@@ -2,36 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/AI/IncomeBudget.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/UiThemes.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Flow/Income.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Logic/TurnOrders/TurnOrderModules/TradeOrders.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Fonts/SmallFont.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Fonts/SmallFont.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Fonts/SmallFontData.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Fonts/SmallFontData.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/GameUi.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/GameUi.tscn" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Themes/DefaultTheme.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Themes/DefaultTheme.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBarToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBarToken.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/PlayerRegimeDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/PlayerRegimeDisplay.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIconLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIconLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/GDMeshSharp3.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/LocationGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/LocationGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/ClientData/ClientPlayerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/ClientData/ClientPlayerData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Location/Settlement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeFinance/RegimeFinance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeFinance/RegimeFinance.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/BudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Finance/FinanceModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Finance/FinanceModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/TurnOrders/MajorTurnOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/TurnOrders/MajorTurnOrders.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/TurnOrders/MinorTurnOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/TurnOrders/MinorTurnOrders.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/TurnOrders/TurnOrderModules/StartConstructionsOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/TurnOrders/TurnOrderModules/StartConstructionsOrders.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/TurnOrders/TurnOrderModules/TurnOrderModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/TurnOrders/TurnOrderModules/TurnOrderModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/StatDisplay/StatLabel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/StatDisplay/StatLabel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/SubscribedNodeToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/SubscribedNodeToken.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +95,8 @@
       <workItem from="1688154844689" duration="733000" />
       <workItem from="1688162850415" duration="9468000" />
       <workItem from="1688236290350" duration="4228000" />
-      <workItem from="1688244436240" duration="4693000" />
+      <workItem from="1688244436240" duration="5441000" />
+      <workItem from="1688255196891" duration="403000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -147,7 +119,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688168821322</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="implementing market">
+      <created>1688249750412</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1688249750412</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -171,6 +150,7 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="first" />
     <MESSAGE value="working on ui subscribed node token" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on ui subscribed node token" />
+    <MESSAGE value="implementing market" />
+    <option name="LAST_COMMIT_MESSAGE" value="implementing market" />
   </component>
 </project>
