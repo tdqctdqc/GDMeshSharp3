@@ -1,0 +1,35 @@
+{
+  "Name": "Azanian",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Rainbow Republic",
+      "Adjective": "Rainbowian",
+      "PrimaryColor": "#00138a",
+      "SecondaryColor": "#fdb91a",
+      "FlagPath": "rainbow"
+    },
+    {
+      "Name": "Great Zimbabwe",
+      "Adjective": "Zimbabwean",
+      "PrimaryColor": "#008000",
+      "SecondaryColor": "#ffd200",
+      "FlagPath": "greatzimbabwe"
+    },
+    {
+      "Name": "Azanian People's Republic",
+      "Adjective": "Azanian People's",
+      "PrimaryColor": "#0000ff",
+      "SecondaryColor": "#008000",
+      "FlagPath": "azania"
+    },
+    {
+      "Name": "Ngunia",
+      "Adjective": "Ngunian",
+      "PrimaryColor": "#ffd900",
+      "SecondaryColor": "#3e5eb9",
+      "FlagPath": "ngunia"
+    }
+  ]
+}

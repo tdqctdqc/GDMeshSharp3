@@ -1,0 +1,63 @@
+[gd_scene load_steps=2 format=3 uid="uid://coa1u1r7c2i5r"]
+
+[ext_resource type="Script" path="res://Assets/Scenes/GameUi/EntityOverviewWindow.cs" id="1"]
+
+[node name="EntityOverview" type="AcceptDialog"]
+title = "Entities"
+size = Vector2i(532, 500)
+visible = true
+ok_button_text = "Close"
+script = ExtResource("1")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(400, 400)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 8.0
+offset_top = 8.0
+offset_right = 524.0
+offset_bottom = 451.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="Domains" type="ItemList" parent="HBoxContainer/ScrollContainer"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+auto_height = true
+
+[node name="ScrollContainer4" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="EntityTypes" type="ItemList" parent="HBoxContainer/ScrollContainer4"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="Entities" type="ItemList" parent="HBoxContainer/ScrollContainer2"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="ScrollContainer5" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="EntityTypeProps" type="ItemList" parent="HBoxContainer/ScrollContainer5"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="ScrollContainer3" type="ScrollContainer" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2
+
+[node name="EntityProps" type="ItemList" parent="HBoxContainer/ScrollContainer3"]
+custom_minimum_size = Vector2(100, 400)
+layout_mode = 2

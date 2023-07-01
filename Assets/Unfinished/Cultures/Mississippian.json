@@ -1,0 +1,13 @@
+{
+  "Name": "Mississippian",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "High Cahokia",
+      "Adjective": "Cahokian",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    }
+  ]
+}

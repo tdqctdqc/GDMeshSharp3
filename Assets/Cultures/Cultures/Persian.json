@@ -1,0 +1,36 @@
+{
+  "Name": "Persian",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Sassania",
+      "Adjective": "Sassanian",
+      "PrimaryColor": "#ff2a2a",
+      "SecondaryColor": "#652e89",
+      "FlagPath": "sassania"
+    },
+    {
+      "Name": "Panavestan",
+      "Adjective": "Panavestani",
+      "PrimaryColor": "#01924a",
+      "SecondaryColor": "#ff0000",
+      "FlagPath": "panavestan"
+    },
+    {
+      "Name": "Tudeh Republic",
+      "Adjective": "Tudeh",
+      "PrimaryColor": "#800000",
+      "SecondaryColor": "#5ab532",
+      "FlagPath": "tudeh"
+    },
+    {
+      "Name": "United Medic States",
+      "Adjective": "Medic",
+      "PrimaryColor": "#ffffff",
+      "SecondaryColor": "#008000",
+      "FlagPath": "medic"
+    }
+
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "Name": "Arab",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "United Arab Republic",
+      "Adjective": "United Arab",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#ff0000",
+      "FlagPath": "unitedarabrepublic"
+    },
+    {
+      "Name": "Hashemite Kingdom",
+      "Adjective": "Hashemite",
+      "PrimaryColor": "#aa0000",
+      "SecondaryColor": "#000000",
+      "FlagPath": "hashemite"
+    },
+    {
+      "Name": "The Khedivate",
+      "Adjective": "Khedivite",
+      "PrimaryColor": "#ffcc00",
+      "SecondaryColor": "#000000",
+      "FlagPath": "khedivate"
+    },
+    {
+      "Name": "Punic Oligarchy",
+      "Adjective": "Punic",
+      "PrimaryColor": "#81dddd",
+      "SecondaryColor": "#983798",
+      "FlagPath": "punic"
+    }
+  ]
+}

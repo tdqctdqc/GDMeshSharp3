@@ -1,0 +1,18 @@
+<Project Sdk="Godot.NET.Sdk/4.0.3">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="GeometRi" Version="1.4.0.3" />
+    <PackageReference Include="Google.OrTools" Version="9.6.2534" />
+    <PackageReference Include="MarkovNextGen" Version="1.2.6" />
+    <PackageReference Include="MessagePack" Version="2.4.59" />
+    <PackageReference Include="MIConvexHull" Version="1.1.19.1019" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.4" />
+    <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
+    <PackageReference Include="RandomFriendlyNameGenerator" Version="1.0.7" />
+    <PackageReference Include="System.Text.Json" Version="7.0.2" />
+  </ItemGroup>
+</Project>

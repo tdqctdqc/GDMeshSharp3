@@ -1,0 +1,36 @@
+{
+  "Name": "Celtic",
+  "SettlementNames": [
+
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Republic of Eire",
+      "Adjective": "Eirean",
+      "PrimaryColor": "#056825",
+      "SecondaryColor": "#ffdb43",
+      "FlagPath": "eire"
+    },
+    {
+      "Name": "Kingdom of Alba",
+      "Adjective": "Alban",
+      "PrimaryColor": "#ffcc00",
+      "SecondaryColor": "#2daeff",
+      "FlagPath": "alba"
+    },
+    {
+      "Name": "Fenian Worker's State",
+      "Adjective": "Fenian",
+      "PrimaryColor": "#03825d",
+      "SecondaryColor": "#f8c300",
+      "FlagPath": "fenian"
+    },
+    {
+      "Name": "Breizh Autarky",
+      "Adjective": "Breizh",
+      "PrimaryColor": "#aaaaaa",
+      "SecondaryColor": "#000000",
+      "FlagPath": "breizh"
+    }
+  ]
+}

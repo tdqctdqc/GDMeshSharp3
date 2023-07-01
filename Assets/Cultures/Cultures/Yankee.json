@@ -1,0 +1,36 @@
+{
+  "Name": "Yankee",
+  "SettlementNames": [
+    
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Free State of Buck",
+      "Adjective": "Buck",
+      "PrimaryColor": "#0000ff",
+      "SecondaryColor": "#ffffff",
+      "FlagPath": "freestateofbuck"
+    },
+    {
+      "Name": "Bay Commonwealth",
+      "Adjective": "Baysian",
+      "PrimaryColor": "#006338",
+      "SecondaryColor": "#ffffff",
+      "FlagPath": "baycommonwealth"
+    },
+    {
+      "Name": "Big Smokey Syndicate",
+      "Adjective": "Big Smokey",
+      "PrimaryColor": "#d50032",
+      "SecondaryColor": "#000000",
+      "FlagPath": "bigsmokeysydnicate"
+    },
+    {
+      "Name": "Excelsior",
+      "Adjective": "Excelsior",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000",
+      "FlagPath": "bigapple"
+    }
+  ]
+}

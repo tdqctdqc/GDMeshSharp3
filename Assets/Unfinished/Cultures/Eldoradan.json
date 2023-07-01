@@ -1,0 +1,35 @@
+{
+  "Name": "Eldoradan",
+  "SettlementNames": [
+    
+
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Bear Flag Republic",
+      "Adjective": "Bear Flag",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "Cascadia",
+      "Adjective": "Cascadian",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "Pharaonic Angeles",
+      "Adjective": "Angeleno",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "Orange Nixonia",
+      "Adjective": "Nixonian",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    }
+
+    
+  ]
+}

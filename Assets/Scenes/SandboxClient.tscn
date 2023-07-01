@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Assets/Scenes/SandboxClient.cs" type="Script" id=1]
+
+[node name="SandboxClient" type="Node"]
+script = ExtResource( 1 )
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Canvas" type="CanvasLayer" parent="."]
+
+[node name="Container" type="HBoxContainer" parent="Canvas"]
+margin_right = 624.0
+margin_bottom = 40.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Degrees" type="Label" parent="Canvas/Container"]
+margin_top = 13.0
+margin_right = 50.0
+margin_bottom = 27.0
+rect_min_size = Vector2( 50, 0 )
+text = "Doot"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MousePos" type="Label" parent="Canvas/Container"]
+margin_left = 54.0
+margin_top = 13.0
+margin_right = 85.0
+margin_bottom = 27.0
+text = "Doot"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DebugHook" type="Control" parent="Canvas"]
+margin_left = 64.0
+margin_top = 104.0
+margin_right = 64.0
+margin_bottom = 104.0
+__meta__ = {
+"_edit_use_anchors_": false
+}

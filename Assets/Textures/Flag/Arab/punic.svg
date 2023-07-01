@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="150mm"
+   height="100mm"
+   viewBox="0 0 150 100"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="punic.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.18641099"
+     inkscape:cx="571.31825"
+     inkscape:cy="-187.75717"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-10.645162,-60.677647)">
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:6.388;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+       id="rect401"
+       width="150"
+       height="100"
+       x="10.645162"
+       y="60.677647" />
+    <rect
+       style="fill:#983798;fill-opacity:1;stroke-width:4.99999;paint-order:fill markers stroke"
+       id="rect340"
+       width="50"
+       height="100"
+       x="10.645162"
+       y="60.677647" />
+    <rect
+       style="fill:#81dddd;fill-opacity:1;stroke-width:3.16227;paint-order:fill markers stroke"
+       id="rect340-1"
+       width="20"
+       height="100"
+       x="25.645161"
+       y="60.677647" />
+    <rect
+       style="fill:#983798;fill-opacity:1;stroke-width:4.99999;paint-order:fill markers stroke"
+       id="rect340-6"
+       width="50"
+       height="100"
+       x="110.64516"
+       y="60.677647" />
+    <rect
+       style="fill:#81dddd;fill-opacity:1;stroke-width:3.16227;paint-order:fill markers stroke"
+       id="rect340-1-8"
+       width="20"
+       height="100"
+       x="125.64516"
+       y="60.677643" />
+    <g
+       id="g872"
+       transform="translate(-119.95619,28.899515)">
+      <path
+         sodipodi:type="star"
+         style="fill:none;fill-opacity:1;stroke:#d4aa00;stroke-width:30.2362;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+         id="path2875"
+         inkscape:flatsided="false"
+         sodipodi:sides="3"
+         sodipodi:cx="736.84229"
+         sodipodi:cy="188.97638"
+         sodipodi:r1="101.66746"
+         sodipodi:r2="50.833729"
+         sodipodi:arg1="0.52359878"
+         sodipodi:arg2="1.5707963"
+         inkscape:rounded="0"
+         inkscape:randomized="0"
+         d="m 824.88889,239.81011 -88.0466,0 -88.04661,0 44.0233,-76.25059 44.02331,-76.250598 44.02329,76.250588 z"
+         transform="matrix(0.13229168,0,0,0.13229168,108.12325,72.736977)"
+         inkscape:transform-center-y="-3.3624395" />
+      <path
+         id="rect4328"
+         style="fill:#d4aa00;stroke-width:3.75107;paint-order:fill markers stroke"
+         d="m 189.23953,77.77813 h 33.1 l 3.26182,4 h -40 z"
+         sodipodi:nodetypes="ccccc" />
+      <path
+         id="path5453"
+         style="fill:#d4aa00;fill-opacity:1;stroke:none;stroke-width:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+         d="m 225.60135,58.767649 a 12.153226,12.153226 0 0 0 -8.26306,11.505241 12.153226,12.153226 0 0 0 8.26306,11.50524 26.967743,26.967743 0 0 1 -2.58538,-11.50524 26.967743,26.967743 0 0 1 2.58538,-11.505241 z" />
+      <path
+         id="path5453-9"
+         style="fill:#d4aa00;fill-opacity:1;stroke:none;stroke-width:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+         d="m 185.60135,58.767651 a 12.153226,12.153226 0 0 1 8.26306,11.505241 12.153226,12.153226 0 0 1 -8.26306,11.505238 26.967743,26.967743 0 0 0 2.58538,-11.505238 26.967743,26.967743 0 0 0 -2.58538,-11.505241 z" />
+      <ellipse
+         style="fill:#000000;fill-opacity:0;stroke:#d4aa00;stroke-width:4;stroke-dasharray:none;stroke-opacity:1;paint-order:fill markers stroke"
+         id="path6476"
+         cx="205.60135"
+         cy="70.272888"
+         rx="5.9227309"
+         ry="5.5692773" />
+    </g>
+  </g>
+</svg>

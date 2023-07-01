@@ -1,0 +1,29 @@
+{
+  "Name": "Quechua",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Tawantinsuyu",
+      "Adjective": "",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000",
+      "FlagPath": "tawantinsuyu"
+    },
+    {
+      "Name": "Kataria",
+      "Adjective": "",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000",
+      "FlagPath": "tawantinsuyu"
+    },
+    {
+      "Name": "Nazca Xenarchate",
+      "Adjective": "Nazcan",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000",
+      "FlagPath": "tawantinsuyu"
+    }
+    
+  ]
+}

@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://b8w1mfxcy3s5"]
+
+[ext_resource type="Script" path="res://Assets/Scenes/GameUi/GameUi.cs" id="1"]
+[ext_resource type="Script" path="res://Assets/Scenes/GameUi/PromptSidebar.cs" id="2_uif6f"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_05t0u"]
+
+[node name="GameUi" type="CanvasLayer"]
+script = ExtResource("1")
+
+[node name="side" type="ScrollContainer" parent="."]
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -143.0
+offset_top = 128.0
+offset_right = -17.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("2_uif6f")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+label_settings = SubResource("LabelSettings_05t0u")

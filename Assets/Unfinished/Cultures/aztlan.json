@@ -1,0 +1,31 @@
+{
+  "Name": "Aztlan",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Villista Popular Republic",
+      "Adjective": "",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "Sinarchist Union",
+      "Adjective": "",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "Tlahtoloyan",
+      "Adjective": "",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "Zunihopi",
+      "Adjective": "",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    }
+  ]
+}

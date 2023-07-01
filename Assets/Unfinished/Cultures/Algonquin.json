@@ -1,0 +1,13 @@
+{
+  "Name": "Algonquin",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "",
+      "Adjective": "",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    }
+  ]
+}

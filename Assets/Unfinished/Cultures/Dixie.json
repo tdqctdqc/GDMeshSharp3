@@ -1,0 +1,32 @@
+{
+  "Name": "",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Lord's Dominion",
+      "Adjective": "Dominionist",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "Columbiad Confederacy",
+      "Adjective": "Columbiad",
+      "PrimaryColor": "#888888",
+      "SecondaryColor": "#ff3737",
+      "FlagPath": "columbiadconfederacy"
+    },
+    {
+      "Name": "Peachtree",
+      "Adjective": "Peachtree",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    },
+    {
+      "Name": "League of Bowling Green",
+      "Adjective": "Bowling Green",
+      "PrimaryColor": "#000000",
+      "SecondaryColor": "#000000"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="150mm"
+   height="100mm"
+   viewBox="0 0 150 100"
+   version="1.1"
+   id="svg5"
+   inkscape:version="1.2 (dc2aedaf03, 2022-05-15)"
+   sodipodi:docname="guomin.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview7"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="0.37282197"
+     inkscape:cx="-999.1364"
+     inkscape:cy="624.96317"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs2" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-10.645162,-60.677647)">
+    <rect
+       style="fill:#ff4242;stroke:none;stroke-width:3;stroke-linecap:round;paint-order:fill markers stroke;fill-opacity:1"
+       id="rect340"
+       width="30"
+       height="100"
+       x="10.645162"
+       y="60.677647" />
+    <rect
+       style="fill:#2b2bff;stroke:none;stroke-width:3;stroke-linecap:round;paint-order:fill markers stroke;fill-opacity:1"
+       id="rect340-2"
+       width="30"
+       height="100"
+       x="70.645157"
+       y="60.677647" />
+    <rect
+       style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:3;stroke-linecap:round;paint-order:fill markers stroke"
+       id="rect340-2-4"
+       width="30"
+       height="100"
+       x="100.64516"
+       y="60.677647" />
+    <rect
+       style="fill:#ffff4b;stroke:none;stroke-width:3;stroke-linecap:round;paint-order:fill markers stroke;fill-opacity:1"
+       id="rect340-3"
+       width="30"
+       height="100"
+       x="40.645161"
+       y="60.677647" />
+    <rect
+       style="fill:#212121;stroke:none;stroke-width:3;stroke-linecap:round;paint-order:fill markers stroke;fill-opacity:1"
+       id="rect340-1"
+       width="30"
+       height="100"
+       x="130.64516"
+       y="60.677647" />
+  </g>
+</svg>

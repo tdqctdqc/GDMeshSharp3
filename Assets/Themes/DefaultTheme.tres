@@ -1,0 +1,6 @@
+[gd_resource type="Theme" load_steps=2 format=3 uid="uid://cxep6j4erabpj"]
+
+[ext_resource type="FontFile" uid="uid://c2gtspx6l3pky" path="res://Assets/Fonts/SmallFont.tres" id="1"]
+
+[resource]
+default_font = ExtResource("1")

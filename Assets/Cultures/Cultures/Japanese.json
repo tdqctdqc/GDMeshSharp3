@@ -1,0 +1,35 @@
+{
+  "Name": "Japanese",
+  "SettlementNames": [
+  ],
+  "RegimeTemplates": [
+    {
+      "Name": "Shogunate",
+      "Adjective": "Shogunate",
+      "PrimaryColor": "#444444",
+      "SecondaryColor": "#ffffff",
+      "FlagPath": "shogunate"
+    },
+    {
+      "Name": "Liberal Democratic Republic of Nihon",
+      "Adjective": "Nihonese",
+      "PrimaryColor": "#ffffff",
+      "SecondaryColor": "#008000",
+      "FlagPath": "nihon"
+    },
+    {
+      "Name": "Kyoto Commune",
+      "Adjective": "Kyotan",
+      "PrimaryColor": "#ffffff",
+      "SecondaryColor": "#610051",
+      "FlagPath": "kyoto"
+    },
+    {
+      "Name": "Kikuchi Empire",
+      "Adjective": "Kikuchi",
+      "PrimaryColor": "#ff00ff",
+      "SecondaryColor": "#ff2a2a",
+      "FlagPath": "kikuchi"
+    }
+  ]
+}
