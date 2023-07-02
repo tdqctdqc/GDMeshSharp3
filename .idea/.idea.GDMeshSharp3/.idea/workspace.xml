@@ -2,12 +2,28 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Session/Logic/Modules/Trade/ItemTradeInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataStructures/History/ItemHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/History/ItemHistory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Market/Market.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Market/Market.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeHistory/RegimeHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeHistory/RegimeHistory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/ProdBuildingConstructBudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/ProdBuildingConstructBudgetPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeProcedure.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="master" />
+      </map>
+    </option>
+    <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitSEFilterConfiguration">
     <file-type-list>
@@ -44,9 +60,10 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="settings.editor.selected.configurable" value="RiderDpaPageId" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
-  <component name="RunManager" selected="Mono Remote.Attach to Player">
+  <component name="RunManager" selected="Start and Debug.Player">
     <configuration name="Attach to Player" type="ConnectRemote" factoryName="Mono Remote" show_console_on_std_err="false" show_console_on_std_out="false" port="23685" address="localhost">
       <option name="allowRunningInParallel" value="false" />
       <option name="listenPortForConnections" value="false" />
@@ -67,9 +84,9 @@
       </method>
     </configuration>
     <configuration name="Player" type="GODOT_DEBUG_RUN_CONFIGURATION" factoryName="Start and Debug">
-      <option name="EXE_PATH" value="" />
+      <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.0.3-stable_mono_win64/Godot_v4.0.3-stable_mono_win64.exe" />
       <option name="PROGRAM_PARAMETERS" value="--path &quot;$PROJECT_DIR$&quot;" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../Godot_v4.0.3-stable_mono_win64" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <method v="2">
@@ -96,7 +113,9 @@
       <workItem from="1688162850415" duration="9468000" />
       <workItem from="1688236290350" duration="4228000" />
       <workItem from="1688244436240" duration="5441000" />
-      <workItem from="1688255196891" duration="403000" />
+      <workItem from="1688255196891" duration="1011000" />
+      <workItem from="1688261723316" duration="1328000" />
+      <workItem from="1688301958399" duration="3379000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -126,7 +145,21 @@
       <option name="project" value="LOCAL" />
       <updated>1688249750412</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="doot">
+      <created>1688255687961</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1688255687961</updated>
+    </task>
+    <task id="LOCAL-00006" summary="doot">
+      <created>1688256149307</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1688256149307</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,6 +184,7 @@
     <MESSAGE value="first" />
     <MESSAGE value="working on ui subscribed node token" />
     <MESSAGE value="implementing market" />
-    <option name="LAST_COMMIT_MESSAGE" value="implementing market" />
+    <MESSAGE value="doot" />
+    <option name="LAST_COMMIT_MESSAGE" value="doot" />
   </component>
 </project>

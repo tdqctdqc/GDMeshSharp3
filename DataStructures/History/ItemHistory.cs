@@ -5,14 +5,9 @@ using MessagePack;
 
 public class ItemHistory : MultiCountHistory<int>
 {
-    public static ItemHistory Construct(Data data)
+    public static ItemHistory Construct()
     {
-        var dic = new Dictionary<int, CountHistory>();
-        foreach (var v in data.Models.Items.Models.Values)
-        {
-            dic.Add(v.Id, CountHistory.Construct());
-        }
-        return new ItemHistory(dic);
+        return new ItemHistory(new Dictionary<int, CountHistory>());
     }
     [SerializationConstructor] private ItemHistory(Dictionary<int, CountHistory> dic) 
         : base(dic)
@@ -25,6 +20,7 @@ public class ItemHistory : MultiCountHistory<int>
         {
             var item = kvp.Key;
             var amt = kvp.Value;
+            if(Counts.ContainsKey(item) == false) Counts.Add(item, CountHistory.Construct());
             Counts[item].Add(amt, tick);
         }
     }

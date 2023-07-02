@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MessagePack;
 
 public class TradeModule : LogicModule
 {
@@ -20,13 +21,13 @@ public class TradeModule : LogicModule
         foreach (var sellOrder in sellOrders)
         {
             var item = (TradeableItem) data.Models[sellOrder.ItemId];
-            if(infos.ContainsKey(item) == false) infos.Add(item, new ItemTradeInfo());
+            if(infos.ContainsKey(item) == false) infos.Add(item, new ItemTradeInfo(0,0,0,0f,0f));
             infos[item].TotalOffered += sellOrder.Quantity;
         }
         foreach (var buyOrder in buyOrders)
         {
             var item = (TradeableItem) data.Models[buyOrder.ItemId];
-            if(infos.ContainsKey(item) == false) infos.Add(item, new ItemTradeInfo());
+            if(infos.ContainsKey(item) == false) infos.Add(item, new ItemTradeInfo(0,0,0,0f,0f));
             infos[item].TotalDemanded += buyOrder.Quantity;
         }
         
@@ -43,6 +44,7 @@ public class TradeModule : LogicModule
                 info.SellSatisfyRatio = Mathf.Clamp(info.TotalDemanded / info.TotalOffered, 0f, 1f);
                 info.BuySatisfyRatio = Mathf.Clamp(info.TotalOffered / info.TotalDemanded, 0f, 1f);
             }
+            proc.ItemTradeInfos.Add(kvp.Key.Id, info);
         }
         
         foreach (var buyOrder in buyOrders)
@@ -51,6 +53,7 @@ public class TradeModule : LogicModule
             var item = (TradeableItem) data.Models[buyOrder.ItemId];
             var info = infos[item];
             var q = Mathf.FloorToInt(buyOrder.Quantity * info.BuySatisfyRatio);
+            infos[item].TotalTraded += q;
             var p = market.ItemPricesById[item.Id];
 
             var itemChange = new TradeProcedure.ItemChange(item.Id, regime.Id, q);
@@ -73,11 +76,5 @@ public class TradeModule : LogicModule
         return res;
     }
 
-    private class ItemTradeInfo
-    {
-        public int TotalOffered { get; set; } = 0;
-        public int TotalDemanded { get; set; } = 0;
-        public float SellSatisfyRatio { get; set; } = 0;
-        public float BuySatisfyRatio { get; set; } = 0;
-    }
+    
 }

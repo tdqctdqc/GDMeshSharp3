@@ -12,8 +12,8 @@ public class RegimeHistory
 
     public static RegimeHistory Construct(Data data)
     {
-        return new RegimeHistory(ItemHistory.Construct(data), ItemHistory.Construct(data),
-            ItemHistory.Construct(data), PeepHistory.Construct());
+        return new RegimeHistory(ItemHistory.Construct(), ItemHistory.Construct(),
+            ItemHistory.Construct(), PeepHistory.Construct());
     }
 
     [SerializationConstructor] private RegimeHistory(ItemHistory prodHistory,

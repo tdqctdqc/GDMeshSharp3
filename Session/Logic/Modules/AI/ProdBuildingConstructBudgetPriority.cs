@@ -20,14 +20,33 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
     {
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, data);
+        var availConstructLabor = availLabor - data.Society.CurrentConstruction.ByPoly
+            .Where(kvp =>
+            {
+                var poly = data.Planet.Polygons[kvp.Key];
+                return poly.Regime.RefId == regime.Id;
+            }).SelectMany(kvp => kvp.Value).Sum(c => c.Model.Model().LaborPerTickToBuild);
+        if (availConstructLabor < 0) return;
         
         SetBuildingLaborConstraint(solver, availLabor, projVars);
         SetItemConstraints(solver, data, budget, projVars);
         SetCreditConstraint(solver, data, credit, prices, projVars);
-        SetConstructLaborConstraint(solver, availLabor, projVars);
+        SetConstructLaborConstraint(solver, availConstructLabor, projVars);
         SetSlotConstraints(solver, regime, projVars);
+        var success = Solve(solver, projVars, regime, data, prices, credit, availLabor);
+        if (success == false)
+        {
+            GD.Print("PLANNING FAILED");
+            foreach (var kvp in budget.Contents)
+            {
+                var item = (Item) data.Models[kvp.Key];
+                var q = kvp.Value;
+                GD.Print($"{item.Name} {q}");
+            }
+        }
         
-        var buildings = Solve(solver, projVars, regime, data, prices, credit, availLabor);
+        
+        var buildings = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
         SelectBuildSites(regime, data, buildings, budget, orders);
     }
 
@@ -42,8 +61,15 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
         SetConstructLaborConstraint(solver, availLabor, projVars);
         SetSlotConstraints(solver, regime, projVars);
         
-        Solve(solver, projVars, regime, data, 
+        var success = Solve(solver, projVars, regime, data, 
             prices, credit, availLabor);
+        if(success == false) GD.Print("Failed");
+        if (success == false)
+        {
+            GD.Print("PLANNING FAILED");
+            GD.Print("credits " + credit);
+            GD.Print("labor " + availLabor);
+        }
         return projVars.GetCounts(kvp => kvp.Key.BuildCosts, (kvp, i) => Mathf.CeilToInt(i * kvp.Value.SolutionValue()));
     }
 
@@ -75,7 +101,7 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
             return new KeyValuePair<BuildingModel, Variable>(b, projVar);
         }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
-    private Dictionary<BuildingModel, int> Solve(Solver solver, 
+    private bool Solve(Solver solver, 
         Dictionary<BuildingModel, Variable> projVars,
         Regime regime, Data data,
         Dictionary<Item, float> prices,
@@ -93,15 +119,13 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
             objective.SetCoefficient(projVar, benefit);
         }
         var status = solver.Solve();
-        if (status != Solver.ResultStatus.OPTIMAL
-            && status != Solver.ResultStatus.FEASIBLE)
-        {
-            //throw new Exception();
-            GD.Print(status);
-        }
-
-        return projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
+        // if (status != Solver.ResultStatus.OPTIMAL && status != Solver.ResultStatus.FEASIBLE)
+        // {
+        //     GD.Print("FAILED");
+        // }
+        return status == Solver.ResultStatus.OPTIMAL || status == Solver.ResultStatus.FEASIBLE;
     }
+    
     private void SetItemConstraints(Solver solver, Data data, ItemWallet budget,
         Dictionary<BuildingModel, Variable> buildingVars)
     {

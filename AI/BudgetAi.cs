@@ -27,6 +27,7 @@ public class BudgetAi
             _regime.Items.Contents.Sum(kvp => prices[(Item) data.Models[kvp.Key]] * _regime.Items[kvp.Key]);
         var totalLaborAvail = _regime.Polygons.Sum(p => p.GetLaborSurplus(data));
         
+        
         foreach (var kvp in _priorities)
         {
             kvp.Value.SetWeight(data, _regime);
@@ -97,6 +98,10 @@ public class BudgetAi
         foreach (var kvp in wishlist)
         {
             orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, kvp.Value));
+        }
+        foreach (var kvp in _regime.Items.Contents)
+        {
+            
         }
     }
 }

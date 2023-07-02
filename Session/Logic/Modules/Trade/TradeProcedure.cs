@@ -6,21 +6,24 @@ using MessagePack;
 public class TradeProcedure : Procedure
 {
     public List<ItemChange> ItemChanges { get; private set; }
+    public Dictionary<int, ItemTradeInfo> ItemTradeInfos { get; private set; }
     public Dictionary<int, float> RegimeTradeBalances { get; private set; }
     public Dictionary<int, float> NewPrices { get; private set; }
-
+    
     public static TradeProcedure Construct()
     {
         return new TradeProcedure(new List<ItemChange>(), new Dictionary<int, float>(),
-            new Dictionary<int, float>());
+            new Dictionary<int, float>(), new Dictionary<int, ItemTradeInfo>());
     }
     [SerializationConstructor] private TradeProcedure(List<ItemChange> itemChanges, 
         Dictionary<int, float> regimeTradeBalances,
-        Dictionary<int, float> newPrices)
+        Dictionary<int, float> newPrices,
+        Dictionary<int, ItemTradeInfo> itemTradeInfos)
     {
         ItemChanges = itemChanges;
         RegimeTradeBalances = regimeTradeBalances;
         NewPrices = newPrices;
+        ItemTradeInfos = itemTradeInfos;
     }
 
     public override bool Valid(Data data)
@@ -31,6 +34,7 @@ public class TradeProcedure : Procedure
     public override void Enact(ProcedureWriteKey key)
     {
         var market = key.Data.Society.Market;
+        var tick = key.Data.BaseDomain.GameClock.Tick;
         foreach (var itemChange in ItemChanges)
         {
             var regime = key.Data.Society.Regimes[itemChange.RegimeId];
@@ -44,7 +48,7 @@ public class TradeProcedure : Procedure
                 regime.Items.Remove(item, -itemChange.Quantity);
             }
         }
-
+        
         foreach (var kvp in RegimeTradeBalances)
         {
             var regime = key.Data.Society.Regimes[kvp.Key];
@@ -54,8 +58,11 @@ public class TradeProcedure : Procedure
         
         foreach (var kvp in NewPrices)
         {
-            market.ItemPricesById[kvp.Key] = kvp.Value;
+            var item = (Item) key.Data.Models[kvp.Key];
+            market.SetNewPrice(item, kvp.Value, tick, key);
         }
+        
+        market.WriteHistory(ItemTradeInfos, tick, key);
     }
     
     public class ItemChange
