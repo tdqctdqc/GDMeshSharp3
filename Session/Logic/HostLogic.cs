@@ -13,7 +13,7 @@ public class HostLogic : ILogic
     private EntityValueCache<Regime, RegimeAi> _regimeAis;
     private ConcurrentDictionary<Player, TurnOrders> _playerTurnOrders;
     private ConcurrentDictionary<Regime, Task<TurnOrders>> _aiTurnOrders;
-    private HostServer _server;
+    private HostServer _server; 
     private HostWriteKey _hKey;
     private ProcedureWriteKey _pKey;
     private Data _data;
