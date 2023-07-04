@@ -11,7 +11,8 @@ public class Regime : Entity
     public ModelRef<RegimeTemplate> Template { get; private set; }
     public Color PrimaryColor { get; protected set; }
     public Color SecondaryColor { get; protected set; }
-    public ItemWallet Items { get; protected set; }
+    public ItemCount Items { get; protected set; }
+    public FlowCount FlowCount { get; private set; }
     public RegimeHistory History { get; private set; }
     public string Name { get; protected set; }
     public EntityRefCollection<MapPolygon> Polygons { get; protected set; }
@@ -20,8 +21,8 @@ public class Regime : Entity
 
     [SerializationConstructor] protected Regime(int id, string name, Color primaryColor, Color secondaryColor, 
         EntityRefCollection<MapPolygon> polygons, EntityRef<MapPolygon> capital,
-        ItemWallet items, RegimeHistory history, ModelRef<Culture> culture,
-        ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor) : base(id)
+        ItemCount items, RegimeHistory history, ModelRef<Culture> culture,
+        ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, FlowCount flowCount) : base(id)
     {
         Items = items;
         PrimaryColor = primaryColor;
@@ -34,13 +35,14 @@ public class Regime : Entity
         Template = template;
         Finance = finance;
         IsMajor = isMajor;
+        FlowCount = flowCount;
     }
 
     public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, bool isMajor, CreateWriteKey key)
     {
         var id = key.IdDispenser;
         var polygons = EntityRefCollection<MapPolygon>.Construct(new HashSet<int>{seed.Id}, key.Data);
-        var items = ItemWallet.Construct();
+        var items = ItemCount.Construct();
         items.Add(ItemManager.Iron, 10_000);
         
         
@@ -54,7 +56,8 @@ public class Regime : Entity
             regimeTemplate.Culture.MakeRef(),
             regimeTemplate.MakeRef(),
             RegimeFinance.Construct(),
-                isMajor
+            isMajor,
+            FlowCount.Construct()
         );
         key.Create(r);
         seed.SetRegime(r, key);
@@ -75,6 +78,11 @@ public class Regime : Entity
     public void SetIsMajor(bool isMajor, CreateWriteKey key)
     {
         IsMajor = isMajor;
+    }
+
+    public void SetFlows(FlowCount flows, ProcedureWriteKey key)
+    {
+        FlowCount = flows;
     }
     public override string ToString() => Name;
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;

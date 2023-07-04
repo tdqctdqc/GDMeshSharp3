@@ -19,11 +19,4 @@ public class BuildingModelManager : IModelManager<BuildingModel>
         Mines = buildings.SelectWhereOfType<BuildingModel, Mine>()
             .ToDictionary(b => b.ProdItem, b => b);
     }
-    private void AddBuildings(params BuildingModel[] models)
-    {
-        foreach (var model in models)
-        {
-            Models.Add(model.Name, model);
-        }
-    }
 }

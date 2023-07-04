@@ -23,6 +23,7 @@ public class Models
     public CultureManager Cultures { get; private set; }
     public RegimeTemplateManager RegimeTemplates { get; private set; }
     public FoodProdTechniqueManager FoodProdTechniques { get; private set; }
+    public FlowManager Flows { get; private set; }
     public Models()
     {
         _managers = new Dictionary<Type, IModelManager>();
@@ -48,6 +49,8 @@ public class Models
         AddManager(RegimeTemplates);
         FoodProdTechniques = new FoodProdTechniqueManager();
         AddManager(FoodProdTechniques);
+        Flows = new FlowManager();
+        AddManager(Flows);
 
         SetIds();
     }

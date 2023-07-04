@@ -39,7 +39,7 @@ public class BudgetAi
             kvp.Value.SetWeight(data, _regime);
         }
         var totalPriorityWeight = _priorities.Sum(kvp => kvp.Value.Weight);
-        var budget = ItemWallet.Construct(_regime.Items);
+        var budget = ItemCount.Construct(_regime.Items);
         foreach (var kvp in _priorities)
         {
             DoPriority(kvp.Value, data, prices, budget, totalPriorityWeight, totalPrice, 
@@ -49,7 +49,7 @@ public class BudgetAi
     }
 
     private void DoPriority(BudgetPriority priority, Data data, Dictionary<Item, float> prices, 
-        ItemWallet itemBudget, float totalPriorityWeight, float totalPrice, int totalLaborAvail, 
+        ItemCount itemBudget, float totalPriorityWeight, float totalPrice, int totalLaborAvail, 
         MajorTurnOrders orders)
     {
         var priorityWeight = priority.Weight;
@@ -87,14 +87,14 @@ public class BudgetAi
             .GetCounts(t => t);
     }
 
-    private void SpendIncome(Data data, MajorTurnOrders orders, ItemWallet itemBudget)
+    private void SpendIncome(Data data, MajorTurnOrders orders, ItemCount itemBudget)
     {
         DoTradeOrders(data, orders, itemBudget);
     }
-    private void DoTradeOrders(Data data, MajorTurnOrders orders, ItemWallet itemBudget)
+    private void DoTradeOrders(Data data, MajorTurnOrders orders, ItemCount itemBudget)
     {
         var market = data.Society.Market;
-        var income = Flow.Income.GetNonBuildingFlow(_regime, data);
+        var income = _regime.FlowCount[FlowManager.Income];
         income += _regime.Finance.LastTradeBalance;
         if (income < 0) return;
         
@@ -114,7 +114,7 @@ public class BudgetAi
             var price = market.ItemPricesById[item.Id];
             var qOnHand = itemBudget[item];
             var desired = kvp.Value;
-            var deficit = desired - qOnHand;
+            var deficit = Mathf.CeilToInt(desired - qOnHand);
             if (deficit > 0)
             {
                 var qToBuy = Math.Min(deficit, Mathf.FloorToInt(stockUpReserveItemsIncome / price));
@@ -130,7 +130,7 @@ public class BudgetAi
         {
             var item = (Item)data.Models[kvp.Key];
             if (item is TradeableItem t == false) continue;
-            var q = kvp.Value;
+            var q = Mathf.FloorToInt(kvp.Value);
             var reserve = Reserve.DesiredReserves.ContainsKey(item)
                 ? Reserve.DesiredReserves[item]
                 : 0;

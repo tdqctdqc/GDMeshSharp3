@@ -24,7 +24,8 @@ public class Income : Flow
                 }
             );
         var fromAgriculture = r.Polygons.Sum(p => p.PolyFoodProd.Income(d));
+        var tradeBalance = r.Finance.LastTradeBalance;
         
-        return fromBuildings + fromAgriculture;
+        return fromBuildings + fromAgriculture + tradeBalance;
     }
 }

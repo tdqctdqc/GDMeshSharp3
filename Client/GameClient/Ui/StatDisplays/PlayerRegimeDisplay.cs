@@ -43,7 +43,7 @@ public class PlayerRegimeDisplay
                 if (locRegime == null) return "";
                 
                 //todo fix
-                return Flow.Income.GetNonBuildingFlow(locRegime, data).ToString();
+                return locRegime.FlowCount[FlowManager.Income].ToString();
             },
             20f,
             data.Notices.Ticked.Blank,

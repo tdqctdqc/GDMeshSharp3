@@ -12,7 +12,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         var sizeLabel = new Label();
         var deltaLabel = new Label();
         var popSize = StatLabel.Construct<int>("Pop Size", sizeLabel,
-            () => GetPeepCount(data));
+            () => GetPopulationCount(data));
         popSize.AddTrigger(data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         popSize.AddTrigger(data.Notices.Ticked.Blank);
         AddChild(sizeLabel);
@@ -24,12 +24,12 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         AddChild(deltaLabel);
     }
 
-    private int GetPeepCount(Data data)
+    private int GetPopulationCount(Data data)
     {
         var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
         if (r.Empty() == false)
         {
-            return r.Entity().GetPeeps(data).Sum(p => p.Size);
+            return r.Entity().GetPopulation(data);
         }
 
         return 0;
@@ -40,7 +40,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
         if (r.Empty() == false)
         {
-            return r.Entity().History.PeepHistory.PeepSize.GetLatestDelta();
+            return Mathf.FloorToInt(r.Entity().History.PeepHistory.PeepSize.GetLatestDelta());
         }
 
         return 0;

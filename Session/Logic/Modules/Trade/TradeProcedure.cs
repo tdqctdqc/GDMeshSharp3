@@ -33,6 +33,10 @@ public class TradeProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
+        foreach (var r in key.Data.Society.Regimes.Entities)
+        {
+            r.Finance.ClearTradeBalance(key);
+        }
         var market = key.Data.Society.Market;
         var tick = key.Data.BaseDomain.GameClock.Tick;
         foreach (var itemChange in ItemChanges)

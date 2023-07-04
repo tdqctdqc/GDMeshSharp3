@@ -13,9 +13,9 @@ public class FoodAndPopGrowthModule : LogicModule
         var foodConsPerPop = data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         foreach (var regime in data.Society.Regimes.Entities)
         {
-            var pop = regime.GetPeeps(data).Sum(p => p.Size);
+            var pop = regime.GetPopulation(data);
             var foodDemanded = foodConsPerPop * pop;
-            var foodStock = regime.Items[ItemManager.Food];
+            var foodStock = Mathf.FloorToInt(regime.Items[ItemManager.Food]);
             var actualCons = Math.Min(foodStock, foodDemanded);
             var surplusRatio = (float) foodStock / foodDemanded - 1f;
             foodConsByRegime.Add(regime.Id, actualCons);

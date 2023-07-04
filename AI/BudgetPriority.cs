@@ -18,7 +18,7 @@ public abstract class BudgetPriority
     }
 
     public abstract void Calculate(Regime regime, Data data,
-        ItemWallet budget,
+        ItemCount budget,
         Dictionary<Item, float> prices,
         int credit,
         int availLabor,

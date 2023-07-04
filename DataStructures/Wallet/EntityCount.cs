@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class EntityWallet<T> : Wallet<int> 
+public class EntityCount<T> : Count<int> 
     where T : Entity
 {
-    public static EntityWallet<T> Construct()
+    public static EntityCount<T> Construct()
     {
-        return new EntityWallet<T>(new Dictionary<int, int>());
+        return new EntityCount<T>(new Dictionary<int, float>());
     }
-    [SerializationConstructor] private EntityWallet(Dictionary<int, int> contents) : base(contents)
+    [SerializationConstructor] private EntityCount(Dictionary<int, float> contents) : base(contents)
     {
     }
     

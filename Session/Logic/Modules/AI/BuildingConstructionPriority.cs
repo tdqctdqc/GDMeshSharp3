@@ -15,7 +15,7 @@ public class BuildingConstructionPriority : BudgetPriority
     {
     }
 
-    public override void Calculate(Regime regime, Data data, ItemWallet budget, Dictionary<Item, float> prices,
+    public override void Calculate(Regime regime, Data data, ItemCount budget, Dictionary<Item, float> prices,
         int credit, int availLabor, MajorTurnOrders orders)
     {
         if (availLabor <= 0) return;
@@ -126,7 +126,7 @@ public class BuildingConstructionPriority : BudgetPriority
         return status == Solver.ResultStatus.OPTIMAL || status == Solver.ResultStatus.FEASIBLE;
     }
     
-    private void SetItemConstraints(Solver solver, Data data, ItemWallet budget,
+    private void SetItemConstraints(Solver solver, Data data, ItemCount budget,
         Dictionary<BuildingModel, Variable> buildingVars)
     {
         var items = data.Models.Items.Models.Select(kvp => kvp.Value.Id).ToList();
@@ -209,7 +209,7 @@ public class BuildingConstructionPriority : BudgetPriority
         }
     }
     private void SelectBuildSitesAndAddRequest(Regime regime, Data data, Dictionary<BuildingModel, int> toBuild, 
-        ItemWallet budget, MajorTurnOrders orders)
+        ItemCount budget, MajorTurnOrders orders)
     {
         var currConstruction = data.Society.CurrentConstruction;
         var availPolys = regime.Polygons;

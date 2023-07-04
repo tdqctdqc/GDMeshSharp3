@@ -14,9 +14,9 @@ public class ItemHistory : MultiCountHistory<int>
     {
         
     }
-    public void TakeSnapshot(int tick, ItemWallet wallet)
+    public void TakeSnapshot(int tick, ItemCount count)
     {
-        foreach (var kvp in wallet.Contents)
+        foreach (var kvp in count.Contents)
         {
             var item = kvp.Key;
             var amt = kvp.Value;

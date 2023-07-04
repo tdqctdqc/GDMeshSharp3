@@ -9,8 +9,8 @@ using Godot;
 
 public class ProduceConstructModule : LogicModule
 {
-    private ConcurrentDictionary<int, ItemWallet> 
-        _regimeProdWallets = new ConcurrentDictionary<int, ItemWallet>();
+    private ConcurrentDictionary<int, ItemCount> 
+        _regimeProdWallets = new ConcurrentDictionary<int, ItemCount>();
     private ConcurrentDictionary<int, EmploymentReport> 
         _polyEmployReps = new ConcurrentDictionary<int, EmploymentReport>();
     private ConcurrentDictionary<int, PolyEmploymentScratch>
@@ -28,16 +28,16 @@ public class ProduceConstructModule : LogicModule
         var proc = ProduceConstructProcedure.Create();
         
         Parallel.ForEach(data.Society.Regimes.Entities, 
-            regime => WorkForRegime(regime, data, proc));
+            regime => CalculateForRegime(regime, data, proc));
         
         res.Procedures.Add(proc);
         return res;
     }
 
-    private void WorkForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
+    private void CalculateForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
     {
         var gains = _regimeProdWallets.GetOrAdd(regime.Id,
-            id => ItemWallet.Construct());
+            id => ItemCount.Construct());
         proc.RegimeResourceGains.TryAdd(regime.Id, gains);
         var unemployedJob = PeepJobManager.Unemployed;
         
@@ -70,6 +70,7 @@ public class ProduceConstructModule : LogicModule
                 employment.Counts[kvp.Key.Id] = kvp.Value;
             }
         }
+        DoNonBuildingFlows(regime, data, proc);
     }
 
     private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc,
@@ -133,6 +134,16 @@ public class ProduceConstructModule : LogicModule
         foreach (var construction in constructions)
         {
             proc.ConstructionProgresses.TryAdd(construction.Pos, ratio);
+        }
+    }
+
+    private void DoNonBuildingFlows(Regime r, Data data, ProduceConstructProcedure proc)
+    {
+        foreach (var kvp in data.Models.Flows.Models)
+        {
+            var flow = kvp.Value;
+            var amt = flow.GetNonBuildingFlow(r, data);
+            proc.RegimeInflows[r.Id].Add(flow, amt);
         }
     }
 }

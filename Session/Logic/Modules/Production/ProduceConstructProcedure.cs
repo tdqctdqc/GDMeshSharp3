@@ -9,8 +9,8 @@ using MessagePack;
 
 public class ProduceConstructProcedure : Procedure
 {
-    public ConcurrentDictionary<int, ItemWallet> RegimeResourceGains { get; private set; }
-    public ConcurrentDictionary<int, ModelWallet<Flow>> RegimeInflows { get; private set; }
+    public ConcurrentDictionary<int, ItemCount> RegimeResourceGains { get; private set; }
+    public ConcurrentDictionary<int, ModelCount<Flow>> RegimeInflows { get; private set; }
     public ConcurrentDictionary<int, EmploymentReport> EmploymentReports { get; private set; }
     public ConcurrentDictionary<PolyTriPosition, float> ConstructionProgresses { get; private set; }
     
@@ -19,12 +19,12 @@ public class ProduceConstructProcedure : Procedure
     public static ProduceConstructProcedure Create()
     {
         return new ProduceConstructProcedure(
-            new ConcurrentDictionary<int, ItemWallet>(), 
+            new ConcurrentDictionary<int, ItemCount>(), 
             new ConcurrentDictionary<int, EmploymentReport>(),
             new ConcurrentDictionary<PolyTriPosition, float>());
     }
     [SerializationConstructor] private ProduceConstructProcedure(
-        ConcurrentDictionary<int, ItemWallet> regimeResourceGains, 
+        ConcurrentDictionary<int, ItemCount> regimeResourceGains, 
         ConcurrentDictionary<int, EmploymentReport> employmentReports,
         ConcurrentDictionary<PolyTriPosition, float> constructionProgresses)
     {

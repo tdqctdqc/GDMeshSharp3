@@ -5,25 +5,25 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public abstract class Wallet<T>
+public abstract class Count<T>
 {
-    public Dictionary<T, int> Contents { get; private set; }
-    public int this[T t] => Contents.ContainsKey(t) ? Contents[t] : 0;
-    [SerializationConstructor] protected Wallet(Dictionary<T, int> contents)
+    public Dictionary<T, float> Contents { get; private set; }
+    public float this[T t] => Contents.ContainsKey(t) ? Contents[t] : 0;
+    [SerializationConstructor] protected Count(Dictionary<T, float> contents)
     {
         Contents = contents;
     }
-    public Snapshot<T, int> GetSnapshot()
+    public Snapshot<T, float> GetSnapshot()
     {
-        return Snapshot<T, int>.Construct(Contents);
+        return Snapshot<T, float>.Construct(Contents);
     }
-    protected void Add(T t, int amount)
+    protected void Add(T t, float amount)
     {
         if (amount < 0f) throw new Exception("Trying to add negative amount to wallet");
         if(Contents.ContainsKey(t) == false) Contents.Add(t, 0);
         Contents[t] += amount;
     }
-    protected void Remove(T t, int amount)
+    protected void Remove(T t, float amount)
     {
         if (amount < 0f) throw new Exception("Trying to remove negative amount from wallet");
         if(Contents.ContainsKey(t) == false)
@@ -38,7 +38,7 @@ public abstract class Wallet<T>
         Contents[t] -= amount;
     }
 
-    public void TransferFrom<R>(R t, int amount, Wallet<R> destination) where R : T
+    public void TransferFrom<R>(R t, float amount, Count<R> destination) where R : T
     {
         Remove(t, amount);
         destination.Add(t, amount);

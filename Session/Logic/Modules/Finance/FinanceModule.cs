@@ -12,7 +12,7 @@ public class FinanceModule : LogicModule
         foreach (var regime in data.Society.Regimes.Entities)
         {
             //todo get from 'flow dic' on regime or something
-            var income = Flow.Income.GetNonBuildingFlow(regime, data);
+            var income = regime.FlowCount[FlowManager.Income];
             proc.GrowthsByRegimeId.Add(regime.Id, Mathf.FloorToInt(income));
         }
 
