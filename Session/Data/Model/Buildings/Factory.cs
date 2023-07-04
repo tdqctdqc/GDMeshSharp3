@@ -9,7 +9,8 @@ public class Factory : FlowProdBuildingModel
         {
             {PeepJobManager.Prole, 500}
         };
-    public Factory() : base(ItemManager.IndustrialPower, 100, BuildingType.Industry, nameof(Factory),
+    public Factory() : base(ItemManager.IndustrialPower, 100, 
+        BuildingType.Industry, nameof(Factory),
         100, 2000, 10)
     {
     }

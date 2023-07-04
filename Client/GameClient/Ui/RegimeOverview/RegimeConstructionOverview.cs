@@ -20,7 +20,7 @@ public partial class RegimeConstructionOverview : ScrollContainer
         var constructions = data.Society.CurrentConstruction
             .ByPoly.Where(kvp => regime.Polygons.RefIds.Contains(kvp.Key))
             .SelectMany(kvp => kvp.Value).ToList();
-        
+        _container.CreateLabelAsChild($"Cap: {regime.FlowCount[FlowManager.ConstructionCap]}");
         foreach (var construction in constructions)
         {
             var hbox = new HBoxContainer();

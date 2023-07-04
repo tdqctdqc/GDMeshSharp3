@@ -9,8 +9,8 @@ public abstract class ItemProdBuildingModel : WorkBuildingModel
     public Item ProdItem { get; private set; }
     public int ProdCap { get; private set; }
     protected ItemProdBuildingModel(BuildingType buildingType, Item prodItem, string name, int numTicksToBuild, 
-        int laborPerTickToBuild, int income, int prodCap)
-        : base(buildingType, name, numTicksToBuild, laborPerTickToBuild,
+        int constructionCapPerTick, int income, int prodCap)
+        : base(buildingType, name, numTicksToBuild, constructionCapPerTick,
             income)
     {
         ProdItem = prodItem;

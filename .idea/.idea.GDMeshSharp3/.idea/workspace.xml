@@ -1,25 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="made sure major regimes got strat resources">
-      <change afterPath="$PROJECT_DIR$/DataStructures/Wallet/FlowCount.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataStructures/Wallet/ItemCount.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/DataStructures/Wallet/ModelCount.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Flow/ConstructionCap.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="gave regime FlowCount">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetAi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/BudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/CountHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/CountHistory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/History/ItemHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/History/ItemHistory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/EntityWallet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Wallet/EntityCount.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/ItemWallet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/ModelWallet.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/Wallet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Wallet/Count.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/Regime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeConstructionOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeConstructionOverview.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/ExtractionBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/ExtractionBuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/FinancialBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/FinancialBuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/FlowProdBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/FlowProdBuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/ItemProdBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/ItemProdBuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/WorkBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/WorkBuildingModel.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/FlowProdBuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/FlowProdBuildingConstructionPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" afterDir="false" />
     </list>
@@ -132,7 +127,7 @@
       <workItem from="1688335588283" duration="1619000" />
       <workItem from="1688426718304" duration="6093000" />
       <workItem from="1688434917618" duration="2987000" />
-      <workItem from="1688499282107" duration="4999000" />
+      <workItem from="1688499282107" duration="8220000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -197,7 +192,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688503356301</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="gave regime FlowCount">
+      <created>1688505580595</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1688505580595</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -226,6 +228,7 @@
     <MESSAGE value="adding market price and Q histories" />
     <MESSAGE value="Added major/minor regime distinction" />
     <MESSAGE value="made sure major regimes got strat resources" />
-    <option name="LAST_COMMIT_MESSAGE" value="made sure major regimes got strat resources" />
+    <MESSAGE value="gave regime FlowCount" />
+    <option name="LAST_COMMIT_MESSAGE" value="gave regime FlowCount" />
   </component>
 </project>

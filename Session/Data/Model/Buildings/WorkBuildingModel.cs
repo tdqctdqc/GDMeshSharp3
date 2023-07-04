@@ -6,8 +6,8 @@ public abstract class WorkBuildingModel : BuildingModel
 {
     public int Income { get; private set; }
     public abstract Dictionary<PeepJob, int> JobLaborReqs { get; }
-    protected WorkBuildingModel(BuildingType buildingType, string name, int numTicksToBuild, int laborPerTickToBuild, int income)
-        : base(buildingType, name, numTicksToBuild, laborPerTickToBuild)
+    protected WorkBuildingModel(BuildingType buildingType, string name, int numTicksToBuild, int constructionCapPerTick, int income)
+        : base(buildingType, name, numTicksToBuild, constructionCapPerTick)
     {
         Income = income;
     }

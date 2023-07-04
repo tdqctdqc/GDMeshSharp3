@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class FlowCount : ModelCount<Flow>
 {
@@ -8,7 +9,7 @@ public class FlowCount : ModelCount<Flow>
     {
         return new FlowCount(new Dictionary<int, float>());
     }
-    protected FlowCount(Dictionary<int, float> contents) : base(contents)
+    [SerializationConstructor] protected FlowCount(Dictionary<int, float> contents) : base(contents)
     {
     }
 }

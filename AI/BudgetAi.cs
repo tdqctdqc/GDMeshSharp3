@@ -6,18 +6,17 @@ using Godot;
 public class BudgetAi 
 {
     private Regime _regime;
-    private Dictionary<Item, BudgetPriority> _priorities;
+    private List<BudgetPriority> _priorities;
     public IncomeBudget IncomeBudget { get; private set; }
     public BudgetItemReserve Reserve { get; private set; }
     
     public BudgetAi(Data data, Regime regime)
     {
         _regime = regime;
-        // _priorities = new Dictionary<Item, BudgetPriority>
-        // {
-        //     {ItemManager.IndustrialPoint, 
-        //         new ItemProdBuildingConstructionPriority(ItemManager.IndustrialPoint, (r,d) => 1f)},
-        // };
+        _priorities = new List<BudgetPriority>
+        {
+               new FlowProdBuildingConstructionPriority(FlowManager.IndustrialPower, (r,d) => 1f),
+        };
         IncomeBudget = new IncomeBudget();
         Reserve = new BudgetItemReserve();
         
@@ -34,15 +33,15 @@ public class BudgetAi
         var totalLaborAvail = _regime.Polygons.Sum(p => p.GetLaborSurplus(data));
         
         
-        foreach (var kvp in _priorities)
+        foreach (var p in _priorities)
         {
-            kvp.Value.SetWeight(data, _regime);
+            p.SetWeight(data, _regime);
         }
-        var totalPriorityWeight = _priorities.Sum(kvp => kvp.Value.Weight);
+        var totalPriorityWeight = _priorities.Sum(p => p.Weight);
         var budget = ItemCount.Construct(_regime.Items);
-        foreach (var kvp in _priorities)
+        foreach (var p in _priorities)
         {
-            DoPriority(kvp.Value, data, prices, budget, totalPriorityWeight, totalPrice, 
+            DoPriority(p, data, prices, budget, totalPriorityWeight, totalPrice, 
                 totalLaborAvail, orders);
         }
         
@@ -56,6 +55,7 @@ public class BudgetAi
         var priorityShare = priorityWeight / totalPriorityWeight;
         var credit = Mathf.FloorToInt(totalPrice *  priorityShare);
         var labor = Mathf.FloorToInt(priorityShare * totalLaborAvail);
+        var constructCap = _regime.FlowCount[FlowManager.ConstructionCap];
         if (credit < 0f)
         {
             throw new Exception($"priority weight {priorityWeight} " +
@@ -63,7 +63,7 @@ public class BudgetAi
                                 $"total price {totalPrice}");
         }
         priority.Calculate(_regime, data, itemBudget, prices, credit,
-            labor, orders);
+            labor, Mathf.FloorToInt(constructCap), orders);
         SpendIncome(data, orders, itemBudget);
     }
 
@@ -74,14 +74,14 @@ public class BudgetAi
         var prices = market.ItemPricesById.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
         
         var totalLaborAvail = _regime.Polygons.Sum(p => p.GetLaborSurplus(data));
-        var totalPriorityWeight = _priorities.Sum(kvp => kvp.Value.Weight);
+        var totalPriorityWeight = _priorities.Sum(p => p.Weight);
         
-        return _priorities.Select(kvp =>
+        return _priorities.Select(p =>
             {
-                var priorityWeight = kvp.Value.Weight;
+                var priorityWeight = p.Weight;
                 var priorityShare = priorityWeight / totalPriorityWeight;
 
-                return kvp.Value.GetItemWishlist(_regime, data, prices,
+                return p.GetItemWishlist(_regime, data, prices,
                     Mathf.FloorToInt(priorityShare * buyItemsIncome), totalLaborAvail);
             })
             .GetCounts(t => t);

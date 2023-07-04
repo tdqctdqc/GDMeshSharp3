@@ -6,9 +6,9 @@ using Godot;
 public abstract class ExtractionBuildingModel : ItemProdBuildingModel
 {
     public ExtractionBuildingModel(Item prodItem, string name, bool fromDeposit, int numTicksToBuild, 
-        int laborPerTickToBuild, int income, int prodCap) 
+        int constructionCapPerTick, int income, int prodCap) 
         : base(BuildingType.Extraction, prodItem, name, 
-            numTicksToBuild, laborPerTickToBuild, income, prodCap)
+            numTicksToBuild, constructionCapPerTick, income, prodCap)
     {
         if (prodItem.Attributes.Has<ExtractableAttribute>() == false) throw new Exception();
     }

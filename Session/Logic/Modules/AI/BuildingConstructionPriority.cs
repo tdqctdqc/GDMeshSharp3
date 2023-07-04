@@ -13,26 +13,21 @@ public class BuildingConstructionPriority : BudgetPriority
         Func<Data, Regime, float> getWeight) 
         : base(getWeight)
     {
+        _relevant = relevant;
+        _utility = utility;
     }
 
     public override void Calculate(Regime regime, Data data, ItemCount budget, Dictionary<Item, float> prices,
-        int credit, int availLabor, MajorTurnOrders orders)
+        int credit, int availLabor, int availConstructCap, MajorTurnOrders orders)
     {
         if (availLabor <= 0) return;
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, data);
-        var availConstructLabor = availLabor - data.Society.CurrentConstruction.ByPoly
-            .Where(kvp =>
-            {
-                var poly = data.Planet.Polygons[kvp.Key];
-                return poly.Regime.RefId == regime.Id;
-            }).SelectMany(kvp => kvp.Value).Sum(c => c.Model.Model().LaborPerTickToBuild);
-        if (availConstructLabor <= 0) return;
         
         SetBuildingLaborConstraint(solver, availLabor, projVars);
         SetItemConstraints(solver, data, budget, projVars);
         SetCreditConstraint(solver, data, credit, prices, projVars);
-        SetConstructLaborConstraint(solver, availConstructLabor, projVars);
+        SetConstructCapConstraint(solver, availConstructCap, projVars);
         SetSlotConstraints(solver, regime, projVars);
         var success = Solve(solver, projVars, regime, data, prices, credit, availLabor);
         if (success == false)
@@ -59,7 +54,7 @@ public class BuildingConstructionPriority : BudgetPriority
         
         SetBuildingLaborConstraint(solver, availLabor, projVars);
         SetCreditConstraint(solver, data, credit, prices, projVars);
-        SetConstructLaborConstraint(solver, availLabor, projVars);
+        SetConstructCapConstraint(solver, availLabor, projVars);
         SetSlotConstraints(solver, regime, projVars);
         
         var success = Solve(solver, projVars, regime, data, 
@@ -163,15 +158,15 @@ public class BuildingConstructionPriority : BudgetPriority
         }
     }
 
-    private void SetConstructLaborConstraint(Solver solver, int laborAvail, 
+    private void SetConstructCapConstraint(Solver solver, int availConstructCap, 
         Dictionary<BuildingModel, Variable> buildingVars)
     {
-        var constructLaborConstraint = solver.MakeConstraint(0, laborAvail, "ConstructLabor");
+        var constructLaborConstraint = solver.MakeConstraint(0, availConstructCap, "ConstructLabor");
         foreach (var kvp in buildingVars)
         {
             var projVar = kvp.Value;
             var b = kvp.Key;
-            constructLaborConstraint.SetCoefficient(projVar, b.LaborPerTickToBuild);
+            constructLaborConstraint.SetCoefficient(projVar, b.ConstructionCapPerTick);
         }
     }
     private void SetBuildingLaborConstraint(Solver solver, int laborAvail, 

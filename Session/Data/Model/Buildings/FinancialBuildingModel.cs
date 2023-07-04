@@ -5,9 +5,9 @@ using Godot;
 
 public class FinancialBuildingModel : WorkBuildingModel
 {
-    public FinancialBuildingModel(int income, string name, int numTicksToBuild, int laborPerTickToBuild) 
+    public FinancialBuildingModel(int income, string name, int numTicksToBuild, int constructionCapPerTick) 
         : base(BuildingType.Financial, name, numTicksToBuild, 
-            laborPerTickToBuild, income)
+            constructionCapPerTick, income)
     {
     }
 
