@@ -17,9 +17,4 @@ public class TradeOrders : TurnOrderModule
         SellOrders = sellOrders;
         BuyOrders = buyOrders;
     }
-
-    public override void WriteToResult(Data data, LogicResults res)
-    {
-        
-    }
 }

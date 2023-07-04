@@ -4,8 +4,6 @@ using System.Linq;
 
 public class TownHall : WorkBuildingModel
 {
-    public override int Capacity { get; } = 100;
-
     public override Dictionary<PeepJob, int> JobLaborReqs { get; }
         = new Dictionary<PeepJob, int>
         {
@@ -33,8 +31,7 @@ public class TownHall : WorkBuildingModel
     }
 
     
-    public override void Produce(WorkProdConsumeProcedure proc, MapPolygon poly, float staffingRatio,
-        int ticksSinceLast, Data data)
+    public override void Work(ProduceConstructProcedure proc, MapPolygon poly, float staffingRatio, Data data)
     {
         
     }

@@ -7,48 +7,34 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
-public class WorkProdConsumeModule : LogicModule
+public class ProduceConstructModule : LogicModule
 {
-    private int _lastRunTick;
-    private int _ticksSinceLast;
     private ConcurrentDictionary<int, ItemWallet> 
         _regimeProdWallets = new ConcurrentDictionary<int, ItemWallet>();
-    private ConcurrentDictionary<int, ItemWallet> 
-        _regimeConsWallets = new ConcurrentDictionary<int, ItemWallet>();
-    private ConcurrentDictionary<int, ItemWallet> 
-        _regimeDemandWallets = new ConcurrentDictionary<int, ItemWallet>();
     private ConcurrentDictionary<int, EmploymentReport> 
         _polyEmployReps = new ConcurrentDictionary<int, EmploymentReport>();
-
     private ConcurrentDictionary<int, PolyEmploymentScratch>
         _polyScratches = new ConcurrentDictionary<int, PolyEmploymentScratch>();
 
     private void Clear()
     {
         foreach (var kvp in _regimeProdWallets) { kvp.Value.Clear(); }
-        foreach (var kvp in _regimeConsWallets) { kvp.Value.Clear(); }
-        foreach (var kvp in _regimeDemandWallets) { kvp.Value.Clear(); }
         foreach (var kvp in _polyEmployReps) { kvp.Value.Counts.Clear(); }
     }
-    public override LogicResults Calculate(Data data)
+    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         var tick = data.BaseDomain.GameClock.Tick;
-        _ticksSinceLast = tick - _lastRunTick;
-        _lastRunTick = tick;
-        var proc = WorkProdConsumeProcedure.Create(_ticksSinceLast);
+        var proc = ProduceConstructProcedure.Create();
         
         Parallel.ForEach(data.Society.Regimes.Entities, 
             regime => WorkForRegime(regime, data, proc));
-        
-        Parallel.ForEach(data.Society.Regimes.Entities,
-            regime => ConsumeForRegime(proc, regime, data));
         
         res.Procedures.Add(proc);
         return res;
     }
 
-    private void WorkForRegime(Regime regime, Data data, WorkProdConsumeProcedure proc)
+    private void WorkForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
     {
         var gains = _regimeProdWallets.GetOrAdd(regime.Id,
             id => ItemWallet.Construct());
@@ -86,7 +72,7 @@ public class WorkProdConsumeModule : LogicModule
         }
     }
 
-    private void ConstructForRegime(Regime regime, Data data, WorkProdConsumeProcedure proc,
+    private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc,
         int totalLaborerUnemployed)
     {
         var builderJob = PeepJobManager.Builder;
@@ -109,48 +95,16 @@ public class WorkProdConsumeModule : LogicModule
         {
             ConstructForPoly(poly, constructLaborRatio, proc, data);
         }
-        
-        // foreach (var poly in regimePolys)
-        // {
-        //     var scratch = _polyScratches[poly.Id];
-        //     
-        //     var constructLabor = scratch.HandleConstructionJobs(data, totalLaborerUnemployed,
-        //         constructionLaborNeeded, constructLaborRunningTotal);
-        //     constructLaborRunningTotal -= constructLabor;
-        //     ConstructForPoly(poly, scratch, constructLaborRatio, proc, data);
-        // }
-        //
-        // var totalConstructLabor = regimePolys.Sum(p =>
-        // {
-        //     var scratch = _polyScratches[p.Id].ByJob;
-        //     if (scratch.ContainsKey(builderJob))
-        //     {
-        //         return scratch[builderJob];
-        //     }
-        //
-        //     return 0;
-        // });
-        // if (totalConstructLabor > constructionLaborNeeded)
-        // {
-        //     throw new Exception($"needed {constructionLaborNeeded} have {totalConstructLabor}");
-        // }
-        //
-        // var effective = Mathf.FloorToInt(constructionLaborNeeded * constructLaborRatio);
-        // if (totalConstructLabor < effective)
-        // {
-        //     throw new Exception($"expected {effective} have {totalConstructLabor} ratio {constructLaborRatio}");
-        // }
-
     }
 
-    private void ProduceFoodForPoly(MapPolygon poly, WorkProdConsumeProcedure proc, PolyEmploymentScratch scratch, Data data)
+    private void ProduceFoodForPoly(MapPolygon poly, ProduceConstructProcedure proc, PolyEmploymentScratch scratch, Data data)
     {
         var peep = poly.GetPeep(data);
         if (peep == null) return;
         var foodProd = scratch.HandleFoodProdJobs(poly.PolyFoodProd, data);
         proc.RegimeResourceGains[poly.Regime.RefId].Add(ItemManager.Food, foodProd);
     }
-    private void WorkInBuildingsForPoly(MapPolygon poly, WorkProdConsumeProcedure proc, PolyEmploymentScratch scratch, Data data)
+    private void WorkInBuildingsForPoly(MapPolygon poly, ProduceConstructProcedure proc, PolyEmploymentScratch scratch, Data data)
     {
         var peep = poly.GetPeep(data);
         if (peep == null) return;
@@ -167,12 +121,12 @@ public class WorkProdConsumeModule : LogicModule
         var effectiveRatio = scratch.HandleBuildingJobs(workBuildings, data);
         foreach (var wb in workBuildings)
         {
-            wb.Produce(proc, poly, effectiveRatio, _ticksSinceLast, data);
+            wb.Work(proc, poly, effectiveRatio, data);
         }
     }
 
     private void ConstructForPoly(MapPolygon poly,
-        float ratio, WorkProdConsumeProcedure proc, Data data)
+        float ratio, ProduceConstructProcedure proc, Data data)
     {
         IEnumerable<Construction> constructions = data.Society.CurrentConstruction.GetPolyConstructions(poly);
         if (constructions == null || constructions.Count() == 0) return;
@@ -180,28 +134,5 @@ public class WorkProdConsumeModule : LogicModule
         {
             proc.ConstructionProgresses.TryAdd(construction.Pos, ratio);
         }
-    }
-
-    private void ConsumeForRegime(WorkProdConsumeProcedure proc, Regime regime, Data data)
-    {
-        var consumptions = _regimeConsWallets.GetOrAdd(regime.Id,
-            id => ItemWallet.Construct());
-        proc.ConsumptionsByRegime.TryAdd(regime.Id, consumptions);
-
-        var demands = _regimeDemandWallets.GetOrAdd(regime.Id,
-            id => ItemWallet.Construct());
-        proc.DemandsByRegime.TryAdd(regime.Id, demands);
-        
-        var numPeeps = regime.Polygons
-            .Where(p => p.HasPeep(data))
-            .Select(p => p.GetPeep(data))
-            .Sum(p => p.Size);
-        var foodDesired = numPeeps * data.BaseDomain.Rules.FoodConsumptionPerPeepPoint * _ticksSinceLast;
-        demands.Add(ItemManager.Food, foodDesired);
-        var foodStock = regime.Items[ItemManager.Food] 
-                        // + proc.RegimeResourceGains[regime.Id][ItemManager.Food]
-                        ;
-        var foodConsumption = Mathf.Min(foodDesired, foodStock);
-        consumptions.Add(ItemManager.Food, foodConsumption);
     }
 }

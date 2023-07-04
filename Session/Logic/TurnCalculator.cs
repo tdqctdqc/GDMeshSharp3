@@ -9,6 +9,7 @@ public class TurnCalculator
     public bool Calculating { get; private set; }
     public TurnCalcState State { get; private set; }
     private List<LogicModule> _modules;
+    private List<TurnOrders> _orders;
     private Data _data;
     private Task<LogicResults> _currTask;
     private Action<LogicResults> _enact;
@@ -31,7 +32,8 @@ public class TurnCalculator
     {
         State = TurnCalcState.Calculating;
         _modules = modules;
-        _currTask = Task.Run(() => HandleTurnOrders(playerTurnOrders, aiTurnOrders, d));
+        _orders = GetOrdersList(playerTurnOrders, aiTurnOrders);
+        StartNextModule();
     }
     public void CheckOnCalculation()
     {
@@ -44,9 +46,7 @@ public class TurnCalculator
             _enact(_currTask.Result);
             if (_modules.Count > 0)
             {
-                var module = _modules[0];
-                _modules.RemoveAt(0);
-                _currTask = Task.Run(() => module.Calculate(_data));
+                StartNextModule();
             }
             else
             {
@@ -56,28 +56,40 @@ public class TurnCalculator
         }
     }
 
+    private void StartNextModule()
+    {
+        if (_modules.Count == 0)
+        {
+            State = TurnCalcState.Finished;
+            _currTask = null;
+            return;
+        }
+        var module = _modules[0];
+        _modules.RemoveAt(0);
+        _currTask = Task.Run(() => module.Calculate(_orders, _data));
+    }
     public void MarkDone()
     {
         State = TurnCalcState.Waiting;
     }
-    private LogicResults HandleTurnOrders(IDictionary<Player, TurnOrders> playerTurnOrders,
-        IDictionary<Regime, Task<TurnOrders>> aiTurnOrders, Data d)
+
+    private List<TurnOrders> GetOrdersList(IDictionary<Player, TurnOrders> playerTurnOrders,
+        IDictionary<Regime, Task<TurnOrders>> aiTurnOrders)
     {
-        var turnOrdersResult = new LogicResults();
-        
+        var res = new List<TurnOrders>();
         foreach (var kvp in playerTurnOrders)
         {
             if (kvp.Key.Regime.Entity().IsPlayerRegime(_data) == false) continue;
             var orders = kvp.Value;
-            orders.WriteToResult(turnOrdersResult, d);
+            res.Add(orders);
         }
         foreach (var kvp in aiTurnOrders)
         {
             if (kvp.Key.IsPlayerRegime(_data)) continue;
             var orders = kvp.Value.Result;
-            orders.WriteToResult(turnOrdersResult, d);
+            res.Add(orders);
         }
-
-        return turnOrdersResult;
+        return res;
     }
+    
 }

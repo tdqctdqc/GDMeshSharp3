@@ -5,7 +5,7 @@ using Godot;
 
 public class ConstructBuildingsModule : LogicModule
 {
-    public override LogicResults Calculate(Data data)
+    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         var finished = new HashSet<Construction>();
@@ -29,7 +29,32 @@ public class ConstructBuildingsModule : LogicModule
             };
             res.CreateEntities.Add(create);
         }
-
+        
+        for (var i = 0; i < orders.Count; i++)
+        {
+            var order = orders[i];
+            if (order is MajorTurnOrders m == false) throw new Exception();
+            var newConstructionPoses = new HashSet<PolyTriPosition>();
+            for (var j = 0; j < m.StartConstructions.ConstructionsToStart.Count; j++)
+            {
+                var toStart = m.StartConstructions.ConstructionsToStart[j];
+                var poly = (MapPolygon) data[toStart.PolyId];
+                var building = (BuildingModel) data.Models[toStart.BuildingModelId];
+                var slots = poly.PolyBuildingSlots.AvailableSlots[building.BuildingType]
+                    .Where(pt => newConstructionPoses.Contains(pt) == false);
+                if (slots.Count() == 0) continue;
+                var pos = slots.First();
+                newConstructionPoses.Add(pos);
+            
+                var proc = StartConstructionProcedure.Construct(
+                    building.MakeRef<BuildingModel>(),
+                    pos,
+                    order.Regime
+                );
+                res.Procedures.Add(proc);
+            }
+        }
+        
         res.Procedures.Add(clear);
         return res;
     }

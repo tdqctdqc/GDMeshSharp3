@@ -98,7 +98,6 @@ public partial class Game : Node
         var session = new GameSession();
         SetSession(session);
         session.StartAsRemote();
-
     }
     public void StartHostSession(GenData data, MapGraphics graphics = null)
     {

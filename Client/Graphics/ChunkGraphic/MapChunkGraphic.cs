@@ -69,7 +69,7 @@ public partial class MapChunkGraphic : Node2D
     public static ChunkGraphicFactory RegimeFill { get; private set; }
         = new PolygonFillChunkGraphicFactory(nameof(RegimeFill), true, (p,d) =>
             {
-                if (p.Regime.Fulfilled()) return p.Regime.Entity().PrimaryColor;
+                if (p.Regime.Fulfilled() && p.Regime.Entity().IsMajor) return p.Regime.Entity().PrimaryColor;
                 return Colors.Transparent;
             }
         );

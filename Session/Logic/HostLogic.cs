@@ -29,9 +29,9 @@ public class HostLogic : ILogic
         CommandQueue = new ConcurrentQueue<Command>();
         _majorModules = new LogicModule[]
         {
-            new WorkProdConsumeModule(),
+            new ProduceConstructModule(),
             new ConstructBuildingsModule(),
-            new PeepGrowthModule(),
+            new FoodAndPopGrowthModule(),
             new FinanceModule(),
             new TradeModule()
         };

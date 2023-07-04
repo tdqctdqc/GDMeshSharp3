@@ -92,6 +92,7 @@ public static class MapPolygonExt
         return data.Society.BuildingAux.ByPoly[poly]
             .Select(b => b.Model.Model()).SelectWhereOfType<BuildingModel, WorkBuildingModel>()
             .Sum(wb => poly.GetPeep(data).Size - wb.TotalLaborReq());
+        
     }
     public static Vector2 GetGraphicalCenterOffset(this MapPolygon poly, Data data)
     {

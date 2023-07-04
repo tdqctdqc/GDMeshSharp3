@@ -1,23 +1,24 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Godot;
 using Google.OrTools.LinearSolver;
 
-
-public class ProdBuildingConstructBudgetPriority : BudgetPriority
+public class BuildingConstructionPriority : BudgetPriority
 {
-    public Item ProducedItem { get; private set; }
-    public ProdBuildingConstructBudgetPriority(Item producedItem, Func<Data, Regime, float> getWeight) 
+    private Func<BuildingModel, bool> _relevant;
+    private Func<BuildingModel, int> _utility;
+    public BuildingConstructionPriority(Func<BuildingModel, bool> relevant, 
+        Func<BuildingModel, int> utility,
+        Func<Data, Regime, float> getWeight) 
         : base(getWeight)
     {
-        ProducedItem = producedItem;
     }
 
     public override void Calculate(Regime regime, Data data, ItemWallet budget, Dictionary<Item, float> prices,
         int credit, int availLabor, MajorTurnOrders orders)
     {
+        if (availLabor <= 0) return;
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, data);
         var availConstructLabor = availLabor - data.Society.CurrentConstruction.ByPoly
@@ -26,7 +27,7 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
                 var poly = data.Planet.Polygons[kvp.Key];
                 return poly.Regime.RefId == regime.Id;
             }).SelectMany(kvp => kvp.Value).Sum(c => c.Model.Model().LaborPerTickToBuild);
-        if (availConstructLabor < 0) return;
+        if (availConstructLabor <= 0) return;
         
         SetBuildingLaborConstraint(solver, availLabor, projVars);
         SetItemConstraints(solver, data, budget, projVars);
@@ -47,7 +48,7 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
         
         
         var buildings = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        SelectBuildSites(regime, data, buildings, budget, orders);
+        SelectBuildSitesAndAddRequest(regime, data, buildings, budget, orders);
     }
 
     public override Dictionary<Item, int> GetItemWishlist(Regime regime, Data data, 
@@ -63,14 +64,14 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
         
         var success = Solve(solver, projVars, regime, data, 
             prices, credit, availLabor);
-        if(success == false) GD.Print("Failed");
         if (success == false)
         {
             GD.Print("PLANNING FAILED");
             GD.Print("credits " + credit);
             GD.Print("labor " + availLabor);
         }
-        return projVars.GetCounts(kvp => kvp.Key.BuildCosts, (kvp, i) => Mathf.CeilToInt(i * kvp.Value.SolutionValue()));
+        return projVars.GetCounts(kvp => kvp.Key.BuildCosts, 
+            (kvp, i) => Mathf.CeilToInt(i * kvp.Value.SolutionValue()));
     }
 
     private Solver MakeSolver()
@@ -85,11 +86,10 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
         return solver;
     }
 
-    private IEnumerable<ProductionBuildingModel> GetRelevantBuildings(Data data)
+    private IEnumerable<BuildingModel> GetRelevantBuildings(Data data)
     {
         return data.Models.Buildings.Models.Values
-            .SelectWhereOfType<BuildingModel, ProductionBuildingModel>()
-            .Where(pb => pb.ProdItem == ProducedItem);
+            .Where(_relevant);
     }
 
     private Dictionary<BuildingModel, Variable> MakeProjVars(Solver solver, Data data)
@@ -97,7 +97,7 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
         var buildings = GetRelevantBuildings(data);
         return buildings.Select(b =>
         {
-            var projVar = solver.MakeIntVar(0, int.MaxValue, b.Name);
+            var projVar = solver.MakeIntVar(0, 1000, b.Name);
             return new KeyValuePair<BuildingModel, Variable>(b, projVar);
         }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
@@ -112,10 +112,10 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
         
         foreach (var kvp in projVars)
         {
-            var b = (ProductionBuildingModel)kvp.Key;
+            var b = kvp.Key;
             var projVar = projVars[b];
             var projPrice = b.BuildCosts.Sum(kvp => prices[kvp.Key] * kvp.Value);
-            var benefit = b.ProductionCap;
+            var benefit = _utility(b);
             objective.SetCoefficient(projVar, benefit);
         }
         var status = solver.Solve();
@@ -208,7 +208,7 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
             slotConstraint.SetCoefficient(projVar, 1);
         }
     }
-    private void SelectBuildSites(Regime regime, Data data, Dictionary<BuildingModel, int> toBuild, 
+    private void SelectBuildSitesAndAddRequest(Regime regime, Data data, Dictionary<BuildingModel, int> toBuild, 
         ItemWallet budget, MajorTurnOrders orders)
     {
         var currConstruction = data.Society.CurrentConstruction;
@@ -226,6 +226,10 @@ public class ProdBuildingConstructBudgetPriority : BudgetPriority
                     .FirstOrDefault(p => p.PolyBuildingSlots[building.BuildingType] > 0);
                 if (poly == null) continue;
                 orders.StartConstructions.ConstructionsToStart.Add(StartConstructionRequest.Construct(building, poly));
+                foreach (var cost in building.BuildCosts)
+                {
+                    budget.Remove(cost.Key, cost.Value);
+                }
             }
         }
     }

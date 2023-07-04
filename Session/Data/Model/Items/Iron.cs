@@ -13,11 +13,11 @@ public class Iron : NaturalResource
     
     public Iron() 
         : base(nameof(Iron), Colors.Black.Lightened(.3f),
-            5, new MineableAttribute(), new ExtractableAttribute())
+            5f, new MineableAttribute(), new ExtractableAttribute())
     {
     }
     protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    protected override int GetDepositScore(MapPolygon p)
+    public override int GetDepositScore(MapPolygon p)
     {
         var score = 15;
         score = Mathf.FloorToInt(score + p.Roughness * 50);
@@ -26,7 +26,7 @@ public class Iron : NaturalResource
         return score;
     }
 
-    protected override int GenerateDepositSize(MapPolygon p)
+    public override int GenerateDepositSize(MapPolygon p)
     {
         return Mathf.FloorToInt(500 * Game.I.Random.RandfRange(.5f, 2f));
     }

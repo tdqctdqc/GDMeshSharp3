@@ -5,7 +5,7 @@ using Godot;
 
 public abstract class NaturalResource : TradeableItem
 {
-    protected NaturalResource(string name, Color color, int initialPrice, params ItemAttribute[] attributes) 
+    protected NaturalResource(string name, Color color, float initialPrice, params ItemAttribute[] attributes) 
         : base(name, color, initialPrice, attributes)
     {
     }
@@ -58,8 +58,8 @@ public abstract class NaturalResource : TradeableItem
         }
     }
     protected abstract IFunction<float, float> DepositChanceFunction { get; }
-    protected abstract int GetDepositScore(MapPolygon p);
-    protected abstract int GenerateDepositSize(MapPolygon p);
+    public abstract int GetDepositScore(MapPolygon p);
+    public abstract int GenerateDepositSize(MapPolygon p);
     protected abstract int _overflowSize { get; }
     protected abstract int _minDepositSize { get; }
     protected abstract OverFlowType _overflow { get; }

@@ -13,6 +13,5 @@ public abstract class TurnOrders
         Regime = regime;
     }
 
-    public abstract void WriteToResult(LogicResults r, Data d);
 
 }

@@ -29,7 +29,28 @@ public class PolyAuxData
 
     private void MakeBoundarySegs(MapPolygon p, Data data, List<List<LineSegment>> source)
     {
-        var ordered = source.Chainify();
+        List<LineSegment> ordered;
+        try
+        {
+            ordered = source.Chainify();
+        }
+        catch
+        {
+            var ex = new GeometryException("couldnt make boundary segs");
+            ex.AddSegLayer(source.SelectMany(l => l).ToList(), "source neighbor segs");
+            ex.AddSegLayer(p.Neighbors
+            .Select(n => p.GetOffsetTo(n, data))
+            .Select(o => new LineSegment(Vector2.Zero, o))
+            .ToList(), "neighbors");
+            
+            ex.AddSegLayer(data.Planet.Polygons.Entities
+                .Where(e => p.GetOffsetTo(e, data).Length() < 1000f)
+                .Select(n => p.GetOffsetTo(n, data))
+                .Select(o => new LineSegment(Vector2.Zero, o))
+                .ToList(), "near");
+            if(_orderedBoundarySegs != null) ex.AddSegLayer(_orderedBoundarySegs, "old segs");
+            throw ex;
+        }
         
         if (ordered.IsChain() == false)
         {

@@ -23,9 +23,8 @@ public partial class RegimeWalletOverview : ScrollContainer
         foreach (var itemName in itemIds)
         {
             var amt = regime.Items[itemName];
-            var lastProd = regime.History.ProdHistory[itemName].GetLatest();
-            var lastDemand = regime.History.DemandHistory[itemName].GetLatest();
-            if (lastDemand == 0 && lastProd == 0) continue;
+            var lastProd = regime.History.ProdHistory[itemName]?.GetLatest();
+            if (lastProd == 0) continue;
             
             var hbox = new HBoxContainer();
             var item = (Item)data.Models[itemName];
@@ -33,7 +32,6 @@ public partial class RegimeWalletOverview : ScrollContainer
             hbox.AddChild(item.Icon.GetTextureRect(Vector2.One * 50f));
             hbox.CreateLabelAsChild($"Amount: {amt} ");
             hbox.CreateLabelAsChild($"Prod: {lastProd} ");
-            hbox.CreateLabelAsChild($"Demand: {lastDemand}");
             _container.AddChild(hbox);
         }
     }

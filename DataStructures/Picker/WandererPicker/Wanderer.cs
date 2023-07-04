@@ -7,18 +7,32 @@ public abstract class Wanderer
 {
     public HashSet<MapPolygon> Picked { get; private set; }
     public HashSet<MapPolygon> ValidAdjacent { get; private set; }
+    public int NumToPick { get; private set; }
 
-    public Wanderer(MapPolygon seed, WandererPicker host)
+    public Wanderer(MapPolygon seed, WandererPicker host, int numToPick)
     {
+        NumToPick = numToPick;
         Picked = new HashSet<MapPolygon>();
         ValidAdjacent = new HashSet<MapPolygon>();
         host.AddWanderer(this);
-        Pick(seed, host);
+        Add(seed, host);
+    }
+
+    public bool Pick(WandererPicker host)
+    {
+        for (var i = 0; i < NumToPick; i++)
+        {
+            var open = MoveAndPick(host);
+            if (open == false) return false;
+        }
+
+        return true;
     }
     public abstract bool MoveAndPick(WandererPicker host);
 
-    protected void Pick(MapPolygon poly, WandererPicker host)
+    protected void Add(MapPolygon poly, WandererPicker host)
     {
+        
         Picked.Add(poly);
         host.NotTaken.Remove(poly);
         ValidAdjacent.Remove(poly);

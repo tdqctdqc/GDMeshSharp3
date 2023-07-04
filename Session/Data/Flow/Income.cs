@@ -4,7 +4,12 @@ using System.Linq;
 
 public class Income : Flow
 {
-    public override float GetFlow(Regime r, Data d)
+
+    public Income() : base(nameof(Income))
+    {
+    }
+
+    public override float GetNonBuildingFlow(Regime r, Data d)
     {
         var fromBuildings = r.Polygons
             .Where(p => p.GetBuildings(d) != null)
@@ -21,10 +26,5 @@ public class Income : Flow
         var fromAgriculture = r.Polygons.Sum(p => p.PolyFoodProd.Income(d));
         
         return fromBuildings + fromAgriculture;
-    }
-
-    public override float GetFlowProjection(Regime r, Data d, TurnOrders t)
-    {
-        throw new NotImplementedException();
     }
 }

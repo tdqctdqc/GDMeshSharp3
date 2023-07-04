@@ -70,7 +70,7 @@ public partial class GeneratorUi : Ui
         if (_session.Generated)
         {
             Game.I.StartHostSession(_session.Data);
-            QueueFree();
+            // QueueFree();
         }
     }
     private async void PressedGenerate()

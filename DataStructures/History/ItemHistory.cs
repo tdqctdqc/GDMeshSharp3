@@ -24,4 +24,10 @@ public class ItemHistory : MultiCountHistory<int>
             Counts[item].Add(amt, tick);
         }
     }
+
+    public void Add(Item item, int value, int tick)
+    {
+        if(Counts.ContainsKey(item.Id) == false) Counts.Add(item.Id, CountHistory.Construct());
+        Counts[item.Id].Add(value, tick);
+    }
 }

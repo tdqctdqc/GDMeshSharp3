@@ -13,9 +13,4 @@ public class MinorTurnOrders : TurnOrders
         : base(tick, regime)
     {
     }
-
-    public override void WriteToResult(LogicResults r, Data d)
-    {
-        return;
-    }
 }

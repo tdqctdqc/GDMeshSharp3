@@ -11,8 +11,8 @@ public abstract class WorkBuildingModel : BuildingModel
     {
         Income = income;
     }
-    public abstract void Produce(WorkProdConsumeProcedure proc, MapPolygon poly, 
-        float staffingRatio, int ticksSinceLast, Data data);
+    public abstract void Work(ProduceConstructProcedure proc, MapPolygon poly, 
+        float staffingRatio, Data data);
 
     public int TotalLaborReq()
     {

@@ -21,10 +21,8 @@ public class FinancialBuildingModel : WorkBuildingModel
     {
         return p.IsLand;
     }
-
-    public override int Capacity { get; }
     public override Dictionary<PeepJob, int> JobLaborReqs { get; }
-    public override void Produce(WorkProdConsumeProcedure proc, MapPolygon poly, float staffingRatio, int ticksSinceLast, Data data)
+    public override void Work(ProduceConstructProcedure proc, MapPolygon poly, float staffingRatio, Data data)
     {
         proc.RegimeResourceGains[poly.Regime.RefId].Add(ItemManager.FinancialPower, Mathf.CeilToInt(Income * staffingRatio));
     }

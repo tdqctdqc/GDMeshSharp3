@@ -11,6 +11,8 @@ public class RegimeGenerator : Generator
     private GenData _data;
     private IdDispenser _id;
     private GenWriteKey _key;
+    private int _polysForRegimeAvg = 20;
+    private int _numPolysToBeMajor = 20;
     public RegimeGenerator()
     {
         
@@ -58,12 +60,16 @@ public class RegimeGenerator : Generator
         HashSet<RegimeTemplate> templates)
     {
         var sw = new Stopwatch();
-        var numLandmassRegimes = Mathf.CeilToInt(lm.Count / polysPerRegime);
-        numLandmassRegimes = Math.Max(1, numLandmassRegimes);
-        // GD.Print($"{numLandmassRegimes} and {templates.Count} remaining");
-        // if (numLandmassRegimes > templates.Count) throw new Exception();
+        var hash = lm.ToHashSet();
+
+        int numRegimes = lm.Count / _polysForRegimeAvg;
+        numRegimes = Mathf.Max(1, numRegimes);
         
-        var seeds = lm.GetDistinctRandomElements(numLandmassRegimes);
+        
+        var seeds = lm.GetDistinctRandomElements(numRegimes);
+        var group = numRegimes;
+        var num6s = numRegimes / 4;
+        var num2s = numRegimes / 3;
         
         var picker = new WandererPicker(lm);
         var iter = 0;
@@ -74,11 +80,23 @@ public class RegimeGenerator : Generator
             iter++;
             var template = templates.GetRandomElement();
             // templates.Remove(template);
-            var regime = Regime.Create(seeds[i], template, _key);
-            var wand = new RegimeWanderer(regime, seeds[i], picker);
+            var regime = Regime.Create(seeds[i], template, false, _key);
+            int numToPick = 0;
+            if (num6s > 0)
+            {
+                numToPick = 6;
+                num6s--;
+            }
+            else if (num2s > 0)
+            {
+                numToPick = 2;
+                num2s--;
+            }
+            else numToPick = 1;
+            var wand = new RegimeWanderer(regime, seeds[i], picker, numToPick);
             seeds[i].SetRegime(regime, _key);
         }
-
+        
         return picker;
     }
     private HashSet<MapPolygon> ExpandRegimes(HashSet<MapPolygon> lm, WandererPicker picker)
@@ -93,8 +111,9 @@ public class RegimeGenerator : Generator
                 r.Polygons.AddRef(p, _key);
                 p.SetRegime(r, _key);
             }
+            r.SetIsMajor(w.Picked.Count >= _numPolysToBeMajor, _key);
         }
-
+        
         return picker.NotTaken;
     }
 
@@ -116,7 +135,8 @@ public class RegimeGenerator : Generator
             var sec = prim.Inverted();
             var template = templates.GetRandomElement();
             // templates.Remove(template);
-            var regime = Regime.Create(union[0], template, _key);
+            var isMajor = union.Count >= _polysForRegimeAvg * .75;
+            var regime = Regime.Create(union[0], template, isMajor, _key);
             for (var i = 1; i < union.Count; i++)
             {
                 var p = union[i];

@@ -6,22 +6,16 @@ using MessagePack;
 public class RegimeHistory
 {
     public ItemHistory ProdHistory { get; protected set; }
-    public ItemHistory ConsumptionHistory { get; protected set; }
-    public ItemHistory DemandHistory { get; protected set; }
     public PeepHistory PeepHistory { get; private set; }
 
     public static RegimeHistory Construct(Data data)
     {
-        return new RegimeHistory(ItemHistory.Construct(), ItemHistory.Construct(),
-            ItemHistory.Construct(), PeepHistory.Construct());
+        return new RegimeHistory(ItemHistory.Construct(), PeepHistory.Construct());
     }
 
-    [SerializationConstructor] private RegimeHistory(ItemHistory prodHistory,
-        ItemHistory consumptionHistory, ItemHistory demandHistory, PeepHistory peepHistory)
+    [SerializationConstructor] private RegimeHistory(ItemHistory prodHistory, PeepHistory peepHistory)
     {
         ProdHistory = prodHistory;
-        ConsumptionHistory = consumptionHistory;
-        DemandHistory = demandHistory;
         PeepHistory = peepHistory;
     }
 }

@@ -8,7 +8,6 @@ public partial class RegimeOverviewWindow : TabWindow
     private RegimeGeneralOverview _general;
     private RegimeConstructionOverview _construction;
     private RegimePeepsOverview _peeps;
-    private RegimeProductionOverview _prod;
     private RegimeWalletOverview _wallet;
     private VBoxContainer _regimeTemplates;
     private Button _switchToRegime;
@@ -24,9 +23,6 @@ public partial class RegimeOverviewWindow : TabWindow
 
         _peeps = new RegimePeepsOverview();
         AddTab(_peeps);
-
-        _prod = new RegimeProductionOverview();
-        AddTab(_prod);
 
         _wallet = new RegimeWalletOverview();
         AddTab(_wallet);
@@ -46,7 +42,6 @@ public partial class RegimeOverviewWindow : TabWindow
         _general.Setup(regime, key);
         _construction.Setup(regime, key.Data);
         _peeps.Setup(regime, key.Data);
-        _prod.Setup(regime, key.Data);
         _wallet.Setup(regime, key.Data);
         _regimeTemplates.ClearChildren();
         foreach (var kvp in key.Data.Models.Cultures.Models)

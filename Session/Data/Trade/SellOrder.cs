@@ -7,7 +7,7 @@ public class SellOrder
     public int RegimeId { get; private set; }
     public int ItemId { get; private set; }
     public int Quantity { get; private set; }
-    public SellOrder(int itemId, int regimeId, int minPrice, int quantity)
+    public SellOrder(int itemId, int regimeId, int quantity)
     {
         ItemId = itemId;
         RegimeId = regimeId;

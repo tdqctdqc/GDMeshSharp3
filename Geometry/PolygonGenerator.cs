@@ -15,6 +15,7 @@ public class PolygonGenerator : Generator
     private bool _leftRightWrap;
     private float _polySize;
     private List<Vector2> _innerPoints;
+    private Data _data;
     public PolygonGenerator(List<Vector2> innerPoints, Vector2 dimensions, 
                                     bool leftRightWrap, float polySize)
     {
@@ -27,6 +28,7 @@ public class PolygonGenerator : Generator
     {
         var report = new GenReport(GetType().Name);
         _id = key.IdDispenser;
+        _data = key.Data;
         
         report.StartSection();
         var info = new MapGenInfo(_innerPoints, _dimensions, _polySize, _leftRightWrap);
@@ -130,7 +132,17 @@ public class PolygonGenerator : Generator
         var allEdgeSegs = borders.SelectMany(b => b.Segments).ToList();
         if (allEdgeSegs.Count == 0) throw new Exception();
         // GD.Print(poly.Id + " 1");
-        allEdgeSegs = allEdgeSegs.FlipChainify();
+        try
+        {
+            allEdgeSegs = allEdgeSegs.FlipChainify();
+
+        }
+        catch (Exception e)
+        {
+            var ex = new GeometryException($"couldnt build poly {poly.Id} borders");
+            ex.AddSegLayer(allEdgeSegs, "border segs");
+            ex.AddPointSet(poly.Neighbors.Select(n => poly.GetOffsetTo(n, _data)).ToList(), "neighbors");
+        }
 
         
         
@@ -168,6 +180,7 @@ public class PolygonGenerator : Generator
             var edge = graph.GetEdge(mp, nMp);
             if (edge.From == edge.To)
             {
+                GD.Print($"degenerate edge {mp.Id} {nMp.Id}");
                 return;
             }
 

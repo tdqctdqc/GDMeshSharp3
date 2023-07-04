@@ -2,15 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Factory : ProductionBuildingModel
+public class Factory : FlowProdBuildingModel
 {
     public override Dictionary<PeepJob, int> JobLaborReqs { get; }
         = new Dictionary<PeepJob, int>
         {
             {PeepJobManager.Prole, 500}
         };
-    public override int ProductionCap { get; } = 100;
-    public Factory() : base(BuildingType.Industry, ItemManager.IndustrialPoint, nameof(Factory),
+    public Factory() : base(ItemManager.IndustrialPower, 100, BuildingType.Industry, nameof(Factory),
         100, 2000, 10)
     {
     }

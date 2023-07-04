@@ -50,10 +50,11 @@ public class Market : Entity
         GD.Print(infos.Count);
         foreach (var kvp in infos)
         {
-            DemandedHistory[kvp.Key].Add(kvp.Value.TotalDemanded, tick);
-            OfferedHistory[kvp.Key].Add(kvp.Value.TotalOffered, tick);
-            TradedQHistory[kvp.Key].Add(kvp.Value.TotalTraded, tick);
             var item = (Item) key.Data.Models[kvp.Key];
+
+            DemandedHistory.Add(item, kvp.Value.TotalDemanded, tick);
+            OfferedHistory.Add(item, kvp.Value.TotalOffered, tick);
+            TradedQHistory.Add(item, kvp.Value.TotalTraded, tick);
 
             GD.Print("ITEM " + item.Name);
             GD.Print("\tOFFERED " + kvp.Value.TotalOffered);

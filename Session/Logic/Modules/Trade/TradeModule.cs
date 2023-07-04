@@ -6,15 +6,22 @@ using MessagePack;
 
 public class TradeModule : LogicModule
 {
-    public override LogicResults Calculate(Data data)
+    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         var proc = TradeProcedure.Construct();
         res.Procedures.Add(proc);
         
         //dummy
+        
         var buyOrders = new List<BuyOrder>();
         var sellOrders = new List<SellOrder>();
+        foreach (var turnOrders in orders)
+        {
+            if (turnOrders is MajorTurnOrders m == false) throw new Exception();
+            buyOrders.AddRange(m.TradeOrders.BuyOrders);
+            sellOrders.AddRange(m.TradeOrders.SellOrders);
+        }
         var infos = new Dictionary<Item, ItemTradeInfo>();
         var market = data.Society.Market;
 

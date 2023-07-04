@@ -4,7 +4,7 @@ using Godot;
 
 public class Food : TradeableItem
 {
-    public Food() : base(nameof(Food), Colors.Yellow, 1)
+    public Food() : base(nameof(Food), Colors.Yellow, .05f)
     {
     }
 }

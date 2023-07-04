@@ -20,10 +20,4 @@ public class MajorTurnOrders : TurnOrders
         StartConstructions = startConstructions;
         TradeOrders = tradeOrders;
     }
-
-    public override void WriteToResult(LogicResults r, Data d)
-    {
-        StartConstructions.WriteToResult(d, r);
-        TradeOrders.WriteToResult(d, r);
-    }
 }

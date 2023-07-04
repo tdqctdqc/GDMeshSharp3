@@ -16,9 +16,9 @@ public class Construction
         TicksLeft = ticksLeft;
     }
 
-    public bool ProgressConstruction(float laborRatio, int ticks, ProcedureWriteKey key)
+    public bool ProgressConstruction(float laborRatio, ProcedureWriteKey key)
     {
-        TicksLeft -= laborRatio * ticks;
+        TicksLeft -= laborRatio * key.Data.BaseDomain.Rules.TickCycleLength;
         return TicksLeft <= 0;
     }
 

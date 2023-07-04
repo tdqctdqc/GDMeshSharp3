@@ -23,11 +23,8 @@ public abstract class BuildingModel : IModel
 
     protected abstract bool CanBuildInTriSpec(PolyTri t, Data data);
     public abstract bool CanBuildInPoly(MapPolygon p, Data data);
-
     public bool CanBuildInTri(PolyTri t, Data data)
     {
         return t.GetBuilding(data) == null && CanBuildInTriSpec(t, data);
     }
-
-    public abstract int Capacity { get; }
 }

@@ -5,7 +5,7 @@ using System.Linq;
 public class MultiCountHistory<TKey>
 {
     public Dictionary<TKey, CountHistory> Counts { get; private set; }
-    public CountHistory this[TKey key] => Counts[key];
+    public CountHistory this[TKey key] => Counts.ContainsKey(key) ? Counts[key] : default;
     public static MultiCountHistory<TKey> Construct()
     {
         return new MultiCountHistory<TKey>(new Dictionary<TKey, CountHistory>());

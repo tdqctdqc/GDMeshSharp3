@@ -16,11 +16,12 @@ public class Regime : Entity
     public string Name { get; protected set; }
     public EntityRefCollection<MapPolygon> Polygons { get; protected set; }
     public RegimeFinance Finance { get; private set; }
+    public bool IsMajor { get; private set; }
 
-    [SerializationConstructor] private Regime(int id, string name, Color primaryColor, Color secondaryColor, 
+    [SerializationConstructor] protected Regime(int id, string name, Color primaryColor, Color secondaryColor, 
         EntityRefCollection<MapPolygon> polygons, EntityRef<MapPolygon> capital,
         ItemWallet items, RegimeHistory history, ModelRef<Culture> culture,
-        ModelRef<RegimeTemplate> template, RegimeFinance finance) : base(id)
+        ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor) : base(id)
     {
         Items = items;
         PrimaryColor = primaryColor;
@@ -32,9 +33,10 @@ public class Regime : Entity
         Culture = culture;
         Template = template;
         Finance = finance;
+        IsMajor = isMajor;
     }
 
-    public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, CreateWriteKey key)
+    public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, bool isMajor, CreateWriteKey key)
     {
         var id = key.IdDispenser;
         var polygons = EntityRefCollection<MapPolygon>.Construct(new HashSet<int>{seed.Id}, key.Data);
@@ -51,7 +53,8 @@ public class Regime : Entity
             RegimeHistory.Construct(key.Data), 
             regimeTemplate.Culture.MakeRef(),
             regimeTemplate.MakeRef(),
-            RegimeFinance.Construct()
+            RegimeFinance.Construct(),
+                isMajor
         );
         key.Create(r);
         seed.SetRegime(r, key);
@@ -69,6 +72,10 @@ public class Regime : Entity
         return r;
     }
 
+    public void SetIsMajor(bool isMajor, CreateWriteKey key)
+    {
+        IsMajor = isMajor;
+    }
     public override string ToString() => Name;
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }

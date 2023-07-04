@@ -3,27 +3,32 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PeepGrowthModule : LogicModule
+public class FoodAndPopGrowthModule : LogicModule
 {
-    public override LogicResults Calculate(Data data)
+    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
-        var growths = new Dictionary<int, int>();
+        var growthsByPeep = new Dictionary<int, int>();
+        var foodConsByRegime = new Dictionary<int, int>();
+        var foodConsPerPop = data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         foreach (var regime in data.Society.Regimes.Entities)
         {
-            var foodDemanded = regime.History.DemandHistory[ItemManager.Food.Id].GetLatest();
-            var foodProd = regime.History.ProdHistory[ItemManager.Food.Id].GetLatest();
-            var surplusRatio = (float) foodProd / foodDemanded - 1f;
+            var pop = regime.GetPeeps(data).Sum(p => p.Size);
+            var foodDemanded = foodConsPerPop * pop;
+            var foodStock = regime.Items[ItemManager.Food];
+            var actualCons = Math.Min(foodStock, foodDemanded);
+            var surplusRatio = (float) foodStock / foodDemanded - 1f;
+            foodConsByRegime.Add(regime.Id, actualCons);
             if (surplusRatio > 0f)
             {
-                HandleGrowth(regime, surplusRatio, growths, data);
+                HandleGrowth(regime, surplusRatio, growthsByPeep, data);
             }
             else
             {
-                HandleDecline(regime, -surplusRatio, growths, data);
+                HandleDecline(regime, -surplusRatio, growthsByPeep, data);
             }
         }
-        res.Procedures.Add(new PeepGrowthAndDeclineProcedure(growths));
+        res.Procedures.Add(new FoodAndPopGrowthProcedure(growthsByPeep, foodConsByRegime));
         return res;
     }
 

@@ -7,7 +7,7 @@ public class Mine : ExtractionBuildingModel
 {
     public Mine(string name, Item prodItem) 
         : base(prodItem, name, true, 
-            150, 3000, 20)
+            150, 3000, 20, 10)
     {
         if (prodItem.Attributes.Has<MineableAttribute>() == false) throw new Exception();
     }
@@ -23,7 +23,6 @@ public class Mine : ExtractionBuildingModel
             {ItemManager.Iron, 1000}
         };
 
-    public override int ProductionCap { get; } = 10;
 
     protected override bool CanBuildInTriSpec(PolyTri t, Data data) => CanBuildInTri(t);
     public static bool CanBuildInTri(PolyTri t)

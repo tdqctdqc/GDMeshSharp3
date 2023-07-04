@@ -6,7 +6,8 @@ using Godot;
 public class RegimeWanderer : Wanderer
 {
     public Regime Regime { get; private set; }
-    public RegimeWanderer(Regime regime, MapPolygon seed, WandererPicker host) : base(seed, host)
+    public RegimeWanderer(Regime regime, MapPolygon seed, WandererPicker host, int numToPick) 
+        : base(seed, host, numToPick)
     {
         Regime = regime;
     }
@@ -20,7 +21,7 @@ public class RegimeWanderer : Wanderer
             foreach (var a in ValidAdjacent)
             {
                 if (host.NotTaken.Contains(a) == false) continue;
-                Pick(a, host);
+                Add(a, host);
                 return true;
             }
             return false;
@@ -44,7 +45,7 @@ public class RegimeWanderer : Wanderer
         }
         if (found)
         {
-            Pick(pick, host);
+            Add(pick, host);
             return true;
         }
 

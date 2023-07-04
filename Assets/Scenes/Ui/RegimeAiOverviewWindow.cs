@@ -41,14 +41,16 @@ public partial class RegimeAiOverviewWindow : TabWindow
         c.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         c.AddChild(vbox);
         vbox.SetAnchorsPreset(Control.LayoutPreset.FullRect);
-        vbox.CreateLabelAsChild("WISHLIST");
-        var wishlist = ai.Budget.GetItemWishlist(_data);
-        foreach (var kvp in wishlist)
-        {
-            var item = kvp.Key;
-            var num = kvp.Value;
-            vbox.CreateLabelAsChild($"{item.Name}: {num}");
-        }
+        
+        // vbox.CreateLabelAsChild("WISHLIST");
+        // var wishlist = ai.Budget.GetItemWishlist(_data);
+        // foreach (var kvp in wishlist)
+        // {
+        //     var item = kvp.Key;
+        //     var num = kvp.Value;
+        //     vbox.CreateLabelAsChild($"{item.Name}: {num}");
+        // }
+        
         return c;
     }
 }

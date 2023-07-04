@@ -41,7 +41,9 @@ public class PlayerRegimeDisplay
             {
                 var locRegime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity();
                 if (locRegime == null) return "";
-                return Flow.Income.GetFlow(locRegime, data).ToString();
+                
+                //todo fix
+                return Flow.Income.GetNonBuildingFlow(locRegime, data).ToString();
             },
             20f,
             data.Notices.Ticked.Blank,
