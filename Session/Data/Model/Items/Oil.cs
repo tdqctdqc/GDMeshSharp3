@@ -15,14 +15,14 @@ public class Oil : NaturalResource
     }
 
     protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    protected override int GetDepositScore(MapPolygon p)
+    public override int GetDepositScore(MapPolygon p)
     {
         var score = 0;
         score = Mathf.FloorToInt(score + 5 * (1f - p.Roughness));
         return score;
     }
 
-    protected override int GenerateDepositSize(MapPolygon p)
+    public override int GenerateDepositSize(MapPolygon p)
     {
         return Mathf.FloorToInt(100 * Game.I.Random.RandfRange(.5f, 2f));
     }
