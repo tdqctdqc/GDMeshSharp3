@@ -1,23 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="gave regime FlowCount">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/BudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeConstructionOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeConstructionOverview.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/ExtractionBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/ExtractionBuildingModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/FinancialBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/FinancialBuildingModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/FlowProdBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/FlowProdBuildingModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/ItemProdBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/ItemProdBuildingModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/WorkBuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/WorkBuildingModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/FlowProdBuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/FlowProdBuildingConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" afterDir="false" />
-    </list>
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="adding construction cap as flow" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,6 +24,7 @@
     </file-type-list>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="mock://C:/Users/Tynan Dion/Desktop/games/GDMeshSharp3/AI/BudgetAi.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/76ec17cec4894b0e90b765dd795aae04197c00/fa/f7f5cc7f/MinCostFlowBase.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/76ec17cec4894b0e90b765dd795aae04197c00/ca/34d880d1/Solver.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/c5e3d8519bda4771918e224591ad5b9f3bb800/44/1de2b5dc/Window.cs" root0="SKIP_HIGHLIGHTING" />
@@ -127,7 +112,7 @@
       <workItem from="1688335588283" duration="1619000" />
       <workItem from="1688426718304" duration="6093000" />
       <workItem from="1688434917618" duration="2987000" />
-      <workItem from="1688499282107" duration="8220000" />
+      <workItem from="1688499282107" duration="8519000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -199,7 +184,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688505580595</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="adding construction cap as flow">
+      <created>1688507872959</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1688507872959</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -229,6 +221,7 @@
     <MESSAGE value="Added major/minor regime distinction" />
     <MESSAGE value="made sure major regimes got strat resources" />
     <MESSAGE value="gave regime FlowCount" />
-    <option name="LAST_COMMIT_MESSAGE" value="gave regime FlowCount" />
+    <MESSAGE value="adding construction cap as flow" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding construction cap as flow" />
   </component>
 </project>
