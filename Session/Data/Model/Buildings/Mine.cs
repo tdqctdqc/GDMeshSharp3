@@ -3,20 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class Mine : ExtractionBuildingModel
+public class Mine : BuildingModel
 {
-    public Mine(string name, Item prodItem) 
-        : base(prodItem, name, true, 
-            150, 3000, 20, 10)
+    public NaturalResource MinedItem { get; private set; }
+    public Mine(string name, NaturalResource prodItem) 
+        : base(BuildingType.Extraction, name, 
+            150, 3000,
+            150, 
+            new List<BuildingComponent>
+            {
+                new ExtractionProd(prodItem, 20),
+                new Workplace(new Dictionary<PeepJob, int>
+                {
+                    {PeepJobManager.Miner, 500}
+                })
+            })
     {
+        MinedItem = prodItem;
         if (prodItem.Attributes.Has<MineableAttribute>() == false) throw new Exception();
     }
-
-    public override Dictionary<PeepJob, int> JobLaborReqs { get; }
-        = new Dictionary<PeepJob, int>
-        {
-            {PeepJobManager.Miner, 500}
-        };
     public override Dictionary<Item, int> BuildCosts { get; protected set; }
         = new Dictionary<Item, int>
         {
@@ -32,6 +37,6 @@ public class Mine : ExtractionBuildingModel
     public override bool CanBuildInPoly(MapPolygon p, Data data)
     {
         var ds = p.GetResourceDeposits(data);
-        return ds != null && ds.Any(d => d.Item.Model() == ProdItem);
+        return ds != null && ds.Any(d => d.Item.Model(data) == MinedItem);
     }
 }

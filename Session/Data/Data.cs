@@ -29,10 +29,6 @@ public class Data
     {
         _idDispenser = new IdDispenser();
         EntityTypeTree = new EntityTypeTree(Game.I.Serializer.ConcreteEntityTypes);
-    }
-
-    public void Setup()
-    {
         Init();
     }
     protected virtual void Init()
@@ -105,8 +101,10 @@ public class Data
         {
             hKey.HostServer.QueueUpdate(EntitiesCreationUpdate.Create(es, hKey));
         }
-        
-        es.First().GetEntityTypeTreeNode().PropagateCreations(es);
+        foreach (var entity in es)
+        {
+            entity.GetEntityTypeTreeNode().PropagateCreation(entity);
+        }
     }
     public void RemoveEntities(int[] entityIds, StrongWriteKey key)
     {

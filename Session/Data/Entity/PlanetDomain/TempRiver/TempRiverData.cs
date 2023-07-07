@@ -63,8 +63,8 @@ public class MapPolyRiverTriInfoOld
         LandTris = new List<PolyTri>();
         var edges = poly.GetEdges(key.Data);
         if (edges.Any(e => e.IsRiver()) == false) return;
-        var nexi = edges.Select(e => e.HiNexus.Entity())
-            .Union(edges.Select(e2 => e2.LoNexus.Entity()))
+        var nexi = edges.Select(e => e.HiNexus.Entity(key.Data))
+            .Union(edges.Select(e2 => e2.LoNexus.Entity(key.Data)))
             .Distinct()
             .Where(n => n.IncidentPolys.Contains(poly))
             .ToHashSet();
@@ -81,7 +81,7 @@ public class MapPolyRiverTriInfoOld
     {
         foreach (var nexus in nexi)
         {
-            if (nexus.IsRiverNexus() == false) continue;
+            if (nexus.IsRiverNexus(data) == false) continue;
             var nexusPoint = Poly.GetOffsetTo(nexus.Point, data);
             var nexusEdges = edges.Where(e => nexus.IncidentEdges.Contains(e));
             
@@ -119,19 +119,19 @@ public class MapPolyRiverTriInfoOld
             if (edge.IsRiver() == false) continue;
             var width = River.GetWidthFromFlow(edge.MoistureFlow);
             
-            var hiNexus = edge.HiNexus.Entity();
+            var hiNexus = edge.HiNexus.Entity(data);
             var hiNexusPoint = Poly.GetOffsetTo(hiNexus.Point, data);
             var hiEnd = new EdgeEndKey(hiNexus, edge);
             var hiCorner = new PolyCornerKey(hiNexus, Poly);
             var hiInner = rData.Inners[hiCorner];
             
-            var loNexus = edge.LoNexus.Entity();
+            var loNexus = edge.LoNexus.Entity(data);
             var loNexusPoint = Poly.GetOffsetTo(loNexus.Point, data);
             var loEnd = new EdgeEndKey(loNexus, edge);
             var loCorner = new PolyCornerKey(loNexus, Poly);
             var loInner = rData.Inners[loCorner];
             
-            var edgeSegs = edge.GetSegsRel(Poly).Segments;
+            var edgeSegs = edge.GetSegsRel(Poly, data).Segments;
             var firstEdgeP = edgeSegs[0].From;
             var lastEdgeP = edgeSegs[edgeSegs.Count - 1].To;
             Vector2 startInner;
@@ -211,16 +211,16 @@ public class MapPolyRiverTriInfoOld
             {
                 edgeInner.AddRange(BankSegs[edge]);
             }
-            else if (edge.HiNexus.Entity().IsRiverNexus() == false && edge.LoNexus.Entity().IsRiverNexus() == false)
+            else if (edge.HiNexus.Entity(data).IsRiverNexus(data) == false && edge.LoNexus.Entity(data).IsRiverNexus(data) == false)
             {
-                edgeInner.AddRange(edge.GetSegsRel(Poly).Segments);
+                edgeInner.AddRange(edge.GetSegsRel(Poly, data).Segments);
             }
             else
             {
-                var hiNexusP = Poly.GetOffsetTo(edge.HiNexus.Entity().Point, data);
-                var loNexusP = Poly.GetOffsetTo(edge.LoNexus.Entity().Point, data);
+                var hiNexusP = Poly.GetOffsetTo(edge.HiNexus.Entity(data).Point, data);
+                var loNexusP = Poly.GetOffsetTo(edge.LoNexus.Entity(data).Point, data);
                 
-                var edgeSegs = edge.GetSegsRel(Poly).Segments;
+                var edgeSegs = edge.GetSegsRel(Poly, data).Segments;
 
                 MapPolyNexus fromNexus;
                 MapPolyNexus toNexus;
@@ -235,14 +235,14 @@ public class MapPolyRiverTriInfoOld
                 if (hiNexusP == from
                     && loNexusP == to)
                 {
-                    fromNexus = edge.HiNexus.Entity();
-                    toNexus = edge.LoNexus.Entity();
+                    fromNexus = edge.HiNexus.Entity(data);
+                    toNexus = edge.LoNexus.Entity(data);
                 }
                 else if (hiNexusP == to
                          && loNexusP == from)
                 {
-                    toNexus = edge.HiNexus.Entity();
-                    fromNexus = edge.LoNexus.Entity();
+                    toNexus = edge.HiNexus.Entity(data);
+                    fromNexus = edge.LoNexus.Entity(data);
                 } else { throw new Exception("bad epsilon"); }
 
                 Vector2 continueFrom = from;
@@ -251,7 +251,7 @@ public class MapPolyRiverTriInfoOld
                 LineSegment firstInnerEdge = null;
                 var edgePoints = edgeSegs.GetPoints();
                 var epsilon = .01f;
-                if (fromNexus.IsRiverNexus())
+                if (fromNexus.IsRiverNexus(data))
                 {
                     var fromInner = rData.Inners[new PolyCornerKey(fromNexus, Poly)];
                     var fromPivotSource = GetPivot(new EdgeEndKey(fromNexus, edge), rData, data);
@@ -271,7 +271,7 @@ public class MapPolyRiverTriInfoOld
                 }
 
                 LineSegment lastInnerEdge = null;
-                if (toNexus.IsRiverNexus())
+                if (toNexus.IsRiverNexus(data))
                 {
                     var toInner = rData.Inners[new PolyCornerKey(toNexus, Poly)];
                     var toPivotSource = GetPivot(new EdgeEndKey(toNexus, edge), rData, data);
@@ -324,7 +324,7 @@ public class MapPolyRiverTriInfoOld
                 "both");
             var rEdges = Poly.GetEdges(data).Where(edge => edge.IsRiver());
                 
-            var rSegs = rEdges.SelectMany(edge => edge.GetSegsRel(Poly).Segments).ToList();
+            var rSegs = rEdges.SelectMany(edge => edge.GetSegsRel(Poly, data).Segments).ToList();
             var rWidth = rEdges.Average(edge => River.GetWidthFromFlow(edge.MoistureFlow));
 
             var ingraved = Geometry2D.OffsetPolygon(bPoints, -rWidth / 2f).Cast<Vector2[]>()
@@ -354,9 +354,9 @@ public class MapPolyRiverTriInfoOld
     private Vector2 GetPivot(EdgeEndKey key, TempRiverData rData, Data data)
     {
         var pivot = rData.HiPivots[key];
-        if (Poly != key.Edge.HighPoly.Entity())
+        if (Poly != key.Edge.HighPoly.Entity(data))
         {
-            pivot += Poly.GetOffsetTo(key.Edge.HighPoly.Entity(), data);
+            pivot += Poly.GetOffsetTo(key.Edge.HighPoly.Entity(data), data);
         }
         return pivot;
     }

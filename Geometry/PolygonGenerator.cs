@@ -141,7 +141,7 @@ public class PolygonGenerator : Generator
         {
             var ex = new GeometryException($"couldnt build poly {poly.Id} borders");
             ex.AddSegLayer(allEdgeSegs, "border segs");
-            ex.AddPointSet(poly.Neighbors.Select(n => poly.GetOffsetTo(n, _data)).ToList(), "neighbors");
+            ex.AddPointSet(poly.Neighbors.Entities(_data).Select(n => poly.GetOffsetTo(n, _data)).ToList(), "neighbors");
         }
 
         
@@ -219,10 +219,10 @@ public class PolygonGenerator : Generator
         var loChain = b.Value;
         var edge = MapPolygonEdge.Create(b.Key, b.Value, key);
 
-        var start = hiChain.Segments.First().From + b.Key.Native.Entity().Center;
+        var start = hiChain.Segments.First().From + b.Key.Native.Entity(key.Data).Center;
         if (start != start.Intify()) throw new Exception();
             
-        var end = hiChain.Segments.Last().To + b.Key.Native.Entity().Center;
+        var end = hiChain.Segments.Last().To + b.Key.Native.Entity(key.Data).Center;
         if (end != end.Intify()) throw new Exception();
 
         if (start.X < 0) start.X += mapWidth;
@@ -242,8 +242,8 @@ public class PolygonGenerator : Generator
         {
             var point = kvp.Key;
             var edges = kvp.Value;
-            var polys = edges.Select(e => e.HighPoly.Entity())
-                .Union(edges.Select(e => e.LowPoly.Entity()))
+            var polys = edges.Select(e => e.HighPoly.Entity(key.Data))
+                .Union(edges.Select(e => e.LowPoly.Entity(key.Data)))
                 .Distinct().ToList();
             var nexus = MapPolyNexus.Construct(point, edges, polys, key);
             foreach (var e in edges)
@@ -282,23 +282,23 @@ public class PolygonGenerator : Generator
         var numCouldntFix = 0;
         MapPolygonEdge getShortEdge()
         {
-            return key.Data.Planet.PolyEdges.Entities.FirstOrDefault(e => e.GetLength() < minLength);
+            return key.Data.Planet.PolyEdges.Entities.FirstOrDefault(e => e.GetLength(key.Data) < minLength);
         }
         while (getShortEdge() is MapPolygonEdge shortEdge && sw.Elapsed.TotalSeconds < maxTime)
         {
-            var hiPoly = shortEdge.HighPoly.Entity();
+            var hiPoly = shortEdge.HighPoly.Entity(key.Data);
             
-            var seg = shortEdge.GetSegsRel(hiPoly)[0];
+            var seg = shortEdge.GetSegsRel(hiPoly, key.Data)[0];
             
             var oldPAbs = seg.From;
             var shiftAxis = (seg.To - seg.From).Normalized();
-            var missingDist = minLength - shortEdge.GetLength();
+            var missingDist = minLength - shortEdge.GetLength(key.Data);
             var newPRelToHiPoly = oldPAbs - shiftAxis * missingDist * 1.1f;
             var newPAbs = newPRelToHiPoly + hiPoly.Center;
             
 
             var success = tryP(shortEdge, oldPAbs, shiftAxis,
-                missingDist, newPAbs, hiPoly.Neighbors);
+                missingDist, newPAbs, hiPoly.Neighbors.Entities(key.Data));
             
             if (success == false)
             {
@@ -310,7 +310,7 @@ public class PolygonGenerator : Generator
 
 
                 success = tryP(shortEdge, oldPAbs, shiftAxis, 
-                    missingDist, newPAbs, hiPoly.Neighbors);
+                    missingDist, newPAbs, hiPoly.Neighbors.Entities(key.Data));
                 if (success == false)
                 {
                     numCouldntFix++;
@@ -346,9 +346,10 @@ public class PolygonGenerator : Generator
             float missingDist, Vector2 newPAbs, IEnumerable<MapPolygon> incidentPolys)
         {
             if (oldPAbs.Y == 0f || oldPAbs.Y == key.Data.Planet.Height) return false;
-            var hiPoly = shortEdge.HighPoly.Entity();
+            var hiPoly = shortEdge.HighPoly.Entity(key.Data);
 
-            var incPolys = shortEdge.HiNexus.Entity().IncidentPolys.Union(shortEdge.LoNexus.Entity().IncidentPolys)
+            var incPolys = shortEdge.HiNexus.Entity(key.Data).IncidentPolys.Entities(key.Data)
+                .Union(shortEdge.LoNexus.Entity(key.Data).IncidentPolys.Entities(key.Data))
                 .Distinct();
             foreach (var poly in incPolys)
             {
@@ -373,7 +374,7 @@ public class PolygonGenerator : Generator
                 var oldPRel = poly.GetOffsetTo(oldPAbs, key.Data);
                 foreach (var affectedEdge in affectedEdges)
                 {
-                    var hiSegs = affectedEdge.GetSegsRel(poly).Segments;
+                    var hiSegs = affectedEdge.GetSegsRel(poly, key.Data).Segments;
                     if (hiSegs.Count != 1) throw new Exception();
                     var seg = hiSegs[0];
                     var newFrom = seg.From;

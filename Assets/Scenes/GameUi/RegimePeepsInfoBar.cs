@@ -29,7 +29,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
         if (r.Empty() == false)
         {
-            return r.Entity().GetPopulation(data);
+            return r.Entity(data).GetPopulation(data);
         }
 
         return 0;
@@ -40,7 +40,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
         if (r.Empty() == false)
         {
-            return Mathf.FloorToInt(r.Entity().History.PeepHistory.PeepSize.GetLatestDelta());
+            return Mathf.FloorToInt(r.Entity(data).History.PeepHistory.PeepSize.GetLatestDelta());
         }
 
         return 0;

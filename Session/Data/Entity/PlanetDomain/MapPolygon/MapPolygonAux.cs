@@ -17,6 +17,8 @@ public class MapPolygonAux : EntityAux<MapPolygon>
     public MapPolygonAux(Domain domain, Data data) : base(domain, data)
     {
         BorderGraph = ImplicitGraph.Get<MapPolygon, PolyBorderChain>(
+            n => n.Neighbors.Entities(data),
+            (n, m) => n.GetEdge(m, data).GetSegsRel(n, data),
             () => Register.Entities, 
             () => Register.Entities.SelectMany(e => e.GetPolyBorders()).ToHashSet()
         );
@@ -24,6 +26,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
             data,
             p => new PolyAuxData(p, data)
         );
+        
         ChangedRegime = new RefAction<ValChangeNotice<EntityRef<Regime>>>();
         Game.I.Serializer.GetEntityMeta<MapPolygon>()
             .GetEntityVarMeta<EntityRef<Regime>>(nameof(MapPolygon.Regime))
@@ -47,10 +50,19 @@ public class MapPolygonAux : EntityAux<MapPolygon>
         data.Notices.FinishedStateSync.Subscribe(() => BuildChunks(data));
         
         data.Notices.SetPolyShapes.Subscribe(() => UpdateAuxDatas(data));
+        data.Notices.FinishedStateSync.Subscribe(() => UpdateAuxDatas(data));
     }
 
     private void UpdateAuxDatas(Data data)
     {
+        foreach (var p in data.Planet.Polygons.Entities)
+        {
+            if (AuxDatas.Dic.ContainsKey(p) == false)
+            {
+                GD.Print("missing poly aux");
+            }
+        }
+
         foreach (var kvp in AuxDatas.Dic)
         {
             var aux = kvp.Value;

@@ -14,9 +14,9 @@ public class ClientPlayerData
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>
         {
             var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
-            if (data.BaseDomain.PlayerAux.ByRegime.ContainsKey(a.NewVal.Entity()))
+            if (data.BaseDomain.PlayerAux.ByRegime.ContainsKey(a.NewVal.Entity(data)))
             {
-                var player = data.BaseDomain.PlayerAux.ByRegime[a.NewVal.Entity()];
+                var player = data.BaseDomain.PlayerAux.ByRegime[a.NewVal.Entity(data)];
                 if(player.PlayerGuid == localPlayer.PlayerGuid)
                 {
                     ResetMajorOrders(data);
@@ -53,12 +53,12 @@ public class ClientPlayerData
     public void ResetMajorOrders(Data data)
     {
         var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
-        MajorOrders = MajorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Entity());
+        MajorOrders = MajorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Entity(data));
     }
     public void ResetMinorOrders(Data data)
     {
         var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
-        MinorOrders = MinorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Entity());
+        MinorOrders = MinorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Entity(data));
     }
 
     public void SubmitOrders(Data data)

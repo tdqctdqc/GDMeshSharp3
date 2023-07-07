@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class History<TValue>
 {
@@ -11,7 +12,7 @@ public class History<TValue>
     {
         return new History<TValue>(new Dictionary<int, TValue>());
     }
-    protected History(Dictionary<int, TValue> byTick)
+    [SerializationConstructor] public History(Dictionary<int, TValue> byTick)
     {
         ByTick = byTick;
         _list = byTick.ToList();

@@ -60,18 +60,18 @@ public partial class PolyHighlighter : Node2D
     private static void DrawIncidentEdges(MapPolygon poly, MeshBuilder mb, Data data)
     {
         var incident = new HashSet<MapPolygonEdge>();
-        var edges = poly.Neighbors.Select(n => poly.GetEdge(n, data));
+        var edges = poly.Neighbors.Entities(data).Select(n => poly.GetEdge(n, data));
         foreach (var e in edges)
         {
-            var n1 = e.HiNexus.Entity().IncidentEdges.Entities();
-            var n2 = e.LoNexus.Entity().IncidentEdges.Entities();
+            var n1 = e.HiNexus.Entity(data).IncidentEdges.Entities(data);
+            var n2 = e.LoNexus.Entity(data).IncidentEdges.Entities(data);
             incident.AddRange(n1);
             incident.AddRange(n2);
         }
         foreach (var e in incident)
         {
-            var start = e.HiNexus.Entity().Point;
-            var end = e.LoNexus.Entity().Point;
+            var start = e.HiNexus.Entity(data).Point;
+            var end = e.LoNexus.Entity(data).Point;
             mb.AddLine(poly.GetOffsetTo(start, data), 
                 poly.GetOffsetTo(end, data), Colors.Red, 10f);
         }
@@ -83,7 +83,7 @@ public partial class PolyHighlighter : Node2D
     }
     private static void DrawnLinesToNeighbors(MapPolygon poly, MeshBuilder mb, Data data)
     {
-        foreach (var n in poly.Neighbors)
+        foreach (var n in poly.Neighbors.Entities(data))
         {
             var offset = poly.GetOffsetTo(n, data);
             mb.AddLine(Vector2.Zero, offset, Colors.White, 10f);
@@ -91,7 +91,7 @@ public partial class PolyHighlighter : Node2D
     }
     private static void DrawnNeighborBordersSimple(MapPolygon poly, MeshBuilder mb, Data data)
     {
-        foreach (var n in poly.Neighbors)
+        foreach (var n in poly.Neighbors.Entities(data))
         {
             var offset = poly.GetOffsetTo(n, data);
             var nEdgeBorders = n.GetOrderedBoundarySegs(data)

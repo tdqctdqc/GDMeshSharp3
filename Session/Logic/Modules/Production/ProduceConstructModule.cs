@@ -43,7 +43,7 @@ public class ProduceConstructModule : LogicModule
         proc.RegimeResourceGains.TryAdd(regime.Id, gains);
         var unemployedJob = PeepJobManager.Unemployed;
         
-        var regimePolys = regime.Polygons;
+        var regimePolys = regime.Polygons.Entities(data);
         var totalLaborerUnemployed = 0;
         
         foreach (var poly in regimePolys)
@@ -76,12 +76,12 @@ public class ProduceConstructModule : LogicModule
     private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
     {
         var builderJob = PeepJobManager.Builder;
-        var regimePolys = regime.Polygons;
+        var regimePolys = regime.Polygons.Entities(data);
         var construction = data.Society.CurrentConstruction.ByPoly;
 
-        var constructionCapNeeded = regime.Polygons
+        var constructionCapNeeded = regime.Polygons.Entities(data)
             .Where(p => construction.ContainsKey(p.Id))
-            .Select(p => construction[p.Id].Sum(c => c.Model.Model().ConstructionCapPerTick))
+            .Select(p => construction[p.Id].Sum(c => c.Model.Model(data).ConstructionCapPerTick))
             .Sum();
         
         if (constructionCapNeeded == 0) return;
@@ -105,19 +105,18 @@ public class ProduceConstructModule : LogicModule
         var peep = poly.GetPeep(data);
         if (peep == null) return;
         IEnumerable<MapBuilding> mapBuildings = poly.GetBuildings(data);
-            if(mapBuildings == null) return;
-            
-        mapBuildings = mapBuildings.Where(b => b.Model.Model() is WorkBuildingModel);
-        if (mapBuildings.Count() == 0) return;
-        
-        IEnumerable<WorkBuildingModel> workBuildings = poly.GetBuildings(data)
-            .Where(b => b.Model.Model() is WorkBuildingModel)
-            .Select(b => (WorkBuildingModel)b.Model.Model());
+        if(mapBuildings == null) return;
+        var workBuildings = mapBuildings.Where(b => b.Model.Model(data).HasComponent<Workplace>());
         if (workBuildings.Count() == 0) return;
-        var effectiveRatio = scratch.HandleBuildingJobs(workBuildings, data);
-        foreach (var wb in workBuildings)
+        var workplaces = workBuildings.Select(b => b.Model.Model(data).GetComponent<Workplace>());
+        var effectiveRatio = scratch.HandleBuildingJobs(workplaces, data);
+        var laborNeed = workBuildings.Sum(b => b.Model.Model(data).GetComponent<Workplace>().TotalLaborReq());
+        foreach (var b in mapBuildings)
         {
-            wb.Work(proc, poly, effectiveRatio, data);
+            foreach (var c in b.Model.Model(data).Components)
+            {
+                c.Work(proc, poly, effectiveRatio, data);
+            }
         }
     }
 
@@ -128,7 +127,7 @@ public class ProduceConstructModule : LogicModule
         if (constructions == null || constructions.Count() == 0) return;
         foreach (var construction in constructions)
         {
-            var spend = ratio * construction.Model.Model().ConstructionCapPerTick;
+            var spend = ratio * construction.Model.Model(data).ConstructionCapPerTick;
             proc.RegimeInflows[r.Id].Remove(FlowManager.ConstructionCap, spend);
             proc.ConstructionProgresses.TryAdd(construction.Pos, ratio);
         }

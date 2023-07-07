@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class RegimeFinance 
 {
@@ -9,7 +10,7 @@ public class RegimeFinance
     {
         return new RegimeFinance(0);
     }
-    private RegimeFinance(int lastTradeBalance)
+    [SerializationConstructor] private RegimeFinance(float lastTradeBalance)
     {
         LastTradeBalance = lastTradeBalance;
     }

@@ -31,13 +31,11 @@ public class MapBuilding : Entity
         key.Create(b);
         return b;
     }
-    [SerializationConstructor] protected MapBuilding(int id, PolyTriPosition position, 
+    [SerializationConstructor] private MapBuilding(int id, PolyTriPosition position, 
         ModelRef<BuildingModel> model, float efficiency) : base(id)
     {
         Position = position;
         Model = model;
         Efficiency = efficiency;
     }
-
-    
 }

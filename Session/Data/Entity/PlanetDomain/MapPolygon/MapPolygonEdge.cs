@@ -12,8 +12,8 @@ public class MapPolygonEdge : Entity
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public float MoistureFlow { get; protected set; }
-    public PolyBorderChain LowSegsRel() => LowPoly.Entity().NeighborBorders[HighPoly.RefId];
-    public PolyBorderChain HighSegsRel() => HighPoly.Entity().NeighborBorders[LowPoly.RefId];
+    public PolyBorderChain LowSegsRel(Data data) => LowPoly.Entity(data).NeighborBorders[HighPoly.RefId];
+    public PolyBorderChain HighSegsRel(Data data) => HighPoly.Entity(data).NeighborBorders[LowPoly.RefId];
     public EntityRef<MapPolygon> LowPoly { get; protected set; }
     public EntityRef<MapPolygon> HighPoly { get; protected set; }
     public Dictionary<byte, byte> HiToLoTriPaths { get; private set; }
@@ -38,8 +38,8 @@ public class MapPolygonEdge : Entity
         var lowId = lowChain.Native;
         var highId = hiChain.Native;
         
-        lowId.Entity().AddNeighbor(highId.Entity(), lowChain, key);
-        highId.Entity().AddNeighbor(lowId.Entity(), hiChain, key);
+        lowId.Entity(key.Data).AddNeighbor(highId.Entity(key.Data), lowChain, key);
+        highId.Entity(key.Data).AddNeighbor(lowId.Entity(key.Data), hiChain, key);
         var b = new MapPolygonEdge(
             key.IdDispenser.GetID(), 0f, lowId, highId,
             new Dictionary<byte, byte>(), new Dictionary<byte, byte>(),
@@ -56,7 +56,7 @@ public class MapPolygonEdge : Entity
     }
     private List<LineSegment> RelativizeSegments(List<LineSegment> abs, MapPolygon poly, Data data)
     {
-        var oldSegs = this.GetSegsRel(poly).Segments;
+        var oldSegs = this.GetSegsRel(poly, data).Segments;
         var oldFrom = oldSegs[0].From;
         var oldTo = oldSegs[oldSegs.Count - 1].To;
         
@@ -87,8 +87,8 @@ public class MapPolygonEdge : Entity
     }
     public void ReplaceMiddlePoints(List<LineSegment> newSegmentsAbs, GenWriteKey key)
     {
-        var hiPoly = HighPoly.Entity();
-        var loPoly = LowPoly.Entity();
+        var hiPoly = HighPoly.Entity(key.Data);
+        var loPoly = LowPoly.Entity(key.Data);
         var highBorderSegs = RelativizeSegments(newSegmentsAbs, hiPoly, key.Data);
         var lowBorderSegs = RelativizeSegments(newSegmentsAbs, loPoly, key.Data);
         
@@ -105,8 +105,8 @@ public class MapPolygonEdge : Entity
     }
     public void ReplacePoints(MapPolygon poly, List<LineSegment> newSegsRel, GenWriteKey key)
     {
-        var hiPoly = HighPoly.Entity();
-        var loPoly = LowPoly.Entity();
+        var hiPoly = HighPoly.Entity(key.Data);
+        var loPoly = LowPoly.Entity(key.Data);
 
         var otherPoly = poly == hiPoly ? loPoly : hiPoly;
         var newChain = PolyBorderChain.Construct(poly, otherPoly, newSegsRel);

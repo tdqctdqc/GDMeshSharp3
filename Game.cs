@@ -10,11 +10,9 @@ public partial class Game : Node
     public static Game I { get; private set; }
     public Serializer Serializer { get; private set; }
     public Logger Logger { get; private set; }
-    // public Guid PlayerGuid { get; private set; } = Guid.NewGuid();
     public RandomNumberGenerator Random = new RandomNumberGenerator();
     private ISession _session;
 
-    public RefFulfiller RefFulfiller => _session.RefFulfiller;
     public IClient Client => _session.Client;
     public override void _Ready()
     {
@@ -27,59 +25,6 @@ public partial class Game : Node
         Assets.Setup();
         SetSerializer();
         StartMainMenuSession();
-        Test();
-    }
-
-    private void Test()
-    {
-        // var segCount = 100f;
-        // var testIters = 1000;
-        // var segs = new List<LineSegment>();
-        // var arm = Vector2.One * 100f;
-        // var points = new List<Vector2>();
-        // for (var i = 0; i < segCount - 1; i++)
-        // {
-        //     var ratioFrom = i / segCount;
-        //     var ratioTo = (i + 1) / segCount;
-        //     var point = arm.Rotated(ratioFrom * Mathf.Pi * 2f);
-        //     points.Add(point);
-        // }
-        //
-        // for (var i = 0; i < points.Count - 1; i++)
-        // {
-        //     segs.Add(new LineSegment(points[i], points[i + 1]));
-        // }
-        //
-        // segs = segs.OrderBy(s => Random.Randf()).ToList();
-        // var sw = new Stopwatch();
-        //
-        // var chainedNew = segs.Chainify();
-        // sw.Start();
-        // for (var i = 0; i < testIters; i++)
-        // {
-        //     chainedNew = segs.ChainifyNew();
-        // }
-        // sw.Stop();
-        // var newTime = sw.Elapsed.TotalMilliseconds;
-        // sw.Reset();
-        //
-        //
-        // var chainedOld = segs.Chainify();
-        // sw.Start();
-        // for (var i = 0; i < testIters; i++)
-        // {
-        //     chainedOld = segs.Chainify();
-        // }
-        // sw.Stop();
-        // var oldTime = sw.Elapsed.TotalMilliseconds;
-        // sw.Reset();
-        //
-        //
-        //
-        //
-        //
-        // GD.Print("old " + oldTime);
-        // GD.Print("new " + newTime);
     }
     public void SetSerializer()
     {
@@ -99,7 +44,7 @@ public partial class Game : Node
         SetSession(session);
         session.StartAsRemote();
     }
-    public void StartHostSession(GenData data, MapGraphics graphics = null)
+    public void StartHostSession(Data data, MapGraphics graphics = null)
     {
         var session = new GameSession();
         SetSession(session);

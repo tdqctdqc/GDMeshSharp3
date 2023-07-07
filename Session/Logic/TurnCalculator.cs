@@ -79,7 +79,7 @@ public class TurnCalculator
         var res = new List<TurnOrders>();
         foreach (var kvp in playerTurnOrders)
         {
-            if (kvp.Key.Regime.Entity().IsPlayerRegime(_data) == false) continue;
+            if (kvp.Key.Regime.Entity(_data).IsPlayerRegime(_data) == false) continue;
             var orders = kvp.Value;
             res.Add(orders);
         }

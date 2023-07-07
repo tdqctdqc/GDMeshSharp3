@@ -14,7 +14,7 @@ public class ItemCount : Count<int>
     {
         return new ItemCount(new Dictionary<int, float>(toCopy.Contents));
     }
-    [SerializationConstructor] private ItemCount(Dictionary<int, float> contents) : base(contents)
+    [SerializationConstructor] public ItemCount(Dictionary<int, float> contents) : base(contents)
     {
     }
 

@@ -30,8 +30,8 @@ public class BudgetAi
         var prices = data.Models.Items.Models.Values.ToDictionary(v => v, v => 1f);
         var totalPrice =
             _regime.Items.Contents.Sum(kvp => prices[(Item) data.Models[kvp.Key]] * _regime.Items[kvp.Key]);
-        var totalLaborAvail = _regime.Polygons.Sum(p => p.GetLaborSurplus(data));
-        
+        var totalLaborAvail = _regime.Polygons.Entities(data).Sum(p => p.GetLaborSurplus(data));
+        var constructCap = Mathf.FloorToInt(_regime.FlowCount[FlowManager.ConstructionCap]);
         
         foreach (var p in _priorities)
         {
@@ -42,20 +42,19 @@ public class BudgetAi
         foreach (var p in _priorities)
         {
             DoPriority(p, data, prices, budget, totalPriorityWeight, totalPrice, 
-                totalLaborAvail, orders);
+                totalLaborAvail, constructCap, orders);
         }
         
     }
 
     private void DoPriority(BudgetPriority priority, Data data, Dictionary<Item, float> prices, 
-        ItemCount itemBudget, float totalPriorityWeight, float totalPrice, int totalLaborAvail, 
+        ItemCount itemBudget, float totalPriorityWeight, float totalPrice, int totalLaborAvail, int constructCap,
         MajorTurnOrders orders)
     {
         var priorityWeight = priority.Weight;
         var priorityShare = priorityWeight / totalPriorityWeight;
         var credit = Mathf.FloorToInt(totalPrice *  priorityShare);
         var labor = Mathf.FloorToInt(priorityShare * totalLaborAvail);
-        var constructCap = _regime.FlowCount[FlowManager.ConstructionCap];
         if (credit < 0f)
         {
             throw new Exception($"priority weight {priorityWeight} " +
@@ -73,7 +72,7 @@ public class BudgetAi
         var market = data.Society.Market;
         var prices = market.ItemPricesById.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
         
-        var totalLaborAvail = _regime.Polygons.Sum(p => p.GetLaborSurplus(data));
+        var totalLaborAvail = _regime.Polygons.Entities(data).Sum(p => p.GetLaborSurplus(data));
         var totalPriorityWeight = _priorities.Sum(p => p.Weight);
         
         return _priorities.Select(p =>

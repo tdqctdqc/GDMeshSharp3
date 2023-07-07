@@ -5,7 +5,6 @@ using System.Linq;
 
 public partial class GameSession : Node, IDataSession
 {
-    RefFulfiller ISession.RefFulfiller => Data.RefFulfiller;
     public Data Data { get; private set; }
     public IClient Client => _client;
     private GameClient _client;
@@ -27,7 +26,7 @@ public partial class GameSession : Node, IDataSession
     {
         
     }
-    public void StartAsHost(GenData data, MapGraphics graphics = null)
+    public void StartAsHost(Data data, MapGraphics graphics = null)
     {
         Data = data;
         Data.ClientPlayerData.SetLocalPlayerGuid(new Guid());
@@ -37,8 +36,7 @@ public partial class GameSession : Node, IDataSession
         _logic = logic;
         var hKey = new HostWriteKey(hServer, logic, data, this);
         _key = hKey;
-
-        data.ClearAuxData();
+        
         hServer.SetDependencies(logic, Data, this);
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
@@ -51,7 +49,6 @@ public partial class GameSession : Node, IDataSession
     public void StartAsRemote()
     {
         Data = new Data();
-        Data.Setup();
 
         var logic = new RemoteLogic(Data, this);
         _logic = logic;

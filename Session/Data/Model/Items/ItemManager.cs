@@ -9,7 +9,6 @@ public class ItemManager : IModelManager<Item>
     public static Recruits Recruits { get; private set; } = new Recruits();
     public static Iron Iron { get; private set; } = new Iron();
     public static Oil Oil { get; private set; } = new Oil();
-    public static IndustrialPower IndustrialPower { get; private set; } = new IndustrialPower();
     public static FinancialPower FinancialPower { get; private set; } = new FinancialPower();
     public Dictionary<string, Item> Models { get; private set; }
     public ItemManager()

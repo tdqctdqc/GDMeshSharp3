@@ -17,13 +17,12 @@ public class ModelRefCollection<TModel> : IRefCollection<string>
     {
         ModelNames = modelNames;
         _refs = null;
-        Game.I.RefFulfiller.Fulfill(this);
     }
-    public IReadOnlyCollection<TModel> Models()
+    public IReadOnlyCollection<TModel> Models(Data data)
     {
         if (_refs == null)
         {
-            Game.I.RefFulfiller.Fulfill(this);
+            data.RefFulfiller.Fulfill(this);
         }
         return _refs;
     }

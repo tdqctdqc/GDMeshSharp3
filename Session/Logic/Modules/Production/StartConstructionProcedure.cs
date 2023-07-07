@@ -11,9 +11,9 @@ public class StartConstructionProcedure : Procedure
     public Construction Construction { get; private set; }
 
     public static StartConstructionProcedure Construct(ModelRef<BuildingModel> building, PolyTriPosition pos, 
-        EntityRef<Regime> orderingRegime)
+        EntityRef<Regime> orderingRegime, Data data)
     {
-        var c = new Construction(building, pos, building.Model().NumTicksToBuild);
+        var c = new Construction(building, pos, building.Model(data).NumTicksToBuild);
         return new StartConstructionProcedure(c, orderingRegime);
     }
     [SerializationConstructor] private StartConstructionProcedure(Construction construction, 
@@ -26,7 +26,7 @@ public class StartConstructionProcedure : Procedure
     public override bool Valid(Data data)
     {
         var poly = Construction.Pos.Poly(data);
-        var regime = OrderingRegime.Entity();
+        var regime = OrderingRegime.Entity(data);
         var noOngoing = data.Society.CurrentConstruction.ByPoly.ContainsKey(poly.Id) == false;
         if (noOngoing == false)
         {
@@ -38,7 +38,7 @@ public class StartConstructionProcedure : Procedure
             return false;
         }
 
-        if (Construction.Model.Model().BuildCosts.Any(kvp => regime.Items[kvp.Key] < kvp.Value))
+        if (Construction.Model.Model(data).BuildCosts.Any(kvp => regime.Items[kvp.Key] < kvp.Value))
         {
             return false;
         }
@@ -48,9 +48,9 @@ public class StartConstructionProcedure : Procedure
     public override void Enact(ProcedureWriteKey key)
     {
         Construction.Pos.Poly(key.Data).PolyBuildingSlots
-            .RemoveSlot(Construction.Model.Model().BuildingType, Construction.Pos);
-        var regime = Construction.Pos.Poly(key.Data).Regime.Entity();
-        foreach (var kvp in Construction.Model.Model().BuildCosts)
+            .RemoveSlot(Construction.Model.Model(key.Data).BuildingType, Construction.Pos);
+        var regime = Construction.Pos.Poly(key.Data).Regime.Entity(key.Data);
+        foreach (var kvp in Construction.Model.Model(key.Data).BuildCosts)
         {
             regime.Items.Remove(kvp.Key, kvp.Value);
         }

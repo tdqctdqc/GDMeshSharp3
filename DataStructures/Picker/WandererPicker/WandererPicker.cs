@@ -22,12 +22,12 @@ public class WandererPicker
         Wanderers.Add(w);
     }
 
-    public void Pick()
+    public void Pick(Data data)
     {
         while (OpenPickers.Count > 0 && NotTaken.Count > 0)
         {
             var wanderer = OpenPickers.GetRandomElement();
-            var open = wanderer.MoveAndPick(this);
+            var open = wanderer.MoveAndPick(this, data);
             if (open == false) OpenPickers.Remove(wanderer);
         }
     }

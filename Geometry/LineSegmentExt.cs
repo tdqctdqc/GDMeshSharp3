@@ -190,10 +190,6 @@ public static class LineSegmentExt
         return res;
     }
 
-    public static bool Neighboring(this MapPolygonEdge e, MapPolygonEdge n)
-    {
-        return e.HiNexus.Entity().IncidentEdges.Contains(n) || e.LoNexus.Entity().IncidentEdges.Contains(n);
-    }
 
     public static void CompleteCircuit(this List<LineSegment> segs)
     {
@@ -203,8 +199,8 @@ public static class LineSegmentExt
     public static void SplitToMinLength(this MapPolygonEdge edge, float minLength, GenWriteKey key)
     {
         var newSegsAbs = new List<LineSegment>();
-        var segs = edge.GetSegsAbs();
-        var offset = edge.HighPoly.Entity().GetOffsetTo(edge.LowPoly.Entity(), key.Data);
+        var segs = edge.GetSegsAbs(key.Data);
+        var offset = edge.HighPoly.Entity(key.Data).GetOffsetTo(edge.LowPoly.Entity(key.Data), key.Data);
         for (var i = 0; i < segs.Count; i++)
         {
             var seg = segs[i];

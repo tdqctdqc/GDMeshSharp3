@@ -20,8 +20,8 @@ public partial class SettlementIconLayer : MapChunkGraphicLayer<int>
     {
         var node = new Node2D();
         var settlement = data.Society.Settlements[key];
-        var icon = settlement.Tier.Model().Icon;
-        var poly = settlement.Poly.Entity();
+        var icon = settlement.Tier.Model(data).Icon;
+        var poly = settlement.Poly.Entity(data);
         var urbanTris = poly.Tris.Tris
             .Where(t => t.Landform == LandformManager.Urban);
         foreach (var urbanTri in urbanTris)

@@ -37,7 +37,7 @@ public class PolyDataTooltipTemplate : DataTooltipTemplate<PolyTriPosition>
         if (bs != null)
         {
             var label = new Label();
-            var counts = bs.Select(b => b.Model.Model()).GetCounts();
+            var counts = bs.Select(b => b.Model.Model(d)).GetCounts();
             int iter = 0;
             foreach (var kvp in counts)
             {
@@ -74,7 +74,7 @@ public class PolyDataTooltipTemplate : DataTooltipTemplate<PolyTriPosition>
         var polyR = t.Poly(d).Regime;
         var txt = "Regime: " + (polyR.Empty()
             ? "None"
-            : polyR.Entity().Name);
+            : polyR.Entity(d).Name);
         return NodeExt.CreateLabel(txt);
     }
 
@@ -118,8 +118,8 @@ public class PolyDataTooltipTemplate : DataTooltipTemplate<PolyTriPosition>
         var kvps = constructions.Select(
             c => new KeyValuePair<BuildingModel, Vector2>
             (
-                c.Model.Model(),
-                new Vector2((c.Model.Model().NumTicksToBuild - c.TicksLeft), c.Model.Model().NumTicksToBuild)
+                c.Model.Model(d),
+                new Vector2((c.Model.Model(d).NumTicksToBuild - c.TicksLeft), c.Model.Model(d).NumTicksToBuild)
             )
         );
         
@@ -152,7 +152,7 @@ public class PolyDataTooltipTemplate : DataTooltipTemplate<PolyTriPosition>
             foreach (var r in rs)
             {
                 if (iter != 0) label.Text += "\n";
-                label.Text += $"{r.Item.Model().Name}: {Mathf.FloorToInt(r.Size)}";
+                label.Text += $"{r.Item.Model(d).Name}: {Mathf.FloorToInt(r.Size)}";
             }
 
             return label;

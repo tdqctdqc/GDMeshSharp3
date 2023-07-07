@@ -8,5 +8,5 @@ public interface IClient
     void Process(float delta, bool gameStateChanged);
     ICameraController Cam { get; }
     ClientSettings Settings { get; }
-    ClientWriteKey Key { get; }
+    ClientWriteKey WriteKey { get; }
 }

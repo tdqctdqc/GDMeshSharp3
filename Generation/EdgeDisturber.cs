@@ -13,7 +13,7 @@ public static class EdgeDisturber
         {
             // if (poly.IsWater() && n.IsWater()) continue;
 
-            if (edge.HighSegsRel().Segments.Any(s => s.Length() > minLength * 2f))
+            if (edge.HighSegsRel(key.Data).Segments.Any(s => s.Length() > minLength * 2f))
             {
                 iter++;
                 edge.SplitToMinLength(minLength, key);
@@ -30,7 +30,7 @@ public static class EdgeDisturber
             var poly = polys.ElementAt(i);
             for (var j = 0; j < poly.Neighbors.Count(); j++)
             {
-                var nPoly = poly.Neighbors.Entities().ElementAt(j);
+                var nPoly = poly.Neighbors.Entities(key.Data).ElementAt(j);
                 if (poly.Id > nPoly.Id)
                 {
                     DisturbEdge(poly.GetEdge(nPoly, key.Data), key);
@@ -45,11 +45,11 @@ public static class EdgeDisturber
         var maxRatio = .3f;
         var minRatio = .2f;
         var ratio = Game.I.Random.RandfRange(minRatio, maxRatio);
-        var points = edge.HighSegsRel().Segments.GetPoints();
+        var points = edge.HighSegsRel(key.Data).Segments.GetPoints();
         var newPoints = new List<Vector2>();
         newPoints.Add(points[0]);
-        var hi = edge.HighPoly.Entity();
-        var lo = edge.LowPoly.Entity();
+        var hi = edge.HighPoly.Entity(key.Data);
+        var lo = edge.LowPoly.Entity(key.Data);
         var offset = hi.GetOffsetTo(lo, key.Data);
 
         for (var i = 1; i < points.Count - 1; i++)

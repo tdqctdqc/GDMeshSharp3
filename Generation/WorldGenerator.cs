@@ -15,7 +15,6 @@ public class WorldGenerator
         _session = session;
         Data = data;
         _key = new GenWriteKey(Data, session);
-        Data.Setup();
         _totalTime = new Stopwatch();
     }
     public GenReport Generate()

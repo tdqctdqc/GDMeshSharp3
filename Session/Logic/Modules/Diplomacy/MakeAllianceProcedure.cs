@@ -18,7 +18,7 @@ public class MakeAllianceProcedure : Procedure
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        var relation = Offerer.Entity().RelationWith(Accepter.Entity(), key.Data);
+        var relation = Offerer.Entity(key.Data).RelationWith(Accepter.Entity(key.Data), key.Data);
         relation.Set<bool>(nameof(RegimeRelation.Alliance), true, key);
     }
 }

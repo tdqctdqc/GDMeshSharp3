@@ -15,7 +15,7 @@ public static class PathFinder
         {
             buildRoadEdgeCost = (p, q) => BuildRoadEdgeCost(p, q, road, data, international);
         }
-        return PathFinder<MapPolygon>.FindPath(s1, s2, p => p.Neighbors.Entities(),
+        return PathFinder<MapPolygon>.FindPath(s1, s2, p => p.Neighbors.Entities(data),
             buildRoadEdgeCost, 
             (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
@@ -33,7 +33,7 @@ public static class PathFinder
         Func<MapPolygon, MapPolygon, float> travelEdgeCost = null)
     {
         if (travelEdgeCost == null) travelEdgeCost = (p, q) => TravelEdgeCost(p, q, data);
-        return PathFinder<MapPolygon>.FindPath(s1, s2, p => p.Neighbors.Entities(),
+        return PathFinder<MapPolygon>.FindPath(s1, s2, p => p.Neighbors.Entities(data),
             travelEdgeCost, (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
 
@@ -50,7 +50,7 @@ public static class PathFinder
         var dist = p1.GetOffsetTo(p2, data).Length();
         if (data.Society.RoadAux.ByEdgeId[e.Id] is RoadSegment r)
         {
-            return dist / r.Road.Model().Speed;
+            return dist / r.Road.Model(data).Speed;
         }
         else
         {

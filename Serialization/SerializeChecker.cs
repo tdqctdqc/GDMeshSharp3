@@ -34,6 +34,10 @@ public static class SerializeChecker<TEntity> where TEntity : Entity
 
         if (constructors.Count() == 0)
         {
+            GD.Print(typeof(TEntity) + " has no valid constructors");
+            var cs = eType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance);
+            GD.Print("non pub instance constructors " + cs.Count());
+            
             throw new SerializationException(typeof(TEntity) + " has no constructors");
         }
         
@@ -80,6 +84,7 @@ public static class SerializeChecker<TEntity> where TEntity : Entity
                 {
                     GD.Print(keyValuePair.Key);
                 }
+                GD.Print($"No matching param found for var {minFirst} for {typeof(TEntity)}");
                 throw new SerializationException($"No matching param found for var {minFirst} for {typeof(TEntity)}");
             }
 

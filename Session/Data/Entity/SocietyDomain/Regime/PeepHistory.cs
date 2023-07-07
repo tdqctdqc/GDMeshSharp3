@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MessagePack;
 
 public class PeepHistory
 {
@@ -17,7 +18,7 @@ public class PeepHistory
             CountHistory.Construct()
             );
     }
-    private PeepHistory(CountHistory peepCount,
+    [SerializationConstructor] private PeepHistory(CountHistory peepCount,
         CountHistory peepSize,
         CountHistory unemployed)
     {
@@ -28,7 +29,7 @@ public class PeepHistory
     public void Update(int tick, Regime regime, ProcedureWriteKey key)
     {
         var peeps = regime.GetPeeps(key.Data);
-        var polys = regime.Polygons.Entities();
+        var polys = regime.Polygons.Entities(key.Data);
         PeepCount.Add(peeps.Count(), tick);
         PeepSize.Add(peeps.Sum(p => p.Size), tick);
         var numUnemployed = polys.Sum(p => p.Employment.NumUnemployed());

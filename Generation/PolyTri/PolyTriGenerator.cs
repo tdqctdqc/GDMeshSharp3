@@ -53,14 +53,14 @@ public class PolyTriGenerator : Generator
     {
         foreach (var poly in key.Data.Planet.Polygons.Entities)
         {
-            foreach (var n in poly.Neighbors)
+            foreach (var n in poly.Neighbors.Entities(key.Data))
             {
                 if(n.Id < poly.Id) continue;
                 var edge = poly.GetEdge(n, key.Data);
-                var hi = edge.HighPoly.Entity();
-                var lo = edge.LowPoly.Entity();
-                var hiSegs = edge.HighSegsRel().Segments;
-                var loSegs = edge.LowSegsRel().Segments;
+                var hi = edge.HighPoly.Entity(key.Data);
+                var lo = edge.LowPoly.Entity(key.Data);
+                var hiSegs = edge.HighSegsRel(key.Data).Segments;
+                var loSegs = edge.LowSegsRel(key.Data).Segments;
                 
                 for (var i = 0; i < hiSegs.Count; i++)
                 {
@@ -100,7 +100,7 @@ public class PolyTriGenerator : Generator
         {
             tris = DoSeaPoly(poly, key);
         }
-        else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus()))
+        else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus(key.Data)))
         {
             tris = NewRiverTriGen.DoPoly(poly, key.Data, rd, key);
         }
@@ -143,8 +143,8 @@ public class PolyTriGenerator : Generator
     private void CollectEdgeTris(ConcurrentBag<(PolyTriPosition[], PolyTriPosition[])> edgeTris,
         MapPolygonEdge edge, GenWriteKey key)
     {
-        var lo = edge.LowPoly.Entity();
-        var hi = edge.HighPoly.Entity();
+        var lo = edge.LowPoly.Entity(key.Data);
+        var hi = edge.HighPoly.Entity(key.Data);
 
         var loSegs = lo.GetBorder(hi.Id).Segments;
         var hiSegs = hi.GetBorder(lo.Id).Segments;

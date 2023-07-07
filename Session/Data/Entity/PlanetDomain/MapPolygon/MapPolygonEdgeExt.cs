@@ -5,89 +5,89 @@ using Godot;
 
 public static class MapPolygonEdgeExt
 {
-    public static List<LineSegment> GetSegsAbs(this MapPolygonEdge b)
+    public static List<LineSegment> GetSegsAbs(this MapPolygonEdge b, Data data)
     {
-        return b.HighSegsRel().Segments
-            .Select(s => s.Translate(b.HighPoly.Entity().Center))
+        return b.HighSegsRel(data).Segments
+            .Select(s => s.Translate(b.HighPoly.Entity(data).Center))
             .ToList().Ordered<LineSegment, Vector2>();
     }
 
     public static (MapPolyNexus from, MapPolyNexus to) OrderNexi(this MapPolygonEdge edge, MapPolygon poly, Data data)
     {
-        var edgeSegs = edge.GetSegsRel(poly).Segments;
+        var edgeSegs = edge.GetSegsRel(poly, data).Segments;
         var fromP = edgeSegs.First().From;
         var toP = edgeSegs.Last().To;
         
-        var hiNexusP = poly.GetOffsetTo(edge.HiNexus.Entity().Point, data);
-        var loNexusP = poly.GetOffsetTo(edge.LoNexus.Entity().Point, data);
+        var hiNexusP = poly.GetOffsetTo(edge.HiNexus.Entity(data).Point, data);
+        var loNexusP = poly.GetOffsetTo(edge.LoNexus.Entity(data).Point, data);
 
         MapPolyNexus from;
         MapPolyNexus to;
         if (hiNexusP == fromP
             && loNexusP == toP)
         {
-            from = edge.HiNexus.Entity();
-            to = edge.LoNexus.Entity();
+            from = edge.HiNexus.Entity(data);
+            to = edge.LoNexus.Entity(data);
         }
         else if (hiNexusP == toP
                  && loNexusP == fromP)
         {
-            to = edge.HiNexus.Entity();
-            from = edge.LoNexus.Entity();
+            to = edge.HiNexus.Entity(data);
+            from = edge.LoNexus.Entity(data);
         } else { throw new Exception("bad edge nexi"); }
 
         return (from, to);
     }
-    public static PolyBorderChain GetSegsRel(this MapPolygonEdge b, MapPolygon p)
+    public static PolyBorderChain GetSegsRel(this MapPolygonEdge b, MapPolygon p, Data data)
     {
-        if (b.HighPoly.Entity() == p)
+        if (b.HighPoly.Entity(data) == p)
         {
-            return b.HighSegsRel();
+            return b.HighSegsRel(data);
         }
-        if (b.LowPoly.Entity() == p)
+        if (b.LowPoly.Entity(data) == p)
         {
-            return b.LowSegsRel();
+            return b.LowSegsRel(data);
         }
 
         throw new Exception();
     }
 
-    public static MapPolygon GetOtherPoly(this MapPolygonEdge b, MapPolygon p)
+    public static MapPolygon GetOtherPoly(this MapPolygonEdge b, MapPolygon p, Data data)
     {
-        if (p == b.LowPoly.Entity()) return b.HighPoly.Entity();
-        if (p == b.HighPoly.Entity()) return b.LowPoly.Entity();
+        if (p == b.LowPoly.Entity(data)) return b.HighPoly.Entity(data);
+        if (p == b.HighPoly.Entity(data)) return b.LowPoly.Entity(data);
         throw new Exception();
     }
-    public static bool IsRegimeBorder(this MapPolygonEdge b)
+    public static bool IsRegimeBorder(this MapPolygonEdge b, Data data)
     {
-        return b.HighPoly.Entity().Regime.RefId != b.LowPoly.Entity().Regime.RefId;
+        return b.HighPoly.Entity(data).Regime.RefId != b.LowPoly.Entity(data).Regime.RefId;
     }
 
-    public static float GetAvgMoisture(this MapPolygonEdge e)
+    public static float GetAvgMoisture(this MapPolygonEdge e, Data data)
     {
-        return (e.HighPoly.Entity().Moisture + e.LowPoly.Entity().Moisture) / 2f;
+        return (e.HighPoly.Entity(data).Moisture + e.LowPoly.Entity(data).Moisture) / 2f;
     }
-    public static float GetAvgRoughness(this MapPolygonEdge e)
+    public static float GetAvgRoughness(this MapPolygonEdge e, Data data)
     {
-        return (e.HighPoly.Entity().Roughness + e.LowPoly.Entity().Roughness) / 2f;
-    }
-
-    public static float GetLength(this MapPolygonEdge e)
-    {
-        return e.HighSegsRel().Segments.Sum(s => s.Length());
+        return (e.HighPoly.Entity(data).Roughness + e.LowPoly.Entity(data).Roughness) / 2f;
     }
 
-    public static IEnumerable<MapPolygonEdge> GetIncidentEdges(this MapPolygonEdge e)
+    public static float GetLength(this MapPolygonEdge e, Data data)
     {
-        var n1 = e.HiNexus.Entity().IncidentEdges.Entities().Where(n => n != e);
-        var n2 = e.LoNexus.Entity().IncidentEdges.Entities().Where(n => n != e);
+        return e.HighSegsRel(data).Segments.Sum(s => s.Length());
+    }
+
+    public static IEnumerable<MapPolygonEdge> GetIncidentEdges(this MapPolygonEdge e, Data data)
+    {
+        var n1 = e.HiNexus.Entity(data).IncidentEdges.Entities(data).Where(n => n != e);
+        var n2 = e.LoNexus.Entity(data).IncidentEdges.Entities(data).Where(n => n != e);
         if (n1 == null || n2 == null) return new List<MapPolygonEdge>();
         return n1.Union(n2).Distinct();
     }
-    public static bool IsLandToSeaEdge(this MapPolygonEdge edge)
+    public static bool IsLandToSeaEdge(this MapPolygonEdge edge, Data data)
     {
-        var w1 = edge.HiNexus.Entity().IncidentPolys.Any(p => p.IsWater());
-        var w2 = edge.LoNexus.Entity().IncidentPolys.Any(p => p.IsWater());
+        var w1 = edge.HiNexus.Entity(data).IncidentPolys.Entities(data).Any(p => p.IsWater());
+        var w2 = edge.LoNexus.Entity(data).IncidentPolys.Entities(data).Any(p => p.IsWater());
         return (w1 || w2) && (!w1 || !w2);
     }
 

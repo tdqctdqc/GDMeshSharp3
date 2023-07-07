@@ -18,8 +18,9 @@ public class MessagePackManager
         }
         catch (Exception e)
         {
-            GD.Print();
-            throw new SerializationException("couldnt serialize " + t.GetType());
+            // GD.Print();
+            // throw new SerializationException("couldnt serialize " + t.GetType());
+            throw e;
         }
     }
     public byte[] Serialize(object t, Type type)

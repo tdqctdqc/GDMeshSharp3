@@ -27,18 +27,18 @@ public class MapPolyNexus : Entity
         IncidentPolys = incidentPolys;
     }
 
-    public MapPolygonEdge GetEdgeWith(MapPolyNexus n)
+    public MapPolygonEdge GetEdgeWith(MapPolyNexus n, Data data)
     {
-        return IncidentEdges.First(e => e.HiNexus.Entity() == n
-                                    || e.LoNexus.Entity() == n);
+        return IncidentEdges.Entities(data).First(e => e.HiNexus.Entity(data) == n
+                                    || e.LoNexus.Entity(data) == n);
     }
 
-    public IEnumerable<MapPolyNexus> GetNeighbors()
+    public IEnumerable<MapPolyNexus> GetNeighbors(Data data)
     {
-        return IncidentEdges.Select(e =>
+        return IncidentEdges.Entities(data).Select(e =>
         {
-            if (e.HiNexus.Entity() == this) return e.LoNexus.Entity();
-            return e.HiNexus.Entity();
+            if (e.HiNexus.Entity(data) == this) return e.LoNexus.Entity(data);
+            return e.HiNexus.Entity(data);
         });
     }
     

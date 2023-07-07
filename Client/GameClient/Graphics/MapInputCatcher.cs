@@ -46,7 +46,7 @@ public partial class MapInputCatcher : Node
         var poly = _mouseOverHandler.MouseOverPoly;
         if (poly.Regime.Fulfilled())
         {
-            var r = poly.Regime.Entity();
+            var r = poly.Regime.Entity(_key.Data);
             var w = Game.I.Client.Requests.OpenWindow<RegimeOverviewWindow>();
             w.Setup(r, _key);
         }

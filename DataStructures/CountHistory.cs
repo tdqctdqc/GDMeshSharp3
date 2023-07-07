@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class CountHistory : History<float>
 {
-    protected CountHistory(Dictionary<int, float> byTick) : base(byTick)
+    [SerializationConstructor] public CountHistory(Dictionary<int, float> byTick) : base(byTick)
     {
     }
     public static CountHistory Construct()

@@ -22,9 +22,9 @@ public class Construction
         return TicksLeft <= 0;
     }
 
-    public int TicksDone()
+    public int TicksDone(Data data)
     {
-        var left = Mathf.CeilToInt(Model.Model().NumTicksToBuild - TicksLeft);
+        var left = Mathf.CeilToInt(Model.Model(data).NumTicksToBuild - TicksLeft);
         return Mathf.Max(0, left);
     }
 

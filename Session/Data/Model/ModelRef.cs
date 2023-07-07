@@ -19,11 +19,11 @@ public class ModelRef<T> : IRef where T : class, IModel
         ModelId = modelId;
     }
 
-    public T Model()
+    public T Model(Data data)
     {
         if (_ref == null)
         {
-            Game.I.RefFulfiller.Fulfill(this);
+            data.RefFulfiller.Fulfill(this);
         }
 
         return _ref;

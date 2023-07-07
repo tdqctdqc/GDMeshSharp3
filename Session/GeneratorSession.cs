@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 
 public partial class GeneratorSession : Node, IDataSession
 {
-    RefFulfiller ISession.RefFulfiller => Data.RefFulfiller;
     Data IDataSession.Data => Data;
     public GenData Data { get; private set; }
     IClient ISession.Client => Client;
@@ -21,7 +21,6 @@ public partial class GeneratorSession : Node, IDataSession
     {
         GenMultiSettings = new GenerationMultiSettings();
     }
-
     public void Setup()
     {
         Server = new DummyServer();
@@ -32,19 +31,38 @@ public partial class GeneratorSession : Node, IDataSession
         Client.Setup(this);
         AddChild(Client);
     }
-    
+
+    private int _tries = 0;
     public void Generate()
     {
         _generating = true;
-        if (Generated)
+        try
         {
-            Reset();
+            Game.I.Random.Seed = (ulong) GenMultiSettings.PlanetSettings.Seed.Value;
+            _tries++;
+            if (Generated)
+            {
+                Reset();
+            }
+            WorldGen.Generate();
+            Generated = true;
+            _generating = false;
+            Client.Graphics.Setup(_key);
         }
-        Game.I.Random.Seed = (ulong) GenMultiSettings.PlanetSettings.Seed.Value;
-        WorldGen.Generate();
-        Generated = true;
-        _generating = false;
-        Client.Graphics.Setup(_key);
+        catch (Exception e)
+        {
+            if (_tries > 10)
+            {
+                GD.Print("Generation failed too many times");
+                throw e;
+            }
+            else
+            {
+                GD.Print("Generation failed, retrying");
+                Reset();
+                Generate();
+            }
+        }
     }
 
     private void Reset()

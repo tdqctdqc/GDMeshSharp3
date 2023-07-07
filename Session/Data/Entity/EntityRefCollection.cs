@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class EntityRefCollection<TRef>
-    : IRefCollection<int>, IReadOnlyHash<TRef> where TRef : Entity
+public class EntityRefCollection<TRef> : IRef where TRef : Entity
 {
     public HashSet<int> RefIds { get; private set; }
     private List<TRef> _refs;
@@ -22,11 +21,12 @@ public class EntityRefCollection<TRef>
         RefIds = refIds == null ? new HashSet<int>() : new HashSet<int>(refIds);
         _refs = null;
     }
-    public IReadOnlyList<TRef> Entities()
+
+    public IReadOnlyList<TRef> Entities(Data data)
     {
         if (_refs == null)
         {
-            Game.I.RefFulfiller.Fulfill(this);
+            data.RefFulfiller.Fulfill(this);
         }
         return _refs;
     }
@@ -90,19 +90,4 @@ public class EntityRefCollection<TRef>
         _refs.RemoveAll(e => e.Id == id);
     }
 
-    public IEnumerator<TRef> GetEnumerator()
-    {
-        if (_refs == null)
-        {
-            Game.I.RefFulfiller.Fulfill(this);
-        }
-        return _refs.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-        return GetEnumerator();
-    }
-
-    int IReadOnlyCollection<TRef>.Count => RefIds.Count;
 }

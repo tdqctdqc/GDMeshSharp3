@@ -2,13 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TownHall : WorkBuildingModel
+public class TownHall : BuildingModel
 {
-    public override Dictionary<PeepJob, int> JobLaborReqs { get; }
-        = new Dictionary<PeepJob, int>
-        {
-            {PeepJobManager.Bureaucrat, 100}
-        };
     public override Dictionary<Item, int> BuildCosts { get; protected set; }
         = new Dictionary<Item, int>
         {
@@ -16,7 +11,14 @@ public class TownHall : WorkBuildingModel
         };
     public TownHall() 
         : base(BuildingType.Government, nameof(TownHall), 
-            50, 500, 0)
+            50, 500, 0,
+            new List<BuildingComponent>
+            {
+                new Workplace(new Dictionary<PeepJob, int>
+                {
+                    {PeepJobManager.Bureaucrat, 100}
+                })
+            })
     {
     }
 
@@ -29,11 +31,4 @@ public class TownHall : WorkBuildingModel
     {
         return p.IsLand;
     }
-
-    
-    public override void Work(ProduceConstructProcedure proc, MapPolygon poly, float staffingRatio, Data data)
-    {
-        
-    }
-    
 }

@@ -14,6 +14,16 @@ public class ImplicitGraph
         return new ImplicitGraph<TNode, TEdge>(n => true, n => n.Neighbors, (n, m) => n.Neighbors.Contains(m),
             (n, m) => n.GetEdge(m), getAllNodes, getAllEdges);
     }
+    
+    public static ImplicitGraph<TNode, TEdge> Get<TNode, TEdge>(Func<TNode, IReadOnlyCollection<TNode>> getNeighbors,
+        Func<TNode, TNode, TEdge> getEdge,
+        Func<IReadOnlyCollection<TNode>> getAllNodes,
+        Func<IReadOnlyCollection<TEdge>> getAllEdges)
+    {
+        return new ImplicitGraph<TNode, TEdge>(n => true, getNeighbors, 
+            (n, m) => getNeighbors(n).Contains(m),
+            getEdge, getAllNodes, getAllEdges);
+    }
 }
 public class ImplicitGraph<TNode, TEdge> : IReadOnlyGraph<TNode, TEdge>
 {

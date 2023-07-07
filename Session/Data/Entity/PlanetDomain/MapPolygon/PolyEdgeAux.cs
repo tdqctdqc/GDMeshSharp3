@@ -9,11 +9,11 @@ public class PolyEdgeAux : EntityAux<MapPolygonEdge>
     private Entity1to1PropIndexer<MapPolygonEdge, Vector2> _byEdge;
     public PolyEdgeAux(Domain domain, Data data) : base(domain, data)
     {
-        _byEdge = Entity1to1PropIndexer<MapPolygonEdge, Vector2>.CreateConstant(data, MakeEdge);
+        _byEdge = Entity1to1PropIndexer<MapPolygonEdge, Vector2>.CreateConstant(data, e => MakeEdge(e, data));
     }
-    private Vector2 MakeEdge(MapPolygonEdge e)
+    private Vector2 MakeEdge(MapPolygonEdge e, Data data)
     {
-        return e.HighPoly.Entity().GetV2EdgeKey(e.LowPoly.Entity());
+        return e.HighPoly.Entity(data).GetV2EdgeKey(e.LowPoly.Entity(data));
     }
     public MapPolygonEdge GetEdge(MapPolygon p1, MapPolygon p2)
     {

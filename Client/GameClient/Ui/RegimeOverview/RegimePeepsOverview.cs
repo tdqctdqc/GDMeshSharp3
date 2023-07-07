@@ -17,7 +17,7 @@ public partial class RegimePeepsOverview : ScrollContainer
     public void Setup(Regime regime, Data data)
     {
         _container.ClearChildren();
-        var populatedPolys = regime.Polygons.Entities()
+        var populatedPolys = regime.Polygons.Entities(data)
             .Where(p => p.HasPeep(data));
         var peeps = populatedPolys
             .Select(p => p.GetPeep(data));

@@ -6,9 +6,12 @@ using System.Linq;
 public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
     where TSingle : Entity where TMult : Entity
 {
-    public List<TMult> this[TSingle s] => _dic.ContainsKey(s.Id) 
-        ? _dic[s.Id].Select(i => Game.I.RefFulfiller.Get<TMult>(i)).ToList() 
-        : null;
+    public List<TMult> Get(TSingle s, Data data)
+    {
+        return _dic.ContainsKey(s.Id) 
+            ? _dic[s.Id].Select(i => data.RefFulfiller.Get<TMult>(i)).ToList() 
+            : null;
+    }
     protected Dictionary<int, HashSet<int>> _dic;
     private Func<TMult, EntityRef<TSingle>> _getSingle;
     private RefAction<ValChangeNotice<EntityRef<TSingle>>> _changedMult;

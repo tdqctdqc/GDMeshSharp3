@@ -9,7 +9,8 @@ public class FlowCount : ModelCount<Flow>
     {
         return new FlowCount(new Dictionary<int, float>());
     }
-    [SerializationConstructor] protected FlowCount(Dictionary<int, float> contents) : base(contents)
+    [SerializationConstructor] public FlowCount(Dictionary<int, float> contents) 
+        : base(contents)
     {
     }
 }

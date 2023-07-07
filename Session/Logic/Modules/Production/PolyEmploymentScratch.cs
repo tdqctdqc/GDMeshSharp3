@@ -47,12 +47,10 @@ public class PolyEmploymentScratch
 
         return Mathf.FloorToInt(ratio * foodProd.BaseProd(data));
     }
-    public float HandleBuildingJobs(IEnumerable<WorkBuildingModel> work, Data data)
+    public float HandleBuildingJobs(IEnumerable<Workplace> work, Data data)
     {
-        var totalLaborNeeded = work.Sum(wb => wb.TotalLaborReq());
-        if (totalLaborNeeded == 0) return 1f;
-        var ratio = (float)Available / totalLaborNeeded;
-        if (ratio > 1f) ratio = 1f;
+        var effectiveRatio = (float)Available / work.Sum(w => w.TotalLaborReq());
+        effectiveRatio = Mathf.Clamp(effectiveRatio, 0f, 1f);
         foreach (var model in work)
         {
             if (Available == 0) break;
@@ -62,41 +60,13 @@ public class PolyEmploymentScratch
                 var job = jobReq.Key;
                 var size = jobReq.Value;
                 Desired += size;
-                var num = Mathf.CeilToInt(ratio * size);
+                var num = Mathf.CeilToInt(effectiveRatio * size);
                 num = Mathf.Min(Available, num);
                 Available -= num;
                 ByJob.AddOrSum(job, num);
             }
         }
 
-        return ratio;
-    }
-
-    public int HandleConstructionJobs(Data data, int regimeUnemployedLaborerTotal, int regimeConstructNeedTotal,
-        int regimeConstructNeedRunningTotal)
-    {
-        if (regimeConstructNeedRunningTotal <= 0) return 0;
-        var builderJob = PeepJobManager.Builder;
-        var unemployed = Available;
-        var contribution = 0;
-        if (regimeConstructNeedTotal > regimeUnemployedLaborerTotal)
-        {
-            contribution = unemployed;
-            Available -= contribution;
-            Desired += contribution;
-        }
-        else
-        {
-            var shareOfTotalUnemployed = (float)unemployed / (float)regimeUnemployedLaborerTotal;
-            var shareOfNeed = shareOfTotalUnemployed * regimeConstructNeedTotal;
-            contribution = Mathf.CeilToInt(shareOfNeed);
-            contribution = Mathf.Min(regimeConstructNeedRunningTotal, contribution);
-            contribution = Mathf.Min(Available, contribution);
-            Available -= contribution;
-            Desired += Mathf.CeilToInt(shareOfTotalUnemployed * regimeConstructNeedTotal);
-        }
-        ByJob.AddOrSum(builderJob, contribution);
-
-        return contribution;
+        return effectiveRatio;
     }
 }

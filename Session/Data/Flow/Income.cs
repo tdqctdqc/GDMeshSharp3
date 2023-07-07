@@ -11,19 +11,17 @@ public class Income : Flow
 
     public override float GetNonBuildingFlow(Regime r, Data d)
     {
-        var fromBuildings = r.Polygons
+        var fromBuildings = r.Polygons.Entities(d)
             .Where(p => p.GetBuildings(d) != null)
             .Sum(p =>
                 {
                     var bs = p.GetBuildings(d);
                     if(bs == null) return 0;
 
-                    return bs.Select(b => b.Model.Model())
-                        .SelectWhereOfType<BuildingModel, WorkBuildingModel>()
-                        .Sum(b => b.Income);
+                    return bs.Select(b => b.Model.Model(d)).Sum(b => b.Income);
                 }
             );
-        var fromAgriculture = r.Polygons.Sum(p => p.PolyFoodProd.Income(d));
+        var fromAgriculture = r.Polygons.Entities(d).Sum(p => p.PolyFoodProd.Income(d));
         var tradeBalance = r.Finance.LastTradeBalance;
         
         return fromBuildings + fromAgriculture + tradeBalance;

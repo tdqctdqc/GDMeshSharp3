@@ -8,7 +8,6 @@ public class CurrentConstruction : Entity
 {
     public Dictionary<PolyTriPosition, Construction> ByTri { get; private set; }
     public Dictionary<int, List<Construction>> ByPoly { get; private set; }
-    public HashSet<PolyTriPosition> Poses { get; private set; } = new HashSet<PolyTriPosition>();
     public static CurrentConstruction Create(GenWriteKey key)
     {
         var cc = new CurrentConstruction(key.IdDispenser.GetID(), 
@@ -17,8 +16,8 @@ public class CurrentConstruction : Entity
         key.Create(cc);
         return cc;
     }
-    [SerializationConstructor] private CurrentConstruction(int id, Dictionary<PolyTriPosition, 
-            Construction> byTri,
+    [SerializationConstructor] private CurrentConstruction(int id, 
+        Dictionary<PolyTriPosition, Construction> byTri,
         Dictionary<int, List<Construction>> byPoly) : base(id)
     {
         ByTri = byTri;
@@ -37,11 +36,10 @@ public class CurrentConstruction : Entity
         ByPoly.AddOrUpdate(poly.Id, construction);
         if (ByTri.ContainsKey(construction.Pos))
         {
-            throw new Exception($"trying to build {construction.Model.Model().Name}" +
-                                $"but already constructing {ByTri[construction.Pos].Model.Model().Name} in tri");
+            throw new Exception($"trying to build {construction.Model.Model(key.Data).Name}" +
+                                $"but already constructing {ByTri[construction.Pos].Model.Model(key.Data).Name} in tri");
         }
         ByTri.Add(construction.Pos, construction);
-        Poses.Add(construction.Pos);
         key.Data.Notices.StartedConstruction.Invoke(construction);
     }
     public void FinishConstruction(MapPolygon poly, PolyTriPosition pos, ProcedureWriteKey key)

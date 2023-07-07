@@ -1,10 +1,8 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Microsoft.Extensions.ObjectPool;
-
 
 public class EntityCreatedNotice : IEntityNotice
 {
@@ -33,7 +31,7 @@ public class EntityCreatedNotice : IEntityNotice
     }
     public void Setup<TEntity>(IReadOnlyList<TEntity> entities) where TEntity : Entity
     {
-        Entities = entities;
+        Entities = entities.ToList();
         EntityType = typeof(TEntity);
     }
 

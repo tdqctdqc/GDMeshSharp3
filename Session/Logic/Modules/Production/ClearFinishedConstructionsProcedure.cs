@@ -28,7 +28,7 @@ public class
         foreach (var pos in Positions)
         {
             var poly = pos.Poly(key.Data);
-            var r = poly.Regime.Entity();
+            var r = poly.Regime.Entity(key.Data);
             key.Data.Society.CurrentConstruction.FinishConstruction(poly, pos, key);
         }
     }

@@ -27,6 +27,15 @@ public partial class MapChunkGraphic : Node2D
         );
     }
 
+    public void Test()
+    {
+        foreach (var kvp in Modules)
+        {
+            kvp.Value.QueueFree();
+        }
+
+        Modules = new Dictionary<string, MapChunkGraphicModule>();
+    }
     public void Update()
     {
         foreach (var m in Modules.Values)
@@ -63,13 +72,13 @@ public partial class MapChunkGraphic : Node2D
             {
                 var rs = p.GetResourceDeposits(d);
                 if(rs == null || rs.Count == 0) return new Color(Colors.Pink, .5f);
-                return rs.First().Item.Model().Color;
+                return rs.First().Item.Model(d).Color;
             }
         );
     public static ChunkGraphicFactory RegimeFill { get; private set; }
         = new PolygonFillChunkGraphicFactory(nameof(RegimeFill), true, (p,d) =>
             {
-                if (p.Regime.Fulfilled() && p.Regime.Entity().IsMajor) return p.Regime.Entity().PrimaryColor;
+                if (p.Regime.Fulfilled() && p.Regime.Entity(d).IsMajor) return p.Regime.Entity(d).PrimaryColor;
                 return Colors.Transparent;
             }
         );

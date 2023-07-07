@@ -28,7 +28,8 @@ public class BuildingConstructionPriority : BudgetPriority
         SetItemConstraints(solver, data, budget, projVars);
         SetCreditConstraint(solver, data, credit, prices, projVars);
         SetConstructCapConstraint(solver, availConstructCap, projVars);
-        SetSlotConstraints(solver, regime, projVars);
+        SetSlotConstraints(solver, regime, projVars, data);
+        
         var success = Solve(solver, projVars, regime, data, prices, credit, availLabor);
         if (success == false)
         {
@@ -55,7 +56,7 @@ public class BuildingConstructionPriority : BudgetPriority
         SetBuildingLaborConstraint(solver, availLabor, projVars);
         SetCreditConstraint(solver, data, credit, prices, projVars);
         SetConstructCapConstraint(solver, availLabor, projVars);
-        SetSlotConstraints(solver, regime, projVars);
+        SetSlotConstraints(solver, regime, projVars, data);
         
         var success = Solve(solver, projVars, regime, data, 
             prices, credit, availLabor);
@@ -177,21 +178,21 @@ public class BuildingConstructionPriority : BudgetPriority
         {
             var projVar = kvp.Value;
             var b = kvp.Key;
-            if(b is WorkBuildingModel w)
+            if(b.HasComponent<Workplace>())
             {
-                buildingLaborConstraint.SetCoefficient(projVar, w.TotalLaborReq());
+                buildingLaborConstraint.SetCoefficient(projVar, b.GetComponent<Workplace>().TotalLaborReq());
             }
         }
     }
 
-    private void SetSlotConstraints(Solver solver, Regime regime, Dictionary<BuildingModel, Variable> buildingVars)
+    private void SetSlotConstraints(Solver solver, Regime regime, Dictionary<BuildingModel, Variable> buildingVars, Data data)
     {
         var slotConstraints = new Dictionary<BuildingType, Constraint>();
         var slotTypes = buildingVars.Select(kvp => kvp.Key.BuildingType).Distinct();
         
         foreach (var slotType in slotTypes)
         {
-            var slots = regime.Polygons.Select(p => p.PolyBuildingSlots[slotType]).Sum();
+            var slots = regime.Polygons.Entities(data).Select(p => p.PolyBuildingSlots[slotType]).Sum();
             var slotConstraint = solver.MakeConstraint(0, slots, slotType.ToString());
             slotConstraints.Add(slotType, slotConstraint);
         }
@@ -214,10 +215,11 @@ public class BuildingConstructionPriority : BudgetPriority
         {
             var building = kvp.Key;
             var num = kvp.Value;
+            if (num == 0) continue;
             for (var i = 0; i < num; i++)
             {
                 MapPolygon poly = null;
-                poly = availPolys
+                poly = availPolys.Entities(data)
                     .FirstOrDefault(p => p.PolyBuildingSlots[building.BuildingType] > 0);
                 if (poly == null) continue;
                 orders.StartConstructions.ConstructionsToStart.Add(StartConstructionRequest.Construct(building, poly));

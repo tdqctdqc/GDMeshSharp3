@@ -5,8 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public partial class MapPolygon : Entity, 
-    IReadOnlyGraphNode<MapPolygon, PolyBorderChain>
+public partial class MapPolygon : Entity
 {
     public override Type GetDomainType() => DomainType();
     private static Type DomainType() => typeof(PlanetDomain);
@@ -115,12 +114,4 @@ public partial class MapPolygon : Entity,
     {
         Altitude = altitude;
     }
-    PolyBorderChain IReadOnlyGraphNode<MapPolygon, PolyBorderChain>.GetEdge(MapPolygon neighbor) =>
-        this.GetBorder(neighbor.Id);
-    
-    MapPolygon IReadOnlyGraphNode<MapPolygon>.Element => this;
-
-    IReadOnlyCollection<MapPolygon> IReadOnlyGraphNode<MapPolygon>.Neighbors => Neighbors;
-
-    bool IReadOnlyGraphNode<MapPolygon>.HasNeighbor(MapPolygon neighbor) => Neighbors.RefIds.Contains(neighbor.Id);
 }

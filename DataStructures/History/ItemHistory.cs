@@ -9,8 +9,8 @@ public class ItemHistory : MultiCountHistory<int>
     {
         return new ItemHistory(new Dictionary<int, CountHistory>());
     }
-    [SerializationConstructor] private ItemHistory(Dictionary<int, CountHistory> dic) 
-        : base(dic)
+    [SerializationConstructor] public ItemHistory(Dictionary<int, CountHistory> counts) 
+        : base(counts)
     {
         
     }

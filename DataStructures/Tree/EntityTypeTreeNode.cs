@@ -46,7 +46,6 @@ public class EntityTypeTreeNode
         PushDown(n);
         
         n.Return();
-
     }
     private void PushDown(EntityCreatedNotice notice)
     {
@@ -77,7 +76,6 @@ public class EntityTypeTreeNode
         Parent?.BubbleUp(n);
         Destroyed.Invoke(n);
         PushDown(n);
-        
     }
     
     private void PushDown(EntityDestroyedNotice notice)

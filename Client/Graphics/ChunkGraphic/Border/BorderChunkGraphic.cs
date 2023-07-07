@@ -61,9 +61,9 @@ public partial class BorderChunkGraphic : MapChunkGraphicModule
         {
             var p = data.Planet.Polygons[key];
             var mb = new MeshBuilder();
-            var color = p.Regime.Entity().SecondaryColor;
+            var color = p.Regime.Entity(data).SecondaryColor;
             var offset = Chunk.RelTo.GetOffsetTo(p, data);
-            foreach (var n in p.Neighbors.Entities())
+            foreach (var n in p.Neighbors.Entities(data))
             {
                 if (n.Regime.RefId == p.Regime.RefId) continue;
                 mb.DrawMapPolyEdge(p, n, data, _thickness, color, offset);
@@ -75,7 +75,7 @@ public partial class BorderChunkGraphic : MapChunkGraphicModule
         protected override IEnumerable<int> GetKeys(Data data)
         {
             return Chunk.Polys
-                .Where(p => p.Regime.Empty() == false && p.Neighbors.Any(n => n.Regime.RefId != p.Regime.RefId))
+                .Where(p => p.Regime.Empty() == false && p.Neighbors.Entities(data).Any(n => n.Regime.RefId != p.Regime.RefId))
                 .Select(p => p.Id);
         }
     }

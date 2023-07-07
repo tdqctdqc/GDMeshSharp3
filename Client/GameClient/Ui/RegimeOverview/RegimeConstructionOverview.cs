@@ -24,9 +24,9 @@ public partial class RegimeConstructionOverview : ScrollContainer
         foreach (var construction in constructions)
         {
             var hbox = new HBoxContainer();
-            var building = construction.Model.Model();
+            var building = construction.Model.Model(data);
             hbox.AddChild(building.Icon.GetTextureRect(Vector2.One * 50f));
-            var ticksDone = construction.TicksDone();
+            var ticksDone = construction.TicksDone(data);
             hbox.CreateLabelAsChild($"{ticksDone} / {building.NumTicksToBuild}");
             _container.AddChild(hbox);
         }

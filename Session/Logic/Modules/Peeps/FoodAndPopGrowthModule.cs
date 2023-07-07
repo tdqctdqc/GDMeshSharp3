@@ -44,7 +44,7 @@ public class FoodAndPopGrowthModule : LogicModule
         var effectiveRatio = Mathf.Min(surplusRatio / range, rules.MaxEffectiveSurplusRatio);
         if (range < 0) throw new Exception();
         
-        var peeps = regime.Polygons.Where(p => p.HasPeep(data))
+        var peeps = regime.Polygons.Entities(data).Where(p => p.HasPeep(data))
             .Select(p => p.GetPeep(data));
         var numPeeps = peeps.Count();
         if (numPeeps == 0) return;

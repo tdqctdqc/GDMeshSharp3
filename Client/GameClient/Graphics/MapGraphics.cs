@@ -65,6 +65,8 @@ public partial class MapGraphics : Node2D
         });
         ChunkChangedCache.Clear();
     }
+
+
     public void Process(float delta)
     {
         if(Game.I.Client?.Cam != null)

@@ -38,6 +38,9 @@ public partial class GeneratorUi : Ui
         topBar.AddWindowButton<GeneratorSettingsWindow>("Gen Settings");
         topBar.AddWindowButton<LoggerWindow>("Logger");
         topBar.AddButton("Test Serialization", () => Game.I.Serializer.Test(session.Data));
+        topBar.AddButton("Save", () => Saver.Save(session.Data));
+        topBar.AddButton("Load", () => Saver.Load());
+        
         
         AddChild(topBar.Container); 
 

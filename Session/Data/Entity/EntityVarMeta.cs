@@ -58,7 +58,7 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
         catch (Exception e)
         {
             GD.Print($"Couldn't serialize property {PropertyName} for {typeof(TEntity)}");
-            throw;
+            throw e;
         }
 
         return true;

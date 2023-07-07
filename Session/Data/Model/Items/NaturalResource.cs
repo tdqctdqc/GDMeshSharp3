@@ -26,17 +26,17 @@ public abstract class NaturalResource : TradeableItem
             var rem = size - _overflowSize;
             if (rem <= 0) continue;
 
-            if(_overflow == OverFlowType.Multiple) OverflowMult(p, deps, scores, rem);
-            else if(_overflow == OverFlowType.Single) OverflowSingle(p, deps, rem);
+            if(_overflow == OverFlowType.Multiple) OverflowMult(p, deps, scores, rem, data);
+            else if(_overflow == OverFlowType.Single) OverflowSingle(p, deps, rem, data);
         }
 
         return deps;
     }
 
     private void OverflowMult(MapPolygon p, Dictionary<MapPolygon, int> deps, 
-        Dictionary<MapPolygon, int> scores, int rem)
+        Dictionary<MapPolygon, int> scores, int rem, Data data)
     {
-        var neighbors = p.Neighbors.Entities();
+        var neighbors = p.Neighbors.Entities(data);
         var portions = Apportioner.ApportionLinear(rem, neighbors, n => scores.GetOrAdd(n, GetDepositScore));
         for (var i = 0; i < portions.Count; i++)
         {
@@ -46,9 +46,9 @@ public abstract class NaturalResource : TradeableItem
             if (deps[n] < _minDepositSize) deps.Remove(n);
         }
     }
-    private void OverflowSingle(MapPolygon p, Dictionary<MapPolygon, int> deps, int rem)
+    private void OverflowSingle(MapPolygon p, Dictionary<MapPolygon, int> deps, int rem, Data data)
     {
-        var overflowPoly = p.Neighbors.Entities()
+        var overflowPoly = p.Neighbors.Entities(data)
             .OrderBy(GetDepositScore)
             .Where(n => deps.ContainsKey(n) == false)
             .FirstOrDefault();

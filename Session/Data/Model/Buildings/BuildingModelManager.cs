@@ -10,13 +10,10 @@ public class BuildingModelManager : IModelManager<BuildingModel>
     public static Factory Factory { get; private set; } = new Factory();
     public static TownHall TownHall { get; private set; } = new TownHall();
     // public static Ranch Ranch { get; private set; } = new Ranch();
-    public static Dictionary<Item, Mine> Mines { get; private set; }
         
     public BuildingModelManager()
     {
         var buildings = GetType().GetStaticPropertiesOfType<BuildingModel>();
         Models = buildings.ToDictionary(b => b.Name, b => b);
-        Mines = buildings.SelectWhereOfType<BuildingModel, Mine>()
-            .ToDictionary(b => b.ProdItem, b => b);
     }
 }

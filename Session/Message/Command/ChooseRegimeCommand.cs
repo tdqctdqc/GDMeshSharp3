@@ -18,6 +18,6 @@ public class ChooseRegimeCommand : Command
 
     public override bool Valid(Data data)
     {
-        return Regime.Entity().IsPlayerRegime(data) == false;
+        return Regime.Entity(data).IsPlayerRegime(data) == false;
     }
 }

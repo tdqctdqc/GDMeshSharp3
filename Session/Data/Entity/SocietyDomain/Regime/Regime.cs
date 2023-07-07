@@ -19,7 +19,7 @@ public class Regime : Entity
     public RegimeFinance Finance { get; private set; }
     public bool IsMajor { get; private set; }
 
-    [SerializationConstructor] protected Regime(int id, string name, Color primaryColor, Color secondaryColor, 
+    [SerializationConstructor] private Regime(int id, string name, Color primaryColor, Color secondaryColor, 
         EntityRefCollection<MapPolygon> polygons, EntityRef<MapPolygon> capital,
         ItemCount items, RegimeHistory history, ModelRef<Culture> culture,
         ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, FlowCount flowCount) : base(id)
@@ -45,13 +45,11 @@ public class Regime : Entity
         var items = ItemCount.Construct();
         items.Add(ItemManager.Iron, 10_000);
         
-        
-        
         var r = new Regime(id.GetID(), regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
             polygons, new EntityRef<MapPolygon>(seed.Id),
-            items, // ItemWallet.Construct(), 
+            items,
             RegimeHistory.Construct(key.Data), 
             regimeTemplate.Culture.MakeRef(),
             regimeTemplate.MakeRef(),

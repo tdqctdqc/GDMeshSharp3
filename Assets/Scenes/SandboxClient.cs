@@ -6,7 +6,7 @@ using Godot;
 
 public partial class SandboxClient : Node, IClient
 {
-    public ClientWriteKey Key { get; private set; }
+    public ClientWriteKey WriteKey { get; private set; }
     public ICameraController Cam { get; private set; }
     private Label _degrees, _mousePos;
     private Dictionary<int, Node2D> _triGraphics;
@@ -43,7 +43,7 @@ public partial class SandboxClient : Node, IClient
     {
         Requests = new ClientRequests(session);
 
-        Key = new ClientWriteKey(null, null);
+        WriteKey = new ClientWriteKey(null, null);
         this.AssignChildNode(ref _canvas, "Canvas");
         var cam = WorldCameraController.Construct(null); //todo make dummy
         AddChild(cam);

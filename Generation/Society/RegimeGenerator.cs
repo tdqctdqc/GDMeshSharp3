@@ -93,7 +93,7 @@ public class RegimeGenerator : Generator
                 num2s--;
             }
             else numToPick = 1;
-            var wand = new RegimeWanderer(regime, seeds[i], picker, numToPick);
+            var wand = new RegimeWanderer(regime, seeds[i], picker, numToPick, _data);
             seeds[i].SetRegime(regime, _key);
         }
         
@@ -101,7 +101,7 @@ public class RegimeGenerator : Generator
     }
     private HashSet<MapPolygon> ExpandRegimes(HashSet<MapPolygon> lm, WandererPicker picker)
     {
-        picker.Pick();
+        picker.Pick(_data);
         
         foreach (var w in picker.Wanderers)
         {
@@ -122,7 +122,7 @@ public class RegimeGenerator : Generator
         var unions = UnionFind.Find(
             remainder, 
             (p1, p2) => p1.IsLand == p2.IsLand,
-            p => p.Neighbors.Entities()
+            p => p.Neighbors.Entities(_data)
         );
         // if (unions.Count > templates.Count) throw new Exception();
         int iter = 0;

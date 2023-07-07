@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class MultiCountHistory<TKey>
 {
@@ -10,7 +11,7 @@ public class MultiCountHistory<TKey>
     {
         return new MultiCountHistory<TKey>(new Dictionary<TKey, CountHistory>());
     }
-    protected MultiCountHistory(Dictionary<TKey, CountHistory> counts)
+    [SerializationConstructor] public MultiCountHistory(Dictionary<TKey, CountHistory> counts)
     {
         Counts = counts;
     }

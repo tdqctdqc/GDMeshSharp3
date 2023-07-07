@@ -8,7 +8,7 @@ using Godot;
 public partial class GeneratorClient : Node, IClient
 {
     public ICameraController Cam { get; private set; }
-    public ClientWriteKey Key { get; private set; }
+    public ClientWriteKey WriteKey { get; private set; }
     public MapGraphics Graphics { get; private set; }
     public CanvasLayer CanvasLayer => _ui;
     private GeneratorUi _ui; 
@@ -24,7 +24,7 @@ public partial class GeneratorClient : Node, IClient
     {
         Requests = new ClientRequests(session);
         Requests.GiveTree(session.Data.EntityTypeTree);
-        Key = new ClientWriteKey(session.Data, session);
+        WriteKey = new ClientWriteKey(session.Data, session);
         Settings = ClientSettings.Load();
         
         var cam = WorldCameraController.Construct(session.Data);

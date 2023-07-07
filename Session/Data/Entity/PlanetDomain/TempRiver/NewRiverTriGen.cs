@@ -20,7 +20,7 @@ public class NewRiverTriGen
         if(rWidth == 0f)
         {
             rWidth = poly.GetNexi(data)
-                .SelectMany(n => n.IncidentEdges)
+                .SelectMany(n => n.IncidentEdges.Entities(data))
                 .Max(e => River.GetWidthFromFlow(e.MoistureFlow));
             if (rWidth == 0f) throw new Exception("making river info for non-river poly");
         }
@@ -34,7 +34,7 @@ public class NewRiverTriGen
         var oldInset = insetPoints.ToList();
 
         bool fixedIt = false;
-        if (edges.Any(e => e.GetLength() <= minEdgeLength))
+        if (edges.Any(e => e.GetLength(data) <= minEdgeLength))
         {
             var t = ConstrainInsetForShortEdges(poly, edges, data, insetPoints);
             if (t != insetPoints) fixedIt = true;
@@ -53,7 +53,7 @@ public class NewRiverTriGen
     {
         var minEdgeLength = 10f;
         var insetSourceSegs = insetSource.ToList().GetLineSegments(true).ToList();
-        var shortEdges = edges.Where(e => e.GetLength() <= minEdgeLength).Select(e => e.GetSegsRel(poly));
+        var shortEdges = edges.Where(e => e.GetLength(data) <= minEdgeLength).Select(e => e.GetSegsRel(poly, data));
         var shortEdgeChains = shortEdges.ChainSort<PolyBorderChain, Vector2>();
         
         var newInsetSegs = new List<LineSegment>();
@@ -140,10 +140,10 @@ public class NewRiverTriGen
         //a. make pivot tris and bank tris
         foreach (var edge in edges)
         {
-            var edgeSegs = edge.GetSegsRel(poly).Segments;
+            var edgeSegs = edge.GetSegsRel(poly, data).Segments;
             var fromTo = edge.OrderNexi(poly, data);
             
-            if(fromTo.from.IsRiverNexus() == false && fromTo.to.IsRiverNexus() == false)
+            if(fromTo.from.IsRiverNexus(data) == false && fromTo.to.IsRiverNexus(data) == false)
             {
                 innerBoundarySegs.AddRange(edgeSegs);
                 continue;
@@ -154,9 +154,9 @@ public class NewRiverTriGen
             var toPivot = edgeSegs[edgeSegs.Count - 1].From;
             var toClose = insetPoints[nexiCloseIndices[fromTo.to]];
             
-            var isShort = edge.GetLength() < 10f && edge.IsRiver() == false;
+            var isShort = edge.GetLength(data) < 10f && edge.IsRiver() == false;
             
-            if (fromTo.from.IsRiverNexus())
+            if (fromTo.from.IsRiverNexus(data))
             {
                 if (edge.IsRiver() == false)
                 {
@@ -169,7 +169,7 @@ public class NewRiverTriGen
             {
                 innerBoundarySegs.Add(edgeSegs[0]);
             }
-            if (fromTo.to.IsRiverNexus())
+            if (fromTo.to.IsRiverNexus(data))
             {
                 if (edge.IsRiver() == false) innerBoundarySegs.Add(new LineSegment(toPivot, toClose));
                 tris.Add(PolyTri.Construct(poly.Id, edgeSegs[edgeSegs.Count - 1].To, toPivot, toClose, 
@@ -298,9 +298,9 @@ public class NewRiverTriGen
     private static Vector2 GetPivot(MapPolygon poly, EdgeEndKey key, TempRiverData rData, Data data)
     {
         var pivot = rData.HiPivots[key];
-        if (poly != key.Edge.HighPoly.Entity())
+        if (poly != key.Edge.HighPoly.Entity(data))
         {
-            pivot += poly.GetOffsetTo(key.Edge.HighPoly.Entity(), data);
+            pivot += poly.GetOffsetTo(key.Edge.HighPoly.Entity(data), data);
         }
         return pivot;
     }

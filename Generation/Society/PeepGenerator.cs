@@ -59,7 +59,7 @@ public class PeepGenerator : Generator
     {
         var developmentRatio = .5f;
         var foodConsPerPeep = _data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
-        var territory = r.Polygons.Entities();
+        var territory = r.Polygons.Entities(_data);
         var foodSurplus = new ConcurrentBag<float>();
         makeFoodProd(FoodProdTechniqueManager.Farm);
         makeFoodProd(FoodProdTechniqueManager.Ranch);
@@ -84,28 +84,38 @@ public class PeepGenerator : Generator
     
     private float GenerateExtractionBuildings(Regime r)
     {
-        var extractBuildings = _data.Models.Buildings.Models
-            .Values.SelectWhereOfType<BuildingModel, ExtractionBuildingModel>()
-            .ToDictionary(m => m.ProdItem, m => m);
+            
+        var t = _data.Models.Buildings.Models.Where(kvp => kvp.Value.GetComponent<ExtractionProd>() != null);
+        var extractBuildings = new Dictionary<Item, List<BuildingModel>>();
+
+        foreach (var kvp in t)
+        {
+            var model = kvp.Value;
+            var comps = model.Components.SelectWhereOfType<BuildingComponent, ExtractionProd>();
+            foreach (var extractionProd in comps)
+            {
+                extractBuildings.AddOrUpdate(extractionProd.ProdItem, model);
+            }
+        }
+
+        var polyBuildings = new Dictionary<MapPolygon, List<BuildingModel>>();
         
-        var polyBuildings = new Dictionary<MapPolygon, List<ExtractionBuildingModel>>();
-        
-        foreach (var p in r.Polygons)
+        foreach (var p in r.Polygons.Entities(_data))
         {
             if (p.GetResourceDeposits(_data) is IEnumerable<ResourceDeposit> rds == false)
             {
                 continue;
             }
             var extractSlots = p.PolyBuildingSlots[BuildingType.Extraction];
-            polyBuildings.Add(p, new List<ExtractionBuildingModel>());
+            polyBuildings.Add(p, new List<BuildingModel>());
 
             foreach (var rd in rds)
             {
                 if (extractSlots < 1) break;
-                if (extractBuildings.ContainsKey(rd.Item.Model()) == false) continue;
+                if (extractBuildings.ContainsKey(rd.Item.Model(_data)) == false) continue;
                 extractSlots--;
-                var b = extractBuildings[rd.Item.Model()];
-                polyBuildings[p].Add(b);
+                var b = extractBuildings[rd.Item.Model(_data)];
+                polyBuildings[p].Add(b.First());
             }
         }
 
@@ -115,7 +125,8 @@ public class PeepGenerator : Generator
             var poly = kvp.Key;
             foreach (var model in kvp.Value)
             {
-                laborDemand += model.JobLaborReqs.Sum(kvp2 => kvp2.Value);
+                var w = model.GetComponent<Workplace>();
+                laborDemand += w.JobLaborReqs.Sum(kvp2 => kvp2.Value);
                 MapBuilding.CreateGen(poly, model, _key);
             }
         }
@@ -125,22 +136,22 @@ public class PeepGenerator : Generator
     private float GenerateTownHalls(Regime r)
     {
         var townHall = BuildingModelManager.TownHall;
-        var settlements = r.Polygons.Where(p => p.HasSettlement(_data))
+        var settlements = r.Polygons.Entities(_data).Where(p => p.HasSettlement(_data))
             .Select(p => p.GetSettlement(_data));
         foreach (var s in settlements)
         {
-            var p = s.Poly.Entity();
+            var p = s.Poly.Entity(_data);
             MapBuilding.CreateGen(p, townHall, _key);
         }
 
-        return townHall.TotalLaborReq() * settlements.Count();
+        return townHall.GetComponent<Workplace>().TotalLaborReq() * settlements.Count();
     }
     private void GenerateFactories(Regime r, float popBudget)
     {
         if (popBudget <= 0) return;
         var factory = BuildingModelManager.Factory;
 
-        var polys = r.Polygons.Entities().Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
+        var polys = r.Polygons.Entities(_data).Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
         var portions = Apportioner.ApportionLinear(popBudget, polys,
             p =>
             {
@@ -150,7 +161,7 @@ public class PeepGenerator : Generator
                 // return p.GetPeeps(_data).Sum(x => x.Size);
             }
         );
-        var factoryLaborReq = factory.TotalLaborReq();
+        var factoryLaborReq = factory.GetComponent<Workplace>().TotalLaborReq();
         for (var i = 0; i < polys.Count; i++)
         {
             var p = polys[i];
@@ -167,34 +178,34 @@ public class PeepGenerator : Generator
     private void GenerateLaborers(Regime r, float popSurplus)
     {
         if (popSurplus <= 0) return;
-        var polys = r.Polygons.Entities().ToList();
+        var polys = r.Polygons.Entities(_data).ToList();
         var laborDesire = 0;
-        foreach (var p in r.Polygons)
+        foreach (var p in polys)
         {
             var buildings = p.GetBuildings(_data);
             if (buildings == null) continue;
             
             var laborBuildings = buildings
-                .Select(b => b.Model.Model())
-                .SelectWhereOfType<BuildingModel, WorkBuildingModel>();
+                .Select(b => b.Model.Model(_data))
+                .SelectWhere(b => b.GetComponent<Workplace>() != null);
             if (laborBuildings.Count() > 0)
             {
-                laborDesire += laborBuildings.Sum(lb => lb.TotalLaborReq());
+                laborDesire += laborBuildings.Sum(b => b.GetComponent<Workplace>().TotalLaborReq());
             }
         }
         var laborRatio = Mathf.Min(1f, popSurplus / laborDesire);
         if (laborRatio == 0) return;
-        foreach (var p in r.Polygons)
+        foreach (var p in polys)
         {
             var buildings = p.GetBuildings(_data);
             if (buildings == null) continue;
             var workBuildings = buildings
-                .Select(b => b.Model.Model())
-                .SelectWhereOfType<BuildingModel, WorkBuildingModel>();
+                .Select(b => b.Model.Model(_data))
+                .SelectWhere(b => b.HasComponent<Workplace>());
             var peep = p.GetPeep(_data);
             foreach (var wb in workBuildings)
             {
-                foreach (var laborReq in wb.JobLaborReqs)
+                foreach (var laborReq in wb.GetComponent<Workplace>().JobLaborReqs)
                 {
                     var num = Mathf.FloorToInt(laborReq.Value * laborRatio);
                     peep.GrowSize(num, _key);
@@ -205,7 +216,7 @@ public class PeepGenerator : Generator
 
     private void GenerateUnemployed(Regime r, int pop)
     {
-        var settlementPolys = r.Polygons.Entities()
+        var settlementPolys = r.Polygons.Entities(_data)
             .Where(p => p.HasSettlement(_data))
             .ToList();
         var portions = Apportioner.ApportionLinear(pop, settlementPolys, 
@@ -218,5 +229,4 @@ public class PeepGenerator : Generator
             peep.GrowSize(polyUnemployed, _key);
         }
     }
-    
 }

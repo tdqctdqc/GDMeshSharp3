@@ -6,13 +6,13 @@ using Godot;
 public class RegimeWanderer : Wanderer
 {
     public Regime Regime { get; private set; }
-    public RegimeWanderer(Regime regime, MapPolygon seed, WandererPicker host, int numToPick) 
-        : base(seed, host, numToPick)
+    public RegimeWanderer(Regime regime, MapPolygon seed, WandererPicker host, int numToPick, Data data) 
+        : base(seed, host, numToPick, data)
     {
         Regime = regime;
     }
     
-    public override bool MoveAndPick(WandererPicker host)
+    public override bool MoveAndPick(WandererPicker host, Data data)
     {
         if (ValidAdjacent.Any(host.NotTaken.Contains) == false) return false;
 
@@ -21,7 +21,7 @@ public class RegimeWanderer : Wanderer
             foreach (var a in ValidAdjacent)
             {
                 if (host.NotTaken.Contains(a) == false) continue;
-                Add(a, host);
+                Add(a, host, data);
                 return true;
             }
             return false;
@@ -34,8 +34,8 @@ public class RegimeWanderer : Wanderer
         foreach (var a in ValidAdjacent)
         {
             if (host.NotTaken.Contains(a) == false) continue;
-            if (a.Neighbors.Entities().Where(n => Picked.Contains(n)).Count() <= 1) continue;
-            var count = a.Neighbors.Entities().Where(n => Picked.Contains(n)).Count();
+            if (a.Neighbors.Entities(data).Where(n => Picked.Contains(n)).Count() <= 1) continue;
+            var count = a.Neighbors.Entities(data).Where(n => Picked.Contains(n)).Count();
             if (count > aCount)
             {
                 pick = a;
@@ -45,7 +45,7 @@ public class RegimeWanderer : Wanderer
         }
         if (found)
         {
-            Add(pick, host);
+            Add(pick, host, data);
             return true;
         }
 

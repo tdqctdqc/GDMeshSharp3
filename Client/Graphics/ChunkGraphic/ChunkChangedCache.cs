@@ -28,8 +28,8 @@ public class ChunkChangedCache
         RoadsChanged = new ChunkChangeListener<int>(d);
         RoadsChanged.ListenForEntityCreationDestructionMult<RoadSegment, int>(
             d,
-            e => e.Edge.Entity().Id,
-            e => new MapPolygon[]{e.Edge.Entity().HighPoly.Entity(), e.Edge.Entity().LowPoly.Entity()});
+            e => e.Edge.Entity(d).Id,
+            e => new MapPolygon[]{e.Edge.Entity(d).HighPoly.Entity(d), e.Edge.Entity(d).LowPoly.Entity(d)});
         
         var px = d.Planet.PolygonAux;
         var changedRegime = d.Planet.PolygonAux.ChangedRegime;
@@ -51,7 +51,7 @@ public class ChunkChangedCache
         SettlementTierChanged.ListenForValueChange<int, Settlement, ModelRef<SettlementTier>>(
             d,
             d.Society.SettlementAux.ChangedTier,
-            e => e.Poly.Entity(),
+            e => e.Poly.Entity(d),
             s => s.Poly.RefId
         );
     }

@@ -25,7 +25,7 @@ public class ConstructBuildingsModule : LogicModule
             clear.Positions.Add(c.Pos);
             Func<HostWriteKey, Entity> create = k =>
             {
-                return MapBuilding.Create(c.Pos, c.Model.Model(), k);
+                return MapBuilding.Create(c.Pos, c.Model.Model(k.Data), k);
             };
             res.CreateEntities.Add(create);
         }
@@ -49,7 +49,8 @@ public class ConstructBuildingsModule : LogicModule
                 var proc = StartConstructionProcedure.Construct(
                     building.MakeRef<BuildingModel>(),
                     pos,
-                    order.Regime
+                    order.Regime,
+                    data
                 );
                 res.Procedures.Add(proc);
             }

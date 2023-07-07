@@ -36,7 +36,7 @@ public class MouseOverPolyHandler
             }
         }
         else if (MouseOverPoly != null && 
-                 MouseOverPoly.Neighbors.Entities()
+                 MouseOverPoly.Neighbors.Entities(data)
                          .FirstOrDefault(n => n.PointInPolyAbs(mousePosMapSpace, data))
                      is MapPolygon neighbor)
         {

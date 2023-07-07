@@ -1,17 +1,14 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract class ItemProdBuildingModel : WorkBuildingModel
+public class ItemProd : BuildingComponent
 {
     public Item ProdItem { get; private set; }
     public int ProdCap { get; private set; }
-    protected ItemProdBuildingModel(BuildingType buildingType, Item prodItem, string name, int numTicksToBuild, 
-        int constructionCapPerTick, int income, int prodCap)
-        : base(buildingType, name, numTicksToBuild, constructionCapPerTick,
-            income)
+
+    public ItemProd(Item prodItem, int prodCap)
     {
         ProdItem = prodItem;
         ProdCap = prodCap;

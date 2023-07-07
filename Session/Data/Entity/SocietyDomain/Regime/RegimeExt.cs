@@ -15,7 +15,7 @@ public static class RegimeExt
     }
     public static bool IsLocalPlayerRegime(this Regime r, Data data)
     {
-        return data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity() == r;
+        return data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data) == r;
     }
     public static Player GetPlayer(this Regime r, Data data)
     {
@@ -24,7 +24,7 @@ public static class RegimeExt
 
     public static IEnumerable<PolyPeep> GetPeeps(this Regime r, Data data)
     {
-        return r.Polygons.SelectWhere(p => p.HasPeep(data))
+        return r.Polygons.Entities(data).SelectWhere(p => p.HasPeep(data))
             .Select(p => p.GetPeep(data));
     }
 

@@ -116,25 +116,25 @@ public class MoistureGenerator : Generator
         void doLandmass(HashSet<MapPolygon> lm)
         {
             var edges = lm
-                .SelectMany(p => p.Neighbors.Select(n => p.GetEdge(n, Data)))
+                .SelectMany(p => p.Neighbors.Entities(Data).Select(n => p.GetEdge(n, Data)))
                 .Distinct()
-                .Where(e => e.HighPoly.Entity().IsLand && e.LowPoly.Entity().IsLand);
-            var coastEdges = edges.Where(e => e.IsLandToSeaEdge());
+                .Where(e => e.HighPoly.Entity(Data).IsLand && e.LowPoly.Entity(Data).IsLand);
+            var coastEdges = edges.Where(e => e.IsLandToSeaEdge(Data));
             var covered = coastEdges.ToHashSet();
             var curr = coastEdges.ToHashSet();
             var nodes = curr.ToDictionary(e => e, e => new DrainGraphNode<MapPolygonEdge>(e));
             
             while (curr.Count > 0)
             {
-                var adjs = curr.SelectMany(c => c.GetIncidentEdges())
+                var adjs = curr.SelectMany(c => c.GetIncidentEdges(Data))
                     .Distinct()
                     .Where(e => covered.Contains(e) == false 
-                                && e.HighPoly.Entity().IsLand && e.LowPoly.Entity().IsLand);
+                                && e.HighPoly.Entity(Data).IsLand && e.LowPoly.Entity(Data).IsLand);
                 curr = adjs.ToHashSet();
                 if (adjs.Count() == 0) break;
                 foreach (var adj in adjs)
                 {
-                    var coveredNeighborEdges = adj.GetIncidentEdges().Where(covered.Contains);
+                    var coveredNeighborEdges = adj.GetIncidentEdges(Data).Where(covered.Contains);
                     if (coveredNeighborEdges.Count() == 0) continue;
                     var drainTo = coveredNeighborEdges.OrderBy(getCost).First();
                     var node = new DrainGraphNode<MapPolygonEdge>(adj);
@@ -147,7 +147,7 @@ public class MoistureGenerator : Generator
             foreach (var kvp in nodes)
             {
                 var node = kvp.Value;
-                var m = node.Element.GetAvgMoisture() * riverFlowPerMoisture;
+                var m = node.Element.GetAvgMoisture(Data) * riverFlowPerMoisture;
                 while (node != null)
                 {
                     node.Element.IncrementFlow(m, _key);
@@ -166,7 +166,7 @@ public class MoistureGenerator : Generator
 
         float getCost(MapPolygonEdge edge)
         {
-            return edge.GetAvgRoughness() * roughnessMult
+            return edge.GetAvgRoughness(Data) * roughnessMult
                    + baseRiverFlowCost;
         }
     }

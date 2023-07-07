@@ -22,7 +22,7 @@ public class LandformManager : TerrainAspectManager<Landform>
     
     public Landform GetAtPoint(MapPolygon poly, Vector2 pRel, Data data)
     {
-        var close = poly.Neighbors.Entities().OrderBy(n => (poly.GetOffsetTo(n, data) - pRel).Length());
+        var close = poly.Neighbors.Entities(data).OrderBy(n => (poly.GetOffsetTo(n, data) - pRel).Length());
         var first = close.ElementAt(0);
         var second = close.ElementAt(1);
         var score = poly.GetScore(first, second, pRel, data, 

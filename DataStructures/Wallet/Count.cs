@@ -17,7 +17,7 @@ public abstract class Count<T>
     {
         return Snapshot<T, float>.Construct(Contents);
     }
-    protected void Add(T t, float amount)
+    public void Add(T t, float amount)
     {
         if (amount < 0f) throw new Exception("Trying to add negative amount to wallet");
         if(Contents.ContainsKey(t) == false) Contents.Add(t, 0);

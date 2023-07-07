@@ -20,10 +20,10 @@ public class EntityRef<TRef> : IEntityRef where TRef : Entity
     {
         RefId = refId;
     }
-    public TRef Entity()
+    public TRef Entity(Data data)
     {
         if (RefId == -1) return null;
-        return Game.I.RefFulfiller.Get<TRef>(this);;
+        return data.RefFulfiller.Get<TRef>(this);
     }
 
     public bool Empty()
@@ -60,6 +60,6 @@ public class EntityRef<TRef> : IEntityRef where TRef : Entity
     
     public override string ToString()
     {
-        return Empty() ? "Empty" : Entity().ToString();
+        return Empty() ? "Empty" : RefId.ToString();
     }
 }

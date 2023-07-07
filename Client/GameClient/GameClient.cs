@@ -9,7 +9,7 @@ public partial class GameClient : Node, IClient
     public ClientRequests Requests { get; private set; }
     public ICameraController Cam { get; private set; }
     public MapGraphics Graphics { get; private set; }
-    public ClientWriteKey Key { get; private set; }
+    public ClientWriteKey WriteKey { get; private set; }
     public ClientSettings Settings { get; private set; }
     
     public override void _Ready()
@@ -21,7 +21,7 @@ public partial class GameClient : Node, IClient
     {
         if (GetParent() == null) return;
         Graphics?.Process(delta);
-        Ui?.Process(delta, Cam, Key);
+        Ui?.Process(delta, Cam, WriteKey);
         if (gameStateChanged)
         {
             Game.I.Logger.Log("updating graphics", LogType.Logic);
@@ -33,7 +33,7 @@ public partial class GameClient : Node, IClient
         Requests = new ClientRequests(session);
         Requests.GiveTree(session.Data.EntityTypeTree);
         Settings = ClientSettings.Load();
-        Key = new ClientWriteKey(session.Data, session);
+        WriteKey = new ClientWriteKey(session.Data, session);
         var cam = WorldCameraController.Construct(session.Data);
         AddChild(cam);
         Cam = cam;
@@ -47,13 +47,13 @@ public partial class GameClient : Node, IClient
             Graphics = graphics;
         }
         AddChild(Graphics);
-        BuildUi(session.Data, Key.Session.Server);
+        BuildUi(session.Data, WriteKey.Session.Server);
     }
     
     private void BuildGraphics(Data data)
     {
         Graphics = new MapGraphics();
-        Graphics.Setup(Key);
+        Graphics.Setup(WriteKey);
     }
 
     private void BuildUi(Data data, IServer server)

@@ -23,7 +23,7 @@ public abstract class AddToRefColProcedure<TKey> : Procedure
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        var e = Entity.Entity();
+        var e = Entity.Entity(key.Data);
         var meta = e.GetMeta();
         var col = meta.GetRefCollection<TKey>(CollectionName, e, key);
         col.AddByProcedure(ToAdd, key);

@@ -8,7 +8,7 @@ public class SetRegimeProcedure : Procedure
     public EntityRef<Regime> Regime { get; private set; }
     public override bool Valid(Data data)
     {
-        return Regime.Entity().IsPlayerRegime(data) == false;
+        return Regime.Entity(data).IsPlayerRegime(data) == false;
     }
 
     public override void Enact(ProcedureWriteKey key)

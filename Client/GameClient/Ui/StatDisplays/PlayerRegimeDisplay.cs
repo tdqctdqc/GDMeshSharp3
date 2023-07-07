@@ -18,7 +18,7 @@ public class PlayerRegimeDisplay
                 var playerRegime = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
                 if (player.Regime.Fulfilled())
                 {
-                    regimeFlagRect.Texture = playerRegime.Entity().Template.Model().Flag;
+                    regimeFlagRect.Texture = playerRegime.Entity(data).Template.Model(data).Flag;
                 }
                 else
                 {
@@ -30,7 +30,7 @@ public class PlayerRegimeDisplay
         
         var regimeNameLabel = new Label();
         StatLabel.Construct<string>("", regimeNameLabel, 
-            () => data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity()?.Name,
+            () => data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data)?.Name,
             data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         hbox.AddChildWithVSeparator(regimeNameLabel);
 
@@ -39,7 +39,7 @@ public class PlayerRegimeDisplay
         var income = icon.MakeIconStatDisplay(data,
             () =>
             {
-                var locRegime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity();
+                var locRegime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
                 if (locRegime == null) return "";
                 
                 //todo fix

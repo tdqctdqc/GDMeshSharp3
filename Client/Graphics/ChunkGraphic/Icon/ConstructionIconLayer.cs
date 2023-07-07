@@ -17,7 +17,7 @@ public partial class ConstructionIconLayer : MapChunkGraphicLayer<Construction>
     protected override Node2D MakeGraphic(Construction key, Data data)
     {
         var construction = key;
-        var icon = construction.Model.Model().Icon.GetMeshInstance();
+        var icon = construction.Model.Model(data).Icon.GetMeshInstance();
         var constrSignMesh = new MeshInstance2D();
         var mesh = new QuadMesh();
         mesh.Size = Vector2.One * 25f;
