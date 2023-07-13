@@ -87,9 +87,11 @@ public partial class MapPolygon : Entity
         //only use in merging left-right wrap
         Neighbors.RemoveRef(poly, key);
     }
-    public void SetRegime(Regime r, CreateWriteKey key)
+    public void SetRegime(Regime r, StrongWriteKey key)
     {
-        GetMeta().UpdateEntityVar<EntityRef<Regime>>(nameof(Regime), this, key, new EntityRef<Regime>(r.Id));
+        GetMeta()
+            .UpdateEntityVar<EntityRef<Regime>>(nameof(Regime), this, key, 
+                new EntityRef<Regime>(r.Id));
     }
     public void SetTerrainTris(PolyTris tris, GenWriteKey key)
     {

@@ -8,15 +8,15 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
 {
     public string PropertyName { get; private set; }
 
-    public RefAction<ValChangeNotice<TProperty>> ValChanged()
+    public ValChangeAction<TProperty> ValChanged()
     {
         if (_valChanged == null)
         {
-            _valChanged = new RefAction<ValChangeNotice<TProperty>>();
+            _valChanged = new ValChangeAction<TProperty>();
         }
         return _valChanged;
     }
-    private RefAction<ValChangeNotice<TProperty>> _valChanged;
+    private ValChangeAction<TProperty> _valChanged;
     protected Func<TEntity, TProperty> GetProperty { get; private set; }
     protected Action<TEntity, TProperty> SetProperty { get; private set; }
     public EntityVarMeta(PropertyInfo prop)

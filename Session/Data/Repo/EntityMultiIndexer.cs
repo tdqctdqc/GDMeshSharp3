@@ -3,25 +3,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
-    where TSingle : Entity where TMult : Entity
+public class EntityMultiIndexer<TKey, TMult> : AuxData<TMult>
+    where TKey : Entity where TMult : Entity
 {
-    public List<TMult> Get(TSingle s, Data data)
+    public List<TMult> Get(TKey s, Data data)
     {
         return _dic.ContainsKey(s.Id) 
             ? _dic[s.Id].Select(i => data.RefFulfiller.Get<TMult>(i)).ToList() 
             : null;
     }
     protected Dictionary<int, HashSet<int>> _dic;
-    private Func<TMult, EntityRef<TSingle>> _getSingle;
-    private RefAction<ValChangeNotice<EntityRef<TSingle>>> _changedMult;
-    public EntityMultiIndexer(Data data, Func<TMult, EntityRef<TSingle>> getSingle,
+    private Func<TMult, EntityRef<TKey>> _getSingle;
+    private RefAction<ValChangeNotice<EntityRef<TKey>>> _changedMult;
+    public EntityMultiIndexer(Data data, Func<TMult, EntityRef<TKey>> getSingle,
         RefAction[] recalcTriggers,
-        RefAction<ValChangeNotice<EntityRef<TSingle>>>[] changeTriggers) : base(data)
+        params RefAction<ValChangeNotice<EntityRef<TKey>>>[] changeTriggers) : base(data)
     {
         _dic = new Dictionary<int, HashSet<int>>();
         _getSingle = getSingle;
-        _changedMult = new RefAction<ValChangeNotice<EntityRef<TSingle>>>();
+        _changedMult = new RefAction<ValChangeNotice<EntityRef<TKey>>>();
         _changedMult.Subscribe(n => 
         {
             if (_dic.TryGetValue(n.OldVal.RefId, out var hash))
@@ -38,7 +38,7 @@ public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
         {
             changeTrigger.Subscribe(_changedMult);
         }
-        data.SubscribeForDestruction<TSingle>(HandleTSingleRemoved);
+        data.SubscribeForDestruction<TKey>(HandleTSingleRemoved);
     }
 
     private void Recalc(Data data)

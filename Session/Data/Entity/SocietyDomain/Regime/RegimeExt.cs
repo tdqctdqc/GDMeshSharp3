@@ -39,4 +39,9 @@ public static class RegimeExt
         var fromIndustry = r.Flows[FlowManager.IndustrialPower].FlowIn;
         return fromPop + fromIndustry;
     }
+
+    public static Alliance GetAlliance(this Regime r, Data data)
+    {
+        return data.Society.AllianceAux.RegimeAlliances[r];
+    }
 }

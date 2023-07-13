@@ -4,23 +4,23 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class Entity1to1PropIndexer<TEntity, TKey> : AuxData<TEntity>
+public class PropEntityIndexer<TEntity, TKey> : AuxData<TEntity>
     where TEntity : Entity
 {
     public TEntity this[TKey e] => _dic.ContainsKey(e) ? _dic[e] : null;
     protected Dictionary<TKey, TEntity> _dic;
     protected Func<TEntity, TKey> _get;
     
-    public static Entity1to1PropIndexer<TEntity, TKey> CreateConstant(Data data, Func<TEntity, TKey> get)
+    public static PropEntityIndexer<TEntity, TKey> CreateConstant(Data data, Func<TEntity, TKey> get)
     {
-        return new Entity1to1PropIndexer<TEntity, TKey>(data, get);
+        return new PropEntityIndexer<TEntity, TKey>(data, get);
     }
-    public static Entity1to1PropIndexer<TEntity, TKey> CreateDynamic(Data data, Func<TEntity, TKey> get,
-        params RefAction<ValChangeNotice<TKey>>[] changedValTriggers)
+    public static PropEntityIndexer<TEntity, TKey> CreateDynamic(Data data, Func<TEntity, TKey> get,
+        params ValChangeAction<TKey>[] changedValTriggers)
     {
-        return new Entity1to1PropIndexer<TEntity, TKey>(data, get, changedValTriggers);
+        return new PropEntityIndexer<TEntity, TKey>(data, get, changedValTriggers);
     }
-    protected Entity1to1PropIndexer(Data data, Func<TEntity, TKey> get,
+    protected PropEntityIndexer(Data data, Func<TEntity, TKey> get,
         params RefAction<ValChangeNotice<TKey>>[] changedValTriggers) : base(data)
     {
         _get = get;

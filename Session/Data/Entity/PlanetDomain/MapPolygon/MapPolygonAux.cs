@@ -28,9 +28,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
         );
         
         ChangedRegime = new RefAction<ValChangeNotice<EntityRef<Regime>>>();
-        Game.I.Serializer.GetEntityMeta<MapPolygon>()
-            .GetEntityVarMeta<EntityRef<Regime>>(nameof(MapPolygon.Regime))
-            .ValChanged().Subscribe(ChangedRegime);
+        Entity.SubscribeToValChange<MapPolygon, EntityRef<Regime>>(nameof(MapPolygon.Regime), ChangedRegime);
         
         data.Notices.SetLandAndSea.Subscribe(() =>
         {

@@ -1,21 +1,21 @@
 
 using System;
 
-public class Entity1To1Indexer<TEntity, TKey> : Entity1to1PropIndexer<TEntity, int?>
+public class EntityPropEntityIndexer<TEntity, TKey> : PropEntityIndexer<TEntity, int?>
     where TEntity : Entity where TKey : Entity
 {
     public TEntity this[TKey k] => this[k.Id];
-    public static Entity1To1Indexer<TEntity, TKey> CreateStatic(Data data, Func<TEntity, EntityRef<TKey>> get)
+    public static EntityPropEntityIndexer<TEntity, TKey> CreateStatic(Data data, Func<TEntity, EntityRef<TKey>> get)
     {
-        return new Entity1To1Indexer<TEntity, TKey>(data, get);
+        return new EntityPropEntityIndexer<TEntity, TKey>(data, get);
     }
-    public static Entity1To1Indexer<TEntity, TKey> CreateDynamic(Data data, Func<TEntity, EntityRef<TKey>> get,
-        params RefAction<ValChangeNotice<EntityRef<TKey>>>[] changedValTriggers)
+    public static EntityPropEntityIndexer<TEntity, TKey> CreateDynamic(Data data, Func<TEntity, EntityRef<TKey>> get,
+        params ValChangeAction<EntityRef<TKey>>[] changedValTriggers)
     {
-        return new Entity1To1Indexer<TEntity, TKey>(data, get, changedValTriggers);
+        return new EntityPropEntityIndexer<TEntity, TKey>(data, get, changedValTriggers);
     }
-    private Entity1To1Indexer(Data data, Func<TEntity, EntityRef<TKey>> get,
-        params RefAction<ValChangeNotice<EntityRef<TKey>>>[] changedValTriggers) 
+    private EntityPropEntityIndexer(Data data, Func<TEntity, EntityRef<TKey>> get,
+        params ValChangeAction<EntityRef<TKey>>[] changedValTriggers) 
         : base(data, e => get(e) == null ? (int?)null : get(e).RefId)
     {
         foreach (var trigger in changedValTriggers)

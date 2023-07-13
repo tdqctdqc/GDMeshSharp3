@@ -35,7 +35,7 @@ public class EntityRefCollection<TRef> : IRef where TRef : Entity
     {
         return RefIds.Contains(entity.Id);
     }
-    public void AddRef(TRef t, GenWriteKey key)
+    public void AddRef(TRef t, StrongWriteKey key)
     {
         if (RefIds.Contains(t.Id)) return;
         RefIds.Add(t.Id);

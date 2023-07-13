@@ -8,9 +8,9 @@ public class Player : Entity
     private static Type DomainType() => typeof(BaseDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
-    public Guid PlayerGuid { get; protected set; }
-    public string Name { get; protected set; }
-    public EntityRef<Regime> Regime { get; protected set; }
+    public Guid PlayerGuid { get; private set; }
+    public string Name { get; private set; }
+    public EntityRef<Regime> Regime { get; private set; }
     public static Player Create(Guid guid, string name, 
         CreateWriteKey key)
     {
