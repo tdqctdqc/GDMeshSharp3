@@ -17,24 +17,27 @@ public class BuildingConstructionPriority : BudgetPriority
         _utility = utility;
     }
 
-    public override void Calculate(Regime regime, Data data, ItemCount budget, Dictionary<Item, float> prices,
-        int credit, int availLabor, int availConstructCap, MajorTurnOrders orders)
+    public override void Calculate(Regime regime, Data data,
+        BudgetScratch scratch, Dictionary<Item, float> prices, 
+        MajorTurnOrders orders)
     {
-        if (availLabor <= 0) return;
+        if (scratch.Unemployed <= 0) return;
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, data);
         
-        SetBuildingLaborConstraint(solver, availLabor, projVars);
-        SetItemConstraints(solver, data, budget, projVars);
-        SetCreditConstraint(solver, data, credit, prices, projVars);
-        SetConstructCapConstraint(solver, availConstructCap, projVars);
+        SetBuildingLaborConstraint(solver, Mathf.FloorToInt(scratch.Unemployed), projVars);
+        SetItemConstraints(solver, data, scratch.Items, projVars);
+        SetCreditConstraint(solver, data, scratch.Credit, 
+            prices, projVars);
+        SetConstructCapConstraint(solver, 
+            Mathf.FloorToInt(scratch.Flows[FlowManager.ConstructionCap]), projVars);
         SetSlotConstraints(solver, regime, projVars, data);
         
-        var success = Solve(solver, projVars, regime, data, prices, credit, availLabor);
+        var success = Solve(solver, projVars);
         if (success == false)
         {
             GD.Print("PLANNING FAILED");
-            foreach (var kvp in budget.Contents)
+            foreach (var kvp in scratch.Items.Contents)
             {
                 var item = (Item) data.Models[kvp.Key];
                 var q = kvp.Value;
@@ -44,7 +47,7 @@ public class BuildingConstructionPriority : BudgetPriority
         
         
         var buildings = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        SelectBuildSitesAndAddRequest(regime, data, buildings, budget, orders);
+        SelectBuildSitesAndAddRequest(regime, data, buildings, prices, scratch, orders);
     }
 
     public override Dictionary<Item, int> GetItemWishlist(Regime regime, Data data, 
@@ -58,8 +61,7 @@ public class BuildingConstructionPriority : BudgetPriority
         SetConstructCapConstraint(solver, availLabor, projVars);
         SetSlotConstraints(solver, regime, projVars, data);
         
-        var success = Solve(solver, projVars, regime, data, 
-            prices, credit, availLabor);
+        var success = Solve(solver, projVars);
         if (success == false)
         {
             GD.Print("PLANNING FAILED");
@@ -97,11 +99,7 @@ public class BuildingConstructionPriority : BudgetPriority
             return new KeyValuePair<BuildingModel, Variable>(b, projVar);
         }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
-    private bool Solve(Solver solver, 
-        Dictionary<BuildingModel, Variable> projVars,
-        Regime regime, Data data,
-        Dictionary<Item, float> prices,
-        float credit, int laborAvail)
+    private bool Solve(Solver solver, Dictionary<BuildingModel, Variable> projVars)
     {
         var objective = solver.Objective();
         objective.SetMaximization();
@@ -110,7 +108,6 @@ public class BuildingConstructionPriority : BudgetPriority
         {
             var b = kvp.Key;
             var projVar = projVars[b];
-            var projPrice = b.BuildCosts.Sum(kvp => prices[kvp.Key] * kvp.Value);
             var benefit = _utility(b);
             objective.SetCoefficient(projVar, benefit);
         }
@@ -204,8 +201,10 @@ public class BuildingConstructionPriority : BudgetPriority
             slotConstraint.SetCoefficient(projVar, 1);
         }
     }
-    private void SelectBuildSitesAndAddRequest(Regime regime, Data data, Dictionary<BuildingModel, int> toBuild, 
-        ItemCount budget, MajorTurnOrders orders)
+    private void SelectBuildSitesAndAddRequest(Regime regime, Data data, 
+        Dictionary<BuildingModel, int> toBuild, 
+        Dictionary<Item, float> prices,
+        BudgetScratch scratch, MajorTurnOrders orders)
     {
         var currConstruction = data.Society.CurrentConstruction;
         var availPolys = regime.Polygons;
@@ -223,10 +222,15 @@ public class BuildingConstructionPriority : BudgetPriority
                     .FirstOrDefault(p => p.PolyBuildingSlots[building.BuildingType] > 0);
                 if (poly == null) continue;
                 orders.StartConstructions.ConstructionsToStart.Add(StartConstructionRequest.Construct(building, poly));
+                
                 foreach (var cost in building.BuildCosts)
                 {
-                    budget.Remove(cost.Key, cost.Value);
+                    scratch.Items.Remove(cost.Key, cost.Value);
+                    scratch.SubtractCredit(cost.Value * prices[cost.Key]);
+
                 }
+
+                scratch.Flows.Remove(FlowManager.ConstructionCap, building.ConstructionCapPerTick);
             }
         }
     }

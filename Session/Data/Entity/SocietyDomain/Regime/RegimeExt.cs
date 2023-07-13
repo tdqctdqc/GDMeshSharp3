@@ -32,4 +32,11 @@ public static class RegimeExt
     {
         return r.GetPeeps(data).Sum(p => p.Size);
     }
+
+    public static float GetPowerScore(this Regime r, Data data)
+    {
+        var fromPop = r.GetPopulation(data);
+        var fromIndustry = r.Flows[FlowManager.IndustrialPower].FlowIn;
+        return fromPop + fromIndustry;
+    }
 }

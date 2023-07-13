@@ -10,6 +10,7 @@ public class ClientRequests
     public RefAction<PolyTriPosition> MouseOver { get; private set; }
     public RefAction<ITooltipInstance> PromptTooltip { get; private set; }
     public RefAction<ITooltipInstance> HideTooltip { get; private set; }
+    public RefAction<string> ToggleMapGraphicsLayer { get; private set; }
     public RefAction<Command> QueueCommand { get; private set; }
     public ClientRequests(ISession session)
     {
@@ -19,6 +20,7 @@ public class ClientRequests
         HideTooltip = new RefAction<ITooltipInstance>();
         QueueCommand = new RefAction<Command>();
         QueueCommand.Subscribe(session.Server.QueueCommandLocal);
+        ToggleMapGraphicsLayer = new RefAction<string>();
     }
     public void GiveTree(EntityTypeTree tree)
     {

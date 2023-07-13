@@ -15,9 +15,6 @@ public partial class IconsChunkGraphic : MapChunkGraphicModule
         
         var buildings = new BuildingIconLayer(chunk, data, mg);
         AddLayer(new Vector2(0f, .5f), buildings);
-        
-        // var regimeIcons = new RegimeFlagChunkLayer(chunk, data, mg);
-        // AddLayer(new Vector2(.4f, .8f), regimeIcons);
     }
 
     private IconsChunkGraphic()

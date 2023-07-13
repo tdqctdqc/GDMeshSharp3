@@ -11,14 +11,7 @@ public class ChunkChangedCache
     public ChunkChangeListener<int> PolyRegimeChanged { get; private set; }
     public ChunkChangeListener<Construction> ConstructionsChanged { get; private set; }
     public ChunkChangeListener<int> SettlementTierChanged { get; private set; }
-    public void Clear()
-    {
-        BuildingsChanged.Clear();
-        RoadsChanged.Clear();
-        // TerrainChanged?.Clear();
-        PolyRegimeChanged.Clear();
-        ConstructionsChanged.Clear();
-    }
+    
     public ChunkChangedCache(Data d)
     {
         BuildingsChanged = new ChunkChangeListener<int>(d);

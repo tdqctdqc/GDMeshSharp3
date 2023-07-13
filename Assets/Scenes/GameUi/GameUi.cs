@@ -38,7 +38,7 @@ public partial class GameUi : Ui
         AddWindow(RegimeAiOverviewWindow.Get(data));
 
         var mapOptions = new MapDisplayOptionsUi();
-        mapOptions.Setup(client.Graphics, data);
+        mapOptions.Setup(data, client);
         mapOptions.Position = Vector2.Down * 50f;
         AddChild(mapOptions);
 

@@ -22,7 +22,7 @@ public class Factory : BuildingModel
     public override Dictionary<Item, int> BuildCosts { get; protected set; }
         = new Dictionary<Item, int>
         {
-            {ItemManager.Iron, 1200}
+            {ItemManager.Iron, 1000}
         };
     protected override bool CanBuildInTriSpec(PolyTri t, Data data)
     {

@@ -76,7 +76,7 @@ public partial class SandboxClient : Node, IClient
         AddChild(mi);
     }
     
-    public void Process(float delta, bool gameStateChanged)
+    public void Process(float delta)
     {
         
     }

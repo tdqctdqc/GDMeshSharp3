@@ -9,7 +9,7 @@ public partial class GeneratorClient : Node, IClient
 {
     public ICameraController Cam { get; private set; }
     public ClientWriteKey WriteKey { get; private set; }
-    public MapGraphics Graphics { get; private set; }
+    public MapGraphics MapGraphics { get; private set; }
     public CanvasLayer CanvasLayer => _ui;
     private GeneratorUi _ui; 
     public ClientSettings Settings { get; private set; }
@@ -22,6 +22,7 @@ public partial class GeneratorClient : Node, IClient
 
     public void Setup(GeneratorSession session)
     {
+        this.ClearChildren();
         Requests = new ClientRequests(session);
         Requests.GiveTree(session.Data.EntityTypeTree);
         WriteKey = new ClientWriteKey(session.Data, session);
@@ -31,22 +32,26 @@ public partial class GeneratorClient : Node, IClient
         AddChild(cam);
         Cam = cam;
         
-        Graphics = new MapGraphics();
-        AddChild(Graphics);
-        
-        _ui = GeneratorUi.Construct(this, session, Graphics);
+        _ui = GeneratorUi.Construct(this, session);
         AddChild(_ui);
     }
     public void HandleInput(InputEvent e, float delta)
     {
     }
-    public void Process(float delta, bool gameStateChanged)
+    public void Process(float delta)
     {
-        _ui.Process(delta, Cam);
-        Graphics.Process(delta);
-        if (gameStateChanged)
-        {
-            Graphics.Update();
-        }
+        _ui?.Process(delta, Cam);
+        MapGraphics?.Process(delta);
+    }
+
+    public void StartMapGraphics()
+    {
+        MapGraphics = new MapGraphics();
+        MapGraphics.Setup(WriteKey);
+        AddChild(MapGraphics);
+    }
+    public override void _ExitTree()
+    {
+        GD.Print("freeing gen client");
     }
 }

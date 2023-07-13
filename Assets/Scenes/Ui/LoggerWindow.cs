@@ -21,11 +21,13 @@ public partial class LoggerWindow : ClosableWindow
         _num = new Dictionary<LogType, int>();
         _innerContainers = new Dictionary<LogType, Node>();
         Hide();
+        Size = Vector2I.One * 500;
         AboutToPopup += Draw;
     }
     public override void _Ready()
     {
         _container = (Container) FindChild("Container");
+        // _container.SetAnchorsPreset(Control.LayoutPreset.FullRect);
     }
 
     public override void _Process(double delta)
@@ -72,12 +74,11 @@ public partial class LoggerWindow : ClosableWindow
     {
         var name = Enum.GetName(typeof(LogType), lt);
         var scroll = new ScrollContainer();
-        scroll.Size = _container.Size;
         _container.AddChild(scroll);
         scroll.Name = name;
 
         var vbox = new VBoxContainer();
-        vbox.Size = _container.Size;
+        // vbox.SetAnchorsPreset(Control.LayoutPreset.TopWide);
         _innerContainers.Add(lt, vbox);
         _num.Add(lt, msgs.Count);
         scroll.AddChild(vbox);

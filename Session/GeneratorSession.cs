@@ -13,6 +13,7 @@ public partial class GeneratorSession : Node, IDataSession
     public WorldGenerator WorldGen { get; private set; }
     public bool Generated { get; private set; } = false;
     private bool _generating = false;
+    private bool _justGenned = false;
     public IServer Server { get; private set; }
     public GenerationMultiSettings GenMultiSettings { get; private set; }
     private ClientWriteKey _key;
@@ -32,46 +33,64 @@ public partial class GeneratorSession : Node, IDataSession
         AddChild(Client);
     }
 
-    private int _tries = 0;
-    public void Generate()
+    public void TryGenerate()
     {
         _generating = true;
+        GD.Print("TRYING GEN");
         try
         {
-            Game.I.Random.Seed = (ulong) GenMultiSettings.PlanetSettings.Seed.Value;
-            _tries++;
-            if (Generated)
-            {
-                Reset();
-            }
-            WorldGen.Generate();
-            Generated = true;
-            _generating = false;
-            Client.Graphics.Setup(_key);
+            Generate();
         }
         catch (Exception e)
         {
-            if (_tries > 10)
-            {
-                GD.Print("Generation failed too many times");
-                throw e;
-            }
+            GD.Print("RETRYING GEN");
+            RetryGen();
+        }
+        _generating = false;
+        _justGenned = true;
+    }
+    public void Generate()
+    {
+        Game.I.Random.Seed = (ulong) GenMultiSettings.PlanetSettings.Seed.Value;
+        if (Generated)
+        {
+            Reset();
+        }
+        WorldGen.Generate();
+        Generated = true;
+    }
+
+    private int _tries = 0;
+    private void RetryGen()
+    {
+        Reset();
+        try
+        {
+            _tries++;
+            Generate();
+        }
+        catch (Exception e)
+        {
+            GD.Print("RETRYING GEN FAILED");
+            if (_tries > 10) throw e;
             else
             {
-                GD.Print("Generation failed, retrying");
-                Reset();
-                Generate();
+                GD.Print("RE RETRYING GEN");
+
+                RetryGen();
             }
         }
     }
 
     private void Reset()
     {
+        Client.Free();
         this.ClearChildren();
         Client = null;
         Game.I.SetSerializer();
         Server = new DummyServer();
         Data = new GenData(GenMultiSettings);
+        _key = new ClientWriteKey(Data, this);
         WorldGen = new WorldGenerator(this, Data);
         Client = new GeneratorClient();
         Client.Setup(this);
@@ -79,6 +98,11 @@ public partial class GeneratorSession : Node, IDataSession
     }
     public override void _Process(double delta)
     {
-        if(_generating == false) Client?.Process((float)delta, false);
+        if (_justGenned)
+        {
+            Client.StartMapGraphics();
+            _justGenned = false;
+        }
+        Client?.Process((float)delta);
     }
 }

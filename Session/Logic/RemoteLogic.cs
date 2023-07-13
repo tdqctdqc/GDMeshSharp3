@@ -17,9 +17,9 @@ public class RemoteLogic : ILogic
         _syncingUpdates = new List<Update>();
     }
 
-    public bool Process(float delta)
+    public void Process(float delta)
     {
-        return true;
+        
     }
     public void ProcessUpdate(Update u)
     {
@@ -30,7 +30,6 @@ public class RemoteLogic : ILogic
         }
         if (u is FinishedStateSyncUpdate su)
         {
-            GD.Print("Got finished state sync update");
             _inited = true;
             var creations = _syncingUpdates.SelectWhereOfType<Update, EntityCreationUpdate>();
             EntitiesCreationUpdate.Create(creations, _sKey).Enact(_sKey);

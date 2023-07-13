@@ -28,7 +28,6 @@ public partial class PolyTriChunkGraphic : MapChunkGraphicModule
             : base(data, chunk, listener)
         {
             _getColor = getColor;
-            Init(data);
         }
         protected override Node2D MakeGraphic(Vector2 key, Data data)
         {

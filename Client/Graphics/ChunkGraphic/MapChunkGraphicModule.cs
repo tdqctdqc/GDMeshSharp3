@@ -5,28 +5,34 @@ using Godot;
 
 public partial class MapChunkGraphicModule : Node2D
 {
-    private Dictionary<IMapChunkGraphicLayer, Vector2> _layers;
+    private Dictionary<IMapChunkGraphicLayer, Vector2> _layerVisRanges;
     public MapChunkGraphicModule()
     {
-        _layers = new Dictionary<IMapChunkGraphicLayer, Vector2>();
+        _layerVisRanges = new Dictionary<IMapChunkGraphicLayer, Vector2>();
     }
 
     protected void AddLayer(Vector2 range, IMapChunkGraphicLayer layer)
     {
         AddChild((Node)layer);
-        _layers.Add(layer, range);
+        _layerVisRanges.Add(layer, range);
     }
-    public void Update(Data data)
+
+    public void Init(Data data)
     {
-        // var zoom = Game.I.Client.Cam.ZoomOut;
+        foreach (var l in _layerVisRanges.Keys)
+        {
+            l.Init(data);
+        }
+    }
+    public void UpdateVis(Data data)
+    {
         var scaledZoom = Game.I.Client.Cam.ScaledZoomOut;
-        foreach (var kvp in _layers)
+        foreach (var kvp in _layerVisRanges)
         {
             var range = kvp.Value;
             if (scaledZoom >= range.X && scaledZoom <= range.Y)
             {
                 kvp.Key.Node.Visible = true;
-                kvp.Key.Update(data);
             }
             else
             {

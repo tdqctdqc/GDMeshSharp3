@@ -31,18 +31,20 @@ public partial class GameUiTopBarToken : ButtonBarToken
                 _submitTurn.Disabled = true;
             }
         });
-        data.Notices.Ticked.Subscribe(i =>
+        Action<int> changeSubmitTurnButton = i =>
         {
             _submitTurn.Text = "Submit Turn";
             _submitTurn.Disabled = false;
-        });
+        };
+        data.Notices.Ticked.Subscribe(changeSubmitTurnButton);
+        TreeExiting += () => data.Notices.Ticked.Unsubscribe(changeSubmitTurnButton);
         
         
         var hostClientLabel = new Label();
         hostClientLabel.Text = host ? "Host" : "Client";
         Container.AddChildWithVSeparator(hostClientLabel);
         Container.AddChildWithVSeparator(TickDisplay.Create(data));
-        Container.AddChildWithVSeparator(PlayerRegimeDisplay.Create(data));
+        Container.AddChildWithVSeparator(RegimeInfoBar.Create(data));
 
         var itemBar = new ItemBar();
         itemBar.Setup(data);

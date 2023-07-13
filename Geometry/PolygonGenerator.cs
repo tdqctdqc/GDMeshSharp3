@@ -180,7 +180,6 @@ public class PolygonGenerator : Generator
             var edge = graph.GetEdge(mp, nMp);
             if (edge.From == edge.To)
             {
-                GD.Print($"degenerate edge {mp.Id} {nMp.Id}");
                 return;
             }
 

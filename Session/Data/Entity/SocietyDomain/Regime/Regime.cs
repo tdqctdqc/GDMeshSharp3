@@ -12,17 +12,20 @@ public class Regime : Entity
     public Color PrimaryColor { get; protected set; }
     public Color SecondaryColor { get; protected set; }
     public ItemCount Items { get; protected set; }
-    public FlowCount FlowCount { get; private set; }
+    // public FlowCount Flows { get; private set; }
+    public RegimeFlows Flows { get; private set; }
     public RegimeHistory History { get; private set; }
     public string Name { get; protected set; }
     public EntityRefCollection<MapPolygon> Polygons { get; protected set; }
     public RegimeFinance Finance { get; private set; }
     public bool IsMajor { get; private set; }
+    public RegimeDiplomacy Diplomacy { get; private set; }
 
     [SerializationConstructor] private Regime(int id, string name, Color primaryColor, Color secondaryColor, 
         EntityRefCollection<MapPolygon> polygons, EntityRef<MapPolygon> capital,
         ItemCount items, RegimeHistory history, ModelRef<Culture> culture,
-        ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, FlowCount flowCount) : base(id)
+        ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, 
+        RegimeFlows flows, RegimeDiplomacy diplomacy) : base(id)
     {
         Items = items;
         PrimaryColor = primaryColor;
@@ -35,7 +38,8 @@ public class Regime : Entity
         Template = template;
         Finance = finance;
         IsMajor = isMajor;
-        FlowCount = flowCount;
+        Flows = flows;
+        Diplomacy = diplomacy;
     }
 
     public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, bool isMajor, CreateWriteKey key)
@@ -43,7 +47,10 @@ public class Regime : Entity
         var id = key.IdDispenser;
         var polygons = EntityRefCollection<MapPolygon>.Construct(new HashSet<int>{seed.Id}, key.Data);
         var items = ItemCount.Construct();
-        items.Add(ItemManager.Iron, 10_000);
+        var flows = new RegimeFlows(new Dictionary<int, FlowData>());
+        flows.AddFlowIn(FlowManager.Income, 0f);
+        flows.AddFlowIn(FlowManager.ConstructionCap, 0f);
+        flows.AddFlowIn(FlowManager.IndustrialPower, 0f);
         
         var r = new Regime(id.GetID(), regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
@@ -55,8 +62,8 @@ public class Regime : Entity
             regimeTemplate.MakeRef(),
             RegimeFinance.Construct(),
             isMajor,
-            FlowCount.Construct()
-        );
+            flows,
+            RegimeDiplomacy.Construct(key.Data));
         key.Create(r);
         seed.SetRegime(r, key);
         
@@ -78,9 +85,9 @@ public class Regime : Entity
         IsMajor = isMajor;
     }
 
-    public void SetFlows(FlowCount flows, ProcedureWriteKey key)
+    public void SetFlows(RegimeFlows flows, ProcedureWriteKey key)
     {
-        FlowCount = flows;
+        Flows = flows;
     }
     public override string ToString() => Name;
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;

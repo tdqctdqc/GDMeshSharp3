@@ -14,10 +14,10 @@ public partial class GeneratorUi : Ui
 
 
     // public GeneratorSettingsWindow GenSettingsWindow { get; private set; }
-    public static GeneratorUi Construct(IClient client, GeneratorSession session, MapGraphics graphics)
+    public static GeneratorUi Construct(IClient client, GeneratorSession session)
     {
         var ui = new GeneratorUi(client);
-        ui.Setup(client, graphics, session);
+        ui.Setup(client, session);
         return ui;
     }
     private GeneratorUi() : base() 
@@ -28,7 +28,7 @@ public partial class GeneratorUi : Ui
     {
         
     }
-    public void Setup(IClient client, MapGraphics graphics, GeneratorSession session)
+    public void Setup(IClient client, GeneratorSession session)
     {
         Setup(client);
         _session = session;
@@ -56,7 +56,7 @@ public partial class GeneratorUi : Ui
         _progress.Text = "Progress";
         sideBar.Container.AddChild(_progress);
         _mapOptions = new MapDisplayOptionsUi();
-        _mapOptions.Setup(graphics, _session.Data);
+        _mapOptions.Setup(_session.Data, client);
         sideBar.Container.Position = Vector2.Down * 50f;
         sideBar.Container.AddChild(_mapOptions);
         AddWindow(new RegimeOverviewWindow());
@@ -73,7 +73,6 @@ public partial class GeneratorUi : Ui
         if (_session.Generated)
         {
             Game.I.StartHostSession(_session.Data);
-            // QueueFree();
         }
     }
     private async void PressedGenerate()
@@ -82,7 +81,7 @@ public partial class GeneratorUi : Ui
         _generating = true;
         try
         {
-            await Task.Run(_session.Generate); 
+            await Task.Run(_session.TryGenerate); 
         }
         catch (Exception e)
         {

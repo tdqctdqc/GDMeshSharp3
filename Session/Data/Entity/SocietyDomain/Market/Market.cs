@@ -40,14 +40,12 @@ public class Market : Entity
     {
         var oldPrice = ItemPricesById[item.Id];
         //todo make float history class or genericize the key param in history?
-        PriceHistory[item.Id].Add(Mathf.CeilToInt(oldPrice), tick);
+        PriceHistory.Add(item, Mathf.CeilToInt(oldPrice), tick);
         ItemPricesById[item.Id] = price;
     }
 
     public void WriteHistory(Dictionary<int, ItemTradeInfo> infos, int tick, ProcedureWriteKey key)
     {
-        GD.Print("WRITING HISTORY");
-        GD.Print(infos.Count);
         foreach (var kvp in infos)
         {
             var item = (Item) key.Data.Models[kvp.Key];
@@ -55,11 +53,12 @@ public class Market : Entity
             DemandedHistory.Add(item, kvp.Value.TotalDemanded, tick);
             OfferedHistory.Add(item, kvp.Value.TotalOffered, tick);
             TradedQHistory.Add(item, kvp.Value.TotalTraded, tick);
-
-            GD.Print("ITEM " + item.Name);
-            GD.Print("\tOFFERED " + kvp.Value.TotalOffered);
-            GD.Print("\tDEMANDED " + kvp.Value.TotalDemanded);
-            GD.Print("\tTRADED " + kvp.Value.TotalTraded);
+            Game.I.Logger.Log(
+                "ITEM " + item.Name
+                + "\n       OFFERED " + kvp.Value.TotalOffered
+                + "\n       DEMANDED " + kvp.Value.TotalDemanded
+                + "\n       TRADED " + kvp.Value.TotalTraded, 
+                LogType.Market);
         }
     }
     public override Type GetDomainType() => DomainType();

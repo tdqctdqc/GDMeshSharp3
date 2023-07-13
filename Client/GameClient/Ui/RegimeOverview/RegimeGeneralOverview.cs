@@ -17,6 +17,12 @@ public partial class RegimeGeneralOverview : ScrollContainer
     {
         Name = regime.Name;
         _container.ClearChildren();
+        var regimeFlagRect = new TextureRect();
+        regimeFlagRect.Size = new Vector2(30f, 20f);
+        regimeFlagRect.CustomMinimumSize = new Vector2(30f, 20f);
+        regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.FitHeightProportional;
+        regimeFlagRect.Texture = regime.Template.Model(key.Data).Flag;
+        _container.AddChild(regimeFlagRect);
         if (regime.IsPlayerRegime(key.Data) == false)
         {
             var button = new Button();

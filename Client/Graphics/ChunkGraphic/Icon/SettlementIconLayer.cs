@@ -8,7 +8,6 @@ public partial class SettlementIconLayer : MapChunkGraphicLayer<int>
     public SettlementIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
         : base(data, chunk, mg.ChunkChangedCache.SettlementTierChanged)
     {
-        Init(data);
     }
 
     private SettlementIconLayer() : base()

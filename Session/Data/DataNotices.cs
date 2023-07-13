@@ -11,6 +11,7 @@ public class DataNotices
     public RefAction PopulatedWorld { get; private set; }
     public RefAction MadeResources { get; private set; }
     public RefAction<int> Ticked { get; private set; }
+    public RefAction FinishedTurnStartCalc { get; private set; }
     public RefAction SetPolyShapes { get; private set; }
     public RefAction SetLandAndSea { get; private set; }
     public RefAction<Construction> StartedConstruction { get; private set; }
@@ -23,6 +24,7 @@ public class DataNotices
         MadeResources = new RefAction();
         FinishedStateSync = new RefAction();
         Ticked = new RefAction<int>();
+        FinishedTurnStartCalc = new RefAction();
         SetPolyShapes = new RefAction();
         SetLandAndSea = new RefAction();
         StartedConstruction = new RefAction<Construction>();

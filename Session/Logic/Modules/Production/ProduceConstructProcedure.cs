@@ -10,7 +10,7 @@ using MessagePack;
 public class ProduceConstructProcedure : Procedure
 {
     public ConcurrentDictionary<int, ItemCount> RegimeResourceGains { get; private set; }
-    public ConcurrentDictionary<int, FlowCount> RegimeInflows { get; private set; }
+    public ConcurrentDictionary<int, RegimeFlows> RegimeFlows { get; private set; }
     public ConcurrentDictionary<int, EmploymentReport> EmploymentReports { get; private set; }
     public ConcurrentDictionary<PolyTriPosition, float> ConstructionProgresses { get; private set; }
 
@@ -20,18 +20,18 @@ public class ProduceConstructProcedure : Procedure
             new ConcurrentDictionary<int, ItemCount>(), 
             new ConcurrentDictionary<int, EmploymentReport>(),
             new ConcurrentDictionary<PolyTriPosition, float>(),
-            new ConcurrentDictionary<int, FlowCount>());
+            new ConcurrentDictionary<int, RegimeFlows>());
     }
     [SerializationConstructor] private ProduceConstructProcedure(
         ConcurrentDictionary<int, ItemCount> regimeResourceGains, 
         ConcurrentDictionary<int, EmploymentReport> employmentReports,
         ConcurrentDictionary<PolyTriPosition, float> constructionProgresses,
-        ConcurrentDictionary<int, FlowCount> regimeInflows)
+        ConcurrentDictionary<int, RegimeFlows> regimeFlows)
     {
         ConstructionProgresses = constructionProgresses;
         RegimeResourceGains = regimeResourceGains;
         EmploymentReports = employmentReports;
-        RegimeInflows = regimeInflows;
+        RegimeFlows = regimeFlows;
     }
 
     public override bool Valid(Data data)
@@ -58,7 +58,7 @@ public class ProduceConstructProcedure : Procedure
 
     private void EnactFlows(ProcedureWriteKey key)
     {
-        foreach (var kvp in RegimeInflows)
+        foreach (var kvp in RegimeFlows)
         {
             var r = (Regime)key.Data[kvp.Key];
             var flows = kvp.Value;

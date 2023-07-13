@@ -18,8 +18,9 @@ public class HostLogic : ILogic
     private ProcedureWriteKey _pKey;
     private Data _data;
     private Task<bool> _calculatingAiOrders;
-    private LogicModule[] _majorModules, _minorModules;
-    private TurnCalculator _turnCalculator;
+    private LogicModule[] _majorTurnStartModules, _majorTurnEndModules, _minorTurnStartModules, _minorTurnEndModules;
+    private TurnCalculator _turnStartCalculator, _turnEndCalculator;
+    private bool _turnStartDone = false;
     public HostLogic(Data data)
     {
         _playerTurnOrders = new ConcurrentDictionary<Player, TurnOrders>();
@@ -27,28 +28,44 @@ public class HostLogic : ILogic
         _regimeAis = EntityValueCache<Regime, RegimeAi>
             .ConstructConstant(data, r => new RegimeAi(r, data));
         CommandQueue = new ConcurrentQueue<Command>();
-        _majorModules = new LogicModule[]
+        _majorTurnStartModules = new LogicModule[]
         {
-            new ProduceConstructModule(),
+            new ProduceConstructModule()
+        };
+        _majorTurnEndModules = new LogicModule[]
+        {
             new ConstructBuildingsModule(),
             new FoodAndPopGrowthModule(),
             new FinanceModule(),
             new TradeModule()
         };
-        _minorModules = new LogicModule[] { };
-        _turnCalculator = new TurnCalculator(EnactResults, data);
+        _minorTurnStartModules = new LogicModule[] { };
+        _minorTurnEndModules = new LogicModule[] { };
+        _turnStartCalculator = new TurnCalculator(EnactResults, data);
+        _turnEndCalculator = new TurnCalculator(EnactResults, data);
         
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank.Subscribe(CalcAiTurnOrders);
     }
 
     public void Start()
     {
-        DoCommands();
-        CalcAiTurnOrders();
+        ProcessTurnBeginning();
     }
-    public bool Process(float delta)
+    public void Process(float delta)
     {
-        if (_turnCalculator.State == TurnCalculator.TurnCalcState.Waiting)
+        if (_turnStartDone)
+        {
+            ProcessTurnEnd();
+        }
+        else
+        {
+            ProcessTurnBeginning();
+        }
+    }
+
+    private bool ProcessTurnEnd()
+    {
+        if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Waiting)
         {
             DoCommands();
             if(CheckReadyForFrame())
@@ -56,34 +73,78 @@ public class HostLogic : ILogic
                 List<LogicModule> modules;
                 if (_data.BaseDomain.GameClock.MajorTurn(_data))
                 {
-                    modules = _majorModules.ToList();
+                    modules = _majorTurnEndModules.ToList();
                 }
                 else
                 {
-                    modules = _minorModules.ToList();
+                    modules = _minorTurnEndModules.ToList();
                 }
-                _turnCalculator.StartCalculateTurn(modules, 
+                _turnEndCalculator.Calculate(modules, 
                     _playerTurnOrders, _aiTurnOrders, _data);
             }
         }
-        else if (_turnCalculator.State == TurnCalculator.TurnCalcState.Calculating)
+        else if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Calculating)
         {
-            _turnCalculator.CheckOnCalculation();
+            _turnEndCalculator.CheckOnCalculation();
         }
-        else if (_turnCalculator.State == TurnCalculator.TurnCalcState.Finished)
+        else if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Finished)
         {
             //todo ticking for remote as well?
             _playerTurnOrders.Clear();
             _aiTurnOrders.Clear();
-            new TickProcedure().Enact(_pKey);
-            _turnCalculator.MarkDone();
+            var tick = new TickProcedure();
+            var res = new LogicResults();
+            res.Procedures.Add(tick);
+            EnactResults(res);
+            _turnEndCalculator.MarkDone();
+            _turnStartDone = false;
+            DoCommands();
+            ProcessTurnBeginning();
+            return true;
+        }
+        return false;
+    }
+
+    private bool ProcessTurnBeginning()
+    {
+        if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Waiting)
+        {
+            DoCommands();
+            List<LogicModule> modules;
+            if (_data.BaseDomain.GameClock.MajorTurn(_data))
+            {
+                modules = _majorTurnStartModules.ToList();
+            }
+            else
+            {
+                modules = _minorTurnStartModules.ToList();
+            }
+            _turnStartCalculator.Calculate(modules, 
+                _playerTurnOrders, _aiTurnOrders, _data);
+        }
+        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Calculating)
+        {
+
+            _turnStartCalculator.CheckOnCalculation();
+        }
+        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Finished)
+        {
+            //todo ticking for remote as well?
+            _playerTurnOrders.Clear();
+            _aiTurnOrders.Clear();
+            _turnStartCalculator.MarkDone();
+            _turnStartDone = true;
+            var proc = new FinishedTurnStartCalcProc();
+            var res = new LogicResults();
+            res.Procedures.Add(proc);
+            EnactResults(res);
+            
             DoCommands();
             CalcAiTurnOrders();
             return true;
         }
         return false;
     }
-    
     public void SetDependencies(HostServer server, GameSession session, Data data)
     {
         _data = data;
@@ -95,7 +156,6 @@ public class HostLogic : ILogic
 
     public void SubmitPlayerTurnOrders(Player player, TurnOrders orders)
     {
-        if(orders == null) GD.Print("orders null");
         if (orders.Tick != _data.BaseDomain.GameClock.Tick) throw new Exception();
         var added = _playerTurnOrders.TryAdd(player, orders);
         if (added == false) throw new Exception();
@@ -114,16 +174,12 @@ public class HostLogic : ILogic
         }
 
         var allPlayersHaveRegime = players.All(p => p.Regime.Empty() == false);
-        // if(allPlayersHaveRegime == false) GD.Print("players dont have regime");
         
         var allPlayersSubmitted = players.All(p => _playerTurnOrders.ContainsKey(p));
-        // if(allPlayersSubmitted == false) GD.Print("players havent submitted");
 
         var allAisHaveEntry = aiRegimes.All(p => _aiTurnOrders.ContainsKey(p));
-        // if(allAisHaveEntry == false) GD.Print("ais not entered");
 
         var allAisCompleted = _aiTurnOrders.All(kvp => kvp.Value.IsCompleted);
-        // if(allAisHaveEntry == false) GD.Print("ais not finished");
 
         return allPlayersHaveRegime && allPlayersSubmitted && allAisHaveEntry && allAisCompleted;
     }

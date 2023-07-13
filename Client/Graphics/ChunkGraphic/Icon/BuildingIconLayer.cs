@@ -8,7 +8,6 @@ public partial class BuildingIconLayer : MapChunkGraphicLayer<int>
     public BuildingIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
         : base(data, chunk, mg.ChunkChangedCache.BuildingsChanged)
     {
-        Init(data);
     }
     private BuildingIconLayer() : base()
     {
@@ -24,8 +23,9 @@ public partial class BuildingIconLayer : MapChunkGraphicLayer<int>
 
     protected override IEnumerable<int> GetKeys(Data data)
     {
-        return Chunk.Polys
+        var keys = Chunk.Polys
             .Where(p => p.GetBuildings(data) != null)
             .SelectMany(p => p.GetBuildings(data)).Select(b => b.Id);
+        return keys;
     }
 }

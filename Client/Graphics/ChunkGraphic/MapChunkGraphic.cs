@@ -25,6 +25,7 @@ public partial class MapChunkGraphic : Node2D
             RegimeBorders,
             Icons
         );
+        Init();
     }
 
     public void Test()
@@ -36,11 +37,19 @@ public partial class MapChunkGraphic : Node2D
 
         Modules = new Dictionary<string, MapChunkGraphicModule>();
     }
-    public void Update()
+    public void UpdateVis()
     {
         foreach (var m in Modules.Values)
         {
-            m.Update(_data);
+            m.UpdateVis(_data);
+        }
+    }
+
+    public void Init()
+    {
+        foreach (var module in Modules.Values)
+        {
+            module.Init(_data);
         }
     }
     private void Order(MapChunk chunk, Data data, MapGraphics mg, params ChunkGraphicFactory[] factories)

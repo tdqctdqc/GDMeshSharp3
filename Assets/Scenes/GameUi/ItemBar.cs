@@ -23,7 +23,8 @@ public partial class ItemBar : HBoxContainer
             }, 
             20f,
             data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank,
-            data.Notices.Ticked.Blank
+            data.Notices.Ticked.Blank,
+            data.Notices.FinishedTurnStartCalc
         );
         this.AddChildWithVSeparator(hBox);
     }

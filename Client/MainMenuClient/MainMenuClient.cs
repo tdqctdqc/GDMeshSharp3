@@ -22,7 +22,7 @@ public partial class MainMenuClient : Node, IClient
     {
     }
 
-    public void Process(float delta, bool gameStateChanged)
+    public void Process(float delta)
     {
     }
     

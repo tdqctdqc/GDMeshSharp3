@@ -17,7 +17,9 @@ public partial class TooltipManager : Control
         AddChild(_panel);
         _panel.Visible = false;
         Game.I.Client.Requests.PromptTooltip.Subscribe(PromptTooltip);
+        TreeExiting += () => Game.I.Client.Requests.PromptTooltip.Unsubscribe(PromptTooltip);
         Game.I.Client.Requests.HideTooltip.Subscribe(HideTooltip);
+        TreeExiting += () => Game.I.Client.Requests.HideTooltip.Unsubscribe(HideTooltip);;
     }
 
     private TooltipManager()

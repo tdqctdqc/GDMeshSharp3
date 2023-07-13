@@ -61,14 +61,6 @@ public static class MapPolygonExt
         .Select(n => poly.GetBorder(n));
     public static List<LineSegment> GetOrderedBoundarySegs(this MapPolygon poly, Data data)
     {
-        // GD.Print(data.Planet.PolygonAux.AuxDatas.Dic.ContainsKey(poly));
-        GD.Print("poly entities has " + data.Planet.Polygons.Entities.Contains(poly));
-        GD.Print("data has " + data.Entities.ContainsValue(poly));
-        var planet = data.Planet;
-        var aux = planet.PolygonAux;
-        var auxDatas = aux.AuxDatas.Dic[poly];
-        var segs = auxDatas.OrderedBoundarySegs;
-        
         return data.Planet
             .PolygonAux
             .AuxDatas[poly]

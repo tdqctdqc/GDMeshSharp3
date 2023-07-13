@@ -26,4 +26,9 @@ public class Income : Flow
         
         return fromBuildings + fromAgriculture + tradeBalance;
     }
+
+    public override float GetConsumption(Regime r, Data d)
+    {
+        return 0f;
+    }
 }

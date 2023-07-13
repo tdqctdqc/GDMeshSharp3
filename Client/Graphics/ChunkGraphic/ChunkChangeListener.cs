@@ -30,26 +30,9 @@ public class ChunkChangeListener<TKey>
     {
         Removed[chunk].Invoke(key);
     }
-    public void Clear()
-    {
-        // foreach (var v in Added.Values)
-        // {
-        //     v.Clear();
-        // }
-        //
-        // foreach (var v in Removed.Values)
-        // {
-        //     v.Clear();
-        // }
-        //
-        // foreach (var v in Changed.Values)
-        // {
-        //     v.Clear();
-        // }
-    }
 }
 
-public static class ChunkChangeListener2Ext
+public static class ChunkChangeListenerExt
 {
     public static void ListenForEntityCreationDestruction<TEntity, TKey>(
         this ChunkChangeListener<TKey> l,
@@ -76,6 +59,15 @@ public static class ChunkChangeListener2Ext
             var chunk = p.GetChunk(data);
             l.MarkRemoved(getKey(v), chunk);
         });
+        
+        var es = data.GetRegister<TEntity>().Entities;
+        var keys = es.Select(getKey);
+        var chunks = es.Select(e => getPoly(e).GetChunk(data));
+        var dic = es.ToDictionary(getKey, e => getPoly(e).GetChunk(data));
+        foreach (var kvp in dic)
+        {
+            l.MarkAdded(kvp.Key, kvp.Value);
+        }
     }
     public static void ListenForEntityCreationDestructionMult<TEntity, TKey>(
         this ChunkChangeListener<TKey> l,

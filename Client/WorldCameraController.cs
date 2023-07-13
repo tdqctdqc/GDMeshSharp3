@@ -14,7 +14,7 @@ public partial class WorldCameraController : Camera2D, ICameraController
     private float _zoomIncr = .01f;
     private float _zoomLevel = .9f;
     private float _maxZoom = 50f;
-    private float _minZoom = .01f;
+    private float _minZoom = .5f;
     private float _minZoomLevel = .05f;
     private float _maxZoomLevel = .9f;
     public float XScrollRatio { get; private set; }
@@ -124,11 +124,11 @@ public partial class WorldCameraController : Camera2D, ICameraController
     {
         if(mb.ButtonIndex == MouseButton.WheelDown)
         {
-            _zoomLevel -= _zoomIncr;
+            _zoomLevel += _zoomIncr;
         }
         if(mb.ButtonIndex == MouseButton.WheelUp)
         {
-            _zoomLevel += _zoomIncr;
+            _zoomLevel -= _zoomIncr;
         }
 
         UpdateZoom();
@@ -139,6 +139,6 @@ public partial class WorldCameraController : Camera2D, ICameraController
         _zoomLevel = Mathf.Clamp(_zoomLevel, _minZoomLevel, _maxZoomLevel);
         var zoomFactor = ShapingFunctions.EaseInCubic(_zoomLevel, _maxZoom, _minZoom);
         zoomFactor = Mathf.Clamp(zoomFactor, _minZoom, _maxZoom);
-        Zoom = Vector2.One * zoomFactor;
+        Zoom = Vector2.One / zoomFactor;
     }
 }

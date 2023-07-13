@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Godot;
 
 public class TurnCalculator
 {
@@ -26,7 +27,7 @@ public class TurnCalculator
         _enact = enact;
         State = TurnCalcState.Waiting;
     }
-    public void StartCalculateTurn(List<LogicModule> modules,
+    public void Calculate(List<LogicModule> modules,
         IDictionary<Player, TurnOrders> playerTurnOrders,
         IDictionary<Regime, Task<TurnOrders>> aiTurnOrders, Data d)
     {

@@ -2,140 +2,90 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/AI/BudgetScratch.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Geometry/Graph/GraphConverter.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Serialization/Save/SaveFile.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Serialization/Save/Saver.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingComponent/BuildingComponent.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingComponent/ExtractionProd.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingComponent/FlowProd.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingComponent/ItemProd.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingComponent/Workplace.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/DiplomacyAi.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeRelation/RegimeDiplomacy.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Flow/FlowData.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Flow/RegimeFlows.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Logic/Modules/Diplomacy/SetEnemyProcedure.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Logic/Modules/FinishedTurnStartCalcProc.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/BudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/BudgetScratch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/BudgetScratch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/GameUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/GameUi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/MapDisplayOptionsUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/MapDisplayOptionsUi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/GeneratorClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GeneratorClient.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/SandboxClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/SandboxClient.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/LoggerWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/LoggerWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Item/IndustrialPoint.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Item/IndustrialPoint.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Misc/Income.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Misc/Income.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ClientRequests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientRequests.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/GameClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/GameClient.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapInputCatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapInputCatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/PolyHighlighter/PolyHighlighter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/PolyHighlighter/PolyHighlighter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverPolyHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverPolyHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/TerrainGraphics/PolyTriChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/TerrainGraphics/PolyTriChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBarToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBarToken.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeConstructionOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeConstructionOverview.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimePeepsOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimePeepsOverview.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/PlayerRegimeDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/PlayerRegimeDisplay.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeGeneralOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeGeneralOverview.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/PlayerRegimeDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/RegimeInfoBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/TickDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/TickDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkChangeListener.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkChangeListener.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkChangedCache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkChangedCache.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyFillLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyFillLayer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/BuildingIconLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/BuildingIconLayer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ConstructionIconLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ConstructionIconLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/IconsChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/IconsChunkGraphic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIconLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIconLayer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/IClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/IClient.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/MainMenuClient/MainMenuClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/MainMenuClient/MainMenuClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Border/PolyBorderChain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Border/PolyBorderChain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Border/PolyBorderChainExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Border/PolyBorderChainExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/CountHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/CountHistory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/History.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/History.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/History/ItemHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/History/ItemHistory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/MultiCountHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/MultiCountHistory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/PathFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/PathFinder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Picker/WandererPicker/RegimeWanderer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Picker/WandererPicker/RegimeWanderer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Picker/WandererPicker/Wanderer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Picker/WandererPicker/Wanderer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Picker/WandererPicker/WandererPicker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Picker/WandererPicker/WandererPicker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Tree/EntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Tree/EntityTypeTreeNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/Count.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Wallet/Count.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/FlowCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Wallet/FlowCount.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/ItemCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Wallet/ItemCount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/WorldCameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/WorldCameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataStructures/RefAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/RefAction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/Count.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Count/Count.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/EntityCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Count/EntityCount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/FlowCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Count/FlowCount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/ItemCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Count/ItemCount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/DataStructures/Wallet/ModelCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/DataStructures/Count/ModelCount.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/GDMeshSharp3.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Game.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/EdgeDisturber.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/EdgeDisturber.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Geology/GenCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Geology/GenCell.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/GeologyGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/MoistureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/PolyTri/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/PolyTri/PolyTriGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/PolyTri/RiverPolyTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/PolyTri/RiverPolyTriGen.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/ResourceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/ResourceGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/LocationGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/LocationGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/PeepGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/PeepGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IGraphExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/IGraphExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Graph/ImplicitGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/ImplicitGraph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Geometry/PolygonGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/PolygonGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/MessagePackManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/MessagePackManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/SerializeChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/SerializeChecker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/ClientData/ClientPlayerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/ClientData/ClientPlayerData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Data.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/EntityRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/EntityRef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/EntityRefCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/EntityRefCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/EntityVarMeta.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/EntityVarMeta.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolyNexus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolyNexus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolyNexusExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolyNexusExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygon.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdgeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdgeExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/DataNotices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/DataNotices.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyAuxData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyAuxData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyEdgeAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyEdgeAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/TempRiver/NewRiverTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/TempRiver/NewRiverTriGen.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/TempRiver/TempRiverData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/TempRiver/TempRiverData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Building/MapBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Building/MapBuilding.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/CurrentConstruction/Construction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/CurrentConstruction/Construction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/CurrentConstruction/CurrentConstruction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/CurrentConstruction/CurrentConstruction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/PeepHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/PeepHistory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Market/Market.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Market/Market.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/Regime.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeFinance/RegimeFinance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeFinance/RegimeFinance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeRelation/RegimeRelation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/RegimeRelation/RegimeRelation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/ConstructionCap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/ConstructionCap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Flow/Income.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/Income.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/LocalCache/LandSeaManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/LocalCache/LandSeaManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Bank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Bank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModelManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModelManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/ExtractionBuildingModel.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/IndustrialPower.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/IndustrialPower.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingComponent/FlowProd.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingComponent/FlowProd.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/FinancialBuildingModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/FlowProdBuildingModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/ItemProdBuildingModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Mine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Mine.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/TownHall.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/TownHall.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/WorkBuildingModel.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/ItemManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/ItemManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/NaturalResource.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/NaturalResource.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/ModelRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/ModelRef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/ModelRefCollection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/ModelRefCollection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Landform/LandformManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Landform/LandformManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/VegetationManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/VegetationManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Repo/EntityMultiIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Repo/EntityMultiIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Repo/EntityRegister.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Repo/EntityRegister.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/GameSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GameSession.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/GeneratorSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GeneratorSession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/ISession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/ISession.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/HostLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/ILogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/ILogic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/FlowProdBuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/FlowProdBuildingConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/ItemProdBuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/ItemProdBuildingConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Diplomacy/DeclareWarProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Diplomacy/DeclareWarProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Diplomacy/MakeAllianceProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Diplomacy/MakeAllianceProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ClearFinishedConstructionsProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ClearFinishedConstructionsProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ConstructBuildingsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ConstructBuildingsModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/PolyEmploymentScratch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/PolyEmploymentScratch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Finance/FinanceModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Finance/FinanceModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/StartConstructionProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/StartConstructionProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/RemoteLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/RemoteLogic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Logic/TurnCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/TurnCalculator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/MainMenuSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/MainMenuSession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Message/Command/ChooseRegimeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Message/Command/ChooseRegimeCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Message/Notice/EntityCreatedNotice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Message/Notice/EntityCreatedNotice.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Message/Procedure/Collection/AddToRefColProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Message/Procedure/Collection/AddToRefColProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Message/Procedure/Collection/RemoveFromRefColProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Message/Procedure/Collection/RemoveFromRefColProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Message/Procedure/SetRegimeProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Message/Procedure/SetRegimeProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyDataTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyDataTooltipTemplate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Sandbox/SandboxSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Sandbox/SandboxSession.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Logger/LogType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Logger/LogType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -251,6 +201,17 @@
       <workItem from="1688654466425" duration="595000" />
       <workItem from="1688659926024" duration="4195000" />
       <workItem from="1688674679562" duration="8596000" />
+      <workItem from="1688691690739" duration="5913000" />
+      <workItem from="1688740278333" duration="4178000" />
+      <workItem from="1688834283203" duration="4485000" />
+      <workItem from="1688843289152" duration="5616000" />
+      <workItem from="1688862389669" duration="5083000" />
+      <workItem from="1688868694756" duration="137000" />
+      <workItem from="1688911268081" duration="6450000" />
+      <workItem from="1688952995465" duration="1008000" />
+      <workItem from="1689035143431" duration="601000" />
+      <workItem from="1689085352197" duration="3553000" />
+      <workItem from="1689264174526" duration="199000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -336,7 +297,14 @@
       <option name="project" value="LOCAL" />
       <updated>1688508257081</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="made ref Entity() take data as param">
+      <created>1688692485869</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1688692485869</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -368,6 +336,7 @@
     <MESSAGE value="gave regime FlowCount" />
     <MESSAGE value="adding construction cap as flow" />
     <MESSAGE value="doo" />
-    <option name="LAST_COMMIT_MESSAGE" value="doo" />
+    <MESSAGE value="made ref Entity() take data as param" />
+    <option name="LAST_COMMIT_MESSAGE" value="made ref Entity() take data as param" />
   </component>
 </project>

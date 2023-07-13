@@ -20,7 +20,10 @@ public partial class RegimeConstructionOverview : ScrollContainer
         var constructions = data.Society.CurrentConstruction
             .ByPoly.Where(kvp => regime.Polygons.RefIds.Contains(kvp.Key))
             .SelectMany(kvp => kvp.Value).ToList();
-        _container.CreateLabelAsChild($"Cap: {regime.FlowCount[FlowManager.ConstructionCap]}");
+        _container.CreateLabelAsChild($"Cap: {regime.Flows[FlowManager.ConstructionCap].FlowIn}");
+        _container.CreateLabelAsChild($"In Use: {regime.Flows[FlowManager.ConstructionCap].FlowOut}");
+        _container.CreateLabelAsChild($"Available: {regime.Flows[FlowManager.ConstructionCap].Net()}");
+        
         foreach (var construction in constructions)
         {
             var hbox = new HBoxContainer();

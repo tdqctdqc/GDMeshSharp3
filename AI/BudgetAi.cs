@@ -19,7 +19,6 @@ public class BudgetAi
         };
         IncomeBudget = new IncomeBudget();
         Reserve = new BudgetItemReserve();
-        
     }
 
     public void Calculate(Data data, 
@@ -27,43 +26,51 @@ public class BudgetAi
     {
         IncomeBudget.Calculate(data);
         Reserve.Calculate(_regime, data);
-        var prices = data.Models.Items.Models.Values.ToDictionary(v => v, v => 1f);
-        var totalPrice =
-            _regime.Items.Contents.Sum(kvp => prices[(Item) data.Models[kvp.Key]] * _regime.Items[kvp.Key]);
-        var totalLaborAvail = _regime.Polygons.Entities(data).Sum(p => p.GetLaborSurplus(data));
-        var constructCap = Mathf.FloorToInt(_regime.FlowCount[FlowManager.ConstructionCap]);
+        var prices = data.Society.Market.ItemPricesById
+            .ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
+        
         
         foreach (var p in _priorities)
         {
             p.SetWeight(data, _regime);
         }
-        var totalPriorityWeight = _priorities.Sum(p => p.Weight);
-        var budget = ItemCount.Construct(_regime.Items);
-        foreach (var p in _priorities)
-        {
-            DoPriority(p, data, prices, budget, totalPriorityWeight, totalPrice, 
-                totalLaborAvail, constructCap, orders);
-        }
+        var scratch = new BudgetScratch();
         
+        DoMainRound(scratch, data, prices, orders);
+        DoCleanupRound(scratch, data, prices, orders);
+        SpendIncome(data, orders, scratch.Items);
     }
 
-    private void DoPriority(BudgetPriority priority, Data data, Dictionary<Item, float> prices, 
-        ItemCount itemBudget, float totalPriorityWeight, float totalPrice, int totalLaborAvail, int constructCap,
-        MajorTurnOrders orders)
+    private void DoMainRound(BudgetScratch scratch, Data data,
+        Dictionary<Item, float> prices, MajorTurnOrders orders)
     {
-        var priorityWeight = priority.Weight;
-        var priorityShare = priorityWeight / totalPriorityWeight;
-        var credit = Mathf.FloorToInt(totalPrice *  priorityShare);
-        var labor = Mathf.FloorToInt(priorityShare * totalLaborAvail);
-        if (credit < 0f)
+        var totalPriorityWeight = _priorities.Sum(p => p.Weight);
+        var totalLaborAvail = _regime.Polygons.Entities(data).Sum(p => p.GetLaborSurplus(data));
+        var totalPrice =
+            _regime.Items.Contents.Sum(kvp =>
+            {
+                return prices.ContainsKey((Item) data.Models[kvp.Key])
+                    ? prices[(Item) data.Models[kvp.Key]] * _regime.Items[kvp.Key]
+                    : 1f;
+            });
+        foreach (var p in _priorities)
         {
-            throw new Exception($"priority weight {priorityWeight} " +
-                                $"total weight {totalPriorityWeight} " +
-                                $"total price {totalPrice}");
+            var weight = p.Weight;
+            var share = weight / totalPriorityWeight;
+            scratch.TakeShare(share, _regime.Items, _regime.Flows, totalLaborAvail, 
+                Mathf.FloorToInt(totalPrice));
+            
+            p.Calculate(_regime, data, scratch, prices, orders);
         }
-        priority.Calculate(_regime, data, itemBudget, prices, credit,
-            labor, Mathf.FloorToInt(constructCap), orders);
-        SpendIncome(data, orders, itemBudget);
+    }
+    private void DoCleanupRound(BudgetScratch scratch, Data data,
+        Dictionary<Item, float> prices, MajorTurnOrders orders)
+    {
+        scratch.MaxCredit();
+        foreach (var p in _priorities)
+        {
+            p.Calculate(_regime, data, scratch, prices, orders);
+        }
     }
 
     public Dictionary<Item, int> GetItemWishlist(Data data, float credit)
@@ -74,14 +81,18 @@ public class BudgetAi
         
         var totalLaborAvail = _regime.Polygons.Entities(data).Sum(p => p.GetLaborSurplus(data));
         var totalPriorityWeight = _priorities.Sum(p => p.Weight);
-        
+        var creditBig = Mathf.Clamp(credit * 10, 0f, 1_000_000f);
         return _priorities.Select(p =>
             {
                 var priorityWeight = p.Weight;
                 var priorityShare = priorityWeight / totalPriorityWeight;
-
-                return p.GetItemWishlist(_regime, data, prices,
-                    Mathf.FloorToInt(priorityShare * buyItemsIncome), totalLaborAvail);
+                var credit = buyItemsIncome * priorityShare;
+                var noCreditLimit = p.GetItemWishlist(_regime, data, prices,
+                    Mathf.FloorToInt(creditBig), totalLaborAvail);
+                var priceTotal = noCreditLimit.Sum(kvp => prices[kvp.Key] * kvp.Value);
+                var ratioFulfil = Mathf.Clamp(credit / priceTotal, 0f, 1f);
+                if (priceTotal == 0f) ratioFulfil = 1f;
+                return noCreditLimit.ToDictionary(kvp => kvp.Key, kvp => Mathf.FloorToInt(kvp.Value * ratioFulfil));
             })
             .GetCounts(t => t);
     }
@@ -93,11 +104,10 @@ public class BudgetAi
     private void DoTradeOrders(Data data, MajorTurnOrders orders, ItemCount itemBudget)
     {
         var market = data.Society.Market;
-        var income = _regime.FlowCount[FlowManager.Income];
-        income += _regime.Finance.LastTradeBalance;
+        var income = _regime.Flows[FlowManager.Income].Net();
         if (income < 0) return;
-        
         var buyItemsIncome = Mathf.Floor(income * IncomeBudget.BuyWishlistItemsRatio);
+        
         var wishlist = GetItemWishlist(data, buyItemsIncome);
         foreach (var kvp in wishlist)
         {

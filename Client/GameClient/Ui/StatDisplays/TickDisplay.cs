@@ -9,6 +9,7 @@ public partial class TickDisplay : Label
     {
         var d = new TickDisplay();
         data.Notices.Ticked.Subscribe(d._tick);
+        d.TreeExiting += () => data.Notices.Ticked.Unsubscribe(d._tick);
         return d;
     }
     private TickDisplay()

@@ -10,7 +10,19 @@ public static class NodeExt
     {
         return SubscribedNodeToken.Construct(node, update, triggers);
     }
-    
+
+    public static HBoxContainer MakeFlowStatDisplay(Flow flow, Data data, float height,
+        params RefAction[] triggers)
+    {
+        return flow.Icon.MakeIconStatDisplay(data,
+            () =>
+            {
+                var regime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
+                var f = regime.Flows[flow];
+                return $"In: {f.FlowIn} \n Out: {f.FlowOut} \n Net: {f.Net()}";
+            },
+            height, triggers);
+    }
     public static HBoxContainer MakeIconStatDisplay(this Icon icon, Data data, 
         Func<string> getStat, float height,
         params RefAction[] triggers)

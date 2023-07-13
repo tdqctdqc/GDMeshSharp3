@@ -12,7 +12,6 @@ public partial class PolyFillLayer : MapChunkGraphicLayer<Vector2>
     {
         _transparency = transparency;
         _getColor = getColor;
-        Init(data);
     }
 
     private PolyFillLayer()

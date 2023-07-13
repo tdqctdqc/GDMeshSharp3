@@ -5,5 +5,5 @@ using Godot;
 
 public interface ILogic
 {
-    bool Process(float delta);
+    void Process(float delta);
 }

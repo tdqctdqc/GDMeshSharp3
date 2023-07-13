@@ -19,11 +19,11 @@ public partial class MapGraphics : Node2D
     private ClientWriteKey _key;
     public void Setup(ClientWriteKey key)
     {
+        Clear();
         _key = key;
         var sw = new Stopwatch();
         sw.Start();
         ChunkChangedCache = new ChunkChangedCache(_key.Data);
-        Clear();
         _segmenters = new List<IGraphicsSegmenter>();
         MapChunkGraphics = new List<MapChunkGraphic>();
         var polySegmenter = new GraphicsSegmenter<MapChunkGraphic>();
@@ -37,6 +37,8 @@ public partial class MapGraphics : Node2D
             return graphic;
         }).ToList();
         
+        _key.Session.Client.Requests.ToggleMapGraphicsLayer.Subscribe(ToggleMapLayer);
+        TreeExiting += () => _key.Session.Client.Requests.ToggleMapGraphicsLayer.Unsubscribe(ToggleMapLayer);
         
         foreach (var keyValuePair in MapChunkLayerBenchmark.Times)
         {
@@ -56,19 +58,23 @@ public partial class MapGraphics : Node2D
         sw.Stop();
         GD.Print("map graphics setup time " + sw.Elapsed.TotalMilliseconds);
     }
-
-    public void Update()
+    private void ToggleMapLayer(string name)
     {
-        MapChunkGraphics.ForEach(c =>
+        foreach (var mc in MapChunkGraphics)
         {
-            c.Update();
-        });
-        ChunkChangedCache.Clear();
+            var n = mc.Modules[name];
+            n.Visible = n.Visible == false;
+        }
     }
-
-
     public void Process(float delta)
     {
+        if (MapChunkGraphics != null)
+        {
+            for (var i = 0; i < MapChunkGraphics.Count; i++)
+            {
+                MapChunkGraphics[i].UpdateVis();
+            }
+        }
         if(Game.I.Client?.Cam != null)
         {
             if (_segmenters == null) return;
@@ -78,18 +84,9 @@ public partial class MapGraphics : Node2D
             }
         }
     }
-    
-    public override void _Input(InputEvent e)
-    {
-        
-    }
-
     private void Clear()
     {
         _segmenters?.Clear();
-        while (GetChildCount() > 0)
-        {
-            GetChild(0).Free();
-        }
+        this.ClearChildren();
     }
 }

@@ -9,7 +9,6 @@ public partial class ConstructionIconLayer : MapChunkGraphicLayer<Construction>
     public ConstructionIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
         : base(data, chunk, mg.ChunkChangedCache.ConstructionsChanged)
     {        
-        Init(data);
     }
     private ConstructionIconLayer() : base()
     {

@@ -22,7 +22,6 @@ public partial class RoadChunkGraphic : MapChunkGraphicModule
             : base(data, chunk, mg.ChunkChangedCache.RoadsChanged)
         {
             _mb = new MeshBuilder();
-            Init(data);
         }
 
         protected override Node2D MakeGraphic(int key, Data data)

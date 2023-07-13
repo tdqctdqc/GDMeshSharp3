@@ -18,11 +18,8 @@ public abstract class BudgetPriority
     }
 
     public abstract void Calculate(Regime regime, Data data,
-        ItemCount budget,
+        BudgetScratch scratch,
         Dictionary<Item, float> prices,
-        int credit,
-        int availLabor,
-        int availConstructCap,
         MajorTurnOrders orders);
 
     public abstract Dictionary<Item, int> GetItemWishlist(Regime regime, Data data,

@@ -13,4 +13,9 @@ public class IndustrialPower : Flow
     {
         return 0f;
     }
+
+    public override float GetConsumption(Regime r, Data d)
+    {
+        return 0f;
+    }
 }

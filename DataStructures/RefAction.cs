@@ -103,7 +103,7 @@ public class RefAction<TArg>
     {
         _refSubscribers.Remove(a);
     }
-    public void Unsubscribe(ref Action<TArg> a)
+    public void Unsubscribe(Action<TArg> a)
     {
         _action -= a.Invoke;        
     }

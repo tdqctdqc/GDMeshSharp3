@@ -19,7 +19,7 @@ public class FlowProd : BuildingComponent
         staffingRatio = Mathf.Clamp(staffingRatio, 0f, 1f);
         var prod = Mathf.FloorToInt(staffingRatio * ProdCap);
         var rId = poly.Regime.RefId;
-        var wallet = proc.RegimeInflows[rId];
-        wallet.Add(ProdFlow, prod);
+        var wallet = proc.RegimeFlows[rId];
+        wallet.AddFlowIn(ProdFlow, prod);
     }
 }

@@ -15,11 +15,13 @@ public partial class RegimePeepsInfoBar : HBoxContainer
             () => GetPopulationCount(data));
         popSize.AddTrigger(data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         popSize.AddTrigger(data.Notices.Ticked.Blank);
+        popSize.AddTrigger(data.Notices.FinishedTurnStartCalc);
         AddChild(sizeLabel);
         var popGrowth = StatLabel.Construct<int>("Pop Growth", deltaLabel,
             () => GetPeepDelta(data));
         popGrowth.AddTrigger(data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         popGrowth.AddTrigger(data.Notices.Ticked.Blank);
+        popGrowth.AddTrigger(data.Notices.FinishedTurnStartCalc);
 
         AddChild(deltaLabel);
     }

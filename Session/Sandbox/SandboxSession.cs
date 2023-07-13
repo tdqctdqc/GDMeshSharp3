@@ -25,7 +25,7 @@ public partial class SandboxSession : Node, ISession
     }
     public override void _Process(double delta)
     {
-        Client?.Process((float)delta, false);
+        Client?.Process((float)delta);
     }
 
     public override void _UnhandledInput(InputEvent e)

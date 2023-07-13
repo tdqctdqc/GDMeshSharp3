@@ -85,7 +85,7 @@ public class ProduceConstructModule : LogicModule
             .Sum();
         
         if (constructionCapNeeded == 0) return;
-        var constructionCap = regime.FlowCount[FlowManager.ConstructionCap];
+        var constructionCap = regime.Flows[FlowManager.ConstructionCap].Net();
         var constructRatio = Mathf.Clamp((float)constructionCap / (float)constructionCapNeeded, 0f, 1f);
         foreach (var poly in regimePolys)
         {
@@ -128,7 +128,7 @@ public class ProduceConstructModule : LogicModule
         foreach (var construction in constructions)
         {
             var spend = ratio * construction.Model.Model(data).ConstructionCapPerTick;
-            proc.RegimeInflows[r.Id].Remove(FlowManager.ConstructionCap, spend);
+            proc.RegimeFlows[r.Id][FlowManager.ConstructionCap].AddFlowOut(spend);
             proc.ConstructionProgresses.TryAdd(construction.Pos, ratio);
         }
     }
@@ -139,8 +139,10 @@ public class ProduceConstructModule : LogicModule
         {
             var flow = kvp.Value;
             var amt = flow.GetNonBuildingFlow(r, data);
-            var flows = proc.RegimeInflows.GetOrAdd(r.Id, i => FlowCount.Construct());
-            proc.RegimeInflows[r.Id].Add(flow, amt);
+            var flows = proc.RegimeFlows.GetOrAdd(r.Id, i => new RegimeFlows(new Dictionary<int, FlowData>()));
+            var consumption = flow.GetConsumption(r, data);
+            proc.RegimeFlows[r.Id].AddFlowIn(flow, amt);
+            proc.RegimeFlows[r.Id].AddFlowOut(flow, consumption);
         }
     }
 }

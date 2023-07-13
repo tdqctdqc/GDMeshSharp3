@@ -15,11 +15,9 @@ public partial class GameSession : Node, IDataSession
     public override void _Process(double deltaD)
     {
         var delta = (float) deltaD;
-        if (_logic != null)
-        {
-            var gameStateChanged = _logic.Process(delta);
-            Client?.Process(delta, gameStateChanged);
-        }
+        _logic?.Process(delta);
+        Client?.Process(delta);
+
     }
 
     public void Setup()

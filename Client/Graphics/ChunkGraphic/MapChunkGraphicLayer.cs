@@ -18,7 +18,6 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
     Node2D IMapChunkGraphicLayer.Node => this;
     public MapChunkGraphicLayer(Data data, MapChunk chunk, ChunkChangeListener<TKey> listener)
     {
-        
         _listener = listener;
         Chunk = chunk;
         _graphics = new Dictionary<TKey, Node2D>();
@@ -46,10 +45,6 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
         if (_listener != null)
         {
             _listener.Added[Chunk].Unsubscribe(_add);
-            if (_listener.Added[Chunk]._refSubscribers.Contains(_add))
-            {
-                throw new Exception();
-            }
             _listener.Changed[Chunk].Unsubscribe(_change);
             _listener.Removed[Chunk].Unsubscribe(_remove);
             _add.Clear();
@@ -58,8 +53,11 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
         }
     }
 
-    protected void Init(Data data)
+    public void Init(Data data)
     {
+        this.ClearChildren();
+        _graphics.Clear();
+        
         if (MapChunkLayerBenchmark.Times.ContainsKey(GetType()) == false)
         {
             MapChunkLayerBenchmark.Times.Add(GetType(), new ConcurrentBag<int>());
@@ -112,49 +110,6 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
     {
         node.Position = Chunk.RelTo.GetOffsetTo(poly, data);
     }
-    public void Update(Data data)
-    {
-        // if (_listener == null) return;
-        // foreach (var key in _listener.Added[Chunk])
-        // {
-        //     Add(key, data);
-        // }
-        //
-        // foreach (var key in _listener.Changed[Chunk])
-        // {
-        //     if (_graphics.ContainsKey(key))
-        //     {
-        //         _graphics[key].QueueFree();
-        //     }
-        //     var newGraphic = MakeGraphic(key, data);
-        //     AddChild(newGraphic);
-        //     _graphics[key] = newGraphic;
-        // }
-        //
-        // foreach (var key in _listener.Removed[Chunk])
-        // {
-        //     Node2D graphic = null;
-        //     try
-        //     {
-        //         graphic = _graphics[key];
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         GD.Print(GetType());
-        //         if (key is Construction p)
-        //         {
-        //             GD.Print("added in listener " + _listener.AddedAllTime.Contains(key));
-        //             GD.Print("poly " + p.Pos.PolyId);
-        //             GD.Print("pos " + p.Pos.Poly(data).Center);
-        //             GD.Print("tri " + p.Pos.TriIndex);
-        //             GD.Print("has building" + data.Society.BuildingAux.ByTri.ContainsKey(p.Pos));
-        //         }
-        //         throw;
-        //     }
-        //     graphic.QueueFree();
-        //     _graphics.Remove(key);
-        // }
-    }
     
     protected abstract Node2D MakeGraphic(TKey key, Data data);
     protected abstract IEnumerable<TKey> GetKeys(Data data);
@@ -162,6 +117,6 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
 
 public interface IMapChunkGraphicLayer
 {
-    void Update(Data data);
     Node2D Node { get; }
+    void Init(Data data);
 }
