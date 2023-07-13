@@ -17,7 +17,7 @@ public abstract class Entity
         GetEntityTypeTreeNode().Meta.Vars[fieldName].UpdateVar(fieldName, this, key, newValue);
     }
 
-    public static void SubscribeToValChange<TEntity, TVal>(string valName, RefAction<ValChangeNotice<TVal>> handler)
+    public static void SubscribeToValChange<TEntity, TVal>(string valName, ValChangeAction<TVal> handler)
         where TEntity : Entity
     {
         Game.I.Serializer.GetEntityMeta<TEntity>().GetEntityVarMeta<TVal>(valName).ValChanged().Subscribe(handler);

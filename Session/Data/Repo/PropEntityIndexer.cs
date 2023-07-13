@@ -21,7 +21,7 @@ public class PropEntityIndexer<TEntity, TKey> : AuxData<TEntity>
         return new PropEntityIndexer<TEntity, TKey>(data, get, changedValTriggers);
     }
     protected PropEntityIndexer(Data data, Func<TEntity, TKey> get,
-        params RefAction<ValChangeNotice<TKey>>[] changedValTriggers) : base(data)
+        params ValChangeAction<TKey>[] changedValTriggers) : base(data)
     {
         _get = get;
         _dic = new Dictionary<TKey, TEntity>();

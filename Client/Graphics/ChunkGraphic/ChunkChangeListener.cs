@@ -104,7 +104,7 @@ public static class ChunkChangeListenerExt
     
     public static void ListenForValueChange<TKey, TEntity, TValue>(
         this ChunkChangeListener<TKey> l,
-        Data data, RefAction<ValChangeNotice<TValue>> valueTrigger, Func<TEntity, MapPolygon> getPoly,
+        Data data, ValChangeAction<TValue> valueTrigger, Func<TEntity, MapPolygon> getPoly,
         Func<TEntity, TKey> getKey)
         where TEntity : Entity
     {

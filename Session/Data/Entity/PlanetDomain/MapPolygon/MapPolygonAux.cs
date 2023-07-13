@@ -12,7 +12,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
     public HashSet<MapChunk> Chunks { get; private set; }
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public LandSeaManager LandSea { get; private set; }
-    public RefAction<ValChangeNotice<EntityRef<Regime>>> ChangedRegime { get; private set; }
+    public ValChangeAction<EntityRef<Regime>> ChangedRegime { get; private set; }
 
     public MapPolygonAux(Domain domain, Data data) : base(domain, data)
     {
@@ -27,7 +27,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
             p => new PolyAuxData(p, data)
         );
         
-        ChangedRegime = new RefAction<ValChangeNotice<EntityRef<Regime>>>();
+        ChangedRegime = new ValChangeAction<EntityRef<Regime>>();
         Entity.SubscribeToValChange<MapPolygon, EntityRef<Regime>>(nameof(MapPolygon.Regime), ChangedRegime);
         
         data.Notices.SetLandAndSea.Subscribe(() =>

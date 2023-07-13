@@ -14,14 +14,14 @@ public class EntityMultiIndexer<TKey, TMult> : AuxData<TMult>
     }
     protected Dictionary<int, HashSet<int>> _dic;
     private Func<TMult, EntityRef<TKey>> _getSingle;
-    private RefAction<ValChangeNotice<EntityRef<TKey>>> _changedMult;
+    private ValChangeAction<EntityRef<TKey>> _changedMult;
     public EntityMultiIndexer(Data data, Func<TMult, EntityRef<TKey>> getSingle,
         RefAction[] recalcTriggers,
-        params RefAction<ValChangeNotice<EntityRef<TKey>>>[] changeTriggers) : base(data)
+        params ValChangeAction<EntityRef<TKey>>[] changeTriggers) : base(data)
     {
         _dic = new Dictionary<int, HashSet<int>>();
         _getSingle = getSingle;
-        _changedMult = new RefAction<ValChangeNotice<EntityRef<TKey>>>();
+        _changedMult = new ValChangeAction<EntityRef<TKey>>();
         _changedMult.Subscribe(n => 
         {
             if (_dic.TryGetValue(n.OldVal.RefId, out var hash))
