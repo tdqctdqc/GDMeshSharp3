@@ -8,7 +8,6 @@ public static class RegimeExt
     {
         return data.Society.RelationAux.ByRegime[r1.Id, r2.Id];
     }
-
     public static bool IsPlayerRegime(this Regime r, Data data)
     {
         return data.BaseDomain.PlayerAux.ByRegime.ContainsKey(r);
@@ -43,5 +42,10 @@ public static class RegimeExt
     public static Alliance GetAlliance(this Regime r, Data data)
     {
         return data.Society.AllianceAux.RegimeAlliances[r];
+    }
+
+    public static bool IsAllied(this Regime r0, Regime r1, Data data)
+    {
+        return r0.GetAlliance(data).Members.Contains(r1);
     }
 }

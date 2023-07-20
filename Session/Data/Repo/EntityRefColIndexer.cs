@@ -1,20 +1,22 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
-public class EntityMultiReverseIndexer<TSingle, TKey>
+public class EntityRefColIndexer<TSingle, TKey>
     : AuxData<TSingle> where TKey : Entity where TSingle : Entity
 {
     public TSingle this[TKey k] => _dic.ContainsKey(k) ? _dic[k] : null;
     private Func<TSingle, IEnumerable<TKey>> _get;
     private Dictionary<TKey, TSingle> _dic;
-    public EntityMultiReverseIndexer(Func<TSingle, IEnumerable<TKey>> get,
-        RefAction<(TKey, TSingle)> change, Data data) 
+    public EntityRefColIndexer(Func<TSingle, IEnumerable<TKey>> get,
+        RefColMeta<TSingle, TKey> colMeta, Data data) 
         : base(data)
     {
         _get = get;
         _dic = new Dictionary<TKey, TSingle>();
-        change.Subscribe(HandleChange);
+        colMeta.Added.Subscribe(HandleColAdd);
+        colMeta.Removed.Subscribe(HandleColRemove);
     }
 
     public override void HandleAdded(TSingle added)
@@ -31,12 +33,22 @@ public class EntityMultiReverseIndexer<TSingle, TKey>
         var keys = _get(removing);
         foreach (var k in keys)
         {
-            _dic.Remove(k);
+            if (_dic[k] == removing)
+            {
+                _dic.Remove(k);
+            }
         }
     }
 
-    private void HandleChange((TKey, TSingle) change)
+    private void HandleColAdd((TSingle e, TKey k) change)
     {
-        _dic[change.Item1] = change.Item2;
+        _dic[change.k] = change.e;
+    }
+    private void HandleColRemove((TSingle e, TKey k) change)
+    {
+        if (_dic[change.k] == change.e)
+        {
+            _dic.Remove(change.k);
+        }
     }
 }

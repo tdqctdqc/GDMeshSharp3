@@ -6,7 +6,7 @@ using Godot;
 public partial class SettlementIconLayer : MapChunkGraphicLayer<int>
 {
     public SettlementIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
-        : base(data, chunk, mg.ChunkChangedCache.SettlementTierChanged)
+        : base(nameof(SettlementIconLayer), data, chunk, new Vector2(0f, .5f), mg.ChunkChangedCache.SettlementTierChanged)
     {
     }
 

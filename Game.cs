@@ -25,6 +25,7 @@ public partial class Game : Node
         Assets.Setup();
         SetSerializer();
         StartMainMenuSession();
+        
     }
     public void SetSerializer()
     {

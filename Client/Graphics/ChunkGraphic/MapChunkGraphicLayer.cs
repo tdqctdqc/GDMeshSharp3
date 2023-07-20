@@ -9,15 +9,21 @@ public class MapChunkLayerBenchmark
 {
     public static Dictionary<Type, ConcurrentBag<int>> Times = new Dictionary<Type, ConcurrentBag<int>>();
 }
-public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGraphicLayer
+public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGraphicNode
 {
+    public bool Hidden { get; set; }
     public MapChunk Chunk { get; private set; }
+    public string Name { get; private set; }
     private Dictionary<TKey, Node2D> _graphics;
     private ChunkChangeListener<TKey> _listener;
+    private Vector2 _visRange;
     private RefAction<TKey> _add, _change, _remove;
-    Node2D IMapChunkGraphicLayer.Node => this;
-    public MapChunkGraphicLayer(Data data, MapChunk chunk, ChunkChangeListener<TKey> listener)
+    Node2D IMapChunkGraphicNode.Node => this;
+    public MapChunkGraphicLayer(string name, Data data, MapChunk chunk, Vector2 visRange,
+        ChunkChangeListener<TKey> listener)
     {
+        Hidden = false;
+        Name = name;
         _listener = listener;
         Chunk = chunk;
         _graphics = new Dictionary<TKey, Node2D>();
@@ -27,6 +33,7 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
         _change.Subscribe(k => Change(k, data));
         _remove = new RefAction<TKey>();
         _remove.Subscribe(k => Remove(k, data));
+        _visRange = visRange;
 
         if (_listener != null)
         {
@@ -35,11 +42,7 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
             _listener.Removed[chunk].Subscribe(_remove);
         }
     }
-    protected MapChunkGraphicLayer()
-    {
-        
-    }
-
+    protected MapChunkGraphicLayer() { }
     public override void _ExitTree()
     {
         if (_listener != null)
@@ -54,9 +57,14 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
     }
 
     public void Init(Data data)
-    {
-        this.ClearChildren();
+    {   
+        // this.ClearChildren();
+        foreach (var kvp in _graphics)
+        {
+            kvp.Value.QueueFree();
+        }
         _graphics.Clear();
+
         
         if (MapChunkLayerBenchmark.Times.ContainsKey(GetType()) == false)
         {
@@ -100,6 +108,23 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
         _graphics.Remove(key);
     }
 
+    public void UpdateVis(Data d)
+    {
+        if (Hidden)
+        {
+            Visible = false;
+            return;
+        }
+        var scaledZoom = Game.I.Client.Cam.ScaledZoomOut;
+        if (scaledZoom >= _visRange.X && scaledZoom <= _visRange.Y)
+        {
+            Visible = true;
+        }
+        else
+        {
+            Visible = false;
+        }
+    }
     protected void SetRelPos(Node2D node, PolyTriPosition pos, Data data)
     {
         var poly = pos.Poly(data);
@@ -115,8 +140,11 @@ public abstract partial class MapChunkGraphicLayer<TKey> : Node2D, IMapChunkGrap
     protected abstract IEnumerable<TKey> GetKeys(Data data);
 }
 
-public interface IMapChunkGraphicLayer
+public interface IMapChunkGraphicNode
 {
+    bool Hidden { get; set; }
+    string Name { get; }
     Node2D Node { get; }
     void Init(Data data);
+    void UpdateVis(Data d);
 }

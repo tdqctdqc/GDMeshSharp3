@@ -63,7 +63,7 @@ public partial class MapGraphics : Node2D
         foreach (var mc in MapChunkGraphics)
         {
             var n = mc.Modules[name];
-            n.Visible = n.Visible == false;
+            n.Hidden = n.Hidden == false;
         }
     }
     public void Process(float delta)

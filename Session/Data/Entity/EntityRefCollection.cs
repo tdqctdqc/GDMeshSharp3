@@ -5,19 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class EntityRefCollection<TRef> : IRef where TRef : Entity
+public class EntityRefCollection<TRef> : IRefCollection<TRef> where TRef : Entity
 {
+    public string Name { get; private set; }
     public HashSet<int> RefIds { get; private set; }
     private List<TRef> _refs;
     public int Count() => RefIds.Count;
-    public static EntityRefCollection<TRef> Construct(HashSet<int> refIds, Data data)
+    public static EntityRefCollection<TRef> Construct(string name, HashSet<int> refIds, Data data)
     {
-        var col = new EntityRefCollection<TRef>(refIds);
+        var col = new EntityRefCollection<TRef>(name, refIds);
         col._refs = col.RefIds.Select(id => (TRef) data[id]).ToList();
         return col;
     }
-    [SerializationConstructor] private EntityRefCollection(HashSet<int> refIds)
+    [SerializationConstructor] private EntityRefCollection(string name, HashSet<int> refIds)
     {
+        Name = name;
         RefIds = refIds == null ? new HashSet<int>() : new HashSet<int>(refIds);
         _refs = null;
     }
@@ -35,18 +37,6 @@ public class EntityRefCollection<TRef> : IRef where TRef : Entity
     {
         return RefIds.Contains(entity.Id);
     }
-    public void AddRef(TRef t, StrongWriteKey key)
-    {
-        if (RefIds.Contains(t.Id)) return;
-        RefIds.Add(t.Id);
-        _refs?.Add(t);
-    }
-    public void RemoveRef(TRef t, GenWriteKey key)
-    {
-        RefIds.Remove(t.Id);
-        _refs?.Remove(t);
-    }
-    
     public void SyncRef(Data data)
     {
         _refs = new List<TRef>();
@@ -63,31 +53,28 @@ public class EntityRefCollection<TRef> : IRef where TRef : Entity
         _refs.Clear();
     }
 
-    public void AddByProcedure(List<int> ids, ProcedureWriteKey key)
+    public void Add(Entity e, List<TRef> ids, StrongWriteKey key)
     {
-        RefIds.AddRange(ids);
-        _refs.AddRange(ids.Select(id => (TRef)key.Data[id]));
+        ids.ForEach(id => Add(e, id, key));
     }
 
-    public void AddByProcedure(int id, ProcedureWriteKey key)
+    public void Add(Entity e, TRef t, StrongWriteKey key)
     {
-        RefIds.Add(id);
-        _refs.Add((TRef)key.Data[id]);
+        if (RefIds.Contains(t.Id)) return;
+        RefIds.Add(t.Id);
+        _refs?.Add(t);
+        e.GetMeta().GetRefColMeta<TRef>(Name).RaiseAdded(e, t);
     }
 
-    public void RemoveByProcedure(List<int> ids, ProcedureWriteKey key)
+    public void Remove(Entity e, List<TRef> ids, StrongWriteKey key)
     {
-        ids.ForEach(id =>
-        {
-            RefIds.Remove(id);
-            _refs.RemoveAll(e => e.Id == id);
-        });
+        ids.ForEach(id => Remove(e, id, key));
     }
 
-    public void RemoveByProcedure(int id, ProcedureWriteKey key)
+    public void Remove(Entity e, TRef t, StrongWriteKey key)
     {
-        RefIds.Remove(id);
-        _refs.RemoveAll(e => e.Id == id);
+        RefIds.Remove(t.Id);
+        _refs?.Remove(t);
+        e.GetMeta().GetRefColMeta<TRef>(Name).RaiseRemoved(e, t);
     }
-
 }

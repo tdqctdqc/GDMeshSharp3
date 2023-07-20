@@ -21,7 +21,18 @@ public abstract class Entity
         where TEntity : Entity
     {
         Game.I.Serializer.GetEntityMeta<TEntity>().GetEntityVarMeta<TVal>(valName).ValChanged().Subscribe(handler);
-
+    }
+    public static void SubscribeToColAdd<TEntity, TVal>(string colName, RefAction<(TEntity, TVal)> handler)
+        where TEntity : Entity
+    {
+        Game.I.Serializer.GetEntityMeta<TEntity>().GetRefColMeta<TVal>(colName).Added.Subscribe(handler);
+    }
+    public static void SubscribeToColRemove<TEntity, TVal>(string colName, RefAction<(TEntity, TVal)> handler)
+        where TEntity : Entity
+    {
+        Game.I.Serializer.GetEntityMeta<TEntity>()
+            .GetRefColMeta<TVal>(colName).Removed
+            .Subscribe(handler);
     }
     public abstract Type GetDomainType();
     public abstract EntityTypeTreeNode GetEntityTypeTreeNode();

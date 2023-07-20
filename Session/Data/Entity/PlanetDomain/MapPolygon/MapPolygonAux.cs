@@ -13,7 +13,6 @@ public class MapPolygonAux : EntityAux<MapPolygon>
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public LandSeaManager LandSea { get; private set; }
     public ValChangeAction<EntityRef<Regime>> ChangedRegime { get; private set; }
-
     public MapPolygonAux(Domain domain, Data data) : base(domain, data)
     {
         BorderGraph = ImplicitGraph.Get<MapPolygon, PolyBorderChain>(
@@ -53,14 +52,6 @@ public class MapPolygonAux : EntityAux<MapPolygon>
 
     private void UpdateAuxDatas(Data data)
     {
-        foreach (var p in data.Planet.Polygons.Entities)
-        {
-            if (AuxDatas.Dic.ContainsKey(p) == false)
-            {
-                GD.Print("missing poly aux");
-            }
-        }
-
         foreach (var kvp in AuxDatas.Dic)
         {
             var aux = kvp.Value;

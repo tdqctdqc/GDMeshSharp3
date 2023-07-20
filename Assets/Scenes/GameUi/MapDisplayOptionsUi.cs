@@ -24,32 +24,28 @@ public partial class MapDisplayOptionsUi : VBoxContainer
         _data = data;
         _mousePos = new Label();
         AddChild(_mousePos);
-        var chunkFactories = typeof(MapChunkGraphic)
-            .GetProperties(BindingFlags.Static | BindingFlags.Public)
-            .Where(p => p.PropertyType == typeof(ChunkGraphicFactory))
-            .Select(p => (ChunkGraphicFactory)p.GetMethod.Invoke(null, null));
-        
-        foreach (var pi in chunkFactories)
+        MapChunkGraphic.AddedLayer += AddLayerOption;
+        foreach (var layerName in MapChunkGraphic.LayerNames)
         {
-            if (pi.Active == false) continue;
-            var name = pi.Name;
-            var btn = new Button();
-            btn.Text = "Showing " + name;
-            Action toggle = () =>
-            {
-                client.Requests.ToggleMapGraphicsLayer.Invoke(name);
-                
-            };
-            
-            var token = ButtonToken.CreateToken(btn, toggle);
-            AddChild(btn);
+            AddLayerOption(layerName);
         }
     }
-    private void Toggle(MapChunkGraphic mc, Node2D n,  Button btn, string name)
+
+    public override void _ExitTree()
     {
-        bool vis = n.Toggle();
-        btn.Text = vis
-            ? "Showing " + name
-            : name + " is hidden";
+        MapChunkGraphic.AddedLayer -= AddLayerOption;
+    }
+
+    private void AddLayerOption(string name)
+    {
+        var btn = new Button();
+        btn.Text = name;
+        Action toggle = () =>
+        {
+            Game.I.Client.Requests.ToggleMapGraphicsLayer.Invoke(name);
+        };
+        
+        var token = ButtonToken.CreateToken(btn, toggle);
+        AddChild(btn);
     }
 }

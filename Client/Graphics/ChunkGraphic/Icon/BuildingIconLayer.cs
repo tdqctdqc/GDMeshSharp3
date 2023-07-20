@@ -6,7 +6,7 @@ using Godot;
 public partial class BuildingIconLayer : MapChunkGraphicLayer<int>
 {
     public BuildingIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
-        : base(data, chunk, mg.ChunkChangedCache.BuildingsChanged)
+        : base(nameof(BuildingIconLayer), data, chunk, new Vector2(0f, .5f), mg.ChunkChangedCache.BuildingsChanged)
     {
     }
     private BuildingIconLayer() : base()

@@ -9,6 +9,7 @@ public class TickProcedure : Procedure
     }
     public override void Enact(ProcedureWriteKey key)
     {
+        GD.Print("tick");
         var gc = key.Data.BaseDomain.GameClock;
         var tick = gc.Tick + 1;
         gc.Set<int>(nameof(GameClock.Tick), tick, key);

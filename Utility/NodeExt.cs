@@ -96,7 +96,9 @@ public static class NodeExt
     {
         while (n.GetChildCount() > 0)
         {
-            n.RemoveChild(n.GetChild(0));
+            var c = n.GetChild(0);
+            n.RemoveChild(c);
+            c.QueueFree();
         }
     }
     public static void AddChildWithVSeparator(this Node parent, Node n)

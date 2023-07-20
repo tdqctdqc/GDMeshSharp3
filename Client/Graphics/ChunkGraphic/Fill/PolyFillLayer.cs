@@ -7,8 +7,8 @@ public partial class PolyFillLayer : MapChunkGraphicLayer<Vector2>
 {
     private Func<MapPolygon, Color> _getColor;
     private float _transparency;
-    public PolyFillLayer(MapChunk chunk, Data data, Func<MapPolygon, Color> getColor,
-        float transparency = 1f) : base(data, chunk, null)
+    public PolyFillLayer(string name, MapChunk chunk, Data data, Func<MapPolygon, Color> getColor, Vector2 visRange,
+        float transparency = 1f) : base(name, data, chunk, visRange, null)
     {
         _transparency = transparency;
         _getColor = getColor;

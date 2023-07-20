@@ -6,26 +6,23 @@ using Godot;
 
 public partial class PolyTriChunkGraphic : MapChunkGraphicModule
 {
-    public PolyTriChunkGraphic(MapChunk chunk, Data data, MapGraphics mg)
+    public PolyTriChunkGraphic(MapChunk chunk, Data data) : base(nameof(PolyTriChunkGraphic))
     {
-        var lfLayer = new PolyTriLayer(data, t => t.Landform.Color, 
-            chunk, null);
-        AddLayer(new Vector2(0f, 1f), lfLayer);
-        var vegLayer = new PolyTriLayer(data, t => t.Vegetation.Color.Darkened(t.Landform.DarkenFactor), 
-            chunk, null);
-        AddLayer(new Vector2(0f, 1f), vegLayer);
-    }
-
-    private PolyTriChunkGraphic()
-    {
-        
+        var lfLayer = new PolyTriLayer("Landform", data, t => t.Landform.Color, 
+            new Vector2(0f, 1f), chunk, null);
+        AddLayer(lfLayer);
+        var vegLayer = new PolyTriLayer("Vegetation", data, t => t.Vegetation.Color.Darkened(t.Landform.DarkenFactor), 
+            new Vector2(0f, 1f), chunk, null);
+        AddLayer(vegLayer);
     }
 
     private partial class PolyTriLayer : MapChunkGraphicLayer<Vector2>
     {
         private Func<PolyTri, Color> _getColor;
-        public PolyTriLayer(Data data, Func<PolyTri, Color> getColor, MapChunk chunk, ChunkChangeListener<Vector2> listener) 
-            : base(data, chunk, listener)
+        public PolyTriLayer(string name, Data data, Func<PolyTri, Color> getColor, 
+            Vector2 visRange, MapChunk chunk,
+            ChunkChangeListener<Vector2> listener) 
+            : base(name, data, chunk, visRange, listener)
         {
             _getColor = getColor;
         }

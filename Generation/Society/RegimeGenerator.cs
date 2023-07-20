@@ -108,7 +108,7 @@ public class RegimeGenerator : Generator
             var r = ((RegimeWanderer) w).Regime;
             foreach (var p in w.Picked)
             {
-                r.Polygons.AddRef(p, _key);
+                r.Polygons.Add(r, p, _key);
                 p.SetRegime(r, _key);
             }
             r.SetIsMajor(w.Picked.Count >= _numPolysToBeMajor, _key);
@@ -140,7 +140,7 @@ public class RegimeGenerator : Generator
             for (var i = 1; i < union.Count; i++)
             {
                 var p = union[i];
-                regime.Polygons.AddRef(p, _key);
+                regime.Polygons.Add(regime, p, _key);
                 p.SetRegime(regime, _key);
             }
         }

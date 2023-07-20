@@ -43,7 +43,8 @@ public class Regime : Entity
     public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, bool isMajor, CreateWriteKey key)
     {
         var id = key.IdDispenser;
-        var polygons = EntityRefCollection<MapPolygon>.Construct(new HashSet<int>{seed.Id}, key.Data);
+        var polygons = EntityRefCollection<MapPolygon>.Construct(nameof(Polygons), 
+            new HashSet<int>{seed.Id}, key.Data);
         var items = ItemCount.Construct();
         var flows = new RegimeFlows(new Dictionary<int, FlowData>());
         flows.AddFlowIn(FlowManager.Income, 0f);
@@ -64,7 +65,8 @@ public class Regime : Entity
         );
         key.Create(r);
         seed.SetRegime(r, key);
-        
+
+        var alliance = Alliance.Create(r, key);
         var regimes = key.Data.Society.Regimes.Entities;
         foreach (var regime in regimes)
         {

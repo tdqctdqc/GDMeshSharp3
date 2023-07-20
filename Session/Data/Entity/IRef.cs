@@ -12,10 +12,11 @@ public interface IRef
 
 public interface IRefCollection<TKey> : IRef
 {
-    void AddByProcedure(List<TKey> ids, ProcedureWriteKey key);
-    void AddByProcedure(TKey id, ProcedureWriteKey key);
-    void RemoveByProcedure(List<TKey> ids, ProcedureWriteKey key);
-    void RemoveByProcedure(TKey id, ProcedureWriteKey key);
+    void Add(Entity e, List<TKey> ids, StrongWriteKey key);
+    void Add(Entity e, TKey id, StrongWriteKey key);
+    void Remove(Entity e, List<TKey> ids, StrongWriteKey key);
+    void Remove(Entity e, TKey id, StrongWriteKey key);
 }
+
 
 

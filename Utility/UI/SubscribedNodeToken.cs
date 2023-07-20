@@ -7,7 +7,8 @@ public partial class SubscribedNodeToken : Node
 {
     private Node _t;
     private Action _update;
-
+    private List<RefAction> _triggers = new ();
+    
     public static SubscribedNodeToken Construct(Node node, Action update, params RefAction[] triggers)
     {
         var s = new SubscribedNodeToken();
@@ -33,7 +34,15 @@ public partial class SubscribedNodeToken : Node
     }
     public void AddTrigger(RefAction trigger)
     {
+        _triggers.Add(trigger);
         trigger.Subscribe(TriggerUpdate);
-        TreeExiting += () => trigger.Unsubscribe(TriggerUpdate);
+    }
+
+    public override void _ExitTree()
+    {
+        foreach (var refAction in _triggers)
+        {
+            refAction.Unsubscribe(TriggerUpdate);
+        }
     }
 }

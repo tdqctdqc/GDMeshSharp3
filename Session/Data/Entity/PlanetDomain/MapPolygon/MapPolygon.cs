@@ -54,7 +54,7 @@ public partial class MapPolygon : Entity
         var id = key.IdDispenser.GetID();
         
         var p = new MapPolygon(id, mapCenter,
-            EntityRefCollection<MapPolygon>.Construct(new HashSet<int>(), key.Data),
+            EntityRefCollection<MapPolygon>.Construct(nameof(Neighbors), new HashSet<int>(), key.Data),
             new Dictionary<int, PolyBorderChain>(),
             ColorsExt.GetRandomColor(),
             0f,
@@ -74,7 +74,7 @@ public partial class MapPolygon : Entity
     public void AddNeighbor(MapPolygon n, PolyBorderChain border, GenWriteKey key)
     {
         if (Neighbors.Contains(n)) return;
-        Neighbors.AddRef(n, key);
+        Neighbors.Add(this, n, key);
         NeighborBorders.Add(n.Id, border);
     }
     public void SetNeighborBorder(MapPolygon n, PolyBorderChain border, GenWriteKey key)
@@ -85,7 +85,7 @@ public partial class MapPolygon : Entity
     public void RemoveNeighbor(MapPolygon poly, GenWriteKey key)
     {
         //only use in merging left-right wrap
-        Neighbors.RemoveRef(poly, key);
+        Neighbors.Remove(this, poly, key);
     }
     public void SetRegime(Regime r, StrongWriteKey key)
     {

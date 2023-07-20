@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Godot;
 
@@ -14,6 +15,8 @@ public partial class GeneratorClient : Node, IClient
     private GeneratorUi _ui; 
     public ClientSettings Settings { get; private set; }
     public ClientRequests Requests { get; private set; }
+    private Task<MapGraphics> _setupMapGraphics;
+    private CancellationTokenSource _setupMapGraphicsToken;
     private Node2D _camTest;
     public override void _Ready()
     {
@@ -40,18 +43,28 @@ public partial class GeneratorClient : Node, IClient
     }
     public void Process(float delta)
     {
+        if (_setupMapGraphics != null && _setupMapGraphics.IsCompleted)
+        {
+            MapGraphics = _setupMapGraphics.Result;
+            AddChild(MapGraphics);
+            _setupMapGraphics = null;
+        }
         _ui?.Process(delta, Cam);
         MapGraphics?.Process(delta);
     }
 
     public void StartMapGraphics()
     {
-        MapGraphics = new MapGraphics();
-        MapGraphics.Setup(WriteKey);
-        AddChild(MapGraphics);
+        _setupMapGraphicsToken = new CancellationTokenSource();
+        _setupMapGraphics = Task.Run(() =>
+        {
+            var mapGraphics = new MapGraphics();
+            mapGraphics.Setup(WriteKey);
+            return mapGraphics;
+        }, _setupMapGraphicsToken.Token);
     }
     public override void _ExitTree()
     {
-        GD.Print("freeing gen client");
+        _setupMapGraphicsToken?.Cancel();
     }
 }

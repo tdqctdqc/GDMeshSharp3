@@ -23,6 +23,11 @@ public partial class RegimeGeneralOverview : ScrollContainer
         regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.FitHeightProportional;
         regimeFlagRect.Texture = regime.Template.Model(key.Data).Flag;
         _container.AddChild(regimeFlagRect);
+        _container.CreateLabelAsChild("ENEMIES");
+        foreach (var enemy in regime.GetAlliance(key.Data).Enemies.Entities(key.Data))
+        {
+            _container.CreateLabelAsChild(enemy.Leader.Entity(key.Data).Name);
+        }
         if (regime.IsPlayerRegime(key.Data) == false)
         {
             var button = new Button();

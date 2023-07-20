@@ -7,7 +7,9 @@ using Godot;
 
 public partial class MapChunkGraphic : Node2D
 {
-    public Dictionary<string, MapChunkGraphicModule> Modules { get; private set; }
+    public static Action<string> AddedLayer;
+    public static HashSet<string> LayerNames = new HashSet<string>();
+    public Dictionary<string, IMapChunkGraphicNode> Modules { get; private set; }
     private MapChunk _chunk;
     private Data _data;
     public void Setup(MapGraphics mg, MapChunk chunk, Data data)
@@ -15,15 +17,16 @@ public partial class MapChunkGraphic : Node2D
         _chunk = chunk;
         _data = data;
         Position = chunk.RelTo.Center;
-        Modules = new Dictionary<string, MapChunkGraphicModule>();
+        Modules = new Dictionary<string, IMapChunkGraphicNode>();
         Order(
             chunk, data, mg,
-            AllTris,
-            RegimeFill,
-            Roads,
-            ResourceDepositPolyFill,
-            RegimeBorders,
-            Icons
+            (AllTris(data), true),
+            (RegimeFill(data), true),
+            (Roads(data, mg), true),
+            (ResourceDepositPolyFill(data), false),
+            (AllianceFill(data), true),
+            (RegimeBorders(data, mg), false),
+            (Icons(data, mg), true)
         );
         Init();
     }
@@ -32,10 +35,10 @@ public partial class MapChunkGraphic : Node2D
     {
         foreach (var kvp in Modules)
         {
-            kvp.Value.QueueFree();
+            kvp.Value.Node.QueueFree();
         }
 
-        Modules = new Dictionary<string, MapChunkGraphicModule>();
+        Modules = new Dictionary<string, IMapChunkGraphicNode>();
     }
     public void UpdateVis()
     {
@@ -52,43 +55,85 @@ public partial class MapChunkGraphic : Node2D
             module.Init(_data);
         }
     }
-    private void Order(MapChunk chunk, Data data, MapGraphics mg, params ChunkGraphicFactory[] factories)
+    private void Order(MapChunk chunk, Data data, MapGraphics mg, params (IMapChunkGraphicNode, bool)[] modules)
     {
-        for (var i = 0; i < factories.Length; i++)
+        for (var i = 0; i < modules.Length; i++)
         {
-            if (factories[i].Active == false) continue;
-            var node = factories[i].GetModule(chunk, data, mg);
-            node.ZIndex = i;
-            Modules.Add(factories[i].Name, node);
-            AddChild(node);
+            var module = modules[i].Item1;
+            module.Hidden = modules[i].Item2 == false;
+            var name = module.Name;
+            if (LayerNames.Contains(name) == false)
+            {
+                LayerNames.Add(name);
+                AddedLayer.Invoke(name);
+            }
+            module.Node.ZIndex = i;
+            Modules.Add(module.Name, module);
+            AddChild(module.Node);
         }
     }
-    public static ChunkGraphicFactory RegimeBorders { get; private set; }
-        = new ChunkGraphicFactoryBasic(nameof(RegimeBorders), true,
-            (c, d, mg) => BorderChunkGraphic.ConstructRegimeBorder(c, mg, 20f, d));
 
-    public static ChunkGraphicFactory AllTris { get; private set; }
-        = new ChunkGraphicFactoryBasic(nameof(AllTris), true,
-            (c, d, mg) => new PolyTriChunkGraphic(c,d,mg));
-    public static ChunkGraphicFactory Roads { get; private set; }
-        = new ChunkGraphicFactoryBasic(nameof(Roads), true,
-            (c, d, mg) => new RoadChunkGraphic(c, d, mg));
-    public static ChunkGraphicFactory Icons { get; private set; }
-        = new ChunkGraphicFactoryBasic(nameof(Icons), true,
-            (c, d, mg) => new IconsChunkGraphic(c, d, mg));
-    public static ChunkGraphicFactory ResourceDepositPolyFill { get; private set; }
-        = new PolygonFillChunkGraphicFactory(nameof(ResourceDepositPolyFill), false, (p,d) =>
+    private IMapChunkGraphicNode RegimeBorders(Data d, MapGraphics mg)
+    {
+        return new RegimeBorderChunkLayer(_chunk, 20f, d, mg);
+    }
+    private MapChunkGraphicModule AllTris(Data d)
+    {
+        return new PolyTriChunkGraphic(_chunk, d);
+    }
+    private IMapChunkGraphicNode Roads(Data d, MapGraphics mg)
+    {
+        return new RoadChunkGraphicLayer(_chunk, d, mg);
+    }
+    private IMapChunkGraphicNode Icons(Data data, MapGraphics mg)
+    {
+        return new IconsChunkGraphic(_chunk, data, mg);
+    }
+    private IMapChunkGraphicNode ResourceDepositPolyFill(Data data)
+    {
+        return new PolyFillLayer(nameof(ResourceDepositPolyFill), _chunk, data, p =>
+        {
+            var rs = p.GetResourceDeposits(data);
+            if (rs == null || rs.Count == 0) return new Color(Colors.Pink, .5f);
+            return rs.First().Item.Model(data).Color;
+        }, new Vector2(0f, 1f));
+    }
+
+    private IMapChunkGraphicNode RegimeFill(Data d)
+    {
+        return new PolyFillLayer(nameof(RegimeFill), _chunk, d, 
+            p =>
             {
-                var rs = p.GetResourceDeposits(d);
-                if(rs == null || rs.Count == 0) return new Color(Colors.Pink, .5f);
-                return rs.First().Item.Model(d).Color;
-            }
-        );
-    public static ChunkGraphicFactory RegimeFill { get; private set; }
-        = new PolygonFillChunkGraphicFactory(nameof(RegimeFill), true, (p,d) =>
-            {
-                if (p.Regime.Fulfilled() && p.Regime.Entity(d).IsMajor) return p.Regime.Entity(d).PrimaryColor;
+                if (p.Regime.Fulfilled() 
+                    // && p.Regime.Entity(d).IsMajor
+                   ) 
+                    return p.Regime.Entity(d).PrimaryColor;
                 return Colors.Transparent;
-            }
-        );
+            },
+            new Vector2(0f, 1f));
+    }
+
+    private IMapChunkGraphicNode AllianceFill(Data d)
+    {
+        var l = new PolyFillLayer(nameof(AllianceFill), _chunk, d, p =>
+        {
+            if (p.Regime.Fulfilled() == false) return Colors.Transparent;
+            if (d.BaseDomain.PlayerAux.LocalPlayer == null) return Colors.Transparent;
+            if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.Empty()) return Colors.Transparent;
+            var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(d);
+            if (p.Regime.RefId == playerRegime.Id) return Colors.SkyBlue;
+            var playerAlliance = playerRegime.GetAlliance(d);
+            var polyAlliance = p.Regime.Entity(d).GetAlliance(d);
+
+            if (playerAlliance.Members.RefIds.Contains(p.Regime.RefId)) return Colors.Green;
+            if (playerAlliance.AtWar.Contains(polyAlliance)) return Colors.Red;
+            if (playerAlliance.Enemies.Contains(polyAlliance)) return Colors.Orange;
+            return Colors.Gray;
+        }, new Vector2(0f, 1f));
+        
+        l.SubscribeUpdate(() => { l.Init(d); }, 
+            d.Notices.Ticked.Blank, d.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
+        
+        return l;
+    }
 }

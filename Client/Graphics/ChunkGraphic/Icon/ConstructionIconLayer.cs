@@ -7,7 +7,7 @@ public partial class ConstructionIconLayer : MapChunkGraphicLayer<Construction>
 {
     private static Texture2D _underConstruction => TextureManager.Textures["UnderConstruction"];
     public ConstructionIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
-        : base(data, chunk, mg.ChunkChangedCache.ConstructionsChanged)
+        : base(nameof(ConstructionIconLayer), data, chunk, new Vector2(0f, .5f), mg.ChunkChangedCache.ConstructionsChanged)
     {        
     }
     private ConstructionIconLayer() : base()

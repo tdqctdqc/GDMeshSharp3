@@ -3,41 +3,49 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class MapChunkGraphicModule : Node2D
+public partial class MapChunkGraphicModule : Node2D, IMapChunkGraphicNode
 {
-    private Dictionary<IMapChunkGraphicLayer, Vector2> _layerVisRanges;
-    public MapChunkGraphicModule()
+    public bool Hidden { get; set; }
+    public string Name { get; private set; }
+    private List<IMapChunkGraphicNode> _nodes;
+    public MapChunkGraphicModule(string name)
     {
-        _layerVisRanges = new Dictionary<IMapChunkGraphicLayer, Vector2>();
+        Hidden = false;
+        Name = name;
+        _nodes = new List<IMapChunkGraphicNode>();
     }
 
-    protected void AddLayer(Vector2 range, IMapChunkGraphicLayer layer)
+    private MapChunkGraphicModule()
+    {
+    }
+
+    protected void AddLayer(IMapChunkGraphicNode layer)
     {
         AddChild((Node)layer);
-        _layerVisRanges.Add(layer, range);
+        _nodes.Add(layer);
     }
 
     public void Init(Data data)
     {
-        foreach (var l in _layerVisRanges.Keys)
+        foreach (var l in _nodes)
         {
             l.Init(data);
         }
     }
     public void UpdateVis(Data data)
     {
-        var scaledZoom = Game.I.Client.Cam.ScaledZoomOut;
-        foreach (var kvp in _layerVisRanges)
+        if (Hidden)
         {
-            var range = kvp.Value;
-            if (scaledZoom >= range.X && scaledZoom <= range.Y)
-            {
-                kvp.Key.Node.Visible = true;
-            }
-            else
-            {
-                kvp.Key.Node.Visible = false;
-            }
+            Visible = false;
+            return;
+        }
+        else Visible = true;
+        var scaledZoom = Game.I.Client.Cam.ScaledZoomOut;
+        foreach (var node in _nodes)
+        {
+            node.UpdateVis(data);
         }
     }
+
+    Node2D IMapChunkGraphicNode.Node => this;
 }

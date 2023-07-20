@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 public class HostLogic : ILogic
 {
     public ConcurrentQueue<Command> CommandQueue { get; }
-    private EntityValueCache<Regime, RegimeAi> _regimeAis;
     private ConcurrentDictionary<Player, TurnOrders> _playerTurnOrders;
     private ConcurrentDictionary<Regime, Task<TurnOrders>> _aiTurnOrders;
     private HostServer _server; 
@@ -25,19 +24,18 @@ public class HostLogic : ILogic
     {
         _playerTurnOrders = new ConcurrentDictionary<Player, TurnOrders>();
         _aiTurnOrders = new ConcurrentDictionary<Regime, Task<TurnOrders>>();
-        _regimeAis = EntityValueCache<Regime, RegimeAi>
-            .ConstructConstant(data, r => new RegimeAi(r, data));
         CommandQueue = new ConcurrentQueue<Command>();
         _majorTurnStartModules = new LogicModule[]
         {
-            new ProduceConstructModule()
+            new ProduceConstructModule(),
         };
         _majorTurnEndModules = new LogicModule[]
         {
             new ConstructBuildingsModule(),
             new FoodAndPopGrowthModule(),
             new FinanceModule(),
-            new TradeModule()
+            new TradeModule(),
+            new AllianceAffairsModule()
         };
         _minorTurnStartModules = new LogicModule[] { };
         _minorTurnEndModules = new LogicModule[] { };
@@ -124,7 +122,6 @@ public class HostLogic : ILogic
         }
         else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Calculating)
         {
-
             _turnStartCalculator.CheckOnCalculation();
         }
         else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Finished)
@@ -138,7 +135,6 @@ public class HostLogic : ILogic
             var res = new LogicResults();
             res.Procedures.Add(proc);
             EnactResults(res);
-            
             DoCommands();
             CalcAiTurnOrders();
             return true;
@@ -151,7 +147,6 @@ public class HostLogic : ILogic
         _server = server;
         _hKey = new HostWriteKey(server, this, data, session);
         _pKey = new ProcedureWriteKey(data, session);
-        _regimeAis = data.HostLogicData.AIs;
     }
 
     public void SubmitPlayerTurnOrders(Player player, TurnOrders orders)
@@ -187,11 +182,11 @@ public class HostLogic : ILogic
     {
         if (_data.BaseDomain.GameClock.MajorTurn(_data))
         {
-            inner(r => _regimeAis[r].GetMajorTurnOrders(_data));
+            inner(r => _data.HostLogicData.AIs[r].GetMajorTurnOrders(_data));
         }
         else
         {
-            inner(r => _regimeAis[r].GetMinorTurnOrders(_data));
+            inner(r => _data.HostLogicData.AIs[r].GetMinorTurnOrders(_data));
         }
 
         void inner(Func<Regime, TurnOrders> getOrders)
