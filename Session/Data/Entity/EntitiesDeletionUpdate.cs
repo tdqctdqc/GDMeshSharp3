@@ -15,7 +15,7 @@ public class EntitiesDeletionUpdate : Update
     {
         EntityIds = entityIds;
     }
-    public override void Enact(ServerWriteKey key)
+    public override void Enact(ProcedureWriteKey key)
     {
         key.Data.RemoveEntities(EntityIds, key);
     }

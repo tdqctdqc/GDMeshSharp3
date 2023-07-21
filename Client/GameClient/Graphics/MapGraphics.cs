@@ -37,8 +37,8 @@ public partial class MapGraphics : Node2D
             return graphic;
         }).ToList();
         
-        _key.Session.Client.Requests.ToggleMapGraphicsLayer.Subscribe(ToggleMapLayer);
-        TreeExiting += () => _key.Session.Client.Requests.ToggleMapGraphicsLayer.Unsubscribe(ToggleMapLayer);
+        _key.Session.Client.UiRequests.ToggleMapGraphicsLayer.Subscribe(ToggleMapLayer);
+        TreeExiting += () => _key.Session.Client.UiRequests.ToggleMapGraphicsLayer.Unsubscribe(ToggleMapLayer);
         
         foreach (var keyValuePair in MapChunkLayerBenchmark.Times)
         {

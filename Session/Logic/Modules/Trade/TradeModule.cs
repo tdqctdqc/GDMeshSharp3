@@ -12,7 +12,7 @@ public class TradeModule : LogicModule
     {
         var res = new LogicResults();
         var proc = TradeProcedure.Construct();
-        res.Procedures.Add(proc);
+        res.Messages.Add(proc);
 
         var buyOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.BuyOrders).ToList();
         var sellOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.SellOrders).ToList();

@@ -23,7 +23,7 @@ public class Prompt
             .Where(r => r.IsPlayerRegime(key.Data) == false);
         Action<Regime> action = r =>
         {
-            var com = new ChooseRegimeCommand(r.MakeRef());
+            var com = new ChooseRegimeCommand(r.MakeRef(), key.Data.ClientPlayerData.LocalPlayerGuid);
             key.Session.Server.QueueCommandLocal(com);
         };
         return CreatePrompt<Regime>("Choose Regime", availRegimes.ToList(), action, r => r.Name);

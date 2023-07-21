@@ -71,18 +71,18 @@ public partial class MapPolygon : Entity
         return p;
     }
     
-    public void AddNeighbor(MapPolygon n, PolyBorderChain border, GenWriteKey key)
+    public void AddNeighbor(MapPolygon n, PolyBorderChain border, StrongWriteKey key)
     {
         if (Neighbors.Contains(n)) return;
         Neighbors.Add(this, n, key);
         NeighborBorders.Add(n.Id, border);
     }
-    public void SetNeighborBorder(MapPolygon n, PolyBorderChain border, GenWriteKey key)
+    public void SetNeighborBorder(MapPolygon n, PolyBorderChain border, StrongWriteKey key)
     {
         if (Neighbors.Contains(n) == false) throw new Exception();
         NeighborBorders[n.Id] = border;
     }
-    public void RemoveNeighbor(MapPolygon poly, GenWriteKey key)
+    public void RemoveNeighbor(MapPolygon poly, StrongWriteKey key)
     {
         //only use in merging left-right wrap
         Neighbors.Remove(this, poly, key);

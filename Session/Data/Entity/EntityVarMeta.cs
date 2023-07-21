@@ -44,7 +44,7 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
         if (key is HostWriteKey hKey)
         {
             var bytes = Game.I.Serializer.MP.Serialize(newValue);
-            hKey.HostServer.QueueUpdate(EntityVarUpdate.Create(fieldName, t.Id, bytes, hKey));
+            hKey.HostServer.QueueMessage(EntityVarUpdate.Create(fieldName, t.Id, bytes, hKey));
         }
     }
     public bool Test(Entity t)

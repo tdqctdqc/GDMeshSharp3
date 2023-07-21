@@ -28,7 +28,7 @@ public class FoodAndPopGrowthModule : LogicModule
                 HandleDecline(regime, -surplusRatio, growthsByPeep, data);
             }
         }
-        res.Procedures.Add(new FoodAndPopGrowthProcedure(growthsByPeep, foodConsByRegime));
+        res.Messages.Add(new FoodAndPopGrowthProcedure(growthsByPeep, foodConsByRegime));
         return res;
     }
 

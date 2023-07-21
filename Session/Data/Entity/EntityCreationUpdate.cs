@@ -21,7 +21,7 @@ public sealed partial class EntityCreationUpdate : Update
         EntityBytes = entityBytes;
         EntityType = entityType;
     }
-    public override void Enact(ServerWriteKey key)
+    public override void Enact(ProcedureWriteKey key)
     {
         var e = (Entity)Game.I.Serializer.MP.Deserialize(EntityBytes, EntityType);
         key.Data.AddEntity(e, key);

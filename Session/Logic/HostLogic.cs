@@ -14,7 +14,7 @@ public class HostLogic : ILogic
     private ConcurrentDictionary<Regime, Task<TurnOrders>> _aiTurnOrders;
     private HostServer _server; 
     private HostWriteKey _hKey;
-    private ProcedureWriteKey _pKey;
+    public ProcedureWriteKey PKey { get; private set; }
     private Data _data;
     private Task<bool> _calculatingAiOrders;
     private LogicModule[] _majorTurnStartModules, _majorTurnEndModules, _minorTurnStartModules, _minorTurnEndModules;
@@ -25,6 +25,8 @@ public class HostLogic : ILogic
         _playerTurnOrders = new ConcurrentDictionary<Player, TurnOrders>();
         _aiTurnOrders = new ConcurrentDictionary<Regime, Task<TurnOrders>>();
         CommandQueue = new ConcurrentQueue<Command>();
+        data.Requests.QueueCommand.Subscribe(CommandQueue.Enqueue);
+        data.Requests.SubmitPlayerOrders.Subscribe(x => SubmitPlayerTurnOrders(x.Item1, x.Item2));
         _majorTurnStartModules = new LogicModule[]
         {
             new ProduceConstructModule(),
@@ -92,7 +94,7 @@ public class HostLogic : ILogic
             _aiTurnOrders.Clear();
             var tick = new TickProcedure();
             var res = new LogicResults();
-            res.Procedures.Add(tick);
+            res.Messages.Add(tick);
             EnactResults(res);
             _turnEndCalculator.MarkDone();
             _turnStartDone = false;
@@ -133,7 +135,7 @@ public class HostLogic : ILogic
             _turnStartDone = true;
             var proc = new FinishedTurnStartCalcProc();
             var res = new LogicResults();
-            res.Procedures.Add(proc);
+            res.Messages.Add(proc);
             EnactResults(res);
             DoCommands();
             CalcAiTurnOrders();
@@ -146,7 +148,7 @@ public class HostLogic : ILogic
         _data = data;
         _server = server;
         _hKey = new HostWriteKey(server, this, data, session);
-        _pKey = new ProcedureWriteKey(data, session);
+        PKey = new ProcedureWriteKey(data, session);
     }
 
     public void SubmitPlayerTurnOrders(Player player, TurnOrders orders)
@@ -209,16 +211,16 @@ public class HostLogic : ILogic
     
     private void EnactResults(LogicResults logicResult)
     {
-        for (var i = 0; i < logicResult.Procedures.Count; i++)
+        for (var i = 0; i < logicResult.Messages.Count; i++)
         {
-            logicResult.Procedures[i].Enact(_pKey);
+            logicResult.Messages[i].Enact(PKey);
         }
-
         for (int i = 0; i < logicResult.CreateEntities.Count; i++)
         {
-            logicResult.CreateEntities[i].Invoke(_hKey);
+            GD.Print("Doot");
+            var entity = logicResult.CreateEntities[i].Invoke(_hKey);
+            logicResult.Messages.Add(EntityCreationUpdate.Create(entity, _hKey));
         }
-        
         _server.ReceiveLogicResult(logicResult, _hKey);
         _server.PushPackets(_hKey);
     }
@@ -232,12 +234,12 @@ public class HostLogic : ILogic
         {
             if (CommandQueue.TryDequeue(out var command))
             {
-                if(command.Valid(_data)) command.Enact(_hKey, logicResult.Procedures.Add);
+                if(command.Valid(_data)) command.Enact(PKey);
             }
         }
-        for (var i = 0; i < logicResult.Procedures.Count; i++)
+        for (var i = 0; i < logicResult.Messages.Count; i++)
         {
-            logicResult.Procedures[i].Enact(_pKey);
+            logicResult.Messages[i].Enact(PKey);
         }
         _server.ReceiveLogicResult(logicResult, _hKey);
         _server.PushPackets(_hKey);

@@ -5,14 +5,12 @@ using Godot;
 
 public class RemoteLogic : ILogic
 {
-    private ServerWriteKey _sKey;
-    private ProcedureWriteKey _pKey;
+    public ProcedureWriteKey PKey { get; private set; }
     private bool _inited;
     private List<Update> _syncingUpdates;
     public RemoteLogic(Data data, GameSession session)
     {
-        _sKey = new ServerWriteKey(data, session);
-        _pKey = new ProcedureWriteKey(data, session);
+        PKey = new ProcedureWriteKey(data, session);
         _inited = false;
         _syncingUpdates = new List<Update>();
     }
@@ -25,22 +23,17 @@ public class RemoteLogic : ILogic
     {
         if(_inited)
         {
-            u.Enact(_sKey);
+            u.Enact(PKey);
             return;
         }
         if (u is FinishedStateSyncUpdate su)
         {
             _inited = true;
             var creations = _syncingUpdates.SelectWhereOfType<Update, EntityCreationUpdate>();
-            EntitiesCreationUpdate.Create(creations, _sKey).Enact(_sKey);
-            su.Enact(_sKey);
+            EntitiesCreationUpdate.Create(creations, PKey).Enact(PKey);
+            su.Enact(PKey);
             return;
         }
         _syncingUpdates.Add(u);
-    }
-
-    public void ProcessProcedure(Procedure p)
-    {
-        p.Enact(_pKey);
     }
 }

@@ -17,7 +17,7 @@ public class FinanceModule : LogicModule
             proc.GrowthsByRegimeId.Add(regime.Id, Mathf.FloorToInt(income));
         }
 
-        res.Procedures.Add(proc);
+        res.Messages.Add(proc);
         return res;
     }
 }

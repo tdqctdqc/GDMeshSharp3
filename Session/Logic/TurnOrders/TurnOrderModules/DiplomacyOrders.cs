@@ -4,15 +4,15 @@ using System.Linq;
 
 public class DiplomacyOrders : TurnOrderModule
 {
-    public List<DiplomacyProposal> DiplomacyProposals { get; private set; }
-    public List<AllianceProposal> AllianceProposals { get; private set; }
+    public List<Proposal> ProposalsMade { get; private set; }
+    public Dictionary<int, bool> ProposalDecisions { get; private set; }
     public static DiplomacyOrders Construct()
     {
-        return new DiplomacyOrders(new List<DiplomacyProposal>(), new List<AllianceProposal>());
+        return new DiplomacyOrders(new List<Proposal>(), new Dictionary<int, bool>());
     }
-    public DiplomacyOrders(List<DiplomacyProposal> diplomacyProposals, List<AllianceProposal> allianceProposal)
+    public DiplomacyOrders(List<Proposal> proposalsMade, Dictionary<int, bool> proposalDecisions)
     {
-        DiplomacyProposals = diplomacyProposals;
-        AllianceProposals = allianceProposal;
+        ProposalDecisions = proposalDecisions;
+        ProposalsMade = proposalsMade;
     }
 }

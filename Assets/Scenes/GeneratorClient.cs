@@ -10,14 +10,20 @@ public partial class GeneratorClient : Node, IClient
 {
     public ICameraController Cam { get; private set; }
     public ClientWriteKey WriteKey { get; private set; }
+    public UiRequests UiRequests { get; private set; }
     public MapGraphics MapGraphics { get; private set; }
     public CanvasLayer CanvasLayer => _ui;
     private GeneratorUi _ui; 
     public ClientSettings Settings { get; private set; }
-    public ClientRequests Requests { get; private set; }
+    public LogicRequests Requests { get; private set; }
     private Task<MapGraphics> _setupMapGraphics;
     private CancellationTokenSource _setupMapGraphicsToken;
     private Node2D _camTest;
+
+    public GeneratorClient()
+    {
+        UiRequests = new UiRequests();
+    }
     public override void _Ready()
     {
         
@@ -26,7 +32,7 @@ public partial class GeneratorClient : Node, IClient
     public void Setup(GeneratorSession session)
     {
         this.ClearChildren();
-        Requests = new ClientRequests(session);
+        Requests = new LogicRequests();
         Requests.GiveTree(session.Data.EntityTypeTree);
         WriteKey = new ClientWriteKey(session.Data, session);
         Settings = ClientSettings.Load();

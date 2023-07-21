@@ -52,11 +52,11 @@ public class ConstructBuildingsModule : LogicModule
                     order.Regime,
                     data
                 );
-                res.Procedures.Add(proc);
+                res.Messages.Add(proc);
             }
         }
         
-        res.Procedures.Add(clear);
+        res.Messages.Add(clear);
         return res;
     }
 }

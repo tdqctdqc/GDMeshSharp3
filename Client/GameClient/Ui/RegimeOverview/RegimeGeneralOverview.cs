@@ -34,7 +34,8 @@ public partial class RegimeGeneralOverview : ScrollContainer
             button.Text = "Choose Regime";
             button.Pressed += () =>
             {
-                var com = new ChooseRegimeCommand(regime.MakeRef());
+                var com = new ChooseRegimeCommand(regime.MakeRef(),
+                    key.Data.ClientPlayerData.LocalPlayerGuid);
                 key.Session.Server.QueueCommandLocal(com);
             };
             _container.AddChild(button);

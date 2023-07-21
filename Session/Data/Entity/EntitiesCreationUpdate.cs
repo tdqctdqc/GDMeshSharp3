@@ -25,7 +25,7 @@ public class EntitiesCreationUpdate : Update
         EntityBytes = entityBytes;
         EntityTypes = entityTypes;
     }
-    public override void Enact(ServerWriteKey key)
+    public override void Enact(ProcedureWriteKey key)
     {
         var es = new Entity[EntityBytes.Count()];
         for (var i = 0; i < EntityBytes.Length; i++)

@@ -9,18 +9,19 @@ public class Alliance : Entity
     public EntityRefCollection<Regime> Members { get; private set; }
     public EntityRefCollection<Alliance> Enemies { get; private set; }
     public EntityRefCollection<Alliance> AtWar { get; private set; }
-    public List<AllianceProposal> AllianceProposals { get; private set; }
-    public List<DiplomacyProposal> DiplomacyProposals { get; private set; }
+    public Dictionary<int, Proposal> Proposals { get; private set; }
     
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
         var members = EntityRefCollection<Regime>.Construct(nameof(Members), new HashSet<int>{founder.Id}, key.Data);
         var enemies = EntityRefCollection<Alliance>.Construct(nameof(Enemies), new HashSet<int>{}, key.Data);
         var atWar = EntityRefCollection<Alliance>.Construct(nameof(AtWar), new HashSet<int>{}, key.Data);
+        var proposals = new Dictionary<int, Proposal>();
+        
         var a = new Alliance(founder.MakeRef(), members, enemies, atWar,
-            new List<AllianceProposal>(),
-            new List<DiplomacyProposal>(),
+            proposals,
             key.IdDispenser.GetID());
+        
         key.Create(a);
         return a;
     }
@@ -28,14 +29,12 @@ public class Alliance : Entity
         EntityRefCollection<Regime> members, 
         EntityRefCollection<Alliance> enemies, 
         EntityRefCollection<Alliance> atWar, 
-        List<AllianceProposal> allianceProposals,
-        List<DiplomacyProposal> diplomacyProposals,
+        Dictionary<int, Proposal> proposals,
         int id) : base(id)
     {
         Leader = leader;
         Members = members;
-        AllianceProposals = allianceProposals;
-        DiplomacyProposals = diplomacyProposals;
+        Proposals = proposals;
         Enemies = enemies;
         AtWar = atWar;
     }

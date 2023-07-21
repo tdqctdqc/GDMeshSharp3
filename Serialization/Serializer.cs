@@ -22,7 +22,6 @@ public class Serializer
     {
         MP = new MessagePackManager();
         MP.Setup();
-        Message.Setup();
         SetupEntityMetas();
     }
     private void SetupEntityMetas()

@@ -73,7 +73,7 @@ public class ClientPlayerData
             orders = MinorOrders;
         }
         
-        var c = SubmitTurnCommand.Construct(orders);
-        Game.I.Client.Requests.QueueCommand.Invoke(c);
+        var c = SubmitTurnCommand.Construct(orders, LocalPlayerGuid);
+        data.Requests.QueueCommand.Invoke(c);
     }
 }

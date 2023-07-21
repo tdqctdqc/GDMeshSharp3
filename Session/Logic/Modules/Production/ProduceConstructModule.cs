@@ -30,7 +30,7 @@ public class ProduceConstructModule : LogicModule
         Parallel.ForEach(data.Society.Regimes.Entities, 
             regime => CalculateForRegime(regime, data, proc));
         
-        res.Procedures.Add(proc);
+        res.Messages.Add(proc);
         return res;
     }
 

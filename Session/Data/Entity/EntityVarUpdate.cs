@@ -20,7 +20,7 @@ public sealed class EntityVarUpdate : Update
         NewValBytes = newValBytes;
     }
 
-    public override void Enact(ServerWriteKey key)
+    public override void Enact(ProcedureWriteKey key)
     {
         var entity = key.Data[EntityId];
         var meta = entity.GetMeta();

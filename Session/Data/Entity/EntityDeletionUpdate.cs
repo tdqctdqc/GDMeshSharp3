@@ -13,7 +13,7 @@ public class EntityDeletionUpdate : Update
     {
         EntityId = entityId;
     }
-    public override void Enact(ServerWriteKey key)
+    public override void Enact(ProcedureWriteKey key)
     {
         key.Data.RemoveEntity(EntityId, key);
     }

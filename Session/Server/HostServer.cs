@@ -47,9 +47,9 @@ public partial class HostServer : Node, IServer
         _key = new HostWriteKey(this, logic, data, session);
     }
 
-    public void QueueUpdate(Update u)
+    public void QueueMessage(Message m)
     {
-        var bytes = u.Wrap();
+        var bytes = m.Serialize();
         for (var i = 0; i < _peers.Count; i++)
         {
             _peers[i].QueuePacket(bytes);
@@ -57,18 +57,9 @@ public partial class HostServer : Node, IServer
     }
     public void ReceiveLogicResult(LogicResults results, HostWriteKey key)
     {
-        for (var i = 0; i < results.Procedures.Count; i++)
+        for (var i = 0; i < results.Messages.Count; i++)
         {
-            var bytes = results.Procedures[i].Wrap();
-            for (var j = 0; j < _peers.Count; j++)
-            {
-                _peers[j].QueuePacket(bytes);
-            }
-        }
-
-        for (var i = 0; i < results.Updates.Count; i++)
-        {
-            var bytes = results.Updates[i].Wrap();
+            var bytes = results.Messages[i].Serialize();
             for (var j = 0; j < _peers.Count; j++)
             {
                 _peers[j].QueuePacket(bytes);
@@ -82,7 +73,6 @@ public partial class HostServer : Node, IServer
     }
     public void QueueCommandLocal(Command c)
     {
-        c.SetGuid(_key.Data.ClientPlayerData.LocalPlayerGuid);
         _logic.CommandQueue.Enqueue(c);
     }
 }

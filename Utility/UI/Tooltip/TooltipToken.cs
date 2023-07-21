@@ -12,8 +12,8 @@ public partial class TooltipToken : Node
     public static TooltipToken Construct<T>(DataTooltipInstance<T> instance, Control control, Data data)
     {
         var token = new TooltipToken(control,
-            () => Game.I.Client.Requests.PromptTooltip.Invoke(instance),
-            () => Game.I.Client.Requests.HideTooltip.Invoke(instance));
+            () => Game.I.Client.UiRequests.PromptTooltip.Invoke(instance),
+            () => Game.I.Client.UiRequests.HideTooltip.Invoke(instance));
         return token;
     }
     

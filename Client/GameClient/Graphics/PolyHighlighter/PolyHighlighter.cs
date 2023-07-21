@@ -9,7 +9,7 @@ public partial class PolyHighlighter : Node2D
 
     public PolyHighlighter(Data data)
     {
-        Game.I.Client.Requests.MouseOver.Subscribe(pos => Draw(data, pos));
+        Game.I.Client.UiRequests.MouseOver.Subscribe(pos => Draw(data, pos));
         _mis = new List<MeshInstance2D>();
     }
     private PolyHighlighter()

@@ -14,7 +14,7 @@ public partial class Ui : CanvasLayer
     protected void Setup(IClient client)
     {
         _windows = new Dictionary<Type, Window>();
-        client.Requests.OpenWindowRequest.Subscribe(type =>
+        client.UiRequests.OpenWindowRequest.Subscribe(type =>
         {
             _windows[type].PopupCentered();
             return _windows[type];

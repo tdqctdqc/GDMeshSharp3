@@ -42,7 +42,7 @@ public partial class MapDisplayOptionsUi : VBoxContainer
         btn.Text = name;
         Action toggle = () =>
         {
-            Game.I.Client.Requests.ToggleMapGraphicsLayer.Invoke(name);
+            Game.I.Client.UiRequests.ToggleMapGraphicsLayer.Invoke(name);
         };
         
         var token = ButtonToken.CreateToken(btn, toggle);

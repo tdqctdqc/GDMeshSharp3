@@ -5,12 +5,13 @@ using Godot;
 public class ChooseRegimeCommand : Command
 {
     public EntityRef<Regime> Regime { get; private set; }
-    public ChooseRegimeCommand(EntityRef<Regime> regime) : base()
+    public ChooseRegimeCommand(EntityRef<Regime> regime, Guid commandingPlayerGuid) 
+        : base(commandingPlayerGuid)
     {
         Regime = regime;
     }
 
-    public override void Enact(HostWriteKey key, Action<Procedure> queueProcedure)
+    public override void Enact(ProcedureWriteKey key)
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         player.Set<EntityRef<Regime>>(nameof(player.Regime), Regime, key);

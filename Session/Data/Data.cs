@@ -8,9 +8,11 @@ using System.Linq;
 public class Data
 {
     private IdDispenser _idDispenser;
+    public LogicRequests Requests { get; private set; }
     public ClientPlayerData ClientPlayerData { get; private set; }
     public HostLogicData HostLogicData { get; private set; }
     public DataNotices Notices { get; private set; }
+    public DataHandles Handles { get; private set; }
     public Models Models { get; private set; }
     public RefFulfiller RefFulfiller { get; private set; }
     public IReadOnlyDictionary<Type, Domain> Domains => _domains;
@@ -27,6 +29,7 @@ public class Data
 
     public Data()
     {
+        Requests = new LogicRequests();
         _idDispenser = new IdDispenser();
         EntityTypeTree = new EntityTypeTree(Game.I.Serializer.ConcreteEntityTypes);
         Init();
@@ -50,6 +53,7 @@ public class Data
         AddDomain(Society);
         ClientPlayerData = new ClientPlayerData(this);
         HostLogicData = new HostLogicData(this);
+        Handles = new DataHandles();
     }
     
     public void AddEntity(Entity e, StrongWriteKey key)
@@ -62,7 +66,7 @@ public class Data
         e.GetEntityTypeTreeNode().PropagateCreation(e);
         if (key is HostWriteKey hKey)
         {
-            hKey.HostServer.QueueUpdate(EntityCreationUpdate.Create(e, hKey));
+            hKey.HostServer.QueueMessage(EntityCreationUpdate.Create(e, hKey));
         }
     }
     public void AddEntities(IEnumerable<Entity> es, StrongWriteKey key) 
@@ -78,7 +82,7 @@ public class Data
         }
         if (key is HostWriteKey hKey)
         {
-            hKey.HostServer.QueueUpdate(EntitiesCreationUpdate.Create(es.ToList(), hKey));
+            hKey.HostServer.QueueMessage(EntitiesCreationUpdate.Create(es.ToList(), hKey));
         }
         foreach (var e in es)
         {
@@ -99,7 +103,7 @@ public class Data
 
         if (key is HostWriteKey hKey)
         {
-            hKey.HostServer.QueueUpdate(EntitiesCreationUpdate.Create(es, hKey));
+            hKey.HostServer.QueueMessage(EntitiesCreationUpdate.Create(es, hKey));
         }
         foreach (var entity in es)
         {
@@ -110,7 +114,7 @@ public class Data
     {
         if (key is HostWriteKey hKey)
         {
-            hKey.HostServer.QueueUpdate(EntitiesDeletionUpdate.Create(entityIds, hKey));
+            hKey.HostServer.QueueMessage(EntitiesDeletionUpdate.Create(entityIds, hKey));
         }
         foreach (var eId in entityIds)
         {
@@ -131,7 +135,7 @@ public class Data
         RefFulfiller.EntityRemoved(eId);
         if (key is HostWriteKey hKey)
         {
-            hKey.HostServer.QueueUpdate(EntityDeletionUpdate.Create(eId, hKey));
+            hKey.HostServer.QueueMessage(EntityDeletionUpdate.Create(eId, hKey));
         }
     }
 

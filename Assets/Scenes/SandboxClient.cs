@@ -7,6 +7,7 @@ using Godot;
 public partial class SandboxClient : Node, IClient
 {
     public ClientWriteKey WriteKey { get; private set; }
+    public UiRequests UiRequests { get; private set; }
     public ICameraController Cam { get; private set; }
     private Label _degrees, _mousePos;
     private Dictionary<int, Node2D> _triGraphics;
@@ -17,11 +18,12 @@ public partial class SandboxClient : Node, IClient
     private RegionDebugGraphic _regionTest;
     private Control _debugHook;
     public ClientSettings Settings { get; private set; }
-    public ClientRequests Requests { get; private set; }
+    public LogicRequests Requests { get; private set; }
 
     public SandboxClient()
     {
         Settings = ClientSettings.Load();
+        UiRequests = new UiRequests();
     }
 
     public override void _Ready()
@@ -41,7 +43,7 @@ public partial class SandboxClient : Node, IClient
     }
     public void Setup(Vector2 home, SandboxSession session)
     {
-        Requests = new ClientRequests(session);
+        Requests = new LogicRequests();
 
         WriteKey = new ClientWriteKey(null, null);
         this.AssignChildNode(ref _canvas, "Canvas");

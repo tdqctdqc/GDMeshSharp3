@@ -16,10 +16,10 @@ public partial class TooltipManager : Control
         _panel = new TooltipPanel();
         AddChild(_panel);
         _panel.Visible = false;
-        Game.I.Client.Requests.PromptTooltip.Subscribe(PromptTooltip);
-        TreeExiting += () => Game.I.Client.Requests.PromptTooltip.Unsubscribe(PromptTooltip);
-        Game.I.Client.Requests.HideTooltip.Subscribe(HideTooltip);
-        TreeExiting += () => Game.I.Client.Requests.HideTooltip.Unsubscribe(HideTooltip);;
+        Game.I.Client.UiRequests.PromptTooltip.Subscribe(PromptTooltip);
+        TreeExiting += () => Game.I.Client.UiRequests.PromptTooltip.Unsubscribe(PromptTooltip);
+        Game.I.Client.UiRequests.HideTooltip.Subscribe(HideTooltip);
+        TreeExiting += () => Game.I.Client.UiRequests.HideTooltip.Unsubscribe(HideTooltip);;
     }
 
     private TooltipManager()

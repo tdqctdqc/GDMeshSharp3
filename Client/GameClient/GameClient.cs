@@ -6,12 +6,16 @@ public partial class GameClient : Node, IClient
     private EntityOverviewWindow _entityOverviewWindow;
     public GameUi Ui { get; private set; }
     private IServer _server;
-    public ClientRequests Requests { get; private set; }
     public ICameraController Cam { get; private set; }
     public MapGraphics Graphics { get; private set; }
     public ClientWriteKey WriteKey { get; private set; }
+    public UiRequests UiRequests { get; private set; }
     public ClientSettings Settings { get; private set; }
-    
+
+    public GameClient()
+    {
+        UiRequests = new UiRequests();
+    }
     public override void _Ready()
     {
         
@@ -25,8 +29,7 @@ public partial class GameClient : Node, IClient
     }
     public void Setup(GameSession session, IServer server, MapGraphics graphics)
     {
-        Requests = new ClientRequests(session);
-        Requests.GiveTree(session.Data.EntityTypeTree);
+        session.Data.Requests.GiveTree(session.Data.EntityTypeTree);
         Settings = ClientSettings.Load();
         WriteKey = new ClientWriteKey(session.Data, session);
         var cam = WorldCameraController.Construct(session.Data);

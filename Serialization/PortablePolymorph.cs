@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
-
 public class PortablePolymorph<T>
 {
     public Type Type { get; private set; }

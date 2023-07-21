@@ -22,7 +22,7 @@ public class Syncer
         _protocol = new PacketProtocol(0);
         _protocol.MessageArrived += b =>
         {
-            var m = Game.I.Serializer.MP.Deserialize<MessageWrapper>(b).Unwrap();
+            var m = Game.I.Serializer.MP.Deserialize<MessageWrapper>(b).Get();
             _handle(m);
         };
         Task.Run(Listen);

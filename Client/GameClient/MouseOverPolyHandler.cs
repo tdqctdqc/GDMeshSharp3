@@ -25,7 +25,7 @@ public class MouseOverPolyHandler
         {
             MouseOverPoly = null;
             MouseOverTri = null;
-            Game.I.Client.Requests.HideTooltip.Invoke(_instance);
+            Game.I.Client.UiRequests.HideTooltip.Invoke(_instance);
             return;
         }
         else if (MouseOverPoly != null && MouseOverPoly.PointInPolyAbs(mousePosMapSpace, data))
@@ -53,9 +53,9 @@ public class MouseOverPolyHandler
         if(MouseOverTri != null)
         {
             var pos = new PolyTriPosition(MouseOverPoly.Id, MouseOverTri.Index);
-            Game.I.Client.Requests.MouseOver.Invoke(pos);
+            Game.I.Client.UiRequests.MouseOver.Invoke(pos);
             _instance.SetElement(pos);
-            Game.I.Client.Requests.PromptTooltip.Invoke(_instance);
+            Game.I.Client.UiRequests.PromptTooltip.Invoke(_instance);
         }
         
     }

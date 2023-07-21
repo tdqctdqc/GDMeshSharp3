@@ -25,6 +25,7 @@ public partial class MapChunkGraphic : Node2D
             (Roads(data, mg), true),
             (ResourceDepositPolyFill(data), false),
             (AllianceFill(data), true),
+            (AllianceBorders(data, mg), true),
             (RegimeBorders(data, mg), false),
             (Icons(data, mg), true)
         );
@@ -75,7 +76,9 @@ public partial class MapChunkGraphic : Node2D
 
     private IMapChunkGraphicNode RegimeBorders(Data d, MapGraphics mg)
     {
-        return new RegimeBorderChunkLayer(_chunk, 20f, d, mg);
+        return new BorderChunkLayer(nameof(RegimeBorders), _chunk, p => p.Regime.RefId,
+            p => p.Regime.Fulfilled() ? p.Regime.Entity(d).SecondaryColor : Colors.Transparent,
+            20f, d, mg);
     }
     private MapChunkGraphicModule AllTris(Data d)
     {
@@ -125,15 +128,30 @@ public partial class MapChunkGraphic : Node2D
             var playerAlliance = playerRegime.GetAlliance(d);
             var polyAlliance = p.Regime.Entity(d).GetAlliance(d);
 
-            if (playerAlliance.Members.RefIds.Contains(p.Regime.RefId)) return Colors.Green;
-            if (playerAlliance.AtWar.Contains(polyAlliance)) return Colors.Red;
-            if (playerAlliance.Enemies.Contains(polyAlliance)) return Colors.Orange;
+            if (playerAlliance.Members.RefIds.Contains(p.Regime.RefId)) 
+                return Colors.Green.GetPeriodicShade(p.Regime.RefId);
+            if (playerAlliance.AtWar.Contains(polyAlliance)) 
+                return Colors.Red;
+            if (playerAlliance.Enemies.Contains(polyAlliance)) 
+                return Colors.Orange;
             return Colors.Gray;
         }, new Vector2(0f, 1f));
         
         l.SubscribeUpdate(() => { l.Init(d); }, 
             d.Notices.Ticked.Blank, d.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         
+        return l;
+    }
+    private IMapChunkGraphicNode AllianceBorders(Data d, MapGraphics mg)
+    {
+        var l = new BorderChunkLayer(nameof(AllianceBorders), _chunk, 
+            p => p.Regime.Fulfilled() ? p.Regime.Entity(d).GetAlliance(d).Id : -1,
+            p => p.Regime.Fulfilled() 
+                ? p.Regime.Entity(d).GetAlliance(d).Leader.Entity(d).SecondaryColor 
+                : Colors.Transparent,
+            30f, d, mg);
+        l.SubscribeUpdate(() => { l.Init(d); }, 
+            d.Notices.Ticked.Blank, d.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         return l;
     }
 }

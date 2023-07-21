@@ -47,7 +47,7 @@ public partial class MapInputCatcher : Node
         if (poly.Regime.Fulfilled())
         {
             var r = poly.Regime.Entity(_key.Data);
-            var w = Game.I.Client.Requests.OpenWindow<RegimeOverviewWindow>();
+            var w = Game.I.Client.UiRequests.OpenWindow<RegimeOverviewWindow>();
             w.Setup(r, _key);
         }
     }
