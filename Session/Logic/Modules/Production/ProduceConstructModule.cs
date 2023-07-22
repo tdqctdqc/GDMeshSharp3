@@ -77,7 +77,7 @@ public class ProduceConstructModule : LogicModule
     {
         var builderJob = PeepJobManager.Builder;
         var regimePolys = regime.Polygons.Entities(data);
-        var construction = data.Society.CurrentConstruction.ByPoly;
+        var construction = data.Infrastructure.CurrentConstruction.ByPoly;
 
         var constructionCapNeeded = regime.Polygons.Entities(data)
             .Where(p => construction.ContainsKey(p.Id))
@@ -123,7 +123,7 @@ public class ProduceConstructModule : LogicModule
     private void ConstructForPoly(Regime r, MapPolygon poly,
         float ratio, ProduceConstructProcedure proc, Data data)
     {
-        IEnumerable<Construction> constructions = data.Society.CurrentConstruction.GetPolyConstructions(poly);
+        IEnumerable<Construction> constructions = data.Infrastructure.CurrentConstruction.GetPolyConstructions(poly);
         if (constructions == null || constructions.Count() == 0) return;
         foreach (var construction in constructions)
         {

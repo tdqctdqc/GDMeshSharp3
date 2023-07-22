@@ -24,5 +24,13 @@ public class Player : Entity
         PlayerGuid = playerGuid;
         Name = name;
     }
+
+    public void SetRegime(Regime regime, ProcedureWriteKey key)
+    {
+        var old = Regime.Entity(key.Data);
+        Regime = regime.MakeRef();
+        key.Data.BaseDomain.PlayerAux.PlayerChangedRegime
+            .Invoke(new ValChangeNotice<Regime>(this, regime, old));
+    }
     
 }

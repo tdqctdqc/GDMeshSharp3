@@ -88,7 +88,7 @@ public class ProduceConstructProcedure : Procedure
         {
             var pos = kvp.Key;
             var r = pos.Poly(key.Data).Regime.Entity(key.Data);
-            var construction = key.Data.Society.CurrentConstruction.ByTri[pos];
+            var construction = key.Data.Infrastructure.CurrentConstruction.ByTri[pos];
             construction.ProgressConstruction(kvp.Value,  key);
         }
     }

@@ -290,7 +290,9 @@ public class GeologyGenerator : Generator
             
             var distFactor = distRatio * spineOsc;
             var altEffect = fault.Friction * frictionAltEffectSetting * distFactor;
-            poly.Set<float>(nameof(poly.Altitude), Mathf.Min(1f, poly.Altitude + altEffect), _key);
+            poly.SetAltitude(Mathf.Min(1f, poly.Altitude + altEffect), _key);
+            
+            
             float roughnessErosion = 0f;
             if (poly.Altitude < seaLevelSetting) roughnessErosion 
                 = poly.Altitude * roughnessErosionMult;
@@ -298,7 +300,7 @@ public class GeologyGenerator : Generator
             var frictionEffect = fault.Friction * frictionRoughnessEffectSetting * distFactor;
             var rand = Game.I.Random.RandfRange(-.2f, .2f);
             var newRoughness = Mathf.Clamp(frictionEffect - roughnessErosion + rand, 0f, 1f);
-            poly.Set(nameof(poly.Roughness), newRoughness, _key);
+            poly.SetRoughness(newRoughness, _key);
         }
     }
 }

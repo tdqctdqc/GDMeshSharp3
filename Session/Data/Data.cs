@@ -40,6 +40,12 @@ public class Data
         Models = new Models();
         Entities = new Dictionary<int, Entity>();
         
+        foreach (var entityType in Game.I.Serializer.ConcreteEntityTypes)
+        {
+            var register = EntityRegister<Entity>.ConstructFromType(entityType, this);
+            Registers.Add(entityType, register);
+        }
+        
         BaseDomain = new BaseDomain(this);
         Planet = new PlanetDomain(this);
         Society = new SocietyDomain(this);
@@ -52,14 +58,6 @@ public class Data
         ClientPlayerData = new ClientPlayerData(this);
         HostLogicData = new HostLogicData(this);
         Handles = new DataHandles();
-        
-        var s = Game.I.Serializer;
-        var entityTypes = s.ConcreteEntityTypes;
-        foreach (var entityType in entityTypes)
-        {
-            var register = EntityRegister<Entity>.ConstructFromType(entityType, this);
-            Registers.Add(entityType, register);
-        }
     }
     
     public void AddEntity(Entity e, StrongWriteKey key)

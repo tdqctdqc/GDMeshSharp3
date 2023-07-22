@@ -206,7 +206,7 @@ public class BuildingConstructionPriority : BudgetPriority
         Dictionary<Item, float> prices,
         BudgetScratch scratch, MajorTurnOrders orders)
     {
-        var currConstruction = data.Society.CurrentConstruction;
+        var currConstruction = data.Infrastructure.CurrentConstruction;
         var availPolys = regime.Polygons;
         
         //sort buildings by type then assign polys from that

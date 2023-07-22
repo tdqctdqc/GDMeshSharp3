@@ -24,4 +24,10 @@ public class GameClock : Entity
         return Tick % data.BaseDomain.Rules.TickCycleLength == 0;
     }
 
+    public void DoTick(ProcedureWriteKey key)
+    {
+        Tick++;
+        key.Data.Notices.Ticked.Invoke(Tick);
+    }
+
 }

@@ -29,7 +29,7 @@ public class
         {
             var poly = pos.Poly(key.Data);
             var r = poly.Regime.Entity(key.Data);
-            key.Data.Society.CurrentConstruction.FinishConstruction(poly, pos, key);
+            key.Data.Infrastructure.CurrentConstruction.FinishConstruction(poly, pos, key);
         }
     }
 }

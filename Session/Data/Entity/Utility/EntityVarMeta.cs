@@ -34,19 +34,6 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
     {
         return GetProperty((TEntity)e);
     }
-    public void UpdateVar(string fieldName, Entity t, StrongWriteKey key, object newValueOb)
-    {
-        var oldValue = (TProperty)GetForSerialize((TEntity)t);
-        var newValue = (TProperty) newValueOb;
-        SetProperty((TEntity)t, newValue);
-        _valChanged?.Invoke(new ValChangeNotice<TProperty>(t, fieldName, 
-            newValue, oldValue));
-        if (key is HostWriteKey hKey)
-        {
-            var bytes = Game.I.Serializer.MP.Serialize(newValue);
-            hKey.HostServer.QueueMessage(EntityVarUpdate.Create(fieldName, t.Id, bytes, hKey));
-        }
-    }
     public bool Test(Entity t)
     {
         var prop = GetProperty((TEntity)t);

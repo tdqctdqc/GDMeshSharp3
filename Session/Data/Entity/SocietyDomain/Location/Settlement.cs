@@ -37,4 +37,11 @@ public class Settlement : Location
     {
         Name = name;
     }
+
+    public void SetTier(SettlementTier tier, ProcedureWriteKey key)
+    {
+        var old = Tier.Model(key.Data);
+        Tier = tier.MakeRef();
+        key.Data.Infrastructure.SettlementAux.ChangedTier.Invoke(this, tier, old);
+    }
 }

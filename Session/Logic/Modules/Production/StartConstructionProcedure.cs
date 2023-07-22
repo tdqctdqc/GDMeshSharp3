@@ -27,7 +27,7 @@ public class StartConstructionProcedure : Procedure
     {
         var poly = Construction.Pos.Poly(data);
         var regime = OrderingRegime.Entity(data);
-        var noOngoing = data.Society.CurrentConstruction.ByPoly.ContainsKey(poly.Id) == false;
+        var noOngoing = data.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(poly.Id) == false;
         if (noOngoing == false)
         {
             return false;
@@ -54,6 +54,6 @@ public class StartConstructionProcedure : Procedure
         {
             regime.Items.Remove(kvp.Key, kvp.Value);
         }
-        key.Data.Society.CurrentConstruction.StartConstruction(Construction, key);
+        key.Data.Infrastructure.CurrentConstruction.StartConstruction(Construction, key);
     }
 }

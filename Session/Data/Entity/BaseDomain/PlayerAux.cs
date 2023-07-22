@@ -4,18 +4,16 @@
 
     public class PlayerAux : EntityAux<Player>
     {
-        public EntityPropEntityIndexer<Player, Regime> ByRegime { get; private set; }
+        public PropEntityIndexer<Player, Regime> ByRegime { get; private set; }
         public PropEntityIndexer<Player, Guid> ByGuid { get; private set; }
-        public ValChangeAction<EntityRef<Regime>> PlayerChangedRegime { get; private set; }
+        public ValChangeAction<Regime> PlayerChangedRegime { get; private set; }
         private Data _data;
         public PlayerAux(Data data) : base(data)
         {
             _data = data;
-            var regimeVar = Game.I.Serializer.GetEntityMeta<Player>()
-                .GetEntityVarMeta<EntityRef<Regime>>(nameof(Player.Regime));
-            PlayerChangedRegime = regimeVar.ValChanged();
-            ByRegime = EntityPropEntityIndexer<Player, Regime>.CreateDynamic(data, 
-                p => p.Regime, PlayerChangedRegime);
+            PlayerChangedRegime = new ValChangeAction<Regime>();
+            ByRegime = PropEntityIndexer<Player, Regime>.CreateDynamic(data, 
+                p => p.Regime.Entity(data), PlayerChangedRegime);
             ByGuid = PropEntityIndexer<Player, Guid>.CreateConstant(data, p => p.PlayerGuid);
         }
 

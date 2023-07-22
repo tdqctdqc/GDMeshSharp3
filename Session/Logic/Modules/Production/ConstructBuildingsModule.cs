@@ -12,7 +12,7 @@ public class ConstructBuildingsModule : LogicModule
         var clear = ClearFinishedConstructionsProcedure.Construct();
         foreach (var r in data.Society.Regimes.Entities)
         {
-            foreach (var kvp in data.Society.CurrentConstruction.ByTri)
+            foreach (var kvp in data.Infrastructure.CurrentConstruction.ByTri)
             {
                 if (kvp.Value.TicksLeft < 0)
                 {

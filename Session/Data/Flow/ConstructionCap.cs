@@ -16,7 +16,7 @@ public class ConstructionCap : Flow
 
     public override float GetConsumption(Regime r, Data d)
     {
-        return d.Society.CurrentConstruction.ByPoly
+        return d.Infrastructure.CurrentConstruction.ByPoly
             .Where(kvp => r.Polygons.RefIds.Contains(kvp.Key))
             .Sum(kvp => kvp.Value.Sum(c => c.Model.Model(d).ConstructionCapPerTick));
     }

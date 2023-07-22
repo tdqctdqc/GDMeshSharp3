@@ -14,9 +14,9 @@ public class ClientPlayerData
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>
         {
             var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
-            if (data.BaseDomain.PlayerAux.ByRegime.ContainsKey(a.NewVal.Entity(data)))
+            if (data.BaseDomain.PlayerAux.ByRegime.ContainsKey(a.NewVal))
             {
-                var player = data.BaseDomain.PlayerAux.ByRegime[a.NewVal.Entity(data)];
+                var player = data.BaseDomain.PlayerAux.ByRegime[a.NewVal];
                 if(player.PlayerGuid == localPlayer.PlayerGuid)
                 {
                     ResetMajorOrders(data);

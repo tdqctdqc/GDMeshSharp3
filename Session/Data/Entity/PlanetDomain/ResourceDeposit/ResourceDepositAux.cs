@@ -5,9 +5,9 @@ public class ResourceDepositAux : EntityAux<ResourceDeposit>
     public ResourceDepositAux(Data data) : base(data)
     {
         ByPoly = new EntityMultiIndexer<MapPolygon, ResourceDeposit>(data, 
-            r => r.Poly,
+            r => r.Poly.Entity(data),
             new RefAction[]{data.Notices.FinishedStateSync, data.Notices.MadeResources},
-            new ValChangeAction<EntityRef<MapPolygon>>[]{}
+            new ValChangeAction<MapPolygon>[]{}
         );
     }
 }

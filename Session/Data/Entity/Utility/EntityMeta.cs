@@ -8,12 +8,10 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
 {
     public Type EntityType => typeof(TEntity);
     public IReadOnlyList<string> FieldNameList => _fieldNames;
-    public HashSet<string> FieldNameHash { get; }
     private List<string> _fieldNames;
     public IReadOnlyDictionary<string, Type> FieldTypes => _fieldTypes;
 
     private Dictionary<string, Type> _fieldTypes;
-    public IReadOnlyDictionary<string, IEntityVarMeta> Vars => _vars;
     
     private Dictionary<string, IEntityVarMeta> _vars;
     private Dictionary<string, IRefColMeta> _refCols;
@@ -34,7 +32,6 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
         
         var properties = entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         _fieldNames = properties.Select(p => p.Name).ToList();
-        FieldNameHash = _fieldNames.ToHashSet();
         _fieldTypes = properties.ToDictionary(p => p.Name, p => p.PropertyType);
         _vars = new Dictionary<string, IEntityVarMeta>();
         _refCols = new Dictionary<string, IRefColMeta>();
@@ -63,8 +60,6 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
         var propType = typeof(TProperty);
         if (propType.IsGenericType && propType.GetGenericTypeDefinition().IsAssignableFrom(typeof(EntityRefCollection<>)))
         {
-            // GD.Print(prop.Name);
-            // GD.Print(typeof(TProperty));
             var genericParam = propType.GenericTypeArguments[0];
             var mi = GetType().GetMethod(nameof(SetupColType), 
                 BindingFlags.Instance | BindingFlags.NonPublic);
@@ -89,19 +84,6 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
         }
         return args;
     }
-    public IRefCollection<TKey> GetRefCollection<TKey>(string fieldName, Entity t, ProcedureWriteKey key)
-    {
-        return (IRefCollection<TKey>)_vars[fieldName].GetForSerialize((TEntity)t);
-    }
-    public void UpdateEntityVar<TProperty>(string fieldName, Entity t, StrongWriteKey key, TProperty newValue)
-    {
-        _vars[fieldName].UpdateVar(fieldName, t, key, newValue);
-    }
-    public EntityVarMeta<TEntity, TProperty> GetEntityVarMeta<TProperty>(string fieldName)
-    {
-        return (EntityVarMeta<TEntity, TProperty>)_vars[fieldName];
-    }
-
     IRefColMeta<TColMember> IEntityMeta.GetRefColMeta<TColMember>(string fieldName)
     {
         return GetRefColMeta<TColMember>(fieldName);

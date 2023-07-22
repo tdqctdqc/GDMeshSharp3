@@ -14,7 +14,7 @@ public class ChooseRegimeCommand : Command
     public override void Enact(ProcedureWriteKey key)
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
-        player.Set<EntityRef<Regime>>(nameof(player.Regime), Regime, key);
+        player.SetRegime(Regime.Entity(key.Data), key);
     }
 
     public override bool Valid(Data data)

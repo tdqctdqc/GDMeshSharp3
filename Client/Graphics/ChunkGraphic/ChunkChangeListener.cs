@@ -34,7 +34,7 @@ public class ChunkChangeListener<TKey>
 
 public static class ChunkChangeListenerExt
 {
-    public static void ListenForEntityCreationDestruction<TEntity, TKey>(
+    public static void ListenForPolyEntity<TEntity, TKey>(
         this ChunkChangeListener<TKey> l,
         Data data, 
         Func<TEntity, TKey> getKey,
@@ -69,11 +69,11 @@ public static class ChunkChangeListenerExt
             l.MarkAdded(kvp.Key, kvp.Value);
         }
     }
-    public static void ListenForEntityCreationDestructionMult<TEntity, TKey>(
+    public static void ListenForMultiPolyEntity<TEntity, TKey>(
         this ChunkChangeListener<TKey> l,
         Data data, 
         Func<TEntity, TKey> getKey,
-        Func<TEntity, IEnumerable<MapPolygon>> getPoly) where TEntity : Entity
+        Func<TEntity, IEnumerable<MapPolygon>> getPolys) where TEntity : Entity
     {
         var created = data.EntityTypeTree[typeof(TEntity)].Created;
         created.Subscribe(notice =>
@@ -81,7 +81,7 @@ public static class ChunkChangeListenerExt
             foreach (var e in notice.Entities)
             {
                 var v = (TEntity) e;
-                var ps = getPoly(v);
+                var ps = getPolys(v);
                 foreach (var p in ps)
                 {
                     var chunk = p.GetChunk(data);
@@ -93,7 +93,7 @@ public static class ChunkChangeListenerExt
         destroyed.Subscribe(notice =>
         {
             var v = (TEntity) notice.Entity;
-            var ps = getPoly(v);
+            var ps = getPolys(v);
             foreach (var p in ps)
             {
                 var chunk = p.GetChunk(data);
@@ -102,13 +102,13 @@ public static class ChunkChangeListenerExt
         });
     }
     
-    public static void ListenForValueChange<TKey, TEntity, TValue>(
+    public static void ListenForChange<TKey, TEntity, TValue>(
         this ChunkChangeListener<TKey> l,
-        Data data, ValChangeAction<TValue> valueTrigger, Func<TEntity, MapPolygon> getPoly,
+        Data data, ValChangeAction<TValue> changeTrigger, Func<TEntity, MapPolygon> getPoly,
         Func<TEntity, TKey> getKey)
         where TEntity : Entity
     {
-        valueTrigger.Subscribe(n =>
+        changeTrigger.Subscribe(n =>
         {
             var e = (TEntity) n.Entity;
             var poly = getPoly(e);
@@ -116,7 +116,7 @@ public static class ChunkChangeListenerExt
             l.Changed[poly.GetChunk(data)].Invoke(key);
         });
     }
-    public static void ListenDynamic<TKey, TValue>(
+    public static void Listen<TKey, TValue>(
         this ChunkChangeListener<TKey> l,
         Data data, 
         Func<TValue, MapPolygon> getPoly, 

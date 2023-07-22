@@ -5,7 +5,6 @@ using Godot;
 
 public interface IEntityVarMeta
 {
-    void UpdateVar(string fieldName, Entity t, StrongWriteKey key, object newValueOb);
     object GetForSerialize(Entity e);
     bool Test(Entity t);
 }

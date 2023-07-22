@@ -109,9 +109,9 @@ public class PolyDataTooltipTemplate : DataTooltipTemplate<PolyTriPosition>
     private static Control GetConstructions(PolyTriPosition t, Data d)
     {
         var entries = new VBoxContainer();
-        if (d.Society.CurrentConstruction.ByPoly.ContainsKey(t.PolyId) == false)
+        if (d.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(t.PolyId) == false)
             return entries;
-        var constructions = d.Society.CurrentConstruction.ByPoly[t.PolyId];
+        var constructions = d.Infrastructure.CurrentConstruction.ByPoly[t.PolyId];
         if(constructions.Count == 0) 
             return entries;
 

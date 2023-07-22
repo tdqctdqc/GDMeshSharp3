@@ -60,10 +60,10 @@ public class EntityTypeTreeNode
     }
     private void BubbleUp(EntityCreatedNotice notice)
     {
-        if (RelevantField(notice) == false) return;
         Parent?.BubbleUp(notice);
         Created.Invoke(notice);
-    }private void BubbleDown(EntityCreatedNotice notice)
+    }
+    private void BubbleDown(EntityCreatedNotice notice)
     {
         Created.Invoke(notice);
         PushDown(notice);
@@ -91,7 +91,6 @@ public class EntityTypeTreeNode
     }
     private void BubbleUp(EntityDestroyedNotice notice)
     {
-        if (RelevantField(notice) == false) return;
         Parent?.BubbleUp(notice);
         Destroyed.Invoke(notice);
     }
@@ -99,11 +98,6 @@ public class EntityTypeTreeNode
     {
         Destroyed.Invoke(notice);
         PushDown(notice);
-    }
-    
-    private bool RelevantField(IEntityNotice n)
-    {
-        return n is ValChangeNotice v == false || Meta.FieldNameHash.Contains(v.FieldName);
     }
     public void SetParent(EntityTypeTreeNode parent)
     {

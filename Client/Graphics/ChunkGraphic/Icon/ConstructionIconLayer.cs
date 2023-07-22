@@ -30,7 +30,7 @@ public partial class ConstructionIconLayer : MapChunkGraphicLayer<Construction>
     protected override IEnumerable<Construction> GetKeys(Data data)
     {
         return Chunk.Polys
-            .Where(p => data.Society.CurrentConstruction.ByPoly.ContainsKey(p.Id))
-            .SelectMany(p => data.Society.CurrentConstruction.ByPoly[p.Id]);
+            .Where(p => data.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(p.Id))
+            .SelectMany(p => data.Infrastructure.CurrentConstruction.ByPoly[p.Id]);
     }
 }

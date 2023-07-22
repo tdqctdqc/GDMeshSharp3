@@ -87,9 +87,9 @@ public partial class MapPolygon : Entity
     }
     public void SetRegime(Regime r, StrongWriteKey key)
     {
-        GetMeta()
-            .UpdateEntityVar<EntityRef<Regime>>(nameof(Regime), this, key, 
-                new EntityRef<Regime>(r.Id));
+        var old = Regime.Entity(key.Data);
+        Regime = r.MakeRef();
+        key.Data.Planet.PolygonAux.ChangedRegime.Invoke(new ValChangeNotice<Regime>(this, r, old));
     }
     public void SetTerrainTris(PolyTris tris, GenWriteKey key)
     {
@@ -113,5 +113,14 @@ public partial class MapPolygon : Entity
     public void SetAltitude(float altitude, GenWriteKey key)
     {
         Altitude = altitude;
+    }
+    public void SetRoughness(float roughness, GenWriteKey key)
+    {
+        Roughness = roughness;
+    }
+
+    public void SetMoisture(float moisture, GenWriteKey key)
+    {
+        Moisture = moisture;
     }
 }

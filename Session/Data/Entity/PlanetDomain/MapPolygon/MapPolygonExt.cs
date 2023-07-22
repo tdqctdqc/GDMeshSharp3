@@ -131,7 +131,7 @@ public static class MapPolygonExt
 
     public static List<Construction> GetCurrentConstructions(this MapPolygon poly, Data data)
     {
-        var curr = data.Society.CurrentConstruction.ByPoly;
+        var curr = data.Infrastructure.CurrentConstruction.ByPoly;
         if (curr.ContainsKey(poly.Id)) return curr[poly.Id];
         return null;
     }

@@ -13,8 +13,7 @@ public class SocietyDomain : Domain
     public RegimeAux RegimeAux { get; private set; }
     public PolyPeepAux PolyPeepAux { get; private set; }
     public AllianceAux AllianceAux { get; private set; }
-    public CurrentConstruction CurrentConstruction => _construction.Value;
-    private SingletonAux<CurrentConstruction> _construction;
+    
     public SocietyDomain(Data data) : base(typeof(SocietyDomain), data)
     {
         
@@ -26,7 +25,6 @@ public class SocietyDomain : Domain
 
         PolyPeepAux = new PolyPeepAux(Data);
         AllianceAux = new AllianceAux(Data);
-        _construction = new SingletonAux<CurrentConstruction>(Data);
         _market = new SingletonAux<Market>(Data);
     }
 }

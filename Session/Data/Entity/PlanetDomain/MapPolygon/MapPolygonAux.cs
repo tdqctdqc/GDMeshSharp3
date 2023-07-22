@@ -12,7 +12,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
     public HashSet<MapChunk> Chunks { get; private set; }
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public LandSeaManager LandSea { get; private set; }
-    public ValChangeAction<EntityRef<Regime>> ChangedRegime { get; private set; }
+    public ValChangeAction<Regime> ChangedRegime { get; private set; }
     public MapPolygonAux(Data data) : base(data)
     {
         BorderGraph = ImplicitGraph.Get<MapPolygon, PolyBorderChain>(
@@ -26,7 +26,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
             p => new PolyAuxData(p, data)
         );
         
-        ChangedRegime = new ValChangeAction<EntityRef<Regime>>();
+        ChangedRegime = new ValChangeAction<Regime>();
         
         data.Notices.SetLandAndSea.Subscribe(() =>
         {

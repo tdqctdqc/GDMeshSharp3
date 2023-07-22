@@ -17,7 +17,7 @@ public partial class RegimeConstructionOverview : ScrollContainer
     public void Setup(Regime regime, Data data)
     {
         _container.ClearChildren();
-        var constructions = data.Society.CurrentConstruction
+        var constructions = data.Infrastructure.CurrentConstruction
             .ByPoly.Where(kvp => regime.Polygons.RefIds.Contains(kvp.Key))
             .SelectMany(kvp => kvp.Value).ToList();
         _container.CreateLabelAsChild($"Cap: {regime.Flows[FlowManager.ConstructionCap].FlowIn}");

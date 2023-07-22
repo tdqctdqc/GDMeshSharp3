@@ -63,7 +63,7 @@ public class MoistureGenerator : Generator
             {
                 foreach (var poly in cell.PolyGeos)
                 {
-                    if (poly.IsWater()) poly.Set<float>(nameof(poly.Moisture), 1f, _key);
+                    if (poly.IsWater()) poly.SetMoisture(1f, _key);
                     else
                     {
                         var moisture = plateMoistures[plate] + Game.I.Random.RandfRange(-.1f, .1f);
@@ -72,7 +72,7 @@ public class MoistureGenerator : Generator
                         {
                             moisture = newMoisture;
                         }
-                        poly.Set<float>(nameof(poly.Moisture), Mathf.Clamp(moisture, 0f, 1f), _key);
+                        poly.SetMoisture(Mathf.Clamp(moisture, 0f, 1f), _key);
                     }
                 }
             }
