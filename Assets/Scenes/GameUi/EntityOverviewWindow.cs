@@ -25,8 +25,6 @@ public partial class EntityOverviewWindow : Window
     {
         _data = data;
         
-        _domain = new UIVar<Domain>(null);
-        _domain.ChangedValue += DrawEntityTypes;
         
         _entityType = new UIVar<Type>(null);
         _entityType.ChangedValue += DrawEntitiesOfType;
@@ -34,7 +32,6 @@ public partial class EntityOverviewWindow : Window
         _selectedEntity = new UIVar<Entity>(null);
         _selectedEntity.ChangedValue += DrawEntityProps;
         
-        _domainToken = ItemListToken.Construct((ItemList) FindChild("Domains"));
         _entityTypeToken = ItemListToken.Construct((ItemList) FindChild("EntityTypes"));
         _entitiesToken = ItemListToken.Construct((ItemList) FindChild("Entities"));
         _entityPropsToken = ItemListToken.Construct((ItemList) FindChild("EntityProps"));
@@ -43,31 +40,29 @@ public partial class EntityOverviewWindow : Window
     }
     private void Draw()
     {
-        _domainToken.Setup(_data.Domains.Values.ToList(), 
-            d => d.GetType().Name,
-            d => () => _domain.SetValue(d));
+        DrawEntityTypes();
+
     }
 
-    private void DrawEntityTypes(Domain d)
+    private void DrawEntityTypes()
     {
-        _entityTypeToken.Setup(d.Registers.Select(r => r.Value.EntityType).ToList(),
+        _entityTypeToken.Setup(_data.Registers.Select(r => r.Value.EntityType).ToList(),
             t => t.Name,
             t => () => _entityType.SetValue(t));
     }
 
     private void DrawEntitiesOfType(Type type)
     {
-        var d = _domain.Value;
-        var register = d.Registers[type];
+        var entities = _data.Entities.Values.Where(e => e.GetEntityTypeTreeNode().EntityType == type).ToList();
         
-        _entitiesToken.Setup(register.Entities.ToList(), 
+        _entitiesToken.Setup(entities, 
             e => e.Id.ToString(),
             e => () => _selectedEntity.SetValue(e));
         
         _entityTypePropsToken.Setup<string>(
             new List<string>
             {
-                "Number: " + register.Entities.Count
+                "Number: " + entities.Count
             },
             i => i,
             i => () => { }

@@ -4,8 +4,6 @@ using MessagePack;
 
 public class Player : Entity
 {
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(BaseDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public Guid PlayerGuid { get; private set; }

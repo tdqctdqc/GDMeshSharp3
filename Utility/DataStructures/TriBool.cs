@@ -26,7 +26,7 @@ public struct TriBool
 
 public static class TriBoolExt
 {
-    public static TriBool Combine(this TriBool t1, TriBool t2)
+    public static TriBool And(this TriBool t1, TriBool t2)
     {
         if (t1.IsUndecided() || t2.IsUndecided()) return TriBool.Undecided;
         if (t1.IsFalse() || t2.IsFalse()) return TriBool.False;

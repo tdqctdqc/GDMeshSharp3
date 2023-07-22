@@ -5,15 +5,15 @@ using Godot;
 
 public class PlanetDomain : Domain
 {
-    public EntityRegister<MapPolygon> Polygons => GetRegister<MapPolygon>();
+    public EntityRegister<MapPolygon> Polygons => Data.GetRegister<MapPolygon>();
     public MapPolygonAux PolygonAux { get; private set; }
-    public EntityRegister<MapPolygonEdge> PolyEdges => GetRegister<MapPolygonEdge>();
+    public EntityRegister<MapPolygonEdge> PolyEdges => Data.GetRegister<MapPolygonEdge>();
 
     public PolyEdgeAux PolyEdgeAux { get; private set; }
     public PlanetInfo Info => _planetInfoAux != null ? _planetInfoAux.Value : null;
     private SingletonAux<PlanetInfo> _planetInfoAux;
-    public EntityRegister<ResourceDeposit> ResourceDeposits => GetRegister<ResourceDeposit>();
-    public EntityRegister<MapPolyNexus> PolyNexi => GetRegister<MapPolyNexus>();
+    public EntityRegister<ResourceDeposit> ResourceDeposits => Data.GetRegister<ResourceDeposit>();
+    public EntityRegister<MapPolyNexus> PolyNexi => Data.GetRegister<MapPolyNexus>();
     public ResourceDepositAux ResourceDepositAux { get; private set; }
 
     public float Width => _planetInfoAux.Value.Dimensions.X;
@@ -24,9 +24,9 @@ public class PlanetDomain : Domain
     }
     public override void Setup()
     {
-        _planetInfoAux = new SingletonAux<PlanetInfo>(this, Data);
-        PolygonAux = new MapPolygonAux(this, Data);
-        PolyEdgeAux = new PolyEdgeAux(this, Data);
-        ResourceDepositAux = new ResourceDepositAux(this, Data);
+        _planetInfoAux = new SingletonAux<PlanetInfo>(Data);
+        PolygonAux = new MapPolygonAux(Data);
+        PolyEdgeAux = new PolyEdgeAux(Data);
+        ResourceDepositAux = new ResourceDepositAux(Data);
     }
 }

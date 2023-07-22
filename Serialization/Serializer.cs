@@ -49,20 +49,17 @@ public class Serializer
     public bool Test(Data data)
     {
         var res = true;
-        foreach (var keyValuePair in data.Domains)
+        foreach (var valueRepo in data.Registers)
         {
-            foreach (var valueRepo in keyValuePair.Value.Registers)
+            var e = valueRepo.Value.Entities.FirstOrDefault();
+            if(e != null)
             {
-                var e = valueRepo.Value.Entities.FirstOrDefault();
-                if(e != null)
-                {
-                    GD.Print("testing " + e.GetType());
-                    res = res && e.GetMeta().TestSerialization(e);
-                }
-                else
-                {
-                    GD.Print($"no {valueRepo.Key} to test");
-                }
+                GD.Print("testing " + e.GetType());
+                res = res && e.GetMeta().TestSerialization(e);
+            }
+            else
+            {
+                GD.Print($"no {valueRepo.Key} to test");
             }
         }
 

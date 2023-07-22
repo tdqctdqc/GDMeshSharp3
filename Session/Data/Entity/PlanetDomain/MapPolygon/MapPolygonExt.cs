@@ -85,14 +85,14 @@ public static class MapPolygonExt
 
     public static List<MapBuilding> GetBuildings(this MapPolygon poly, Data data)
     {
-        return data.Society.BuildingAux.ByPoly[poly];
+        return data.Infrastructure.BuildingAux.ByPoly[poly];
     }
     public static int GetLaborSurplus(this MapPolygon poly, Data data)
     {
         if (poly.GetBuildings(data) == null) return 0;
         if (poly.GetPeep(data) == null) return 0;
         
-        return data.Society.BuildingAux.ByPoly[poly]
+        return data.Infrastructure.BuildingAux.ByPoly[poly]
             .Select(b => b.Model.Model(data))
             .SelectWhere(b => b.HasComponent<Workplace>())
             .Sum(wb => poly.GetPeep(data).Size - wb.GetComponent<Workplace>().TotalLaborReq());
@@ -108,7 +108,7 @@ public static class MapPolygonExt
     }
     public static Settlement GetSettlement(this MapPolygon p, Data data)
     {
-        return data.Society.SettlementAux.ByPoly.ContainsKey(p) ? data.Society.SettlementAux.ByPoly[p] : null;
+        return data.Infrastructure.SettlementAux.ByPoly.ContainsKey(p) ? data.Infrastructure.SettlementAux.ByPoly[p] : null;
     }
     public static PolyPeep GetPeep(this MapPolygon poly, Data data)
     {

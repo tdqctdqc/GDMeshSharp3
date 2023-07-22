@@ -39,12 +39,12 @@ public class AllianceMergeProposal : DiplomacyProposal
                 alliance1.Members.Add(alliance1, r, key);
             }
             
-            var enemies0 = alliance0.Enemies.Entities(key.Data).ToList();
+            var enemies0 = alliance0.Rivals.Entities(key.Data).ToList();
             for (var i = 0; i < enemies0.Count; i++)
             {
                 var e = enemies0[i];
-                alliance1.Enemies.Add(alliance1, e, key);
-                e.Enemies.Add(e, alliance1, key);
+                alliance1.Rivals.Add(alliance1, e, key);
+                e.Rivals.Add(e, alliance1, key);
             }
             
             var war0 = alliance0.AtWar.Entities(key.Data).ToList();
@@ -66,6 +66,6 @@ public class AllianceMergeProposal : DiplomacyProposal
         if (data.Entities.ContainsKey(Alliance1) == false) return false;
         var a0 = (Alliance) data.Entities[Alliance0];
         var a1 = (Alliance) data.Entities[Alliance1];
-        return a0.Enemies.Contains(a1) == false;
+        return a0.Rivals.Contains(a1) == false;
     }
 }

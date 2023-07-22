@@ -6,7 +6,7 @@
         public EntityPropEntityIndexer<Settlement, MapPolygon> ByPoly { get; private set; }
         public ValChangeAction<ModelRef<SettlementTier>> ChangedTier { get; private set; }
 
-        public SettlementAux(Domain domain, Data data) : base(domain, data)
+        public SettlementAux(Data data) : base(data)
         {
             ByPoly = EntityPropEntityIndexer<Settlement, MapPolygon>
                 .CreateStatic(data, s => s.Poly);

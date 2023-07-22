@@ -21,12 +21,10 @@ public partial class MapChunkGraphic : Node2D
         Order(
             chunk, data, mg,
             (AllTris(data), true),
-            (RegimeFill(data), true),
+            (Regime(data, mg), true),
             (Roads(data, mg), true),
             (ResourceDepositPolyFill(data), false),
-            (AllianceFill(data), true),
-            (AllianceBorders(data, mg), true),
-            (RegimeBorders(data, mg), false),
+            (Alliance(data, mg), true),
             (Icons(data, mg), true)
         );
         Init();
@@ -74,12 +72,6 @@ public partial class MapChunkGraphic : Node2D
         }
     }
 
-    private IMapChunkGraphicNode RegimeBorders(Data d, MapGraphics mg)
-    {
-        return new BorderChunkLayer(nameof(RegimeBorders), _chunk, p => p.Regime.RefId,
-            p => p.Regime.Fulfilled() ? p.Regime.Entity(d).SecondaryColor : Colors.Transparent,
-            20f, d, mg);
-    }
     private MapChunkGraphicModule AllTris(Data d)
     {
         return new PolyTriChunkGraphic(_chunk, d);
@@ -102,9 +94,10 @@ public partial class MapChunkGraphic : Node2D
         }, new Vector2(0f, 1f));
     }
 
-    private IMapChunkGraphicNode RegimeFill(Data d)
+    private IMapChunkGraphicNode Regime(Data d, MapGraphics mg)
     {
-        return new PolyFillLayer(nameof(RegimeFill), _chunk, d, 
+        var module = new MapChunkGraphicModule("Regime");
+        var fill = new PolyFillLayer(nameof(Regime), _chunk, d, 
             p =>
             {
                 if (p.Regime.Fulfilled() 
@@ -114,11 +107,19 @@ public partial class MapChunkGraphic : Node2D
                 return Colors.Transparent;
             },
             new Vector2(0f, 1f));
+        var borders = new BorderChunkLayer("Borders", _chunk, p => p.Regime.RefId,
+            p => p.Regime.Fulfilled() ? p.Regime.Entity(d).SecondaryColor : Colors.Transparent,
+            20f, d, mg);
+        module.AddLayer(fill);
+        module.AddLayer(borders);
+        return module;
     }
 
-    private IMapChunkGraphicNode AllianceFill(Data d)
+    private IMapChunkGraphicNode Alliance(Data d, MapGraphics mg)
     {
-        var l = new PolyFillLayer(nameof(AllianceFill), _chunk, d, p =>
+        var module = new MapChunkGraphicModule("Alliance");
+        
+        var fill = new PolyFillLayer("fill", _chunk, d, p =>
         {
             if (p.Regime.Fulfilled() == false) return Colors.Transparent;
             if (d.BaseDomain.PlayerAux.LocalPlayer == null) return Colors.Transparent;
@@ -132,26 +133,29 @@ public partial class MapChunkGraphic : Node2D
                 return Colors.Green.GetPeriodicShade(p.Regime.RefId);
             if (playerAlliance.AtWar.Contains(polyAlliance)) 
                 return Colors.Red;
-            if (playerAlliance.Enemies.Contains(polyAlliance)) 
+            if (playerAlliance.Rivals.Contains(polyAlliance)) 
                 return Colors.Orange;
             return Colors.Gray;
         }, new Vector2(0f, 1f));
         
-        l.SubscribeUpdate(() => { l.Init(d); }, 
-            d.Notices.Ticked.Blank, d.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
-        
-        return l;
-    }
-    private IMapChunkGraphicNode AllianceBorders(Data d, MapGraphics mg)
-    {
-        var l = new BorderChunkLayer(nameof(AllianceBorders), _chunk, 
+        var allianceBorders = new BorderChunkLayer(nameof(Alliance), _chunk, 
             p => p.Regime.Fulfilled() ? p.Regime.Entity(d).GetAlliance(d).Id : -1,
             p => p.Regime.Fulfilled() 
-                ? p.Regime.Entity(d).GetAlliance(d).Leader.Entity(d).SecondaryColor 
+                ? p.Regime.Entity(d).GetAlliance(d).Leader.Entity(d).PrimaryColor 
                 : Colors.Transparent,
             30f, d, mg);
-        l.SubscribeUpdate(() => { l.Init(d); }, 
+        
+        var regimeBorders = new BorderChunkLayer(nameof(Alliance), _chunk, 
+            p => p.Regime.RefId,
+            p => p.Regime.Fulfilled() 
+                ? p.Regime.Entity(d).GetAlliance(d).Leader.Entity(d).PrimaryColor 
+                : Colors.Transparent,
+            5f, d, mg);
+        module.AddLayer(fill);
+        module.AddLayer(regimeBorders);
+        module.AddLayer(allianceBorders);
+        module.SubscribeUpdate(() => { module.Init(d); }, 
             d.Notices.Ticked.Blank, d.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
-        return l;
+        return module;
     }
 }

@@ -16,4 +16,11 @@ public static class AllianceExt
         if (a.Leader.RefId == r.Id) w *= 2;
         return w;
     }
+
+    public static IEnumerable<Alliance> GetNeighborAlliances(this Regime regime, Data data)
+    {
+        return regime.Polygons.Entities(data)
+            .SelectMany(p => p.Neighbors.Entities(data).Where(e => e.Regime.Fulfilled()))
+            .Select(p => p.Regime.Entity(data).GetAlliance(data)).Distinct();
+    }
 }

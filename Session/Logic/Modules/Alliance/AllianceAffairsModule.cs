@@ -13,9 +13,11 @@ public class AllianceAffairsModule : LogicModule
         UpdateProposalPriorities(data, res);
         ResolveProposals(orders, data, res);
         AddProposals(orders, res, data);
+        RemoveInvalidProposals(data, res);
         return res;
     }
 
+    
     private void ReceiveProposalDecisions(List<TurnOrders> orders, Data data, LogicResults res)
     {
         foreach (var turnOrders in orders)
@@ -31,15 +33,27 @@ public class AllianceAffairsModule : LogicModule
     }
     private void ResolveProposals(List<TurnOrders> orders, Data data, LogicResults res)
     {
-        var proposals = data.Society.Alliances.Entities
-            .SelectMany(a => a.Proposals.Values).ToHashSet();
-        foreach (var proposal in proposals)
+        var resolved = new HashSet<int>();
+        
+        foreach (var alliance in data.Society.Alliances.Entities)
         {
-            var decision = proposal.GetResolution(data);
-            if (decision.IsUndecided()) continue;
-            var resolve = new ResolveProposalProcedure(decision.IsTrue(), proposal.Id);
-            res.Messages.Add(resolve);
+            var readyProposals = alliance.Proposals.Values
+                .Where(p => resolved.Contains(p.Id) == false)
+                .Where(p => p.Valid(data))
+                .Where(p => p.Undecided(data) == false)
+                .ToHashSet();
+            if (readyProposals.Count() > 0)
+            {
+                var proposal = readyProposals
+                    .OrderByDescending(p => p.Priority).First();
+                resolved.Add(proposal.Id);
+                var decision = proposal.GetResolution(data);
+                var resolve = new ResolveProposalProcedure(decision.IsTrue(), proposal.Id);
+                res.Messages.Add(resolve);
+            }
         }
+        
+        
     }
     private void UpdateProposalPriorities(Data data, LogicResults res)
     {
@@ -52,7 +66,14 @@ public class AllianceAffairsModule : LogicModule
         }
         res.Messages.Add(proc);
     }
-    
+    private void RemoveInvalidProposals(Data data, LogicResults res)
+    {
+        var invalids = data.Handles.Proposals.Values.Where(p => p.Valid(data) == false);
+        foreach (var invalid in invalids)
+        {
+            res.Messages.Add(new CancelProposalProcedure(invalid.Id));
+        }
+    }
     private void AddProposals(List<TurnOrders> orders, LogicResults res, Data data)
     {
         var tick = data.BaseDomain.GameClock.Tick;

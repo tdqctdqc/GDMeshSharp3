@@ -19,7 +19,7 @@ public partial class MapChunkGraphicModule : Node2D, IMapChunkGraphicNode
     {
     }
 
-    protected void AddLayer(IMapChunkGraphicNode layer)
+    public void AddLayer(IMapChunkGraphicNode layer)
     {
         AddChild((Node)layer);
         _nodes.Add(layer);

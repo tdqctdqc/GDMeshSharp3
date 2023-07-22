@@ -65,18 +65,7 @@ public class Regime : Entity
         );
         key.Create(r);
         seed.SetRegime(r, key);
-
-        var alliance = Alliance.Create(r, key);
-        var regimes = key.Data.Society.Regimes.Entities;
-        foreach (var regime in regimes)
-        {
-            if (regime != r)
-            {
-                RegimeRelation.Create(id.GetID(), new EntityRef<Regime>(r.Id), 
-                    new EntityRef<Regime>(regime.Id), key);
-            }
-        }
-        
+        Alliance.Create(r, key);
         return r;
     }
 
@@ -92,6 +81,4 @@ public class Regime : Entity
     public override string ToString() => Name;
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(SocietyDomain);
 }

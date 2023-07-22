@@ -6,8 +6,8 @@ public class EntityAux<T> : IEntityAux where T : Entity
 {
     public EntityRegister<T> Register { get; private set; }
     Type IEntityAux.EntityType => typeof(T);
-    public EntityAux(Domain domain, Data data)
+    public EntityAux(Data data)
     {
-        Register = domain.GetRegister<T>();
+        Register = data.GetRegister<T>();
     }
 }

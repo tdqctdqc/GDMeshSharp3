@@ -6,7 +6,8 @@ using Godot;
 public class DiplomacyAi
 {
     private Regime _regime;
-    public static float DesiredFriendToEnemyPowerRatio = 1.5f;
+    public static float DesiredFriendToRivalPowerRatio = 1.5f;
+    public static float DesiredFriendToEnemyPowerRatio = 2f;
     public DiplomacyAi(Regime regime)
     {
         _regime = regime;
@@ -15,19 +16,18 @@ public class DiplomacyAi
     public void Calculate(Data data, MajorTurnOrders orders)
     {
         var alliance = _regime.GetAlliance(data);
-
         var alliancePower = alliance.GetPowerScore(data);
-        var enemyPower = alliance.Enemies.Entities(data)
+        var rivalPower = alliance.Rivals.Entities(data)
             .Sum(a => a.GetPowerScore(data));
-        if (alliancePower > enemyPower * DesiredFriendToEnemyPowerRatio)
+        if (alliancePower > rivalPower * DesiredFriendToRivalPowerRatio)
         {
-            FindEnemies(data, orders, alliancePower, enemyPower);
+            FindEnemies(data, orders, alliancePower, rivalPower);
         }
-        
-        if (enemyPower / DesiredFriendToEnemyPowerRatio > alliancePower)
+        if (rivalPower / DesiredFriendToRivalPowerRatio > alliancePower)
         {
-            FindFriends(data, orders, alliancePower, enemyPower);
+            FindFriends(data, orders, alliancePower, rivalPower);
         }
+        ProposeWars(data, orders, alliancePower, rivalPower);
         DecideOnProposals(data, orders);
     }
 
@@ -44,34 +44,32 @@ public class DiplomacyAi
         }
     }
     private void FindEnemies(Data data, MajorTurnOrders orders, float friendPower,
-        float enemyPower)
+        float rivalPower)
     {
-        var enemyPowerToFill = (friendPower - enemyPower) / DesiredFriendToEnemyPowerRatio;
+        var rivalPowerToFill = (friendPower - rivalPower) / DesiredFriendToRivalPowerRatio;
         var regimeAlliance = _regime.GetAlliance(data);
-        var neutralNeighbors = _regime.Polygons.Entities(data)
-            .SelectMany(p => p.Neighbors.Entities(data).Where(e => e.Regime.Fulfilled()))
-            .Select(p => p.Regime.Entity(data).GetAlliance(data))
+        var neutralNeighbors = _regime.GetNeighborAlliances(data)
             .Where(a =>
             {
                 if (a == regimeAlliance) return false;
                 var power = a.GetPowerScore(data);
-                if (power > enemyPowerToFill) return false;
-                return regimeAlliance.Enemies.Contains(a) == false;
+                if (power > rivalPowerToFill) return false;
+                return regimeAlliance.Rivals.Contains(a) == false;
             })
             .ToHashSet();
         if (neutralNeighbors.Count == 0) return;
-        var newEnemy = neutralNeighbors
-            .OrderBy(e => GetEnemyScore(regimeAlliance, e, data))
+        var newRival = neutralNeighbors
+            .OrderBy(e => GetRivalScore(regimeAlliance, e, data))
             .FirstOrDefault();
-        if (newEnemy != null)
+        if (newRival != null && Game.I.Random.Randf() < .5f)
         {
-            var proposal = DeclareEnemyProposal.Construct(_regime, newEnemy, data);
+            var proposal = DeclareRivalProposal.Construct(_regime, newRival, data);
             proposal.InFavor.Add(_regime.Id);
             orders.DiplomacyOrders.ProposalsMade.Add(proposal);
         }
     }
 
-    private float GetEnemyScore(Alliance alliance, Alliance target, Data data)
+    private float GetRivalScore(Alliance alliance, Alliance target, Data data)
     {
         var targetPolys = target.Members.Entities(data).SelectMany(r => r.Polygons.Entities(data));
         var targetNeighborPolys = targetPolys
@@ -83,25 +81,23 @@ public class DiplomacyAi
         return targetNeighborPolys / pCount;
     }
     private void FindFriends(Data data, MajorTurnOrders orders, float friendPower,
-        float enemyPower)
+        float rivalPower)
     {
-        var friendPowerToFill = enemyPower * DesiredFriendToEnemyPowerRatio - friendPower;
+        var friendPowerToFill = rivalPower * DesiredFriendToRivalPowerRatio - friendPower;
         if (friendPowerToFill < 0f) return;
         var regimeAlliance = _regime.GetAlliance(data);
-        var neutralNeighbors = _regime.Polygons.Entities(data)
-            .SelectMany(p => p.Neighbors.Entities(data).Where(e => e.Regime.Fulfilled()))
-            .Select(p => p.Regime.Entity(data).GetAlliance(data))
+        var neutralNeighbors = _regime.GetNeighborAlliances(data)
             .Where(a =>
             {
                 if (a == regimeAlliance) return false;
-                return regimeAlliance.Enemies.Contains(a) == false;
+                return regimeAlliance.Rivals.Contains(a) == false;
             })
             .ToHashSet();
         if (neutralNeighbors.Count == 0) return;
         var newFriend = neutralNeighbors
             .OrderBy(e => GetFriendScore(regimeAlliance, e, data))
             .FirstOrDefault();
-        if (newFriend != null)
+        if (newFriend != null && Game.I.Random.Randf() < .5f)
         {
             var proposal = AllianceMergeProposal.Construct(_regime, newFriend, data);
             proposal.InFavor.Add(_regime.Id);
@@ -113,13 +109,31 @@ public class DiplomacyAi
         var res = 0f;
         var power = target.GetPowerScore(data);
         res += power * 2f;
-        var ourEnemies = alliance.Enemies.Entities(data);
-        var sharedEnemies = target.Enemies.Entities(data)
+        var ourEnemies = alliance.Rivals.Entities(data);
+        var sharedEnemies = target.Rivals.Entities(data)
             .Where(ourEnemies.Contains);
         if (sharedEnemies.Count() > 0)
         {
             res += sharedEnemies.Sum(e => e.GetPowerScore(data));
         }
         return res;
+    }
+
+    private void ProposeWars(Data data, MajorTurnOrders orders, float friendPower,
+        float rivalPower)
+    {
+        if (friendPower < rivalPower * DesiredFriendToRivalPowerRatio) return;
+        var regimeAlliance = _regime.GetAlliance(data);
+        var enemyPower = regimeAlliance.AtWar.Entities(data).Sum(a => a.GetPowerScore(data));
+        if (enemyPower * DesiredFriendToEnemyPowerRatio > friendPower) return;
+        var nonEnemyRivals = regimeAlliance.Rivals.Entities(data)
+            .Except(regimeAlliance.AtWar.Entities(data)).ToList();
+        if (nonEnemyRivals.Count == 0) return;
+        if (Game.I.Random.Randf() < .1f)
+        {
+            var target = nonEnemyRivals.OrderBy(r => r.GetPowerScore(data)).First();
+            var proposal = DeclareWarProposal.Construct(_regime, target, data);
+            orders.DiplomacyOrders.ProposalsMade.Add(proposal);
+        }
     }
 }

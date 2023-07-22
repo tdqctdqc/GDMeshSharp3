@@ -7,8 +7,6 @@ using MessagePack;
 
 public partial class MapPolygon : Entity
 {
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(PlanetDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public Vector2 Center { get; protected set; }

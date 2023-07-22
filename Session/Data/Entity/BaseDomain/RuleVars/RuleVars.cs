@@ -5,8 +5,6 @@ using MessagePack;
 
 public class RuleVars : Entity
 {
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(BaseDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public int TickCycleLength { get; private set; }

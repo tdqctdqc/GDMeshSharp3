@@ -51,7 +51,6 @@ public class CurrentConstruction : Entity
         ByTri.Remove(pos);
     }
 
-    public override Type GetDomainType() => DomainType();
     private static Type DomainType() => typeof(SocietyDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }

@@ -5,7 +5,7 @@ using System.Linq;
 public class AllianceAux : EntityAux<Alliance>
 {
     public EntityRefColIndexer<Alliance, Regime> RegimeAlliances { get; private set; }
-    public AllianceAux(Domain domain, Data data) : base(domain, data)
+    public AllianceAux(Data data) : base(data)
     {
         var membersMeta = Game.I.Serializer.GetEntityMeta<Alliance>()
             .GetRefColMeta<Regime>(nameof(Alliance.Members));

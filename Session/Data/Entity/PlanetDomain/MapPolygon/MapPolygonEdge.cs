@@ -7,8 +7,6 @@ using MessagePack;
 
 public class MapPolygonEdge : Entity
 {
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(PlanetDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public float MoistureFlow { get; protected set; }

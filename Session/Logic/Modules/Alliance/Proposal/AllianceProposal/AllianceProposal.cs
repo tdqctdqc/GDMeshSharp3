@@ -20,7 +20,7 @@ public abstract class AllianceProposal : Proposal
         alliance.Proposals.Add(Id, this);
     }
 
-    protected override void CleanUp(ProcedureWriteKey key)
+    public override void CleanUp(ProcedureWriteKey key)
     {
         if (key.Data.Entities.ContainsKey(AllianceId))
         {
@@ -48,5 +48,15 @@ public abstract class AllianceProposal : Proposal
         var res = alliance.GetWeightInAlliance(Proposer.Entity(data), data);
         if (Proposer.RefId == alliance.Leader.RefId) res *= 2;
         return res;
+    }
+
+    public override bool Valid(Data data)
+    {
+        return data.Entities.ContainsKey(AllianceId);
+    }
+
+    public override bool Undecided(Data data)
+    {
+        return AllianceUndecided(data.Society.Alliances[AllianceId], data);
     }
 }

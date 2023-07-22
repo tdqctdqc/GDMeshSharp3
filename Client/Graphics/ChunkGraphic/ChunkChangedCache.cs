@@ -43,7 +43,7 @@ public class ChunkChangedCache
         SettlementTierChanged = new ChunkChangeListener<int>(d);
         SettlementTierChanged.ListenForValueChange<int, Settlement, ModelRef<SettlementTier>>(
             d,
-            d.Society.SettlementAux.ChangedTier,
+            d.Infrastructure.SettlementAux.ChangedTier,
             e => e.Poly.Entity(d),
             s => s.Poly.RefId
         );

@@ -4,8 +4,6 @@ using MessagePack;
 
 public class ResourceDeposit : Entity
 {
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(PlanetDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public ModelRef<Item> Item { get; protected set; }

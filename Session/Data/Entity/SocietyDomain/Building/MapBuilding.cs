@@ -4,8 +4,6 @@ using MessagePack;
 
 public class MapBuilding : Entity
 {
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(SocietyDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public PolyTriPosition Position { get; protected set; }

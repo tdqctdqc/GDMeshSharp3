@@ -6,7 +6,7 @@ using Godot;
 public class RoadAux : EntityAux<RoadSegment>
 {
     public EntityPropEntityIndexer<RoadSegment, MapPolygonEdge> ByEdgeId { get; private set; }
-    public RoadAux(Domain domain, Data data) : base(domain, data)
+    public RoadAux(Data data) : base(data)
     {
         ByEdgeId = EntityPropEntityIndexer<RoadSegment, MapPolygonEdge>.CreateStatic(data, rs => rs.Edge);
     }

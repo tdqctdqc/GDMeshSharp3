@@ -34,6 +34,5 @@ public abstract class Entity
             .GetRefColMeta<TVal>(colName).Removed
             .Subscribe(handler);
     }
-    public abstract Type GetDomainType();
     public abstract EntityTypeTreeNode GetEntityTypeTreeNode();
 }

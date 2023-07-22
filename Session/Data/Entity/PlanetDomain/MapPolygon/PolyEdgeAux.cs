@@ -7,7 +7,7 @@ using Godot;
 public class PolyEdgeAux : EntityAux<MapPolygonEdge>
 {
     private PropEntityIndexer<MapPolygonEdge, Vector2> _byEdge;
-    public PolyEdgeAux(Domain domain, Data data) : base(domain, data)
+    public PolyEdgeAux(Data data) : base(data)
     {
         _byEdge = PropEntityIndexer<MapPolygonEdge, Vector2>.CreateConstant(data, e => MakeEdge(e, data));
     }

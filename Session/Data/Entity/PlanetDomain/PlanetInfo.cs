@@ -6,8 +6,6 @@ using MessagePack;
 
 public class PlanetInfo : Entity
 {
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(PlanetDomain);
     public Vector2 Dimensions { get; protected set; }
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }

@@ -54,10 +54,26 @@ public abstract class Proposal
         Id = id;
     }
 
+    public abstract bool Undecided(Data data);
+    public bool AllianceUndecided(Alliance alliance, Data data)
+    {
+        var allianceWeight = alliance.Members.Entities(data).Sum(m => alliance.GetWeightInAlliance(m, data));
+        
+        var inFavor = InFavor.Where(f => alliance.Members.RefIds.Contains(f));
+        var against = Against.Where(f => alliance.Members.RefIds.Contains(f));
+        
+        var forWeight = inFavor.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
+        var forRatio = forWeight / allianceWeight;
+        
+        var againstWeight = against.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
+        var againstRatio = againstWeight / allianceWeight;
+        
+        return forRatio < .5f && againstRatio < .5f;
+    }
     public abstract TriBool GetResolution(Data data);
     
     protected abstract void ResolveInner(bool accepted, ProcedureWriteKey key);
-    protected abstract void CleanUp(ProcedureWriteKey key);
+    public abstract void CleanUp(ProcedureWriteKey key);
     public abstract float GetPriorityGrowth(Data data);
     public abstract bool Valid(Data data);
 }

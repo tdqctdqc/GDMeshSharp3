@@ -162,14 +162,14 @@ public class PolyDataTooltipTemplate : DataTooltipTemplate<PolyTriPosition>
 
     private static Control GetSettlementSize(PolyTriPosition t, Data d)
     {
-        return  d.Society.SettlementAux.ByPoly[t.Poly(d)] is Settlement s
+        return  d.Infrastructure.SettlementAux.ByPoly[t.Poly(d)] is Settlement s
             ? NodeExt.CreateLabel("Settlement Size: " + s.Size)
             : null;
     }
 
     private static Control GetSettlementName(PolyTriPosition t, Data d)
     {
-        return  d.Society.SettlementAux.ByPoly[t.Poly(d)] is Settlement s
+        return  d.Infrastructure.SettlementAux.ByPoly[t.Poly(d)] is Settlement s
             ? NodeExt.CreateLabel("Settlement Name: " + s.Name)
             : null;
     }

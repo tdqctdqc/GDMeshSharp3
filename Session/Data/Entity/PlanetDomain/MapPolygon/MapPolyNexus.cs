@@ -50,8 +50,6 @@ public class MapPolyNexus : Entity
         Point = point;
     }
     //ENTITY NECESSARIES
-    public override Type GetDomainType() => DomainType();
-    private static Type DomainType() => typeof(PlanetDomain);
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
 

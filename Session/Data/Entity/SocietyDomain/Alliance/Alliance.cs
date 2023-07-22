@@ -7,14 +7,14 @@ public class Alliance : Entity
 {
     public EntityRef<Regime> Leader { get; private set; }
     public EntityRefCollection<Regime> Members { get; private set; }
-    public EntityRefCollection<Alliance> Enemies { get; private set; }
+    public EntityRefCollection<Alliance> Rivals { get; private set; }
     public EntityRefCollection<Alliance> AtWar { get; private set; }
     public Dictionary<int, Proposal> Proposals { get; private set; }
     
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
         var members = EntityRefCollection<Regime>.Construct(nameof(Members), new HashSet<int>{founder.Id}, key.Data);
-        var enemies = EntityRefCollection<Alliance>.Construct(nameof(Enemies), new HashSet<int>{}, key.Data);
+        var enemies = EntityRefCollection<Alliance>.Construct(nameof(Rivals), new HashSet<int>{}, key.Data);
         var atWar = EntityRefCollection<Alliance>.Construct(nameof(AtWar), new HashSet<int>{}, key.Data);
         var proposals = new Dictionary<int, Proposal>();
         
@@ -27,7 +27,7 @@ public class Alliance : Entity
     }
     [SerializationConstructor] private Alliance(EntityRef<Regime> leader,
         EntityRefCollection<Regime> members, 
-        EntityRefCollection<Alliance> enemies, 
+        EntityRefCollection<Alliance> rivals, 
         EntityRefCollection<Alliance> atWar, 
         Dictionary<int, Proposal> proposals,
         int id) : base(id)
@@ -35,7 +35,7 @@ public class Alliance : Entity
         Leader = leader;
         Members = members;
         Proposals = proposals;
-        Enemies = enemies;
+        Rivals = rivals;
         AtWar = atWar;
     }
 
@@ -55,18 +55,17 @@ public class Alliance : Entity
         Members.Remove(this, r, key);
     }
 
-    public void SetEnemy(Alliance a, ProcedureWriteKey key)
+    public void SetRival(Alliance a, ProcedureWriteKey key)
     {
         if (a == this) throw new Exception();
-        Enemies.Add(this, a, key);
+        Rivals.Add(this, a, key);
     }
     public void SetWar(Alliance a, ProcedureWriteKey key)
     {
         if (a == this) throw new Exception();
-        if(Enemies.Contains(a) == false) throw new Exception();
+        if(Rivals.Contains(a) == false) throw new Exception();
         AtWar.Add(this, a, key);
     }
-    public override Type GetDomainType() => DomainType();
     private static Type DomainType() => typeof(SocietyDomain);
     public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;

@@ -18,7 +18,7 @@ public partial class RoadChunkGraphicLayer : MapChunkGraphicLayer<int>
     protected override Node2D MakeGraphic(int key, Data data)
     {
         _mb.Clear();
-        var seg = data.Society.RoadSegments[key];
+        var seg = data.Infrastructure.RoadSegments[key];
         var hi = seg.Edge.Entity(data).HighPoly.Entity(data);
         var lo = seg.Edge.Entity(data).LowPoly.Entity(data);
         seg.Road.Model(data).Draw(_mb, Chunk.RelTo.GetOffsetTo(hi.Center, data), 
@@ -38,9 +38,9 @@ public partial class RoadChunkGraphicLayer : MapChunkGraphicLayer<int>
                 if (p.Id > n.Id)
                 {
                     var border = p.GetEdge(n, data);
-                    if (data.Society.RoadAux.ByEdgeId.ContainsKey(border.Id))
+                    if (data.Infrastructure.RoadAux.ByEdgeId.ContainsKey(border.Id))
                     {
-                        var seg = data.Society.RoadAux.ByEdgeId[border.Id];
+                        var seg = data.Infrastructure.RoadAux.ByEdgeId[border.Id];
                         res.Add(seg.Id);
                     }
                 }

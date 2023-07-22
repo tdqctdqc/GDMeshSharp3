@@ -7,7 +7,6 @@ using System.Reflection;
 public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
 {
     public Type EntityType => typeof(TEntity);
-    public Type DomainType { get; private set; }
     public IReadOnlyList<string> FieldNameList => _fieldNames;
     public HashSet<string> FieldNameHash { get; }
     private List<string> _fieldNames;
@@ -32,10 +31,6 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
         {
             throw new SerializationException($"Entity {entityType.Name} cannot have generic parameters");
         }
-        
-        DomainType = (Type)entityType
-            .GetMethod(nameof(DomainType), BindingFlags.Static | BindingFlags.NonPublic)
-            .Invoke(null, null);
         
         var properties = entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
         _fieldNames = properties.Select(p => p.Name).ToList();

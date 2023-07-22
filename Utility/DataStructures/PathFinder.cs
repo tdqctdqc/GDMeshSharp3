@@ -48,7 +48,7 @@ public static class PathFinder
         var e = p1.GetEdge(p2, data);
         if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;
         var dist = p1.GetOffsetTo(p2, data).Length();
-        if (data.Society.RoadAux.ByEdgeId[e.Id] is RoadSegment r)
+        if (data.Infrastructure.RoadAux.ByEdgeId[e.Id] is RoadSegment r)
         {
             return dist / r.Road.Model(data).Speed;
         }

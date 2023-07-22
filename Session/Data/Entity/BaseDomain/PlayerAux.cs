@@ -8,7 +8,7 @@
         public PropEntityIndexer<Player, Guid> ByGuid { get; private set; }
         public ValChangeAction<EntityRef<Regime>> PlayerChangedRegime { get; private set; }
         private Data _data;
-        public PlayerAux(Domain domain, Data data) : base(domain, data)
+        public PlayerAux(Data data) : base(data)
         {
             _data = data;
             var regimeVar = Game.I.Serializer.GetEntityMeta<Player>()

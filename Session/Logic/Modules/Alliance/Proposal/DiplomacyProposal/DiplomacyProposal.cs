@@ -28,7 +28,7 @@ public abstract class DiplomacyProposal : Proposal
         }
     }
 
-    protected override void CleanUp(ProcedureWriteKey key)
+    public override void CleanUp(ProcedureWriteKey key)
     {
         if (key.Data.Entities.ContainsKey(Alliance0))
         {
@@ -57,7 +57,7 @@ public abstract class DiplomacyProposal : Proposal
         }
         var a0 = allianceInFavor(data.Society.Alliances[Alliance0]);
         var a1 = allianceInFavor(data.Society.Alliances[Alliance1]);
-        return a0.Combine(a1);
+        return a0.And(a1);
         TriBool allianceInFavor(Alliance alliance)
         {
             var inFavor = InFavor.Where(f => alliance.Members.RefIds.Contains(f));
@@ -66,11 +66,17 @@ public abstract class DiplomacyProposal : Proposal
             var forWeight = inFavor.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
             var againstWeight = against.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
             var undecidedWeight = undecided.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
-            if (undecidedWeight > forWeight && undecidedWeight > againstWeight)
+            if (AllianceUndecided(alliance, data))
             {
                 return TriBool.Undecided;
             }
             return new TriBool(forWeight > againstWeight);
         }
+    }
+
+    public override bool Undecided(Data data)
+    {
+        return AllianceUndecided(data.Society.Alliances[Alliance0], data)
+            || AllianceUndecided(data.Society.Alliances[Alliance1], data);
     }
 }

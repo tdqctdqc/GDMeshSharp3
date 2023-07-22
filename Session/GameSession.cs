@@ -10,7 +10,6 @@ public partial class GameSession : Node, IDataSession
     private GameClient _client;
     private ILogic _logic;
     public IServer Server { get; private set; }
-    public UserCredential UserCredential { get; private set; }
     private WriteKey _key;
     public override void _Process(double deltaD)
     {

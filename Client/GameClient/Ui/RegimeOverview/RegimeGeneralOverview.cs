@@ -20,14 +20,10 @@ public partial class RegimeGeneralOverview : ScrollContainer
         var regimeFlagRect = new TextureRect();
         regimeFlagRect.Size = new Vector2(30f, 20f);
         regimeFlagRect.CustomMinimumSize = new Vector2(30f, 20f);
-        regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.FitHeightProportional;
+        regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.KeepSize;
         regimeFlagRect.Texture = regime.Template.Model(key.Data).Flag;
         _container.AddChild(regimeFlagRect);
-        _container.CreateLabelAsChild("ENEMIES");
-        foreach (var enemy in regime.GetAlliance(key.Data).Enemies.Entities(key.Data))
-        {
-            _container.CreateLabelAsChild(enemy.Leader.Entity(key.Data).Name);
-        }
+        
         if (regime.IsPlayerRegime(key.Data) == false)
         {
             var button = new Button();
@@ -39,6 +35,12 @@ public partial class RegimeGeneralOverview : ScrollContainer
                 key.Session.Server.QueueCommandLocal(com);
             };
             _container.AddChild(button);
+        }
+        
+        _container.CreateLabelAsChild("RIVALS");
+        foreach (var rival in regime.GetAlliance(key.Data).Rivals.Entities(key.Data))
+        {
+            _container.CreateLabelAsChild(rival.Leader.Entity(key.Data).Name);
         }
     }
 }

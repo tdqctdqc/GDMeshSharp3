@@ -5,7 +5,6 @@ using System.Collections.Generic;
 public interface IEntityMeta
 {
     Type EntityType { get; }
-    Type DomainType { get; }
     IReadOnlyList<string> FieldNameList { get; }
     HashSet<string> FieldNameHash { get; }
     IReadOnlyDictionary<string, Type> FieldTypes { get; }
