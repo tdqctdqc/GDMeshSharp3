@@ -28,12 +28,12 @@ public class GodotCustomResolver : IFormatterResolver
         // use outer helper method.
         static FormatterCache()
         {
-            Formatter = (IMessagePackFormatter<T>)ResolverGetFormatterHelper.GetFormatter(typeof(T));
+            Formatter = (IMessagePackFormatter<T>)GodotResolverGetFormatterHelper.GetFormatter(typeof(T));
         }
     }
 }
 
-internal static class ResolverGetFormatterHelper
+internal static class GodotResolverGetFormatterHelper
 {
     // If type is concrete type, use type-formatter map
     static readonly Dictionary<Type, object> formatterMap = new Dictionary<Type, object>()

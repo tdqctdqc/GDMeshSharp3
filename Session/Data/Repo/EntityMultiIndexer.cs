@@ -24,7 +24,7 @@ public class EntityMultiIndexer<TMulti, TMult> : AuxData<TMult>
         _changedMult = new ValChangeAction<TMulti>();
         _changedMult.Subscribe(n => 
         {
-            if (_dic.TryGetValue(n.OldVal.Id, out var hash))
+            if (n.OldVal != null && _dic.TryGetValue(n.OldVal.Id, out var hash))
             {
                 hash.Remove(n.Entity.Id);
             }

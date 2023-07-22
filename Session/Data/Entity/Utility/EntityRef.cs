@@ -36,15 +36,6 @@ public class EntityRef<TRef> : IEntityRef where TRef : Entity
         return RefId != -1;
     }
 
-    public bool CheckExists(Data data)
-    {
-        if (data.Entities.TryGetValue(RefId, out var e))
-        {
-            return e is TRef;
-        }
-
-        return false;
-    }
     public void SyncRef(Data data)
     {
         if (data.Entities.ContainsKey(RefId) == false)
