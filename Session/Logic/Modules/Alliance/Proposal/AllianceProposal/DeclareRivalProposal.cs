@@ -27,19 +27,19 @@ public class DeclareRivalProposal : AllianceProposal
 
     protected override void ResolveInner(bool accepted, ProcedureWriteKey key)
     {
-        var alliance = key.Data.Society.Alliances[AllianceId];
-        var target = key.Data.Society.Alliances[TargetAllianceId];
+        var alliance = key.Data.Get<Alliance>(AllianceId);
+        var target = key.Data.Get<Alliance>(TargetAllianceId);
         if (accepted)
         {
-            alliance.Rivals.Add(alliance, target, key);
-            target.Rivals.Add(target, alliance, key);
+            alliance.Rivals.Add(target, key);
+            target.Rivals.Add(alliance, key);
         }
     }
 
     public override bool Valid(Data data)
     {
         return base.Valid(data) 
-               && data.Entities.ContainsKey(TargetAllianceId)
-               && data.Society.Alliances[AllianceId].Members.RefIds.Contains(TargetAllianceId) == false;
+               && data.EntitiesById.ContainsKey(TargetAllianceId)
+               && data.Get<Alliance>(AllianceId).Members.RefIds.Contains(TargetAllianceId) == false;
     }
 }

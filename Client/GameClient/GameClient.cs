@@ -29,7 +29,6 @@ public partial class GameClient : Node, IClient
     }
     public void Setup(GameSession session, IServer server, MapGraphics graphics)
     {
-        session.Data.Requests.GiveTree(session.Data.EntityTypeTree);
         Settings = ClientSettings.Load();
         WriteKey = new ClientWriteKey(session.Data, session);
         var cam = WorldCameraController.Construct(session.Data);

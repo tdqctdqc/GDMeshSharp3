@@ -11,7 +11,7 @@ public abstract class NaturalResource : TradeableItem
     }
     public Dictionary<MapPolygon, int> GenerateDeposits(Data data)
     {
-        var polys = data.Planet.Polygons.Entities;
+        var polys = data.GetAll<MapPolygon>();
         var deps = new Dictionary<MapPolygon, int>();
         var scores = new Dictionary<MapPolygon, int>();
         foreach (var p in polys)

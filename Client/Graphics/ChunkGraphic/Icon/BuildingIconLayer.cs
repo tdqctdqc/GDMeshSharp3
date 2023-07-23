@@ -15,7 +15,7 @@ public partial class BuildingIconLayer : MapChunkGraphicLayer<int>
 
     protected override Node2D MakeGraphic(int key, Data data)
     {
-        var building = data.Infrastructure.Buildings[key];
+        var building = data.Get<MapBuilding>(key);
         var icon = building.Model.Model(data).Icon.GetMeshInstance();
         SetRelPos(icon, building.Position, data);
         return icon;

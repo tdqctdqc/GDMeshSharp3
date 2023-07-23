@@ -38,7 +38,7 @@ public class ResourceGenerator : Generator
     }
     private void MakeSureMajorRegimesHaveResources()
     {
-        var majors = _data.Society.Regimes.Entities.Where(r => r.IsMajor);
+        var majors = _data.GetAll<Regime>().Where(r => r.IsMajor);
         foreach (var regime in majors)
         {
             addResource(regime, ItemManager.Iron);

@@ -15,7 +15,8 @@ public class PolyTriGenerator : Generator
     {
         _data = key.GenData;
         var report = new GenReport(GetType().Name);
-        var polys = _data.Planet.Polygons.Entities;
+        var polys = _data.GetAll<MapPolygon>();
+        var polyEdges = _data.GetAll<MapPolygonEdge>();
         
         report.StartSection();
         var riverData = new RiverPolyTriGen().DoRivers(key);
@@ -30,8 +31,8 @@ public class PolyTriGenerator : Generator
         
         report.StartSection();
         var edgeTris = new ConcurrentBag<(PolyTriPosition[], PolyTriPosition[])>();
-        Parallel.ForEach(_data.Planet.PolyEdges.Entities, p => CollectEdgeTris(edgeTris, p, key));
-        Parallel.ForEach(_data.Planet.Polygons.Entities, p => p.Tris.SetNeighbors(p, key)); 
+        Parallel.ForEach(polyEdges, p => CollectEdgeTris(edgeTris, p, key));
+        Parallel.ForEach(polys, p => p.Tris.SetNeighbors(p, key)); 
         report.StopSection("making poly tri paths");
         
         _data.Notices.SetPolyShapes.Invoke();
@@ -41,7 +42,7 @@ public class PolyTriGenerator : Generator
         report.StopSection("postprocessing polytris");
 
         report.StartSection();
-        Parallel.ForEach(_data.Planet.Polygons.Entities, p => p.SetTerrainStats(key)); 
+        Parallel.ForEach(polys, p => p.SetTerrainStats(key)); 
         report.StopSection("setting terrain stats");
 
         return report;
@@ -49,7 +50,7 @@ public class PolyTriGenerator : Generator
 
     private void CheckJoins(GenWriteKey key)
     {
-        foreach (var poly in key.Data.Planet.Polygons.Entities)
+        foreach (var poly in key.Data.GetAll<MapPolygon>())
         {
             foreach (var n in poly.Neighbors.Entities(key.Data))
             {
@@ -178,7 +179,7 @@ public class PolyTriGenerator : Generator
 
     private void Postprocess(GenWriteKey key)
     {
-        var polys = key.Data.Planet.Polygons.Entities;
+        var polys = key.Data.GetAll<MapPolygon>();
         var erodeChance = .75f;
         var mountainNoise = new FastNoiseLite();
         mountainNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;

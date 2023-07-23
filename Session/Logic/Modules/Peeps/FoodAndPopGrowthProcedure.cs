@@ -24,7 +24,7 @@ public class FoodAndPopGrowthProcedure : Procedure
         var tick = key.Data.Tick;
         
         //todo make history update itself in its own procedure
-        foreach (var r in key.Data.Society.Regimes.Entities)
+        foreach (var r in key.Data.GetAll<Regime>())
         {
             r.History.PeepHistory.Update(tick, r, key);
         }
@@ -35,7 +35,7 @@ public class FoodAndPopGrowthProcedure : Procedure
     {
         foreach (var kvp in FoodConsumptions)
         {
-            var regime = key.Data.Society.Regimes[kvp.Key];
+            var regime = key.Data.Get<Regime>(kvp.Key);
             var cons = kvp.Value;
             regime.Items.Remove(ItemManager.Food, cons);
         }
@@ -44,7 +44,7 @@ public class FoodAndPopGrowthProcedure : Procedure
     {
         foreach (var kvp in Growths)
         {
-            var peep = key.Data.Society.PolyPeeps[kvp.Key];
+            var peep = key.Data.Get<PolyPeep>(kvp.Key);
             var growth = kvp.Value;
             //todo divide by class
             if (growth < 0)

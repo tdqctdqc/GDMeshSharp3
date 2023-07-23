@@ -35,7 +35,7 @@ public class AllianceAffairsModule : LogicModule
     {
         var resolved = new HashSet<int>();
         
-        foreach (var alliance in data.Society.Alliances.Entities)
+        foreach (var alliance in data.GetAll<Alliance>())
         {
             var readyProposals = alliance.Proposals.Entities(data)
                 .Select(h => h.Value)

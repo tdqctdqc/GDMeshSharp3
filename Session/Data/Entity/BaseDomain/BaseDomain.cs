@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 public class BaseDomain : Domain
 {
-    public EntityRegister<Player> Players => Data.GetRegister<Player>();
     public PlayerAux PlayerAux { get; private set; }
     public GameClock GameClock => _gameClockAux.Value;
     private GameClockAux _gameClockAux;

@@ -26,8 +26,8 @@ public class DeclareWarProposal : AllianceProposal
 
     protected override void ResolveInner(bool accepted, ProcedureWriteKey key)
     {
-        var alliance = key.Data.Society.Alliances[AllianceId];
-        var target = key.Data.Society.Alliances[TargetAllianceId];
+        var alliance = key.Data.Get<Alliance>(AllianceId);
+        var target = key.Data.Get<Alliance>(TargetAllianceId);
         alliance.SetWar(target, key);
         target.SetWar(alliance, key);
     }
@@ -35,12 +35,12 @@ public class DeclareWarProposal : AllianceProposal
     public override bool Valid(Data data)
     {
         return base.Valid(data)
-               && data.Entities.ContainsKey(TargetAllianceId)
+               && data.EntitiesById.ContainsKey(TargetAllianceId)
                && inner();
         bool inner()
         {
-            var alliance = data.Society.Alliances[AllianceId];
-            var target = data.Society.Alliances[TargetAllianceId];
+            var alliance = data.Get<Alliance>(AllianceId);
+            var target = data.Get<Alliance>(TargetAllianceId);
             return alliance.Rivals.Contains(target);
         }
     }

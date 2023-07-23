@@ -43,7 +43,7 @@ public class PolyAuxData
             .Select(o => new LineSegment(Vector2.Zero, o))
             .ToList(), "neighbors");
             
-            ex.AddSegLayer(data.Planet.Polygons.Entities
+            ex.AddSegLayer(data.GetAll<MapPolygon>()
                 .Where(e => p.GetOffsetTo(e, data).Length() < 1000f)
                 .Select(n => p.GetOffsetTo(n, data))
                 .Select(o => new LineSegment(Vector2.Zero, o))

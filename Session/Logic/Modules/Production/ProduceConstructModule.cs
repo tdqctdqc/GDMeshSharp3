@@ -27,7 +27,7 @@ public class ProduceConstructModule : LogicModule
         var tick = data.BaseDomain.GameClock.Tick;
         var proc = ProduceConstructProcedure.Create();
         
-        Parallel.ForEach(data.Society.Regimes.Entities, 
+        Parallel.ForEach(data.GetAll<Regime>(), 
             regime => CalculateForRegime(regime, data, proc));
         
         res.Messages.Add(proc);

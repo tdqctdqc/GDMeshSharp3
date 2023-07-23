@@ -19,8 +19,9 @@ public class LandSeaManager
     {
         Landmasses = new List<HashSet<MapPolygon>>();
         LandmassDic = new Dictionary<MapPolygon, HashSet<MapPolygon>>();
-        var landPolys = data.Planet.Polygons.Entities.Where(p => p.IsLand);
-        var seaPolys = data.Planet.Polygons.Entities.Where(p => p.IsWater());
+        var polys = data.GetAll<MapPolygon>().ToList();
+        var landPolys = polys.Where(p => p.IsLand);
+        var seaPolys = polys.Where(p => p.IsWater());
         var landmasses =
             UnionFind.Find(landPolys.ToList(), (p1, p2) => p1.HasNeighbor(p2), p1 => p1.Neighbors.Entities(data));
         landmasses.ForEach(m =>
@@ -43,6 +44,6 @@ public class LandSeaManager
         });
 
         var landAndSeaCount = landPolys.Count() + seaPolys.Count();
-        if (landAndSeaCount != data.Planet.Polygons.Entities.Count) throw new Exception();
+        if (landAndSeaCount != polys.Count) throw new Exception();
     }
 }

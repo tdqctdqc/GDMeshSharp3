@@ -18,8 +18,8 @@ public class MapPolygonAux : EntityAux<MapPolygon>
         BorderGraph = ImplicitGraph.Get<MapPolygon, PolyBorderChain>(
             n => n.Neighbors.Entities(data),
             (n, m) => n.GetEdge(m, data).GetSegsRel(n, data),
-            () => Register.Entities, 
-            () => Register.Entities.SelectMany(e => e.GetPolyBorders()).ToHashSet()
+            () => data.GetAll<MapPolygon>().ToHashSet(), 
+            () => data.GetAll<MapPolygon>().SelectMany(e => e.GetPolyBorders()).ToHashSet()
         );
         AuxDatas = EntityValueCache<MapPolygon, PolyAuxData>.ConstructConstant(
             data,
@@ -68,7 +68,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
         var gridCellSize = 1000f;
         var numPartitions = Mathf.CeilToInt(data.Planet.Info.Dimensions.X / gridCellSize);
         MapPolyGrid = new PolyGrid(numPartitions, data.Planet.Info.Dimensions, data);
-        foreach (var p in data.Planet.Polygons.Entities)
+        foreach (var p in data.GetAll<MapPolygon>())
         {
             if(p.NeighborBorders.Count > 0) MapPolyGrid.AddElement(p);
         }
@@ -81,7 +81,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
             polygon => polygon.Center,
             data.Planet.Width / 10f
         );
-        foreach (var p in data.Planet.Polygons.Entities)
+        foreach (var p in data.GetAll<MapPolygon>())
         {
             regularGrid.AddElement(p);
         }

@@ -9,7 +9,7 @@ public class SaveFile
 
     public static SaveFile Save(Data data)
     {
-        return new SaveFile(data.Entities.Values
+        return new SaveFile(data.EntitiesById.Values
             .Select(e => EntityCreationUpdate.Create(e, null))
             .Select(e => data.Serializer.MP.Serialize(e))
             .ToList());

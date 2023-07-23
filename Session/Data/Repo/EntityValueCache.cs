@@ -50,16 +50,9 @@ public class EntityValueCache<TEntity, TValue> : AuxData<TEntity>
     }
     private void Initialize(Data data)
     {
-        var register = data.GetRegister<TEntity>();
-        // _dic = register.Entities.Select(e =>
-        // {
-        //     var v = _get((TEntity) e);
-        //     return new KeyValuePair<TEntity, TValue>(e, v);
-        // }).AsParallel()
-        // .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-        //
+        var entities = data.GetAll<TEntity>();
         _dic.Clear();
-        foreach (var e in register.Entities)
+        foreach (var e in entities)
         {
             var v = _get((TEntity) e);
             if (v != null)

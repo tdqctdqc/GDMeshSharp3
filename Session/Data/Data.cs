@@ -16,14 +16,13 @@ public class Data
     public DataHandles Handles { get; private set; }
     public Models Models { get; private set; }
     public RefFulfiller RefFulfiller { get; private set; }
-    public Dictionary<Type, IEntityRegister> Registers { get; private set; }
-    public Dictionary<int, Entity> Entities { get; private set; }
-    public Entity this[int id] => Entities[id];
+    public Dictionary<int, Entity> EntitiesById { get; private set; }
+    public Entity this[int id] => EntitiesById[id];
     public BaseDomain BaseDomain { get; private set; }
     public PlanetDomain Planet { get; private set; }
     public SocietyDomain Society { get; private set; }
     public InfrastructureDomain Infrastructure { get; private set; }
-    public EntityTypeTree EntityTypeTree { get; private set; }
+    private EntityTypeTree _entityTypeTree;
     public int Tick => BaseDomain.GameClock.Tick;
     public Serializer Serializer { get; private set; }
 
@@ -32,18 +31,17 @@ public class Data
         Serializer = new Serializer();
         Requests = new LogicRequests();
         _idDispenser = new IdDispenser();
-        EntityTypeTree = new EntityTypeTree(this);
+        _entityTypeTree = new EntityTypeTree(this);
         Init();
     }
     protected virtual void Init()
     {
         GD.Print("doot");
 
-        Registers = new Dictionary<Type, IEntityRegister>();
         Notices = new DataNotices();
         RefFulfiller = new RefFulfiller(this);
         Models = new Models();
-        Entities = new Dictionary<int, Entity>();
+        EntitiesById = new Dictionary<int, Entity>();
         
         BaseDomain = new BaseDomain(this);
         Planet = new PlanetDomain(this);
@@ -61,25 +59,12 @@ public class Data
 
     private void AddEntityType(Type t)
     {
-        EntityTypeTree.Get(t, this);
-        var mi = GetType()
-            .GetMethod(nameof(AddEntityTypeGeneric), BindingFlags.Instance | BindingFlags.Public);
-        var mig = mi
-            .MakeGenericMethod(t);
-        var m = Serializer.GetEntityMeta(t);
-        if(Registers.ContainsKey(t) == false)
-        {
-            Registers.TryAdd(t, (IEntityRegister) mig.Invoke(this, new object[] { }));
-        }
-    }
-    public void AddEntityTypeGeneric<T>() where T : Entity
-    {
-        Registers.Add(typeof(T), new EntityRegister<T>(this));
+        _entityTypeTree.Get(t);
     }
     public void AddEntity(Entity e, StrongWriteKey key)
     {
         var t = e.GetType();
-        if (Registers.ContainsKey(t) == false)
+        if (_entityTypeTree.Nodes.ContainsKey(t) == false)
         {
             AddEntityType(t);
         }
@@ -89,12 +74,12 @@ public class Data
             e.SetId(_idDispenser.GetID(), key);
         }
         _idDispenser.SetMin(e.Id);
-        if (Entities.ContainsKey(e.Id))
+        if (EntitiesById.ContainsKey(e.Id))
         {
-            GD.Print($"trying to overwrite {Entities[e.Id].GetType().ToString()} with {e.GetType().ToString()}");
+            GD.Print($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} with {e.GetType().ToString()}");
         }
-        Entities.Add(e.Id, e);
-        key.Data.EntityTypeTree[e.GetType()].PropagateCreation(e);
+        EntitiesById.Add(e.Id, e);
+        _entityTypeTree.Get(e.GetType()).PropagateCreation(e);
         if (key is HostWriteKey hKey)
         {
             hKey.HostServer.QueueMessage(EntityCreationUpdate.Create(e, hKey));
@@ -105,7 +90,7 @@ public class Data
         foreach (var e in es)
         {
             var t = e.GetType();
-            if (Registers.ContainsKey(t) == false)
+            if (_entityTypeTree.Nodes.ContainsKey(t) == false)
             {
                 AddEntityType(t);
             }
@@ -114,22 +99,42 @@ public class Data
                 e.SetId(_idDispenser.GetID(), key);
             }
             _idDispenser.SetMin(e.Id);
-            if (Entities.ContainsKey(e.Id))
+            if (EntitiesById.ContainsKey(e.Id))
             {
-                throw new EntityTypeException($"trying to overwrite {Entities[e.Id].GetType().ToString()} " +
+                throw new EntityTypeException($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} " +
                                               $"with {e.GetType().ToString()}");
             }
-            Entities.Add(e.Id, e);
+            EntitiesById.Add(e.Id, e);
         }
-
-        if (key is HostWriteKey hKey)
-        {
-            hKey.HostServer.QueueMessage(EntitiesCreationUpdate.Create(es, hKey));
-        }
+        //
+        // if (key is HostWriteKey hKey)
+        // {
+        //     hKey.HostServer.QueueMessage(EntitiesCreationUpdate.Create(es, hKey));
+        // }
         foreach (var entity in es)
         {
-            key.Data.EntityTypeTree[entity.GetType()].PropagateCreation(entity);
+            _entityTypeTree.Get(entity.GetType()).PropagateCreation(entity);
         }
+    }
+
+    private void SetupEntity(Entity e, StrongWriteKey key)
+    {
+        var t = e.GetType();
+        if (_entityTypeTree.Nodes.ContainsKey(t) == false)
+        {
+            AddEntityType(t);
+        }
+        if (e.Id == -1)
+        {
+            e.SetId(_idDispenser.GetID(), key);
+        }
+        _idDispenser.SetMin(e.Id);
+        if (EntitiesById.ContainsKey(e.Id))
+        {
+            throw new EntityTypeException($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} " +
+                                          $"with {e.GetType().ToString()}");
+        }
+        EntitiesById.Add(e.Id, e);
     }
     public void RemoveEntities(int[] entityIds, StrongWriteKey key)
     {
@@ -139,20 +144,20 @@ public class Data
         }
         foreach (var eId in entityIds)
         {
-            var e = Entities[eId];
-            key.Data.EntityTypeTree[e.GetType()].PropagateDestruction(e);
+            var e = EntitiesById[eId];
+            _entityTypeTree.Get(e.GetType()).PropagateDestruction(e);
         }
         foreach (var eId in entityIds)
         {
-            Entities.Remove(eId);
+            EntitiesById.Remove(eId);
             RefFulfiller.EntityRemoved(eId);
         }
     }
     public void RemoveEntity(int eId, StrongWriteKey key)
     {
-        var e = Entities[eId];
-        key.Data.EntityTypeTree[e.GetType()].PropagateDestruction(e);
-        Entities.Remove(eId);
+        var e = EntitiesById[eId];
+        key.Data._entityTypeTree.Get(e.GetType()).PropagateDestruction(e);
+        EntitiesById.Remove(eId);
         RefFulfiller.EntityRemoved(eId);
         if (key is HostWriteKey hKey)
         {
@@ -160,22 +165,45 @@ public class Data
         }
     }
 
-    public EntityRegister<T> GetRegister<T>() where T : Entity
-    {
-        if(Registers.ContainsKey(typeof(T)) == false) AddEntityTypeGeneric<T>();
-        return (EntityRegister<T>)Registers[typeof(T)];
-    }
-
     public void SubscribeForCreation<TEntity>(Action<EntityCreatedNotice> callback) where TEntity : Entity
     {
-        EntityTypeTree.Get(typeof(TEntity), this).Created.Subscribe(callback);
+        _entityTypeTree.Get(typeof(TEntity)).Created.Subscribe(callback);
     }
     public void SubscribeForCreation<TEntity>(RefAction<EntityCreatedNotice> callback) where TEntity : Entity
     {
-        EntityTypeTree.Get(typeof(TEntity), this).Created.Subscribe(callback);
+        _entityTypeTree.Get(typeof(TEntity)).Created.Subscribe(callback);
     }
     public void SubscribeForDestruction<TEntity>(Action<EntityDestroyedNotice> callback) where TEntity : Entity
     {
-        EntityTypeTree.Get(typeof(TEntity), this).Destroyed.Subscribe(callback);
+        _entityTypeTree.Get(typeof(TEntity)).Destroyed.Subscribe(callback);
+    }
+
+    public T Get<T>(int id) where T : Entity
+    {
+        return (T) EntitiesById[id];
+    }
+
+    public IEnumerable<T> GetAll<T>() where T : Entity
+    {
+        //todo make entity type tree node generic?
+        return _entityTypeTree.Get<T>().Entities.Select(e => (T) e);
+    }
+
+    public EntityMeta<T> GetEntityMeta<T>() where T : Entity
+    {
+        return (EntityMeta<T>)_entityTypeTree.Get(typeof(T)).Meta;
+    }
+    public IEntityMeta GetEntityMeta(Type entityType) 
+    {
+        return _entityTypeTree.Get(entityType).Meta;
+    }
+
+    public EntityTypeTreeNode GetEntityTypeNode<T>() where T : Entity
+    {
+        return _entityTypeTree.Get<T>();
+    }
+    public IEnumerable<EntityTypeTreeNode> GetAllEntityTypeNodes()
+    {
+        return _entityTypeTree.Nodes.Values;
     }
 }

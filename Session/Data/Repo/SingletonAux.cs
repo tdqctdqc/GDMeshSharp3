@@ -5,11 +5,13 @@ using Godot;
 
 public class SingletonAux<T> : EntityAux<T> where T : Entity
 {
-    public T Value => Register.Entities.FirstOrDefault();
+    private Data _data;
+    public T Value => _data.GetAll<T>().FirstOrDefault();
     public SingletonAux(Data data) : base(data)
     {
-        data.SubscribeForCreation<T>(
-            entity => { if (Register.Entities.Count > 1) throw new Exception(); }
+        _data = data;
+        _data.SubscribeForCreation<T>(
+            entity => { if (_data.GetAll<T>().Count() > 1) throw new Exception(); }
         );
     }
 }

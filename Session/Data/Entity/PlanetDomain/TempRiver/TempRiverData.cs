@@ -16,33 +16,6 @@ public class TempRiverData
         Inners = new ConcurrentDictionary<PolyCornerKey, Vector2>();
         Infos = new ConcurrentDictionary<MapPolygon, MapPolyRiverTriInfoOld>();
     }
-
-    public void GenerateInfos(GenWriteKey key)
-    {
-        var polys = key.Data.Planet.Polygons.Entities;
-        
-        // polys.ToList().ForEach(poly =>
-        // {
-        //     if (poly.GetEdges(key.Data).Any(e => e.IsRiver()) == false) return;
-        //     var info = new MapPolyRiverTriInfo(poly, this, key);
-        //     Infos.TryAdd(poly, info);
-        // });
-        
-        try
-        {
-            Parallel.ForEach(polys, poly =>
-            {
-                if (poly.GetEdges(key.Data).Any(e => e.IsRiver()) == false) return;
-                var info = new MapPolyRiverTriInfoOld(poly, this, key);
-                Infos.TryAdd(poly, info);
-            });
-        }
-        catch
-        {
-            throw;
-        }
-        
-    }
 }
 
 public class MapPolyRiverTriInfoOld

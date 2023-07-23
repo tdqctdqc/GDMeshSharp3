@@ -38,7 +38,7 @@ public partial class GeneratorSession : Node, IDataSession
         _generating = true;
         GD.Print("TRYING GEN");
         try
-        {
+        {        
             Generate();
         }
         catch (Exception e)

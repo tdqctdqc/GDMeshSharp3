@@ -11,7 +11,7 @@ public class FoodAndPopGrowthModule : LogicModule
         var growthsByPeep = new Dictionary<int, int>();
         var foodConsByRegime = new Dictionary<int, int>();
         var foodConsPerPop = data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
-        foreach (var regime in data.Society.Regimes.Entities)
+        foreach (var regime in data.GetAll<Regime>())
         {
             var pop = regime.GetPopulation(data);
             var foodDemanded = foodConsPerPop * pop;

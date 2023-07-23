@@ -29,7 +29,7 @@ public class LocationGenerator : Generator
     
     private void GenerateCities()
     {
-        var landPolys = Data.Planet.Polygons.Entities.Where(p => p.IsLand);
+        var landPolys = Data.GetAll<MapPolygon>().Where(p => p.IsLand);
         var unions = UnionFind.Find(landPolys.ToList(), 
             (p, q) => p.Regime.Entity(Data) == q.Regime.Entity(Data),
             p => p.Neighbors.Entities(Data));
@@ -206,7 +206,7 @@ public class LocationGenerator : Generator
     private void NameSettlements(Data data)
     {
         var taken = new HashSet<string>();
-        foreach (var r in data.Society.Regimes.Entities)
+        foreach (var r in data.GetAll<Regime>())
         {
             var settlements = r.Polygons.Entities(Data).Where(p => p.HasSettlement(data))
                 .Select(p => p.GetSettlement(data));

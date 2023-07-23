@@ -23,12 +23,12 @@ public class PeepGenerator : Generator
         
         report.StartSection();
         
-        foreach (var p in _data.Planet.Polygons.Entities)
+        foreach (var p in _data.GetAll<MapPolygon>())
         {
             if(p.IsLand) PolyPeep.Create(p, key);
         }
         
-        foreach (var r in _data.Society.Regimes.Entities)
+        foreach (var r in _data.GetAll<Regime>())
         {
             GenerateForRegime(r);
         }

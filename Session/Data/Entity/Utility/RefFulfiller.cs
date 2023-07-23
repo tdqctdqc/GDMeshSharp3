@@ -32,10 +32,10 @@ public class RefFulfiller
     }
     public TEntity Get<TEntity>(int id) where TEntity : Entity
     {
-        return (TEntity) _data.Entities[id];
+        return (TEntity) _data.EntitiesById[id];
     }
     public TEntity Get<TEntity>(EntityRef<TEntity> tRef) where TEntity : Entity
     {
-        return (TEntity) _data.Entities[tRef.RefId];
+        return (TEntity) _data.EntitiesById[tRef.RefId];
     }
 }

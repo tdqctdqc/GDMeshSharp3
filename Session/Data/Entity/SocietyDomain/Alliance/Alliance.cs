@@ -13,10 +13,14 @@ public class Alliance : Entity
     
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
-        var members = EntityRefCollection<Regime>.Construct(nameof(Members), new HashSet<int>{founder.Id}, key.Data);
-        var enemies = EntityRefCollection<Alliance>.Construct(nameof(Rivals), new HashSet<int>{}, key.Data);
-        var atWar = EntityRefCollection<Alliance>.Construct(nameof(AtWar), new HashSet<int>{}, key.Data);
-        var proposals = EntityRefCollection<Holder<Proposal>>.Construct(nameof(Proposals), new HashSet<int>(), key.Data);
+        var members = EntityRefCollection<Regime>.Construct(nameof(Members), -1,
+            new HashSet<int>{founder.Id}, key.Data);
+        var enemies = EntityRefCollection<Alliance>.Construct(nameof(Rivals), -1,
+            new HashSet<int>{}, key.Data);
+        var atWar = EntityRefCollection<Alliance>.Construct(nameof(AtWar), -1,
+            new HashSet<int>{}, key.Data);
+        var proposals = EntityRefCollection<Holder<Proposal>>.Construct(nameof(Proposals), -1,
+            new HashSet<int>(), key.Data);
         
         var a = new Alliance(founder.MakeRef(), members, enemies, atWar,
             proposals,
@@ -46,24 +50,24 @@ public class Alliance : Entity
         {
             old.RemoveMember(r, key);
         }
-        Members.Add(this, r, key);
+        Members.Add(r, key);
     }
 
     public void RemoveMember(Regime r, ProcedureWriteKey key)
     {
         if (Leader.RefId == r.Id) throw new Exception();
-        Members.Remove(this, r, key);
+        Members.Remove(r, key);
     }
 
     public void SetRival(Alliance a, ProcedureWriteKey key)
     {
         if (a == this) throw new Exception();
-        Rivals.Add(this, a, key);
+        Rivals.Add(a, key);
     }
     public void SetWar(Alliance a, ProcedureWriteKey key)
     {
         if (a == this) throw new Exception();
         if(Rivals.Contains(a) == false) throw new Exception();
-        AtWar.Add(this, a, key);
+        AtWar.Add(a, key);
     }
 }

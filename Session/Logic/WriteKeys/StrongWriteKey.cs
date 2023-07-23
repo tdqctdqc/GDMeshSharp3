@@ -7,12 +7,4 @@ public class StrongWriteKey : WriteKey
     {
     }
 
-    public void Delete<TEntity>(TEntity t) where TEntity : Entity
-    {
-        Data.RemoveEntity(t.Id, this);
-    }
-    public void Delete(int id) 
-    {
-        Data.RemoveEntity(id, this);
-    }
 }

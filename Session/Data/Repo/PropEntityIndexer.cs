@@ -41,16 +41,6 @@ public class PropEntityIndexer<TEntity, TKey> : AuxData<TEntity>
                 _dic[n.NewVal] = (TEntity)n.Entity;
             });
         }
-        // Initialize(data);
-    }
-    private void Initialize(Data data)
-    {
-        _dic = new Dictionary<TKey, TEntity>();
-        var register = data.GetRegister<TEntity>();
-        foreach (var e in register.Entities)
-        {
-            _dic.Add(_get((TEntity)e), (TEntity)e);
-        }
     }
     public bool ContainsKey(TKey e)
     {

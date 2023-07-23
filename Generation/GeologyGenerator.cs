@@ -61,14 +61,15 @@ public class GeologyGenerator : Generator
     private void BuildCells()
     {
         var polysPerCell = 3;
-        var numCells = Data.Planet.Polygons.Entities.Count / polysPerCell;
+        var polys = Data.GetAll<MapPolygon>().ToList();
+        var numCells = polys.Count / polysPerCell;
         var polyCellDic = Data.GenAuxData.PolyCells;
-        var cellSeeds = Picker.PickSeeds(Data.Planet.Polygons.Entities, new int[] {numCells})[0];
+        var cellSeeds = Picker.PickSeeds(polys, new int[] {numCells})[0];
 
         var cells = cellSeeds.Select(p => new GenCell(p, _key, polyCellDic, Data)).ToList();
         Data.GenAuxData.Cells.AddRange(cells);
         var polysNotTaken =
-            Data.Planet.Polygons.Entities.Except(cellSeeds);
+            polys.Except(cellSeeds);
 
         var remainder = Picker.PickInTurn(polysNotTaken, 
             cells, 
@@ -100,7 +101,7 @@ public class GeologyGenerator : Generator
         {
             p.SetNeighbors();
         });
-        foreach (var poly in Data.Planet.Polygons.Entities)
+        foreach (var poly in Data.GetAll<MapPolygon>())
         {
             var cell = Data.GenAuxData.PolyCells[poly];
             var plate = cell.Plate;
@@ -223,7 +224,7 @@ public class GeologyGenerator : Generator
             }
             f.PolyFootprint.AddRange(inRange);   
         });
-        foreach (var poly in Data.Planet.Polygons.Entities)
+        foreach (var poly in Data.GetAll<MapPolygon>())
         {
             poly.SetIsLand(poly.Altitude > seaLevelSetting, _key);
         }

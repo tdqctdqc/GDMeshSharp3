@@ -9,13 +9,16 @@ public interface IRef
     void ClearRef();
 }
 
-
-public interface IRefCollection<TKey> : IRef
+public interface IRefCollection : IRef
 {
-    void Add(Entity e, List<TKey> ids, StrongWriteKey key);
-    void Add(Entity e, TKey id, StrongWriteKey key);
-    void Remove(Entity e, List<TKey> ids, StrongWriteKey key);
-    void Remove(Entity e, TKey id, StrongWriteKey key);
+    void UpdateOwnerId(int newId, StrongWriteKey key);
+}
+public interface IRefCollection<TKey> : IRefCollection
+{
+    void Add(List<TKey> ids, StrongWriteKey key);
+    void Add(TKey id, StrongWriteKey key);
+    void Remove(List<TKey> ids, StrongWriteKey key);
+    void Remove(TKey id, StrongWriteKey key);
 }
 
 

@@ -44,7 +44,7 @@ public class EntityMultiIndexer<TMulti, TMult> : AuxData<TMult>
     private void Recalc(Data data)
     {
         _dic.Clear();
-        var mults = data.GetRegister<TMult>().Entities;
+        var mults = data.GetAll<TMult>();
         foreach (var entity in mults)
         {
             HandleAdded(entity);

@@ -50,7 +50,7 @@ public class PolyGrid
     public void Update()
     {
         Cells = new Dictionary<Vector2, List<MapPolygon>>();
-        foreach (var element in _data.Planet.Polygons.Entities)
+        foreach (var element in _data.GetAll<MapPolygon>())
         {
             AddElement(element);
         }

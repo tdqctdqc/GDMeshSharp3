@@ -67,9 +67,10 @@ public class WorldGenerator
 
         Game.I.Logger.RunAndLogTime(() =>
         {
-            EdgeDisturber.SplitEdges(Data.Planet.Polygons.Entities, _key,
+            var polys = Data.GetAll<MapPolygon>().ToList();
+            EdgeDisturber.SplitEdges(polys, _key,
                 Data.GenMultiSettings.PlanetSettings.PreferredMinPolyEdgeLength.Value);
-            EdgeDisturber.DisturbEdges(Data.Planet.Polygons.Entities, _key);
+            EdgeDisturber.DisturbEdges(polys, _key);
         }, "Edge disturb", LogType.Generation);
         
         RunGenerator(new MoistureGenerator());

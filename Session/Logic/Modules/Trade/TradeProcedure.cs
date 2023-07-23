@@ -34,7 +34,7 @@ public class TradeProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        foreach (var r in key.Data.Society.Regimes.Entities)
+        foreach (var r in key.Data.GetAll<Regime>())
         {
             r.Finance.ClearTradeBalance(key);
         }
@@ -42,7 +42,7 @@ public class TradeProcedure : Procedure
         var tick = key.Data.BaseDomain.GameClock.Tick;
         foreach (var itemChange in ItemChanges)
         {
-            var regime = key.Data.Society.Regimes[itemChange.RegimeId];
+            var regime = key.Data.Get<Regime>(itemChange.RegimeId);
             var item = (Item) key.Data.Models[itemChange.ItemId];
             if (itemChange.Quantity > 0)
             {
@@ -56,7 +56,7 @@ public class TradeProcedure : Procedure
         
         foreach (var kvp in RegimeTradeBalances)
         {
-            var regime = key.Data.Society.Regimes[kvp.Key];
+            var regime = key.Data.Get<Regime>(kvp.Key);
             var balance = kvp.Value;
             regime.Finance.AddToTradeBalance(balance, key);
         }

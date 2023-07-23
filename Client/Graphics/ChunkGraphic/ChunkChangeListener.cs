@@ -40,7 +40,8 @@ public static class ChunkChangeListenerExt
         Func<TEntity, TKey> getKey,
         Func<TEntity, MapPolygon> getPoly) where TEntity : Entity
     {
-        var created = data.EntityTypeTree[typeof(TEntity)].Created;
+        var node = data.GetEntityTypeNode<TEntity>();
+        var created = node.Created;
         created.Subscribe(notice =>
         {
             foreach (var e in notice.Entities)
@@ -51,7 +52,7 @@ public static class ChunkChangeListenerExt
                 l.MarkAdded(getKey(v), chunk);
             }
         });
-        var destroyed = data.EntityTypeTree[typeof(TEntity)].Destroyed;
+        var destroyed = node.Destroyed;
         destroyed.Subscribe(notice =>
         {
             var v = (TEntity) notice.Entity;
@@ -60,7 +61,7 @@ public static class ChunkChangeListenerExt
             l.MarkRemoved(getKey(v), chunk);
         });
         
-        var es = data.GetRegister<TEntity>().Entities;
+        var es = data.GetAll<TEntity>().ToList();
         var keys = es.Select(getKey);
         var chunks = es.Select(e => getPoly(e).GetChunk(data));
         var dic = es.ToDictionary(getKey, e => getPoly(e).GetChunk(data));
@@ -75,7 +76,9 @@ public static class ChunkChangeListenerExt
         Func<TEntity, TKey> getKey,
         Func<TEntity, IEnumerable<MapPolygon>> getPolys) where TEntity : Entity
     {
-        var created = data.EntityTypeTree[typeof(TEntity)].Created;
+        var node = data.GetEntityTypeNode<TEntity>();
+
+        var created = node.Created;
         created.Subscribe(notice =>
         {
             foreach (var e in notice.Entities)
@@ -89,7 +92,7 @@ public static class ChunkChangeListenerExt
                 }
             }
         });
-        var destroyed = data.EntityTypeTree[typeof(TEntity)].Destroyed;
+        var destroyed = node.Destroyed;
         destroyed.Subscribe(notice =>
         {
             var v = (TEntity) notice.Entity;

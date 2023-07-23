@@ -7,13 +7,13 @@ public class RefColMeta<TEntity, TColMember> : IRefColMeta<TColMember> where TEn
 {
     public RefAction<(TEntity, TColMember)> Added { get; private set; }
     public RefAction<(TEntity, TColMember)> Removed { get; private set; }
-
+    
     public RefColMeta()
     {
         Added = new RefAction<(TEntity, TColMember)>();
         Removed = new RefAction<(TEntity, TColMember)>();
     }
-
+    
     public void RaiseAdded(Entity e, TColMember added)
     {
         Added.Invoke(((TEntity)e, added));

@@ -68,7 +68,25 @@ public static class MapPolygonExt
     }
     public static Vector2[] GetOrderedBoundaryPoints(this MapPolygon poly, Data data)
     {
-        return data.Planet.PolygonAux.AuxDatas[poly].OrderedBoundaryPoints;
+        var aux = data.Planet.PolygonAux;
+        var datas = aux.AuxDatas[poly];
+        try
+        {
+            var ps = datas.OrderedBoundaryPoints;
+            return ps;
+        }
+        catch (Exception e)
+        {
+            var keys = aux.AuxDatas.Dic.Keys.ToHashSet();
+            var polys = data.GetAll<MapPolygon>().ToHashSet();
+            GD.Print(aux.AuxDatas.Dic.ContainsKey(poly));
+            GD.Print("auxes " + aux.AuxDatas.Dic.Count());
+            GD.Print("keys " + keys.Count());
+            GD.Print("polys " + polys.Count());
+            GD.Print("overlap " + keys.Where(k => polys.Contains(k)).Count());
+            // GD.Print(aux.AuxDatas.Dic.Keys.Any(k => k.Id == poly.Id));
+            throw;
+        }
     }
     public static ReadOnlyHash<ResourceDeposit> GetResourceDeposits(this MapPolygon p, Data data)
     {

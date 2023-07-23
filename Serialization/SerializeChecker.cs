@@ -52,7 +52,7 @@ public static class SerializeChecker<TEntity> where TEntity : Entity
         }
 
         var c = constructors[0];
-        var meta = data.Serializer.GetEntityMeta<TEntity>();
+        var meta = data.GetEntityMeta(typeof(TEntity));
         var fields = meta.FieldNameList.ToDictionary(n => n, n => meta.FieldTypes[n]);
         var paramInfos = c.GetParameters().ToDictionary(pi => pi.Name, pi => pi.ParameterType);
         

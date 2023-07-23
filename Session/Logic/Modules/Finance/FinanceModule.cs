@@ -9,7 +9,7 @@ public class FinanceModule : LogicModule
     {
         var res = new LogicResults();
         var proc = GrowFinancialPowerProcedure.Construct();
-        foreach (var regime in data.Society.Regimes.Entities)
+        foreach (var regime in data.GetAll<Regime>())
         {
             //todo get from 'flow dic' on regime or something
             var income = regime.Flows[FlowManager.Income].Net();

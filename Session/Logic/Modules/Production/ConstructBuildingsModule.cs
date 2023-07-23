@@ -10,7 +10,7 @@ public class ConstructBuildingsModule : LogicModule
         var res = new LogicResults();
         var finished = new HashSet<Construction>();
         var clear = ClearFinishedConstructionsProcedure.Construct();
-        foreach (var r in data.Society.Regimes.Entities)
+        foreach (var r in data.GetAll<Regime>())
         {
             foreach (var kvp in data.Infrastructure.CurrentConstruction.ByTri)
             {

@@ -1,29 +1,36 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public class EntityTypeTree
 {
-    public EntityTypeTreeNode this[Type type] => Nodes[type];
     public Dictionary<Type, EntityTypeTreeNode> Nodes { get; private set; }
     public EntityTypeTree(Data data)
     {
         Nodes = new Dictionary<Type, EntityTypeTreeNode>();
     }
-
-    public EntityTypeTreeNode Get(Type type, Data data) 
+    public EntityTypeTreeNode Get<T>() where T : Entity
     {
-        if(Nodes.ContainsKey(type) == false) Add(type, data);
+        return Get(typeof(T));
+    }
+    public EntityTypeTreeNode Get(Type type) 
+    {
+        if(Nodes.ContainsKey(type) == false) Add(type);
         return Nodes[type];
     }
-    private void Add(Type type, Data data)
+    private void Add(Type type)
     {
-        var node = new EntityTypeTreeNode(type, data);
+        var node = new EntityTypeTreeNode(type);
         Nodes.Add(type, node);
         var parentType = type.BaseType;
+        if (Nodes.ContainsKey(parentType) == false && typeof(Entity).IsAssignableFrom(parentType))
+        {
+            Add(parentType);
+        }
         if(Nodes.TryGetValue(parentType, out var pNode))
         {
-            node.SetParent(pNode);
+            node.SetParent(Nodes[parentType]);
         }
         foreach (var type1 in Nodes.Keys.ToList())
         {

@@ -63,10 +63,10 @@ public abstract class Proposal
         var inFavor = InFavor.Where(f => alliance.Members.RefIds.Contains(f));
         var against = Against.Where(f => alliance.Members.RefIds.Contains(f));
         
-        var forWeight = inFavor.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
+        var forWeight = inFavor.Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));
         var forRatio = forWeight / allianceWeight;
         
-        var againstWeight = against.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
+        var againstWeight = against.Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));
         var againstRatio = againstWeight / allianceWeight;
         
         return forRatio < .5f && againstRatio < .5f;

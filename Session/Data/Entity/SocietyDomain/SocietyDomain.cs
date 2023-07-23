@@ -5,9 +5,6 @@ using Godot;
 
 public class SocietyDomain : Domain
 {
-    public EntityRegister<Regime> Regimes => Data.GetRegister<Regime>();
-    public EntityRegister<PolyPeep> PolyPeeps => Data.GetRegister<PolyPeep>();
-    public EntityRegister<Alliance> Alliances => Data.GetRegister<Alliance>();
     public Market Market => _market != null ? _market.Value : null;
     private SingletonAux<Market> _market;
     public RegimeAux RegimeAux { get; private set; }

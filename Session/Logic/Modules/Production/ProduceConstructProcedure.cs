@@ -51,7 +51,7 @@ public class ProduceConstructProcedure : Procedure
         
         foreach (var kvp in EmploymentReports)
         {
-            var poly = key.Data.Planet.Polygons[kvp.Key];
+            var poly = key.Data.Get<MapPolygon>(kvp.Key);
             poly.SetEmploymentReport(kvp.Value, key);
         }
     }

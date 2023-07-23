@@ -43,7 +43,7 @@ public class Regime : Entity
     public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, bool isMajor, CreateWriteKey key)
     {
         var polygons = EntityRefCollection<MapPolygon>.Construct(nameof(Polygons), 
-            new HashSet<int>{seed.Id}, key.Data);
+            -1, new HashSet<int>{seed.Id}, key.Data);
         var items = ItemCount.Construct();
         var flows = new RegimeFlows(new Dictionary<int, FlowData>());
         flows.AddFlowIn(FlowManager.Income, 0f);

@@ -27,7 +27,7 @@ public class HostSyncer : Syncer
         Player.Create(newPlayerGuid, "doot", key);
 
         var data = key.Data;
-        foreach (var e in data.Entities.Values)
+        foreach (var e in data.EntitiesById.Values)
         {
             var u = EntityCreationUpdate.Create(e, key);
             QueuePacket(u.Serialize(key.Data));

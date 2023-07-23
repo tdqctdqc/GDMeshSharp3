@@ -67,7 +67,7 @@ public class TradeModule : LogicModule
         var market = data.Society.Market;
         foreach (var buyOrder in buyOrders)
         {
-            var regime = data.Society.Regimes[buyOrder.RegimeId];
+            var regime = data.Get<Regime>(buyOrder.RegimeId);
             var item = (TradeableItem) data.Models[buyOrder.ItemId];
             var info = infos[item];
             var q = Mathf.FloorToInt(buyOrder.Quantity * info.BuySatisfyRatio);
@@ -81,7 +81,7 @@ public class TradeModule : LogicModule
         }
         foreach (var sellOrder in sellOrders)
         {
-            var regime = data.Society.Regimes[sellOrder.RegimeId];
+            var regime = data.Get<Regime>(sellOrder.RegimeId);
             var item = (TradeableItem) data.Models[sellOrder.ItemId];
             var info = infos[item];
             var q = Mathf.FloorToInt(sellOrder.Quantity * info.SellSatisfyRatio);

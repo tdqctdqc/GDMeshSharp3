@@ -14,9 +14,9 @@ public class MapPolyNexus : Entity
         GenWriteKey key)
     {
         var n = new MapPolyNexus(-1, point, 
-            EntityRefCollection<MapPolygonEdge>.Construct(nameof(IncidentEdges),
+            EntityRefCollection<MapPolygonEdge>.Construct(nameof(IncidentEdges), -1,
                 edges.Select(e => e.Id).ToHashSet(), key.Data),
-            EntityRefCollection<MapPolygon>.Construct(nameof(IncidentPolys),
+            EntityRefCollection<MapPolygon>.Construct(nameof(IncidentPolys), -1,
                 polys.Select(p => p.Id).ToHashSet(), key.Data));
         key.Create(n);
         return n;

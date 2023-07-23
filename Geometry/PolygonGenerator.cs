@@ -75,7 +75,10 @@ public class PolygonGenerator : Generator
             var center = dPoint.GetIntV2();
             var polygon = MapPolygon.Create(center, _dimensions.X, key);
         }
-        info.SetupPolys(key.Data.Planet.Polygons.Entities.ToList());
+        GD.Print("all polys " + key.Data.GetAll<MapPolygon>().Count());
+        GD.Print("num auxes " + key.Data.Planet.PolygonAux.AuxDatas.Dic.Count);
+        
+        info.SetupPolys(key.Data.GetAll<MapPolygon>().ToList());
     }
 
     private void Wrap(Graph<MapPolygon, LineSegment> graph, MapGenInfo info, GenWriteKey key)
@@ -260,8 +263,8 @@ public class PolygonGenerator : Generator
         foreach (var kvp in edgeNexi)
         {
             var edge = kvp.Key;
-            var n1 = key.Data.Planet.PolyNexi[(int)kvp.Value.X];
-            var n2 = key.Data.Planet.PolyNexi[(int)kvp.Value.Y];
+            var n1 = key.Data.Get<MapPolyNexus>((int)kvp.Value.X);
+            var n2 = key.Data.Get<MapPolyNexus>((int)kvp.Value.Y);
             edge.SetNexi(n1, n2, key);
         }
     }
@@ -279,7 +282,7 @@ public class PolygonGenerator : Generator
         var numCouldntFix = 0;
         MapPolygonEdge getShortEdge()
         {
-            return key.Data.Planet.PolyEdges.Entities.FirstOrDefault(e => e.GetLength(key.Data) < minLength);
+            return key.Data.GetAll<MapPolygonEdge>().FirstOrDefault(e => e.GetLength(key.Data) < minLength);
         }
         while (getShortEdge() is MapPolygonEdge shortEdge && sw.Elapsed.TotalSeconds < maxTime)
         {

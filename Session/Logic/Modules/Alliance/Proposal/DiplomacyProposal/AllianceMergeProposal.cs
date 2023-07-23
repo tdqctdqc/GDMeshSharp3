@@ -28,44 +28,44 @@ public class AllianceMergeProposal : DiplomacyProposal
     {
         if (accepted)
         {
-            var alliance0 = key.Data.Society.Alliances[Alliance0];
-            var alliance1 = key.Data.Society.Alliances[Alliance1];
+            var alliance0 = key.Data.Get<Alliance>(Alliance0);
+            var alliance1 = key.Data.Get<Alliance>(Alliance1);
             var members0 = alliance0.Members.Entities(key.Data).ToList();
             
             for (var i = 0; i < members0.Count; i++)
             {
                 var r = members0[i];
-                alliance0.Members.Remove(alliance0, r, key);
-                alliance1.Members.Add(alliance1, r, key);
+                alliance0.Members.Remove(r, key);
+                alliance1.Members.Add(r, key);
             }
             
             var enemies0 = alliance0.Rivals.Entities(key.Data).ToList();
             for (var i = 0; i < enemies0.Count; i++)
             {
                 var e = enemies0[i];
-                alliance1.Rivals.Add(alliance1, e, key);
-                e.Rivals.Add(e, alliance1, key);
+                e.Rivals.Remove(e, key);
+                alliance1.Rivals.Add(e, key);
+                e.Rivals.Add(alliance1, key);
             }
             
             var war0 = alliance0.AtWar.Entities(key.Data).ToList();
             for (var i = 0; i < war0.Count; i++)
             {
                 var e = war0[i];
-                alliance1.AtWar.Add(alliance1, e, key);
-                e.AtWar.Add(e, alliance1, key);
+                e.AtWar.Remove(alliance0, key);
+                alliance1.AtWar.Add(e, key);
+                e.AtWar.Add(alliance1, key);
             }
-            
             key.Data.RemoveEntity(alliance0.Id, key);
         }
-        
     }
 
     public override bool Valid(Data data)
     {
-        if (data.Entities.ContainsKey(Alliance0) == false) return false;
-        if (data.Entities.ContainsKey(Alliance1) == false) return false;
-        var a0 = (Alliance) data.Entities[Alliance0];
-        var a1 = (Alliance) data.Entities[Alliance1];
+        if (data.EntitiesById.ContainsKey(Alliance0) == false) return false;
+        if (data.EntitiesById.ContainsKey(Alliance1) == false) return false;
+        var a0 = (Alliance) data.EntitiesById[Alliance0];
+        var a1 = (Alliance) data.EntitiesById[Alliance1];
         return a0.Rivals.Contains(a1) == false;
     }
 }

@@ -16,29 +16,29 @@ public abstract class AllianceProposal : Proposal
 
     public override void Propose(ProcedureWriteKey key)
     {
-        var alliance = key.Data.Society.Alliances[AllianceId];
-        var holder = key.Data.GetRegister<Holder<Proposal>>()[Id];
-        alliance.Proposals.Add(alliance, holder, key);
+        var alliance = key.Data.Get<Alliance>(AllianceId);
+        var holder = key.Data.Get<Holder<Proposal>>(Id);
+        alliance.Proposals.Add(holder, key);
     }
 
     public override void CleanUp(ProcedureWriteKey key)
     {
-        var holder = key.Data.GetRegister<Holder<Proposal>>()[Id];
+        var holder = key.Data.Get<Holder<Proposal>>(Id);
 
-        if (key.Data.Entities.ContainsKey(AllianceId))
+        if (key.Data.EntitiesById.ContainsKey(AllianceId))
         {
-            var alliance = key.Data.Society.Alliances[AllianceId];
-            alliance.Proposals.Remove(alliance, holder, key);
+            var alliance = key.Data.Get<Alliance>(AllianceId);
+            alliance.Proposals.Remove(holder, key);
         }
     }
 
     public override TriBool GetResolution(Data data)
     {
-        var alliance = data.Society.Alliances[AllianceId];
-        var forWeight = InFavor.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
-        var againstWeight = Against.Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));
+        var alliance = data.Get<Alliance>(AllianceId);
+        var forWeight = InFavor.Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));
+        var againstWeight = Against.Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));
         var undecidedWeight = alliance.Members.RefIds.Except(InFavor).Except(Against)
-            .Sum(f => alliance.GetWeightInAlliance(data.Society.Regimes[f], data));;
+            .Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));;
         if (undecidedWeight > forWeight && undecidedWeight > againstWeight)
         {
             return TriBool.Undecided;
@@ -47,7 +47,7 @@ public abstract class AllianceProposal : Proposal
     }
     public override float GetPriorityGrowth(Data data)
     {
-        var alliance = data.Society.Alliances[AllianceId];
+        var alliance = data.Get<Alliance>(AllianceId);
         var res = alliance.GetWeightInAlliance(Proposer.Entity(data), data);
         if (Proposer.RefId == alliance.Leader.RefId) res *= 2;
         return res;
@@ -55,11 +55,11 @@ public abstract class AllianceProposal : Proposal
 
     public override bool Valid(Data data)
     {
-        return data.Entities.ContainsKey(AllianceId);
+        return data.EntitiesById.ContainsKey(AllianceId);
     }
 
     public override bool Undecided(Data data)
     {
-        return AllianceUndecided(data.Society.Alliances[AllianceId], data);
+        return AllianceUndecided(data.Get<Alliance>(AllianceId), data);
     }
 }

@@ -18,7 +18,7 @@ public partial class SettlementIconLayer : MapChunkGraphicLayer<int>
     protected override Node2D MakeGraphic(int key, Data data)
     {
         var node = new Node2D();
-        var settlement = data.Infrastructure.Settlements[key];
+        var settlement = data.Get<Settlement>(key);
         var icon = settlement.Tier.Model(data).Icon;
         var poly = settlement.Poly.Entity(data);
         var urbanTris = poly.Tris.Tris

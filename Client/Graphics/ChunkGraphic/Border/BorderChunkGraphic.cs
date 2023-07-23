@@ -24,7 +24,7 @@ public partial class BorderChunkLayer : MapChunkGraphicLayer<int>
     }
     protected override Node2D MakeGraphic(int key, Data data)
     {
-        var p = data.Planet.Polygons[key];
+        var p = data.Get<MapPolygon>(key);
         var mb = new MeshBuilder();
         var color = _getColor(p);
         var offset = Chunk.RelTo.GetOffsetTo(p, data);

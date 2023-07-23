@@ -33,7 +33,6 @@ public partial class GeneratorClient : Node, IClient
     {
         this.ClearChildren();
         Requests = new LogicRequests();
-        Requests.GiveTree(session.Data.EntityTypeTree);
         WriteKey = new ClientWriteKey(session.Data, session);
         Settings = ClientSettings.Load();
         

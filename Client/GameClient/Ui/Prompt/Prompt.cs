@@ -19,7 +19,7 @@ public class Prompt
 
     public static Prompt GetChooseRegimePrompt(WriteKey key)
     {
-        var availRegimes = key.Data.Society.Regimes.Entities
+        var availRegimes = key.Data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(key.Data) == false);
         Action<Regime> action = r =>
         {

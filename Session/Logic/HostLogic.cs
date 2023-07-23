@@ -160,8 +160,8 @@ public class HostLogic : ILogic
 
     private bool CheckReadyForFrame()
     {
-        var players = _data.BaseDomain.Players.Entities;
-        var aiRegimes = _data.Society.Regimes.Entities.Where(r => r.IsPlayerRegime(_data) == false);
+        var players = _data.GetAll<Player>();
+        var aiRegimes = _data.GetAll<Regime>().Where(r => r.IsPlayerRegime(_data) == false);
         foreach (var kvp in _aiTurnOrders)
         {
             if (kvp.Value.IsFaulted)
@@ -193,7 +193,7 @@ public class HostLogic : ILogic
 
         void inner(Func<Regime, TurnOrders> getOrders)
         {
-            var aiRegimes = _data.Society.Regimes.Entities
+            var aiRegimes = _data.GetAll<Regime>()
                 .Where(r => r.IsPlayerRegime(_data) == false);
             foreach (var aiRegime in aiRegimes)
             {

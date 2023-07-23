@@ -9,7 +9,7 @@ public static class EdgeDisturber
     public static void SplitEdges(IReadOnlyCollection<MapPolygon> polys, GenWriteKey key, float minLength)
     {
         int iter = 0;
-        foreach (var edge in key.Data.Planet.PolyEdges.Entities)
+        foreach (var edge in key.Data.GetAll<MapPolygonEdge>())
         {
             // if (poly.IsWater() && n.IsWater()) continue;
 

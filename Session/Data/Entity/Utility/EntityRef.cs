@@ -38,7 +38,7 @@ public class EntityRef<TRef> : IEntityRef where TRef : Entity
 
     public void SyncRef(Data data)
     {
-        if (data.Entities.ContainsKey(RefId) == false)
+        if (data.EntitiesById.ContainsKey(RefId) == false)
         {
             RefId = -1;
         }

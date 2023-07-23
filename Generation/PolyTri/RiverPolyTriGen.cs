@@ -13,7 +13,7 @@ public class RiverPolyTriGen
         
         //todo partition by riverpoly union find instead?
         var lms = key.Data.Planet.PolygonAux.LandSea.Landmasses;
-        var riverNexi = key.Data.Planet.PolyNexi.Entities
+        var riverNexi = key.Data.GetAll<MapPolyNexus>()
             .Where(n => n.IncidentEdges.Entities(key.Data).Any(e => e.IsRiver())).ToList();
         Parallel.ForEach(lms, lm => PreprocessRiversForLandmass(rd, riverNexi, lm, key));
         key.Data.Notices.SetPolyShapes?.Invoke();
