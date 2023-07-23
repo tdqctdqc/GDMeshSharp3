@@ -43,7 +43,7 @@ public class ProduceConstructModule : LogicModule
         proc.RegimeResourceGains.TryAdd(regime.Id, gains);
         var unemployedJob = PeepJobManager.Unemployed;
         
-        var regimePolys = regime.Polygons.Entities(data);
+        var regimePolys = regime.Polygons.Items(data);
         var totalLaborerUnemployed = 0;
         
         foreach (var poly in regimePolys)
@@ -76,10 +76,10 @@ public class ProduceConstructModule : LogicModule
     private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
     {
         var builderJob = PeepJobManager.Builder;
-        var regimePolys = regime.Polygons.Entities(data);
+        var regimePolys = regime.Polygons.Items(data);
         var construction = data.Infrastructure.CurrentConstruction.ByPoly;
 
-        var constructionCapNeeded = regime.Polygons.Entities(data)
+        var constructionCapNeeded = regime.Polygons.Items(data)
             .Where(p => construction.ContainsKey(p.Id))
             .Select(p => construction[p.Id].Sum(c => c.Model.Model(data).ConstructionCapPerTick))
             .Sum();

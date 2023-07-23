@@ -33,7 +33,7 @@ public partial class RoadChunkGraphicLayer : MapChunkGraphicLayer<int>
         var res = new List<int>();
         foreach (var p in Chunk.Polys)
         {
-            foreach (var n in p.Neighbors.Entities(data))
+            foreach (var n in p.Neighbors.Items(data))
             {
                 if (p.Id > n.Id)
                 {

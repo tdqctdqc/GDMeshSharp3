@@ -54,7 +54,7 @@ public static class GraphGenerator
         var discardHash = discardMergePolys.ToHashSet();
         discardMergePolys.ForEach(discard =>
         {
-            var ns = discard.Neighbors.Entities(key.Data).ToList();
+            var ns = discard.Neighbors.Items(key.Data).ToList();
             for (var i = ns.Count - 1; i >= 0; i--)
             {
                 var discardN = ns[i];
@@ -68,7 +68,7 @@ public static class GraphGenerator
         });
         check.ForEach(n =>
         {
-            var badNs = n.Neighbors.Entities(key.Data).Intersect(discardHash).ToList();
+            var badNs = n.Neighbors.Items(key.Data).Intersect(discardHash).ToList();
             foreach (var badN in badNs)
             {
                 n.RemoveNeighbor(badN, key);

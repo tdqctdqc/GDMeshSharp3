@@ -16,9 +16,9 @@ public class MapPolygonAux : EntityAux<MapPolygon>
     public MapPolygonAux(Data data) : base(data)
     {
         BorderGraph = ImplicitGraph.Get<MapPolygon, PolyBorderChain>(
-            n => n.Neighbors.Entities(data),
+            n => n.Neighbors.Items(data),
             (n, m) => n.GetEdge(m, data).GetSegsRel(n, data),
-            () => data.GetAll<MapPolygon>().ToHashSet(), 
+            () => data.GetAll<MapPolygon>(), 
             () => data.GetAll<MapPolygon>().SelectMany(e => e.GetPolyBorders()).ToHashSet()
         );
         AuxDatas = EntityValueCache<MapPolygon, PolyAuxData>.ConstructConstant(

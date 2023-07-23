@@ -30,54 +30,46 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
     {
         var entityType = typeof(TEntity);
         
-        //bc with generic parameters it will not capture all the classes
-        // if (entityType.ContainsGenericParameters)
-        // {
-        //     throw new SerializationException($"Entity {entityType.Name} cannot have generic parameters");
-        // }
-        
         var properties = entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-        
-        
-        
         
         _fieldNames = properties.Select(p => p.Name).ToList();
         _fieldTypes = properties.ToDictionary(p => p.Name, p => p.PropertyType);
         _vars = new Dictionary<string, IEntityVarMeta>();
         _refCols = new Dictionary<string, IRefColMeta>();
         
-        var makeFuncsMi = typeof(EntityMeta<TEntity>).GetMethod(nameof(MakeFuncs),
-            BindingFlags.Instance | BindingFlags.NonPublic);
         foreach (var propertyInfo in properties)
         {
-            var makeFuncsGeneric = makeFuncsMi.MakeGenericMethod(propertyInfo.PropertyType);
-            makeFuncsGeneric.Invoke(this, new []{propertyInfo});
+            this.InvokeGeneric(nameof(MakeFuncs),
+                new []{propertyInfo.PropertyType}, new []{propertyInfo});
+        }
+        
+        var declaredProperties = entityType.GetProperties(BindingFlags.DeclaredOnly 
+                                                          | BindingFlags.Instance | BindingFlags.Public);
+        foreach (var declaredProperty in declaredProperties)
+        {
+            this.InvokeGeneric(nameof(SetupRefCol), 
+                new []{declaredProperty.PropertyType}, 
+                new []{declaredProperty});
         }
     }
     private void MakeFuncs<TProperty>(PropertyInfo prop)
     {
         var name = prop.Name;
         var type = prop.PropertyType;
-
-        var mi = GetType().GetMethod(nameof(SetupVarType), BindingFlags.Instance | BindingFlags.NonPublic);
-        var genericMi = mi.MakeGenericMethod(new[] {typeof(TProperty)});
-        genericMi.Invoke(this, new []{prop});
-    }
-    private void SetupVarType<TProperty>(PropertyInfo prop)
-    {
         var eVar = new EntityVarMeta<TEntity, TProperty>(prop);
         _vars.Add(prop.Name, eVar);
+    }
+    private void SetupRefCol<TProperty>(PropertyInfo prop)
+    {
         var propType = typeof(TProperty);
-        if (propType.IsGenericType && propType.GetGenericTypeDefinition().IsAssignableFrom(typeof(EntityRefCollection<>)))
+        if (propType.IsGenericType 
+            && propType.GetGenericTypeDefinition().IsAssignableFrom(typeof(EntRefCol<>)))
         {
             var genericParam = propType.GenericTypeArguments[0];
-            var mi = GetType().GetMethod(nameof(SetupColType), 
-                BindingFlags.Instance | BindingFlags.NonPublic);
-            var genericMi = mi.MakeGenericMethod(new[] {genericParam});
-            genericMi.Invoke(this, new []{prop});
+            this.InvokeGeneric(nameof(SetupColType),
+                new[] {genericParam}, new []{prop});
         }
     }
-
     private void SetupColType<TColMember>(PropertyInfo prop)
     {
         var col = new RefColMeta<TEntity, TColMember>();

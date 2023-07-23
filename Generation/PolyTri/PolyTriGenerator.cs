@@ -52,7 +52,7 @@ public class PolyTriGenerator : Generator
     {
         foreach (var poly in key.Data.GetAll<MapPolygon>())
         {
-            foreach (var n in poly.Neighbors.Entities(key.Data))
+            foreach (var n in poly.Neighbors.Items(key.Data))
             {
                 if(n.Id < poly.Id) continue;
                 var edge = poly.GetEdge(n, key.Data);

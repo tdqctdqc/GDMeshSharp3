@@ -67,7 +67,7 @@ public class WorldGenerator
 
         Game.I.Logger.RunAndLogTime(() =>
         {
-            var polys = Data.GetAll<MapPolygon>().ToList();
+            var polys = Data.GetAll<MapPolygon>();
             EdgeDisturber.SplitEdges(polys, _key,
                 Data.GenMultiSettings.PlanetSettings.PreferredMinPolyEdgeLength.Value);
             EdgeDisturber.DisturbEdges(polys, _key);

@@ -61,7 +61,7 @@ public class GeologyGenerator : Generator
     private void BuildCells()
     {
         var polysPerCell = 3;
-        var polys = Data.GetAll<MapPolygon>().ToList();
+        var polys = Data.GetAll<MapPolygon>();
         var numCells = polys.Count / polysPerCell;
         var polyCellDic = Data.GenAuxData.PolyCells;
         var cellSeeds = Picker.PickSeeds(polys, new int[] {numCells})[0];

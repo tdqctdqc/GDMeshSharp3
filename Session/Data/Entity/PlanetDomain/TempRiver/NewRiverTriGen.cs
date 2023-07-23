@@ -20,7 +20,7 @@ public class NewRiverTriGen
         if(rWidth == 0f)
         {
             rWidth = poly.GetNexi(data)
-                .SelectMany(n => n.IncidentEdges.Entities(data))
+                .SelectMany(n => n.IncidentEdges.Items(data))
                 .Max(e => River.GetWidthFromFlow(e.MoistureFlow));
             if (rWidth == 0f) throw new Exception("making river info for non-river poly");
         }

@@ -22,10 +22,10 @@ public partial class MapChunkGraphic : Node2D
             chunk, data, mg,
             (AllTris(data), true),
             (Regime(data, mg), true),
-            (Roads(data, mg), true),
             (ResourceDepositPolyFill(data), false),
             (Alliance(data, mg), true),
-            (Icons(data, mg), true)
+            (Icons(data, mg), true),
+            (Roads(data, mg), true)
         );
         Init();
     }

@@ -16,7 +16,8 @@ public abstract class Entity
     {
         Id = id;
         var meta = key.Data.GetEntityMeta(this.GetType());
-        foreach (var refCollection in meta.GetPropertyValues(this).SelectWhereOfType<object, IRefCollection>())
+        foreach (var refCollection in meta.GetPropertyValues(this)
+                     .SelectWhereOfType<object, IReadOnlyRefCollection>())
         {
             refCollection.UpdateOwnerId(id, key);
         }

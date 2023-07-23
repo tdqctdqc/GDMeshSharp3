@@ -10,8 +10,8 @@ public class AllianceAux : EntityAux<Alliance>
         var membersMeta = data
             .GetEntityMeta<Alliance>()
             .GetRefColMeta<Regime>(nameof(Alliance.Members));
-            
+
         RegimeAlliances = new EntityRefColIndexer<Alliance, Regime>(
-            a => a.Members.Entities(data), membersMeta, data);
+            a => a.Members.Items(data), membersMeta, data);
     }
 }

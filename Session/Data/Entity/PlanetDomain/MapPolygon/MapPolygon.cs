@@ -8,7 +8,7 @@ using MessagePack;
 public partial class MapPolygon : Entity
 {
     public Vector2 Center { get; protected set; }
-    public EntityRefCollection<MapPolygon> Neighbors { get; protected set; }
+    public EntRefCol<MapPolygon> Neighbors { get; protected set; }
     public Dictionary<int, PolyBorderChain> NeighborBorders { get; protected set; }
     public Color Color { get; protected set; }
     public float Altitude { get; protected set; }
@@ -20,7 +20,7 @@ public partial class MapPolygon : Entity
     public EmploymentReport Employment { get; private set; }
     public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
-    [SerializationConstructor] private MapPolygon(int id, Vector2 center, EntityRefCollection<MapPolygon> neighbors, 
+    [SerializationConstructor] private MapPolygon(int id, Vector2 center, EntRefCol<MapPolygon> neighbors, 
         Dictionary<int, PolyBorderChain> neighborBorders, Color color, float altitude, float roughness, 
         float moisture, EntityRef<Regime> regime, PolyTris tris, bool isLand,
         EmploymentReport employment, PolyBuildingSlots polyBuildingSlots, PolyFoodProd polyFoodProd) 
@@ -49,7 +49,7 @@ public partial class MapPolygon : Entity
 
         
         var p = new MapPolygon(-1, mapCenter,
-            EntityRefCollection<MapPolygon>
+            EntRefCol<MapPolygon>
                 .Construct(nameof(Neighbors), -1, new HashSet<int>(), key.Data),
             new Dictionary<int, PolyBorderChain>(),
             ColorsExt.GetRandomColor(),

@@ -6,7 +6,7 @@ public static class AllianceExt
 {
     public static float GetPowerScore(this Alliance a, Data data)
     {
-        return a.Members.Entities(data).Sum(r => r.GetPowerScore(data));
+        return a.Members.Items(data).Sum(r => r.GetPowerScore(data));
     }
 
     public static float GetWeightInAlliance(this Alliance a, Regime r, Data data)
@@ -19,8 +19,8 @@ public static class AllianceExt
 
     public static IEnumerable<Alliance> GetNeighborAlliances(this Regime regime, Data data)
     {
-        return regime.Polygons.Entities(data)
-            .SelectMany(p => p.Neighbors.Entities(data).Where(e => e.Regime.Fulfilled()))
+        return regime.Polygons.Items(data)
+            .SelectMany(p => p.Neighbors.Items(data).Where(e => e.Regime.Fulfilled()))
             .Select(p => p.Regime.Entity(data).GetAlliance(data)).Distinct();
     }
 }

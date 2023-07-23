@@ -7,37 +7,36 @@ using MessagePack;
 public class MapPolyNexus : Entity
 {
     public Vector2 Point { get; private set; }
-    public EntityRefCollection<MapPolygonEdge> IncidentEdges { get; private set; }
-    public EntityRefCollection<MapPolygon> IncidentPolys { get; private set; }
-
+    public EntRefCol<MapPolygonEdge> IncidentEdges { get; private set; }
+    public EntRefCol<MapPolygon> IncidentPolys { get; private set; }
     public static MapPolyNexus Create(Vector2 point, List<MapPolygonEdge> edges, List<MapPolygon> polys,
         GenWriteKey key)
     {
         var n = new MapPolyNexus(-1, point, 
-            EntityRefCollection<MapPolygonEdge>.Construct(nameof(IncidentEdges), -1,
+            EntRefCol<MapPolygonEdge>.Construct(nameof(IncidentEdges), -1,
                 edges.Select(e => e.Id).ToHashSet(), key.Data),
-            EntityRefCollection<MapPolygon>.Construct(nameof(IncidentPolys), -1,
+            EntRefCol<MapPolygon>.Construct(nameof(IncidentPolys), -1,
                 polys.Select(p => p.Id).ToHashSet(), key.Data));
         key.Create(n);
         return n;
     }
-    [SerializationConstructor] private MapPolyNexus(int id, Vector2 point, EntityRefCollection<MapPolygonEdge> incidentEdges,
-        EntityRefCollection<MapPolygon> incidentPolys) : base(id)
+    [SerializationConstructor] private MapPolyNexus(int id, Vector2 point, EntRefCol<MapPolygonEdge> incidentEdges,
+        EntRefCol<MapPolygon> incidentPolys) : base(id)
     {
         Point = point;
-        IncidentEdges = incidentEdges;
-        IncidentPolys = incidentPolys;
+        IncidentEdges = EntRefCol<MapPolygonEdge>.Construct(incidentEdges);
+        IncidentPolys = EntRefCol<MapPolygon>.Construct(incidentPolys);
     }
 
     public MapPolygonEdge GetEdgeWith(MapPolyNexus n, Data data)
     {
-        return IncidentEdges.Entities(data).First(e => e.HiNexus.Entity(data) == n
+        return IncidentEdges.Items(data).First(e => e.HiNexus.Entity(data) == n
                                     || e.LoNexus.Entity(data) == n);
     }
 
     public IEnumerable<MapPolyNexus> GetNeighbors(Data data)
     {
-        return IncidentEdges.Entities(data).Select(e =>
+        return IncidentEdges.Items(data).Select(e =>
         {
             if (e.HiNexus.Entity(data) == this) return e.LoNexus.Entity(data);
             return e.HiNexus.Entity(data);

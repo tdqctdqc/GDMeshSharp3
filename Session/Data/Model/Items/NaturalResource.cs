@@ -36,7 +36,7 @@ public abstract class NaturalResource : TradeableItem
     private void OverflowMult(MapPolygon p, Dictionary<MapPolygon, int> deps, 
         Dictionary<MapPolygon, int> scores, int rem, Data data)
     {
-        var neighbors = p.Neighbors.Entities(data);
+        var neighbors = p.Neighbors.Items(data);
         var portions = Apportioner.ApportionLinear(rem, neighbors, n => scores.GetOrAdd(n, GetDepositScore));
         for (var i = 0; i < portions.Count; i++)
         {
@@ -48,7 +48,7 @@ public abstract class NaturalResource : TradeableItem
     }
     private void OverflowSingle(MapPolygon p, Dictionary<MapPolygon, int> deps, int rem, Data data)
     {
-        var overflowPoly = p.Neighbors.Entities(data)
+        var overflowPoly = p.Neighbors.Items(data)
             .OrderBy(GetDepositScore)
             .Where(n => deps.ContainsKey(n) == false)
             .FirstOrDefault();

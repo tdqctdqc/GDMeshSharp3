@@ -68,7 +68,6 @@ public class Data
         {
             AddEntityType(t);
         }
-
         if (e.Id == -1)
         {
             e.SetId(_idDispenser.GetID(), key);
@@ -79,7 +78,7 @@ public class Data
             GD.Print($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} with {e.GetType().ToString()}");
         }
         EntitiesById.Add(e.Id, e);
-        _entityTypeTree.Get(e.GetType()).PropagateCreation(e);
+        _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
         if (key is HostWriteKey hKey)
         {
             hKey.HostServer.QueueMessage(EntityCreationUpdate.Create(e, hKey));
@@ -89,31 +88,7 @@ public class Data
     {
         foreach (var e in es)
         {
-            var t = e.GetType();
-            if (_entityTypeTree.Nodes.ContainsKey(t) == false)
-            {
-                AddEntityType(t);
-            }
-            if (e.Id == -1)
-            {
-                e.SetId(_idDispenser.GetID(), key);
-            }
-            _idDispenser.SetMin(e.Id);
-            if (EntitiesById.ContainsKey(e.Id))
-            {
-                throw new EntityTypeException($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} " +
-                                              $"with {e.GetType().ToString()}");
-            }
-            EntitiesById.Add(e.Id, e);
-        }
-        //
-        // if (key is HostWriteKey hKey)
-        // {
-        //     hKey.HostServer.QueueMessage(EntitiesCreationUpdate.Create(es, hKey));
-        // }
-        foreach (var entity in es)
-        {
-            _entityTypeTree.Get(entity.GetType()).PropagateCreation(entity);
+            AddEntity(e, key);
         }
     }
 
@@ -138,25 +113,15 @@ public class Data
     }
     public void RemoveEntities(int[] entityIds, StrongWriteKey key)
     {
-        if (key is HostWriteKey hKey)
+        foreach (var entityId in entityIds)
         {
-            hKey.HostServer.QueueMessage(EntitiesDeletionUpdate.Create(entityIds, hKey));
-        }
-        foreach (var eId in entityIds)
-        {
-            var e = EntitiesById[eId];
-            _entityTypeTree.Get(e.GetType()).PropagateDestruction(e);
-        }
-        foreach (var eId in entityIds)
-        {
-            EntitiesById.Remove(eId);
-            RefFulfiller.EntityRemoved(eId);
+            RemoveEntity(entityId, key);
         }
     }
     public void RemoveEntity(int eId, StrongWriteKey key)
     {
         var e = EntitiesById[eId];
-        key.Data._entityTypeTree.Get(e.GetType()).PropagateDestruction(e);
+        key.Data._entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
         EntitiesById.Remove(eId);
         RefFulfiller.EntityRemoved(eId);
         if (key is HostWriteKey hKey)
@@ -183,10 +148,9 @@ public class Data
         return (T) EntitiesById[id];
     }
 
-    public IEnumerable<T> GetAll<T>() where T : Entity
+    public HashSet<T> GetAll<T>() where T : Entity
     {
-        //todo make entity type tree node generic?
-        return _entityTypeTree.Get<T>().Entities.Select(e => (T) e);
+        return _entityTypeTree.Get<T>().Entities;
     }
 
     public EntityMeta<T> GetEntityMeta<T>() where T : Entity
@@ -198,11 +162,11 @@ public class Data
         return _entityTypeTree.Get(entityType).Meta;
     }
 
-    public EntityTypeTreeNode GetEntityTypeNode<T>() where T : Entity
+    public EntityTypeTreeNode<T> GetEntityTypeNode<T>() where T : Entity
     {
         return _entityTypeTree.Get<T>();
     }
-    public IEnumerable<EntityTypeTreeNode> GetAllEntityTypeNodes()
+    public IEnumerable<IEntityTypeTreeNode> GetAllEntityTypeNodes()
     {
         return _entityTypeTree.Nodes.Values;
     }

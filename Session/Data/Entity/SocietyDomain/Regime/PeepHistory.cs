@@ -29,7 +29,7 @@ public class PeepHistory
     public void Update(int tick, Regime regime, ProcedureWriteKey key)
     {
         var peeps = regime.GetPeeps(key.Data);
-        var polys = regime.Polygons.Entities(key.Data);
+        var polys = regime.Polygons.Items(key.Data);
         PeepCount.Add(peeps.Count(), tick);
         PeepSize.Add(peeps.Sum(p => p.Size), tick);
         var numUnemployed = polys.Sum(p => p.Employment.NumUnemployed());

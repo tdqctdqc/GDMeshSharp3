@@ -10,18 +10,20 @@ public partial class RegimeGeneralOverview : ScrollContainer
     {
         SetAnchorsPreset(LayoutPreset.FullRect);
         _container = new VBoxContainer();
-        _container.SetAnchorsPreset(LayoutPreset.FullRect);
         AddChild(_container);
     }
     public void Setup(Regime regime, ClientWriteKey key)
     {
         Name = regime.Name;
         _container.ClearChildren();
+        var flagControl = new Control();
         var regimeFlagRect = new TextureRect();
-        regimeFlagRect.Size = new Vector2(30f, 20f);
-        regimeFlagRect.CustomMinimumSize = new Vector2(30f, 20f);
-        regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.KeepSize;
+        regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.FitHeightProportional;
+        regimeFlagRect.StretchMode = TextureRect.StretchModeEnum.Scale;
+        regimeFlagRect.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
+        regimeFlagRect.SizeFlagsVertical = SizeFlags.ShrinkBegin;
         regimeFlagRect.Texture = regime.Template.Model(key.Data).Flag;
+        regimeFlagRect.CustomMinimumSize = new Vector2(150f, 100f);
         _container.AddChild(regimeFlagRect);
         
         if (regime.IsPlayerRegime(key.Data) == false)
@@ -38,7 +40,7 @@ public partial class RegimeGeneralOverview : ScrollContainer
         }
         
         _container.CreateLabelAsChild("RIVALS");
-        foreach (var rival in regime.GetAlliance(key.Data).Rivals.Entities(key.Data))
+        foreach (var rival in regime.GetAlliance(key.Data).Rivals.Items(key.Data))
         {
             _container.CreateLabelAsChild(rival.Leader.Entity(key.Data).Name);
         }

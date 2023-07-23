@@ -114,7 +114,7 @@ public class MoistureGenerator : Generator
         void doLandmass(HashSet<MapPolygon> lm)
         {
             var edges = lm
-                .SelectMany(p => p.Neighbors.Entities(Data).Select(n => p.GetEdge(n, Data)))
+                .SelectMany(p => p.Neighbors.Items(Data).Select(n => p.GetEdge(n, Data)))
                 .Distinct()
                 .Where(e => e.HighPoly.Entity(Data).IsLand && e.LowPoly.Entity(Data).IsLand);
             var coastEdges = edges.Where(e => e.IsLandToSeaEdge(Data));

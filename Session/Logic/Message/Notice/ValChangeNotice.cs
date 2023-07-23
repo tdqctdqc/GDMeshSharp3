@@ -4,9 +4,8 @@ using System.Linq;
 using Godot;
 
 
-public abstract class ValChangeNotice : IEntityNotice
+public abstract class ValChangeNotice
 {
-    Type IEntityNotice.EntityType => Entity.GetType();
     public Entity Entity { get; private set; }
     protected ValChangeNotice(Entity entity)
     {

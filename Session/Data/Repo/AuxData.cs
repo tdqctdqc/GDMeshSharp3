@@ -15,10 +15,7 @@ public abstract class AuxData<TEntity> : IEntityAux
     {
         data.SubscribeForCreation<TEntity>(n =>
         {
-            foreach (var t in n.Entities)
-            {
-                HandleAdded((TEntity) t);
-            }
+            HandleAdded((TEntity) n.Entity);
         });
         data.SubscribeForDestruction<TEntity>(n => HandleRemoved((TEntity)n.Entity));
     }

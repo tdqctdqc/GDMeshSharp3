@@ -34,8 +34,8 @@ public class RegimeWanderer : Wanderer
         foreach (var a in ValidAdjacent)
         {
             if (host.NotTaken.Contains(a) == false) continue;
-            if (a.Neighbors.Entities(data).Where(n => Picked.Contains(n)).Count() <= 1) continue;
-            var count = a.Neighbors.Entities(data).Where(n => Picked.Contains(n)).Count();
+            if (a.Neighbors.Items(data).Where(n => Picked.Contains(n)).Count() <= 1) continue;
+            var count = a.Neighbors.Items(data).Where(n => Picked.Contains(n)).Count();
             if (count > aCount)
             {
                 pick = a;

@@ -6,20 +6,20 @@ using MessagePack;
 public class Alliance : Entity
 {
     public EntityRef<Regime> Leader { get; private set; }
-    public EntityRefCollection<Regime> Members { get; private set; }
-    public EntityRefCollection<Alliance> Rivals { get; private set; }
-    public EntityRefCollection<Alliance> AtWar { get; private set; }
-    public EntityRefCollection<Holder<Proposal>> Proposals { get; private set; }
+    public EntRefCol<Regime> Members { get; private set; }
+    public EntRefCol<Alliance> Rivals { get; private set; }
+    public EntRefCol<Alliance> AtWar { get; private set; }
+    public EntRefCol<Holder<Proposal>> Proposals { get; private set; }
     
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
-        var members = EntityRefCollection<Regime>.Construct(nameof(Members), -1,
+        var members = EntRefCol<Regime>.Construct(nameof(Members), -1,
             new HashSet<int>{founder.Id}, key.Data);
-        var enemies = EntityRefCollection<Alliance>.Construct(nameof(Rivals), -1,
+        var enemies = EntRefCol<Alliance>.Construct(nameof(Rivals), -1,
             new HashSet<int>{}, key.Data);
-        var atWar = EntityRefCollection<Alliance>.Construct(nameof(AtWar), -1,
+        var atWar = EntRefCol<Alliance>.Construct(nameof(AtWar), -1,
             new HashSet<int>{}, key.Data);
-        var proposals = EntityRefCollection<Holder<Proposal>>.Construct(nameof(Proposals), -1,
+        var proposals = EntRefCol<Holder<Proposal>>.Construct(nameof(Proposals), -1,
             new HashSet<int>(), key.Data);
         
         var a = new Alliance(founder.MakeRef(), members, enemies, atWar,
@@ -30,10 +30,10 @@ public class Alliance : Entity
         return a;
     }
     [SerializationConstructor] private Alliance(EntityRef<Regime> leader,
-        EntityRefCollection<Regime> members, 
-        EntityRefCollection<Alliance> rivals, 
-        EntityRefCollection<Alliance> atWar, 
-        EntityRefCollection<Holder<Proposal>> proposals,
+        EntRefCol<Regime> members, 
+        EntRefCol<Alliance> rivals, 
+        EntRefCol<Alliance> atWar, 
+        EntRefCol<Holder<Proposal>> proposals,
         int id) : base(id)
     {
         Leader = leader;

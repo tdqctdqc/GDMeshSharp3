@@ -60,10 +60,6 @@ public class PolygonGenerator : Generator
         report.StartSection();
         BuildBorders(info, graph, key);
         report.StopSection("Building borders");
-        
-        // report.StartSection();
-        // FixShortEdges(key);
-        // report.StopSection("fixing short edges");
         return report;
     }
 
@@ -75,8 +71,6 @@ public class PolygonGenerator : Generator
             var center = dPoint.GetIntV2();
             var polygon = MapPolygon.Create(center, _dimensions.X, key);
         }
-        GD.Print("all polys " + key.Data.GetAll<MapPolygon>().Count());
-        GD.Print("num auxes " + key.Data.Planet.PolygonAux.AuxDatas.Dic.Count);
         
         info.SetupPolys(key.Data.GetAll<MapPolygon>().ToList());
     }
@@ -142,7 +136,7 @@ public class PolygonGenerator : Generator
         {
             var ex = new GeometryException($"couldnt build poly {poly.Id} borders");
             ex.AddSegLayer(allEdgeSegs, "border segs");
-            ex.AddPointSet(poly.Neighbors.Entities(_data).Select(n => poly.GetOffsetTo(n, _data)).ToList(), "neighbors");
+            ex.AddPointSet(poly.Neighbors.Items(_data).Select(n => poly.GetOffsetTo(n, _data)).ToList(), "neighbors");
         }
 
         
@@ -298,7 +292,7 @@ public class PolygonGenerator : Generator
             
 
             var success = tryP(shortEdge, oldPAbs, shiftAxis,
-                missingDist, newPAbs, hiPoly.Neighbors.Entities(key.Data));
+                missingDist, newPAbs, hiPoly.Neighbors.Items(key.Data));
             
             if (success == false)
             {
@@ -310,7 +304,7 @@ public class PolygonGenerator : Generator
 
 
                 success = tryP(shortEdge, oldPAbs, shiftAxis, 
-                    missingDist, newPAbs, hiPoly.Neighbors.Entities(key.Data));
+                    missingDist, newPAbs, hiPoly.Neighbors.Items(key.Data));
                 if (success == false)
                 {
                     numCouldntFix++;
@@ -348,8 +342,8 @@ public class PolygonGenerator : Generator
             if (oldPAbs.Y == 0f || oldPAbs.Y == key.Data.Planet.Height) return false;
             var hiPoly = shortEdge.HighPoly.Entity(key.Data);
 
-            var incPolys = shortEdge.HiNexus.Entity(key.Data).IncidentPolys.Entities(key.Data)
-                .Union(shortEdge.LoNexus.Entity(key.Data).IncidentPolys.Entities(key.Data))
+            var incPolys = shortEdge.HiNexus.Entity(key.Data).IncidentPolys.Items(key.Data)
+                .Union(shortEdge.LoNexus.Entity(key.Data).IncidentPolys.Items(key.Data))
                 .Distinct();
             foreach (var poly in incPolys)
             {

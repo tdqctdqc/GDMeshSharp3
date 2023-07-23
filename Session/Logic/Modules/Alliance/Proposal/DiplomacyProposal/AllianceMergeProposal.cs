@@ -30,7 +30,7 @@ public class AllianceMergeProposal : DiplomacyProposal
         {
             var alliance0 = key.Data.Get<Alliance>(Alliance0);
             var alliance1 = key.Data.Get<Alliance>(Alliance1);
-            var members0 = alliance0.Members.Entities(key.Data).ToList();
+            var members0 = alliance0.Members.Items(key.Data).ToList();
             
             for (var i = 0; i < members0.Count; i++)
             {
@@ -39,7 +39,7 @@ public class AllianceMergeProposal : DiplomacyProposal
                 alliance1.Members.Add(r, key);
             }
             
-            var enemies0 = alliance0.Rivals.Entities(key.Data).ToList();
+            var enemies0 = alliance0.Rivals.Items(key.Data).ToList();
             for (var i = 0; i < enemies0.Count; i++)
             {
                 var e = enemies0[i];
@@ -48,7 +48,7 @@ public class AllianceMergeProposal : DiplomacyProposal
                 e.Rivals.Add(alliance1, key);
             }
             
-            var war0 = alliance0.AtWar.Entities(key.Data).ToList();
+            var war0 = alliance0.AtWar.Items(key.Data).ToList();
             for (var i = 0; i < war0.Count; i++)
             {
                 var e = war0[i];

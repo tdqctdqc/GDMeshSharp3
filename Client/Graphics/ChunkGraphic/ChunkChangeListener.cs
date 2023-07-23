@@ -44,13 +44,10 @@ public static class ChunkChangeListenerExt
         var created = node.Created;
         created.Subscribe(notice =>
         {
-            foreach (var e in notice.Entities)
-            {
-                var v = (TEntity) e;
-                var p = getPoly(v);
-                var chunk = p.GetChunk(data);
-                l.MarkAdded(getKey(v), chunk);
-            }
+            var v = (TEntity) notice.Entity;
+            var p = getPoly(v);
+            var chunk = p.GetChunk(data);
+            l.MarkAdded(getKey(v), chunk);
         });
         var destroyed = node.Destroyed;
         destroyed.Subscribe(notice =>
@@ -61,7 +58,7 @@ public static class ChunkChangeListenerExt
             l.MarkRemoved(getKey(v), chunk);
         });
         
-        var es = data.GetAll<TEntity>().ToList();
+        var es = data.GetAll<TEntity>();
         var keys = es.Select(getKey);
         var chunks = es.Select(e => getPoly(e).GetChunk(data));
         var dic = es.ToDictionary(getKey, e => getPoly(e).GetChunk(data));
@@ -81,15 +78,12 @@ public static class ChunkChangeListenerExt
         var created = node.Created;
         created.Subscribe(notice =>
         {
-            foreach (var e in notice.Entities)
+            var v = (TEntity) notice.Entity;
+            var ps = getPolys(v);
+            foreach (var p in ps)
             {
-                var v = (TEntity) e;
-                var ps = getPolys(v);
-                foreach (var p in ps)
-                {
-                    var chunk = p.GetChunk(data);
-                    l.MarkAdded(getKey(v), chunk);
-                }
+                var chunk = p.GetChunk(data);
+                l.MarkAdded(getKey(v), chunk);
             }
         });
         var destroyed = node.Destroyed;

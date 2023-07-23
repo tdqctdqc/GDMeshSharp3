@@ -30,7 +30,7 @@ public static class EdgeDisturber
             var poly = polys.ElementAt(i);
             for (var j = 0; j < poly.Neighbors.Count(); j++)
             {
-                var nPoly = poly.Neighbors.Entities(key.Data).ElementAt(j);
+                var nPoly = poly.Neighbors.Items(key.Data).ElementAt(j);
                 if (poly.Id > nPoly.Id)
                 {
                     DisturbEdge(poly.GetEdge(nPoly, key.Data), key);

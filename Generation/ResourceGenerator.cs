@@ -47,14 +47,14 @@ public class ResourceGenerator : Generator
 
         void addResource(Regime regime, NaturalResource res)
         {
-            var has = regime.Polygons.Entities(_key.Data).Any(p =>
+            var has = regime.Polygons.Items(_key.Data).Any(p =>
             {
                 var deps = p.GetResourceDeposits(_data);
                 if (deps == null) return false;
                 return deps.Any(d => d.Item.Model(_data) == res);
             });
             if (has) return;
-            var poly = regime.Polygons.Entities(_key.Data).OrderBy(res.GetDepositScore).First();
+            var poly = regime.Polygons.Items(_key.Data).OrderBy(res.GetDepositScore).First();
             var size = res.GenerateDepositSize(poly);
             ResourceDeposit.Create(res, poly, size, _key);
         }

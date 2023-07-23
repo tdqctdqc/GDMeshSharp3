@@ -22,7 +22,7 @@ public class Serializer
         foreach (var node in data.GetAllEntityTypeNodes())
         {
             var eType = node.EntityType;
-            var e = node.Entities.FirstOrDefault();
+            var e = node.GetEntities().FirstOrDefault();
             var meta = node.Meta;
             if(e != null)
             {

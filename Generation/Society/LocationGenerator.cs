@@ -32,7 +32,7 @@ public class LocationGenerator : Generator
         var landPolys = Data.GetAll<MapPolygon>().Where(p => p.IsLand);
         var unions = UnionFind.Find(landPolys.ToList(), 
             (p, q) => p.Regime.Entity(Data) == q.Regime.Entity(Data),
-            p => p.Neighbors.Entities(Data));
+            p => p.Neighbors.Items(Data));
 
         var dic = new ConcurrentDictionary<List<MapPolygon>, List<int>>();
         
@@ -87,7 +87,7 @@ public class LocationGenerator : Generator
             if (polyQueue.Count == 0) break;
             var poly = polyQueue.Dequeue();
             if (forbidden.Contains(poly)) continue;
-            foreach (var n in poly.Neighbors.Entities(Data))
+            foreach (var n in poly.Neighbors.Items(Data))
             {
                 forbidden.Add(n);
             }
@@ -168,7 +168,7 @@ public class LocationGenerator : Generator
             {
                 deforestStr = .5f;
             }
-            else if (poly.Neighbors.Entities(Data).Any(n => n.HasSettlement(Data)))
+            else if (poly.Neighbors.Items(Data).Any(n => n.HasSettlement(Data)))
             {
                 deforestStr = .1f;
             }
@@ -208,7 +208,7 @@ public class LocationGenerator : Generator
         var taken = new HashSet<string>();
         foreach (var r in data.GetAll<Regime>())
         {
-            var settlements = r.Polygons.Entities(Data).Where(p => p.HasSettlement(data))
+            var settlements = r.Polygons.Items(Data).Where(p => p.HasSettlement(data))
                 .Select(p => p.GetSettlement(data));
             var names = r.Culture.Model(data).SettlementNames.Where(n => taken.Contains(n) == false).ToList();
             if (settlements.Count() > names.Count) continue;

@@ -53,7 +53,7 @@ public static class MapPolygonExt
     }
     public static bool HasNeighbor(this MapPolygon poly, MapPolygon n) => poly.Neighbors.RefIds.Contains(n.Id);
     public static bool IsWater(this MapPolygon poly) => poly.IsLand == false;
-    public static bool IsCoast(this MapPolygon poly, Data data) => poly.IsLand && poly.Neighbors.Entities(data).Any(n => n.IsWater());
+    public static bool IsCoast(this MapPolygon poly, Data data) => poly.IsLand && poly.Neighbors.Items(data).Any(n => n.IsWater());
     public static MapPolygonEdge GetEdge(this MapPolygon poly, MapPolygon neighbor, Data data) 
         => data.Planet.PolyEdgeAux.GetEdge(poly, neighbor);
     public static PolyBorderChain GetBorder(this MapPolygon poly, int nId) => poly.NeighborBorders[nId];
@@ -68,25 +68,7 @@ public static class MapPolygonExt
     }
     public static Vector2[] GetOrderedBoundaryPoints(this MapPolygon poly, Data data)
     {
-        var aux = data.Planet.PolygonAux;
-        var datas = aux.AuxDatas[poly];
-        try
-        {
-            var ps = datas.OrderedBoundaryPoints;
-            return ps;
-        }
-        catch (Exception e)
-        {
-            var keys = aux.AuxDatas.Dic.Keys.ToHashSet();
-            var polys = data.GetAll<MapPolygon>().ToHashSet();
-            GD.Print(aux.AuxDatas.Dic.ContainsKey(poly));
-            GD.Print("auxes " + aux.AuxDatas.Dic.Count());
-            GD.Print("keys " + keys.Count());
-            GD.Print("polys " + polys.Count());
-            GD.Print("overlap " + keys.Where(k => polys.Contains(k)).Count());
-            // GD.Print(aux.AuxDatas.Dic.Keys.Any(k => k.Id == poly.Id));
-            throw;
-        }
+        return data.Planet.PolygonAux.AuxDatas[poly].OrderedBoundaryPoints;
     }
     public static ReadOnlyHash<ResourceDeposit> GetResourceDeposits(this MapPolygon p, Data data)
     {
@@ -144,7 +126,7 @@ public static class MapPolygonExt
     }
     public static IEnumerable<MapPolygonEdge> GetEdges(this MapPolygon p, Data data)
     {
-        return p.Neighbors.Entities(data).Select(n => p.GetEdge(n, data));
+        return p.Neighbors.Items(data).Select(n => p.GetEdge(n, data));
     }
 
     public static List<Construction> GetCurrentConstructions(this MapPolygon poly, Data data)

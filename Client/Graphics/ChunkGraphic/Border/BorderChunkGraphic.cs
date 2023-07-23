@@ -28,7 +28,7 @@ public partial class BorderChunkLayer : MapChunkGraphicLayer<int>
         var mb = new MeshBuilder();
         var color = _getColor(p);
         var offset = Chunk.RelTo.GetOffsetTo(p, data);
-        foreach (var n in p.Neighbors.Entities(data))
+        foreach (var n in p.Neighbors.Items(data))
         {
             if (_getMarker(n) == _getMarker(p)) continue;
             mb.DrawMapPolyEdge(p, n, data, _thickness, color, offset);
@@ -41,7 +41,7 @@ public partial class BorderChunkLayer : MapChunkGraphicLayer<int>
     protected override IEnumerable<int> GetKeys(Data data)
     {
         return Chunk.Polys
-            .Where(p => p.Regime.Empty() == false && p.Neighbors.Entities(data).Any(n => n.Regime.RefId != p.Regime.RefId))
+            .Where(p => p.Regime.Empty() == false && p.Neighbors.Items(data).Any(n => n.Regime.RefId != p.Regime.RefId))
             .Select(p => p.Id);
     }
 }

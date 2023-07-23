@@ -45,7 +45,7 @@ public class BudgetAi
         Dictionary<Item, float> prices, MajorTurnOrders orders)
     {
         var totalPriorityWeight = _priorities.Sum(p => p.Weight);
-        var totalLaborAvail = _regime.Polygons.Entities(data).Sum(p => p.GetLaborSurplus(data));
+        var totalLaborAvail = _regime.Polygons.Items(data).Sum(p => p.GetLaborSurplus(data));
         var totalPrice =
             _regime.Items.Contents.Sum(kvp =>
             {
@@ -79,7 +79,7 @@ public class BudgetAi
         var market = data.Society.Market;
         var prices = market.ItemPricesById.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
         
-        var totalLaborAvail = _regime.Polygons.Entities(data).Sum(p => p.GetLaborSurplus(data));
+        var totalLaborAvail = _regime.Polygons.Items(data).Sum(p => p.GetLaborSurplus(data));
         var totalPriorityWeight = _priorities.Sum(p => p.Weight);
         var creditBig = Mathf.Clamp(credit * 10, 0f, 1_000_000f);
         return _priorities.Select(p =>

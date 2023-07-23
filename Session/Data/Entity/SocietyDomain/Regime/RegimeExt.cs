@@ -19,7 +19,7 @@ public static class RegimeExt
 
     public static IEnumerable<PolyPeep> GetPeeps(this Regime r, Data data)
     {
-        return r.Polygons.Entities(data).SelectWhere(p => p.HasPeep(data))
+        return r.Polygons.Items(data).SelectWhere(p => p.HasPeep(data))
             .Select(p => p.GetPeep(data));
     }
 

@@ -22,7 +22,7 @@ public class PolyAuxData
         var nbs = p.NeighborBorders.Values.ToList();
         if (nbs.Count() > 0)
         {
-            var source = p.Neighbors.Entities(data).Select(n => p.GetBorder(n.Id).Segments).ToList();
+            var source = p.Neighbors.Items(data).Select(n => p.GetBorder(n.Id).Segments).ToList();
             MakeBoundarySegs(p, data, source);   
         }
     }
@@ -38,7 +38,7 @@ public class PolyAuxData
         {
             var ex = new GeometryException("couldnt make boundary segs");
             ex.AddSegLayer(source.SelectMany(l => l).ToList(), "source neighbor segs");
-            ex.AddSegLayer(p.Neighbors.Entities(data)
+            ex.AddSegLayer(p.Neighbors.Items(data)
             .Select(n => p.GetOffsetTo(n, data))
             .Select(o => new LineSegment(Vector2.Zero, o))
             .ToList(), "neighbors");

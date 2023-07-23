@@ -5,23 +5,23 @@ using Godot;
 
 public class EntityTypeTree
 {
-    public Dictionary<Type, EntityTypeTreeNode> Nodes { get; private set; }
+    public Dictionary<Type, IEntityTypeTreeNode> Nodes { get; private set; }
     public EntityTypeTree(Data data)
     {
-        Nodes = new Dictionary<Type, EntityTypeTreeNode>();
+        Nodes = new Dictionary<Type, IEntityTypeTreeNode>();
     }
-    public EntityTypeTreeNode Get<T>() where T : Entity
+    public EntityTypeTreeNode<T> Get<T>() where T : Entity
     {
-        return Get(typeof(T));
+        return (EntityTypeTreeNode<T>) Get(typeof(T));
     }
-    public EntityTypeTreeNode Get(Type type) 
+    public IEntityTypeTreeNode Get(Type type) 
     {
         if(Nodes.ContainsKey(type) == false) Add(type);
         return Nodes[type];
     }
     private void Add(Type type)
     {
-        var node = new EntityTypeTreeNode(type);
+        var node = IEntityTypeTreeNode.ConstructFromType(type);
         Nodes.Add(type, node);
         var parentType = type.BaseType;
         if (Nodes.ContainsKey(parentType) == false && typeof(Entity).IsAssignableFrom(parentType))

@@ -79,15 +79,15 @@ public static class MapPolygonEdgeExt
 
     public static IEnumerable<MapPolygonEdge> GetIncidentEdges(this MapPolygonEdge e, Data data)
     {
-        var n1 = e.HiNexus.Entity(data).IncidentEdges.Entities(data).Where(n => n != e);
-        var n2 = e.LoNexus.Entity(data).IncidentEdges.Entities(data).Where(n => n != e);
+        var n1 = e.HiNexus.Entity(data).IncidentEdges.Items(data).Where(n => n != e);
+        var n2 = e.LoNexus.Entity(data).IncidentEdges.Items(data).Where(n => n != e);
         if (n1 == null || n2 == null) return new List<MapPolygonEdge>();
         return n1.Union(n2).Distinct();
     }
     public static bool IsLandToSeaEdge(this MapPolygonEdge edge, Data data)
     {
-        var w1 = edge.HiNexus.Entity(data).IncidentPolys.Entities(data).Any(p => p.IsWater());
-        var w2 = edge.LoNexus.Entity(data).IncidentPolys.Entities(data).Any(p => p.IsWater());
+        var w1 = edge.HiNexus.Entity(data).IncidentPolys.Items(data).Any(p => p.IsWater());
+        var w2 = edge.LoNexus.Entity(data).IncidentPolys.Items(data).Any(p => p.IsWater());
         return (w1 || w2) && (!w1 || !w2);
     }
 

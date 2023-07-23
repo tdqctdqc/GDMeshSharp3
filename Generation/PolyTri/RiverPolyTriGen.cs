@@ -14,7 +14,7 @@ public class RiverPolyTriGen
         //todo partition by riverpoly union find instead?
         var lms = key.Data.Planet.PolygonAux.LandSea.Landmasses;
         var riverNexi = key.Data.GetAll<MapPolyNexus>()
-            .Where(n => n.IncidentEdges.Entities(key.Data).Any(e => e.IsRiver())).ToList();
+            .Where(n => n.IncidentEdges.Items(key.Data).Any(e => e.IsRiver())).ToList();
         Parallel.ForEach(lms, lm => PreprocessRiversForLandmass(rd, riverNexi, lm, key));
         key.Data.Notices.SetPolyShapes?.Invoke();
         return rd;
@@ -23,8 +23,8 @@ public class RiverPolyTriGen
         HashSet<MapPolygon> lm, GenWriteKey key)
     {
         var rIncidentEdges = riverNexi
-            .Where(n => n.IncidentPolys.Entities(key.Data).Any(p => lm.Contains(p)))
-            .SelectMany(n => n.IncidentEdges.Entities(key.Data))
+            .Where(n => n.IncidentPolys.Items(key.Data).Any(p => lm.Contains(p)))
+            .SelectMany(n => n.IncidentEdges.Items(key.Data))
             .Distinct()
             .ToList();
         MakePivots(rd, rIncidentEdges, key);
@@ -82,7 +82,7 @@ public class RiverPolyTriGen
         var newHiSegs = new List<LineSegment>();
         var hiPoly = edge.HighPoly.Entity(key.Data);
         var fromSeg = hiSegments[0];
-        var fromPivotWidth = fromNexus.IncidentEdges.Entities(key.Data).Average(e => River.GetWidthFromFlow(e.MoistureFlow)) / 2f;
+        var fromPivotWidth = fromNexus.IncidentEdges.Items(key.Data).Average(e => River.GetWidthFromFlow(e.MoistureFlow)) / 2f;
         var fromSegWidth = fromSeg.Length();
         if (fromPivotWidth + 10f >= fromSegWidth)
         {
@@ -105,7 +105,7 @@ public class RiverPolyTriGen
         }
         
         var toSeg = hiSegments[hiSegments.Count - 1];
-        var toPivotWidth = toNexus.IncidentEdges.Entities(key.Data).Average(e => River.GetWidthFromFlow(e.MoistureFlow)) / 2f;
+        var toPivotWidth = toNexus.IncidentEdges.Items(key.Data).Average(e => River.GetWidthFromFlow(e.MoistureFlow)) / 2f;
         var toSegWidth = toSeg.Length();
         if (toPivotWidth + 10f >= toSegWidth)
         {

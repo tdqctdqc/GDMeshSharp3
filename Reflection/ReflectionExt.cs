@@ -2,10 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using Godot;
 
 public static class ReflectionExt 
 {
+    public static void InvokeGeneric(this object ob, string methodName, Type[] genericParams, object[] args)
+    {
+        var mi = ob.GetType().GetMethod(methodName, 
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var genericMi = mi.MakeGenericMethod(genericParams);
+        genericMi.Invoke(ob, args);
+    }
      public static List<T> GetStaticPropertiesOfType<T>(this Type type)
      {
          return type.GetProperties(BindingFlags.Static | BindingFlags.Public)

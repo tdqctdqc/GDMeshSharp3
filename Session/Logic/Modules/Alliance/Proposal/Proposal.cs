@@ -58,7 +58,7 @@ public abstract class Proposal
     public abstract bool Undecided(Data data);
     public bool AllianceUndecided(Alliance alliance, Data data)
     {
-        var allianceWeight = alliance.Members.Entities(data).Sum(m => alliance.GetWeightInAlliance(m, data));
+        var allianceWeight = alliance.Members.Items(data).Sum(m => alliance.GetWeightInAlliance(m, data));
         
         var inFavor = InFavor.Where(f => alliance.Members.RefIds.Contains(f));
         var against = Against.Where(f => alliance.Members.RefIds.Contains(f));
