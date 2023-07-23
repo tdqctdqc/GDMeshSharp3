@@ -16,7 +16,7 @@ public class Market : Entity
         var prices = key.Data.Models.Items.Models.Values
             .SelectWhereOfType<Item, TradeableItem>()
             .ToDictionary(item => item.Id, item => item.DefaultPrice);
-        var m = new Market(key.IdDispenser.GetID(), prices,
+        var m = new Market(-1, prices,
             ItemHistory.Construct(), ItemHistory.Construct(), 
             ItemHistory.Construct(), ItemHistory.Construct());
         key.Create(m);
@@ -61,6 +61,4 @@ public class Market : Entity
                 LogType.Market);
         }
     }
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
 }

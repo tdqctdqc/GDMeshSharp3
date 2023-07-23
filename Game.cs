@@ -8,7 +8,6 @@ using System.Linq;
 public partial class Game : Node
 {
     public static Game I { get; private set; }
-    public Serializer Serializer { get; private set; }
     public Logger Logger { get; private set; }
     public RandomNumberGenerator Random = new RandomNumberGenerator();
     private ISession _session;
@@ -29,7 +28,6 @@ public partial class Game : Node
     }
     public void SetSerializer()
     {
-        Serializer = new Serializer();
     }
     public void StartMainMenuSession()
     {

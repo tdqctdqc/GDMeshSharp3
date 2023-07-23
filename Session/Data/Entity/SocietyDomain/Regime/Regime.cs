@@ -42,7 +42,6 @@ public class Regime : Entity
 
     public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, bool isMajor, CreateWriteKey key)
     {
-        var id = key.IdDispenser;
         var polygons = EntityRefCollection<MapPolygon>.Construct(nameof(Polygons), 
             new HashSet<int>{seed.Id}, key.Data);
         var items = ItemCount.Construct();
@@ -51,7 +50,7 @@ public class Regime : Entity
         flows.AddFlowIn(FlowManager.ConstructionCap, 0f);
         flows.AddFlowIn(FlowManager.IndustrialPower, 0f);
         
-        var r = new Regime(id.GetID(), regimeTemplate.Name, 
+        var r = new Regime(-1, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
             polygons, new EntityRef<MapPolygon>(seed.Id),
@@ -79,6 +78,4 @@ public class Regime : Entity
         Flows = flows;
     }
     public override string ToString() => Name;
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
 }

@@ -8,13 +8,11 @@ using Godot;
 public class PolyTriGenerator : Generator
 {
     private GenData _data;
-    private IdDispenser _idd;
     public PolyTriGenerator()
     {
     }
     public override GenReport Generate(GenWriteKey key)
     {
-        _idd = key.IdDispenser;
         _data = key.GenData;
         var report = new GenReport(GetType().Name);
         var polys = _data.Planet.Polygons.Entities;

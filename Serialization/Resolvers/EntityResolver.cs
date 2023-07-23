@@ -23,7 +23,7 @@ public class EntityResolver : IFormatterResolver
             return makeFormatterMi.MakeGenericMethod(t)
                 .Invoke(this, new object[] { data });
         };
-        _formatters = Game.I.Serializer.ConcreteEntityTypes.ToDictionary(t => t, makeFormatter);
+        _formatters = data.Serializer.ConcreteEntityTypes.ToDictionary(t => t, makeFormatter);
     }
 
     // GetFormatter<T>'s get cost should be minimized so use type cache.

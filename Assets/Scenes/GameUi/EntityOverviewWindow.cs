@@ -30,7 +30,7 @@ public partial class EntityOverviewWindow : Window
         _entityType.ChangedValue += DrawEntitiesOfType;
         
         _selectedEntity = new UIVar<Entity>(null);
-        _selectedEntity.ChangedValue += DrawEntityProps;
+        _selectedEntity.ChangedValue += e => DrawEntityProps(data, e);
         
         _entityTypeToken = ItemListToken.Construct((ItemList) FindChild("EntityTypes"));
         _entitiesToken = ItemListToken.Construct((ItemList) FindChild("Entities"));
@@ -53,7 +53,7 @@ public partial class EntityOverviewWindow : Window
 
     private void DrawEntitiesOfType(Type type)
     {
-        var entities = _data.Entities.Values.Where(e => e.GetEntityTypeTreeNode().EntityType == type).ToList();
+        var entities = _data.Entities.Values.Where(e => type.IsAssignableFrom(e.GetType()) ).ToList();
         
         _entitiesToken.Setup(entities, 
             e => e.Id.ToString(),
@@ -68,12 +68,12 @@ public partial class EntityOverviewWindow : Window
             i => () => { }
         );
     }
-    private void DrawEntityProps(Entity e)
+    private void DrawEntityProps(Data data, Entity e)
     {
-        var meta = e.GetMeta();
+        var meta = data.Serializer.GetEntityMeta(e.GetType());
         var vals = meta.GetPropertyValues(e);
         _entityPropsToken.Setup<int>(
-            Enumerable.Range(0, e.GetMeta().FieldNameList.Count).ToList(),
+            Enumerable.Range(0, meta.FieldNameList.Count).ToList(),
             i => meta.FieldNameList[i] + ": " + vals[i].ToString(),
             i => () => { }
         );

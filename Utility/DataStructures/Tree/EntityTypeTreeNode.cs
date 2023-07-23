@@ -13,17 +13,13 @@ public class EntityTypeTreeNode
     public List<EntityTypeTreeNode> Children { get; private set; }
     public RefAction<EntityCreatedNotice> Created { get; private set; }    
      public RefAction<EntityDestroyedNotice> Destroyed { get; private set; }
-    public EntityTypeTreeNode(Type entityType)
+    public EntityTypeTreeNode(Type entityType, Data data)
     {
-        Meta = Game.I.Serializer.GetEntityMeta(entityType);
+        Meta = data.Serializer.GetEntityMeta(entityType);
         EntityType = entityType;
         Children = new List<EntityTypeTreeNode>();
         Created = new RefAction<EntityCreatedNotice>();
         Destroyed = new RefAction<EntityDestroyedNotice>();
-        var setTreeMethod = entityType.GetProperty(nameof(RoadSegment.EntityTypeTreeNode), 
-                BindingFlags.Public | BindingFlags.Static)
-            .SetMethod;
-        setTreeMethod.Invoke(null, new object[]{this});
     }
 
     public void PropagateCreation(Entity e)

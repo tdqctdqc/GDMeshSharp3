@@ -49,7 +49,7 @@ public partial class HostServer : Node, IServer
 
     public void QueueMessage(Message m)
     {
-        var bytes = m.Serialize();
+        var bytes = m.Serialize(_key.Data);
         for (var i = 0; i < _peers.Count; i++)
         {
             _peers[i].QueuePacket(bytes);
@@ -59,7 +59,7 @@ public partial class HostServer : Node, IServer
     {
         for (var i = 0; i < results.Messages.Count; i++)
         {
-            var bytes = results.Messages[i].Serialize();
+            var bytes = results.Messages[i].Serialize(_key.Data);
             for (var j = 0; j < _peers.Count; j++)
             {
                 _peers[j].QueuePacket(bytes);

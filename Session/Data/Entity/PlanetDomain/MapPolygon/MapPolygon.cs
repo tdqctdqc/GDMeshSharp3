@@ -7,8 +7,6 @@ using MessagePack;
 
 public partial class MapPolygon : Entity
 {
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public Vector2 Center { get; protected set; }
     public EntityRefCollection<MapPolygon> Neighbors { get; protected set; }
     public Dictionary<int, PolyBorderChain> NeighborBorders { get; protected set; }
@@ -49,9 +47,8 @@ public partial class MapPolygon : Entity
         if (mapCenter.X > mapWidth) mapCenter = new Vector2(mapCenter.X - mapWidth, center.Y);
         if (mapCenter.X < 0f) mapCenter = new Vector2(mapCenter.X + mapWidth, center.Y);
 
-        var id = key.IdDispenser.GetID();
         
-        var p = new MapPolygon(id, mapCenter,
+        var p = new MapPolygon(-1, mapCenter,
             EntityRefCollection<MapPolygon>.Construct(nameof(Neighbors), new HashSet<int>(), key.Data),
             new Dictionary<int, PolyBorderChain>(),
             ColorsExt.GetRandomColor(),

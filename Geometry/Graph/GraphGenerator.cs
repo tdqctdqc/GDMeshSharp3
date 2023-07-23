@@ -9,7 +9,7 @@ using DelaunatorSharp;
 public static class GraphGenerator
 {
     public static Graph<MapPolygon, LineSegment> GenerateMapPolyVoronoiGraph
-        (MapGenInfo info, IdDispenser id, GenWriteKey key)
+        (MapGenInfo info, GenWriteKey key)
     {
         var g = GenerateVoronoiGraph<MapPolygon, LineSegment>(
             info.Polys,

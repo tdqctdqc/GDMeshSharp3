@@ -5,12 +5,10 @@ using MessagePack;
 
 public class GameClock : Entity
 {
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public int Tick { get; protected set; }
     public static GameClock Create(GenWriteKey key)
     {
-        var gc = new GameClock(key.IdDispenser.GetID(), 0);
+        var gc = new GameClock(-1, 0);
         key.Create(gc);
         return gc;
     }

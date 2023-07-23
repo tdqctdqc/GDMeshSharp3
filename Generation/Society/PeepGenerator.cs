@@ -9,7 +9,6 @@ using Google.OrTools.ConstraintSolver;
 public class PeepGenerator : Generator
 {
     private GenData _data;
-    private IdDispenser _id;
     private GenWriteKey _key;
     public PeepGenerator()
     {
@@ -19,7 +18,6 @@ public class PeepGenerator : Generator
     public override GenReport Generate(GenWriteKey key)
     {
         _key = key;
-        _id = key.IdDispenser;
         _data = key.GenData;
         var report = new GenReport(GetType().Name);
         

@@ -23,24 +23,33 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
     {
         PropertyName = prop.Name;
         var getMi = prop.GetGetMethod();
-        if (getMi == null) throw new SerializationException($"No get method for {PropertyName}");
+        if (getMi == null)
+        {
+            GD.Print($"No get method for {PropertyName}");
+            throw new SerializationException($"No get method for {PropertyName}");
+        }
         GetProperty = getMi.MakeInstanceMethodDelegate<Func<TEntity, TProperty>>();
         
         var setMi = prop.GetSetMethod(true);
-        if (setMi == null) throw new SerializationException($"No set method for {PropertyName}");
+        if (setMi == null)
+        {
+            GD.Print($"No set method for {PropertyName}");
+            throw new SerializationException($"No set method for {PropertyName}");
+        }
         SetProperty = setMi.MakeInstanceMethodDelegate<Action<TEntity, TProperty>>();
     }
     public object GetForSerialize(Entity e)
     {
         return GetProperty((TEntity)e);
     }
-    public bool Test(Entity t)
+    public bool Test(Entity t, Data data)
     {
         var prop = GetProperty((TEntity)t);
+        
         try
         {
-            var bytes = Game.I.Serializer.MP.Serialize(prop);
-            var deserialized = Game.I.Serializer.MP.Deserialize<TProperty>(bytes);
+            var bytes = data.Serializer.MP.Serialize(prop);
+            var deserialized = data.Serializer.MP.Deserialize<TProperty>(bytes);
         }
         catch (Exception e)
         {

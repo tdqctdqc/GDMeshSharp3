@@ -10,13 +10,8 @@ public abstract class Message
     // public abstract void HandleRemote(RemoteLogic logic);
     public abstract void Enact(ProcedureWriteKey key);
 
-    public MessageWrapper Wrap()
+    public byte[] Serialize(Data data)
     {
-        return new MessageWrapper(this);
-    }
-
-    public byte[] Serialize()
-    {
-        return Game.I.Serializer.MP.Serialize(this, GetType());
+        return data.Serializer.MP.Serialize(this, GetType());
     }
 }

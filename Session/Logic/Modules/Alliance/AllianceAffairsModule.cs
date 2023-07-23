@@ -37,7 +37,8 @@ public class AllianceAffairsModule : LogicModule
         
         foreach (var alliance in data.Society.Alliances.Entities)
         {
-            var readyProposals = alliance.Proposals.Values
+            var readyProposals = alliance.Proposals.Entities(data)
+                .Select(h => h.Value)
                 .Where(p => resolved.Contains(p.Id) == false)
                 .Where(p => p.Valid(data))
                 .Where(p => p.Undecided(data) == false)

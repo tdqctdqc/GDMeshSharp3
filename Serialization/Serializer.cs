@@ -12,7 +12,14 @@ public class Serializer
     public MessagePackManager MP { get; private set; }
     public Dictionary<string, Type> Types { get; private set; }
     public Dictionary<Type, IEntityMeta> _entityMetas;
-    public IEntityMeta GetEntityMeta(Type type) => _entityMetas[type];
+    public IEntityMeta GetEntityMeta(Type type)
+    {
+        if (_entityMetas.ContainsKey(type) == false)
+        {
+            AddEntityMeta(type);
+        }
+        return _entityMetas[type];
+    }
     public EntityMeta<T> GetEntityMeta<T>() where T : Entity
     {
         return (EntityMeta<T>)_entityMetas[typeof(T)];
@@ -27,19 +34,17 @@ public class Serializer
     private void SetupEntityMetas()
     {
         Types = new Dictionary<string, Type>();
-        var reference = nameof(EntityMeta<Entity>.ForReference);
         _entityMetas = new Dictionary<Type, IEntityMeta>();
-        var entityTypes = Assembly.GetExecutingAssembly().GetConcreteTypesOfType<Entity>();
-        ConcreteEntityTypes = new ReadOnlyHash<Type>(new HashSet<Type>(entityTypes));
-        var metaTypes = typeof(EntityMeta<>);
-        foreach (var entityType in entityTypes)
-        {
-            Types.Add(entityType.Name, entityType);
-            var genericMeta = metaTypes.MakeGenericType(entityType);
-            var constructor = genericMeta.GetConstructors()[0];
-            var meta = constructor.Invoke(new object[]{});
-            _entityMetas.Add(entityType, (IEntityMeta)meta);
-        }
+    }
+
+    private void AddEntityMeta(Type entityType)
+    {
+        var metaType = typeof(EntityMeta<>);
+        Types.Add(entityType.Name, entityType);
+        var genericMeta = metaType.MakeGenericType(entityType);
+        var constructor = genericMeta.GetConstructors()[0];
+        var meta = constructor.Invoke(new object[]{});
+        _entityMetas.Add(entityType, (IEntityMeta)meta);
     }
 
     public void ClearMetas()
@@ -52,10 +57,11 @@ public class Serializer
         foreach (var valueRepo in data.Registers)
         {
             var e = valueRepo.Value.Entities.FirstOrDefault();
+            var meta = data.Serializer.GetEntityMeta(e.GetType());
             if(e != null)
             {
                 GD.Print("testing " + e.GetType());
-                res = res && e.GetMeta().TestSerialization(e);
+                res = res && meta.TestSerialization(e, data);
             }
             else
             {

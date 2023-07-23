@@ -8,7 +8,7 @@ public class Saver
     public static void Save(Data data)
     {
         var file = SaveFile.Save(data);
-        var bytes = Game.I.Serializer.MP.Serialize(file);
+        var bytes = data.Serializer.MP.Serialize(file);
         var dir = DirAccess.Open("");
         var fileAccess = FileAccess.Open("save.sv", FileAccess.ModeFlags.Write);
         fileAccess.StoreBuffer(bytes);
@@ -20,13 +20,14 @@ public class Saver
         var fileAccess = FileAccess.Open("save.sv", FileAccess.ModeFlags.Read);
         var bytes = fileAccess.GetBuffer((long)fileAccess.GetLength());
         fileAccess.Close();
-        var saveFile = Game.I.Serializer.MP.Deserialize<SaveFile>(bytes);
         var data = new Data();
+        var saveFile = data.Serializer.MP.Deserialize<SaveFile>(bytes);
+
         var entities = saveFile.Entities
             .Select(eBytes =>
             {
-                var u = Game.I.Serializer.MP.Deserialize<EntityCreationUpdate>(eBytes);
-                var e = (Entity)Game.I.Serializer.MP.Deserialize(u.EntityBytes, u.EntityType);
+                var u = data.Serializer.MP.Deserialize<EntityCreationUpdate>(eBytes);
+                var e = (Entity)data.Serializer.MP.Deserialize(u.EntityBytes, u.EntityType);
                 return e;
             }).ToList();
         data.AddEntities(entities, null);

@@ -9,18 +9,18 @@ public class Alliance : Entity
     public EntityRefCollection<Regime> Members { get; private set; }
     public EntityRefCollection<Alliance> Rivals { get; private set; }
     public EntityRefCollection<Alliance> AtWar { get; private set; }
-    public Dictionary<int, Proposal> Proposals { get; private set; }
+    public EntityRefCollection<Holder<Proposal>> Proposals { get; private set; }
     
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
         var members = EntityRefCollection<Regime>.Construct(nameof(Members), new HashSet<int>{founder.Id}, key.Data);
         var enemies = EntityRefCollection<Alliance>.Construct(nameof(Rivals), new HashSet<int>{}, key.Data);
         var atWar = EntityRefCollection<Alliance>.Construct(nameof(AtWar), new HashSet<int>{}, key.Data);
-        var proposals = new Dictionary<int, Proposal>();
+        var proposals = EntityRefCollection<Holder<Proposal>>.Construct(nameof(Proposals), new HashSet<int>(), key.Data);
         
         var a = new Alliance(founder.MakeRef(), members, enemies, atWar,
             proposals,
-            key.IdDispenser.GetID());
+            -1);
         
         key.Create(a);
         return a;
@@ -29,7 +29,7 @@ public class Alliance : Entity
         EntityRefCollection<Regime> members, 
         EntityRefCollection<Alliance> rivals, 
         EntityRefCollection<Alliance> atWar, 
-        Dictionary<int, Proposal> proposals,
+        EntityRefCollection<Holder<Proposal>> proposals,
         int id) : base(id)
     {
         Leader = leader;
@@ -66,7 +66,4 @@ public class Alliance : Entity
         if(Rivals.Contains(a) == false) throw new Exception();
         AtWar.Add(this, a, key);
     }
-    private static Type DomainType() => typeof(SocietyDomain);
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
 }

@@ -4,15 +4,13 @@ using MessagePack;
 
 public class MapBuilding : Entity
 {
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public PolyTriPosition Position { get; protected set; }
     public ModelRef<BuildingModel> Model { get; protected set; }
     public float Efficiency { get; private set; } // out of 100
     
     public static MapBuilding Create(PolyTriPosition pos, BuildingModel model, CreateWriteKey key)
     {
-        var b = new MapBuilding(key.IdDispenser.GetID(), pos, model.MakeRef(), 1f);
+        var b = new MapBuilding(-1, pos, model.MakeRef(), 1f);
         key.Create(b);
         return b;
     }
@@ -25,7 +23,7 @@ public class MapBuilding : Entity
         }
         var pos = slots.AvailableSlots[model.BuildingType].First.Value;
         slots.AvailableSlots[model.BuildingType].RemoveFirst();
-        var b = new MapBuilding(key.IdDispenser.GetID(), pos, model.MakeRef(), 1f);
+        var b = new MapBuilding(-1, pos, model.MakeRef(), 1f);
         key.Create(b);
         return b;
     }

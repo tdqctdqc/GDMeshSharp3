@@ -13,7 +13,7 @@ public sealed partial class EntityCreationUpdate : Update
     
     public static EntityCreationUpdate Create(Entity entity, HostWriteKey key)
     {
-        var entityBytes = Game.I.Serializer.MP.Serialize(entity, entity.GetType());
+        var entityBytes = key.Data.Serializer.MP.Serialize(entity, entity.GetType());
         return new EntityCreationUpdate(entity.GetType(), entityBytes);
     }
     [SerializationConstructor] private EntityCreationUpdate(Type entityType, byte[] entityBytes) 
@@ -23,7 +23,7 @@ public sealed partial class EntityCreationUpdate : Update
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        var e = (Entity)Game.I.Serializer.MP.Deserialize(EntityBytes, EntityType);
+        var e = (Entity)key.Data.Serializer.MP.Deserialize(EntityBytes, EntityType);
         key.Data.AddEntity(e, key);
     }
 }

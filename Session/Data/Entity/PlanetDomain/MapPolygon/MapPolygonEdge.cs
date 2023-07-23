@@ -7,8 +7,6 @@ using MessagePack;
 
 public class MapPolygonEdge : Entity
 {
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public float MoistureFlow { get; protected set; }
     public PolyBorderChain LowSegsRel(Data data) => LowPoly.Entity(data).NeighborBorders[HighPoly.RefId];
     public PolyBorderChain HighSegsRel(Data data) => HighPoly.Entity(data).NeighborBorders[LowPoly.RefId];
@@ -39,7 +37,7 @@ public class MapPolygonEdge : Entity
         lowId.Entity(key.Data).AddNeighbor(highId.Entity(key.Data), lowChain, key);
         highId.Entity(key.Data).AddNeighbor(lowId.Entity(key.Data), hiChain, key);
         var b = new MapPolygonEdge(
-            key.IdDispenser.GetID(), 0f, lowId, highId,
+            -1, 0f, lowId, highId,
             new Dictionary<byte, byte>(), new Dictionary<byte, byte>(),
             null, null);
         key.Create(b);

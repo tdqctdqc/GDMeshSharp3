@@ -9,7 +9,6 @@ using Godot;
 public class RegimeGenerator : Generator
 {
     private GenData _data;
-    private IdDispenser _id;
     private GenWriteKey _key;
     private int _polysForRegimeAvg = 20;
     private int _numPolysToBeMajor = 20;
@@ -20,7 +19,6 @@ public class RegimeGenerator : Generator
 
     public override GenReport Generate(GenWriteKey key)
     {
-        _id = key.IdDispenser;
         _key = key;
         _data = key.GenData;
         var report = new GenReport(GetType().Name);

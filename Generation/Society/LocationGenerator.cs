@@ -10,7 +10,6 @@ public class LocationGenerator : Generator
 {
     public GenData Data { get; private set; }
     private GenWriteKey _key;
-    private IdDispenser _id;
     public LocationGenerator()
     {
     }
@@ -19,7 +18,6 @@ public class LocationGenerator : Generator
     {
         var report = new GenReport(GetType().Name);
         _key = key;
-        _id = key.IdDispenser;
         Data = key.GenData;
         report.StartSection();
         GenerateCities();

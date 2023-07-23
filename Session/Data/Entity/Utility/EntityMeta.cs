@@ -24,13 +24,18 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
     public EntityMeta()
     {
         var entityType = typeof(TEntity);
+        
         //bc with generic parameters it will not capture all the classes
-        if (entityType.ContainsGenericParameters)
-        {
-            throw new SerializationException($"Entity {entityType.Name} cannot have generic parameters");
-        }
+        // if (entityType.ContainsGenericParameters)
+        // {
+        //     throw new SerializationException($"Entity {entityType.Name} cannot have generic parameters");
+        // }
         
         var properties = entityType.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+        
+        
+        
+        
         _fieldNames = properties.Select(p => p.Name).ToList();
         _fieldTypes = properties.ToDictionary(p => p.Name, p => p.PropertyType);
         _vars = new Dictionary<string, IEntityVarMeta>();
@@ -92,9 +97,9 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
     {
         return (RefColMeta<TEntity, TColMember>)_refCols[fieldName];
     }
-    public bool TestSerialization(Entity e)
+    public bool TestSerialization(Entity e, Data data)
     {
         var t = (TEntity) e;
-        return SerializeChecker<TEntity>.Test(t, _vars);
+        return SerializeChecker<TEntity>.Test(t, _vars, data);
     }
 }

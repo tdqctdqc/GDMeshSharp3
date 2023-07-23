@@ -44,5 +44,4 @@ public class DeclareWarProposal : AllianceProposal
             return alliance.Rivals.Contains(target);
         }
     }
-    
 }

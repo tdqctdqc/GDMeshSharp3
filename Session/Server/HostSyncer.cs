@@ -16,7 +16,7 @@ public class HostSyncer : Syncer
                     c.Enact(logic.PKey);
                 }
                 else throw new Exception();
-            })
+            }, logic.PKey.Data)
     {
         _peerQueue = new Queue<byte[]>();
     }
@@ -30,11 +30,11 @@ public class HostSyncer : Syncer
         foreach (var e in data.Entities.Values)
         {
             var u = EntityCreationUpdate.Create(e, key);
-            QueuePacket(u.Serialize());
+            QueuePacket(u.Serialize(key.Data));
         }
         
         var done = FinishedStateSyncUpdate.Create(newPlayerGuid, key);
-        var bytes = done.Serialize();
+        var bytes = done.Serialize(key.Data);
         QueuePacket(bytes);
         PushPackets(key);
     }

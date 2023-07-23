@@ -11,7 +11,7 @@ public class PolyPeep : Entity
     public static PolyPeep Create(MapPolygon poly, CreateWriteKey key)
     {
         var p = new PolyPeep(poly.MakeRef(), 0, 
-            key.IdDispenser.GetID());
+            -1);
         key.Create(p);
         return p;
     }
@@ -41,7 +41,4 @@ public class PolyPeep : Entity
         if (delta < 0) throw new Exception();
         Size -= delta;
     }
-
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
 }

@@ -7,19 +7,19 @@ using MessagePack;
 
 public static class SerializeChecker<TEntity> where TEntity : Entity
 {
-    public static bool Test(TEntity e, IReadOnlyDictionary<string, IEntityVarMeta> varMetas)
+    public static bool Test(TEntity e, IReadOnlyDictionary<string, IEntityVarMeta> varMetas, Data data)
     {
         var res = true;
         var eType = typeof(TEntity);
         foreach (var varMeta in varMetas.Values)
         {
-            res = res && varMeta.Test(e);
+            res = res && varMeta.Test(e, data);
         }
-        res = res && TestConstructor();
+        res = res && TestConstructor(data);
         return res;
     }
 
-    private static bool TestConstructor()
+    private static bool TestConstructor(Data data)
     {
         var eType = typeof(TEntity);
         var constructors = eType.GetConstructors();
@@ -52,7 +52,7 @@ public static class SerializeChecker<TEntity> where TEntity : Entity
         }
 
         var c = constructors[0];
-        var meta = Game.I.Serializer.GetEntityMeta<TEntity>();
+        var meta = data.Serializer.GetEntityMeta<TEntity>();
         var fields = meta.FieldNameList.ToDictionary(n => n, n => meta.FieldTypes[n]);
         var paramInfos = c.GetParameters().ToDictionary(pi => pi.Name, pi => pi.ParameterType);
         

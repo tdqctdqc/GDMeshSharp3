@@ -5,8 +5,6 @@ using MessagePack;
 
 public class RuleVars : Entity
 {
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public int TickCycleLength { get; private set; }
     public int FoodConsumptionPerPeepPoint { get; protected set; }
     public float MinSurplusRatioToGetGrowth { get; private set; }
@@ -26,7 +24,7 @@ public class RuleVars : Entity
             .1f,
             1f,
             .2f,
-            key.IdDispenser.GetID());
+            -1);
         key.Create(v);
         return v;
     }

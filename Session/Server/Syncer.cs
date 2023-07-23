@@ -14,7 +14,7 @@ public class Syncer
 
 
     protected Syncer(PacketPeerStream packetStream,
-        Action<Message> handle)
+        Action<Message> handle, Data data)
     {
         _handle = handle;
         _sw = new Stopwatch();
@@ -22,7 +22,7 @@ public class Syncer
         _protocol = new PacketProtocol(0);
         _protocol.MessageArrived += b =>
         {
-            var m = Game.I.Serializer.MP.Deserialize<MessageWrapper>(b).Get();
+            var m = data.Serializer.MP.Deserialize<MessageWrapper>(b).Get(data);
             _handle(m);
         };
         Task.Run(Listen);

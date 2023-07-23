@@ -10,7 +10,7 @@ public class CurrentConstruction : Entity
     public Dictionary<int, List<Construction>> ByPoly { get; private set; }
     public static CurrentConstruction Create(GenWriteKey key)
     {
-        var cc = new CurrentConstruction(key.IdDispenser.GetID(), 
+        var cc = new CurrentConstruction(-1, 
             new Dictionary<PolyTriPosition, Construction>(),
             new Dictionary<int, List<Construction>>());
         key.Create(cc);
@@ -50,8 +50,4 @@ public class CurrentConstruction : Entity
         if (ByPoly[poly.Id].Count == 0) ByPoly.Remove(poly.Id);
         ByTri.Remove(pos);
     }
-
-    private static Type DomainType() => typeof(SocietyDomain);
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
 }

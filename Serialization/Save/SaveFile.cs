@@ -11,7 +11,7 @@ public class SaveFile
     {
         return new SaveFile(data.Entities.Values
             .Select(e => EntityCreationUpdate.Create(e, null))
-            .Select(e => Game.I.Serializer.MP.Serialize(e))
+            .Select(e => data.Serializer.MP.Serialize(e))
             .ToList());
     }
     [SerializationConstructor] public SaveFile(List<byte[]> entities)

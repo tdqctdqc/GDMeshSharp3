@@ -6,20 +6,20 @@ using MessagePack;
 
 public class MakeProposalProcedure : Procedure
 {
-    public int ProposalId { get; private set; }
-    public static MakeProposalProcedure Construct(Proposal p, Data data)
+    public PortablePolymorph<Proposal> Proposal { get; private set; }
+    public static MakeProposalProcedure Construct(Proposal p, Data d)
     {
-        p.SetId(data.Handles.ProposalIds.GetID());
-        return new MakeProposalProcedure(PortablePolymorph<Proposal>.Construct(p));
+        return new MakeProposalProcedure(PortablePolymorph<Proposal>.Construct(p, d));
     }
     [SerializationConstructor] private MakeProposalProcedure(PortablePolymorph<Proposal> proposal)
     {
         Proposal = proposal;
     }
-    public PortablePolymorph<Proposal> Proposal { get; private set; }
     public override void Enact(ProcedureWriteKey key)
     {
-        var p = Proposal.Get();
+        var p = Proposal.Get(key.Data);
+        var holder = Holder<Proposal>.Create(p, key);
+        p.SetId(holder.Id);
         if (key.Data.Handles.Proposals.ContainsKey(p.Id))
         {
             var already = key.Data.Handles.Proposals[p.Id];

@@ -11,7 +11,6 @@ using DelaunatorSharp;
 public class PolygonGenerator : Generator
 {
     private Vector2 _dimensions;
-    private IdDispenser _id;
     private bool _leftRightWrap;
     private float _polySize;
     private List<Vector2> _innerPoints;
@@ -27,7 +26,6 @@ public class PolygonGenerator : Generator
     public override GenReport Generate(GenWriteKey key)
     {
         var report = new GenReport(GetType().Name);
-        _id = key.IdDispenser;
         _data = key.Data;
         
         report.StartSection();
@@ -46,7 +44,7 @@ public class PolygonGenerator : Generator
         report.StopSection("Creating points and polys");
 
         report.StartSection();
-        var graph = GraphGenerator.GenerateMapPolyVoronoiGraph(info, _id, key);
+        var graph = GraphGenerator.GenerateMapPolyVoronoiGraph(info, key);
         report.StopSection("Generating poly graph");
 
         if (_leftRightWrap)
@@ -244,7 +242,7 @@ public class PolygonGenerator : Generator
             var polys = edges.Select(e => e.HighPoly.Entity(key.Data))
                 .Union(edges.Select(e => e.LowPoly.Entity(key.Data)))
                 .Distinct().ToList();
-            var nexus = MapPolyNexus.Construct(point, edges, polys, key);
+            var nexus = MapPolyNexus.Create(point, edges, polys, key);
             foreach (var e in edges)
             {
                 if (edgeNexi.ContainsKey(e) == false) edgeNexi.Add(e, Vector2.Zero);

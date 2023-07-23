@@ -4,8 +4,8 @@ using System.Linq;
 
 public abstract class DiplomacyProposal : Proposal
 {
-    public int Alliance0 { get; private set; }
-    public int Alliance1 { get; private set; }
+    public int Alliance0 { get; protected set; }
+    public int Alliance1 { get; protected set; }
 
     protected DiplomacyProposal(int alliance0, int alliance1, int id, EntityRef<Regime> proposer, HashSet<int> inFavor, 
         HashSet<int> against, float priority) 
@@ -17,28 +17,30 @@ public abstract class DiplomacyProposal : Proposal
     
     public override void Propose(ProcedureWriteKey key)
     {
+        var holder = key.Data.GetRegister<Holder<Proposal>>()[Id];
         if (key.Data.Entities.ContainsKey(Alliance0) 
             && key.Data.Entities.ContainsKey(Alliance1))
         {
             var alliance0 = key.Data.Society.Alliances[Alliance0];
-            alliance0.Proposals.Add(Id, this);
+            alliance0.Proposals.Add(alliance0, holder, key);
         
             var alliance1 = key.Data.Society.Alliances[Alliance1];
-            alliance1.Proposals.Add(Id, this);
+            alliance1.Proposals.Add(alliance1, holder, key);
         }
     }
 
     public override void CleanUp(ProcedureWriteKey key)
     {
+        var holder = key.Data.GetRegister<Holder<Proposal>>()[Id];
         if (key.Data.Entities.ContainsKey(Alliance0))
         {
             var alliance0 = key.Data.Society.Alliances[Alliance0];
-            alliance0.Proposals.Remove(Id);
+            alliance0.Proposals.Remove(alliance0, holder, key);
         }
         if (key.Data.Entities.ContainsKey(Alliance1))
         {
             var alliance1 = key.Data.Society.Alliances[Alliance1];
-            alliance1.Proposals.Remove(Id);
+            alliance1.Proposals.Remove(alliance1, holder, key);
         }
     }
     

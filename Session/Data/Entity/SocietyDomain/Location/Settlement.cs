@@ -7,9 +7,6 @@ using MessagePack;
 
 public class Settlement : Location
 {
-    private static Type DomainType() => typeof(SocietyDomain);
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
     public EntityRef<MapPolygon> Poly { get; protected set; }
     public ModelRef<SettlementTier> Tier { get; private set; }
     public int Size { get; protected set; }
@@ -18,7 +15,7 @@ public class Settlement : Location
     public static Settlement Create(string name, MapPolygon poly, int size, CreateWriteKey key)
     {
         var tier = key.Data.Models.SettlementTiers.GetTier(size);
-        var s = new Settlement(key.IdDispenser.GetID(), poly.MakeRef(), 
+        var s = new Settlement(-1, poly.MakeRef(), 
             size, tier.MakeRef(), name);
         key.Create(s);
         return s;

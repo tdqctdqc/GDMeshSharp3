@@ -6,7 +6,7 @@ using MessagePack;
 
 public abstract class AllianceProposal : Proposal
 {
-    public int AllianceId { get; private set; }   
+    public int AllianceId { get; protected set; }   
     [SerializationConstructor] protected AllianceProposal(int id, EntityRef<Regime> proposer, 
         int allianceId, HashSet<int> inFavor, HashSet<int> against, float priority) 
         : base(id, proposer, inFavor, against, priority)
@@ -17,15 +17,18 @@ public abstract class AllianceProposal : Proposal
     public override void Propose(ProcedureWriteKey key)
     {
         var alliance = key.Data.Society.Alliances[AllianceId];
-        alliance.Proposals.Add(Id, this);
+        var holder = key.Data.GetRegister<Holder<Proposal>>()[Id];
+        alliance.Proposals.Add(alliance, holder, key);
     }
 
     public override void CleanUp(ProcedureWriteKey key)
     {
+        var holder = key.Data.GetRegister<Holder<Proposal>>()[Id];
+
         if (key.Data.Entities.ContainsKey(AllianceId))
         {
             var alliance = key.Data.Society.Alliances[AllianceId];
-            alliance.Proposals.Remove(Id);
+            alliance.Proposals.Remove(alliance, holder, key);
         }
     }
 

@@ -8,5 +8,5 @@ public interface IEntityMeta
     IReadOnlyList<string> FieldNameList { get; }
     object[] GetPropertyValues(Entity entity);
     IRefColMeta<TProperty> GetRefColMeta<TProperty>(string fieldName);
-    bool TestSerialization(Entity e);
+    bool TestSerialization(Entity e, Data data);
 }

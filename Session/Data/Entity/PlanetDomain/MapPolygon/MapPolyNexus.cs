@@ -10,10 +10,10 @@ public class MapPolyNexus : Entity
     public EntityRefCollection<MapPolygonEdge> IncidentEdges { get; private set; }
     public EntityRefCollection<MapPolygon> IncidentPolys { get; private set; }
 
-    public static MapPolyNexus Construct(Vector2 point, List<MapPolygonEdge> edges, List<MapPolygon> polys,
+    public static MapPolyNexus Create(Vector2 point, List<MapPolygonEdge> edges, List<MapPolygon> polys,
         GenWriteKey key)
     {
-        var n = new MapPolyNexus(key.IdDispenser.GetID(), point, 
+        var n = new MapPolyNexus(-1, point, 
             EntityRefCollection<MapPolygonEdge>.Construct(nameof(IncidentEdges),
                 edges.Select(e => e.Id).ToHashSet(), key.Data),
             EntityRefCollection<MapPolygon>.Construct(nameof(IncidentPolys),
@@ -49,9 +49,5 @@ public class MapPolyNexus : Entity
     {
         Point = point;
     }
-    //ENTITY NECESSARIES
-    public override EntityTypeTreeNode GetEntityTypeTreeNode() => EntityTypeTreeNode;
-    public static EntityTypeTreeNode EntityTypeTreeNode { get; private set; }
-
     
 }

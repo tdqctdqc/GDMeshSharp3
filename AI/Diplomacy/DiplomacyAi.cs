@@ -33,10 +33,10 @@ public class DiplomacyAi
 
     private void DecideOnProposals(Data data, MajorTurnOrders orders)
     {
-        var proposals = _regime.GetAlliance(data).Proposals;
-        foreach (var kvp in proposals)
+        var proposals = _regime.GetAlliance(data).Proposals.Entities(data)
+            .Select(h => h.Value);
+        foreach (var proposal in proposals)
         {
-            var proposal = kvp.Value;
             if (proposal.Against.Contains(_regime.Id)
                 || proposal.InFavor.Contains(_regime.Id)) continue;
             var decision = proposal.GetDecisionForAi(_regime, data);

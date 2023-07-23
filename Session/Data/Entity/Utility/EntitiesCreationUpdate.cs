@@ -10,7 +10,7 @@ public class EntitiesCreationUpdate : Update
     
     public static EntitiesCreationUpdate Create(IReadOnlyList<Entity> entities, CreateWriteKey key)
     {
-        var entityBytes = entities.Select(e => Game.I.Serializer.MP.Serialize(e, e.GetType())).ToArray();
+        var entityBytes = entities.Select(e => key.Data.Serializer.MP.Serialize(e, e.GetType())).ToArray();
         var entityTypes = entities.Select(e => e.GetType()).ToArray();
         return new EntitiesCreationUpdate(entityTypes, entityBytes);
     }
@@ -30,7 +30,7 @@ public class EntitiesCreationUpdate : Update
         var es = new Entity[EntityBytes.Count()];
         for (var i = 0; i < EntityBytes.Length; i++)
         {
-            var e = (Entity)Game.I.Serializer.MP.Deserialize(EntityBytes[i], EntityTypes[i]);
+            var e = (Entity)key.Data.Serializer.MP.Deserialize(EntityBytes[i], EntityTypes[i]);
             es[i] = e;
         }
         key.Data.AddEntities(es, key);

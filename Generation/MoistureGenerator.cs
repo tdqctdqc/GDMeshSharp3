@@ -10,7 +10,6 @@ public class MoistureGenerator : Generator
 {
     public GenData Data { get; private set; }
     private GenWriteKey _key;
-    private IdDispenser _id;
     public MoistureGenerator()
     {
     }
@@ -20,7 +19,6 @@ public class MoistureGenerator : Generator
         var report = new GenReport(GetType().Name);
         _key = key;
         Data = key.GenData;
-        _id = key.IdDispenser;
         report.StartSection();
         SetPolyMoistures();
         report.StopSection("SetPolyMoistures");

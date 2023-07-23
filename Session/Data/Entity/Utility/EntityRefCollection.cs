@@ -63,7 +63,7 @@ public class EntityRefCollection<TRef> : IRefCollection<TRef> where TRef : Entit
         if (RefIds.Contains(t.Id)) return;
         RefIds.Add(t.Id);
         _refs?.Add(t);
-        e.GetMeta().GetRefColMeta<TRef>(Name).RaiseAdded(e, t);
+        key.Data.Serializer.GetEntityMeta(e.GetType()).GetRefColMeta<TRef>(Name).RaiseAdded(e, t);
     }
 
     public void Remove(Entity e, List<TRef> ids, StrongWriteKey key)
@@ -75,6 +75,6 @@ public class EntityRefCollection<TRef> : IRefCollection<TRef> where TRef : Entit
     {
         RefIds.Remove(t.Id);
         _refs?.Remove(t);
-        e.GetMeta().GetRefColMeta<TRef>(Name).RaiseRemoved(e, t);
+        key.Data.Serializer.GetEntityMeta(e.GetType()).GetRefColMeta<TRef>(Name).RaiseRemoved(e, t);
     }
 }

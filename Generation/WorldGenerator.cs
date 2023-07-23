@@ -35,7 +35,6 @@ public class WorldGenerator
         var polySize = 200f;
         var edgePointMargin = new Vector2(polySize, polySize);
         var dim = Data.GenMultiSettings.Dimensions;
-        var id = _key.IdDispenser.GetID();
         
         Game.I.Logger.RunAndLogTime(() =>
         {

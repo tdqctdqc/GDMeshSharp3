@@ -55,7 +55,7 @@ public class MessagePackManager
         );
         _options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
         // Pass options every time or set as default
-        MessagePackSerializer.DefaultOptions = _options;
+        // MessagePackSerializer.DefaultOptions = _options;
     }
     
 }

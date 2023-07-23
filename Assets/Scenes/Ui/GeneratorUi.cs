@@ -37,7 +37,7 @@ public partial class GeneratorUi : Ui
         topBar.AddButton("Done", GoToGameSession);
         topBar.AddWindowButton<GeneratorSettingsWindow>("Gen Settings");
         topBar.AddWindowButton<LoggerWindow>("Logger");
-        topBar.AddButton("Test Serialization", () => Game.I.Serializer.Test(session.Data));
+        topBar.AddButton("Test Serialization", () => session.Data.Serializer.Test(session.Data));
         topBar.AddButton("Save", () => Saver.Save(session.Data));
         topBar.AddButton("Load", () => Saver.Load());
         
@@ -79,9 +79,10 @@ public partial class GeneratorUi : Ui
     {
         if (_generating) return;
         _generating = true;
+        await Task.Run(_session.TryGenerate); 
+
         try
         {
-            await Task.Run(_session.TryGenerate); 
         }
         catch (Exception e)
         {

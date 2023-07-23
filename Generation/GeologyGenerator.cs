@@ -19,7 +19,7 @@ public class GeologyGenerator : Generator
     {
         var report = new GenReport(GetType().Name);
         _key = key;
-        _id = key.IdDispenser;
+        _id = new IdDispenser();
         Data = key.GenData;
         
         report.StartSection(); 

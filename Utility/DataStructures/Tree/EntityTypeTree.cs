@@ -4,27 +4,32 @@ using System.Linq;
 
 public class EntityTypeTree
 {
-    public EntityTypeTreeNode this[Type type] => _nodes[type];
-    private Dictionary<Type, EntityTypeTreeNode> _nodes;
-    private HashSet<Type> _rootTypes;
-    public EntityTypeTree(IEnumerable<Type> types)
+    public EntityTypeTreeNode this[Type type] => Nodes[type];
+    public Dictionary<Type, EntityTypeTreeNode> Nodes { get; private set; }
+    public EntityTypeTree(Data data)
     {
-        _nodes = new Dictionary<Type, EntityTypeTreeNode>();
-        foreach (var type in types)
+        Nodes = new Dictionary<Type, EntityTypeTreeNode>();
+    }
+
+    public EntityTypeTreeNode Get(Type type, Data data) 
+    {
+        if(Nodes.ContainsKey(type) == false) Add(type, data);
+        return Nodes[type];
+    }
+    private void Add(Type type, Data data)
+    {
+        var node = new EntityTypeTreeNode(type, data);
+        Nodes.Add(type, node);
+        var parentType = type.BaseType;
+        if(Nodes.TryGetValue(parentType, out var pNode))
         {
-            _nodes.Add(type, new EntityTypeTreeNode(type));
+            node.SetParent(pNode);
         }
-        _rootTypes = new HashSet<Type>();
-        foreach (var node in _nodes.Values)
+        foreach (var type1 in Nodes.Keys.ToList())
         {
-            var parentType = node.EntityType.BaseType;
-            if(_nodes.TryGetValue(parentType, out var pNode))
+            if (type1.BaseType == type)
             {
-                node.SetParent(pNode);
-            }
-            else
-            {
-                _rootTypes.Add(node.EntityType);
+                Nodes[type1].SetParent(node);
             }
         }
     }

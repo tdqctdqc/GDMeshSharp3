@@ -7,9 +7,9 @@ public class PortablePolymorph<T>
     public Type Type { get; private set; }
     public byte[] Bytes { get; private set; }
 
-    public static PortablePolymorph<T> Construct(T t)
+    public static PortablePolymorph<T> Construct(T t, Data data)
     {
-        return new PortablePolymorph<T>(t.GetType(), Game.I.Serializer.MP.Serialize(t, t.GetType()));
+        return new PortablePolymorph<T>(t.GetType(), data.Serializer.MP.Serialize(t, t.GetType()));
     }
     public PortablePolymorph(Type type, byte[] bytes)
     {
@@ -17,8 +17,8 @@ public class PortablePolymorph<T>
         Bytes = bytes;
     }
 
-    public T Get()
+    public T Get(Data data)
     {
-        return (T)Game.I.Serializer.MP.Deserialize(Bytes, Type);
+        return (T)data.Serializer.MP.Deserialize(Bytes, Type);
     }
 }
