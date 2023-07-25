@@ -10,6 +10,11 @@ public static class EnumerableExt
     {
         return enumerable.Where(e => e is TSub).Select(e => (TSub)(object) e);
     }
+    public static IEnumerable<T> Yield<T>(this T item)
+    {
+        if (item == null) yield break;
+        yield return item;
+    }
     public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> enumerable, Func<T,bool> pred)
     {
         return enumerable.Where(pred).Select(e => e);

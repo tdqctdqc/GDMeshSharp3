@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public class RefAction
+public class RefAction : IInvokable
 {
     private Action _action;
     private HashSet<RefAction> _subscribingTo;
-    private HashSet<RefAction> _refSubscribers;
+    private HashSet<IInvokable> _refSubscribers;
 
     public RefAction()
     {
@@ -33,10 +33,22 @@ public class RefAction
     {
         _action += a;
     }
+    public void SubscribeForNode(RefAction a, Node n)
+    {
+        if (_refSubscribers == null) _refSubscribers = new HashSet<IInvokable>();
+        _refSubscribers.Add(a);
+        n.TreeExiting += () => Unsubscribe(a);
+    }
+    public void SubscribeForNode(Action a, Node n)
+    {
+        var wrapper = new ActionWrapper(a);
+        if (_refSubscribers == null) _refSubscribers = new HashSet<IInvokable>();
+        _refSubscribers.Add(wrapper);
+        n.TreeExiting += () => Unsubscribe(wrapper);
+    }
     public void Subscribe(RefAction a)
     {
-        // _action += a.Invoke;
-        if (_refSubscribers == null) _refSubscribers = new HashSet<RefAction>();
+        if (_refSubscribers == null) _refSubscribers = new HashSet<IInvokable>();
         _refSubscribers.Add(a);
         if (a._subscribingTo == null) a._subscribingTo = new HashSet<RefAction>();
         a._subscribingTo.Add(this);
@@ -45,7 +57,7 @@ public class RefAction
     {
         _action -= a;
     }
-    public void Unsubscribe(RefAction a)
+    public void Unsubscribe(IInvokable a)
     {
         _refSubscribers.Remove(a);
     }
@@ -59,10 +71,10 @@ public class RefAction
         _subscribingTo.Clear();
     }
 }
-public class RefAction<TArg>
+public class RefAction<TArg> : IInvokable<TArg>
 {
     public RefAction Blank { get; private set; }
-    public HashSet<RefAction<TArg>> _refSubscribers;
+    public HashSet<IInvokable<TArg>> _refSubscribers;
     private Action<TArg> _action;
     private HashSet<RefAction<TArg>> _subscribingTo;
     public RefAction()
@@ -87,9 +99,22 @@ public class RefAction<TArg>
     {
         Blank.Subscribe(a);
     }
+    public void SubscribeForNode(RefAction<TArg> a, Node n)
+    {
+        if (_refSubscribers == null) _refSubscribers = new HashSet<IInvokable<TArg>>();
+        _refSubscribers.Add(a);
+        n.TreeExited += () => Unsubscribe(a);
+    }
+    public void SubscribeForNode(Action<TArg> a, Node n)
+    {
+        var refAction = new ActionWrapper<TArg>(a);
+        if (_refSubscribers == null) _refSubscribers = new HashSet<IInvokable<TArg>>();
+        _refSubscribers.Add(refAction);
+        n.TreeExited += () => Unsubscribe(refAction);
+    }
     public void Subscribe(RefAction<TArg> a)
     {
-        if (_refSubscribers == null) _refSubscribers = new HashSet<RefAction<TArg>>();
+        if (_refSubscribers == null) _refSubscribers = new HashSet<IInvokable<TArg>>();
         _refSubscribers.Add(a);
         
         if (a._subscribingTo == null) a._subscribingTo = new HashSet<RefAction<TArg>>();
@@ -99,7 +124,7 @@ public class RefAction<TArg>
     {
         _action += a.Invoke;
     }
-    public void Unsubscribe(RefAction<TArg> a)
+    public void Unsubscribe(IInvokable<TArg> a)
     {
         _refSubscribers.Remove(a);
     }

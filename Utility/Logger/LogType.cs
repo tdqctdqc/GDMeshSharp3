@@ -2,5 +2,6 @@ public enum LogType
 {
     Logic,
     Generation,
-    Market
+    Market,
+    Graphics
 }

@@ -89,4 +89,14 @@ public void SetLandform(Landform lf, GenWriteKey key)
             LfMarker, VMarker, Index,
             NeighborStartIndex, NeighborCount);
     }
+
+    public Color GetDisplayColor()
+    {
+        if (Vegetation.Color != Colors.Transparent)
+        {
+            return Vegetation.Color.Darkened(Landform.DarkenFactor);
+        }
+
+        return Landform.Color;
+    }
 }

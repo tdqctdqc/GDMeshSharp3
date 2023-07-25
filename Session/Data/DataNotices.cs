@@ -14,8 +14,6 @@ public class DataNotices
     public RefAction FinishedTurnStartCalc { get; private set; }
     public RefAction SetPolyShapes { get; private set; }
     public RefAction SetLandAndSea { get; private set; }
-    public RefAction<Construction> StartedConstruction { get; private set; }
-    public RefAction<Construction> EndedConstruction { get; private set; }
     
     public DataNotices()
     {
@@ -27,8 +25,6 @@ public class DataNotices
         FinishedTurnStartCalc = new RefAction();
         SetPolyShapes = new RefAction();
         SetLandAndSea = new RefAction();
-        StartedConstruction = new RefAction<Construction>();
-        EndedConstruction = new RefAction<Construction>();
     }
 }
 

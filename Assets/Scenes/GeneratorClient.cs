@@ -52,6 +52,7 @@ public partial class GeneratorClient : Node, IClient
         {
             MapGraphics = _setupMapGraphics.Result;
             AddChild(MapGraphics);
+            _ui.MapGraphicsOptions.Setup(MapGraphics);
             _setupMapGraphics = null;
         }
         _ui?.Process(delta, Cam);

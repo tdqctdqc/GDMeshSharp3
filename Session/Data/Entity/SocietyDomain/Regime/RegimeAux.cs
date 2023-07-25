@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class RegimeAux : EntityAux<Regime>
+public class RegimeAux
 {
     public EntityMultiIndexer<Regime, MapPolygon> Territories { get; private set; }
-    public RegimeAux(Data data) : base(data)
+    public RegimeAux(Data data)
     {
         var changedRegime = data.Planet.PolygonAux.ChangedRegime;
         Territories = new EntityMultiIndexer<Regime, MapPolygon>(

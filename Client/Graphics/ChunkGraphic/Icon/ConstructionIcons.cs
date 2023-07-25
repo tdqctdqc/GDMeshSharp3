@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class ConstructionIconLayer : MapChunkGraphicLayer<Construction>
+public partial class ConstructionIcons : MapChunkGraphicNode<Construction>
 {
     private static Texture2D _underConstruction => TextureManager.Textures["UnderConstruction"];
-    public ConstructionIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
-        : base(nameof(ConstructionIconLayer), data, chunk, new Vector2(0f, .5f), mg.ChunkChangedCache.ConstructionsChanged)
+    public ConstructionIcons(MapChunk chunk, Data data) 
+        : base(nameof(ConstructionIcons), data, chunk)
     {        
     }
-    private ConstructionIconLayer() : base()
+    private ConstructionIcons() : base()
     {
     }
-    protected override Node2D MakeGraphic(Construction key, Data data)
+    protected override Node2D MakeGraphic(Construction settlement, Data data)
     {
-        var construction = key;
+        var construction = settlement;
         var icon = construction.Model.Model(data).Icon.GetMeshInstance();
         var constrSignMesh = new MeshInstance2D();
         var mesh = new QuadMesh();

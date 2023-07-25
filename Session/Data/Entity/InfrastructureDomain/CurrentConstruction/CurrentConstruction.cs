@@ -40,12 +40,12 @@ public class CurrentConstruction : Entity
                                 $"but already constructing {ByTri[construction.Pos].Model.Model(key.Data).Name} in tri");
         }
         ByTri.Add(construction.Pos, construction);
-        key.Data.Notices.StartedConstruction.Invoke(construction);
+        key.Data.Infrastructure.ConstructionAux.StartedConstruction.Invoke(construction);
     }
     public void FinishConstruction(MapPolygon poly, PolyTriPosition pos, ProcedureWriteKey key)
     {
         var construction = ByTri[pos];
-        key.Data.Notices.EndedConstruction.Invoke(construction);
+        key.Data.Infrastructure.ConstructionAux.EndedConstruction.Invoke(construction);
         ByPoly[poly.Id].RemoveAll(c => c.Pos.Equals(pos));
         if (ByPoly[poly.Id].Count == 0) ByPoly.Remove(poly.Id);
         ByTri.Remove(pos);

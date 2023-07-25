@@ -31,13 +31,11 @@ public partial class GameUiTopBarToken : ButtonBarToken
                 _submitTurn.Disabled = true;
             }
         });
-        Action<int> changeSubmitTurnButton = i =>
-        {
-            _submitTurn.Text = "Submit Turn";
-            _submitTurn.Disabled = false;
-        };
-        data.Notices.Ticked.Subscribe(changeSubmitTurnButton);
-        TreeExiting += () => data.Notices.Ticked.Unsubscribe(changeSubmitTurnButton);
+        data.Notices.Ticked.SubscribeForNode(i =>
+            {
+                _submitTurn.Text = "Submit Turn";
+                _submitTurn.Disabled = false;
+            }, this);
         
         
         var hostClientLabel = new Label();

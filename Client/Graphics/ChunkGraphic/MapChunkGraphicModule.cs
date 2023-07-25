@@ -5,45 +5,37 @@ using Godot;
 
 public partial class MapChunkGraphicModule : Node2D, IMapChunkGraphicNode
 {
-    public bool Hidden { get; set; }
     public string Name { get; private set; }
-    private List<IMapChunkGraphicNode> _nodes;
+    public Dictionary<string, IMapChunkGraphicNode> Nodes { get; private set; }
     public MapChunkGraphicModule(string name)
     {
-        Hidden = false;
         Name = name;
-        _nodes = new List<IMapChunkGraphicNode>();
+        Nodes = new Dictionary<string, IMapChunkGraphicNode>();
     }
 
     private MapChunkGraphicModule()
     {
     }
 
-    public void AddLayer(IMapChunkGraphicNode layer)
+    public void AddNode(IMapChunkGraphicNode layer)
     {
         AddChild((Node)layer);
-        _nodes.Add(layer);
+        Nodes.Add(layer.Name, layer);
     }
 
     public void Init(Data data)
     {
-        foreach (var l in _nodes)
+        foreach (var kvp in Nodes)
         {
-            l.Init(data);
+            kvp.Value.Init(data);
         }
     }
-    public void UpdateVis(Data data)
+
+    public void Update(Data d)
     {
-        if (Hidden)
+        foreach (var kvp in Nodes)
         {
-            Visible = false;
-            return;
-        }
-        else Visible = true;
-        var scaledZoom = Game.I.Client.Cam.ScaledZoomOut;
-        foreach (var node in _nodes)
-        {
-            node.UpdateVis(data);
+            kvp.Value.Update(d);
         }
     }
 

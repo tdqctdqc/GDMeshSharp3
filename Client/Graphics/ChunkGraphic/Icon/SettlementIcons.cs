@@ -3,22 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class SettlementIconLayer : MapChunkGraphicLayer<int>
+public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
 {
-    public SettlementIconLayer(MapChunk chunk, Data data, MapGraphics mg) 
-        : base(nameof(SettlementIconLayer), data, chunk, new Vector2(0f, .5f), mg.ChunkChangedCache.SettlementTierChanged)
+    public SettlementIcons(MapChunk chunk, Data data) 
+        : base(nameof(SettlementIcons), data, chunk)
     {
     }
 
-    private SettlementIconLayer() : base()
+    private SettlementIcons() : base()
     {
     }
 
 
-    protected override Node2D MakeGraphic(int key, Data data)
+    protected override Node2D MakeGraphic(Settlement settlement, Data data)
     {
         var node = new Node2D();
-        var settlement = data.Get<Settlement>(key);
         var icon = settlement.Tier.Model(data).Icon;
         var poly = settlement.Poly.Entity(data);
         var urbanTris = poly.Tris.Tris
@@ -42,10 +41,10 @@ public partial class SettlementIconLayer : MapChunkGraphicLayer<int>
         return node;
     }
 
-    protected override IEnumerable<int> GetKeys(Data data)
+    protected override IEnumerable<Settlement> GetKeys(Data data)
     {
         return Chunk.Polys.Where(p => p.HasSettlement(data))
-            .Select(p => p.GetSettlement(data).Id);
+            .Select(p => p.GetSettlement(data));
     }
 }
 

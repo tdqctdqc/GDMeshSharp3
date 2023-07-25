@@ -4,10 +4,10 @@ using System.Diagnostics;
 using System.Linq;
 using Godot;
 
-public class PolyEdgeAux : EntityAux<MapPolygonEdge>
+public class PolyEdgeAux
 {
     private PropEntityIndexer<MapPolygonEdge, Vector2> _byEdge;
-    public PolyEdgeAux(Data data) : base(data)
+    public PolyEdgeAux(Data data)
     {
         _byEdge = PropEntityIndexer<MapPolygonEdge, Vector2>.CreateConstant(data, e => MakeEdge(e, data));
     }

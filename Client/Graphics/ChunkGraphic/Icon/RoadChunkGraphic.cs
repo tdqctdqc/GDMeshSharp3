@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class RoadChunkGraphicLayer : MapChunkGraphicLayer<int>
+public partial class RoadChunkGraphicNode : MapChunkGraphicNode<int>
 {
     private MeshBuilder _mb;
 
-    private RoadChunkGraphicLayer() { }
+    private RoadChunkGraphicNode() { }
 
-    public RoadChunkGraphicLayer(MapChunk chunk, Data data, MapGraphics mg) 
-        : base(nameof(RoadChunkGraphicLayer), data, chunk, new Vector2(0f, 1f), mg.ChunkChangedCache.RoadsChanged)
+    public RoadChunkGraphicNode(MapChunk chunk, Data data, MapGraphics mg) 
+        : base(nameof(RoadChunkGraphicNode), data, chunk)
     {
         _mb = new MeshBuilder();
     }
 
-    protected override Node2D MakeGraphic(int key, Data data)
+    protected override Node2D MakeGraphic(int settlement, Data data)
     {
         _mb.Clear();
-        var seg = data.Get<RoadSegment>(key);
+        var seg = data.Get<RoadSegment>(settlement);
         var hi = seg.Edge.Entity(data).HighPoly.Entity(data);
         var lo = seg.Edge.Entity(data).LowPoly.Entity(data);
         seg.Road.Model(data).Draw(_mb, Chunk.RelTo.GetOffsetTo(hi.Center, data), 

@@ -12,10 +12,9 @@ public partial class MapGraphics : Node2D
     {
         
     }
-    protected List<IGraphicsSegmenter> _segmenters;
+    protected GraphicsSegmenter _segmenter;
     public PolyHighlighter Highlighter { get; private set; }
-    public List<MapChunkGraphic> MapChunkGraphics { get; private set; }
-    public ChunkChangedCache ChunkChangedCache { get; private set; }
+    public GraphicLayerHolder GraphicLayerHolder { get; private set; }
     private ClientWriteKey _key;
     public void Setup(ClientWriteKey key)
     {
@@ -23,70 +22,53 @@ public partial class MapGraphics : Node2D
         _key = key;
         var sw = new Stopwatch();
         sw.Start();
-        ChunkChangedCache = new ChunkChangedCache(_key.Data);
-        _segmenters = new List<IGraphicsSegmenter>();
-        MapChunkGraphics = new List<MapChunkGraphic>();
-        var polySegmenter = new GraphicsSegmenter<MapChunkGraphic>();
-        _segmenters.Add(polySegmenter);
         
-        var mapChunkGraphics = _key.Data.Planet.PolygonAux.Chunks.Select(u =>
-        {
-            var graphic = new MapChunkGraphic();
-            MapChunkGraphics.Add(graphic);
-            graphic.Setup(this, u, _key.Data);
-            return graphic;
-        }).ToList();
+        _key.Session.Client.UiRequests.ToggleMapGraphicsLayer.SubscribeForNode(ToggleMapLayer, this);
         
-        _key.Session.Client.UiRequests.ToggleMapGraphicsLayer.Subscribe(ToggleMapLayer);
-        TreeExiting += () => _key.Session.Client.UiRequests.ToggleMapGraphicsLayer.Unsubscribe(ToggleMapLayer);
-        
-        foreach (var keyValuePair in MapChunkLayerBenchmark.Times)
-        {
-           GD.Print($"{keyValuePair.Key} {keyValuePair.Value.Sum()}"); 
-        }
-        
-        polySegmenter.Setup(mapChunkGraphics, 10, n => n.Position, _key.Data);
+        _segmenter = new GraphicsSegmenter(10, _key.Data);
+        AddChild(_segmenter);
+        GraphicLayerHolder = new GraphicLayerHolder(_segmenter, this, _key.Data);
 
         Highlighter = new PolyHighlighter(_key.Data);
-        Highlighter.ZIndex = 99;
         AddChild(Highlighter);
         
-        AddChild(polySegmenter);
         var inputCatcher = new MapInputCatcher(_key, this);
         AddChild(inputCatcher);
         
+        key.Data.Notices.Ticked.Blank.SubscribeForNode(() => Update(_key.Data), this);
+
         sw.Stop();
         GD.Print("map graphics setup time " + sw.Elapsed.TotalMilliseconds);
     }
+
+    private void Update(Data d)
+    {
+        GraphicLayerHolder.Update(d);
+    }
     private void ToggleMapLayer(string name)
     {
-        foreach (var mc in MapChunkGraphics)
-        {
-            var n = mc.Modules[name];
-            n.Hidden = n.Hidden == false;
-        }
+        // foreach (var mc in MapChunkGraphics)
+        // {
+        //     var n = mc.Modules[name];
+        //     n.Hidden = n.Hidden == false;
+        // }
     }
     public void Process(float delta)
     {
-        if (MapChunkGraphics != null)
-        {
-            for (var i = 0; i < MapChunkGraphics.Count; i++)
-            {
-                MapChunkGraphics[i].UpdateVis();
-            }
-        }
+        // if (MapChunkGraphics != null)
+        // {
+        //     for (var i = 0; i < MapChunkGraphics.Count; i++)
+        //     {
+        //         MapChunkGraphics[i].UpdateVis();
+        //     }
+        // }
         if(Game.I.Client?.Cam != null)
         {
-            if (_segmenters == null) return;
-            for (var i = 0; i < _segmenters.Count; i++)
-            {
-                _segmenters[i].Update(Game.I.Client.Cam.XScrollRatio);
-            }
+            _segmenter.Update(Game.I.Client.Cam.XScrollRatio);
         }
     }
     private void Clear()
     {
-        _segmenters?.Clear();
         this.ClearChildren();
     }
 }

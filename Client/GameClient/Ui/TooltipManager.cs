@@ -16,21 +16,13 @@ public partial class TooltipManager : Control
         _panel = new TooltipPanel();
         AddChild(_panel);
         _panel.Visible = false;
-        Game.I.Client.UiRequests.PromptTooltip.Subscribe(PromptTooltip);
-        TreeExiting += () => Game.I.Client.UiRequests.PromptTooltip.Unsubscribe(PromptTooltip);
-        Game.I.Client.UiRequests.HideTooltip.Subscribe(HideTooltip);
-        TreeExiting += () => Game.I.Client.UiRequests.HideTooltip.Unsubscribe(HideTooltip);;
-    }
-
-    private TooltipManager()
-    {
-        
+        Game.I.Client.UiRequests.PromptTooltip.SubscribeForNode(PromptTooltip, this);
+        Game.I.Client.UiRequests.HideTooltip.SubscribeForNode(HideTooltip, this);
     }
     public void Process(float delta, Vector2 mousePosInMapSpace)
     {
         _panel.Move(GetLocalMousePosition() + _offsetFromMouse);
     }
-
     private void PromptTooltip(ITooltipInstance instance)
     {
         _panel.Visible = true;

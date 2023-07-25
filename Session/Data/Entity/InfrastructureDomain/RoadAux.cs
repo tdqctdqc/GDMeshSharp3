@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class RoadAux : EntityAux<RoadSegment>
+public class RoadAux
 {
     public EntityPropEntityIndexer<RoadSegment, MapPolygonEdge> ByEdgeId { get; private set; }
-    public RoadAux(Data data) : base(data)
+    public RoadAux(Data data)
     {
         ByEdgeId = EntityPropEntityIndexer<RoadSegment, MapPolygonEdge>.CreateStatic(data, rs => rs.Edge);
     }

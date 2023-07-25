@@ -9,12 +9,11 @@ public partial class GeneratorUi : Ui
     private GeneratorSession _session;
     private bool _generating;
     private Label _progress;
-    private MapDisplayOptionsUi _mapOptions;
     public TooltipManager TooltipManager { get; private set; }
-
+    public MapGraphicsOptions MapGraphicsOptions { get; private set; }
 
     // public GeneratorSettingsWindow GenSettingsWindow { get; private set; }
-    public static GeneratorUi Construct(IClient client, GeneratorSession session)
+    public static GeneratorUi Construct(GeneratorClient client, GeneratorSession session)
     {
         var ui = new GeneratorUi(client);
         ui.Setup(client, session);
@@ -28,7 +27,7 @@ public partial class GeneratorUi : Ui
     {
         
     }
-    public void Setup(IClient client, GeneratorSession session)
+    public void Setup(GeneratorClient client, GeneratorSession session)
     {
         Setup(client);
         _session = session;
@@ -55,10 +54,9 @@ public partial class GeneratorUi : Ui
         _progress = new Label();
         _progress.Text = "Progress";
         sideBar.Container.AddChild(_progress);
-        _mapOptions = new MapDisplayOptionsUi();
-        _mapOptions.Setup(_session.Data, client);
+        MapGraphicsOptions = new MapGraphicsOptions();
         sideBar.Container.Position = Vector2.Down * 50f;
-        sideBar.Container.AddChild(_mapOptions);
+        sideBar.Container.AddChild(MapGraphicsOptions);
         AddWindow(new RegimeOverviewWindow());
         
         TooltipManager = new TooltipManager(session.Data);

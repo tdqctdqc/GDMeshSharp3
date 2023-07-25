@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using Godot;
 
-public class MapPolygonAux : EntityAux<MapPolygon>
+public class MapPolygonAux
 {
     public IReadOnlyGraph<MapPolygon, PolyBorderChain> BorderGraph { get; private set; }
     public EntityValueCache<MapPolygon, PolyAuxData> AuxDatas { get; private set; }
@@ -13,7 +13,7 @@ public class MapPolygonAux : EntityAux<MapPolygon>
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public LandSeaManager LandSea { get; private set; }
     public ValChangeAction<Regime> ChangedRegime { get; private set; }
-    public MapPolygonAux(Data data) : base(data)
+    public MapPolygonAux(Data data)
     {
         BorderGraph = ImplicitGraph.Get<MapPolygon, PolyBorderChain>(
             n => n.Neighbors.Items(data),

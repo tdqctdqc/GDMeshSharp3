@@ -7,7 +7,7 @@ public partial class GameClient : Node, IClient
     public GameUi Ui { get; private set; }
     private IServer _server;
     public ICameraController Cam { get; private set; }
-    public MapGraphics Graphics { get; private set; }
+    public MapGraphics MapGraphics { get; private set; }
     public ClientWriteKey WriteKey { get; private set; }
     public UiRequests UiRequests { get; private set; }
     public ClientSettings Settings { get; private set; }
@@ -24,7 +24,7 @@ public partial class GameClient : Node, IClient
     public void Process(float delta)
     {
         if (GetParent() == null) return;
-        Graphics?.Process(delta);
+        MapGraphics?.Process(delta);
         Ui?.Process(delta, Cam, WriteKey);
     }
     public void Setup(GameSession session, IServer server, MapGraphics graphics)
@@ -37,29 +37,26 @@ public partial class GameClient : Node, IClient
 
         if (graphics == null)
         {
-            BuildGraphics(session.Data);
+            MapGraphics = new MapGraphics();
+            MapGraphics.Setup(WriteKey);
         }
         else
         {
-            Graphics = graphics;
+            MapGraphics = graphics;
         }
-        AddChild(Graphics);
+        AddChild(MapGraphics);
+        
         BuildUi(session.Data, WriteKey.Session.Server);
-    }
-    
-    private void BuildGraphics(Data data)
-    {
-        Graphics = new MapGraphics();
-        Graphics.Setup(WriteKey);
     }
 
     private void BuildUi(Data data, IServer server)
     {
-        Ui = GameUi.Construct(this, server is HostServer, data, Graphics);
+        Ui = GameUi.Construct(this, server is HostServer, data, MapGraphics);
         AddChild(Ui);
         _server = server;
         _entityOverviewWindow = EntityOverviewWindow.Get(data);
         AddChild(_entityOverviewWindow);
+        Ui.MapGraphicsOptions.Setup(MapGraphics);
     }
     public void HandleInput(InputEvent e, float delta)
     {

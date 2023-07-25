@@ -3,7 +3,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <LangVersion>11.0</LangVersion>
+    <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="GeometRi" Version="1.4.0.3" />

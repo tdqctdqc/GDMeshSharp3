@@ -7,6 +7,7 @@ public partial class GameUi : Ui
     public PromptManager Prompts { get; private set; }
     public TooltipManager TooltipManager { get; private set; }
     public PromptSidebar PromptSidebar { get; private set; }
+    public MapGraphicsOptions MapGraphicsOptions { get; private set; }
     public void Process(float delta, ICameraController cam, ClientWriteKey key)
     {
         TooltipManager.Process(delta, cam.GetMousePosInMapSpace());
@@ -37,10 +38,9 @@ public partial class GameUi : Ui
         AddWindow(new RegimeOverviewWindow());
         AddWindow(RegimeAiOverviewWindow.Get(data));
 
-        var mapOptions = new MapDisplayOptionsUi();
-        mapOptions.Setup(data, client);
-        mapOptions.Position = Vector2.Down * 50f;
-        AddChild(mapOptions);
+        MapGraphicsOptions = new MapGraphicsOptions();
+        MapGraphicsOptions.Position = Vector2.Down * 50f;
+        AddChild(MapGraphicsOptions);
 
         PromptSidebar = (PromptSidebar)FindChild("side");
         
