@@ -72,15 +72,8 @@ public static class MapPolygonExt
     }
     public static ReadOnlyHash<ResourceDeposit> GetResourceDeposits(this MapPolygon p, Data data)
     {
-        var rd = data.Planet.ResourceDepositAux.ByPoly.Get(p, data);
+        var rd = data.Planet.ResourceDepositAux.ByPoly[p];
         return rd == null ? null : new ReadOnlyHash<ResourceDeposit>(rd.ToHashSet());
-    }
-
-    
-
-    public static float GetGatheredFoodRatio(this MapPolygon poly)
-    {
-        return Mathf.Max(0f , poly.Moisture - poly.Roughness * .25f);
     }
 
     public static List<MapBuilding> GetBuildings(this MapPolygon poly, Data data)

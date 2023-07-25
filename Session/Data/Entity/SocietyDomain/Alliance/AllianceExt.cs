@@ -19,7 +19,7 @@ public static class AllianceExt
 
     public static IEnumerable<Alliance> GetNeighborAlliances(this Regime regime, Data data)
     {
-        return regime.Polygons.Items(data)
+        return regime.GetPolys(data)
             .SelectMany(p => p.Neighbors.Items(data).Where(e => e.Regime.Fulfilled()))
             .Select(p => p.Regime.Entity(data).GetAlliance(data)).Distinct();
     }

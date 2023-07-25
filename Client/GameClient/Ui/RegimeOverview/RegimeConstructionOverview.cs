@@ -18,7 +18,7 @@ public partial class RegimeConstructionOverview : ScrollContainer
     {
         _container.ClearChildren();
         var constructions = data.Infrastructure.CurrentConstruction
-            .ByPoly.Where(kvp => regime.Polygons.RefIds.Contains(kvp.Key))
+            .ByPoly.Where(kvp => regime.GetPolys(data).Contains(data.Get<MapPolygon>(kvp.Key)))
             .SelectMany(kvp => kvp.Value).ToList();
         _container.CreateLabelAsChild($"Cap: {regime.Flows[FlowManager.ConstructionCap].FlowIn}");
         _container.CreateLabelAsChild($"In Use: {regime.Flows[FlowManager.ConstructionCap].FlowOut}");

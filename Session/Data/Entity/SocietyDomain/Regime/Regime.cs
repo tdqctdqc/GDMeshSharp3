@@ -16,12 +16,12 @@ public class Regime : Entity
     public RegimeFlows Flows { get; private set; }
     public RegimeHistory History { get; private set; }
     public string Name { get; protected set; }
-    public EntRefCol<MapPolygon> Polygons { get; protected set; }
+    // public EntRefCol<MapPolygon> Polygons { get; protected set; }
     public RegimeFinance Finance { get; private set; }
     public bool IsMajor { get; private set; }
 
     [SerializationConstructor] private Regime(int id, string name, Color primaryColor, Color secondaryColor, 
-        EntRefCol<MapPolygon> polygons, EntityRef<MapPolygon> capital,
+        EntityRef<MapPolygon> capital,
         ItemCount items, RegimeHistory history, ModelRef<Culture> culture,
         ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, 
         RegimeFlows flows) : base(id)
@@ -29,7 +29,6 @@ public class Regime : Entity
         Items = items;
         PrimaryColor = primaryColor;
         SecondaryColor = secondaryColor;
-        Polygons = polygons;
         Name = name;
         Capital = capital;
         History = history;
@@ -42,8 +41,6 @@ public class Regime : Entity
 
     public static Regime Create(MapPolygon seed, RegimeTemplate regimeTemplate, bool isMajor, CreateWriteKey key)
     {
-        var polygons = EntRefCol<MapPolygon>.Construct(nameof(Polygons), 
-            -1, new HashSet<int>{seed.Id}, key.Data);
         var items = ItemCount.Construct();
         var flows = new RegimeFlows(new Dictionary<int, FlowData>());
         flows.AddFlowIn(FlowManager.Income, 0f);
@@ -53,7 +50,7 @@ public class Regime : Entity
         var r = new Regime(-1, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
-            polygons, new EntityRef<MapPolygon>(seed.Id),
+            new EntityRef<MapPolygon>(seed.Id),
             items,
             RegimeHistory.Construct(key.Data), 
             regimeTemplate.Culture.MakeRef(),

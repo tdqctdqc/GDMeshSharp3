@@ -3,32 +3,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class EntityMultiIndexer<TMulti, TMult> : AuxData<TMult>
-    where TMulti : Entity where TMult : Entity
+public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
+    where TSingle : Entity where TMult : Entity
 {
-    public List<TMult> Get(TMulti s, Data data)
-    {
-        return _dic.ContainsKey(s.Id) 
-            ? _dic[s.Id].Select(i => data.RefFulfiller.Get<TMult>(i)).ToList() 
-            : null;
-    }
-    protected Dictionary<int, HashSet<int>> _dic;
-    private Func<TMult, TMulti> _getSingle;
-    private ValChangeAction<TMulti> _changedMult;
-    public EntityMultiIndexer(Data data, Func<TMult, TMulti> getSingle,
+    public HashSet<TMult> this[TSingle t] => _dic.ContainsKey(t) ? _dic[t] : null;
+    protected Dictionary<TSingle, HashSet<TMult>> _dic;
+    private Func<TMult, TSingle> _getSingle;
+    private ValChangeAction<TSingle> _changedMult;
+    public EntityMultiIndexer(Data data, Func<TMult, TSingle> getSingle,
         RefAction[] recalcTriggers,
-        params ValChangeAction<TMulti>[] changeTriggers) : base(data)
+        params ValChangeAction<TSingle>[] changeTriggers) : base(data)
     {
-        _dic = new Dictionary<int, HashSet<int>>();
+        _dic = new Dictionary<TSingle, HashSet<TMult>>();
         _getSingle = getSingle;
-        _changedMult = new ValChangeAction<TMulti>();
+        _changedMult = new ValChangeAction<TSingle>();
         _changedMult.Subscribe(n => 
         {
-            if (n.OldVal != null && _dic.TryGetValue(n.OldVal.Id, out var hash))
+            if (n.OldVal != null && _dic.TryGetValue(n.OldVal, out var hash))
             {
-                hash.Remove(n.Entity.Id);
+                hash.Remove((TMult)n.Entity);
             }
-            _dic.AddOrUpdate(n.NewVal.Id, n.Entity.Id);
+            _dic.AddOrUpdate(n.NewVal, (TMult)n.Entity);
         });
         foreach (var recalcTrigger in recalcTriggers)
         {
@@ -38,7 +33,7 @@ public class EntityMultiIndexer<TMulti, TMult> : AuxData<TMult>
         {
             changeTrigger.Subscribe(_changedMult);
         }
-        data.SubscribeForDestruction<TMulti>(HandleTSingleRemoved);
+        data.SubscribeForDestruction<TSingle>(HandleTSingleRemoved);
     }
 
     private void Recalc(Data data)
@@ -53,16 +48,16 @@ public class EntityMultiIndexer<TMulti, TMult> : AuxData<TMult>
     public override void HandleAdded(TMult added)
     {
         var single = _getSingle(added);
-        if(single != null) _dic.AddOrUpdate(single.Id, added.Id);
+        if(single != null) _dic.AddOrUpdate(single, added);
     }
 
     private void HandleTSingleRemoved(EntityDestroyedNotice n)
     {
-        _dic.Remove(n.Entity.Id);
+        _dic.Remove((TSingle)n.Entity);
     }
     public override void HandleRemoved(TMult removing)
     {
         var single = _getSingle(removing);
-        if(single != null) _dic[single.Id].Remove(removing.Id);
+        if(single != null) _dic[single].Remove(removing);
     }
 }

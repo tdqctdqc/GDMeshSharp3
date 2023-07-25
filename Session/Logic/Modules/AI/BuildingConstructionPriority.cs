@@ -189,7 +189,7 @@ public class BuildingConstructionPriority : BudgetPriority
         
         foreach (var slotType in slotTypes)
         {
-            var slots = regime.Polygons.Items(data).Select(p => p.PolyBuildingSlots[slotType]).Sum();
+            var slots = regime.GetPolys(data).Select(p => p.PolyBuildingSlots[slotType]).Sum();
             var slotConstraint = solver.MakeConstraint(0, slots, slotType.ToString());
             slotConstraints.Add(slotType, slotConstraint);
         }
@@ -207,7 +207,7 @@ public class BuildingConstructionPriority : BudgetPriority
         BudgetScratch scratch, MajorTurnOrders orders)
     {
         var currConstruction = data.Infrastructure.CurrentConstruction;
-        var availPolys = regime.Polygons;
+        var availPolys = regime.GetPolys(data);
         
         //sort buildings by type then assign polys from that
         foreach (var kvp in toBuild)
@@ -218,7 +218,7 @@ public class BuildingConstructionPriority : BudgetPriority
             for (var i = 0; i < num; i++)
             {
                 MapPolygon poly = null;
-                poly = availPolys.Items(data)
+                poly = availPolys
                     .FirstOrDefault(p => p.PolyBuildingSlots[building.BuildingType] > 0);
                 if (poly == null) continue;
                 orders.StartConstructions.ConstructionsToStart.Add(StartConstructionRequest.Construct(building, poly));

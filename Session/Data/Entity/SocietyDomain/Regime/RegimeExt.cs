@@ -17,9 +17,13 @@ public static class RegimeExt
         return data.BaseDomain.PlayerAux.ByRegime[r];
     }
 
+    public static IEnumerable<MapPolygon> GetPolys(this Regime r, Data data)
+    {
+        return data.Planet.PolygonAux.PolysByRegime[r];
+    }
     public static IEnumerable<PolyPeep> GetPeeps(this Regime r, Data data)
     {
-        return r.Polygons.Items(data).SelectWhere(p => p.HasPeep(data))
+        return r.GetPolys(data).SelectWhere(p => p.HasPeep(data))
             .Select(p => p.GetPeep(data));
     }
 

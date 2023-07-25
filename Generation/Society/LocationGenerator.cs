@@ -208,7 +208,7 @@ public class LocationGenerator : Generator
         var taken = new HashSet<string>();
         foreach (var r in data.GetAll<Regime>())
         {
-            var settlements = r.Polygons.Items(Data).Where(p => p.HasSettlement(data))
+            var settlements = r.GetPolys(Data).Where(p => p.HasSettlement(data))
                 .Select(p => p.GetSettlement(data));
             var names = r.Culture.Model(data).SettlementNames.Where(n => taken.Contains(n) == false).ToList();
             if (settlements.Count() > names.Count) continue;

@@ -57,7 +57,7 @@ public class PeepGenerator : Generator
     {
         var developmentRatio = .5f;
         var foodConsPerPeep = _data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
-        var territory = r.Polygons.Items(_data);
+        var territory = r.GetPolys(_data);
         var foodSurplus = new ConcurrentBag<float>();
         makeFoodProd(FoodProdTechniqueManager.Farm);
         makeFoodProd(FoodProdTechniqueManager.Ranch);
@@ -98,7 +98,7 @@ public class PeepGenerator : Generator
 
         var polyBuildings = new Dictionary<MapPolygon, List<BuildingModel>>();
         
-        foreach (var p in r.Polygons.Items(_data))
+        foreach (var p in r.GetPolys(_data))
         {
             if (p.GetResourceDeposits(_data) is IEnumerable<ResourceDeposit> rds == false)
             {
@@ -134,7 +134,7 @@ public class PeepGenerator : Generator
     private float GenerateTownHalls(Regime r)
     {
         var townHall = BuildingModelManager.TownHall;
-        var settlements = r.Polygons.Items(_data).Where(p => p.HasSettlement(_data))
+        var settlements = r.GetPolys(_data).Where(p => p.HasSettlement(_data))
             .Select(p => p.GetSettlement(_data));
         foreach (var s in settlements)
         {
@@ -149,7 +149,7 @@ public class PeepGenerator : Generator
         if (popBudget <= 0) return;
         var factory = BuildingModelManager.Factory;
 
-        var polys = r.Polygons.Items(_data).Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
+        var polys = r.GetPolys(_data).Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
         var portions = Apportioner.ApportionLinear(popBudget, polys,
             p =>
             {
@@ -176,7 +176,7 @@ public class PeepGenerator : Generator
     private void GenerateLaborers(Regime r, float popSurplus)
     {
         if (popSurplus <= 0) return;
-        var polys = r.Polygons.Items(_data).ToList();
+        var polys = r.GetPolys(_data).ToList();
         var laborDesire = 0;
         foreach (var p in polys)
         {
@@ -214,7 +214,7 @@ public class PeepGenerator : Generator
 
     private void GenerateUnemployed(Regime r, int pop)
     {
-        var settlementPolys = r.Polygons.Items(_data)
+        var settlementPolys = r.GetPolys(_data)
             .Where(p => p.HasSettlement(_data))
             .ToList();
         var portions = Apportioner.ApportionLinear(pop, settlementPolys, 

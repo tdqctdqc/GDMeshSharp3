@@ -11,7 +11,7 @@ public class Income : Flow
 
     public override float GetNonBuildingFlow(Regime r, Data d)
     {
-        var fromBuildings = r.Polygons.Items(d)
+        var fromBuildings = r.GetPolys(d)
             .Where(p => p.GetBuildings(d) != null)
             .Sum(p =>
                 {
@@ -21,7 +21,7 @@ public class Income : Flow
                     return bs.Select(b => b.Model.Model(d)).Sum(b => b.Income);
                 }
             );
-        var fromAgriculture = r.Polygons.Items(d).Sum(p => p.PolyFoodProd.Income(d));
+        var fromAgriculture = r.GetPolys(d).Sum(p => p.PolyFoodProd.Income(d));
         var tradeBalance = r.Finance.LastTradeBalance;
         
         return fromBuildings + fromAgriculture + tradeBalance;
