@@ -4,29 +4,19 @@ using System.Linq;
 using Godot;
 
 
-public abstract class ValChangeNotice
+public class ValChangeNotice<TEntity, TProperty> where TEntity : Entity
 {
-    public Entity Entity { get; private set; }
-    protected ValChangeNotice(Entity entity)
-    {
-        Entity = entity;
-    }
-
-    public abstract void Clear();
-}
-
-public class ValChangeNotice<TProperty> : ValChangeNotice
-{
+    public TEntity Entity { get; private set; }
     public TProperty NewVal { get; private set; }
     public TProperty OldVal { get; private set; }
 
-    public ValChangeNotice(Entity entity, TProperty newVal, TProperty oldVal) 
-        : base(entity)
+    public ValChangeNotice(TEntity entity, TProperty newVal, TProperty oldVal)
     {
+        Entity = entity;
         NewVal = newVal;
         OldVal = oldVal;
     }
-    public override void Clear()
+    public void Clear()
     {
         NewVal = default;
         OldVal = default;

@@ -16,12 +16,12 @@ public class PropEntityIndexer<TEntity, TKey> : AuxData<TEntity>
         return new PropEntityIndexer<TEntity, TKey>(data, get);
     }
     public static PropEntityIndexer<TEntity, TKey> CreateDynamic(Data data, Func<TEntity, TKey> get,
-        params ValChangeAction<TKey>[] changedValTriggers)
+        params ValChangeAction<TEntity, TKey>[] changedValTriggers)
     {
         return new PropEntityIndexer<TEntity, TKey>(data, get, changedValTriggers);
     }
     protected PropEntityIndexer(Data data, Func<TEntity, TKey> get,
-        params ValChangeAction<TKey>[] changedValTriggers) : base(data)
+        params ValChangeAction<TEntity, TKey>[] changedValTriggers) : base(data)
     {
         _get = get;
         _dic = new Dictionary<TKey, TEntity>();
@@ -29,7 +29,7 @@ public class PropEntityIndexer<TEntity, TKey> : AuxData<TEntity>
         {
             trigger.Subscribe(n =>
             {
-                var t = (TEntity) n.Entity;
+                var t = n.Entity;
                 if (n.OldVal != null)
                 {
                     if (_dic.ContainsKey(n.OldVal) == false) throw new Exception();

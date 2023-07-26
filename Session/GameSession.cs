@@ -23,7 +23,7 @@ public partial class GameSession : Node, IDataSession
     {
         
     }
-    public void StartAsHost(Data data, MapGraphics graphics = null)
+    public void StartAsHost(Data data)
     {
         Data = data;
         Data.ClientPlayerData.SetLocalPlayerGuid(new Guid());
@@ -38,7 +38,7 @@ public partial class GameSession : Node, IDataSession
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
         Player.Create(_key.Data.ClientPlayerData.LocalPlayerGuid, "Doot", hKey);
-        StartClient(hServer, graphics);
+        StartClient(hServer);
         logic.Start();
         _client.Ui.Prompts.AddPromptIcon(Prompt.GetChooseRegimePrompt(hKey));
     }
@@ -55,7 +55,7 @@ public partial class GameSession : Node, IDataSession
 
         Data.Notices.FinishedStateSync.Subscribe(() =>
         {
-            StartClient(server, null);
+            StartClient(server);
         });
         server.Setup(this, logic, Data);
         StartServer(server);
@@ -67,10 +67,10 @@ public partial class GameSession : Node, IDataSession
         AddChild((Node)server);
     }
 
-    private void StartClient(IServer server, MapGraphics graphics)
+    private void StartClient(IServer server)
     {
         _client = new GameClient();
-        _client.Setup(this, server, graphics);
+        _client.Setup(this, server);
         AddChild((Node)Client);
     }
     public override void _UnhandledInput(InputEvent e)

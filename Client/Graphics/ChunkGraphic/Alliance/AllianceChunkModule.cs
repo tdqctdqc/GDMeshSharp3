@@ -36,20 +36,20 @@ public partial class AllianceChunkModule : MapChunkGraphicModule
             c => new AllianceChunkModule(c, d), 
             d);
         l.RegisterForNotice(d.Planet.PolygonAux.ChangedRegime,
-            r => ((MapPolygon) r.Entity).GetChunk(d),
+            r => r.Entity.GetChunk(d),
             (n, m) => { m.HandlePolygonRegimeChange(n); });
         return l;
     }
 
-    private void HandlePlayerRegimeChange(ValChangeNotice<Regime> n, Data d)
+    private void HandlePlayerRegimeChange(ValChangeNotice<Player, Regime> n, Data d)
     {
-        var player = (Player) n.Entity;
+        var player = n.Entity;
         if (player != d.BaseDomain.PlayerAux.LocalPlayer) return;
         _fill.Redraw(d);
     }
-    private void HandlePolygonRegimeChange(ValChangeNotice<Regime> notice)
+    private void HandlePolygonRegimeChange(ValChangeNotice<MapPolygon, Regime> notice)
     {
-        _fill.Updates.Add((MapPolygon) notice.Entity);
+        _fill.Updates.Add(notice.Entity);
     }
     private void HandleTurn(Data d)
     {

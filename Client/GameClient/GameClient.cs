@@ -27,7 +27,7 @@ public partial class GameClient : Node, IClient
         MapGraphics?.Process(delta);
         Ui?.Process(delta, Cam, WriteKey);
     }
-    public void Setup(GameSession session, IServer server, MapGraphics graphics)
+    public void Setup(GameSession session, IServer server)
     {
         Settings = ClientSettings.Load();
         WriteKey = new ClientWriteKey(session.Data, session);
@@ -35,15 +35,7 @@ public partial class GameClient : Node, IClient
         AddChild(cam);
         Cam = cam;
 
-        if (graphics == null)
-        {
-            MapGraphics = new MapGraphics();
-            MapGraphics.Setup(WriteKey);
-        }
-        else
-        {
-            MapGraphics = graphics;
-        }
+        MapGraphics = new MapGraphics(WriteKey);
         AddChild(MapGraphics);
         
         BuildUi(session.Data, WriteKey.Session.Server);

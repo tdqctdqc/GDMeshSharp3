@@ -87,7 +87,7 @@ public partial class MapPolygon : Entity
     {
         var old = Regime.Entity(key.Data);
         Regime = r.MakeRef();
-        key.Data.Planet.PolygonAux.ChangedRegime.Invoke(new ValChangeNotice<Regime>(this, r, old));
+        key.Data.Planet.PolygonAux.ChangedRegime.Invoke(this, r, old);
     }
     public void SetTerrainTris(PolyTris tris, GenWriteKey key)
     {

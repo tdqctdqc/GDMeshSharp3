@@ -10,12 +10,12 @@ public class EntityPropEntityIndexer<TEntity, TKey> : PropEntityIndexer<TEntity,
         return new EntityPropEntityIndexer<TEntity, TKey>(data, get);
     }
     public static EntityPropEntityIndexer<TEntity, TKey> CreateDynamic(Data data, Func<TEntity, EntityRef<TKey>> get,
-        params ValChangeAction<EntityRef<TKey>>[] changedValTriggers)
+        params ValChangeAction<TEntity, EntityRef<TKey>>[] changedValTriggers)
     {
         return new EntityPropEntityIndexer<TEntity, TKey>(data, get, changedValTriggers);
     }
     private EntityPropEntityIndexer(Data data, Func<TEntity, EntityRef<TKey>> get,
-        params ValChangeAction<EntityRef<TKey>>[] changedValTriggers) 
+        params ValChangeAction<TEntity, EntityRef<TKey>>[] changedValTriggers) 
         : base(data, e => get(e) == null ? (int?)null : get(e).RefId)
     {
         foreach (var trigger in changedValTriggers)

@@ -32,7 +32,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
             m => m.SettlementIcons, d);
         l.RegisterForNotice(d.Infrastructure.SettlementAux.ChangedTier, 
             n => ((Settlement)n.Entity).Poly.Entity(d).GetChunk(d),
-            (notice, graphic) => graphic.SettlementIcons.QueueChange((Settlement)notice.Entity));
+            (notice, graphic) => graphic.SettlementIcons.QueueChange(notice.Entity));
         
         l.RegisterForAdd(d.Infrastructure.ConstructionAux.StartedConstruction,
             k => k.Pos.Poly(d).GetChunk(d),

@@ -64,13 +64,13 @@ public partial class GeneratorClient : Node, IClient
         _setupMapGraphicsToken = new CancellationTokenSource();
         _setupMapGraphics = Task.Run(() =>
         {
-            var mapGraphics = new MapGraphics();
-            mapGraphics.Setup(WriteKey);
+            var mapGraphics = new MapGraphics(WriteKey);
             return mapGraphics;
         }, _setupMapGraphicsToken.Token);
     }
     public override void _ExitTree()
     {
         _setupMapGraphicsToken?.Cancel();
+        MapGraphics.Free();
     }
 }

@@ -28,8 +28,8 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
         return l;
     }
 
-    private void HandlePolygonRegimeChange(ValChangeNotice<Regime> notice)
+    private void HandlePolygonRegimeChange(ValChangeNotice<MapPolygon, Regime> notice)
     {
-        _fill.Updates.Add((MapPolygon) notice.Entity);
+        _fill.Updates.Add(notice.Entity);
     }
 }

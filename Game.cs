@@ -43,11 +43,11 @@ public partial class Game : Node
         SetSession(session);
         session.StartAsRemote();
     }
-    public void StartHostSession(Data data, MapGraphics graphics = null)
+    public void StartHostSession(Data data)
     {
         var session = new GameSession();
         SetSession(session);
-        session.StartAsHost(data, graphics);
+        session.StartAsHost(data);
     }
 
     public void StartSandbox()

@@ -9,33 +9,31 @@ public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
     public HashSet<TMult> this[TSingle t] => _dic.ContainsKey(t) ? _dic[t] : null;
     protected Dictionary<TSingle, HashSet<TMult>> _dic;
     private Func<TMult, TSingle> _getSingle;
-    private ValChangeAction<TSingle> _changedMult;
     public EntityMultiIndexer(Data data, Func<TMult, TSingle> getSingle,
         RefAction[] recalcTriggers,
-        params ValChangeAction<TSingle>[] changeTriggers) : base(data)
+        params ValChangeAction<TMult, TSingle>[] changeTriggers) : base(data)
     {
         _dic = new Dictionary<TSingle, HashSet<TMult>>();
         _getSingle = getSingle;
-        _changedMult = new ValChangeAction<TSingle>();
-        _changedMult.Subscribe(n => 
-        {
-            if (n.OldVal != null && _dic.TryGetValue(n.OldVal, out var hash))
-            {
-                hash.Remove((TMult)n.Entity);
-            }
-            _dic.AddOrUpdate(n.NewVal, (TMult)n.Entity);
-        });
         foreach (var recalcTrigger in recalcTriggers)
         {
             recalcTrigger.Subscribe(() => Recalc(data));
         }
         foreach (var changeTrigger in changeTriggers)
         {
-            changeTrigger.Subscribe(_changedMult);
+            changeTrigger.Subscribe(HandleValChanged);
         }
         data.SubscribeForDestruction<TSingle>(HandleTSingleRemoved);
     }
 
+    private void HandleValChanged(ValChangeNotice<TMult, TSingle> n)
+    {
+        if (n.OldVal != null && _dic.TryGetValue(n.OldVal, out var hash))
+        {
+            hash.Remove((TMult)n.Entity);
+        }
+        _dic.AddOrUpdate(n.NewVal, (TMult)n.Entity);
+    }
     private void Recalc(Data data)
     {
         _dic.Clear();

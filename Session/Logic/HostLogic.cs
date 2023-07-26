@@ -217,7 +217,6 @@ public class HostLogic : ILogic
         }
         for (int i = 0; i < logicResult.CreateEntities.Count; i++)
         {
-            GD.Print("Doot");
             var entity = logicResult.CreateEntities[i].Invoke(_hKey);
             logicResult.Messages.Add(EntityCreationUpdate.Create(entity, _hKey));
         }

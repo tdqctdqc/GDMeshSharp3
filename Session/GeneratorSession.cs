@@ -36,11 +36,11 @@ public partial class GeneratorSession : Node, IDataSession
     public void TryGenerate()
     {
         _generating = true;
-        GD.Print("TRYING GEN");     
-        Generate();
 
         try
         {       
+            GD.Print("TRYING GEN");     
+            Generate();
         }
         catch (Exception e)
         {

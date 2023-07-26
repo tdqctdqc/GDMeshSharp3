@@ -7,16 +7,6 @@ using Godot;
 public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where TEntity : Entity
 {
     public string PropertyName { get; private set; }
-
-    public ValChangeAction<TProperty> ValChanged()
-    {
-        if (_valChanged == null)
-        {
-            _valChanged = new ValChangeAction<TProperty>();
-        }
-        return _valChanged;
-    }
-    private ValChangeAction<TProperty> _valChanged;
     protected Func<TEntity, TProperty> GetProperty { get; private set; }
     protected Action<TEntity, TProperty> SetProperty { get; private set; }
     public EntityVarMeta(PropertyInfo prop)

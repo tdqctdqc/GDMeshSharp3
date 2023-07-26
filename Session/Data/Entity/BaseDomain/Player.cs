@@ -27,8 +27,7 @@ public class Player : Entity
     {
         var old = Regime.Entity(key.Data);
         Regime = regime.MakeRef();
-        key.Data.BaseDomain.PlayerAux.PlayerChangedRegime
-            .Invoke(new ValChangeNotice<Regime>(this, regime, old));
+        key.Data.BaseDomain.PlayerAux.PlayerChangedRegime.Invoke(this, regime, old);
     }
     
 }

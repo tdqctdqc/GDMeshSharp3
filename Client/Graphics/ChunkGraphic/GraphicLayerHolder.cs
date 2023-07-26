@@ -12,8 +12,6 @@ public class GraphicLayerHolder
         Layers = new List<IGraphicLayer>();
         Layers.Add(Terrain(segmenter, data, mg));
         Layers.Add(PolyFill(segmenter, data, mg));
-        // Layers.Add(RegimeChunkModule.GetLayer(data, segmenter));
-        // Layers.Add(AllianceChunkModule.GetLayer(data, segmenter));
         // Layers.Add(ResourceDepositPolyFill(segmenter, data, mg));
         Layers.Add(Roads(segmenter, data, mg));
         Layers.Add(IconsChunkModule.GetLayer(data, segmenter));
