@@ -3,35 +3,47 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public class PromptManager
+public partial class PromptManager : Node, IClientComponent
 {
+    public Action Disconnect { get; set; }
+    public void Process(float delta)
+    {
+        
+    }
+
     private Dictionary<Prompt, PromptWindow> _windows;
     private float _timer;
     private float _period = 1f;
-    private GameUi _gameUi;
-
-    public PromptManager(GameUi gameUi, Data data)
+    private Client _client;
+    public PromptManager(Client client, Data data)
     {
-        _gameUi = gameUi;
+        _client = client;
         _windows = new Dictionary<Prompt, PromptWindow>();
+        data.BaseDomain.PlayerAux.SetLocalPlayer.SubscribeForNode(
+            () =>
+            {
+                var p = data.BaseDomain.PlayerAux.LocalPlayer;
+                if (p.Regime.Empty())
+                {
+                    AddPrompt(new ChooseRegimePrompt(data));
+                }
+            }, this);
+        client.UiLayer.AddChild(this);
     }
 
-    public void AddPromptIcon(Prompt prompt)
+    public void AddPrompt(Prompt prompt)
     {
         var icon = new PromptSideIcon();
-        icon.Setup(prompt, _gameUi);
-        _gameUi.PromptSidebar.AddPromptIcon(icon);
+        icon.Setup(prompt);
+        Game.I.Client.GetComponent<UiFrame>().RightSidebar.AddChild(icon);
     }
     public void OpenPromptWindow(Prompt prompt)
     {
-        if (_windows.ContainsKey(prompt) == false)
-        {
-            var w = SceneManager.Instance<PromptWindow>();
-            w.Setup(prompt);
-            _gameUi.AddChild(w);
-            w.PopupCentered();
-            _windows.Add(prompt, w);
-            w.CloseRequested += () => _windows.Remove(prompt);
-        }
+        var w = Game.I.Client.GetComponent<WindowManager>()
+            .GetWindow<PromptWindow>();
+        w.Setup(prompt);
+        w.PopupCentered();
     }
+
+    Node IClientComponent.Node => this;
 }

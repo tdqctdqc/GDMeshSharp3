@@ -28,8 +28,8 @@ public class DeclareWarProposal : AllianceProposal
     {
         var alliance = key.Data.Get<Alliance>(AllianceId);
         var target = key.Data.Get<Alliance>(TargetAllianceId);
-        alliance.SetWar(target, key);
-        target.SetWar(alliance, key);
+        alliance.AtWar.Add(target, key);
+        target.AtWar.Add(alliance, key);
     }
 
     public override bool Valid(Data data)

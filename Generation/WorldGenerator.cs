@@ -7,25 +7,31 @@ using Godot;
 public class WorldGenerator
 {
     public GenData Data { get; private set; }
+    public bool Generating { get; private set; }
     private GenWriteKey _key;
     private Stopwatch _totalTime;
-    private GeneratorSession _session;
-    public WorldGenerator(GeneratorSession session, GenData data)
+    private Action _succeeded;
+    public WorldGenerator(GenData data, GameSession session, Action succeeded)
     {
-        _session = session;
+        _succeeded = succeeded;
         Data = data;
         _key = new GenWriteKey(Data, session);
         _totalTime = new Stopwatch();
     }
     public GenReport Generate()
     {
-        Game.I.Random.Seed = (ulong)_session.GenMultiSettings.PlanetSettings.Seed.Value;
+        Generating = true;
+        Game.I.Random.Seed = (ulong)Data.GenMultiSettings.PlanetSettings.Seed.Value;
         var report = new GenReport(GetType().Name);
         GenerateInner(report);
+        Data.Generated = true;
+        Generating = false;
+        GD.Print("generated");
+        _succeeded.Invoke();
         return report;
     }
 
-    private GenData GenerateInner(GenReport r)
+    private void GenerateInner(GenReport r)
     {
         _totalTime.Start();
     
@@ -83,8 +89,6 @@ public class WorldGenerator
         
         _totalTime.Stop();
         
-        GD.Print("world gen time was " + _totalTime.Elapsed.TotalMilliseconds + "ms");
-        return Data;
     }
 
     private void RunGenerator(Generator gen)
@@ -95,4 +99,5 @@ public class WorldGenerator
             Game.I.Logger.Log(r.GetTimes(), LogType.Generation);
         }, gen.GetType().Name, LogType.Generation);
     }
+    
 }

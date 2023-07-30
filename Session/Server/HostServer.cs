@@ -18,7 +18,11 @@ public partial class HostServer : Node, IServer
         _tcp = new TcpServer();
         _tcp.Listen((ushort)_port);
     }
-
+    public void Setup(HostLogic logic, Data data, GameSession session)
+    {
+        _logic = logic;
+        _key = new HostWriteKey(this, logic, data, session);
+    }
     public override void _Process(double delta)
     {
         if (_tcp.IsConnectionAvailable())
@@ -41,11 +45,7 @@ public partial class HostServer : Node, IServer
         _peers.Add(syncer);
         _peersByGuid.Add(newPlayerGuid, syncer);
     }
-    public void SetDependencies(HostLogic logic, Data data, GameSession session)
-    {
-        _logic = logic;
-        _key = new HostWriteKey(this, logic, data, session);
-    }
+    
 
     public void QueueMessage(Message m)
     {

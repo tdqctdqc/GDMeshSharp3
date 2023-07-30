@@ -5,7 +5,7 @@ using Godot;
 
 public partial class TerrainChunkModule : MapChunkGraphicModule
 {
-    public TerrainChunkModule(MapChunk chunk, Data data) : base(nameof(TerrainChunkModule))
+    public TerrainChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(TerrainChunkModule))
     {
         var lfLayer = new PolyTriFillChunkGraphic("Landform", chunk, 
             (pt, d) => pt.Landform.Color);

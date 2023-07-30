@@ -48,7 +48,6 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
                 iter++;
             }
         }
-
         _arrayMesh = MeshGenerator.GetArrayMesh(vertices.ToArray(), colors.ToArray());
         Mesh = _arrayMesh;
     }
@@ -65,6 +64,7 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
     }
     public void Update(Data d)
     {
+        if (Updates.Count == 0) return;
         var mdt = new MeshDataTool();
         mdt.CreateFromSurface(_arrayMesh, 0);
         foreach (var key in Updates)
@@ -82,6 +82,4 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
         mdt.CommitToSurface(_arrayMesh);
         Updates.Clear();
     }
-
-    
 }

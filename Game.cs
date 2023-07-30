@@ -12,7 +12,7 @@ public partial class Game : Node
     public RandomNumberGenerator Random = new RandomNumberGenerator();
     private ISession _session;
 
-    public IClient Client => _session.Client;
+    public Client Client => _session.Client;
     public override void _Ready()
     {
         if (I != null)
@@ -22,46 +22,34 @@ public partial class Game : Node
         I = this;
         Logger = new Logger();
         Assets.Setup();
-        SetSerializer();
         StartMainMenuSession();
         
     }
-    public void SetSerializer()
-    {
-    }
     public void StartMainMenuSession()
     {
-        SetSession(new MainMenuSession());
-    }
-    public void StartGeneratorSession()
-    {
-        SetSession(new GeneratorSession());
+        AddChild(new MainMenuSession());
     }
     public void StartClientSession()
     {
-        var session = new GameSession();
+        var session = GameSession.StartAsRemote();
         SetSession(session);
-        session.StartAsRemote();
     }
-    public void StartHostSession(Data data)
+    public void StartHostSession()
     {
-        var session = new GameSession();
+        var session = GameSession.StartAsGenerator();
         SetSession(session);
-        session.StartAsHost(data);
     }
-
-    public void StartSandbox()
+    public void LoadHostSession(Data data)
     {
-        SetSession(new SandboxSession());
+        var session = GameSession.StartAsLoad(data);
+        SetSession(session);
     }
-
     private void SetSession(Node session)
     {
         if(_session != null) RemoveChild((Node) _session);
         _session?.QueueFree();
         session.Name = "Session";
         _session = (ISession)session;
-        _session.Setup();
         AddChild(session);
     }
 }

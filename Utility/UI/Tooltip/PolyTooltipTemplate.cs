@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PolyDataTooltipTemplate : DataTooltipTemplate<PolyTriPosition>
+public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
 {
-    public PolyDataTooltipTemplate() : base()
+    public PolyTooltipTemplate() : base()
     {
     }
 

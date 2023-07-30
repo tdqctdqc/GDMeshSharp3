@@ -7,12 +7,6 @@ using Godot;
 using Poly2Tri;
 public class TriangulationTesting
 {
-    private SandboxClient _client;
-
-    public TriangulationTesting(SandboxClient client)
-    {
-        _client = client;
-    }
 
     public void Run()
     {

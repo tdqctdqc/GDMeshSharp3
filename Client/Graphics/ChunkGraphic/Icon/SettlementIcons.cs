@@ -15,11 +15,11 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
     }
 
 
-    protected override Node2D MakeGraphic(Settlement settlement, Data data)
+    protected override Node2D MakeGraphic(Settlement element, Data data)
     {
         var node = new Node2D();
-        var icon = settlement.Tier.Model(data).Icon;
-        var poly = settlement.Poly.Entity(data);
+        var icon = element.Tier.Model(data).Icon;
+        var poly = element.Poly.Entity(data);
         var urbanTris = poly.Tris.Tris
             .Where(t => t.Landform == LandformManager.Urban);
         foreach (var urbanTri in urbanTris)
@@ -31,7 +31,7 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
 
         var nameNode = new Node2D();
         var nameLabel = new Label();
-        nameLabel.Text = settlement.Name;
+        nameLabel.Text = element.Name;
         nameLabel.Theme = UiThemes.DefaultTheme;
         nameLabel.LabelSettings = UiThemes.MapLabelSettings;
         SetRelPos(nameNode, urbanTris.First().GetPosition(), data);
@@ -45,6 +45,11 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
     {
         return Chunk.Polys.Where(p => p.HasSettlement(data))
             .Select(p => p.GetSettlement(data));
+    }
+
+    protected override bool Ignore(Settlement element, Data data)
+    {
+        return false;
     }
 }
 

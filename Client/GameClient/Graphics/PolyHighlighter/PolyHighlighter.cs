@@ -150,7 +150,7 @@ public partial class PolyHighlighter : Node2D
     }
     private void Move(MapPolygon poly)
     {
-        Position = Game.I.Client.Cam.GetMapPosInGlobalSpace(poly.Center);
+        Position = Game.I.Client.Cam().GetMapPosInGlobalSpace(poly.Center);
     }
     public void Clear()
     {

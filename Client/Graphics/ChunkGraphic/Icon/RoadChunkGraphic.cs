@@ -15,10 +15,10 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicNode<int>
         _mb = new MeshBuilder();
     }
 
-    protected override Node2D MakeGraphic(int settlement, Data data)
+    protected override Node2D MakeGraphic(int element, Data data)
     {
         _mb.Clear();
-        var seg = data.Get<RoadSegment>(settlement);
+        var seg = data.Get<RoadSegment>(element);
         var hi = seg.Edge.Entity(data).HighPoly.Entity(data);
         var lo = seg.Edge.Entity(data).LowPoly.Entity(data);
         seg.Road.Model(data).Draw(_mb, Chunk.RelTo.GetOffsetTo(hi.Center, data), 
@@ -48,5 +48,10 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicNode<int>
         }
 
         return res;
+    }
+
+    protected override bool Ignore(int element, Data data)
+    {
+        return false;
     }
 }

@@ -1,12 +1,17 @@
 
 using Godot;
 
-public class RegimeInfoBar
+public partial class RegimeInfoBar : HBoxContainer
 {
-    public static Node Create(Data data)
+    public RegimeInfoBar(Data data, bool host)
     {
-        var hbox = new HBoxContainer();
         var player = data.BaseDomain.PlayerAux.LocalPlayer;
+        
+        this.AddChildWithVSeparator(TickDisplay.Create(data));
+        var hostClientLabel = new Label();
+        hostClientLabel.Text = host ? "Host" : "Client";
+        this.AddChildWithVSeparator(hostClientLabel);
+        
         var regimeFlagRect = new TextureRect();
         regimeFlagRect.Size = new Vector2(15f, 10f);
         regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.FitWidthProportional;
@@ -25,39 +30,13 @@ public class RegimeInfoBar
                 }
             },
             data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
-        hbox.AddChild(regimeFlagRect);
+        AddChild(regimeFlagRect);
         
         var regimeNameLabel = new Label();
         StatLabel.Construct<string>("", regimeNameLabel, 
             () => data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data)?.Name,
             data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
-        hbox.AddChildWithVSeparator(regimeNameLabel);
-
-        var icon = Icon.Create("Income", Icon.AspectRatio._1x1, 25f);
-
-        var income = NodeExt.MakeFlowStatDisplay(FlowManager.Income, 
-            data, 
-            10f,
-            data.Notices.Ticked.Blank,
-            data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank
-        );
-        hbox.AddChildWithVSeparator(income);
-        
-        var conCap = NodeExt.MakeFlowStatDisplay(FlowManager.ConstructionCap, 
-            data, 
-            10f,
-            data.Notices.Ticked.Blank,
-            data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank
-        );
-        hbox.AddChildWithVSeparator(conCap);
-        
-        var indPower = NodeExt.MakeFlowStatDisplay(FlowManager.IndustrialPower, 
-            data, 
-            10f,
-            data.Notices.Ticked.Blank,
-            data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank
-        );
-        hbox.AddChildWithVSeparator(indPower);
-        return hbox;
+        this.AddChildWithVSeparator(regimeNameLabel);
+        this.AddChildWithVSeparator(new RegimePeepsInfoBar(data));
     }
 }

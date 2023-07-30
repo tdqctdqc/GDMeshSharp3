@@ -4,38 +4,43 @@ using System.Data;
 using System.Linq;
 using Godot;
 
-public partial class TooltipManager : Control
+public partial class TooltipManager : Control, IClientComponent
 {
     private TooltipPanel _panel;
-    private ITooltipInstance _currInstance;
+    private ITooltipTemplate _currTemplate;
+    private int _callerHash;
     private Vector2 _offsetFromMouse = new Vector2(20f, 20f);
     private Data _data;
-    public TooltipManager(Data data)
+    
+    Node IClientComponent.Node => this;
+    public Action Disconnect { get; set; }
+
+    public TooltipManager(Data data, Client client)
     {
         _data = data;
         _panel = new TooltipPanel();
         AddChild(_panel);
         _panel.Visible = false;
-        Game.I.Client.UiRequests.PromptTooltip.SubscribeForNode(PromptTooltip, this);
-        Game.I.Client.UiRequests.HideTooltip.SubscribeForNode(HideTooltip, this);
+        client.UiLayer.AddChild(this);
     }
-    public void Process(float delta, Vector2 mousePosInMapSpace)
+    public void Process(float delta)
     {
-        _panel.Move(GetLocalMousePosition() + _offsetFromMouse);
+        if(_currTemplate != null) _panel.Move(GetLocalMousePosition() + _offsetFromMouse);
     }
-    private void PromptTooltip(ITooltipInstance instance)
+    public void PromptTooltip(ITooltipTemplate template, object element, int callerHash)
     {
+        _callerHash = callerHash;
         _panel.Visible = true;
-        _panel.Setup(instance, _data);
-        _currInstance = instance;
+        _panel.Setup(template, element, _data);
+        _currTemplate = template;
     }
 
-    private void HideTooltip(ITooltipInstance instance)
+    public void HideTooltip(int callerHash)
     {
-        if (_currInstance == instance)
+        if (callerHash == _callerHash)
         {
             _panel.Visible = false;
-            _currInstance = null;
+            _currTemplate = null;
         }
     }
 }

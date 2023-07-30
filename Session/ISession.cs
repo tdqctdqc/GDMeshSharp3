@@ -4,8 +4,7 @@ using System;
 public interface ISession
 {
     // RefFulfiller RefFulfiller { get; }
-    IClient Client { get; }
+    Client Client { get; }
     IServer Server { get; }
     void QueueFree();
-    void Setup();
 }

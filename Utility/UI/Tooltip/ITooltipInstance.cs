@@ -1,6 +1,6 @@
 
 public interface ITooltipInstance
 {
-    IDataTooltipTemplate Template { get; }
+    ITooltipTemplate Template { get; }
     object Element { get; }
 }

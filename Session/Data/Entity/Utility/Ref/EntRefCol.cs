@@ -32,7 +32,6 @@ public class EntRefCol<TRef>
     public void Add(TRef t, StrongWriteKey key)
     {
         var owner = key.Data[OwnerEntityId];
-
         if (RefIds.Contains(t.Id)) return;
         RefIds.Add(t.Id);
         _refs?.Add(t);

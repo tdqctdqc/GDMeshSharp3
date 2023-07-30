@@ -18,7 +18,7 @@ public partial class RemoteServer : Node, IServer
     private string _ip = "127.0.0.1";
     private int _port = 3306;
 
-    public void Setup(ISession session, RemoteLogic logic, Data data)
+    public void Setup(GameSession session, RemoteLogic logic, Data data)
     {
         _key = new ServerWriteKey(data, session);
         _streamPeer = new StreamPeerTcp();

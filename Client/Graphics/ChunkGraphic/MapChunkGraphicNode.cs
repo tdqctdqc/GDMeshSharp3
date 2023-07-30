@@ -76,6 +76,7 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
     }
     private void Add(TKey key, Data data)
     {
+        if (Ignore(key, data)) return;
         var graphic = MakeGraphic(key, data);
         _graphics.Add(key, graphic);
         AddChild(graphic);
@@ -87,12 +88,11 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
             _graphics[key].QueueFree();
             _graphics.Remove(key);
         }
-        var graphic = MakeGraphic(key, data);
-        _graphics.Add(key, graphic);
-        AddChild(graphic);
+        Add(key, data);
     }
     private void Remove(TKey key, Data data)
     {
+        if (_graphics.ContainsKey(key) == false) return;
         var graphic = _graphics[key];
         graphic.QueueFree();
         _graphics.Remove(key);
@@ -109,8 +109,9 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
         node.Position = Chunk.RelTo.GetOffsetTo(poly, data);
     }
     
-    protected abstract Node2D MakeGraphic(TKey settlement, Data data);
+    protected abstract Node2D MakeGraphic(TKey element, Data data);
     protected abstract IEnumerable<TKey> GetKeys(Data data);
+    protected abstract bool Ignore(TKey element, Data data);
 }
 
 public interface IMapChunkGraphicNode

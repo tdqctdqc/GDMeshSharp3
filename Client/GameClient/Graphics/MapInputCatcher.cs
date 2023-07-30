@@ -5,13 +5,11 @@ using Godot;
 
 public partial class MapInputCatcher : Node
 {
-    private MapGraphics _graphics;
-    private ClientWriteKey _key;
     private MouseOverPolyHandler _mouseOverHandler;
-    public MapInputCatcher(ClientWriteKey key, MapGraphics graphics)
+    private Data _data;
+    public MapInputCatcher(Data data)
     {
-        _key = key;
-        _graphics = graphics;
+        _data = data;
         _mouseOverHandler = new MouseOverPolyHandler();
     }
 
@@ -23,9 +21,9 @@ public partial class MapInputCatcher : Node
     {
         if (e is InputEventMouseMotion mm)
         {
-            var mapPos = Game.I.Client.Cam.GetMousePosInMapSpace();
+            var mapPos = Game.I.Client.Cam().GetMousePosInMapSpace();
             var d = GetProcessDeltaTime();
-            _mouseOverHandler.Process((float) d, _key.Data, mapPos);
+            _mouseOverHandler.Process((float) d, _data, mapPos);
             // GetViewport().SetInputAsHandled();
         }
 
@@ -37,7 +35,7 @@ public partial class MapInputCatcher : Node
             }
         }
 
-        Game.I.Client.Cam.Process(e);
+        Game.I.Client.Cam().Process(e);
     }
 
 
@@ -46,9 +44,9 @@ public partial class MapInputCatcher : Node
         var poly = _mouseOverHandler.MouseOverPoly;
         if (poly.Regime.Fulfilled())
         {
-            var r = poly.Regime.Entity(_key.Data);
-            var w = Game.I.Client.UiRequests.OpenWindow<RegimeOverviewWindow>();
-            w.Setup(r, _key);
+            var r = poly.Regime.Entity(_data);
+            var w = Game.I.Client.GetComponent<WindowManager>().OpenWindow<RegimeOverviewWindow>();
+            w.Setup(r, _data);
         }
     }
 }

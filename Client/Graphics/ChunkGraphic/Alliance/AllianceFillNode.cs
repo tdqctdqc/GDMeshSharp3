@@ -15,7 +15,11 @@ public partial class AllianceFillNode : PolyFillChunkGraphic
     {
         if (p.Regime.Fulfilled() == false) return Colors.Transparent;
         if (d.BaseDomain.PlayerAux.LocalPlayer == null) return Colors.Gray;
-        if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.Empty()) return Colors.Gray;
+        if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.Empty())
+        {
+            GD.Print("empty player regime");
+            return Colors.Gray;
+        }
         var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(d);
         if (p.Regime.RefId == playerRegime.Id) return Colors.SkyBlue;
         var playerAlliance = playerRegime.GetAlliance(d);

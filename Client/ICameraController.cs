@@ -1,6 +1,6 @@
 using Godot;
 
-public interface ICameraController
+public interface ICameraController : IClientComponent
 {
     Vector2 Position { get; }
     Vector2 GetMousePosInMapSpace();

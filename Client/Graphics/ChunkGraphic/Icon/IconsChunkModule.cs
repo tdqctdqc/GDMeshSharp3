@@ -8,7 +8,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
     public BuildingIcons BuildingIcons { get; private set; }
     public SettlementIcons SettlementIcons { get; private set; }
     public ConstructionIcons ConstructionIcons { get; private set; }
-    public IconsChunkModule(MapChunk chunk, Data data) : base(nameof(IconsChunkModule))
+    public IconsChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(IconsChunkModule))
     {
         ConstructionIcons = new ConstructionIcons(chunk, data);
         AddNode(ConstructionIcons);
@@ -30,7 +30,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         
         l.RegisterForEntityLifetime(n => n.Poly.Entity(d).GetChunk(d), 
             m => m.SettlementIcons, d);
-        l.RegisterForNotice(d.Infrastructure.SettlementAux.ChangedTier, 
+        l.RegisterForChunkNotice(d.Infrastructure.SettlementAux.ChangedTier, 
             n => ((Settlement)n.Entity).Poly.Entity(d).GetChunk(d),
             (notice, graphic) => graphic.SettlementIcons.QueueChange(notice.Entity));
         

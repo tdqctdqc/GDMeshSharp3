@@ -4,11 +4,11 @@ using System.Linq;
 using Godot;
 
 
-public abstract class DataTooltipTemplate<T> : IDataTooltipTemplate
+public abstract class TooltipTemplate<T> : ITooltipTemplate
 {
     protected abstract List<Func<T, Data, Control>> _fastGetters { get; }
     protected abstract List<Func<T, Data, Control>> _slowGetters { get; }
-    protected DataTooltipTemplate()
+    protected TooltipTemplate()
     {
     }
     public List<Control> GetFastEntries(T t, Data d)
@@ -20,6 +20,6 @@ public abstract class DataTooltipTemplate<T> : IDataTooltipTemplate
     {
         return _slowGetters.Select(f => f(t, d)).Where(c => c != null).ToList();
     }
-    List<Control> IDataTooltipTemplate.GetFastEntries(object o, Data d) => GetFastEntries((T) o, d);
-    List<Control> IDataTooltipTemplate.GetSlowEntries(object o, Data d) => GetSlowEntries((T) o, d);
+    List<Control> ITooltipTemplate.GetFastEntries(object o, Data d) => GetFastEntries((T) o, d);
+    List<Control> ITooltipTemplate.GetSlowEntries(object o, Data d) => GetSlowEntries((T) o, d);
 }

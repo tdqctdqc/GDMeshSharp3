@@ -6,8 +6,7 @@ using Godot;
 
 public partial class RegimePeepsInfoBar : HBoxContainer
 {
-    private RefAction _update;
-    public void Setup(Data data)
+    public RegimePeepsInfoBar(Data data)
     {
         var sizeLabel = new Label();
         var deltaLabel = new Label();

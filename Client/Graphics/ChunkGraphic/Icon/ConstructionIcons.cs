@@ -13,9 +13,9 @@ public partial class ConstructionIcons : MapChunkGraphicNode<Construction>
     private ConstructionIcons() : base()
     {
     }
-    protected override Node2D MakeGraphic(Construction settlement, Data data)
+    protected override Node2D MakeGraphic(Construction element, Data data)
     {
-        var construction = settlement;
+        var construction = element;
         var icon = construction.Model.Model(data).Icon.GetMeshInstance();
         var constrSignMesh = new MeshInstance2D();
         var mesh = new QuadMesh();
@@ -32,5 +32,10 @@ public partial class ConstructionIcons : MapChunkGraphicNode<Construction>
         return Chunk.Polys
             .Where(p => data.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(p.Id))
             .SelectMany(p => data.Infrastructure.CurrentConstruction.ByPoly[p.Id]);
+    }
+
+    protected override bool Ignore(Construction element, Data data)
+    {
+        return false;
     }
 }

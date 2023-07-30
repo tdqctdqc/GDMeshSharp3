@@ -4,83 +4,74 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
-public partial class GeneratorUi : Ui
+public partial class GeneratorUi : Node, IClientComponent
 {
-    private GeneratorSession _session;
-    private bool _generating;
-    private Label _progress;
-    public TooltipManager TooltipManager { get; private set; }
-    public MapGraphicsOptions MapGraphicsOptions { get; private set; }
-
-    // public GeneratorSettingsWindow GenSettingsWindow { get; private set; }
-    public static GeneratorUi Construct(GeneratorClient client, GeneratorSession session)
+    public Action Disconnect { get; set; }
+    public void Process(float delta)
     {
-        var ui = new GeneratorUi(client);
-        ui.Setup(client, session);
+        
+    }
+
+    private WorldGenLogic _logic;
+    private Label _progress;
+    private GameSession _session;
+    
+    public GeneratorSettingsWindow GenSettingsWindow { get; private set; }
+    public static GeneratorUi Construct(Client client, GameSession session, WorldGenLogic wrapper)
+    {
+        var ui = new GeneratorUi();
+        ui.Setup(client, session, wrapper);
         return ui;
     }
-    private GeneratorUi() : base() 
-    {
-    }
 
-    protected GeneratorUi(IClient client) : base()
+    protected GeneratorUi() : base()
     {
         
     }
-    public void Setup(GeneratorClient client, GeneratorSession session)
+    public void Setup(Client client, GameSession session, WorldGenLogic wrapper)
     {
-        Setup(client);
         _session = session;
-        var topBar = ButtonBarToken.Create<HBoxContainer>();
+        _logic = wrapper;
+        var uiFrame = client.GetComponent<UiFrame>();
+
+        var topBar = new HBoxContainer();
+        uiFrame.AddTopBar(topBar);
+
         topBar.AddButton("Generate", PressedGenerate);
-        topBar.AddButton("Done", GoToGameSession);
+        topBar.AddButton("Done", () =>
+        {
+            if(wrapper.Succeeded)
+            {
+                _session.GeneratorToGameTransition();
+            }
+        });
         topBar.AddWindowButton<GeneratorSettingsWindow>("Gen Settings");
-        topBar.AddWindowButton<LoggerWindow>("Logger");
-        topBar.AddButton("Test Serialization", () => session.Data.Serializer.Test(session.Data));
-        topBar.AddButton("Save", () => Saver.Save(session.Data));
-        topBar.AddButton("Load", () => Saver.Load());
         
-        
-        AddChild(topBar.Container); 
+        var genSettingsWindow = GeneratorSettingsWindow.Get(wrapper.Settings);
+        var windows = client.GetComponent<WindowManager>();
+        windows.AddWindow(genSettingsWindow);
 
-        var genSettingsWindow = GeneratorSettingsWindow.Get(_session.GenMultiSettings);
-        AddWindow(genSettingsWindow);
-
-        var loggerWindow = LoggerWindow.Get();
-        AddWindow(loggerWindow);
-        
-        var sideBar = ButtonBarToken.Create<VBoxContainer>();
-        AddChild(sideBar.Container);
         _progress = new Label();
         _progress.Text = "Progress";
-        sideBar.Container.AddChild(_progress);
-        MapGraphicsOptions = new MapGraphicsOptions();
-        sideBar.Container.Position = Vector2.Down * 50f;
-        sideBar.Container.AddChild(MapGraphicsOptions);
-        AddWindow(new RegimeOverviewWindow());
+        uiFrame.LeftSidebar.AddChild(_progress);
         
-        TooltipManager = new TooltipManager(session.Data);
-        AddChild(TooltipManager);
+        Disconnect += () =>
+        {
+            windows.RemoveWindow(genSettingsWindow);
+            topBar.QueueFree();
+            _progress.QueueFree();
+        };
     }
-    public void Process(float delta, ICameraController cam)
-    {
-        TooltipManager.Process(delta, cam.GetMousePosInMapSpace());
-    }
+    
     public void GoToGameSession()
     {
-        if (_session.Generated)
-        {
-            Game.I.StartHostSession(_session.Data);
-        }
     }
     private async void PressedGenerate()
     {
-        if (_generating) return;
-        _generating = true;
-        await Task.Run(_session.TryGenerate); 
-
+        if (_logic.Generating) return;
         try
         {
+            await Task.Run(_logic.TryGenerate); 
         }
         catch (Exception e)
         {
@@ -103,10 +94,9 @@ public partial class GeneratorUi : Ui
                 }
             }
         }
-        
-        _generating = false;
     }
 
+    
     private void DisplayException(DisplayableException d)
     {
         var display = new Node2D();
@@ -115,8 +105,8 @@ public partial class GeneratorUi : Ui
                 
         var graphic = d.GetGraphic();
         display.AddChild(graphic);
-        var cam = new DebugCameraController(graphic);
-
-        display.AddChild(cam);
+        Game.I.Client.GraphicsLayer.AddChild(display);
     }
+    
+    Node IClientComponent.Node => this;
 }

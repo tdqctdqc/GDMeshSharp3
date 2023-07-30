@@ -13,10 +13,10 @@ public partial class BuildingIcons : MapChunkGraphicNode<MapBuilding>
     {
     }
 
-    protected override Node2D MakeGraphic(MapBuilding settlement, Data data)
+    protected override Node2D MakeGraphic(MapBuilding element, Data data)
     {
-        var icon = settlement.Model.Model(data).Icon.GetMeshInstance();
-        SetRelPos(icon, settlement.Position, data);
+        var icon = element.Model.Model(data).Icon.GetMeshInstance();
+        SetRelPos(icon, element.Position, data);
         return icon;
     }
 
@@ -26,5 +26,10 @@ public partial class BuildingIcons : MapChunkGraphicNode<MapBuilding>
             .Where(p => p.GetBuildings(data) != null)
             .SelectMany(p => p.GetBuildings(data));
         return keys;
+    }
+
+    protected override bool Ignore(MapBuilding element, Data data)
+    {
+        return false;
     }
 }

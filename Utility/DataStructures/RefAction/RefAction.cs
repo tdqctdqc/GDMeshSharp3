@@ -80,7 +80,6 @@ public class RefAction<TArg> : IInvokable<TArg>
     public RefAction()
     {
         Blank = new RefAction();
-        _action += t => Blank.Invoke();
     }
     
     public void Invoke(TArg t)

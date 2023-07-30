@@ -3,19 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class MapGraphicsOptions : VBoxContainer
+public partial class MapGraphicsOptions : VBoxContainer, IClientComponent
 {
-    public MapGraphicsOptions()
+    public Action Disconnect { get; set; }
+    public void Process(float delta)
     {
         
     }
 
-    public void Setup(MapGraphics mg)
+    public MapGraphicsOptions(Client client)
     {
-        this.ClearChildren();
-        foreach (var graphicLayer in mg.GraphicLayerHolder.Layers)
+        client.GetComponent<UiFrame>().LeftSidebar.AddChild(this);
+        foreach (var graphicLayer in client.GetComponent<MapGraphics>().GraphicLayerHolder.Layers)
         {
             AddChild(graphicLayer.GetControl());
         }
     }
+
+    Node IClientComponent.Node => this;
 }

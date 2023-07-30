@@ -11,7 +11,8 @@ public partial class TooltipPanel : Panel
     private VBoxContainer _container;
     private static float _margin = 20f;
     private static float _detailTime = .25f;
-    private ITooltipInstance _instance;
+    private ITooltipTemplate _template;
+    private object _element;
     private TimerAction _detailAction;
     public TooltipPanel()
     {
@@ -23,10 +24,11 @@ public partial class TooltipPanel : Panel
     {
         _detailAction?.Process(delta);
     }
-    public void Setup(ITooltipInstance instance, Data data)
+    public void Setup(ITooltipTemplate template, object element, Data data)
     {
         Clear();
-        _instance = instance;
+        _template = template;
+        _element = element;
         AddFastEntries(data);
         _detailAction.ResetTimer();
         _detailAction.SetAction(() => AddSlowEntries(data));
@@ -35,7 +37,7 @@ public partial class TooltipPanel : Panel
     private void Clear()
     {
         _container.ClearChildren();
-        _instance = null;
+        _template = null;
     }
 
     private void Resize()
@@ -50,7 +52,7 @@ public partial class TooltipPanel : Panel
     private void AddFastEntries(Data data)
     {
         var oldSize = _container.Size;
-        var entries = _instance.Template.GetFastEntries(_instance.Element, data);
+        var entries = _template.GetFastEntries(_element, data);
         entries.ForEach(e => _container.AddChild(e));
         Resize();
 
@@ -61,8 +63,8 @@ public partial class TooltipPanel : Panel
     }
     private void AddSlowEntries(Data data)
     {
-        if (_instance == null) return;
-        var entries = _instance.Template.GetSlowEntries(_instance.Element, data);
+        if (_template == null) return;
+        var entries = _template.GetSlowEntries(_element, data);
         entries.ForEach(e => _container.AddChild(e));
         Resize();
 

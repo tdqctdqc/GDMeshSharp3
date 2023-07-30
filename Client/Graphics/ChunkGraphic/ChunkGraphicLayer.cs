@@ -58,7 +58,7 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     }
 
 
-    public void RegisterForNotice<TNotice>(RefAction<TNotice> refAction,
+    public void RegisterForChunkNotice<TNotice>(RefAction<TNotice> refAction,
         Func<TNotice, MapChunk> getChunk, Action<TNotice, TGraphic> queueUpdate)
     {
         refAction.SubscribeForNode(n =>
@@ -75,7 +75,7 @@ public static class MapChunkGraphicNodeExt
         Func<TEntity, MapChunk> getChunk, Func<TGraphic,  MapChunkGraphicNode<TEntity>> getNode, Data d) 
         where TGraphic : Node2D, IMapChunkGraphicNode where TEntity : Entity
     {
-        l.RegisterForNotice(d.GetEntityTypeNode<TEntity>().Created, 
+        l.RegisterForChunkNotice(d.GetEntityTypeNode<TEntity>().Created, 
             n => getChunk((TEntity)n.Entity),
             (n, graphic) =>
             {
@@ -83,7 +83,7 @@ public static class MapChunkGraphicNodeExt
                 node.QueueAdd((TEntity)n.Entity);
             });
         
-        l.RegisterForNotice(d.GetEntityTypeNode<TEntity>().Destroyed, 
+        l.RegisterForChunkNotice(d.GetEntityTypeNode<TEntity>().Destroyed, 
             n => getChunk((TEntity)n.Entity),
             (n, graphic) =>
             {
@@ -98,7 +98,7 @@ public static class MapChunkGraphicNodeExt
         Func<TGraphic, MapChunkGraphicNode<TKey>> getNode) 
         where TGraphic : Node2D, IMapChunkGraphicNode
     {
-        l.RegisterForNotice(action, 
+        l.RegisterForChunkNotice(action, 
             n => getChunk(n),
             (n, graphic) =>
             {
@@ -113,7 +113,7 @@ public static class MapChunkGraphicNodeExt
         Func<TGraphic, MapChunkGraphicNode<TKey>> getNode) 
         where TGraphic : Node2D, IMapChunkGraphicNode
     {
-        l.RegisterForNotice(action, 
+        l.RegisterForChunkNotice(action, 
             n => getChunk(n),
             (n, graphic) =>
             {

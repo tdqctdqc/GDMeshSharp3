@@ -5,17 +5,24 @@ using Godot;
 
 public partial class StartScene : Node
 {
-    private ButtonToken _genBtn, _remoteBtn, _sandbox;
+    private Button _genBtn, _remoteBtn, _sandbox;
     public override void _Ready()
     {
-        _genBtn = ButtonToken.FindButtonCreateToken(this, "Generate", StartGenerator); 
-        _remoteBtn = ButtonToken.FindButtonCreateToken(this, "Remote", StartAsClient); 
-        _sandbox = ButtonToken.FindButtonCreateToken(this, "Sandbox", StartSandbox); 
+        var container = GetNode<Container>("Container");
+        _genBtn = container.GetNode<Button>("Generate");
+        _genBtn.ButtonUp += StartAsHost;
+
+        _remoteBtn = container.GetNode<Button>("Remote");
+        _remoteBtn.ButtonUp += StartAsClient;
+
+        _sandbox = container.GetNode<Button>("Sandbox");
+        _sandbox.ButtonUp += StartSandbox;
     }
 
-    private void StartGenerator()
+    private void StartAsHost()
     {
-        Game.I.StartGeneratorSession();
+        GD.Print("starting as host");
+        Game.I.StartHostSession();
         QueueFree();
     }
 
@@ -27,7 +34,6 @@ public partial class StartScene : Node
 
     private void StartSandbox()
     {
-        Game.I.StartSandbox();
         QueueFree();
     }
 }

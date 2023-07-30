@@ -16,13 +16,12 @@ public partial class PromptWindow : ClosableWindow
         for (var i = 0; i < prompt.Actions.Count; i++)
         {
             var btn = new Button();
-            var btnToken = ButtonToken.CreateToken(btn, 
-                prompt.Actions[i],
-                () =>
-                {
-                    prompt.Satisfied?.Invoke();
-                    QueueFree();
-                });
+            btn.ButtonUp += prompt.Actions[i];
+            btn.ButtonUp += () =>
+            {
+                prompt.Satisfied?.Invoke();
+                QueueFree();
+            };
             btn.Text = prompt.ActionDescrs[i];
             _container.AddChild(btn);
         }

@@ -12,7 +12,7 @@ public partial class RegimeGeneralOverview : ScrollContainer
         _container = new VBoxContainer();
         AddChild(_container);
     }
-    public void Setup(Regime regime, ClientWriteKey key)
+    public void Setup(Regime regime, Data data)
     {
         Name = regime.Name;
         _container.ClearChildren();
@@ -22,27 +22,27 @@ public partial class RegimeGeneralOverview : ScrollContainer
         regimeFlagRect.StretchMode = TextureRect.StretchModeEnum.Scale;
         regimeFlagRect.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
         regimeFlagRect.SizeFlagsVertical = SizeFlags.ShrinkBegin;
-        regimeFlagRect.Texture = regime.Template.Model(key.Data).Flag;
+        regimeFlagRect.Texture = regime.Template.Model(data).Flag;
         regimeFlagRect.CustomMinimumSize = new Vector2(150f, 100f);
         _container.AddChild(regimeFlagRect);
         
-        if (regime.IsPlayerRegime(key.Data) == false)
+        if (regime.IsPlayerRegime(data) == false)
         {
             var button = new Button();
             button.Text = "Choose Regime";
             button.Pressed += () =>
             {
                 var com = new ChooseRegimeCommand(regime.MakeRef(),
-                    key.Data.ClientPlayerData.LocalPlayerGuid);
-                key.Session.Server.QueueCommandLocal(com);
+                    data.ClientPlayerData.LocalPlayerGuid);
+                Game.I.Client.HandleCommand(com);
             };
             _container.AddChild(button);
         }
         
         _container.CreateLabelAsChild("RIVALS");
-        foreach (var rival in regime.GetAlliance(key.Data).Rivals.Items(key.Data))
+        foreach (var rival in regime.GetAlliance(data).Rivals.Items(data))
         {
-            _container.CreateLabelAsChild(rival.Leader.Entity(key.Data).Name);
+            _container.CreateLabelAsChild(rival.Leader.Entity(data).Name);
         }
     }
 }

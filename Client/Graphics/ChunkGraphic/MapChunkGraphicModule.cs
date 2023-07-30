@@ -6,9 +6,12 @@ using Godot;
 public partial class MapChunkGraphicModule : Node2D, IMapChunkGraphicNode
 {
     public string Name { get; private set; }
+    public MapChunk Chunk { get; private set; }
+
     public Dictionary<string, IMapChunkGraphicNode> Nodes { get; private set; }
-    public MapChunkGraphicModule(string name)
+    public MapChunkGraphicModule(MapChunk chunk, string name)
     {
+        Chunk = chunk;
         Name = name;
         Nodes = new Dictionary<string, IMapChunkGraphicNode>();
     }

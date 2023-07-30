@@ -8,7 +8,48 @@ public partial class WorldCameraController : Camera2D, ICameraController
     public float SmoothedZoomOut => ShapingFunctions.EaseInCubic(_zoomLevel, _maxZoom, _minZoom);
     public float ZoomOut => Zoom.X;
     public float MaxZoomOut => _maxZoom;
-
+    public Action Disconnect { get; set; }
+    public void Process(float delta)
+    {
+        var mult = 1f;
+        if (Input.IsKeyPressed( Key.Shift)) mult = 3f;
+        if(Input.IsKeyPressed(Key.W))
+        {
+            Position += Vector2.Up * delta / Zoom * _udScrollSpeed * mult;
+        }
+        if(Input.IsKeyPressed(Key.S))
+        {
+            Position += Vector2.Down * delta / Zoom * _udScrollSpeed * mult;
+        }
+        if(Input.IsKeyPressed(Key.A))
+        {
+            XScrollRatio -= delta / Zoom.Length() * _lrScrollSpeed * mult;
+            if (XScrollRatio > 1f) XScrollRatio -= 1f;
+            if (XScrollRatio < 0f) XScrollRatio += 1f;
+        }
+        if(Input.IsKeyPressed(Key.D))
+        {
+            XScrollRatio += delta / Zoom.Length() * _lrScrollSpeed * mult;
+            if (XScrollRatio > 1f) XScrollRatio -= 1f;
+            if (XScrollRatio < 0f) XScrollRatio += 1f;
+        }
+        if(Input.IsKeyPressed(Key.Q))
+        {
+            Position += Vector2.Left * delta / Zoom * _udScrollSpeed * mult;
+        }
+        if(Input.IsKeyPressed(Key.E))
+        {
+            Position += Vector2.Right * delta / Zoom * _udScrollSpeed * mult;
+        }
+    }
+    public void Process(InputEvent e)
+    {
+        if (e is InputEventMouseButton mb)
+        {
+            HandleMouseButton(mb);
+        }
+    }
+    Node IClientComponent.Node => this; 
     private float _udScrollSpeed = 500f;
     private float _lrScrollSpeed = .05f;
     private float _zoomIncr = .01f;
@@ -34,7 +75,6 @@ public partial class WorldCameraController : Camera2D, ICameraController
     }
     public void Setup(Data data)
     {
-        
         _data = data;
     }
 
@@ -77,48 +117,7 @@ public partial class WorldCameraController : Camera2D, ICameraController
         return globalSpace;
     }
 
-    public void Process(InputEvent e)
-    {
-        if (e is InputEventMouseButton mb)
-        {
-            HandleMouseButton(mb);
-        }
-    }
-    public override void _Process(double deltaD)
-    {
-        var delta = (float) deltaD;
-        var mult = 1f;
-        if (Input.IsKeyPressed( Key.Shift)) mult = 3f;
-        if(Input.IsKeyPressed(Key.W))
-        {
-            Position += Vector2.Up * delta / Zoom * _udScrollSpeed * mult;
-        }
-        if(Input.IsKeyPressed(Key.S))
-        {
-            Position += Vector2.Down * delta / Zoom * _udScrollSpeed * mult;
-        }
-        if(Input.IsKeyPressed(Key.A))
-        {
-            XScrollRatio -= delta / Zoom.Length() * _lrScrollSpeed * mult;
-            if (XScrollRatio > 1f) XScrollRatio -= 1f;
-            if (XScrollRatio < 0f) XScrollRatio += 1f;
-        }
-        if(Input.IsKeyPressed(Key.D))
-        {
-            XScrollRatio += delta / Zoom.Length() * _lrScrollSpeed * mult;
-            if (XScrollRatio > 1f) XScrollRatio -= 1f;
-            if (XScrollRatio < 0f) XScrollRatio += 1f;
-        }
-        if(Input.IsKeyPressed(Key.Q))
-        {
-            Position += Vector2.Left * delta / Zoom * _udScrollSpeed * mult;
-        }
-        if(Input.IsKeyPressed(Key.E))
-        {
-            Position += Vector2.Right * delta / Zoom * _udScrollSpeed * mult;
-        }
-    }
-
+    
     
     private void HandleMouseButton(InputEventMouseButton mb)
     {

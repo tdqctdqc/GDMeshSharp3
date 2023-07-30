@@ -37,14 +37,14 @@ public partial class RegimeOverviewWindow : TabWindow
         AddTab(scroll);
         Hide();
     }
-    public void Setup(Regime regime, ClientWriteKey key)
+    public void Setup(Regime regime, Data data)
     {
-        _general.Setup(regime, key);
-        _construction.Setup(regime, key.Data);
-        _peeps.Setup(regime, key.Data);
-        _wallet.Setup(regime, key.Data);
+        _general.Setup(regime, data);
+        _construction.Setup(regime, data);
+        _peeps.Setup(regime, data);
+        _wallet.Setup(regime, data);
         _regimeTemplates.ClearChildren();
-        foreach (var kvp in key.Data.Models.Cultures.Models)
+        foreach (var kvp in data.Models.Cultures.Models)
         {
             kvp.Value.RegimeTemplates.ForEach(rt =>
             {

@@ -10,29 +10,16 @@ public class Prompt
     public Action Satisfied { get; set; }
     public List<Action> Actions { get; private set; }
     public List<string> ActionDescrs { get; private set; }
-
-    public static Prompt CreatePrompt<T>(string descr, List<T> elements, Action<T> action, Func<T, string> descrs)
-    {
-        return new Prompt(descr, elements.Select<T, Action>(e => () => action(e)).ToList(),
-            elements.Select(e => descrs(e)).ToList());
-    }
-
-    public static Prompt GetChooseRegimePrompt(WriteKey key)
-    {
-        var availRegimes = key.Data.GetAll<Regime>()
-            .Where(r => r.IsPlayerRegime(key.Data) == false);
-        Action<Regime> action = r =>
-        {
-            var com = new ChooseRegimeCommand(r.MakeRef(), key.Data.ClientPlayerData.LocalPlayerGuid);
-            key.Session.Server.QueueCommandLocal(com);
-        };
-        return CreatePrompt<Regime>("Choose Regime", availRegimes.ToList(), action, r => r.Name);
-    }
     public Prompt(string descr, List<Action> actions, List<string> actionDescrs)
     {
         Descr = descr;
         Actions = actions;
         ActionDescrs = actionDescrs;
+    }
+    protected void AddAction(Action action, string descr)
+    {
+        Actions.Add(action);
+        ActionDescrs.Add(descr);
     }
 }
 

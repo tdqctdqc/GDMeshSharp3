@@ -14,14 +14,32 @@ public static class NodeExt
     public static HBoxContainer MakeFlowStatDisplay(Flow flow, Data data, float height,
         params RefAction[] triggers)
     {
-        return flow.Icon.MakeIconStatDisplay(data,
+        var h = flow.Icon.MakeIconStatDisplay(data,
             () =>
             {
                 var regime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
                 var f = regime.Flows[flow];
-                return $"In: {f.FlowIn} \n Out: {f.FlowOut} \n Net: {f.Net()}";
+                // return $"In: {f.FlowIn} \n Out: {f.FlowOut} \n Net: {f.Net()}";
+                return $"{f.Net()}";
             },
             height, triggers);
+        var tooltipTemplate = new FlowTooltipTemplate();
+        h.RegisterTooltip(tooltipTemplate, 
+            () => (flow, data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data)));
+        return h;
+    }
+
+    public static void RegisterTooltip<T>(this Control c, TooltipTemplate<T> template, Func<T> getObject)
+    {
+        var hash = c.GetHashCode();
+        c.MouseEntered += () =>
+        {
+            Game.I.Client.GetComponent<TooltipManager>().PromptTooltip(template, getObject(), hash);
+        };
+        c.MouseExited += () =>
+        {
+            Game.I.Client.GetComponent<TooltipManager>().HideTooltip(hash);
+        };
     }
     public static HBoxContainer MakeIconStatDisplay(this Icon icon, Data data, 
         Func<string> getStat, float height,

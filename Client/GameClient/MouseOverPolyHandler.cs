@@ -7,11 +7,10 @@ public class MouseOverPolyHandler
 {
     public MapPolygon MouseOverPoly { get; private set; }
     public PolyTri MouseOverTri { get; private set; }
-    private DataTooltipInstance<PolyTriPosition> _instance;
+    private PolyTooltipTemplate _template;
     public MouseOverPolyHandler()
     {
-        _instance = new DataTooltipInstance<PolyTriPosition>(new PolyDataTooltipTemplate(), 
-            new PolyTriPosition(-1, (byte)255));
+        _template = new PolyTooltipTemplate();
     }
     public void Process(float delta, Data data, Vector2 mousePosMapSpace)
     {
@@ -25,7 +24,7 @@ public class MouseOverPolyHandler
         {
             MouseOverPoly = null;
             MouseOverTri = null;
-            Game.I.Client.UiRequests.HideTooltip.Invoke(_instance);
+            Game.I.Client.GetComponent<TooltipManager>().HideTooltip(GetHashCode());
             return;
         }
         else if (MouseOverPoly != null && MouseOverPoly.PointInPolyAbs(mousePosMapSpace, data))
@@ -54,8 +53,8 @@ public class MouseOverPolyHandler
         {
             var pos = new PolyTriPosition(MouseOverPoly.Id, MouseOverTri.Index);
             Game.I.Client.UiRequests.MouseOver.Invoke(pos);
-            _instance.SetElement(pos);
-            Game.I.Client.UiRequests.PromptTooltip.Invoke(_instance);
+            Game.I.Client.GetComponent<TooltipManager>()
+                .PromptTooltip(_template, pos, GetHashCode());
         }
         
     }

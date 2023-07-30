@@ -43,31 +43,10 @@ public class Alliance : Entity
         AtWar = atWar;
     }
 
-    public void AddMember(Regime r, ProcedureWriteKey key)
-    {
-        var old = r.GetAlliance(key.Data);
-        if (old != null)
-        {
-            old.RemoveMember(r, key);
-        }
-        Members.Add(r, key);
-    }
-
-    public void RemoveMember(Regime r, ProcedureWriteKey key)
-    {
-        if (Leader.RefId == r.Id) throw new Exception();
-        Members.Remove(r, key);
-    }
-
-    public void SetRival(Alliance a, ProcedureWriteKey key)
-    {
-        if (a == this) throw new Exception();
-        Rivals.Add(a, key);
-    }
-    public void SetWar(Alliance a, ProcedureWriteKey key)
-    {
-        if (a == this) throw new Exception();
-        if(Rivals.Contains(a) == false) throw new Exception();
-        AtWar.Add(a, key);
-    }
+    // public void SetWar(Alliance a, ProcedureWriteKey key)
+    // {
+    //     if (a == this) throw new Exception();
+    //     if(Rivals.Contains(a) == false) throw new Exception();
+    //     AtWar.Add(a, key);
+    // }
 }

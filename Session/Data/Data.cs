@@ -17,7 +17,7 @@ public class Data
     public Models Models { get; private set; }
     public RefFulfiller RefFulfiller { get; private set; }
     public Dictionary<int, Entity> EntitiesById { get; private set; }
-    public Entity this[int id] => EntitiesById[id];
+    public Entity this[int id] => EntitiesById.ContainsKey(id) ? EntitiesById[id] : null;
     public BaseDomain BaseDomain { get; private set; }
     public PlanetDomain Planet { get; private set; }
     public SocietyDomain Society { get; private set; }
