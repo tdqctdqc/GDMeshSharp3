@@ -26,7 +26,7 @@ public class Graph<TNode, TEdge> : IGraph<TNode, TEdge>
 
     
 
-    IReadOnlyCollection<TNode> IReadOnlyGraph<TNode>.GetNeighbors(TNode value)
+    IEnumerable<TNode> IReadOnlyGraph<TNode>.GetNeighbors(TNode value)
     {
         return GetNeighbors(value);
     }
@@ -125,6 +125,6 @@ public class Graph<TNode, TEdge> : IGraph<TNode, TEdge>
     {
         return _nodeDic.ContainsKey(value);
     }
-    IReadOnlyCollection<TNode> IReadOnlyGraph<TNode>.Elements => Elements;
-    IReadOnlyCollection<TEdge> IReadOnlyGraph<TNode, TEdge>.Edges => Edges;
+    IEnumerable<TNode> IReadOnlyGraph<TNode>.Elements => Elements;
+    IEnumerable<TEdge> IReadOnlyGraph<TNode, TEdge>.Edges => Edges;
 }

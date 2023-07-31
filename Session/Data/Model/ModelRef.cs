@@ -7,7 +7,6 @@ using MessagePack;
 public class ModelRef<T> : IRef where T : class, IModel
 {
     public int ModelId { get; private set; }
-    private T _ref;
 
     public ModelRef(T model, CreateWriteKey key)
     {
@@ -21,26 +20,21 @@ public class ModelRef<T> : IRef where T : class, IModel
 
     public T Model(Data data)
     {
-        if (_ref == null)
+        if (ModelId != -1)
         {
-            data.RefFulfiller.Fulfill(this);
+            return (T)data.Models[ModelId];
         }
 
-        return _ref;
+        return null;
     }
 
     public ModelRef<T> Copy()
     {
         return new ModelRef<T>(ModelId);
     }
-    public void SyncRef(Data data)
-    {
-        _ref = data.Models.GetModel<T>(ModelId);
-    }
 
     public void ClearRef()
     {
-        _ref = null;
         ModelId = -1;
     }
 }

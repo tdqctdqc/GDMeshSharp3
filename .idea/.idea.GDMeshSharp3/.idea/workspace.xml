@@ -2,116 +2,64 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/ClientTopBar.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/ChooseRegimePrompt.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiFrame.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/IClientComponent.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/WindowManager.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/UI/ButtonExt.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/FlowTooltipTemplate.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersNode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/AlliancePolyFill.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/ResourcePolyFill.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ResourceIcons.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/AllianceChunkModule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/ResourceChunkModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Arab.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Arab.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Azanian.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Azanian.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Bolivarian.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Bolivarian.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Celtic.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Celtic.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/English.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/English.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Greek.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Greek.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Indian.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Indian.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Japanese.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Japanese.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Kongo.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Kongo.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Persian.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Persian.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Turkic.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Turkic.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Cultures/Cultures/Yankee.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Cultures/Cultures/Yankee.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/GameUi.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/GameUi.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/MapDisplayOptionsUi.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/Tooltip/TooltipPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/Tooltip/TooltipPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GeneratorClient.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SandboxClient.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/SandboxClient.tscn" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/StartScene.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/StartScene.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/StartScene.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/StartScene.tscn" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/PromptSideIcon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/PromptSideIcon.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/PromptWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/PromptWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle1.svg.import" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle1.svg.import" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle2.svg" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle2.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle2.svg.import" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle2.svg.import" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle3.svg" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle3.svg" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle3.svg.import" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Textures/Icons/Troop/rifle3.svg.import" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Unfinished/Cultures/Abyssinian.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Unfinished/Cultures/Abyssinian.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Unfinished/Cultures/Uralic.json" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Unfinished/Cultures/Uralic.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/GameClient.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapInputCatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapInputCatcher.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/PolyHighlighter/PolyHighlighter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/PolyHighlighter/PolyHighlighter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverPolyHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverPolyHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBarToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBar.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/Prompt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/Prompt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/PromptManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/PromptManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeGeneralOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeGeneralOverview.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/RegimeInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/RegimeInfoBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceBorderNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceBorderNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceFillNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceFillNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceBorderNode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/DiplomacyChunkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Alliance/AllianceFillNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/DiplomacyPolyFill.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicSwitchLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicSwitchLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicUpdate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyFillChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyFillChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolygonFillChunkGraphicFactory.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/TriColorMesh.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/TriColorMesh.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/BuildingIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/BuildingIcons.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ConstructionIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ConstructionIcons.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/IChunkGraphicNodeNew.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/Coal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/IGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/IGraphicLayer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/IconsChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/IconsChunkModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/MapChunkGraphicModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Regime/RegimeBordersNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Regime/RegimeBordersNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Regime/RegimeChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Regime/RegimeChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Terrain/TerrainChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Terrain/TerrainChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicView.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/ICameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ICameraController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/IClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/IClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/MainMenuClient/MainMenuClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/MainMenuClient/MainMenuClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Ui.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/UiRequests.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/UiRequests.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/WorldCameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/WorldCameraController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Game.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/GenData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/GenData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/Save/Saver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Save/Saver.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/PlayerAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/PlayerAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Regime/RegimeBordersNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/RegimeBordersNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Regime/RegimeChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/RegimeChunkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Regime/RegimeFillNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/RegimePolyFill.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Terrain/TerrainChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/TerrainChunkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/FloatSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/FloatSettingsOption.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/ResourceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/ResourceGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IReadOnlyGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/IReadOnlyGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/ImplicitGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/ImplicitGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Data.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapChunk.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Alliance/AllianceAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Alliance/AllianceAux.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/EntRefCol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/EntRefCol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/EntityRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/EntityRef.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/IRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/IRef.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/ROERefCol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/ROERefCol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/RefFulfiller.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/RefFulfiller.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/ConstructionCap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/ConstructionCap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModelManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModelManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/Iron.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/Iron.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/ItemManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/ItemManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/Oil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/Oil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/ModelRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/ModelRef.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/GameSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GameSession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/GeneratorSession.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/IDataSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/GameplayUi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/ISession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/ISession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareWarProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareWarProposal.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/TickProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/TickProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/MainMenuSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/MainMenuSession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Sandbox/SandboxSession.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Sandbox/TriangulationTesting.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Sandbox/TriangulationTesting.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Server/DummyServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/DummyServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Server/HostServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Server/RemoteServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/RemoteServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/RefAction/RefAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/RefAction/RefAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/ButtonBarToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/ButtonBarToken.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/ButtonToken.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/DataTooltipInstance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/DataTooltipInstance.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/DataTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/TooltipTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/IDataTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/ITooltipTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/ITooltipInstance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/ITooltipInstance.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyDataTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/TooltipToken.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -275,6 +223,8 @@
       <workItem from="1690675124218" duration="6239000" />
       <workItem from="1690735892273" duration="652000" />
       <workItem from="1690742547748" duration="4022000" />
+      <workItem from="1690750655444" duration="11150000" />
+      <workItem from="1690812323840" duration="7882000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -458,7 +408,14 @@
       <option name="project" value="LOCAL" />
       <updated>1690395308496</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="working on client, ui, new svgs">
+      <created>1690751083891</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1690751083891</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -502,6 +459,7 @@
     <MESSAGE value="working on map chunk graphics and associated ui" />
     <MESSAGE value="make EntityMultiIndexer use actual entities instead of keys" />
     <MESSAGE value="made valueChangeNotice typed by entity as well" />
-    <option name="LAST_COMMIT_MESSAGE" value="made valueChangeNotice typed by entity as well" />
+    <MESSAGE value="working on client, ui, new svgs" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on client, ui, new svgs" />
   </component>
 </project>

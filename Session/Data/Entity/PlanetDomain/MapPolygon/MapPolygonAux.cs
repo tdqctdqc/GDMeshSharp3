@@ -94,7 +94,7 @@ public class MapPolygonAux
         Chunks = new HashSet<MapChunk>();
         foreach (var c in regularGrid.Cells)
         {
-            var chunk = new MapChunk(c.Value, c.Key);
+            var chunk = new MapChunk(c.Value, c.Key, data);
             Chunks.Add(chunk);
             c.Value.ForEach(p => ChunksByPoly.Add(p, chunk));
         }

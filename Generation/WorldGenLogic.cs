@@ -9,14 +9,13 @@ public class WorldGenLogic : ILogic
     private bool _justGenned = false;
     private int _tries = 0;
     private GameSession _session;
+    public GenData Data => (GenData) _session.Data;
     public Action FinishedGenSuccessfully { get; set; }
     public bool Succeeded { get; private set; }
-    public GenerationMultiSettings Settings { get; private set; }
 
     public WorldGenLogic(GameSession session)
     {
         _session = session;
-        Settings = new GenerationMultiSettings();
     }
     public void Process(float delta)
     {

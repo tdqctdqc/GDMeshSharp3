@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -129,8 +130,9 @@ public static class MapPolygonExt
         return null;
     }
 
-    public static MapChunk GetMapChunk(this MapPolygon poly, Data d)
+    public static IEnumerable<MapChunk> GetChunkAndNeighboringChunks(this MapPolygon p, Data d)
     {
-        return d.Planet.PolygonAux.ChunksByPoly[poly];
+        return p.GetChunk(d).Yield()
+            .Union(p.Neighbors.Items(d).Select(n => n.GetChunk(d))).Distinct();
     }
 }

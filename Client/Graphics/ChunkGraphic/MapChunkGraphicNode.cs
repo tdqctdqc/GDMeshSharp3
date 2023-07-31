@@ -46,6 +46,13 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
 
     public void Update(Data d)
     {
+        // if (_queuedToAdd.Count > 0 || _queuedToChange.Count > 0 || _queuedToRemove.Count > 0)
+        // {
+        //     Init(d);
+        //     _queuedToAdd.Clear();
+        //     _queuedToChange.Clear();
+        //     _queuedToRemove.Clear();
+        // }
         foreach (var key in _queuedToRemove)
         {
             Remove(key, d);
@@ -73,6 +80,11 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
     public void QueueChange(TKey key)
     {
         _queuedToChange.Add(key);
+    }
+
+    public void QueueChangeAll()
+    {
+        _queuedToChange.AddRange(_graphics.Keys);
     }
     private void Add(TKey key, Data data)
     {

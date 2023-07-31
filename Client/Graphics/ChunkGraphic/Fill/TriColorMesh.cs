@@ -9,6 +9,8 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
     public string Name { get; private set; }
     public Node2D Node => this;
     private Dictionary<TElement, List<int>> _triIndicesByElement;
+    private List<Vector2> _vertices;
+    private List<Color> _colors;
     public HashSet<TElement> Updates { get; private set; }
     private Func<TElement, Data, Color> _getColor;
     private Func<TElement, Data, IEnumerable<Triangle>> _getTris;
@@ -18,7 +20,6 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
         Func<TElement, Data, IEnumerable<Triangle>> getTris, Func<Data, IEnumerable<TElement>> getElements)
     {
         Name = name;
-        _triIndicesByElement = new Dictionary<TElement, List<int>>();
         Updates = new HashSet<TElement>();
         _getColor = getColor;
         _getTris = getTris;
@@ -27,8 +28,9 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
 
     public void Init(Data data)
     {
-        var vertices = new List<Vector2>();
-        var colors = new List<Color>();
+        _triIndicesByElement = new Dictionary<TElement, List<int>>();
+        _vertices = new List<Vector2>();
+        _colors = new List<Color>();
         int iter = 0;
         var elements = _getElements(data);
         foreach (var element in elements)
@@ -41,14 +43,14 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
             foreach (var tri in tris)
             {
                 triIndices.Add(iter);
-                colors.Add(color);
-                vertices.Add(tri.A);
-                vertices.Add(tri.B);
-                vertices.Add(tri.C);
+                _colors.Add(color);
+                _vertices.Add(tri.A);
+                _vertices.Add(tri.B);
+                _vertices.Add(tri.C);
                 iter++;
             }
         }
-        _arrayMesh = MeshGenerator.GetArrayMesh(vertices.ToArray(), colors.ToArray());
+        _arrayMesh = MeshGenerator.GetArrayMesh(_vertices.ToArray(), _colors.ToArray());
         Mesh = _arrayMesh;
     }
     public void Redraw(Data data)
@@ -65,21 +67,24 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
     public void Update(Data d)
     {
         if (Updates.Count == 0) return;
-        var mdt = new MeshDataTool();
-        mdt.CreateFromSurface(_arrayMesh, 0);
-        foreach (var key in Updates)
-        {
-            var tris = _triIndicesByElement[key];
-            var color = _getColor(key, d);
-            foreach (var tri in tris)
-            {
-                mdt.SetVertexColor(tri*3, color);
-                mdt.SetVertexColor(tri*3 + 1, color);
-                mdt.SetVertexColor(tri*3 + 2, color);
-            }
-        }
-
-        mdt.CommitToSurface(_arrayMesh);
+        Init(d);
+        
+        // var mdt = new MeshDataTool();
+        // mdt.CreateFromSurface(_arrayMesh, 0);
+        //
+        // foreach (var key in _triIndicesByElement.Keys)
+        // {
+        //     var tris = _triIndicesByElement[key];
+        //     var color = _getColor(key, d);
+        //     foreach (var tri in tris)
+        //     {
+        //         mdt.SetVertexColor(tri*3, color);
+        //         mdt.SetVertexColor(tri*3 + 1, color);
+        //         mdt.SetVertexColor(tri*3 + 2, color);
+        //     }
+        // }
+        //
+        // mdt.CommitToSurface(_arrayMesh);
         Updates.Clear();
     }
 }

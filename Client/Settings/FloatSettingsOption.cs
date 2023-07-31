@@ -23,10 +23,9 @@ public class FloatSettingsOption : SettingsOption<float>
     {
         var hbox = new VBoxContainer();
         var l = new Label();
-        l.Text = Value.ToString();
+        l.Text = Name + ": " + Value.ToString().PadDecimals(2);
         hbox.AddChild(l);
         var slider = new HSlider();
-        slider.CustomMinimumSize = new Vector2(500f, 0f);
         slider.MinValue = Min;
         slider.MaxValue = Max;
         slider.Step = Step;
@@ -36,7 +35,7 @@ public class FloatSettingsOption : SettingsOption<float>
         slider.ValueChanged += t =>
         {
             Set((float)t);
-            l.Text = Value.ToString();
+            l.Text = Name + ": " + Value.ToString().PadDecimals(2);
         };
         
         return hbox;

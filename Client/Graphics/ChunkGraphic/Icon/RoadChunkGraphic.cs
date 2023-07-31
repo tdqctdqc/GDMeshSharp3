@@ -9,7 +9,7 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicNode<int>
 
     private RoadChunkGraphicNode() { }
 
-    public RoadChunkGraphicNode(MapChunk chunk, Data data, MapGraphics mg) 
+    public RoadChunkGraphicNode(MapChunk chunk, Data data) 
         : base(nameof(RoadChunkGraphicNode), data, chunk)
     {
         _mb = new MeshBuilder();

@@ -7,18 +7,18 @@ using MessagePack;
 
 public class ImplicitGraph
 {
-    public static ImplicitGraph<TNode, TEdge> Get<TNode, TEdge>(Func<IReadOnlyCollection<TNode>> getAllNodes,
-        Func<IReadOnlyCollection<TEdge>> getAllEdges)
+    public static ImplicitGraph<TNode, TEdge> Get<TNode, TEdge>(Func<IEnumerable<TNode>> getAllNodes,
+        Func<IEnumerable<TEdge>> getAllEdges)
         where TNode : IReadOnlyGraphNode<TNode, TEdge>
     {
         return new ImplicitGraph<TNode, TEdge>(n => true, n => n.Neighbors, (n, m) => n.Neighbors.Contains(m),
             (n, m) => n.GetEdge(m), getAllNodes, getAllEdges);
     }
     
-    public static ImplicitGraph<TNode, TEdge> Get<TNode, TEdge>(Func<TNode, IReadOnlyCollection<TNode>> getNeighbors,
+    public static ImplicitGraph<TNode, TEdge> Get<TNode, TEdge>(Func<TNode, IEnumerable<TNode>> getNeighbors,
         Func<TNode, TNode, TEdge> getEdge,
-        Func<IReadOnlyCollection<TNode>> getAllNodes,
-        Func<IReadOnlyCollection<TEdge>> getAllEdges)
+        Func<IEnumerable<TNode>> getAllNodes,
+        Func<IEnumerable<TEdge>> getAllEdges)
     {
         return new ImplicitGraph<TNode, TEdge>(n => true, getNeighbors, 
             (n, m) => getNeighbors(n).Contains(m),
@@ -28,19 +28,19 @@ public class ImplicitGraph
 public class ImplicitGraph<TNode, TEdge> : IReadOnlyGraph<TNode, TEdge>
 {
     private Func<TNode, bool> _contains;
-    private Func<TNode, IReadOnlyCollection<TNode>> _getNeighbors;
+    private Func<TNode, IEnumerable<TNode>> _getNeighbors;
     private Func<TNode, TNode, TEdge> _getEdge;
     private Func<TNode, TNode, bool> _hasEdge;
-    private Func<IReadOnlyCollection<TNode>> _getAllNodes;
-    private Func<IReadOnlyCollection<TEdge>> _getAllEdges;
+    private Func<IEnumerable<TNode>> _getAllNodes;
+    private Func<IEnumerable<TEdge>> _getAllEdges;
     
     public ImplicitGraph(
         Func<TNode, bool> contains, 
-        Func<TNode, IReadOnlyCollection<TNode>> getNeighbors, 
+        Func<TNode, IEnumerable<TNode>> getNeighbors, 
         Func<TNode, TNode, bool> hasEdge,
         Func<TNode, TNode, TEdge> getEdge,
-        Func<IReadOnlyCollection<TNode>> getAllNodes,
-        Func<IReadOnlyCollection<TEdge>> getAllEdges)
+        Func<IEnumerable<TNode>> getAllNodes,
+        Func<IEnumerable<TEdge>> getAllEdges)
     {
         _getAllEdges = getAllEdges;
         _getAllNodes = getAllNodes;
@@ -51,8 +51,8 @@ public class ImplicitGraph<TNode, TEdge> : IReadOnlyGraph<TNode, TEdge>
     }
 
 
-    public IReadOnlyCollection<TNode> Elements => _getAllNodes();
-    public IReadOnlyCollection<TEdge> Edges => _getAllEdges();
+    public IEnumerable<TNode> Elements => _getAllNodes();
+    public IEnumerable<TEdge> Edges => _getAllEdges();
     public bool HasEdge(TNode t1, TNode t2)
     {
         return _hasEdge(t1, t2);
@@ -68,7 +68,7 @@ public class ImplicitGraph<TNode, TEdge> : IReadOnlyGraph<TNode, TEdge>
         return _contains(value);
     }
 
-    public IReadOnlyCollection<TNode> GetNeighbors(TNode value)
+    public IEnumerable<TNode> GetNeighbors(TNode value)
     {
         return _getNeighbors(value);
     }

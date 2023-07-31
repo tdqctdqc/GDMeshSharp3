@@ -8,12 +8,14 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
 {
     public string Name { get; private set; }
     public Dictionary<Vector2, TGraphic> ByChunkCoords { get; private set; }
+    public List<ISettingsOption> Settings { get; private set; }
     private bool _visible = true;
     private GraphicsSegmenter _segmenter;
     public ChunkGraphicLayer(string name, GraphicsSegmenter segmenter,
         Func<MapChunk, TGraphic> getGraphic, Data data)
     {
         Name = name;
+        Settings = new List<ISettingsOption>();
         _segmenter = segmenter;
         ByChunkCoords = new Dictionary<Vector2, TGraphic>();
         foreach (var chunk in data.Planet.PolygonAux.Chunks)
@@ -59,13 +61,52 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
 
 
     public void RegisterForChunkNotice<TNotice>(RefAction<TNotice> refAction,
-        Func<TNotice, MapChunk> getChunk, Action<TNotice, TGraphic> queueUpdate)
+        Func<TNotice, IEnumerable<MapChunk>> getChunks, Action<TNotice, TGraphic> queueUpdate)
     {
         refAction.SubscribeForNode(n =>
         {
-            var graphic = ByChunkCoords[getChunk(n).Coords];
-            queueUpdate(n, graphic);
+            foreach (var chunk in getChunks(n))
+            {
+                var graphic = ByChunkCoords[chunk.Coords];
+                queueUpdate(n, graphic);
+            }
         }, _segmenter);
+    }
+
+    public void AddSetting<T>(SettingsOption<T> option, Action<TGraphic, T> update)
+    {
+        option.SettingChanged.SubscribeForNode(() =>
+        {
+            foreach (var module in ByChunkCoords.Values)
+            {
+                update(module, option.Value);
+            }
+        }, _segmenter);
+        Settings.Add(option);
+    }
+    public void AddTransparencySetting()
+    {
+        var option = new FloatSettingsOption("Transparency", 1f, 0f, 1f, .05f, false);
+        option.SettingChanged.SubscribeForNode(() =>
+        {
+            foreach (var module in ByChunkCoords.Values)
+            {
+                module.Node.Modulate = new Color(Colors.White, option.Value);
+            }
+        }, _segmenter);
+        Settings.Add(option);
+    }
+    public void AddTransparencySetting(Func<TGraphic, Node2D> getNode)
+    {
+        var option = new FloatSettingsOption("Transparency", 1f, 0f, 1f, .05f, false);
+        option.SettingChanged.SubscribeForNode(() =>
+        {
+            foreach (var module in ByChunkCoords.Values)
+            {
+                getNode(module).Modulate = new Color(Colors.White, option.Value);
+            }
+        }, _segmenter);
+        Settings.Add(option);
     }
 }
 
@@ -76,7 +117,7 @@ public static class MapChunkGraphicNodeExt
         where TGraphic : Node2D, IMapChunkGraphicNode where TEntity : Entity
     {
         l.RegisterForChunkNotice(d.GetEntityTypeNode<TEntity>().Created, 
-            n => getChunk((TEntity)n.Entity),
+            n => getChunk((TEntity)n.Entity).Yield(),
             (n, graphic) =>
             {
                 var node = getNode(graphic);
@@ -84,7 +125,7 @@ public static class MapChunkGraphicNodeExt
             });
         
         l.RegisterForChunkNotice(d.GetEntityTypeNode<TEntity>().Destroyed, 
-            n => getChunk((TEntity)n.Entity),
+            n => getChunk((TEntity)n.Entity).Yield(),
             (n, graphic) =>
             {
                 var node = getNode(graphic);
@@ -99,7 +140,7 @@ public static class MapChunkGraphicNodeExt
         where TGraphic : Node2D, IMapChunkGraphicNode
     {
         l.RegisterForChunkNotice(action, 
-            n => getChunk(n),
+            n => getChunk(n).Yield(),
             (n, graphic) =>
             {
                 var node = getNode(graphic);
@@ -114,7 +155,7 @@ public static class MapChunkGraphicNodeExt
         where TGraphic : Node2D, IMapChunkGraphicNode
     {
         l.RegisterForChunkNotice(action, 
-            n => getChunk(n),
+            n => getChunk(n).Yield(),
             (n, graphic) =>
             {
                 var node = getNode(graphic);

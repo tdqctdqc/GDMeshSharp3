@@ -9,7 +9,7 @@ public partial class RegimeBordersNode : BorderChunkNode
         : base(nameof(RegimeBordersNode), chunk, 
             (p, n) => p.Regime.RefId == n.Regime.RefId,
             p => p.Regime.Fulfilled() ? p.Regime.Entity(data).SecondaryColor : Colors.Transparent,
-            thickness, data)
+            (m, n) => thickness, data)
     {
     }
 

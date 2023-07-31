@@ -4,11 +4,11 @@ using System.Linq;
 
 public partial class RegimeChunkModule : MapChunkGraphicModule
 {
-    private RegimeFillNode _fill;
+    private RegimePolyFill _fill;
     private RegimeBordersNode _borders;
     public RegimeChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(RegimeChunkModule))
     {
-        _fill = new RegimeFillNode(chunk, data);
+        _fill = new RegimePolyFill(chunk, data);
         AddNode(_fill);
 
         _borders = new RegimeBordersNode(chunk, 20f, data);
@@ -22,8 +22,9 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
             segmenter, 
             c => new RegimeChunkModule(c, d), 
             d);
+        l.AddTransparencySetting(m => m._fill);
         l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedRegime,
-            r => ((MapPolygon) r.Entity).GetChunk(d),
+            r => r.Entity.GetChunkAndNeighboringChunks(d),
             (n, m) => { m.HandlePolygonRegimeChange(n, d); });
         return l;
     }

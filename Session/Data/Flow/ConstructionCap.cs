@@ -10,8 +10,9 @@ public class ConstructionCap : Flow
 
     public override float GetNonBuildingFlow(Regime r, Data d)
     {
-        return FlowManager.IndustrialPower.GetNonBuildingFlow(r, d) 
+        var val = FlowManager.IndustrialPower.GetNonBuildingFlow(r, d)
                + r.GetPopulation(d);
+        return val / 10f;
     }
 
     public override float GetConsumption(Regime r, Data d)

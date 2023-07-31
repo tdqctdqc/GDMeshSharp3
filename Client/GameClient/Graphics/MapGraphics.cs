@@ -24,7 +24,7 @@ public partial class MapGraphics : Node2D, IClientComponent
         
         _segmenter = new GraphicsSegmenter(10, data);
         AddChild(_segmenter);
-        GraphicLayerHolder = new GraphicLayerHolder(_segmenter, this, data);
+        GraphicLayerHolder = new GraphicLayerHolder(_segmenter, data);
 
         Highlighter = new PolyHighlighter(data);
         AddChild(Highlighter);

@@ -38,7 +38,11 @@ public partial class RegimeGeneralOverview : ScrollContainer
             };
             _container.AddChild(button);
         }
-        
+
+        _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(data).Id);
+        _container.CreateLabelAsChild("ALLIANCE LEADER: " 
+                                      + regime.GetAlliance(data).Leader.Entity(data).Name
+                                      + " " + regime.GetAlliance(data).Leader.Entity(data).Id);
         _container.CreateLabelAsChild("RIVALS");
         foreach (var rival in regime.GetAlliance(data).Rivals.Items(data))
         {

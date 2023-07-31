@@ -1,16 +1,17 @@
-
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
-public class Oil : NaturalResource
+public class Coal : NaturalResource
 {
     protected override int _overflowSize { get; } = 100;
     protected override int _minDepositSize { get; } = 10;
     protected override OverFlowType _overflow { get; } = OverFlowType.Multiple;
 
-    public Oil() 
-        : base(nameof(Oil), Colors.Purple, 
-            5, new ExtractableAttribute())
+    public Coal() 
+        : base(nameof(Coal), Colors.Black, 
+            5, new ExtractableAttribute(), new MineableAttribute())
     {
     }
 
@@ -18,7 +19,7 @@ public class Oil : NaturalResource
     public override int GetDepositScore(MapPolygon p)
     {
         var score = 0;
-        score = Mathf.FloorToInt(score + 5 * (1f - p.Roughness));
+        score = Mathf.FloorToInt(score + 5 * (p.Roughness));
         return score;
     }
 
@@ -26,5 +27,4 @@ public class Oil : NaturalResource
     {
         return Mathf.FloorToInt(100 * Game.I.Random.RandfRange(.5f, 2f));
     }
-
 }

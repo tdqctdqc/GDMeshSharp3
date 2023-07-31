@@ -17,6 +17,10 @@ public partial class MapGraphicsOptions : VBoxContainer, IClientComponent
         foreach (var graphicLayer in client.GetComponent<MapGraphics>().GraphicLayerHolder.Layers)
         {
             AddChild(graphicLayer.GetControl());
+            foreach (var setting in graphicLayer.Settings)
+            {
+                AddChild(setting.GetControlInterface());
+            }
         }
     }
 

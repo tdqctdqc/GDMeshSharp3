@@ -7,16 +7,16 @@ using Godot;
 
 public partial class BorderChunkNode : MapChunkGraphicNode<MapPolygon>
 {
-    private float _thickness;
+    private Func<MapPolygon, MapPolygon, float> _getThickness;
     private Func<MapPolygon, Color> _getColor;
     private Func<MapPolygon, MapPolygon, bool> _inUnion;
     public BorderChunkNode(string name, MapChunk chunk, Func<MapPolygon, MapPolygon, bool> inUnion, 
-        Func<MapPolygon, Color> getColor, float thickness, Data data)
+        Func<MapPolygon, Color> getColor, Func<MapPolygon, MapPolygon, float> getThickness, Data data)
         : base(name, data, chunk)
     {
         _getColor = getColor;
         _inUnion = inUnion;
-        _thickness = thickness;
+        _getThickness = getThickness;
         Init(data);
     }
     private BorderChunkNode() : base()
@@ -30,7 +30,7 @@ public partial class BorderChunkNode : MapChunkGraphicNode<MapPolygon>
         foreach (var n in element.Neighbors.Items(data))
         {
             if (_inUnion(n, element)) continue;
-            mb.DrawMapPolyEdge(element, n, data, _thickness, color, offset);
+            mb.DrawMapPolyEdge(element, n, data, _getThickness(element, n), color, offset);
         }
 
         if (mb.Tris.Count == 0) return new Node2D();
@@ -52,9 +52,10 @@ public partial class BorderChunkNode : MapChunkGraphicNode<MapPolygon>
 
     public void QueueChangeAround(MapPolygon poly, Data data)
     {
-        QueueChange(poly);
-        foreach (var n in poly.Neighbors.Items(data))
+        if(Chunk.Polys.Contains(poly)) QueueChange(poly);
+        foreach (var n in poly.Neighbors.Items(data).Where(n => Chunk.Polys.Contains(n)))
         {
+            if (Ignore(n, data)) continue;
             QueueChange(n);
         }
     }

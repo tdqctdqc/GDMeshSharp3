@@ -10,10 +10,6 @@ public partial class PolyFillChunkGraphic : TriColorMesh<MapPolygon>
                 (p, d) =>
                 {
                     var offset = chunk.RelTo.GetOffsetTo(p, d);
-                    // var ps = p.GetOrderedBoundarySegs(d).Select(ls => ls.From).ToArray();
-                    // var ts = Geometry2D.TriangulatePolygon(ps);
-                    // return ts.Select(i => ps[i] + offset).ToList();
-
                     return p.Tris.Tris.Select(t => t.Transpose(offset));
                 }, d => chunk.Polys)
     {

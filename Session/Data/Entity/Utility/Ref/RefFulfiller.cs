@@ -13,13 +13,6 @@ public class RefFulfiller
         _data = data;
         _entityRefs = new Dictionary<int, List<IRef>>();
     }
-
-
-    public void Fulfill(IRef r)
-    {
-        if (r is IEntityRef i && i.RefId != -1) _entityRefs.AddOrUpdate(i.RefId, r);
-        r.SyncRef(_data);
-    }
     
 
     public void EntityRemoved(int id)

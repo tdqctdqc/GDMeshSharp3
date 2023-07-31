@@ -12,7 +12,7 @@ public class Iron : NaturalResource
     
     
     public Iron() 
-        : base(nameof(Iron), Colors.Black.Lightened(.3f),
+        : base(nameof(Iron), Colors.DarkRed,
             5f, new MineableAttribute(), new ExtractableAttribute())
     {
     }

@@ -5,7 +5,6 @@ using Godot;
 
 public interface IRef
 {
-    void SyncRef(Data data);
     void ClearRef();
 }
 
@@ -16,7 +15,7 @@ public interface IReadOnlyRefCollection : IRef
 }
 public interface IReadOnlyRefCollection<TRef> : IReadOnlyRefCollection
 {
-    IReadOnlyList<TRef> Items(Data data);
+    IEnumerable<TRef> Items(Data data);
 }
 public interface IRefCollection<TRef> : IReadOnlyRefCollection<TRef>
 {

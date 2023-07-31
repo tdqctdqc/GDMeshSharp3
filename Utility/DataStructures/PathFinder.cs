@@ -69,7 +69,7 @@ public static class PathFinder
 public static class PathFinder<T>
 {
     public static List<T> FindPath(T start, T end, 
-        Func<T, IReadOnlyCollection<T>> getNeighbors, 
+        Func<T, IEnumerable<T>> getNeighbors, 
         Func<T,T,float> getEdgeCost, 
         Func<T,T,float> heuristicFunc,
         int maxIter = Int32.MaxValue)
@@ -102,7 +102,8 @@ public static class PathFinder<T>
 
             closed.Add(current);
 
-            neighbors = getNeighbors(current);
+            //todo fix, profile, or something
+            neighbors = getNeighbors(current).ToList();
             currentHasParent = parents.ContainsKey(current);
             currentParent = currentHasParent ? parents[current] : default;
             

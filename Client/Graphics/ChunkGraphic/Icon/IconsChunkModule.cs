@@ -31,7 +31,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         l.RegisterForEntityLifetime(n => n.Poly.Entity(d).GetChunk(d), 
             m => m.SettlementIcons, d);
         l.RegisterForChunkNotice(d.Infrastructure.SettlementAux.ChangedTier, 
-            n => ((Settlement)n.Entity).Poly.Entity(d).GetChunk(d),
+            n => ((Settlement)n.Entity).Poly.Entity(d).GetChunk(d).Yield(),
             (notice, graphic) => graphic.SettlementIcons.QueueChange(notice.Entity));
         
         l.RegisterForAdd(d.Infrastructure.ConstructionAux.StartedConstruction,

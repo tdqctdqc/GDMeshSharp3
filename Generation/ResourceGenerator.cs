@@ -43,6 +43,7 @@ public class ResourceGenerator : Generator
         {
             addResource(regime, ItemManager.Iron);
             addResource(regime, ItemManager.Oil);
+            addResource(regime, ItemManager.Coal);
         }
 
         void addResource(Regime regime, NaturalResource res)

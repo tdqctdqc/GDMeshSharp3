@@ -23,7 +23,7 @@ public class EntityRef<TRef> : IEntityRef where TRef : Entity
     public TRef Entity(Data data)
     {
         if (RefId == -1) return null;
-        return data.RefFulfiller.Get<TRef>(this);
+        return data.Get<TRef>(RefId);
     }
 
     public bool Empty()

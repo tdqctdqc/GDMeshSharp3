@@ -7,14 +7,14 @@ using Godot;
 public class GraphicLayerHolder
 {
     public List<IGraphicLayer> Layers { get; private set; }
-    public GraphicLayerHolder(GraphicsSegmenter segmenter, MapGraphics mg, Data data)
+    public GraphicLayerHolder(GraphicsSegmenter segmenter, Data data)
     {
         Layers = new List<IGraphicLayer>();
-        Layers.Add(Terrain(segmenter, data, mg));
-        Layers.Add(PolyFill(segmenter, data, mg));
-        // Layers.Add(ResourceDepositPolyFill(segmenter, data, mg));
-        Layers.Add(Roads(segmenter, data, mg));
+        Layers.Add(Terrain(segmenter, data));
+        Layers.Add(PolyFill(segmenter, data));
+        Layers.Add(Roads(segmenter, data));
         Layers.Add(IconsChunkModule.GetLayer(data, segmenter));
+        Layers.Add(ResourceChunkModule.GetLayer(data, segmenter));
     }
 
     public void Update(Data d)
@@ -30,23 +30,22 @@ public class GraphicLayerHolder
             LogType.Graphics);
     }
 
-    private ChunkGraphicSwitchLayer PolyFill(GraphicsSegmenter segmenter, 
-        Data data, MapGraphics mg)
+    private ChunkGraphicSwitchLayer PolyFill(GraphicsSegmenter segmenter, Data data)
     {
         var regime = RegimeChunkModule.GetLayer(data, segmenter);
+        var diplomacy = DiplomacyChunkModule.GetLayer(data, segmenter);
         var alliance = AllianceChunkModule.GetLayer(data, segmenter);
-        return new ChunkGraphicSwitchLayer("Poly Fill", regime, alliance);
+        return new ChunkGraphicSwitchLayer("Poly Fill", regime, diplomacy, alliance);
     }
     private ChunkGraphicLayer<RoadChunkGraphicNode> Roads(GraphicsSegmenter segmenter, 
-        Data d, MapGraphics mg)
+        Data d)
     {
         var l = new ChunkGraphicLayer<RoadChunkGraphicNode>("Roads", segmenter,
-            c => new RoadChunkGraphicNode(c, d, mg),
+            c => new RoadChunkGraphicNode(c, d),
             d);
         return l;
     }
-    private ChunkGraphicLayer<TerrainChunkModule> Terrain(GraphicsSegmenter segmenter, 
-        Data d, MapGraphics mg)
+    private ChunkGraphicLayer<TerrainChunkModule> Terrain(GraphicsSegmenter segmenter, Data d)
     {
         var l = new ChunkGraphicLayer<TerrainChunkModule>("Terrain", segmenter,
             c => new TerrainChunkModule(c, d),
