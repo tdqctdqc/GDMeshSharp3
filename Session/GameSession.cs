@@ -118,9 +118,9 @@ public partial class GameSession : Node, ISession
         AddChild((Node)server);
     }
 
-    public override void _UnhandledInput(InputEvent e)
-    {
-        var delta = (float)GetProcessDeltaTime();
-        Client?.HandleInput(e, delta);
-    }
+    // public override void _UnhandledInput(InputEvent e)
+    // {
+    //     var delta = (float)GetProcessDeltaTime();
+    //     Client?.HandleInput(e, delta);
+    // }
 }

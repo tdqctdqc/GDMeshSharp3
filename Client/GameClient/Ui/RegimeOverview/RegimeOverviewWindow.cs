@@ -10,7 +10,6 @@ public partial class RegimeOverviewWindow : TabWindow
     private RegimePeepsOverview _peeps;
     private RegimeWalletOverview _wallet;
     private VBoxContainer _regimeTemplates;
-    private Button _switchToRegime;
     public RegimeOverviewWindow()
     {
         Size = new Vector2I(500, 500);
@@ -27,7 +26,6 @@ public partial class RegimeOverviewWindow : TabWindow
         _wallet = new RegimeWalletOverview();
         AddTab(_wallet);
 
-        _switchToRegime = new Button();
         var scroll = new ScrollContainer();
         scroll.Name = "Regime Templates";
         scroll.Size = new Vector2(200f, 400f);

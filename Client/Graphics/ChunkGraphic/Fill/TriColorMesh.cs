@@ -67,24 +67,24 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
     public void Update(Data d)
     {
         if (Updates.Count == 0) return;
-        Init(d);
+        // Init(d);
         
-        // var mdt = new MeshDataTool();
-        // mdt.CreateFromSurface(_arrayMesh, 0);
-        //
-        // foreach (var key in _triIndicesByElement.Keys)
-        // {
-        //     var tris = _triIndicesByElement[key];
-        //     var color = _getColor(key, d);
-        //     foreach (var tri in tris)
-        //     {
-        //         mdt.SetVertexColor(tri*3, color);
-        //         mdt.SetVertexColor(tri*3 + 1, color);
-        //         mdt.SetVertexColor(tri*3 + 2, color);
-        //     }
-        // }
-        //
-        // mdt.CommitToSurface(_arrayMesh);
+        var mdt = new MeshDataTool();
+        mdt.CreateFromSurface(_arrayMesh, 0);
+        
+        foreach (var key in _triIndicesByElement.Keys)
+        {
+            var tris = _triIndicesByElement[key];
+            var color = _getColor(key, d);
+            foreach (var tri in tris)
+            {
+                mdt.SetVertexColor(tri*3, color);
+                mdt.SetVertexColor(tri*3 + 1, color);
+                mdt.SetVertexColor(tri*3 + 2, color);
+            }
+        }
+        
+        mdt.CommitToSurface(_arrayMesh);
         Updates.Clear();
     }
 }

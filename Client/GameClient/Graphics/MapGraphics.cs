@@ -12,6 +12,7 @@ public partial class MapGraphics : Node2D, IClientComponent
     protected GraphicsSegmenter _segmenter;
     public PolyHighlighter Highlighter { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
+    public MapInputCatcher InputCatcher { get; private set; }
     Node IClientComponent.Node => this;
     public Action Disconnect { get; set; }
 
@@ -29,8 +30,8 @@ public partial class MapGraphics : Node2D, IClientComponent
         Highlighter = new PolyHighlighter(data);
         AddChild(Highlighter);
         
-        var inputCatcher = new MapInputCatcher(data);
-        AddChild(inputCatcher);
+        InputCatcher = new MapInputCatcher(data);
+        AddChild(InputCatcher);
         
         client.GraphicsLayer.AddChild(this);
         

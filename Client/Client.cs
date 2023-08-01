@@ -8,7 +8,7 @@ public partial class Client : Node, IClient
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiRequests UiRequests { get; private set; }
-    public CanvasLayer UiLayer { get; private set; }
+    public Control UiLayer { get; private set; }
     public Node2D GraphicsLayer { get; private set; }
     public Dictionary<Type, IClientComponent> Components { get; private set; }
     private GameSession _session;
@@ -19,11 +19,17 @@ public partial class Client : Node, IClient
     }
     private void Setup()
     {
+        
         Key = new ClientWriteKey(_session.Data, _session);
         GraphicsLayer = new Node2D();
         AddChild(GraphicsLayer);
-        UiLayer = new CanvasLayer();
-        AddChild(UiLayer);
+        var ui = new CanvasLayer();
+        UiLayer = new Control();
+        UiLayer.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        UiLayer.MouseFilter = Control.MouseFilterEnum.Pass;
+        ui.AddChild(UiLayer);
+        UiLayer.FocusMode = Control.FocusModeEnum.None;
+        AddChild(ui);
         
         _session = _session;
         Components = new Dictionary<Type, IClientComponent>();

@@ -12,35 +12,35 @@ public partial class WorldCameraController : Camera2D, ICameraController
     public void Process(float delta)
     {
         var mult = 1f;
-        if (Input.IsKeyPressed( Key.Shift)) mult = 3f;
-        if(Input.IsKeyPressed(Key.W))
+        if (Input.IsActionPressed("Speed Up Scroll")) mult = 3f;
+        if(Input.IsActionPressed("Scroll Up"))
         {
             Position += Vector2.Up * delta / Zoom * _udScrollSpeed * mult;
         }
-        if(Input.IsKeyPressed(Key.S))
+        if(Input.IsActionPressed("Scroll Down"))
         {
             Position += Vector2.Down * delta / Zoom * _udScrollSpeed * mult;
         }
-        if(Input.IsKeyPressed(Key.A))
+        if(Input.IsActionPressed("Scroll Left"))
         {
             XScrollRatio -= delta / Zoom.Length() * _lrScrollSpeed * mult;
             if (XScrollRatio > 1f) XScrollRatio -= 1f;
             if (XScrollRatio < 0f) XScrollRatio += 1f;
         }
-        if(Input.IsKeyPressed(Key.D))
+        if(Input.IsActionPressed("Scroll Right"))
         {
             XScrollRatio += delta / Zoom.Length() * _lrScrollSpeed * mult;
             if (XScrollRatio > 1f) XScrollRatio -= 1f;
             if (XScrollRatio < 0f) XScrollRatio += 1f;
         }
-        if(Input.IsKeyPressed(Key.Q))
-        {
-            Position += Vector2.Left * delta / Zoom * _udScrollSpeed * mult;
-        }
-        if(Input.IsKeyPressed(Key.E))
-        {
-            Position += Vector2.Right * delta / Zoom * _udScrollSpeed * mult;
-        }
+        // if(Input.IsKeyPressed(Key.Q))
+        // {
+        //     Position += Vector2.Left * delta / Zoom * _udScrollSpeed * mult;
+        // }
+        // if(Input.IsKeyPressed(Key.E))
+        // {
+        //     Position += Vector2.Right * delta / Zoom * _udScrollSpeed * mult;
+        // }
     }
     public void Process(InputEvent e)
     {

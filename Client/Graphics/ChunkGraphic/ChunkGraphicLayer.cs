@@ -40,7 +40,7 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     }
     public Control GetControl()
     {
-        var button = new Button();
+        var button = ButtonExt.GetButton();
         Action<bool> setButtonText = v => button.Text = $"{(v ? "Showing" : "Hiding")} {Name}";
         setButtonText(Visible);
         button.ButtonUp += () =>

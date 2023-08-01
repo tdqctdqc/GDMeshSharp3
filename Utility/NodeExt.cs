@@ -40,6 +40,7 @@ public static class NodeExt
         {
             Game.I.Client.GetComponent<TooltipManager>().HideTooltip(hash);
         };
+        c.MouseFilter = Control.MouseFilterEnum.Stop;
     }
     public static HBoxContainer MakeIconStatDisplay(this Icon icon, Data data, 
         Func<string> getStat, float height,
@@ -57,10 +58,7 @@ public static class NodeExt
             amount,
             getStat
         );
-        hBox.SubscribeUpdate(() =>
-        {
-            stat.TriggerUpdate();
-        }, triggers);
+        hBox.SubscribeUpdate(stat.TriggerUpdate, triggers);
 
         return hBox;
     }

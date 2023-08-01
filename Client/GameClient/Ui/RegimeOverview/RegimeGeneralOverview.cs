@@ -28,14 +28,13 @@ public partial class RegimeGeneralOverview : ScrollContainer
         
         if (regime.IsPlayerRegime(data) == false)
         {
-            var button = new Button();
-            button.Text = "Choose Regime";
-            button.Pressed += () =>
+            var button = ButtonExt.GetButton(() =>
             {
                 var com = new ChooseRegimeCommand(regime.MakeRef(),
                     data.ClientPlayerData.LocalPlayerGuid);
                 Game.I.Client.HandleCommand(com);
-            };
+            });
+            button.Text = "Choose Regime";
             _container.AddChild(button);
         }
 

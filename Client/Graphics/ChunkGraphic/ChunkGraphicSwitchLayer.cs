@@ -6,6 +6,7 @@ using Godot;
 public class ChunkGraphicSwitchLayer : IGraphicLayer
 {
     public List<IGraphicLayer> Layers { get; private set; }
+    
     private IGraphicLayer _showing;
     public string Name { get; private set; }
     
@@ -48,34 +49,26 @@ public class ChunkGraphicSwitchLayer : IGraphicLayer
         var side = new Panel();
         side.CustomMinimumSize = new Vector2(20f, 0f);
         outer.AddChild(side);
-        
         var box = new VBoxContainer();
         outer.AddChild(box);
-        var buttons = new Dictionary<Button, IGraphicLayer>();
-        Action<bool, Button> setButtonText = (v, b) => b.Text = $"{(v ? "Showing" : "Hiding")} {buttons[b].Name}";
-
-        Layers.ForEach(l =>
+        
+        var btns = ToggleButton.GetToggleGroup(Layers, (l, v) =>
         {
-            var button = new Button();
-            box.AddChild(button);
-            button.ButtonUp += () =>
-            {
-                var visible = (l == _showing) == false;
-                if (visible) _showing = l;
-                else _showing = null;
-                SetLayerVisibilities();
-                foreach (var kvp in buttons)
-                {
-                    setButtonText(kvp.Value == _showing, kvp.Key);
-                }
-            };
-            buttons.Add(button, l);
-            setButtonText(l == _showing, button);
+            l.Visible = v;
+            if (v) _showing = l;
+        });
+        for (var i = 0; i < Layers.Count; i++)
+        {
+            var l = Layers[i];
+            var btn = btns.ElementAt(i);
+            btn.Text = l.Name;
+            box.AddChild(btn);
             foreach (var setting in l.Settings)
             {
                 box.AddChild(setting.GetControlInterface());
             }
-        });
+        }
+        
         return outer;
     }
     

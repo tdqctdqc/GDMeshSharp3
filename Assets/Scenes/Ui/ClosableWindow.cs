@@ -10,6 +10,14 @@ public partial class ClosableWindow : Window
         this.MakeCloseable();
     }
 
+    public override void _UnhandledInput(InputEvent e)
+    {
+        if (e is InputEventMouse m && m.Position.InBox(Vector2.Zero, Size) == false)
+        {
+            Game.I.Client.GetComponent<MapGraphics>()?.InputCatcher._UnhandledInput(m);
+        }
+    }
+
     public override void _UnhandledKeyInput(InputEvent @event)
     {
         if (@event is InputEventKey k && k.Keycode == Key.Escape)
