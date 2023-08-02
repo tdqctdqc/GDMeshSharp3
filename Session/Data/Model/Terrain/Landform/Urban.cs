@@ -29,5 +29,4 @@ public class Urban : Landform, IDecaledTerrain
         });
     }
     float IDecaledTerrain.DecalSpacing => 10f;
-    Color IDecaledTerrain.GetDecalColor(PolyTri pt) => Colors.DimGray;
 }

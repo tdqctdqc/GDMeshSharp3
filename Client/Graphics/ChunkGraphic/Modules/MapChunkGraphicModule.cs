@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -34,11 +35,11 @@ public partial class MapChunkGraphicModule : Node2D, IMapChunkGraphicNode
         }
     }
 
-    public void Update(Data d)
+    public void Update(Data d, ConcurrentQueue<Action> queue)
     {
         foreach (var kvp in Nodes)
         {
-            kvp.Value.Update(d);
+            kvp.Value.Update(d, queue);
         }
     }
 

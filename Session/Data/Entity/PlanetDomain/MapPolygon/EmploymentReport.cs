@@ -21,10 +21,10 @@ public class EmploymentReport
         Counts.AddRange(toCopy.Counts);
     }
 
-    public int NumUnemployed()
+    public int NumUnemployed(Data data)
     {
-        if (Counts.ContainsKey(PeepJobManager.Unemployed.Id) == false) return 0;
-        return Counts[PeepJobManager.Unemployed.Id];
+        if (Counts.ContainsKey(data.Models.PeepJobs.Unemployed.Id) == false) return 0;
+        return Counts[data.Models.PeepJobs.Unemployed.Id];
     }
     public void Clear()
     {

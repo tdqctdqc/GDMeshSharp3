@@ -11,8 +11,8 @@ public class PolyTri : Triangle
     public byte NeighborCount { get; private set; }
     public byte LfMarker { get; private set; }
     public byte VMarker { get; private set; }
-    public Landform Landform => LandformManager.ByMarker[LfMarker];
-    public Vegetation Vegetation => VegetationManager.ByMarker[VMarker];
+    public Landform Landform(Data d) => d.Models.Landforms.ByMarker[LfMarker];
+    public Vegetation Vegetation(Data d) => d.Models.Vegetations.ByMarker[VMarker];
 
 
     public static PolyTri Construct(int polyId, Vector2 a, Vector2 b, Vector2 c, Landform landform,
@@ -90,13 +90,4 @@ public void SetLandform(Landform lf, GenWriteKey key)
             NeighborStartIndex, NeighborCount);
     }
 
-    public Color GetDisplayColor()
-    {
-        if (Vegetation.Color != Colors.Transparent)
-        {
-            return Vegetation.Color.Darkened(Landform.DarkenFactor);
-        }
-
-        return Landform.Color;
-    }
 }

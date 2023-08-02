@@ -44,7 +44,7 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
         }
     }
 
-    public void Update(Data d)
+    public void Update(Data d, ConcurrentQueue<Action> queue)
     {
         // if (_queuedToAdd.Count > 0 || _queuedToChange.Count > 0 || _queuedToRemove.Count > 0)
         // {
@@ -53,21 +53,24 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
         //     _queuedToChange.Clear();
         //     _queuedToRemove.Clear();
         // }
-        foreach (var key in _queuedToRemove)
+        queue.Enqueue(() =>
         {
-            Remove(key, d);
-        }
-        _queuedToRemove.Clear();
-        foreach (var key in _queuedToChange)
-        {
-            Change(key, d);
-        }
-        _queuedToChange.Clear();
-        foreach (var key in _queuedToAdd)
-        {
-            Add(key, d);
-        }
-        _queuedToAdd.Clear();
+            foreach (var key in _queuedToRemove)
+            {
+                Remove(key, d);
+            }
+            _queuedToRemove.Clear();
+            foreach (var key in _queuedToChange)
+            {
+                Change(key, d);
+            }
+            _queuedToChange.Clear();
+            foreach (var key in _queuedToAdd)
+            {
+                Add(key, d);
+            }
+            _queuedToAdd.Clear();
+        });
     }
     public void QueueAdd(TKey key)
     {
@@ -91,7 +94,7 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
         if (Ignore(key, data)) return;
         var graphic = MakeGraphic(key, data);
         _graphics.Add(key, graphic);
-        AddChild(graphic);
+        this.AddChildDeferred(graphic);
     }
     private void Change(TKey key, Data data)
     {
@@ -131,6 +134,6 @@ public interface IMapChunkGraphicNode
     string Name { get; }
     Node2D Node { get; }
     void Init(Data data);
-    void Update(Data d);
+    void Update(Data d, ConcurrentQueue<Action> queue);
 }
 

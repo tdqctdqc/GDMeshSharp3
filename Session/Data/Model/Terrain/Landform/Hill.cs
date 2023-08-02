@@ -18,10 +18,4 @@
         }
 
         float IDecaledTerrain.DecalSpacing => 20f;
-        Color IDecaledTerrain.GetDecalColor(PolyTri pt)
-        {
-            return pt.Vegetation == VegetationManager.Barren
-                ? Colors.Gray
-                : pt.Vegetation.Color.Darkened(.4f);
-        }
     }

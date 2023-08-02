@@ -10,18 +10,18 @@ public class Ranch : FoodProdTechnique
     {
     }
 
-    public override int NumForPoly(MapPolygon poly)
+    public override int NumForPoly(MapPolygon poly, Data data)
     {
         return Mathf.FloorToInt(poly.Tris.Tris
                     .Where(t =>
-                        t.Landform.IsLand
-                        && t.Landform.MinRoughness <= LandformManager.Hill.MinRoughness
-                        && t.Vegetation.MinMoisture < VegetationManager.Grassland.MinMoisture
+                        t.Landform(data).IsLand
+                        && t.Landform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
+                        && t.Vegetation(data).MinMoisture < data.Models.Vegetations.Grassland.MinMoisture
                         && float.IsNaN(t.GetArea()) == false
                     )
                     .Sum(t => t.GetArea()
-                              * t.Landform.FertilityMod
-                              * ShapingFunctions.ProjectToRange(t.Vegetation.FertilityMod, 1f, .5f, 1f))
+                              * t.Landform(data).FertilityMod
+                              * ShapingFunctions.ProjectToRange(t.Vegetation(data).FertilityMod, 1f, .5f, 1f))
                 / 10000f);
     }
 }

@@ -59,14 +59,14 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
     {
         var tri = t.Tri(d);
         if (tri == null) return null; //todo this should be fixed when the tri holes are fixed
-        return NodeExt.CreateLabel("Landform: " + tri.Vegetation.Name);
+        return NodeExt.CreateLabel("Landform: " + tri.Vegetation(d).Name);
     }
 
     private static Control GetLandform(PolyTriPosition t, Data d)
     {
         var tri = t.Tri(d);
         if (tri == null) return null; //todo this should be fixed when the tri holes are fixed
-        return NodeExt.CreateLabel("Landform: " + tri.Landform.Name);
+        return NodeExt.CreateLabel("Landform: " + tri.Landform(d).Name);
     }
 
     private static Control GetRegime(PolyTriPosition t, Data d)

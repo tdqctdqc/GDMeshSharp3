@@ -7,11 +7,11 @@ public partial class ItemBar : HBoxContainer
 {
     public ItemBar(Data data)
     {
-        AddFlow(FlowManager.ConstructionCap, data);
-        AddFlow(FlowManager.IndustrialPower, data);
-        AddFlow(FlowManager.Income, data);
+        AddFlow(data.Models.Flows.ConstructionCap, data);
+        AddFlow(data.Models.Flows.IndustrialPower, data);
+        AddFlow(data.Models.Flows.Income, data);
 
-        foreach (var kvp in data.Models.Items.Models)
+        foreach (var kvp in data.Models.GetModels<Item>())
         {
             AddItem(kvp.Value, data);
         }

@@ -16,5 +16,4 @@ public class Peak : Landform, IDecaledTerrain
             Vector2.Up * spacing + offset});
     }
     float IDecaledTerrain.DecalSpacing => 30f;
-    Color IDecaledTerrain.GetDecalColor(PolyTri pt) => Color.Darkened(.25f);
 }

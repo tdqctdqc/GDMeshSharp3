@@ -17,12 +17,12 @@ public class Iron : NaturalResource
     {
     }
     protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    public override int GetDepositScore(MapPolygon p)
+    public override int GetDepositScore(MapPolygon p, Data d)
     {
         var score = 15;
         score = Mathf.FloorToInt(score + p.Roughness * 50);
         if (p.IsWater()) score /= 10;
-        if(p.IsLand && p.Moisture >= VegetationManager.Swamp.MinMoisture * .75f) score += 20;
+        if(p.IsLand && p.Moisture >= d.Models.Vegetations.Swamp.MinMoisture * .75f) score += 20;
         return score;
     }
 

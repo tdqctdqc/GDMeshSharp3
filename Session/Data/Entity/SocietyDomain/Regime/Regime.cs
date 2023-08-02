@@ -43,9 +43,9 @@ public class Regime : Entity
     {
         var items = ItemCount.Construct();
         var flows = new RegimeFlows(new Dictionary<int, FlowData>());
-        flows.AddFlowIn(FlowManager.Income, 0f);
-        flows.AddFlowIn(FlowManager.ConstructionCap, 0f);
-        flows.AddFlowIn(FlowManager.IndustrialPower, 0f);
+        flows.AddFlowIn(key.Data.Models.Flows.Income, 0f);
+        flows.AddFlowIn(key.Data.Models.Flows.ConstructionCap, 0f);
+        flows.AddFlowIn(key.Data.Models.Flows.IndustrialPower, 0f);
         
         var r = new Regime(-1, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 

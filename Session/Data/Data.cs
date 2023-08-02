@@ -40,7 +40,7 @@ public class Data
 
         Notices = new DataNotices();
         // RefFulfiller = new RefFulfiller(this);
-        Models = new Models();
+        Models = new Models(this);
         EntitiesById = new Dictionary<int, Entity>();
         
         BaseDomain = new BaseDomain(this);

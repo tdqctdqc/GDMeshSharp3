@@ -47,10 +47,10 @@ public static class MapPolygonExt
         var closeL = (poly.GetOffsetTo(closest, data) - pRel).Length();
         var secondCloseL = (poly.GetOffsetTo(secondClosest, data) - pRel).Length();
         var totalDist = l + closeL + secondCloseL;
-        var closeInt = .5f * Mathf.Lerp(getScore(poly), getScore(closest), closeL / (l + closeL));
-        var secondInt = .5f * Mathf.Lerp(getScore(poly), getScore(secondClosest), secondCloseL / (l + secondCloseL));
+        var closeInt = Mathf.Lerp(getScore(poly), getScore(closest), closeL / (l + closeL));
+        var secondInt = Mathf.Lerp(getScore(poly), getScore(secondClosest), secondCloseL / (l + secondCloseL));
 
-        return closeInt + secondInt;
+        return (closeInt + secondInt) / 2f;
     }
     public static bool HasNeighbor(this MapPolygon poly, MapPolygon n) => poly.Neighbors.RefIds.Contains(n.Id);
     public static bool IsWater(this MapPolygon poly) => poly.IsLand == false;

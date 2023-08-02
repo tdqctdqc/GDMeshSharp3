@@ -8,7 +8,7 @@ using Priority_Queue;
 
 public class LocationGenerator : Generator
 {
-    public GenData Data { get; private set; }
+    private GenData _data;
     private GenWriteKey _key;
     public LocationGenerator()
     {
@@ -18,7 +18,7 @@ public class LocationGenerator : Generator
     {
         var report = new GenReport(GetType().Name);
         _key = key;
-        Data = key.GenData;
+        _data = key.GenData;
         report.StartSection();
         GenerateCities();
         NameSettlements(key.Data);
@@ -29,10 +29,10 @@ public class LocationGenerator : Generator
     
     private void GenerateCities()
     {
-        var landPolys = Data.GetAll<MapPolygon>().Where(p => p.IsLand);
+        var landPolys = _data.GetAll<MapPolygon>().Where(p => p.IsLand);
         var unions = UnionFind.Find(landPolys.ToList(), 
-            (p, q) => p.Regime.Entity(Data) == q.Regime.Entity(Data),
-            p => p.Neighbors.Items(Data));
+            (p, q) => p.Regime.Entity(_data) == q.Regime.Entity(_data),
+            p => p.Neighbors.Items(_data));
 
         var dic = new ConcurrentDictionary<List<MapPolygon>, List<int>>();
         
@@ -70,9 +70,9 @@ public class LocationGenerator : Generator
             var p = regimeUnionPolys[i];
             
             
-            if (p.Tris.Tris.Any(t => t.Landform != LandformManager.Mountain
-                           && t.Landform != LandformManager.Peak
-                           && t.Landform != LandformManager.River))
+            if (p.Tris.Tris.Any(t => t.Landform(_data) != _data.Models.Landforms.Mountain
+                           && t.Landform(_data) != _data.Models.Landforms.Peak
+                           && t.Landform(_data) != _data.Models.Landforms.River))
             {
                 polyQueue.Enqueue(p, -SettlementDesireability(p));
             }
@@ -87,7 +87,7 @@ public class LocationGenerator : Generator
             if (polyQueue.Count == 0) break;
             var poly = polyQueue.Dequeue();
             if (forbidden.Contains(poly)) continue;
-            foreach (var n in poly.Neighbors.Items(Data))
+            foreach (var n in poly.Neighbors.Items(_data))
             {
                 forbidden.Add(n);
             }
@@ -137,16 +137,16 @@ public class LocationGenerator : Generator
             var size = settlementSizes[i];
 
             var availTris = p.Tris.Tris
-                .Where(t => t.Landform != LandformManager.River
-                    && t.Landform != LandformManager.Mountain
-                    && t.Landform != LandformManager.Peak)
+                .Where(t => t.Landform(_data) != _data.Models.Landforms.River
+                    && t.Landform(_data) != _data.Models.Landforms.Mountain
+                    && t.Landform(_data) != _data.Models.Landforms.Peak)
                 .OrderBy(t => t.GetCentroid().LengthSquared());
             
             var numUrbanTris = Mathf.Min(availTris.Count(), trisForSize(size));
             for (var j = 0; j < numUrbanTris; j++)
             {
-                availTris.ElementAt(j).SetLandform(LandformManager.Urban, _key);
-                availTris.ElementAt(j).SetVegetation(VegetationManager.Barren, _key);
+                availTris.ElementAt(j).SetLandform(_data.Models.Landforms.Urban, _key);
+                availTris.ElementAt(j).SetVegetation(_data.Models.Vegetations.Barren, _key);
             }
         }
         int trisForSize(float size)
@@ -158,17 +158,17 @@ public class LocationGenerator : Generator
     {
         foreach (var poly in polys)
         {
-            var forestTris = poly.Tris.Tris.Where(t => t.Vegetation == VegetationManager.Forest);
+            var forestTris = poly.Tris.Tris.Where(t => t.Vegetation(_data) == _data.Models.Vegetations.Forest);
             if (forestTris.Count() == 0)
             {
                 continue;
             }
             float deforestStr = 0f;
-            if (poly.HasSettlement(Data))
+            if (poly.HasSettlement(_data))
             {
                 deforestStr = .5f;
             }
-            else if (poly.Neighbors.Items(Data).Any(n => n.HasSettlement(Data)))
+            else if (poly.Neighbors.Items(_data).Any(n => n.HasSettlement(_data)))
             {
                 deforestStr = .1f;
             }
@@ -177,7 +177,7 @@ public class LocationGenerator : Generator
             {
                 if (Game.I.Random.Randf() < deforestStr)
                 {
-                    tri.SetVegetation(VegetationManager.Grassland, _key);
+                    tri.SetVegetation(_data.Models.Vegetations.Grassland, _key);
                 }
             }
         }
@@ -192,11 +192,11 @@ public class LocationGenerator : Generator
     private float SettlementDesireability(MapPolygon poly)
     {
         var res = PopScore(poly);
-        if (poly.Tris.Tris.Any(t => t.Landform == LandformManager.River))
+        if (poly.Tris.Tris.Any(t => t.Landform(_data) == _data.Models.Landforms.River))
         {
             res += 1f;
         }
-        if (poly.IsCoast(Data))
+        if (poly.IsCoast(_data))
         {
             res += 1f;
         }
@@ -208,7 +208,7 @@ public class LocationGenerator : Generator
         var taken = new HashSet<string>();
         foreach (var r in data.GetAll<Regime>())
         {
-            var settlements = r.GetPolys(Data).Where(p => p.HasSettlement(data))
+            var settlements = r.GetPolys(_data).Where(p => p.HasSettlement(data))
                 .Select(p => p.GetSettlement(data));
             var names = r.Culture.Model(data).SettlementNames.Where(n => taken.Contains(n) == false).ToList();
             if (settlements.Count() > names.Count) continue;

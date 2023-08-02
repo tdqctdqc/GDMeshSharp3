@@ -14,10 +14,10 @@ public abstract class BuildingModel : IModel
     public List<BuildingComponent> Components { get; private set; }
     public int Income { get; private set; }
     public Icon Icon { get; }
-    public abstract Dictionary<Item, int> BuildCosts { get; protected set; }
+    public Dictionary<Item, int> BuildCosts { get; private set; }
 
     public BuildingModel(BuildingType buildingType, string name, int numTicksToBuild, int constructionCapPerTick,
-        int income, List<BuildingComponent> components)
+        int income, List<BuildingComponent> components, Dictionary<Item, int> buildCosts)
     {
         BuildingType = buildingType;
         Name = name;
@@ -26,6 +26,7 @@ public abstract class BuildingModel : IModel
         Icon = Icon.Create(Name, Icon.AspectRatio._1x1, 25f);
         Components = components;
         Income = income;
+        BuildCosts = buildCosts;
     }
 
     protected abstract bool CanBuildInTriSpec(PolyTri t, Data data);

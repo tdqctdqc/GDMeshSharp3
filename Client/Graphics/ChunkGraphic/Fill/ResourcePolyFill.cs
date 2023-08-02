@@ -10,7 +10,12 @@ public partial class ResourcePolyFill : PolyFillChunkGraphic
             (p, d) =>
                {
                    var rs = p.GetResourceDeposits(d);
-                   if (rs == null || rs.Count == 0) return p.IsLand ? Colors.White : LandformManager.Sea.Color;
+                   if (rs == null || rs.Count == 0)
+                   {
+                       return p.IsLand
+                           ? Colors.White
+                           : data.Models.Landforms.Sea.Color;
+                   }
                    if (rs.Count > 1) return Colors.Green;
                    return rs.First().Item.Model(d).Color;
                }, data)

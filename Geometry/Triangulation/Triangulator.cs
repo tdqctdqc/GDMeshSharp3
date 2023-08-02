@@ -16,7 +16,7 @@ public static class Triangulator
         Func<Vector2, Vector2, Vector2, PolyTri> constructor = (v, w, x) =>
         {
             var lf = data.Models.Landforms.GetAtPoint(poly, (v + w + x) / 3f, data);
-            var vg = data.Models.Vegetation.GetAtPoint(poly, (v + w + x) / 3f, lf, data);
+            var vg = data.Models.Vegetations.GetAtPoint(poly, (v + w + x) / 3f, lf, data);
             return PolyTri.Construct(poly.Id, v, w, x, lf, vg);
         };
         var polygon = new Poly2Tri.Polygon(boundaryPoints.Select(p => new PolygonPoint(p.X, p.Y)));

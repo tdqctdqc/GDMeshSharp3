@@ -6,7 +6,7 @@ using Godot;
 public class Mine : BuildingModel
 {
     public NaturalResource MinedItem { get; private set; }
-    public Mine(string name, NaturalResource prodItem) 
+    public Mine(string name, NaturalResource prodItem, Items items, PeepJobList jobs) 
         : base(BuildingType.Extraction, name, 
             150, 3000,
             150, 
@@ -15,24 +15,22 @@ public class Mine : BuildingModel
                 new ExtractionProd(prodItem, 20),
                 new Workplace(new Dictionary<PeepJob, int>
                 {
-                    {PeepJobManager.Miner, 500}
+                    {jobs.Miner, 500}
                 })
+            },
+            new Dictionary<Item, int>
+            {
+                {items.Iron, 1000}
             })
     {
         MinedItem = prodItem;
         if (prodItem.Attributes.Has<MineableAttribute>() == false) throw new Exception();
     }
-    public override Dictionary<Item, int> BuildCosts { get; protected set; }
-        = new Dictionary<Item, int>
-        {
-            {ItemManager.Iron, 1000}
-        };
 
-
-    protected override bool CanBuildInTriSpec(PolyTri t, Data data) => CanBuildInTri(t);
-    public static bool CanBuildInTri(PolyTri t)
+    protected override bool CanBuildInTriSpec(PolyTri t, Data data) => CanBuildInTri(t, data);
+    public static bool CanBuildInTri(PolyTri t, Data data)
     {
-        return t.Landform.IsLand;
+        return t.Landform(data).IsLand;
     }
     public override bool CanBuildInPoly(MapPolygon p, Data data)
     {

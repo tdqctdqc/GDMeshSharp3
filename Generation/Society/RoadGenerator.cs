@@ -65,7 +65,7 @@ public class RoadGenerator : Generator
             var railGraph = GraphGenerator.GenerateDelaunayGraph(railSettlements,
                 s => first.GetOffsetTo(s, _data),
                 (p1, p2) => p1.GetV2EdgeKey(p2));
-            BuildRoadNetworkLocal(RoadModelManager.Railroad, 2000f, 
+            BuildRoadNetworkLocal(_data.Models.RoadList.Railroad, 2000f, 
                 railGraph, covered, segs, true);
         }
         
@@ -75,7 +75,7 @@ public class RoadGenerator : Generator
             var pavedGraph = GraphGenerator.GenerateDelaunayGraph(pavedSettlements,
                 s => first.GetOffsetTo(s, _data),
                 (p1, p2) => p1.GetV2EdgeKey(p2));
-            BuildRoadNetworkLocal(RoadModelManager.PavedRoad, 1000f, 
+            BuildRoadNetworkLocal(_data.Models.RoadList.PavedRoad, 1000f, 
                 pavedGraph, covered, segs, true);
         }
         
@@ -85,7 +85,7 @@ public class RoadGenerator : Generator
             var dirtGraph = GraphGenerator.GenerateDelaunayGraph(dirtSettlements,
                 s => first.GetOffsetTo(s, _data),
                 (p1, p2) => p1.GetV2EdgeKey(p2));
-            BuildRoadNetworkLocal(RoadModelManager.DirtRoad, 500f, 
+            BuildRoadNetworkLocal(_data.Models.RoadList.DirtRoad, 500f, 
                 dirtGraph, covered, segs, true);
         }
         return segs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);

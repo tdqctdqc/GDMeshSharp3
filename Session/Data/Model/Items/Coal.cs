@@ -16,7 +16,7 @@ public class Coal : NaturalResource
     }
 
     protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    public override int GetDepositScore(MapPolygon p)
+    public override int GetDepositScore(MapPolygon p, Data d)
     {
         var score = 0;
         score = Mathf.FloorToInt(score + 5 * (p.Roughness));

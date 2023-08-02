@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -51,11 +52,11 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
         };
         return button;
     }
-    public void Update(Data d)
+    public void Update(Data d, ConcurrentQueue<Action> queue)
     {
         foreach (var graphic in ByChunkCoords.Values)
         {
-            graphic.Update(d);
+            graphic.Update(d, queue);
         }
     }
 

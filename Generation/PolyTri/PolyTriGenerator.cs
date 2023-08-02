@@ -123,8 +123,8 @@ public class PolyTriGenerator : Generator
             var a = boundaryPs[triPIndices[i]];
             var b = boundaryPs[triPIndices[i+1]];
             var c = boundaryPs[triPIndices[i+2]];
-            tris.Add(PolyTri.Construct(poly.Id, a,b,c,LandformManager.Sea,
-                VegetationManager.Barren));
+            tris.Add(PolyTri.Construct(poly.Id, a,b,c,_data.Models.Landforms.Sea,
+                _data.Models.Vegetations.Barren));
         }
         return tris;
     }
@@ -201,33 +201,33 @@ public class PolyTriGenerator : Generator
         void erode(MapPolygon poly, PolyTri tri)
         {
             if (
-                (tri.Landform == LandformManager.Mountain || tri.Landform == LandformManager.Peak)
-                && tri.AnyNeighbor(poly, n => n.Landform.IsWater)
+                (tri.Landform(_data) == _data.Models.Landforms.Mountain || tri.Landform(_data) == _data.Models.Landforms.Peak)
+                && tri.AnyNeighbor(poly, n => n.Landform(_data).IsWater)
                 && Game.I.Random.Randf() < erodeChance
             )
             {
-                var v = key.Data.Models.Vegetation.GetAtPoint(poly, tri.GetCentroid(), 
-                    LandformManager.Hill, _data);
-                tri.SetLandform(LandformManager.Hill, key);
+                var v = key.Data.Models.Vegetations.GetAtPoint(poly, tri.GetCentroid(), 
+                    _data.Models.Landforms.Hill, _data);
+                tri.SetLandform(_data.Models.Landforms.Hill, key);
                 tri.SetVegetation(v, key);
             }
         }
 
         void irrigate(MapPolygon poly, PolyTri tri)
         {
-            if (tri.Landform.IsLand
-                && tri.Vegetation.MinMoisture < VegetationManager.Grassland.MinMoisture
-                && VegetationManager.Grassland.AllowedLandforms.Contains(tri.Landform)
-                && tri.AnyNeighbor(poly, n => n.Landform.IsWater))
+            if (tri.Landform(_data).IsLand
+                && tri.Vegetation(_data).MinMoisture < _data.Models.Vegetations.Grassland.MinMoisture
+                && _data.Models.Vegetations.Grassland.AllowedLandforms.Contains(tri.Landform(_data))
+                && tri.AnyNeighbor(poly, n => n.Landform(_data).IsWater))
             {
-                tri.SetVegetation(VegetationManager.Grassland, key);
+                tri.SetVegetation(_data.Models.Vegetations.Grassland, key);
                 tri.ForEachNeighbor(poly, nTri =>
                 {
-                    if (nTri.Landform.IsLand
-                        && nTri.Vegetation.MinMoisture < VegetationManager.Steppe.MinMoisture
-                        && VegetationManager.Steppe.AllowedLandforms.Contains(nTri.Landform))
+                    if (nTri.Landform(_data).IsLand
+                        && nTri.Vegetation(_data).MinMoisture < _data.Models.Vegetations.Steppe.MinMoisture
+                        && _data.Models.Vegetations.Steppe.AllowedLandforms.Contains(nTri.Landform(_data)))
                     {
-                        nTri.SetVegetation(VegetationManager.Steppe, key);
+                        nTri.SetVegetation(_data.Models.Vegetations.Steppe, key);
                     }
                 });
             }
@@ -235,37 +235,37 @@ public class PolyTriGenerator : Generator
 
         void swampRidging(MapPolygon poly, PolyTri tri)
         {
-            if (tri.Vegetation == VegetationManager.Swamp)
+            if (tri.Vegetation(_data) == _data.Models.Vegetations.Swamp)
             {
                 var globalPos = tri.GetCentroid() + poly.Center;
                 var noise = swampNoise.GetNoise2D(globalPos.X, globalPos.Y);
                 if (noise < -.3f)
                 {
-                    tri.SetVegetation(VegetationManager.Forest, key);
+                    tri.SetVegetation(_data.Models.Vegetations.Forest, key);
                 }
                 else if (noise < -.2f)
                 {
-                    tri.SetVegetation(VegetationManager.Grassland, key);
+                    tri.SetVegetation(_data.Models.Vegetations.Grassland, key);
                 }
             }
         }
 
         void mountainRidging(MapPolygon poly, PolyTri tri)
         {
-            if (tri.Landform.IsLand && tri.Landform.MinRoughness >= LandformManager.Peak.MinRoughness)
+            if (tri.Landform(_data).IsLand && tri.Landform(_data).MinRoughness >= _data.Models.Landforms.Peak.MinRoughness)
             {
                 var globalPos = tri.GetCentroid() + poly.Center;
                 var noise = mountainNoise.GetNoise2D(globalPos.X, globalPos.Y);
-                if(noise < .2f) tri.SetLandform(LandformManager.Mountain, key);
+                if(noise < .2f) tri.SetLandform(_data.Models.Landforms.Mountain, key);
             }
-            else if (tri.Landform.IsLand && tri.Landform.MinRoughness >= LandformManager.Mountain.MinRoughness)
+            else if (tri.Landform(_data).IsLand && tri.Landform(_data).MinRoughness >= _data.Models.Landforms.Mountain.MinRoughness)
             {
                 var globalPos = tri.GetCentroid() + poly.Center;
                 var noise = mountainNoise.GetNoise2D(globalPos.X, globalPos.Y);
                 if(noise < 0f)
                 {
-                    tri.SetLandform(LandformManager.Hill, key);
-                    tri.SetVegetation(_data.Models.Vegetation.GetAtPoint(poly, tri.GetCentroid(), LandformManager.Hill, _data), key);
+                    tri.SetLandform(_data.Models.Landforms.Hill, key);
+                    tri.SetVegetation(_data.Models.Vegetations.GetAtPoint(poly, tri.GetCentroid(), _data.Models.Landforms.Hill, _data), key);
                 }
             }
         }

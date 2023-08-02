@@ -16,6 +16,6 @@ public class BudgetItemReserve
         var foodCons = data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         var pop = regime.GetPeeps(data).Sum(p => p.Size);
         var foodNeed = foodCons * pop;
-        DesiredReserves[ItemManager.Food] = foodNeed;
+        DesiredReserves[data.Models.Items.Food] = foodNeed;
     }
 }

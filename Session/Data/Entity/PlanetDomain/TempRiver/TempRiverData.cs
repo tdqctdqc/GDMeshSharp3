@@ -67,7 +67,7 @@ public class MapPolyRiverTriInfoOld
                 var endKey1 = new EdgeEndKey(nexus, edge1);
                 var pivot1 = GetPivot(endKey1, rData, data);
                 InnerTris.Add(endKey1, PolyTri.Construct(Poly.Id, nexusPoint, inner, pivot1, 
-                    LandformManager.River, VegetationManager.Barren));
+                    data.Models.Landforms.River, data.Models.Vegetations.Barren));
             }
 
             if (nexusEdges.Count() > 1)
@@ -78,7 +78,7 @@ public class MapPolyRiverTriInfoOld
                     var endKey2 = new EdgeEndKey(nexus, edge2);
                     var pivot2 = GetPivot(endKey2, rData, data);
                     InnerTris.Add(endKey2, PolyTri.Construct(Poly.Id, nexusPoint, inner, pivot2, 
-                        LandformManager.River, VegetationManager.Barren));
+                        data.Models.Landforms.River, data.Models.Vegetations.Barren));
                 }
             }
         }
@@ -164,9 +164,9 @@ public class MapPolyRiverTriInfoOld
                 var outSeg = edgeSegs[i];
                 var inSeg = bankSegs[i];
                 bankTris.Add(PolyTri.Construct(Poly.Id, outSeg.From, outSeg.To, inSeg.From,
-                    LandformManager.River, VegetationManager.Barren));
+                    data.Models.Landforms.River, data.Models.Vegetations.Barren));
                 bankTris.Add(PolyTri.Construct(Poly.Id, outSeg.To, inSeg.To, inSeg.From,
-                    LandformManager.River, VegetationManager.Barren));
+                    data.Models.Landforms.River, data.Models.Vegetations.Barren));
             }
             BankTris.Add(edge, bankTris);
         }

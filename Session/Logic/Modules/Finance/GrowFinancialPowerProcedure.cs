@@ -27,7 +27,7 @@ public class GrowFinancialPowerProcedure : Procedure
         foreach (var kvp in GrowthsByRegimeId)
         {
             var regime = (Regime) d[kvp.Key];
-            regime.Items.Add(ItemManager.FinancialPower, kvp.Value);
+            regime.Items.Add(key.Data.Models.Items.FinancialPower, kvp.Value);
         }
     }
 }

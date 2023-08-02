@@ -15,7 +15,7 @@ public class BudgetAi
         _regime = regime;
         _priorities = new List<BudgetPriority>
         {
-               new FlowProdBuildingConstructionPriority(FlowManager.IndustrialPower, (r,d) => 1f),
+               new FlowProdBuildingConstructionPriority(data.Models.Flows.IndustrialPower, (r,d) => 1f),
         };
         IncomeBudget = new IncomeBudget();
         Reserve = new BudgetItemReserve();
@@ -104,7 +104,7 @@ public class BudgetAi
     private void DoTradeOrders(Data data, MajorTurnOrders orders, ItemCount itemBudget)
     {
         var market = data.Society.Market;
-        var income = _regime.Flows[FlowManager.Income].Net();
+        var income = _regime.Flows[data.Models.Flows.Income].Net();
         if (income < 0) return;
         var buyItemsIncome = Mathf.Floor(income * IncomeBudget.BuyWishlistItemsRatio);
         

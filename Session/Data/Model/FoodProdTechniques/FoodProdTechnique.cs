@@ -20,5 +20,5 @@ public abstract class FoodProdTechnique : IModel
         Income = income;
     }
 
-    public abstract int NumForPoly(MapPolygon poly);
+    public abstract int NumForPoly(MapPolygon poly, Data data);
 }

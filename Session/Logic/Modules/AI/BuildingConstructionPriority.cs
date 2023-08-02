@@ -30,7 +30,7 @@ public class BuildingConstructionPriority : BudgetPriority
         SetCreditConstraint(solver, data, scratch.Credit, 
             prices, projVars);
         SetConstructCapConstraint(solver, 
-            Mathf.FloorToInt(scratch.Flows[FlowManager.ConstructionCap]), projVars);
+            Mathf.FloorToInt(scratch.Flows[data.Models.Flows.ConstructionCap]), projVars);
         SetSlotConstraints(solver, regime, projVars, data);
         
         var success = Solve(solver, projVars);
@@ -86,8 +86,7 @@ public class BuildingConstructionPriority : BudgetPriority
 
     private IEnumerable<BuildingModel> GetRelevantBuildings(Data data)
     {
-        return data.Models.Buildings.Models.Values
-            .Where(_relevant);
+        return data.Models.GetModels<BuildingModel>().Values.Where(_relevant);
     }
 
     private Dictionary<BuildingModel, Variable> MakeProjVars(Solver solver, Data data)
@@ -122,7 +121,7 @@ public class BuildingConstructionPriority : BudgetPriority
     private void SetItemConstraints(Solver solver, Data data, ItemCount budget,
         Dictionary<BuildingModel, Variable> buildingVars)
     {
-        var items = data.Models.Items.Models.Select(kvp => kvp.Value.Id).ToList();
+        var items = data.Models.GetModels<Item>().Select(kvp => kvp.Value.Id).ToList();
         var itemNumConstraints = new Dictionary<int, Constraint>();
         items.ForEach(i =>
         {
@@ -230,7 +229,7 @@ public class BuildingConstructionPriority : BudgetPriority
 
                 }
 
-                scratch.Flows.Remove(FlowManager.ConstructionCap, building.ConstructionCapPerTick);
+                scratch.Flows.Remove(data.Models.Flows.ConstructionCap, building.ConstructionCapPerTick);
             }
         }
     }

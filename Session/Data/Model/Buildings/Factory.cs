@@ -4,29 +4,28 @@ using System.Linq;
 
 public class Factory : BuildingModel
 {
-    public Factory() : base(BuildingType.Industry, nameof(Factory),100, 
+    public Factory(Items items, FlowList flows, PeepJobList jobs) : base(BuildingType.Industry, nameof(Factory),100, 
         2000, 100,
         
         new List<BuildingComponent>
             {
-                new FlowProd(100, FlowManager.IndustrialPower),
+                new FlowProd(100, flows.IndustrialPower),
                 new Workplace(new Dictionary<PeepJob, int>
                 {
-                    {PeepJobManager.Prole, 500}
+                    {jobs.Prole, 500}
                 })
-            })
+            },
+        new Dictionary<Item, int>
+        {
+            {items.Iron, 1000}
+        })
     {
         
     }
 
-    public override Dictionary<Item, int> BuildCosts { get; protected set; }
-        = new Dictionary<Item, int>
-        {
-            {ItemManager.Iron, 1000}
-        };
     protected override bool CanBuildInTriSpec(PolyTri t, Data data)
     {
-        return t.Landform.IsLand && t.Landform.MinRoughness <= LandformManager.Hill.MinRoughness;
+        return t.Landform(data).IsLand && t.Landform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness;
     }
 
     public override bool CanBuildInPoly(MapPolygon p, Data data)

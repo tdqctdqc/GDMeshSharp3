@@ -37,7 +37,7 @@ public class FoodAndPopGrowthProcedure : Procedure
         {
             var regime = key.Data.Get<Regime>(kvp.Key);
             var cons = kvp.Value;
-            regime.Items.Remove(ItemManager.Food, cons);
+            regime.Items.Remove(key.Data.Models.Items.Food, cons);
         }
     }
     private void DoGrowth(ProcedureWriteKey key)

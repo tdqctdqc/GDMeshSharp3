@@ -104,9 +104,8 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
         if (updated == false) return;
         // GD.Print("relevant player regime change");
         _allianceBorder.QueueChangeAll();
-        
-        _diplomacyFill.Update(d);
-        
+
+        _diplomacyFill.Update(d, Game.I.Client.GetComponent<MapGraphics>().UpdateQueue);
 
         bool isRelevant(MapPolygon p, Alliance alliance)
         {

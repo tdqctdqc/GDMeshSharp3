@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -17,13 +18,13 @@ public class GraphicLayerHolder
         Layers.Add(ResourceChunkModule.GetLayer(data, segmenter));
     }
 
-    public void Update(Data d)
+    public void Update(Data d, ConcurrentQueue<Action> queue)
     {
         var sw = new Stopwatch();
         sw.Start();
         foreach (var kvp in Layers)
         {
-            kvp.Update(d);
+            kvp.Update(d, queue);
         }
         sw.Stop();
         Game.I.Logger.Log($"graphics update time {sw.Elapsed.TotalMilliseconds}",

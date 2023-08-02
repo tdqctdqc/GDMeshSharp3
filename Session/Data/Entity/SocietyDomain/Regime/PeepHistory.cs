@@ -32,7 +32,7 @@ public class PeepHistory
         var polys = regime.GetPolys(key.Data);
         PeepCount.Add(peeps.Count(), tick);
         PeepSize.Add(peeps.Sum(p => p.Size), tick);
-        var numUnemployed = polys.Sum(p => p.Employment.NumUnemployed());
+        var numUnemployed = polys.Sum(p => p.Employment.NumUnemployed(key.Data));
         Unemployed.Add(numUnemployed, tick);
     }
 }

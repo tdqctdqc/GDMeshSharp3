@@ -20,9 +20,9 @@ public partial class RegimeConstructionOverview : ScrollContainer
         var constructions = data.Infrastructure.CurrentConstruction
             .ByPoly.Where(kvp => regime.GetPolys(data).Contains(data.Get<MapPolygon>(kvp.Key)))
             .SelectMany(kvp => kvp.Value).ToList();
-        _container.CreateLabelAsChild($"Cap: {regime.Flows[FlowManager.ConstructionCap].FlowIn}");
-        _container.CreateLabelAsChild($"In Use: {regime.Flows[FlowManager.ConstructionCap].FlowOut}");
-        _container.CreateLabelAsChild($"Available: {regime.Flows[FlowManager.ConstructionCap].Net()}");
+        _container.CreateLabelAsChild($"Cap: {regime.Flows[data.Models.Flows.ConstructionCap].FlowIn}");
+        _container.CreateLabelAsChild($"In Use: {regime.Flows[data.Models.Flows.ConstructionCap].FlowOut}");
+        _container.CreateLabelAsChild($"Available: {regime.Flows[data.Models.Flows.ConstructionCap].Net()}");
         
         foreach (var construction in constructions)
         {

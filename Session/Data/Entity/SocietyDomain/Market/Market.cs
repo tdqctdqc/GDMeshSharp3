@@ -13,7 +13,7 @@ public class Market : Entity
     public ItemHistory PriceHistory { get; private set; }
     public static Market Create(CreateWriteKey key)
     {
-        var prices = key.Data.Models.Items.Models.Values
+        var prices = key.Data.Models.GetModels<Item>().Values
             .SelectWhereOfType<Item, TradeableItem>()
             .ToDictionary(item => item.Id, item => item.DefaultPrice);
         var m = new Market(-1, prices,

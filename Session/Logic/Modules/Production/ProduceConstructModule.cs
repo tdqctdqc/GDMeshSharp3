@@ -41,7 +41,7 @@ public class ProduceConstructModule : LogicModule
         var gains = _regimeProdWallets.GetOrAdd(regime.Id,
             id => ItemCount.Construct());
         proc.RegimeResourceGains.TryAdd(regime.Id, gains);
-        var unemployedJob = PeepJobManager.Unemployed;
+        var unemployedJob = data.Models.PeepJobs.Unemployed;
         
         var regimePolys = regime.GetPolys(data);
         var totalLaborerUnemployed = 0;
@@ -75,7 +75,7 @@ public class ProduceConstructModule : LogicModule
 
     private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
     {
-        var builderJob = PeepJobManager.Builder;
+        var builderJob = data.Models.PeepJobs.Builder;
         var regimePolys = regime.GetPolys(data);
         var construction = data.Infrastructure.CurrentConstruction.ByPoly;
 
@@ -85,7 +85,7 @@ public class ProduceConstructModule : LogicModule
             .Sum();
         
         if (constructionCapNeeded == 0) return;
-        var constructionCap = regime.Flows[FlowManager.ConstructionCap].Net();
+        var constructionCap = regime.Flows[data.Models.Flows.ConstructionCap].Net();
         var constructRatio = Mathf.Clamp((float)constructionCap / (float)constructionCapNeeded, 0f, 1f);
         foreach (var poly in regimePolys)
         {
@@ -98,7 +98,7 @@ public class ProduceConstructModule : LogicModule
         var peep = poly.GetPeep(data);
         if (peep == null) return;
         var foodProd = scratch.HandleFoodProdJobs(poly.PolyFoodProd, data);
-        proc.RegimeResourceGains[poly.Regime.RefId].Add(ItemManager.Food, foodProd);
+        proc.RegimeResourceGains[poly.Regime.RefId].Add(data.Models.Items.Food, foodProd);
     }
     private void WorkInBuildingsForPoly(MapPolygon poly, ProduceConstructProcedure proc, PolyEmploymentScratch scratch, Data data)
     {
@@ -128,14 +128,14 @@ public class ProduceConstructModule : LogicModule
         foreach (var construction in constructions)
         {
             var spend = ratio * construction.Model.Model(data).ConstructionCapPerTick;
-            proc.RegimeFlows[r.Id][FlowManager.ConstructionCap].AddFlowOut(spend);
+            proc.RegimeFlows[r.Id][data.Models.Flows.ConstructionCap].AddFlowOut(spend);
             proc.ConstructionProgresses.TryAdd(construction.Pos, ratio);
         }
     }
 
     private void DoNonBuildingFlows(Regime r, Data data, ProduceConstructProcedure proc)
     {
-        foreach (var kvp in data.Models.Flows.Models)
+        foreach (var kvp in data.Models.GetModels<Flow>())
         {
             var flow = kvp.Value;
             var amt = flow.GetNonBuildingFlow(r, data);

@@ -13,44 +13,57 @@ public class Models
     
     public Dictionary<int, IModel> _models;
     public Dictionary<string, IModel> _modelsByName;
-    public LandformManager Landforms { get; private set; }
-    public VegetationManager Vegetation { get; private set; }
-    public PeepJobManager PeepJobs { get; private set; }
-    public ItemManager Items { get; private set; }
-    public SettlementTierManager SettlementTiers { get; private set; }
-    public BuildingModelManager Buildings { get; private set; }
-    public RoadModelManager Roads { get; private set; }
+    public RoadList RoadList { get; private set; }
+    public LandformList Landforms { get; private set; }
+    public VegetationList Vegetations { get; private set; }
+    public PeepJobList PeepJobs { get; private set; }
+    public Items Items { get; private set; }
+    public SettlementTierList Settlements { get; private set; }
+    public BuildingList Buildings { get; private set; }
     public CultureManager Cultures { get; private set; }
     public RegimeTemplateManager RegimeTemplates { get; private set; }
-    public FoodProdTechniqueManager FoodProdTechniques { get; private set; }
-    public FlowManager Flows { get; private set; }
-    public Models()
+    public FoodProdTechniqueList FoodProdTechniques { get; private set; }
+    public FlowList Flows { get; private set; }
+    public Models(Data data)
     {
         _managers = new Dictionary<Type, IModelManager>();
         _models = new Dictionary<int, IModel>();
         _modelsByName = new Dictionary<string, IModel>();
-        Landforms = new LandformManager();
-        AddManager(Landforms);
-        Vegetation = new VegetationManager();
-        AddManager(Vegetation);
-        PeepJobs = new PeepJobManager();
-        AddManager(PeepJobs);
-        Items = new ItemManager();
+        
+        Items = new Items();
         AddManager(Items);
-        Buildings = new BuildingModelManager();
+
+        Landforms = new LandformList();
+        AddManager(Landforms);
+
+        Vegetations = new VegetationList(Landforms);
+        AddManager(Vegetations);
+        
+        PeepJobs = new PeepJobList();
+        AddManager(PeepJobs);
+        
+        Flows = new FlowList();
+        AddManager(Flows);
+
+        Buildings = new BuildingList(Items, Flows, PeepJobs);
         AddManager(Buildings);
-        Roads = new RoadModelManager();
-        AddManager(Roads);
-        SettlementTiers = new SettlementTierManager();
-        AddManager(SettlementTiers);
+
+        RoadList = new RoadList();
+        AddManager(RoadList);
+
+        Settlements = new SettlementTierList();
+        AddManager(Settlements);
+        
         Cultures = new CultureManager();
         AddManager(Cultures);
+        
         RegimeTemplates = new RegimeTemplateManager(Cultures);
         AddManager(RegimeTemplates);
-        FoodProdTechniques = new FoodProdTechniqueManager();
+        
+        FoodProdTechniques = new FoodProdTechniqueList();
         AddManager(FoodProdTechniques);
-        Flows = new FlowManager();
-        AddManager(Flows);
+
+        
 
         SetIds();
     }
@@ -88,12 +101,25 @@ public class Models
         return (T)_models[id];
     }
 
+    public Dictionary<string, TModel> GetModels<TModel>() where TModel : IModel
+    {
+        return GetManager<TModel>().Models;
+    }
     public IModelManager<TModel> GetManager<TModel>() where TModel : IModel
     {
         return (IModelManager<TModel>)_managers[typeof(TModel)];
     }
     private void AddManager<T>(IModelManager<T> manager) where T : IModel
     {
+        _managers.Add(typeof(T), manager);
+        foreach (var keyValuePair in manager.Models)
+        {
+            _modelsByName.Add(keyValuePair.Key, keyValuePair.Value);
+        }
+    }
+    private void AddManager<T>(ModelList<T> list) where T : IModel
+    {
+        var manager = new ModelManager<T>(list);
         _managers.Add(typeof(T), manager);
         foreach (var keyValuePair in manager.Models)
         {

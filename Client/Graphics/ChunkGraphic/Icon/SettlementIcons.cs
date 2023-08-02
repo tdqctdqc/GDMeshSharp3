@@ -21,7 +21,7 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
         var icon = element.Tier.Model(data).Icon;
         var poly = element.Poly.Entity(data);
         var urbanTris = poly.Tris.Tris
-            .Where(t => t.Landform == LandformManager.Urban);
+            .Where(t => t.Landform(data) == data.Models.Landforms.Urban);
         foreach (var urbanTri in urbanTris)
         {
             var mesh = icon.GetMeshInstance();

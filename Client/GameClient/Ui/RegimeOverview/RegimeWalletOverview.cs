@@ -18,7 +18,7 @@ public partial class RegimeWalletOverview : ScrollContainer
     public void Setup(Regime regime, Data data)
     {
         _container.ClearChildren();
-        var itemIds = data.Models.Items.Models.Values.Select(i => i.Id);
+        var itemIds = data.Models.GetModels<Item>().Values.Select(i => i.Id);
         
         foreach (var itemName in itemIds)
         {

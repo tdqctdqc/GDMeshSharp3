@@ -23,7 +23,7 @@ public class ResourceGenerator : Generator
     private void GenerateResources()
     {
         var deposits = new ConcurrentDictionary<NaturalResource, Dictionary<MapPolygon, int>>();
-        var resources = _data.Models.Items.Models.Values;
+        var resources = _data.Models.GetModels<Item>().Values;
         Parallel.ForEach(resources, r =>
         {
             if (r is NaturalResource n == false) return;
@@ -41,9 +41,9 @@ public class ResourceGenerator : Generator
         var majors = _data.GetAll<Regime>().Where(r => r.IsMajor);
         foreach (var regime in majors)
         {
-            addResource(regime, ItemManager.Iron);
-            addResource(regime, ItemManager.Oil);
-            addResource(regime, ItemManager.Coal);
+            addResource(regime, _data.Models.Items.Iron);
+            addResource(regime, _data.Models.Items.Oil);
+            addResource(regime, _data.Models.Items.Coal);
         }
 
         void addResource(Regime regime, NaturalResource res)
@@ -55,7 +55,7 @@ public class ResourceGenerator : Generator
                 return deps.Any(d => d.Item.Model(_data) == res);
             });
             if (has) return;
-            var poly = regime.GetPolys(_key.Data).OrderBy(res.GetDepositScore).First();
+            var poly = regime.GetPolys(_key.Data).OrderBy(p => res.GetDepositScore(p, _data)).First();
             var size = res.GenerateDepositSize(poly);
             ResourceDeposit.Create(res, poly, size, _key);
         }

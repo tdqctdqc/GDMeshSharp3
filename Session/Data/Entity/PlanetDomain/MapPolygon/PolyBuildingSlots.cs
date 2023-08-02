@@ -31,7 +31,7 @@ public class PolyBuildingSlots
         var totalSlots = industrySlots + govSlots + extrSlots;
         
         AvailableSlots.Clear();
-        var tris = poly.Tris.Tris.Where(t => t.Landform.IsLand)
+        var tris = poly.Tris.Tris.Where(t => t.Landform(key.Data).IsLand)
             .Select(t => t.Index)
             .OrderBy(t => Game.I.Random.Randi())
             .ToHashSet();

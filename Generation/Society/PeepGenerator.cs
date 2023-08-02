@@ -59,8 +59,8 @@ public class PeepGenerator : Generator
         var foodConsPerPeep = _data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         var territory = r.GetPolys(_data);
         var foodSurplus = new ConcurrentBag<float>();
-        makeFoodProd(FoodProdTechniqueManager.Farm);
-        makeFoodProd(FoodProdTechniqueManager.Ranch);
+        makeFoodProd(_data.Models.FoodProdTechniques.Farm);
+        makeFoodProd(_data.Models.FoodProdTechniques.Ranch);
         
         void makeFoodProd(FoodProdTechnique technique)
         {
@@ -68,7 +68,7 @@ public class PeepGenerator : Generator
             Parallel.ForEach(territory, p =>
             {
                 var tris = p.Tris.Tris;
-                var numBuilding = Mathf.FloorToInt(technique.NumForPoly(p) * developmentRatio);
+                var numBuilding = Mathf.FloorToInt(technique.NumForPoly(p, _data) * developmentRatio);
                 if (numBuilding == 0) return;
                 foodSurplus.Add(buildingSurplus * numBuilding);
                 p.GetPeep(_key.Data)
@@ -83,7 +83,8 @@ public class PeepGenerator : Generator
     private float GenerateExtractionBuildings(Regime r)
     {
             
-        var t = _data.Models.Buildings.Models.Where(kvp => kvp.Value.GetComponent<ExtractionProd>() != null);
+        var t = _data.Models.GetManager<BuildingModel>().Models
+            .Where(kvp => kvp.Value.GetComponent<ExtractionProd>() != null);
         var extractBuildings = new Dictionary<Item, List<BuildingModel>>();
 
         foreach (var kvp in t)
@@ -133,7 +134,7 @@ public class PeepGenerator : Generator
     }
     private float GenerateTownHalls(Regime r)
     {
-        var townHall = BuildingModelManager.TownHall;
+        var townHall = _data.Models.Buildings.TownHall;
         var settlements = r.GetPolys(_data).Where(p => p.HasSettlement(_data))
             .Select(p => p.GetSettlement(_data));
         foreach (var s in settlements)
@@ -147,7 +148,7 @@ public class PeepGenerator : Generator
     private void GenerateFactories(Regime r, float popBudget)
     {
         if (popBudget <= 0) return;
-        var factory = BuildingModelManager.Factory;
+        var factory = _data.Models.Buildings.Factory;
 
         var polys = r.GetPolys(_data).Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
         var portions = Apportioner.ApportionLinear(popBudget, polys,

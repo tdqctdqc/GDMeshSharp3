@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -80,11 +81,11 @@ public class ChunkGraphicSwitchLayer : IGraphicLayer
             layer.Visible = layerShouldBeVisible;
         });
     }
-    public void Update(Data d)
+    public void Update(Data d, ConcurrentQueue<Action> queue)
     {
         foreach (var l in Layers)
         {
-            l.Update(d);
+            l.Update(d, queue);
         }
     }
 }

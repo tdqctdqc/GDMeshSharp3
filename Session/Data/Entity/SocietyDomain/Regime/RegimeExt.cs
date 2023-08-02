@@ -35,7 +35,7 @@ public static class RegimeExt
     public static float GetPowerScore(this Regime r, Data data)
     {
         var fromPop = r.GetPopulation(data);
-        var fromIndustry = r.Flows[FlowManager.IndustrialPower].FlowIn;
+        var fromIndustry = r.Flows[data.Models.Flows.IndustrialPower].FlowIn;
         return fromPop + fromIndustry;
     }
 

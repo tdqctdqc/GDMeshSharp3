@@ -16,7 +16,7 @@ public abstract class NaturalResource : TradeableItem
         var scores = new Dictionary<MapPolygon, int>();
         foreach (var p in polys)
         {
-            var score = scores.GetOrAdd(p, GetDepositScore);
+            var score = scores.GetOrAdd(p, p => GetDepositScore(p, data));
             var chance = DepositChanceFunction.Calc(score);
             if (Game.I.Random.Randf() > chance) continue;
             var size = GenerateDepositSize(p) + (deps.ContainsKey(p) ? deps[p] : 0);
@@ -37,7 +37,10 @@ public abstract class NaturalResource : TradeableItem
         Dictionary<MapPolygon, int> scores, int rem, Data data)
     {
         var neighbors = p.Neighbors.Items(data);
-        var portions = Apportioner.ApportionLinear(rem, neighbors, n => scores.GetOrAdd(n, GetDepositScore));
+        var portions = Apportioner.ApportionLinear(
+            rem, 
+            neighbors, 
+            n => scores.GetOrAdd(n, p => GetDepositScore(p, data)));
         for (var i = 0; i < portions.Count; i++)
         {
             var n = neighbors.ElementAt(i);
@@ -49,7 +52,7 @@ public abstract class NaturalResource : TradeableItem
     private void OverflowSingle(MapPolygon p, Dictionary<MapPolygon, int> deps, int rem, Data data)
     {
         var overflowPoly = p.Neighbors.Items(data)
-            .OrderBy(GetDepositScore)
+            .OrderBy(p => GetDepositScore(p, data))
             .Where(n => deps.ContainsKey(n) == false)
             .FirstOrDefault();
         if (overflowPoly != null)
@@ -58,7 +61,7 @@ public abstract class NaturalResource : TradeableItem
         }
     }
     protected abstract IFunction<float, float> DepositChanceFunction { get; }
-    public abstract int GetDepositScore(MapPolygon p);
+    public abstract int GetDepositScore(MapPolygon p, Data d);
     public abstract int GenerateDepositSize(MapPolygon p);
     protected abstract int _overflowSize { get; }
     protected abstract int _minDepositSize { get; }

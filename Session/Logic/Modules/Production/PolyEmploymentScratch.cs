@@ -31,7 +31,7 @@ public class PolyEmploymentScratch
         if (totalLaborNeeded == 0) return 0;
         var ratio = (float)Available / totalLaborNeeded;
         if (ratio > 1f) ratio = 1f;
-        var job = PeepJobManager.Farmer;
+        var job = data.Models.PeepJobs.Farmer;
         foreach (var kvp in foodProd.Nums)
         {
             var technique = (FoodProdTechnique)data.Models[kvp.Key];

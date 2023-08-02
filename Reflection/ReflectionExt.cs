@@ -21,9 +21,9 @@ public static class ReflectionExt
              .Select(p => (T)p.GetValue(null))
              .ToList();
      }
-     public static List<T> GetPropertiesOfType<T>(this Type type, object instance)
+     public static List<T> GetPropertiesOfType<T>(this object instance)
      {
-         return type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+         return instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
              .Where(p => typeof(T).IsAssignableFrom(p.PropertyType))
              .Select(p => (T)p.GetValue(instance))
              .ToList();

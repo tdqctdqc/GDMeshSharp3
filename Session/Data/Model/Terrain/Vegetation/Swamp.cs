@@ -5,8 +5,8 @@ using Godot;
 
 public class Swamp : Vegetation
 {
-    public Swamp() 
-        : base(new HashSet<Landform>{LandformManager.Plain}, .7f, .25f, Colors.DarkOliveGreen, "Swamp",
+    public Swamp(LandformList lfs) 
+        : base(new HashSet<Landform>{lfs.Plain}, .7f, .25f, Colors.DarkOliveGreen, "Swamp",
             true)
     {
     }
