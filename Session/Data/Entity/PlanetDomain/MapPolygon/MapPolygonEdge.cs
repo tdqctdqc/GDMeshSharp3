@@ -122,5 +122,17 @@ public class MapPolygonEdge : Entity
         HiNexus = n1.MakeRef();
         LoNexus = n2.MakeRef();
     }
+
+    public bool IsIncidentToNexus(MapPolyNexus nexus)
+    {
+        if (nexus == null) return false;
+        return HiNexus.RefId == nexus.Id || LoNexus.RefId == nexus.Id;
+    }
+
+    public MapPolyNexus GetOtherNexus(MapPolyNexus nexus, Data data)
+    {
+        if (IsIncidentToNexus(nexus) == false) throw new Exception();
+        return HiNexus.RefId == nexus.Id ? HiNexus.Entity(data) : LoNexus.Entity(data);
+    }
 }
 

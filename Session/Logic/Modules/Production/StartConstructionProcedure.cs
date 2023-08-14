@@ -53,6 +53,7 @@ public class StartConstructionProcedure : Procedure
         foreach (var kvp in Construction.Model.Model(key.Data).BuildCosts)
         {
             regime.Items.Remove(kvp.Key, kvp.Value);
+            regime.History.ItemHistory.Latest(kvp.Key).Consumed += kvp.Value;
         }
         key.Data.Infrastructure.CurrentConstruction.StartConstruction(Construction, key);
     }

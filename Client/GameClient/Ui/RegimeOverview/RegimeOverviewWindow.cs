@@ -9,6 +9,7 @@ public partial class RegimeOverviewWindow : TabWindow
     private RegimeConstructionOverview _construction;
     private RegimePeepsOverview _peeps;
     private RegimeWalletOverview _wallet;
+    private RegimeFoodOverview _ag;
     private VBoxContainer _regimeTemplates;
     public RegimeOverviewWindow()
     {
@@ -26,6 +27,9 @@ public partial class RegimeOverviewWindow : TabWindow
         _wallet = new RegimeWalletOverview();
         AddTab(_wallet);
 
+        _ag = new RegimeFoodOverview();
+        AddTab(_ag);
+
         var scroll = new ScrollContainer();
         scroll.Name = "Regime Templates";
         scroll.Size = new Vector2(200f, 400f);
@@ -41,6 +45,7 @@ public partial class RegimeOverviewWindow : TabWindow
         _construction.Setup(regime, data);
         _peeps.Setup(regime, data);
         _wallet.Setup(regime, data);
+        _ag.Setup(regime, data);
         _regimeTemplates.ClearChildren();
         foreach (var kvp in data.Models.Cultures.Models)
         {

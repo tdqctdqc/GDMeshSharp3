@@ -16,7 +16,9 @@ public class TradeModule : LogicModule
 
         var buyOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.BuyOrders).ToList();
         var sellOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.SellOrders).ToList();
-        var infos = new Dictionary<Item, ItemTradeInfo>();
+        
+        var tradeable = data.Models.GetModels<Item>().Values.Where(i => i is TradeableItem);
+        var infos = tradeable.ToDictionary(i => i, i => ItemTradeReport.Construct(i, data));
         var market = data.Society.Market;
 
         SetupInfos(infos, sellOrders, buyOrders, data, proc);
@@ -26,21 +28,20 @@ public class TradeModule : LogicModule
         return res;
     }
 
-    private void SetupInfos(Dictionary<Item, ItemTradeInfo> infos, List<SellOrder> sellOrders, 
+    private void SetupInfos(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 
         List<BuyOrder> buyOrders, Data data, TradeProcedure proc)
     {
+        var tick = data.Tick;
         foreach (var sellOrder in sellOrders)
         {
             var item = (TradeableItem) data.Models[sellOrder.ItemId];
-            if(infos.ContainsKey(item) == false) infos.Add(item, 
-                new ItemTradeInfo(0,0,0,0f,0f));
+            var price = data.Society.Market.Prices[item.Id];
             infos[item].TotalOffered += sellOrder.Quantity;
         }
         foreach (var buyOrder in buyOrders)
         {
             var item = (TradeableItem) data.Models[buyOrder.ItemId];
-            if(infos.ContainsKey(item) == false) infos.Add(item, 
-                new ItemTradeInfo(0,0,0,0f,0f));
+            var price = data.Society.Market.Prices[item.Id];
             infos[item].TotalDemanded += buyOrder.Quantity;
         }
         
@@ -61,46 +62,66 @@ public class TradeModule : LogicModule
         }
     }
 
-    private void ExchangeItems(Dictionary<Item, ItemTradeInfo> infos, List<SellOrder> sellOrders, 
+    private void ExchangeItems(Dictionary<Item, ItemTradeReport> tradeReports, List<SellOrder> sellOrders, 
         List<BuyOrder> buyOrders, Data data, TradeProcedure proc)
     {
         var market = data.Society.Market;
+        var rItemTradeReports = new Dictionary<Vector2, RegimeItemTradeReport>();
+
+        Vector2 getKey(Regime r, Item i)
+        {
+            return new Vector2(r.Id, i.Id);
+        }
+
+        RegimeItemTradeReport GetOrAdd(Regime r, Item i)
+        {
+            var key = getKey(r, i);
+            return rItemTradeReports.GetOrAdd(key,
+                k =>
+                {
+                    var report = RegimeItemTradeReport.Construct(i.Id, r.Id);
+                    proc.RegimeItemTradeReports.Add(report);
+                    return report;
+                });
+        }
         foreach (var buyOrder in buyOrders)
         {
             var regime = data.Get<Regime>(buyOrder.RegimeId);
             var item = (TradeableItem) data.Models[buyOrder.ItemId];
-            var info = infos[item];
-            var q = Mathf.FloorToInt(buyOrder.Quantity * info.BuySatisfyRatio);
+            var tradeReport = tradeReports[item];
+            var q = Mathf.FloorToInt(buyOrder.Quantity * tradeReport.BuySatisfyRatio);
             if (q == 0) continue;
-            infos[item].TotalTraded += q;
-            var p = market.ItemPricesById[item.Id];
+            tradeReport.TotalTraded += q;
+            var p = market.Prices[item.Id];
 
-            var itemChange = new TradeProcedure.ItemChange(item.Id, regime.Id, q);
-            proc.ItemChanges.Add(itemChange);
+            var regimeItemTradeReport = GetOrAdd(regime, item);
+            regimeItemTradeReport.QuantityDemanded += buyOrder.Quantity;
+            regimeItemTradeReport.QuantityBought += q;
             proc.RegimeTradeBalances.AddOrSum(regime.Id, -p * q);
         }
         foreach (var sellOrder in sellOrders)
         {
             var regime = data.Get<Regime>(sellOrder.RegimeId);
             var item = (TradeableItem) data.Models[sellOrder.ItemId];
-            var info = infos[item];
-            var q = Mathf.FloorToInt(sellOrder.Quantity * info.SellSatisfyRatio);
+            var tradeReport = tradeReports[item];
+            var q = Mathf.FloorToInt(sellOrder.Quantity * tradeReport.SellSatisfyRatio);
             if (q == 0) continue;
-            var p = market.ItemPricesById[item.Id];
+            var p = market.Prices[item.Id];
             
-            var itemChange = new TradeProcedure.ItemChange(item.Id, regime.Id, -q);
-            proc.ItemChanges.Add(itemChange);
+            var regimeItemTradeReport = GetOrAdd(regime, item);
+            regimeItemTradeReport.QuantityOffered += sellOrder.Quantity;
+            regimeItemTradeReport.QuantitySold += q;
             proc.RegimeTradeBalances.AddOrSum(regime.Id, p * q);
         }
     }
-    private void UpdatePrices(Dictionary<Item, ItemTradeInfo> infos, TradeProcedure proc, Data data)
+    private void UpdatePrices(Dictionary<Item, ItemTradeReport> infos, TradeProcedure proc, Data data)
     {
         var market = data.Society.Market;
         foreach (var kvp in infos)
         {
             var info = kvp.Value;
             var item = (TradeableItem)kvp.Key;
-            var price = market.ItemPricesById[item.Id];
+            var price = market.Prices[item.Id];
             var offered = info.TotalOffered;
             var demanded = info.TotalDemanded;
             if (offered > demanded)

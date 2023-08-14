@@ -12,20 +12,20 @@ public class PolyTris
     public PolyTri[] Tris;
     public byte[] TriNeighbors { get; private set; }
 
-    public static PolyTris Create(List<PolyTri> tris, 
+    public static PolyTris Create(IEnumerable<PolyTri> tris, 
         GenWriteKey key)
     {
         // if (tris.Count == 0) throw new Exception();
-        if (tris.Count > 254) throw new Exception("Too many tris");
-        
+        if (tris.Count() > 254) throw new Exception("Too many tris");
 
-        for (var i = 0; i < tris.Count; i++)
+        var trisA = tris.Where(t => float.IsNaN(t.GetArea()) == false).ToArray();
+        for (var i = 0; i < trisA.Length; i++)
         {
-            tris[i].SetIndex((byte)i, key);
+            trisA[i].SetIndex((byte)i, key);
         }
         
         
-        var ts = new PolyTris(tris.ToArray(), new byte[0]);
+        var ts = new PolyTris(trisA, new byte[0]);
         
         // ts.SetNeighbors(key);
         

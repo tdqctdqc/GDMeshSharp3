@@ -11,8 +11,8 @@ public class ProduceConstructModule : LogicModule
 {
     private ConcurrentDictionary<int, ItemCount> 
         _regimeProdWallets = new ConcurrentDictionary<int, ItemCount>();
-    private ConcurrentDictionary<int, EmploymentReport> 
-        _polyEmployReps = new ConcurrentDictionary<int, EmploymentReport>();
+    private ConcurrentDictionary<int, PolyEmploymentReport> 
+        _polyEmployReps = new ConcurrentDictionary<int, PolyEmploymentReport>();
     private ConcurrentDictionary<int, PolyEmploymentScratch>
         _polyScratches = new ConcurrentDictionary<int, PolyEmploymentScratch>();
 
@@ -23,6 +23,7 @@ public class ProduceConstructModule : LogicModule
     }
     public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
+        Clear();
         var res = new LogicResults();
         var tick = data.BaseDomain.GameClock.Tick;
         var proc = ProduceConstructProcedure.Create();
@@ -40,7 +41,7 @@ public class ProduceConstructModule : LogicModule
 
         var gains = _regimeProdWallets.GetOrAdd(regime.Id,
             id => ItemCount.Construct());
-        proc.RegimeResourceGains.TryAdd(regime.Id, gains);
+        proc.RegimeResourceProds.TryAdd(regime.Id, gains);
         var unemployedJob = data.Models.PeepJobs.Unemployed;
         
         var regimePolys = regime.GetPolys(data);
@@ -61,7 +62,7 @@ public class ProduceConstructModule : LogicModule
         {
             var scratch = _polyScratches[poly.Id];
             var numUnemployed = scratch.Available;
-            var employment = _polyEmployReps.GetOrAdd(poly.Id, p => EmploymentReport.Construct());
+            var employment = _polyEmployReps.GetOrAdd(poly.Id, p => PolyEmploymentReport.Construct());
             employment.Clear();
             employment.Counts.AddOrSum(unemployedJob.Id, numUnemployed);
             proc.EmploymentReports[poly.Id] = employment;
@@ -98,7 +99,7 @@ public class ProduceConstructModule : LogicModule
         var peep = poly.GetPeep(data);
         if (peep == null) return;
         var foodProd = scratch.HandleFoodProdJobs(poly.PolyFoodProd, data);
-        proc.RegimeResourceGains[poly.Regime.RefId].Add(data.Models.Items.Food, foodProd);
+        proc.RegimeResourceProds[poly.Regime.RefId].Add(data.Models.Items.Food, foodProd);
     }
     private void WorkInBuildingsForPoly(MapPolygon poly, ProduceConstructProcedure proc, PolyEmploymentScratch scratch, Data data)
     {

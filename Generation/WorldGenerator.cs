@@ -81,6 +81,7 @@ public class WorldGenerator
         
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyTriGenerator());
+        RunGenerator(new PolyNavGenerator());
         RunGenerator(new RegimeGenerator());
         RunGenerator(new LocationGenerator());
         RunGenerator(new RoadGenerator());

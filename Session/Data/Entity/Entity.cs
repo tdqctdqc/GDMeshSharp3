@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public abstract class Entity
+public abstract class Entity : IIdentifiable
 {
     public int Id { get; protected set; }
     protected Entity(int id)

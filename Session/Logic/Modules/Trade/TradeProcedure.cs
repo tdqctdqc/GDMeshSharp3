@@ -6,22 +6,22 @@ using MessagePack;
 
 public class TradeProcedure : Procedure
 {
-    public List<ItemChange> ItemChanges { get; private set; }
-    public Dictionary<int, ItemTradeInfo> ItemTradeInfos { get; private set; }
+    public List<RegimeItemTradeReport> RegimeItemTradeReports { get; private set; }
+    public Dictionary<int, ItemTradeReport> ItemTradeInfos { get; private set; }
     public Dictionary<int, float> RegimeTradeBalances { get; private set; }
     public Dictionary<int, float> NewPrices { get; private set; }
     
     public static TradeProcedure Construct()
     {
-        return new TradeProcedure(new List<ItemChange>(), new Dictionary<int, float>(),
-            new Dictionary<int, float>(), new Dictionary<int, ItemTradeInfo>());
+        return new TradeProcedure(new List<RegimeItemTradeReport>(), new Dictionary<int, float>(),
+            new Dictionary<int, float>(), new Dictionary<int, ItemTradeReport>());
     }
-    [SerializationConstructor] private TradeProcedure(List<ItemChange> itemChanges, 
+    [SerializationConstructor] private TradeProcedure(List<RegimeItemTradeReport> regimeItemTradeReports, 
         Dictionary<int, float> regimeTradeBalances,
         Dictionary<int, float> newPrices,
-        Dictionary<int, ItemTradeInfo> itemTradeInfos)
+        Dictionary<int, ItemTradeReport> itemTradeInfos)
     {
-        ItemChanges = itemChanges;
+        RegimeItemTradeReports = regimeItemTradeReports;
         RegimeTradeBalances = regimeTradeBalances;
         NewPrices = newPrices;
         ItemTradeInfos = itemTradeInfos;
@@ -40,18 +40,25 @@ public class TradeProcedure : Procedure
         }
         var market = key.Data.Society.Market;
         var tick = key.Data.BaseDomain.GameClock.Tick;
-        foreach (var itemChange in ItemChanges)
+        foreach (var tradeReport in RegimeItemTradeReports)
         {
-            var regime = key.Data.Get<Regime>(itemChange.RegimeId);
-            var item = (Item) key.Data.Models[itemChange.ItemId];
-            if (itemChange.Quantity > 0)
+            var regime = key.Data.Get<Regime>(tradeReport.RegimeId);
+            var item = (Item) key.Data.Models[tradeReport.ItemId];
+            var q = tradeReport.Net();
+            if (q > 0)
             {
-                regime.Items.Add(item, itemChange.Quantity);
+                regime.Items.Add(item, q);
             }
             else
             {
-                regime.Items.Remove(item, -itemChange.Quantity);
+                regime.Items.Remove(item, -q);
             }
+
+            var itemReport = regime.History.ItemHistory[item, tick];
+            itemReport.Bought = tradeReport.QuantityBought;
+            itemReport.Sold = tradeReport.QuantitySold;
+            itemReport.Offered = tradeReport.QuantityOffered;
+            itemReport.Demanded = tradeReport.QuantityDemanded;
         }
         
         foreach (var kvp in RegimeTradeBalances)
@@ -70,17 +77,5 @@ public class TradeProcedure : Procedure
         market.WriteHistory(ItemTradeInfos, tick, key);
     }
     
-    public class ItemChange
-    {
-        public int ItemId { get; set; }
-        public int RegimeId { get; set; }
-        public int Quantity { get; set; }
-
-        public ItemChange(int itemId, int regimeId, int quantity)
-        {
-            ItemId = itemId;
-            RegimeId = regimeId;
-            Quantity = quantity;
-        }
-    }
+    
 }

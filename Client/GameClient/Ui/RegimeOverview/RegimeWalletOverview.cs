@@ -18,20 +18,27 @@ public partial class RegimeWalletOverview : ScrollContainer
     public void Setup(Regime regime, Data data)
     {
         _container.ClearChildren();
-        var itemIds = data.Models.GetModels<Item>().Values.Select(i => i.Id);
+        var itemIds = data.Models.GetModels<Item>().Values;
+        var tick = data.BaseDomain.GameClock.Tick;
         
-        foreach (var itemName in itemIds)
+        foreach (var item in itemIds)
         {
-            var amt = regime.Items[itemName];
-            var lastProd = regime.History.ProdHistory[itemName]?.GetLatest();
-            if (lastProd == 0) continue;
+            var amt = regime.Items[item];
+            var itemReport = regime.History.ItemHistory.Latest(item);
             
             var hbox = new HBoxContainer();
-            var item = (Item)data.Models[itemName];
             
             hbox.AddChild(item.Icon.GetTextureRect(Vector2.One * 50f));
             hbox.CreateLabelAsChild($"Amount: {amt} ");
-            hbox.CreateLabelAsChild($"Prod: {lastProd} ");
+            hbox.CreateLabelAsChild($"Prod: {itemReport.Produced} ");
+            hbox.CreateLabelAsChild($"Consumed: {itemReport.Consumed} ");
+            if (item is TradeableItem)
+            {
+                hbox.CreateLabelAsChild($"Bought: {itemReport.Bought} ");
+                hbox.CreateLabelAsChild($"Sold: {itemReport.Sold} ");
+                hbox.CreateLabelAsChild($"Offered: {itemReport.Offered} ");
+                hbox.CreateLabelAsChild($"Demanded: {itemReport.Demanded} ");
+            }
             _container.AddChild(hbox);
         }
     }

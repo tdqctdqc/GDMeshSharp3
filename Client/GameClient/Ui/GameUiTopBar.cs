@@ -23,6 +23,7 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         AddChild(general);
 
         general.AddWindowButton<RegimeAiOverviewWindow>("Regime Ais");
+        general.AddWindowButton<MarketOverviewWindow>("Market");
         
         _submitTurn = general.AddButton("Submit Turn", () =>
         {

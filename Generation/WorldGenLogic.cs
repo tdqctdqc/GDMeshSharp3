@@ -32,6 +32,7 @@ public class WorldGenLogic : ILogic
         _tries = 0;
         Succeeded = false;
         Generating = true;
+        
         try
         {       
             GD.Print("TRYING GEN");
@@ -41,6 +42,7 @@ public class WorldGenLogic : ILogic
         }
         catch (Exception e)
         {
+            GD.Print();
             GD.Print("RETRYING GEN");
             RetryGen();
         }
@@ -59,13 +61,17 @@ public class WorldGenLogic : ILogic
         }
         catch (Exception e)
         {
-            GD.Print("RETRYING GEN FAILED");
-            if (_tries > 10) throw e;
-            else
+            if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
             {
-                GD.Print("RE RETRYING GEN");
-                RetryGen();
+                GD.Print("RETRYING GEN FAILED");
+                if (_tries > 10) throw e;
+                else
+                {
+                    GD.Print("RE RETRYING GEN");
+                    RetryGen();
+                }
             }
+            else throw;
         }
         Generating = false;
     }

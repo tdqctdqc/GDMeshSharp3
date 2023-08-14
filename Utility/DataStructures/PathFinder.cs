@@ -19,29 +19,20 @@ public static class PathFinder
             buildRoadEdgeCost, 
             (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
-
-    public static float GetBuildPathCost(List<MapPolygon> path, RoadModel road, Data data, 
-        bool international, Func<MapPolygon, MapPolygon, float> buildRoadEdgeCost = null)
+    public static List<Waypoint> FindNavPath(MapPolygon s1, MapPolygon s2, Data data,
+        Func<Waypoint, Waypoint, float> edgeCost)
     {
-        if (buildRoadEdgeCost == null)
-        {
-            buildRoadEdgeCost = (p, q) => BuildRoadEdgeCost(p, q, road, data, international);
-        }
-        return PathFinder<MapPolygon>.GetPathCost(path, (p, q) => BuildRoadEdgeCost(p, q, road, data));
+        var nav = data.Planet.Nav;
+        var w1 = nav.GetPolyWaypoint(s1);
+        var w2 = nav.GetPolyWaypoint(s2);
+        return PathFinder<Waypoint>.FindPath(w1, w2, 
+            p => p.Neighbors.Select(nId => nav.Waypoints[nId]),
+            edgeCost, 
+            (p1, p2) => PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length());
     }
-    public static List<MapPolygon> FindTravelPath(MapPolygon s1, MapPolygon s2, Data data,
-        Func<MapPolygon, MapPolygon, float> travelEdgeCost = null)
+    public static List<Waypoint> FindDefaultNavPath(MapPolygon s1, MapPolygon s2, Data data)
     {
-        if (travelEdgeCost == null) travelEdgeCost = (p, q) => TravelEdgeCost(p, q, data);
-        return PathFinder<MapPolygon>.FindPath(s1, s2, p => p.Neighbors.Items(data),
-            travelEdgeCost, (p1, p2) => p1.GetOffsetTo(p2, data).Length());
-    }
-
-    public static float GetTravelPathCost(List<MapPolygon> path, Data data,
-        Func<MapPolygon, MapPolygon, float> travelEdgeCost = null)
-    {
-        if (travelEdgeCost == null) travelEdgeCost = (p, q) => TravelEdgeCost(p, q, data);
-        return PathFinder<MapPolygon>.GetPathCost(path, travelEdgeCost);
+        return FindNavPath(s2, s2, data, (p, q) => EdgeCost(p, q, data));
     }
     private static float TravelEdgeCost(MapPolygon p1, MapPolygon p2, Data data)
     {
@@ -65,6 +56,19 @@ public static class PathFinder
         var dist = p1.GetOffsetTo(p2, data).Length();
         return dist * (p1.Roughness + p2.Roughness) / 2f;
     }
+    private static float BuildRoadEdgeCost(Waypoint p1, Waypoint p2, Data data)
+    {
+        var n1 = (LandNav) p1.WaypointType.Value();
+        var n2 = (LandNav) p2.WaypointType.Value();
+        var dist =  PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length();
+        return dist * (n1.Roughness + n2.Roughness) / 2f;
+    }
+    
+    private static float EdgeCost(Waypoint p1, Waypoint p2, Data data)
+    {
+        var dist =  PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length();
+        return dist;
+    }
 }
 public static class PathFinder<T>
 {
@@ -84,7 +88,6 @@ public static class PathFinder<T>
         costsFromStart.Add(start, 0f);
         heuristicCosts.Add(start, heuristicFunc(start, end));
         int iter = 0;
-        bool hasLast = false;
         T current = default;
         IReadOnlyCollection<T> neighbors = null;
         bool currentHasParent = false;
@@ -192,6 +195,7 @@ public static class PathFinder<T>
             path.Add(from);
             to = from;
         }
+        // path.Add(to);
 
         return path;
     }

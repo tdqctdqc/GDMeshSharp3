@@ -26,7 +26,7 @@ public class BudgetAi
     {
         IncomeBudget.Calculate(data);
         Reserve.Calculate(_regime, data);
-        var prices = data.Society.Market.ItemPricesById
+        var prices = data.Society.Market.Prices
             .ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
         
         
@@ -77,7 +77,7 @@ public class BudgetAi
     {
         var buyItemsIncome = Mathf.Floor(credit * IncomeBudget.BuyWishlistItemsRatio);
         var market = data.Society.Market;
-        var prices = market.ItemPricesById.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
+        var prices = market.Prices.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
         
         var totalLaborAvail = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
         var totalPriorityWeight = _priorities.Sum(p => p.Weight);
@@ -112,7 +112,7 @@ public class BudgetAi
         foreach (var kvp in wishlist)
         {
             orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, kvp.Value));
-            var price = market.ItemPricesById[kvp.Key.Id];
+            var price = market.Prices[kvp.Key.Id];
         }
         
         var stockUpReserveItemsIncome = Mathf.Floor(income * IncomeBudget.BuyReserveItemsRatio);
@@ -120,7 +120,7 @@ public class BudgetAi
         {
             if (stockUpReserveItemsIncome <= 0) break;
             var item = kvp.Key;
-            var price = market.ItemPricesById[item.Id];
+            var price = market.Prices[item.Id];
             var qOnHand = itemBudget[item];
             var desired = kvp.Value;
             var deficit = Mathf.CeilToInt(desired - qOnHand);

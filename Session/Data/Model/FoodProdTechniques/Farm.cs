@@ -5,8 +5,8 @@ using Godot;
 
 public class Farm : FoodProdTechnique
 {
-    public Farm() 
-        : base(nameof(Farm), 1500, 500, 2)
+    public Farm(PeepJobList list) 
+        : base(nameof(Farm), 1500, 500, 2, list.Farmer)
     {
     }
 

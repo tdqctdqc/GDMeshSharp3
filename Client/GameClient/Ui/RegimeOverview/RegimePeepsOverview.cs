@@ -24,7 +24,7 @@ public partial class RegimePeepsOverview : ScrollContainer
         var peepCount = peeps.Count();
         var peepSize = peeps.Sum(p => p.Size);
         var jobs = populatedPolys
-            .SelectMany(p => p.Employment.Counts)
+            .SelectMany(p => p.PolyEmployment.Counts)
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);
         _container.CreateLabelAsChild("Peeps: " + peepCount);
         _container.CreateLabelAsChild("Population: " + peepSize);

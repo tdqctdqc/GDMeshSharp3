@@ -107,7 +107,7 @@ public class PolyTriGenerator : Generator
         {
             tris = DoLandPolyNoRivers(poly, key);
         }
-        
+
         var polyTerrainTris = PolyTris.Create(tris,  key);
         if (polyTerrainTris == null) throw new Exception();
         poly.SetTerrainTris(polyTerrainTris, key);

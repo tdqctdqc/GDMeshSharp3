@@ -39,7 +39,7 @@ public partial class WindowManager : Node, IClientComponent
     public T OpenWindow<T>() where T : Window
     {
         var type = typeof(T);
-        _windows[type].PopupCentered();
+        _windows[type].PopupCenteredClamped();
         return (T)_windows[type];
     }
     public T GetWindow<T>() where T : Window

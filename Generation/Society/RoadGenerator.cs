@@ -18,6 +18,8 @@ public class RoadGenerator : Generator
         var genReport = new GenReport(nameof(RoadGenerator));
         
         genReport.StartSection();
+        BuildPolyNavPaths();
+        
         var allSegs = new ConcurrentBag<IDictionary<Vector2, RoadModel>>();
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
         {
@@ -38,11 +40,53 @@ public class RoadGenerator : Generator
         return genReport;
     }
 
+    private void BuildPolyNavPaths()
+    {
+        var nav = _key.Data.Planet.Nav;
+        foreach (var mapPolygon in _key.Data.GetAll<MapPolygon>())
+        {
+            var ns = mapPolygon.Neighbors.Items(_key.Data)
+                .Where(n => n.Id < mapPolygon.Id);
+            foreach (var n in ns)
+            {
+                var path = PathFinder.FindDefaultNavPath(mapPolygon, n, _key.GenData);
+                if (path != null )
+                {
+                    if (path.Count != 1)
+                    {
+                        nav.PolyNavPaths.Add(new Vector2(mapPolygon.Id, n.Id), path.Select(w => w.Id).ToList());
+                    }
+                    else if (path.Count == 1)
+                    {
+                        // GD.Print(
+                            
+                            // nav.GetPolyWaypoint(mapPolygon).Id == path[0].Id
+                            // || 
+                            // nav.GetPolyWaypoint(n) == path[0]
+                            // && nav.GetPolyWaypoint(mapPolygon).Neighbors.Contains(path[0].Id)
+                                 // );
+                        //
+                        // GD.Print(PlanetDomain.GetOffsetTo(nav.GetPolyWaypoint(mapPolygon).Pos, 
+                        //     path[0].Pos, _data).Length());
+                        // GD.Print(PlanetDomain.GetOffsetTo(nav.GetPolyWaypoint(n).Pos, 
+                        //     path[0].Pos, _data).Length());
+                        // var path2 = new List<int>
+                        //     {nav.GetPolyWaypoint(mapPolygon).Id, path[0].Id, nav.GetPolyWaypoint(n).Id};
+                        // nav.PolyNavPaths.Add(new Vector2(mapPolygon.Id, n.Id), path2);
+
+                    }
+                }
+            }
+        }
+    }
     private IDictionary<Vector2, RoadModel> GenerateForLandmass(HashSet<MapPolygon> lm)
     {
         var settlementPolys = lm.Where(p => p.HasSettlement(_data));
         if (settlementPolys.Count() < 3) return new Dictionary<Vector2, RoadModel>();
         var first = lm.First();
+
+        var polyPaths = new Dictionary<MapPolygonEdge, List<Waypoint>>();
+        
 
         bool rail(Settlement s)
         {
@@ -57,7 +101,7 @@ public class RoadGenerator : Generator
             return s.Size >= 5f;
         }
         var covered = new HashSet<Vector2>();
-        var segs = new Dictionary<Vector2, RoadModel>();
+        var polySegs = new Dictionary<Vector2, RoadModel>();
         
         var railSettlements = settlementPolys.Where(p => rail(p.GetSettlement(_data))).ToList();
         if(railSettlements.Count > 2)
@@ -66,7 +110,7 @@ public class RoadGenerator : Generator
                 s => first.GetOffsetTo(s, _data),
                 (p1, p2) => p1.GetV2EdgeKey(p2));
             BuildRoadNetworkLocal(_data.Models.RoadList.Railroad, 2000f, 
-                railGraph, covered, segs, true);
+                railGraph, covered, polySegs, true);
         }
         
         var pavedSettlements = settlementPolys.Where(p => paved(p.GetSettlement(_data))).ToList();
@@ -76,7 +120,7 @@ public class RoadGenerator : Generator
                 s => first.GetOffsetTo(s, _data),
                 (p1, p2) => p1.GetV2EdgeKey(p2));
             BuildRoadNetworkLocal(_data.Models.RoadList.PavedRoad, 1000f, 
-                pavedGraph, covered, segs, true);
+                pavedGraph, covered, polySegs, true);
         }
         
         var dirtSettlements = settlementPolys.Where(p => dirt(p.GetSettlement(_data))).ToList();
@@ -86,9 +130,9 @@ public class RoadGenerator : Generator
                 s => first.GetOffsetTo(s, _data),
                 (p1, p2) => p1.GetV2EdgeKey(p2));
             BuildRoadNetworkLocal(_data.Models.RoadList.DirtRoad, 500f, 
-                dirtGraph, covered, segs, true);
+                dirtGraph, covered, polySegs, true);
         }
-        return segs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+        return polySegs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
     
     private void BuildRoadNetworkLocal(RoadModel road, float roadBuildDist,
@@ -103,7 +147,7 @@ public class RoadGenerator : Generator
             var s1 = (MapPolygon)_data[(int)e.X];
             var s2 = (MapPolygon)_data[(int)e.Y];
             if (s1.GetOffsetTo(s2, _data).LengthSquared() > distSqr) continue;
-
+            
             var buildPath = PathFinder.FindRoadBuildPath(s1, s2, road, _data, international);
             for (var i = 0; i < buildPath.Count - 1; i++)
             {
@@ -118,5 +162,12 @@ public class RoadGenerator : Generator
                 segs.Add(pathEdge, road);
             }
         }
+    }
+
+    private Dictionary<MapPolygonEdge, List<PolyTri>> GetTriPaths()
+    {
+        return null;
+        var edges = _data.GetAll<MapPolygonEdge>()
+            .Where(e => e.HighPoly.Entity(_data).IsLand && e.LowPoly.Entity(_data).IsLand);
     }
 }

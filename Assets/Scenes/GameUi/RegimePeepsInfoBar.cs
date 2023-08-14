@@ -41,7 +41,13 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
         if (r.Empty() == false)
         {
-            return Mathf.FloorToInt(r.Entity(data).History.PeepHistory.PeepSize.GetLatestDelta());
+            var ordered = r.Entity(data).History.PeepHistory.GetOrdered();
+            if (ordered.Count > 1)
+            {
+                var last = ordered[ordered.Count - 1].TotalPop;
+                var penult = ordered[ordered.Count - 2].TotalPop;
+                return Mathf.FloorToInt(last - penult);
+            }
         }
 
         return 0;

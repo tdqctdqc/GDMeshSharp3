@@ -10,5 +10,6 @@ public class TickProcedure : Procedure
     public override void Enact(ProcedureWriteKey key)
     {
         key.Data.BaseDomain.GameClock.DoTick(key);
+        
     }
 }

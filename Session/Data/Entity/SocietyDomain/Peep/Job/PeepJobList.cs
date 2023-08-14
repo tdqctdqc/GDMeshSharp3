@@ -16,4 +16,9 @@ public class PeepJobList : ModelList<PeepJob>
         = new PeepJob(nameof(Builder));
     public PeepJob Unemployed { get; private set; } 
         = new PeepJob(nameof(Unemployed));
+    public PeepJob Herder { get; private set; }
+        = new PeepJob(nameof(Herder));
+
+    public PeepJob Fisher { get; private set; }
+        = new PeepJob(nameof(Fisher));
 }

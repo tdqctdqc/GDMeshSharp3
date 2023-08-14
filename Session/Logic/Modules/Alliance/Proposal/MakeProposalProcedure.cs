@@ -6,12 +6,12 @@ using MessagePack;
 
 public class MakeProposalProcedure : Procedure
 {
-    public PortablePolymorph<Proposal> Proposal { get; private set; }
+    public PolymorphMessage<Proposal> Proposal { get; private set; }
     public static MakeProposalProcedure Construct(Proposal p, Data d)
     {
-        return new MakeProposalProcedure(PortablePolymorph<Proposal>.Construct(p, d));
+        return new MakeProposalProcedure(PolymorphMessage<Proposal>.Construct(p, d));
     }
-    [SerializationConstructor] private MakeProposalProcedure(PortablePolymorph<Proposal> proposal)
+    [SerializationConstructor] private MakeProposalProcedure(PolymorphMessage<Proposal> proposal)
     {
         Proposal = proposal;
     }

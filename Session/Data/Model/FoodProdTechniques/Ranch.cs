@@ -5,8 +5,8 @@ using Godot;
 
 public class Ranch : FoodProdTechnique
 {
-    public Ranch() 
-        : base(nameof(Ranch), 1000, 100, 2)
+    public Ranch(PeepJobList list) 
+        : base(nameof(Ranch), 1000, 100, 2, list.Herder)
     {
     }
 
@@ -16,12 +16,16 @@ public class Ranch : FoodProdTechnique
                     .Where(t =>
                         t.Landform(data).IsLand
                         && t.Landform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
-                        && t.Vegetation(data).MinMoisture < data.Models.Vegetations.Grassland.MinMoisture
+                        && t.Vegetation(data).MinMoisture <= data.Models.Vegetations.Grassland.MinMoisture
                         && float.IsNaN(t.GetArea()) == false
                     )
-                    .Sum(t => t.GetArea()
-                              * t.Landform(data).FertilityMod
-                              * ShapingFunctions.ProjectToRange(t.Vegetation(data).FertilityMod, 1f, .5f, 1f))
-                / 10000f);
+                    .Sum(t =>
+                    {
+                        var lfMod = ShapingFunctions.ProjectToRange(t.Landform(data).FertilityMod, 1f, .25f, 1f);
+                        var vMod = ShapingFunctions.ProjectToRange(t.Vegetation(data).FertilityMod, 1f, .5f, 1f);
+                        var grassMod = t.Vegetation(data) == data.Models.Vegetations.Grassland ? .5f : 1f;
+                        return t.GetArea() * lfMod * vMod * grassMod;
+                    })
+                / 5000f);
     }
 }

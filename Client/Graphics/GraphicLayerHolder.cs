@@ -16,6 +16,7 @@ public class GraphicLayerHolder
         Layers.Add(Roads(segmenter, data));
         Layers.Add(IconsChunkModule.GetLayer(data, segmenter));
         Layers.Add(ResourceChunkModule.GetLayer(data, segmenter));
+        Layers.Add(NavGraphicChunk.GetLayer(data, segmenter));
     }
 
     public void Update(Data d, ConcurrentQueue<Action> queue)

@@ -31,11 +31,16 @@ public class PolyEmploymentScratch
         if (totalLaborNeeded == 0) return 0;
         var ratio = (float)Available / totalLaborNeeded;
         if (ratio > 1f) ratio = 1f;
-        var job = data.Models.PeepJobs.Farmer;
-        foreach (var kvp in foodProd.Nums)
+
+        float foodPerLabor(int foodProdId)
         {
-            var technique = (FoodProdTechnique)data.Models[kvp.Key];
-            if (Available == 0) break;
+            return data.Models.GetModel<FoodProdTechnique>(foodProdId).FoodPerLabor();
+        }
+        
+        foreach (var kvp in foodProd.Nums.OrderByDescending(kvp => foodPerLabor(kvp.Key)))
+        {
+            var technique = data.Models.GetModel<FoodProdTechnique>(kvp.Key);
+            var job = technique.JobType;
             var numBuildings = kvp.Value;
             var desiredLabor = technique.BaseLabor * numBuildings;
             Desired += desiredLabor;
@@ -45,7 +50,8 @@ public class PolyEmploymentScratch
             ByJob.AddOrSum(job, numLabor);
         }
 
-        return Mathf.FloorToInt(ratio * foodProd.BaseProd(data));
+        var prod = Mathf.FloorToInt(ratio * foodProd.BaseProd(data));
+        return prod;
     }
     public float HandleBuildingJobs(IEnumerable<Workplace> work, Data data)
     {

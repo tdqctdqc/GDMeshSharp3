@@ -19,7 +19,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         BuildingIcons = new BuildingIcons(chunk, data);
         AddNode(BuildingIcons);
     }
-
+    
     public static ChunkGraphicLayer<IconsChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
     {
         var l = new ChunkGraphicLayer<IconsChunkModule>("Icons", segmenter,
@@ -30,6 +30,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         
         l.RegisterForEntityLifetime(n => n.Poly.Entity(d).GetChunk(d), 
             m => m.SettlementIcons, d);
+        
         l.RegisterForChunkNotice(d.Infrastructure.SettlementAux.ChangedTier, 
             n => ((Settlement)n.Entity).Poly.Entity(d).GetChunk(d).Yield(),
             (notice, graphic) => graphic.SettlementIcons.QueueChange(notice.Entity));

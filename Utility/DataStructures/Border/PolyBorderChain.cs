@@ -6,7 +6,6 @@ using Godot;
 using MessagePack;
 
 public class PolyBorderChain : Chain<LineSegment, Vector2>
-    // , IBorderChain<LineSegment, Vector2, MapPolygon>
 {
     public EntityRef<MapPolygon> Native { get; private set; }
     public EntityRef<MapPolygon> Foreign { get; private set; }

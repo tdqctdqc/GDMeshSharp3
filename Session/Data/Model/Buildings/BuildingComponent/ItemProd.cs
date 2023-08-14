@@ -20,7 +20,7 @@ public class ItemProd : BuildingComponent
         staffingRatio = Mathf.Clamp(staffingRatio, 0f, 1f);
         var prod = Mathf.FloorToInt(staffingRatio * ProdCap);
         var rId = poly.Regime.RefId;
-        var wallet = proc.RegimeResourceGains[rId];
+        var wallet = proc.RegimeResourceProds[rId];
         wallet.Add(ProdItem, prod);
     }
 }

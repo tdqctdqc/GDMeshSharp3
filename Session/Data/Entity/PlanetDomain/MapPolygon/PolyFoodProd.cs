@@ -6,9 +6,9 @@ using MessagePack;
 public class PolyFoodProd
 {
     public int BaseProd(Data data) 
-        => Nums.Sum(kvp => ((FoodProdTechnique)data.Models[kvp.Key]).BaseProd * kvp.Value);
+        => Nums.Sum(kvp => data.Models.GetModel<FoodProdTechnique>(kvp.Key).BaseProd * kvp.Value);
     public int BaseLabor(Data data) 
-        => Nums.Sum(kvp => ((FoodProdTechnique)data.Models[kvp.Key]).BaseLabor * kvp.Value);
+        => Nums.Sum(kvp => data.Models.GetModel<FoodProdTechnique>(kvp.Key).BaseLabor * kvp.Value);
     public Dictionary<int, int> Nums { get; private set; }
 
     public static PolyFoodProd Construct()

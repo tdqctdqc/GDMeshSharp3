@@ -216,6 +216,7 @@ public static class GraphGenerator
         for (int i = 0; i < tris.Count; i++)
         {
             var t = tris[i];
+            
             var elementA = elements[poses.IndexOf(t.A)];
             var a = graph[elementA];
             

@@ -4,6 +4,8 @@ using System.Linq;
 
 public class PlanetSettings : Settings
 {
+    public BoolSettingsOption RetryGen { get; private set; }
+        = new BoolSettingsOption("Retry Gen", false);
     public FloatSettingsOption MapWidth { get; private set; }
         = new FloatSettingsOption("Map Width", 16000f, 4000f, 32000f, 1000f, true);
     public FloatSettingsOption MapHeight { get; private set; }

@@ -4,10 +4,10 @@ using System.Linq;
 
 public partial class ClientSettingsWindow : SettingsWindow
 {
-    public static ClientSettingsWindow Get()
+    public static ClientSettingsWindow Get(ClientSettings s)
     {
         var w = new ClientSettingsWindow();
-        w.Setup(Game.I.Client.Settings);
+        w.Setup(s);
         return w;
     }
     private ClientSettingsWindow()

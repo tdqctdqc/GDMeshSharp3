@@ -9,27 +9,27 @@ using MessagePack;
 
 public class ProduceConstructProcedure : Procedure
 {
-    public ConcurrentDictionary<int, ItemCount> RegimeResourceGains { get; private set; }
+    public ConcurrentDictionary<int, ItemCount> RegimeResourceProds { get; private set; }
     public ConcurrentDictionary<int, RegimeFlows> RegimeFlows { get; private set; }
-    public ConcurrentDictionary<int, EmploymentReport> EmploymentReports { get; private set; }
+    public ConcurrentDictionary<int, PolyEmploymentReport> EmploymentReports { get; private set; }
     public ConcurrentDictionary<PolyTriPosition, float> ConstructionProgresses { get; private set; }
 
     public static ProduceConstructProcedure Create()
     {
         return new ProduceConstructProcedure(
             new ConcurrentDictionary<int, ItemCount>(), 
-            new ConcurrentDictionary<int, EmploymentReport>(),
+            new ConcurrentDictionary<int, PolyEmploymentReport>(),
             new ConcurrentDictionary<PolyTriPosition, float>(),
             new ConcurrentDictionary<int, RegimeFlows>());
     }
     [SerializationConstructor] private ProduceConstructProcedure(
-        ConcurrentDictionary<int, ItemCount> regimeResourceGains, 
-        ConcurrentDictionary<int, EmploymentReport> employmentReports,
+        ConcurrentDictionary<int, ItemCount> regimeResourceProds, 
+        ConcurrentDictionary<int, PolyEmploymentReport> employmentReports,
         ConcurrentDictionary<PolyTriPosition, float> constructionProgresses,
         ConcurrentDictionary<int, RegimeFlows> regimeFlows)
     {
         ConstructionProgresses = constructionProgresses;
-        RegimeResourceGains = regimeResourceGains;
+        RegimeResourceProds = regimeResourceProds;
         EmploymentReports = employmentReports;
         RegimeFlows = regimeFlows;
     }
@@ -68,16 +68,18 @@ public class ProduceConstructProcedure : Procedure
     private void EnactProduce(ProcedureWriteKey key)
     {
         var tick = key.Data.Tick;
-        foreach (var kvp in RegimeResourceGains)
+        foreach (var kvp in RegimeResourceProds)
         {
             var r = (Regime)key.Data[kvp.Key];
             var gains = kvp.Value;
             foreach (var kvp2 in gains.Contents)
             {
                 var item = (Item)key.Data.Models[kvp2.Key];
-                r.Items.Add(item, kvp2.Value);
+                var gain = kvp2.Value;
+                var itemReport = r.History.ItemHistory[item, tick];
+                itemReport.Produced += gain;
+                r.Items.Add(item, gain);
             }
-            r.History.ProdHistory.TakeSnapshot(tick, gains);
         }
     }
     

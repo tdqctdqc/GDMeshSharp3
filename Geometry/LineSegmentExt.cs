@@ -269,4 +269,26 @@ public static class LineSegmentExt
         if (l1.To != l2.From) throw new Exception();
         return (l1.From - l1.To).GetClockwiseAngleTo(l2.To - l2.From);
     }
+
+    public static Vector2 GetPointAlong(this List<LineSegment> segs, float ratio)
+    {
+        if (ratio < 0f || ratio > 1f) throw new Exception();
+        var totalLength = segs.Sum(ls => ls.Length());
+        var targetLength = ratio * totalLength;
+        var soFar = 0f;
+        for (var i = 0; i < segs.Count; i++)
+        {
+            var seg = segs[i];
+            var toGo = targetLength - soFar;
+            if (toGo > seg.Length())
+            {
+                soFar += seg.Length();
+                continue;
+            }
+
+            return seg.From + seg.GetNormalizedAxis() * toGo;
+        }
+
+        return segs[segs.Count - 1].To;
+    }
 }

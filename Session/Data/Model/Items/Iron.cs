@@ -8,7 +8,7 @@ public class Iron : NaturalResource
 {
     protected override int _overflowSize { get; } = 100;
     protected override int _minDepositSize { get; } = 10;
-    protected override OverFlowType _overflow { get; } = OverFlowType.None;
+    protected override OverFlowType _overflow { get; } = OverFlowType.Single;
     
     
     public Iron() 

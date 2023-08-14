@@ -20,6 +20,6 @@ public class ExtractionProd : ItemProd
         prod = Mathf.Min(Mathf.FloorToInt(depSize), prod);
         var rId = poly.Regime.RefId;
         
-        proc.RegimeResourceGains[rId].Add(ProdItem, prod);
+        proc.RegimeResourceProds[rId].Add(ProdItem, prod);
     }
 }

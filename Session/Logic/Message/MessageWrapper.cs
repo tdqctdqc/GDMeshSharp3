@@ -1,7 +1,7 @@
 
 using System;
 
-public class MessageWrapper : PortablePolymorph<Message>
+public class MessageWrapper : PolymorphMessage<Message>
 {
     public MessageWrapper(Message message, Data data) 
         : base(message.GetType(),

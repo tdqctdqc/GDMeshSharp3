@@ -42,6 +42,9 @@ public partial class Client : Node, IClient
         AddChild(cam);
         
         AddComponent(new WindowManager(this));
+        GetComponent<WindowManager>().AddWindow(ClientSettingsWindow.Get(Settings));
+        
+        
         AddComponent(new PromptManager(this, _session.Data));
         AddComponent(new ClientTopBar(this, _session));
         
@@ -130,6 +133,7 @@ public partial class Client : Node, IClient
         AddComponent(mapGraphicsOptions);
         
         GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
+        GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(data));
     }
 }
 

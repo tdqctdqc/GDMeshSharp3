@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class EmploymentReport
+public class PolyEmploymentReport
 {
     public Dictionary<int, int> Counts { get; private set; }
-    public static EmploymentReport Construct()
+    public static PolyEmploymentReport Construct()
     {
-        return new EmploymentReport(new Dictionary<int, int>());
+        return new PolyEmploymentReport(new Dictionary<int, int>());
     }
-    [SerializationConstructor] private EmploymentReport(Dictionary<int, int> counts)
+    [SerializationConstructor] private PolyEmploymentReport(Dictionary<int, int> counts)
     {
         Counts = new Dictionary<int, int>();
     }
 
-    public void Copy(EmploymentReport toCopy, ProcedureWriteKey key)
+    public void Copy(PolyEmploymentReport toCopy, ProcedureWriteKey key)
     {
         Counts.Clear();
         Counts.AddRange(toCopy.Counts);

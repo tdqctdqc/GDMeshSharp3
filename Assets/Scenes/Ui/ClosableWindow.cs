@@ -25,4 +25,12 @@ public partial class ClosableWindow : Window
             Hide();
         }
     }
+
+    public override void _Process(double delta)
+    {
+        if (GetViewport().GetVisibleRect().HasPoint(Position) == false)
+        {
+            
+        }
+    }
 }

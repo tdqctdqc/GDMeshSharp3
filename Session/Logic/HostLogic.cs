@@ -29,10 +29,11 @@ public class HostLogic : ILogic
         data.Requests.SubmitPlayerOrders.Subscribe(x => SubmitPlayerTurnOrders(x.Item1, x.Item2));
         _majorTurnStartModules = new LogicModule[]
         {
-            new ProduceConstructModule(),
         };
         _majorTurnEndModules = new LogicModule[]
         {
+            new DefaultLogicModule(() => new PrepareNewHistoriesProcedure()),
+            new ProduceConstructModule(),
             new ConstructBuildingsModule(),
             new FoodAndPopGrowthModule(),
             new FinanceModule(),

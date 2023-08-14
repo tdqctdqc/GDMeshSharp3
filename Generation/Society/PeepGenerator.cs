@@ -59,8 +59,11 @@ public class PeepGenerator : Generator
         var foodConsPerPeep = _data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         var territory = r.GetPolys(_data);
         var foodSurplus = new ConcurrentBag<float>();
-        makeFoodProd(_data.Models.FoodProdTechniques.Farm);
-        makeFoodProd(_data.Models.FoodProdTechniques.Ranch);
+        
+        foreach (var foodProdTechnique in _data.Models.GetModels<FoodProdTechnique>().Values)
+        {
+            makeFoodProd(foodProdTechnique);
+        }
         
         void makeFoodProd(FoodProdTechnique technique)
         {
