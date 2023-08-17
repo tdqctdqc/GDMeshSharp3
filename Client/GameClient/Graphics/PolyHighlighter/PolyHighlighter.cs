@@ -47,16 +47,26 @@ public partial class PolyHighlighter : Node2D
     private void DrawSimple(Data data, MapPolygon poly, PolyTri pt, MeshBuilder mb)
     {
         DrawBordersSimple(poly, mb, data);
+        // DrawAssocWaypoints(poly, mb, data);
         // DrawnNeighborBordersSimple(poly, mb, data);
     }
 
+    private void DrawAssocWaypoints(MapPolygon poly, MeshBuilder mb, Data data)
+    {
+        var wps = data.Planet.Nav.GetPolyAssocWaypoints(poly, data);
+        foreach (var waypoint in wps)
+        {
+            var offset = poly.GetOffsetTo(waypoint.Pos, data);
+            mb.AddCircle(offset, 20f, 6, Colors.Purple);
+        }
+    }
     private void DrawNavPathsToNeighbors(MapPolygon poly, MeshBuilder mb, Data data)
     {
         var nav = data.Planet.Nav;
-        var polyWp = nav.GetPolyWaypoint(poly);
+        var polyWp = nav.GetPolyCenterWaypoint(poly);
         foreach (var nPoly in poly.Neighbors.Items(data))
         {
-            var nPolyWp = nav.GetPolyWaypoint(nPoly);
+            var nPolyWp = nav.GetPolyCenterWaypoint(nPoly);
             var path = PathFinder.FindNavPath(poly, nPoly, data);
             for (var i = 0; i < path.Count - 1; i++)
             {

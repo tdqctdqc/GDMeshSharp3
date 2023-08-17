@@ -22,7 +22,7 @@ public class RoadGenerator : Generator
         var allSegs = new ConcurrentBag<IDictionary<Vector2, RoadModel>>();
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
         {
-            allSegs.Add(GenerateForLandmass(lm));
+            allSegs.Add(GenerateForLandmass(lm.Polys));
         });
         foreach (var dic in allSegs)
         {

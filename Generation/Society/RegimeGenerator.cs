@@ -36,15 +36,15 @@ public class RegimeGenerator : Generator
         var templates = _data.Models.RegimeTemplates.Models.Values.ToHashSet();
         _data.Planet.PolygonAux.LandSea.Landmasses.ForEach(lm =>
         {
-            var picker = GenerateLandmassRegimes(lm, polysPerRegime, templates);
-            lmPickers.TryAdd(lm, picker);
+            var picker = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);
+            lmPickers.TryAdd(lm.Polys, picker);
         });
 
         var remainders = new ConcurrentBag<HashSet<MapPolygon>>();
         
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
         {
-            var remainder = ExpandRegimes(lm, lmPickers[lm]);
+            var remainder = ExpandRegimes(lm.Polys, lmPickers[lm.Polys]);
             remainders.Add(remainder);
         });
         

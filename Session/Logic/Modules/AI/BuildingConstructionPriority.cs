@@ -220,7 +220,8 @@ public class BuildingConstructionPriority : BudgetPriority
                 poly = availPolys
                     .FirstOrDefault(p => p.PolyBuildingSlots[building.BuildingType] > 0);
                 if (poly == null) continue;
-                orders.StartConstructions.ConstructionsToStart.Add(StartConstructionRequest.Construct(building, poly));
+                orders.StartConstructions.ConstructionsToStart
+                    .Add(StartConstructionRequest.Construct(building, poly));
                 
                 foreach (var cost in building.BuildCosts)
                 {

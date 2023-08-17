@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class ItemProd : BuildingComponent
+public class ItemProd : BuildingModelComponent
 {
     public Item ProdItem { get; private set; }
     public int ProdCap { get; private set; }

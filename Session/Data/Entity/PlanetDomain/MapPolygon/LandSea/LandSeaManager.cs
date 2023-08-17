@@ -5,10 +5,10 @@ using Godot;
 
 public class LandSeaManager
 {
-    public List<HashSet<MapPolygon>> Landmasses { get; private set; }
-    public Dictionary<MapPolygon, HashSet<MapPolygon>> LandmassDic { get; private set; }
-    public List<HashSet<MapPolygon>> Seas { get; private set; }
-    public Dictionary<MapPolygon, HashSet<MapPolygon>> SeaDic { get; private set; }
+    public List<Landmass> Landmasses { get; private set; }
+    public Dictionary<MapPolygon, Landmass> LandmassDic { get; private set; }
+    public List<Sea> Seas { get; private set; }
+    public Dictionary<MapPolygon, Sea> SeaDic { get; private set; }
 
     public LandSeaManager()
     {
@@ -17,8 +17,8 @@ public class LandSeaManager
 
     public void SetMasses(Data data)
     {
-        Landmasses = new List<HashSet<MapPolygon>>();
-        LandmassDic = new Dictionary<MapPolygon, HashSet<MapPolygon>>();
+        Landmasses = new List<Landmass>();
+        LandmassDic = new Dictionary<MapPolygon, Landmass>();
         var polys = data.GetAll<MapPolygon>();
         var landPolys = polys.Where(p => p.IsLand);
         var seaPolys = polys.Where(p => p.IsWater());
@@ -26,21 +26,21 @@ public class LandSeaManager
             UnionFind.Find(landPolys.ToList(), (p1, p2) => p1.HasNeighbor(p2), p1 => p1.Neighbors.Items(data));
         landmasses.ForEach(m =>
         {
-            var hash = m.ToHashSet();
-            Landmasses.Add(hash);
-            m.ForEach(p => LandmassDic.Add(p, hash));
+            var lm = new Landmass(m.ToHashSet());
+            Landmasses.Add(lm);
+            m.ForEach(p => LandmassDic.Add(p, lm));
         });
         
-        Seas = new List<HashSet<MapPolygon>>();
-        SeaDic = new Dictionary<MapPolygon, HashSet<MapPolygon>>();
+        Seas = new List<Sea>();
+        SeaDic = new Dictionary<MapPolygon, Sea>();
         var seamasses =
             UnionFind.Find(seaPolys.ToList(), 
                 (p1, p2) => p1.HasNeighbor(p2), p1 => p1.Neighbors.Items(data));
         seamasses.ForEach(m =>
         {
-            var hash = m.ToHashSet();
-            Seas.Add(hash);
-            m.ForEach(p => SeaDic.Add(p, hash));
+            var sea = new Sea(m.ToHashSet());
+            Seas.Add(sea);
+            m.ForEach(p => SeaDic.Add(p, sea));
         });
 
         var landAndSeaCount = landPolys.Count() + seaPolys.Count();

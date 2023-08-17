@@ -88,19 +88,19 @@ public class PeepGenerator : Generator
             
         var t = _data.Models.GetManager<BuildingModel>().Models
             .Where(kvp => kvp.Value.GetComponent<ExtractionProd>() != null);
-        var extractBuildings = new Dictionary<Item, List<BuildingModel>>();
+        var extractBuildings = new System.Collections.Generic.Dictionary<Item, List<BuildingModel>>();
 
         foreach (var kvp in t)
         {
             var model = kvp.Value;
-            var comps = model.Components.SelectWhereOfType<BuildingComponent, ExtractionProd>();
+            var comps = model.Components.SelectWhereOfType<BuildingModelComponent, ExtractionProd>();
             foreach (var extractionProd in comps)
             {
                 extractBuildings.AddOrUpdate(extractionProd.ProdItem, model);
             }
         }
 
-        var polyBuildings = new Dictionary<MapPolygon, List<BuildingModel>>();
+        var polyBuildings = new System.Collections.Generic.Dictionary<MapPolygon, List<BuildingModel>>();
         
         foreach (var p in r.GetPolys(_data))
         {
@@ -129,7 +129,7 @@ public class PeepGenerator : Generator
             {
                 var w = model.GetComponent<Workplace>();
                 laborDemand += w.JobLaborReqs.Sum(kvp2 => kvp2.Value);
-                MapBuilding.CreateGen(poly, model, _key);
+                MapBuilding.CreateGen(poly, poly.GetCenterWaypoint(_key.Data).Id, model, _key);
             }
         }
 
@@ -143,10 +143,50 @@ public class PeepGenerator : Generator
         foreach (var s in settlements)
         {
             var p = s.Poly.Entity(_data);
-            MapBuilding.CreateGen(p, townHall, _key);
+            MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, townHall, _key);
         }
 
         return townHall.GetComponent<Workplace>().TotalLaborReq() * settlements.Count();
+    }
+
+    private void GenerateInfrastructureBuildings(Regime r, float popBudget)
+    {
+        if (popBudget <= 0) return;
+        
+        
+    }
+
+    private void GeneratePorts(Regime r, float popBudget)
+    {
+        var coasts = new Dictionary<Sea, HashSet<MapPolygon>>();
+        var seas = _key.Data.Planet.PolygonAux.LandSea.SeaDic;
+        foreach (var poly in r.GetPolys(_key.Data))
+        {
+            var seaNs = poly.Neighbors.Items(_key.Data)
+                .Where(n => n.IsWater())
+                .Select(n => seas[n])
+                .Distinct();
+            foreach (var sea in seaNs)
+            {
+                coasts.AddOrUpdate(sea, poly);
+            }
+        }
+
+        var port = _key.Data.Models.Buildings.Port;
+        var portLaborReq = port.GetComponent<Workplace>().TotalLaborReq();
+        var coastLists = coasts.Values.ToList();
+        var portions = Apportioner.ApportionLinear(popBudget,
+            coastLists, c => c.Count);
+        for (var i = 0; i < portions.Count; i++)
+        {
+            var coast = coastLists[i];
+            var portion = portions[i];
+            var numPorts = Mathf.FloorToInt(portion / portLaborReq);
+            if (numPorts > 0)
+            {
+                
+            }
+        }
     }
     private void GenerateFactories(Regime r, float popBudget)
     {
@@ -173,7 +213,7 @@ public class PeepGenerator : Generator
             
             for (var j = 0; j < numFactories; j++)
             {
-                MapBuilding.CreateGen(p, factory, _key);
+                MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, factory, _key);
             }
         }
     }

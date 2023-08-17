@@ -10,7 +10,7 @@ public class Mine : BuildingModel
         : base(BuildingType.Extraction, name, 
             150, 3000,
             150, 
-            new List<BuildingComponent>
+            new List<BuildingModelComponent>
             {
                 new ExtractionProd(prodItem, 20),
                 new Workplace(new Dictionary<PeepJob, int>

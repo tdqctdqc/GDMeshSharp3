@@ -16,26 +16,4 @@ public class StartConstructionsOrders : TurnOrderModule
     {
         ConstructionsToStart = constructionsToStart;
     }
-    // public override void WriteToResult(Data data, LogicResults res)
-    // {
-    //     var newConstructionPoses = new HashSet<PolyTriPosition>();
-    //     for (var i = 0; i < ConstructionsToStart.Count; i++)
-    //     {
-    //         var toStart = ConstructionsToStart[i];
-    //         var poly = (MapPolygon) data[toStart.PolyId];
-    //         var building = (BuildingModel) data.Models[toStart.BuildingModelId];
-    //         var slots = poly.PolyBuildingSlots.AvailableSlots[building.BuildingType]
-    //             .Where(pt => newConstructionPoses.Contains(pt) == false);
-    //         if (slots.Count() == 0) continue;
-    //         var pos = slots.First();
-    //         newConstructionPoses.Add(pos);
-    //         
-    //         var proc = StartConstructionProcedure.Construct(
-    //             building.MakeRef<BuildingModel>(),
-    //             pos,
-    //             Regime
-    //         );
-    //         res.Procedures.Add(proc);
-    //     }
-    // }
 }

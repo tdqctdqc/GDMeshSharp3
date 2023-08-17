@@ -19,10 +19,15 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicNode<int>
     {
         _mb.Clear();
         var seg = data.Get<RoadSegment>(element);
-        var hi = seg.Edge.Entity(data).HighPoly.Entity(data);
-        var lo = seg.Edge.Entity(data).LowPoly.Entity(data);
-        seg.Road.Model(data).Draw(_mb, Chunk.RelTo.GetOffsetTo(hi.Center, data), 
-            Chunk.RelTo.GetOffsetTo(lo.Center, data), 10f);
+        
+        for (var i = 0; i < seg.WaypointIds.Count - 1; i++)
+        {
+            var from = data.Planet.Nav.Waypoints[seg.WaypointIds[i]];
+            var to = data.Planet.Nav.Waypoints[seg.WaypointIds[i + 1]];
+            seg.Road.Model(data).Draw(_mb, Chunk.RelTo.GetOffsetTo(from.Pos, data), 
+                Chunk.RelTo.GetOffsetTo(to.Pos, data), 10f);
+        }
+        
         var mesh = _mb.GetMeshInstance();
         _mb.Clear();
         return mesh;

@@ -10,10 +10,12 @@ public class StartConstructionProcedure : Procedure
     public EntityRef<Regime> OrderingRegime { get; private set; }
     public Construction Construction { get; private set; }
 
-    public static StartConstructionProcedure Construct(ModelRef<BuildingModel> building, PolyTriPosition pos, 
+    public static StartConstructionProcedure Construct(ModelRef<BuildingModel> building, 
+        PolyTriPosition pos, 
+        int waypoint,
         EntityRef<Regime> orderingRegime, Data data)
     {
-        var c = new Construction(building, pos, building.Model(data).NumTicksToBuild);
+        var c = new Construction(building, pos, building.Model(data).NumTicksToBuild, waypoint);
         return new StartConstructionProcedure(c, orderingRegime);
     }
     [SerializationConstructor] private StartConstructionProcedure(Construction construction, 

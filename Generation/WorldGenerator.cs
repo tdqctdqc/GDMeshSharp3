@@ -85,11 +85,11 @@ public class WorldGenerator
         RunGenerator(new RegimeGenerator());
         RunGenerator(new LocationGenerator());
         RunGenerator(new RoadGenerator());
-        RunGenerator(new BuildingGenerator());
         RunGenerator(new PeepGenerator());
         
         _totalTime.Stop();
-        
+        Game.I.Logger.Log("Total gen time: " + _totalTime.Elapsed.TotalMilliseconds,
+            LogType.Generation);
     }
 
     private void RunGenerator(Generator gen)

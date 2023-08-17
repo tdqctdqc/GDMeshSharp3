@@ -40,4 +40,9 @@ public class PlanetDomain : Domain
         if (off2.Length() < off1.Length() && off2.Length() < off3.Length()) return off2;
         return off3;
     }
+
+    public static Vector2 ClampPosition(Vector2 pos, Data data)
+    {
+        return GetOffsetTo(Vector2.Zero, pos, data);
+    }
 }

@@ -11,13 +11,13 @@ public abstract class BuildingModel : IModel
     public int NumTicksToBuild { get; private set; }
     public int ConstructionCapPerTick { get; private set; }
     public BuildingType BuildingType { get; private set; }
-    public List<BuildingComponent> Components { get; private set; }
+    public List<BuildingModelComponent> Components { get; private set; }
     public int Income { get; private set; }
     public Icon Icon { get; }
     public Dictionary<Item, int> BuildCosts { get; private set; }
 
     public BuildingModel(BuildingType buildingType, string name, int numTicksToBuild, int constructionCapPerTick,
-        int income, List<BuildingComponent> components, Dictionary<Item, int> buildCosts)
+        int income, List<BuildingModelComponent> components, Dictionary<Item, int> buildCosts)
     {
         BuildingType = buildingType;
         Name = name;
@@ -36,20 +36,20 @@ public abstract class BuildingModel : IModel
         return t.GetBuilding(data) == null && CanBuildInTriSpec(t, data);
     }
 
-    public T GetComponent<T>(Func<T, bool> good) where T : BuildingComponent
+    public T GetComponent<T>(Func<T, bool> good) where T : BuildingModelComponent
     {
         return (T) Components.FirstOrDefault(c => c is T t && good(t));
     }
-    public T GetComponent<T>() where T : BuildingComponent
+    public T GetComponent<T>() where T : BuildingModelComponent
     {
         return (T) Components.FirstOrDefault(c => c is T t);
     }
     
-    public bool HasComponent<T>(Func<T, bool> good) where T : BuildingComponent
+    public bool HasComponent<T>(Func<T, bool> good) where T : BuildingModelComponent
     {
         return Components.Any(c => c is T t && good(t));
     }
-    public bool HasComponent<T>() where T : BuildingComponent
+    public bool HasComponent<T>() where T : BuildingModelComponent
     {
         return Components.Any(c => c is T t);
     }

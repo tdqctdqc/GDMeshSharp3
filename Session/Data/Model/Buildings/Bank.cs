@@ -7,7 +7,7 @@ public class Bank : BuildingModel
     public Bank(Items items, PeepJobList jobs) 
         : base( BuildingType.Financial, nameof(Bank), 
             25, 200, 100,
-            new List<BuildingComponent>
+            new List<BuildingModelComponent>
             {
                 new Workplace(new Dictionary<PeepJob, int>
                     {

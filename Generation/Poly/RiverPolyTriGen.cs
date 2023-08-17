@@ -15,7 +15,7 @@ public class RiverPolyTriGen
         var lms = key.Data.Planet.PolygonAux.LandSea.Landmasses;
         var riverNexi = key.Data.GetAll<MapPolyNexus>()
             .Where(n => n.IncidentEdges.Items(key.Data).Any(e => e.IsRiver())).ToList();
-        Parallel.ForEach(lms, lm => PreprocessRiversForLandmass(rd, riverNexi, lm, key));
+        Parallel.ForEach(lms, lm => PreprocessRiversForLandmass(rd, riverNexi, lm.Polys, key));
         key.Data.Notices.SetPolyShapes?.Invoke();
         return rd;
     }

@@ -7,13 +7,15 @@ public class Construction
 {
     public ModelRef<BuildingModel> Model { get; private set; }
     public PolyTriPosition Pos { get; private set; }
+    public int Waypoint { get; private set; }
     public float TicksLeft { get; private set; }
 
-    public Construction(ModelRef<BuildingModel> model, PolyTriPosition pos, float ticksLeft)
+    public Construction(ModelRef<BuildingModel> model, PolyTriPosition pos, float ticksLeft, int waypoint)
     {
         Model = model;
         Pos = pos;
         TicksLeft = ticksLeft;
+        Waypoint = waypoint;
     }
 
     public bool ProgressConstruction(float laborRatio, ProcedureWriteKey key)

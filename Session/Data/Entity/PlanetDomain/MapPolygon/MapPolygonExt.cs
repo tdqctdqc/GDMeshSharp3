@@ -6,6 +6,10 @@ using Godot;
 
 public static class MapPolygonExt
 {
+    public static Waypoint GetCenterWaypoint(this MapPolygon poly, Data data)
+    {
+        return data.Planet.Nav.GetPolyCenterWaypoint(poly);
+    }
     public static bool PointInPolyAbs(this MapPolygon poly, Vector2 posAbs, Data data)
     {
         var posRel = poly.GetOffsetTo(posAbs, data);

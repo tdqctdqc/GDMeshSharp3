@@ -111,9 +111,9 @@ public class MoistureGenerator : Generator
         var roughnessMult = Data.GenMultiSettings.MoistureSettings.RiverFlowCostRoughnessMult.Value;
         Parallel.ForEach(Data.Planet.PolygonAux.LandSea.Landmasses, doLandmass);
         
-        void doLandmass(HashSet<MapPolygon> lm)
+        void doLandmass(Landmass lm)
         {
-            var edges = lm
+            var edges = lm.Polys
                 .SelectMany(p => p.Neighbors.Items(Data).Select(n => p.GetEdge(n, Data)))
                 .Distinct()
                 .Where(e => e.HighPoly.Entity(Data).IsLand && e.LowPoly.Entity(Data).IsLand);

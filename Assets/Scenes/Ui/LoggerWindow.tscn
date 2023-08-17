@@ -3,6 +3,7 @@
 [ext_resource type="Script" path="res://Assets/Scenes/Ui/LoggerWindow.cs" id="1"]
 
 [node name="LoggerWindow" type="Window"]
+position = Vector2i(0, 36)
 script = ExtResource("1")
 
 [node name="Container" type="TabContainer" parent="."]

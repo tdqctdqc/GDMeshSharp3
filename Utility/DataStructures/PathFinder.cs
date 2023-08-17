@@ -22,11 +22,11 @@ public static class PathFinder
     public static List<Waypoint> FindNavPath(MapPolygon s1, MapPolygon s2, Data data)
     {
         var nav = data.Planet.Nav;
-        var w1 = nav.GetPolyWaypoint(s1);
-        var w2 = nav.GetPolyWaypoint(s2);
+        var w1 = nav.GetPolyCenterWaypoint(s1);
+        var w2 = nav.GetPolyCenterWaypoint(s2);
         return PathFinder<Waypoint>.FindPath(w1, w2, 
             p => p.Neighbors.Select(nId => nav.Waypoints[nId]),
-            (w,p) => PlanetDomain.GetOffsetTo(w.Pos, p.Pos, data).Length(), 
+            (w,p) => EdgeCost(w, p, data), 
             (p1, p2) => PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length());
     }
     private static float TravelEdgeCost(MapPolygon p1, MapPolygon p2, Data data)
@@ -48,8 +48,17 @@ public static class PathFinder
     {
         if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;
         if (international == false && p1.Regime.RefId != p2.Regime.RefId) return Mathf.Inf;
-        var dist = p1.GetOffsetTo(p2, data).Length();
-        return dist * (p1.Roughness + p2.Roughness) / 2f;
+
+        var path = data.Planet.Nav.GetPolyPath(p1, p2);
+        var cost = 0f;
+        for (int i = 0; i < path.Count() - 1; i++)
+        {
+            var from = path.ElementAt(i);
+            var to = path.ElementAt(i + 1);
+            cost += EdgeCost(from, to, data);
+        }
+        
+        return cost;
     }
     private static float BuildRoadEdgeCost(Waypoint p1, Waypoint p2, Data data)
     {
@@ -61,8 +70,16 @@ public static class PathFinder
     
     private static float EdgeCost(Waypoint p1, Waypoint p2, Data data)
     {
-        var dist = PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length();
-        return dist;
+        var cost = PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length();
+        if (p1.WaypointData.Value() is LandNav n1)
+        {
+            cost *= 1f + n1.Roughness;
+        }
+        if (p2.WaypointData.Value() is LandNav n2)
+        {
+            cost *= 1f + n2.Roughness;
+        }
+        return cost;
     }
 }
 public static class PathFinder<T>

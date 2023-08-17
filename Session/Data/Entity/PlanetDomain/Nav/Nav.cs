@@ -29,7 +29,7 @@ public class Nav : Entity
         PolyCenterIds.Add(poly.Id, p.Id);
     }
 
-    public Waypoint GetPolyWaypoint(MapPolygon poly)
+    public Waypoint GetPolyCenterWaypoint(MapPolygon poly)
     {
         return Waypoints[PolyCenterIds[poly.Id]];
     }
@@ -44,5 +44,31 @@ public class Nav : Entity
         var p = PolyNavPaths[k].Select(i => Waypoints[i]);
         if (hi == p2.Id) return p.Reverse();
         return p;
+    }
+
+    public IEnumerable<Waypoint> GetPolyAssocWaypoints(MapPolygon poly, Data data)
+    {
+        var center = GetPolyCenterWaypoint(poly);
+        var assoc = new HashSet<Waypoint>{center};
+        var frontier = new Queue<Waypoint>();
+        frontier.Enqueue(center);
+        while (frontier.Count() > 0)
+        {
+            var current = frontier.Dequeue();
+            if (current.AssociatedWithPoly(poly))
+            {
+                foreach (var n in current.Neighbors)
+                {
+                    var nWp = data.Planet.Nav.Waypoints[n];
+                    if (assoc.Contains(nWp) == false && nWp.AssociatedWithPoly(poly))
+                    {
+                        frontier.Enqueue(nWp);
+                        assoc.Add(nWp);
+                    }
+                }
+            }
+        }
+
+        return assoc;
     }
 }

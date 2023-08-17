@@ -25,7 +25,7 @@ public class ConstructBuildingsModule : LogicModule
             clear.Positions.Add(c.Pos);
             Func<HostWriteKey, Entity> create = k =>
             {
-                return MapBuilding.Create(c.Pos, c.Model.Model(k.Data), k);
+                return MapBuilding.Create(c.Pos, c.Waypoint, c.Model.Model(k.Data), k);
             };
             res.CreateEntities.Add(create);
         }
@@ -45,10 +45,11 @@ public class ConstructBuildingsModule : LogicModule
                 if (slots.Count() == 0) continue;
                 var pos = slots.First();
                 newConstructionPoses.Add(pos);
-            
+                
                 var proc = StartConstructionProcedure.Construct(
                     building.MakeRef<BuildingModel>(),
                     pos,
+                    poly.GetCenterWaypoint(data).Id,
                     order.Regime,
                     data
                 );

@@ -66,12 +66,14 @@ public partial class GeneratorUi : Node, IClientComponent
     public void GoToGameSession()
     {
     }
-    private async void PressedGenerate()
+    private void PressedGenerate()
     {
         if (_logic.Generating) return;
+        _logic.TryGenerate();
         try
         {
-            await Task.Run(_logic.TryGenerate); 
+            // await Task.Run(_logic.TryGenerate);
+            
         }
         catch (Exception e)
         {
@@ -88,9 +90,7 @@ public partial class GeneratorUi : Node, IClientComponent
                 }
                 else
                 {
-                    GD.Print(e.Message);
-                    GD.Print(e.StackTrace);
-                    throw e;
+                    throw;
                 }
             }
         }

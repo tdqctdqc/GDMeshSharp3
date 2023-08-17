@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Workplace : BuildingComponent
+public class Workplace : BuildingModelComponent
 {
     public Dictionary<PeepJob, int> JobLaborReqs { get; private set; }
 

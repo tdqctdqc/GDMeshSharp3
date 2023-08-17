@@ -41,7 +41,8 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
     private void AddWaypointMarkers(Nav nav, MeshBuilder mb, MapChunk chunk, Data d)
     {
         foreach (var kvp in nav.Waypoints
-                     .Where(kvp2 => chunk.Coords == kvp2.Value.ChunkCoords))
+                     .Where(kvp2 => 
+                         chunk.Polys.Contains(d.Get<MapPolygon>(kvp2.Value.AssociatedPolyIds.X))))
         {
             var point = kvp.Value;
             var offset = chunk.RelTo.GetOffsetTo(point.Pos, d);
@@ -68,9 +69,10 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
             {
                 color = Colors.DarkBlue;
             }
-            else if (point.WaypointData.Value() is InlandNav)
+            else if (point.WaypointData.Value() is InlandNav n)
             {
-                color = Colors.Red;
+                var roughness = n.Roughness;
+                color = Colors.Red.Darkened(roughness);
             }
             else if (point.WaypointData.Value() is CoastNav)
             {
