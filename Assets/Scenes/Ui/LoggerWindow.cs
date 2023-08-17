@@ -27,7 +27,7 @@ public partial class LoggerWindow : ClosableWindow
     public override void _Ready()
     {
         _container = (Container) FindChild("Container");
-        // _container.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        _container.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
     }
 
     public override void _Process(double delta)
@@ -78,7 +78,6 @@ public partial class LoggerWindow : ClosableWindow
         scroll.Name = name;
 
         var vbox = new VBoxContainer();
-        // vbox.SetAnchorsPreset(Control.LayoutPreset.TopWide);
         _innerContainers.Add(lt, vbox);
         _num.Add(lt, msgs.Count);
         scroll.AddChild(vbox);

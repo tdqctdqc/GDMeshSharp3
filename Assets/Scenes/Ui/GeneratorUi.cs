@@ -100,7 +100,6 @@ public partial class GeneratorUi : Node, IClientComponent
     private void DisplayException(DisplayableException d)
     {
         var display = new Node2D();
-        AddChild(display);
         GD.Print(d.StackTrace);
                 
         var graphic = d.GetGraphic();

@@ -9,7 +9,8 @@ public partial class PolyHighlighter : Node2D
 
     public PolyHighlighter(Data data)
     {
-        Game.I.Client.UiRequests.MouseOver.SubscribeForNode(pos => Draw(data, pos), this);
+        Game.I.Client.UiRequests.MouseOver
+            .SubscribeForNode(pos => Draw(data, pos), this);
         _mis = new List<MeshInstance2D>();
     }
     private PolyHighlighter()
@@ -46,10 +47,26 @@ public partial class PolyHighlighter : Node2D
     private void DrawSimple(Data data, MapPolygon poly, PolyTri pt, MeshBuilder mb)
     {
         DrawBordersSimple(poly, mb, data);
-
         // DrawnNeighborBordersSimple(poly, mb, data);
     }
 
+    private void DrawNavPathsToNeighbors(MapPolygon poly, MeshBuilder mb, Data data)
+    {
+        var nav = data.Planet.Nav;
+        var polyWp = nav.GetPolyWaypoint(poly);
+        foreach (var nPoly in poly.Neighbors.Items(data))
+        {
+            var nPolyWp = nav.GetPolyWaypoint(nPoly);
+            var path = PathFinder.FindNavPath(poly, nPoly, data);
+            for (var i = 0; i < path.Count - 1; i++)
+            {
+                var from = path[i];
+                var to = path[i + 1];
+                mb.AddLine(poly.GetOffsetTo(from.Pos, data), poly.GetOffsetTo(to.Pos, data), 
+                    Colors.Red, 10f);
+            }
+        }
+    }
     private static void DrawComplex(Data data, PolyTriPosition pos, MapPolygon poly, PolyTri pt, MeshBuilder mb)
     {
         DrawBoundarySegments(poly, mb, data);

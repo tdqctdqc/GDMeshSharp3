@@ -42,9 +42,12 @@ public class WorldGenLogic : ILogic
         }
         catch (Exception e)
         {
-            GD.Print();
-            GD.Print("RETRYING GEN");
-            RetryGen();
+            if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
+            {
+                GD.Print("RETRYING GEN");
+                RetryGen();
+            }
+            else throw e;
         }
         Generating = false;
     }

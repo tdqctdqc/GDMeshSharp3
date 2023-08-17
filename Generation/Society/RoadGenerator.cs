@@ -18,7 +18,6 @@ public class RoadGenerator : Generator
         var genReport = new GenReport(nameof(RoadGenerator));
         
         genReport.StartSection();
-        BuildPolyNavPaths();
         
         var allSegs = new ConcurrentBag<IDictionary<Vector2, RoadModel>>();
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
@@ -40,45 +39,7 @@ public class RoadGenerator : Generator
         return genReport;
     }
 
-    private void BuildPolyNavPaths()
-    {
-        var nav = _key.Data.Planet.Nav;
-        foreach (var mapPolygon in _key.Data.GetAll<MapPolygon>())
-        {
-            var ns = mapPolygon.Neighbors.Items(_key.Data)
-                .Where(n => n.Id < mapPolygon.Id);
-            foreach (var n in ns)
-            {
-                var path = PathFinder.FindDefaultNavPath(mapPolygon, n, _key.GenData);
-                if (path != null )
-                {
-                    if (path.Count != 1)
-                    {
-                        nav.PolyNavPaths.Add(new Vector2(mapPolygon.Id, n.Id), path.Select(w => w.Id).ToList());
-                    }
-                    else if (path.Count == 1)
-                    {
-                        // GD.Print(
-                            
-                            // nav.GetPolyWaypoint(mapPolygon).Id == path[0].Id
-                            // || 
-                            // nav.GetPolyWaypoint(n) == path[0]
-                            // && nav.GetPolyWaypoint(mapPolygon).Neighbors.Contains(path[0].Id)
-                                 // );
-                        //
-                        // GD.Print(PlanetDomain.GetOffsetTo(nav.GetPolyWaypoint(mapPolygon).Pos, 
-                        //     path[0].Pos, _data).Length());
-                        // GD.Print(PlanetDomain.GetOffsetTo(nav.GetPolyWaypoint(n).Pos, 
-                        //     path[0].Pos, _data).Length());
-                        // var path2 = new List<int>
-                        //     {nav.GetPolyWaypoint(mapPolygon).Id, path[0].Id, nav.GetPolyWaypoint(n).Id};
-                        // nav.PolyNavPaths.Add(new Vector2(mapPolygon.Id, n.Id), path2);
-
-                    }
-                }
-            }
-        }
-    }
+    
     private IDictionary<Vector2, RoadModel> GenerateForLandmass(HashSet<MapPolygon> lm)
     {
         var settlementPolys = lm.Where(p => p.HasSettlement(_data));

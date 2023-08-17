@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract class WaypointType
+public class WaypointData
 {
     
 }

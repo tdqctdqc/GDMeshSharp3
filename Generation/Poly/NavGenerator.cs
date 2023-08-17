@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PolyNavGenerator : Generator
+public class NavGenerator : Generator
 {
     private GenWriteKey _key;
     private IdDispenser _id;
@@ -11,10 +11,11 @@ public class PolyNavGenerator : Generator
     private Dictionary<MapPolygonEdge, Waypoint> _edgePoints;
     private Dictionary<MapPolyNexus, Waypoint> _nexusPoints;
     private Dictionary<Vector2, Waypoint> _interiorPoints;
+    private float _nonRiverEdgeSplitLength = 50f;
     public override GenReport Generate(GenWriteKey key)
     {
         _key = key;
-        var report = new GenReport(nameof(PolyNavGenerator));
+        var report = new GenReport(nameof(NavGenerator));
         _id = new IdDispenser();
         var nav = Nav.Create(key);
 
@@ -32,7 +33,8 @@ public class PolyNavGenerator : Generator
         {
             nav.Waypoints.Add(point.Id, point);
         }
-        
+        // MergePoints(key.Data);
+        MakePolyPaths();
         return report;
     }
     private void MakeCenterNavPoints(Data data)
@@ -65,9 +67,15 @@ public class PolyNavGenerator : Generator
             if(nexus.IncidentEdges.Items(data)
                .Any(e => point.Pos == e.HighPoly.Entity(data).Center || point.Pos == e.LowPoly.Entity(data).Center))
             {
+                throw new Exception();
                 GD.Print("in nexus");
             }
-            if (nexus.IncidentPolys.Items(data).Any(p => p.IsWater()))
+            
+            if (nexus.IsRiverNexus(data))
+            {
+                point.SetType(new RiverNav(), _key);
+            }
+            else if (nexus.IncidentPolys.Items(data).Any(p => p.IsWater()))
             {
                 if (nexus.IncidentPolys.Items(data).Any(p => p.IsLand))
                 {
@@ -78,10 +86,6 @@ public class PolyNavGenerator : Generator
                     point.SetType(new SeaNav(), _key);
                 }
             }
-            else if (nexus.IsRiverNexus(data))
-            {
-                point.SetType(new RiverNav(), _key);
-            }
             else
             {
                 point.SetType(new InlandNav(), _key);
@@ -90,31 +94,43 @@ public class PolyNavGenerator : Generator
         }
     }
 
+    private bool ShouldMakeEdgePoint(MapPolygonEdge edge, Data data)
+    {
+        var segs = edge.HighSegsRel(data).Segments;
+        if(segs.Sum(ls => ls.Length()) >= _nonRiverEdgeSplitLength)        return true;
+        if (edge.IsRiver()) return false;
+
+        if (edge.HiNexus.Entity(data).IsRiverNexus(data) 
+            && edge.HiNexus.Entity(data).IsRiverNexus(data)) 
+            return true;
+        return false;
+    }
     private void MakeEdgePoints(Data data)
     {
         _edgePoints = new Dictionary<MapPolygonEdge, Waypoint>();
         foreach (var edge in data.GetAll<MapPolygonEdge>())
         {
             var segs = edge.HighSegsRel(data).Segments;
-            if (segs.Sum(ls => ls.Length()) < 100f) continue;
+            
+            if (ShouldMakeEdgePoint(edge, data) == false) continue;
+            
             var pos = segs.GetPointAlong(.5f) + edge.HighPoly.Entity(data).Center;
-            if (pos == edge.HighPoly.Entity(data).Center || pos == edge.LowPoly.Entity(data).Center)
-            {
-                GD.Print("in edge");
-            }
+            
             var point = Waypoint.Construct(_key, _id.GetID(), 
                 edge.HighPoly.Entity(data),
                 pos);
+            var hiWater = edge.HighPoly.Entity(data).IsWater();
+            var loWater = edge.LowPoly.Entity(data).IsWater();
             
-            if (edge.HighPoly.Entity(data).IsWater())
+            if (hiWater || loWater)
             {
-                if (edge.LowPoly.Entity(data).IsLand)
+                if (hiWater && loWater)
                 {
-                    point.SetType(new CoastNav(), _key);
+                    point.SetType(new SeaNav(), _key);
                 }
                 else
                 {
-                    point.SetType(new SeaNav(), _key);
+                    point.SetType(new CoastNav(), _key);
                 }
             }
             else if (edge.IsRiver())
@@ -149,19 +165,11 @@ public class PolyNavGenerator : Generator
                     GetInteriorPos(mapPolygon, hi));
                 pHi.SetType(land ? new InlandNav() : new SeaNav(), _key);
                 _interiorPoints.TryAdd(new Vector2(center.Id, hi.Id), pHi);
-                if (pHi.Pos == edge.HighPoly.Entity(data).Center || pHi.Pos == edge.LowPoly.Entity(data).Center)
-                {
-                    GD.Print("interior hi");
-                }
                 
                 var lo = _nexusPoints[edge.LoNexus.Entity(data)];
                 var pLo = Waypoint.Construct(_key, _id.GetID(), mapPolygon, 
                     GetInteriorPos(mapPolygon, lo));
                 pLo.SetType(land ? new InlandNav() : new SeaNav(), _key);
-                if (pLo.Pos == edge.HighPoly.Entity(data).Center || pLo.Pos == edge.LowPoly.Entity(data).Center)
-                {
-                    GD.Print("interior lo");
-                }
                 
                 _interiorPoints.TryAdd(new Vector2(center.Id, lo.Id), pLo);
                 
@@ -172,10 +180,6 @@ public class PolyNavGenerator : Generator
                         GetInteriorPos(mapPolygon, edgePoint));
                     pEdge.SetType(land ? new InlandNav() : new SeaNav(), _key);
                     _interiorPoints.Add(new Vector2(center.Id, edgePoint.Id), pEdge);
-                    if (pEdge.Pos == edge.HighPoly.Entity(data).Center || pEdge.Pos == edge.LowPoly.Entity(data).Center)
-                    {
-                        GD.Print("interior");
-                    }
                 }
             }
         }
@@ -242,20 +246,139 @@ public class PolyNavGenerator : Generator
 
     private void MergePoints(Data data)
     {
-        var centerPoints = _centerPoints.Values.ToHashSet();
-        var nexusPoints = _nexusPoints.Values.ToHashSet();
-        var edgePoints = _edgePoints.Values.ToHashSet();
-        var interiorPoints = _interiorPoints.Values.ToHashSet();
-        var points = data.Planet.Nav.Waypoints.Values.ToList();
-        void mergePoints(Waypoint mergePoint, params Waypoint[] toMerge)
+        var removed = new HashSet<int>();
+        MergeOcean(removed, data);
+        MergeClose(removed, data);
+        foreach (var i in removed)
         {
-            
+            data.Planet.Nav.Waypoints.Remove(i);
         }
     }
 
-    private void MergeOceanPoints(MapPolygon poly)
+    private IEnumerable<Waypoint> GetInteriors(MapPolygon poly, Data data)
     {
+        var center = _centerPoints[poly];
+        var nexusInteriorWps = poly.GetNexi(data)
+            .Select(n => _interiorPoints[new Vector2(center.Id, _nexusPoints[n].Id)]);
+        var edgeInteriorWps = poly.GetEdges(data)
+            .Where(e => _edgePoints.ContainsKey(e))
+            .Select(e => _interiorPoints[new Vector2(center.Id, _edgePoints[e].Id)]);
+        return nexusInteriorWps.Union(edgeInteriorWps);
+    }
+    private void MergeOcean(HashSet<int> removed, Data data)
+    {
+        foreach (var poly in data.GetAll<MapPolygon>())
+        {
+            if (poly.IsLand) continue;
+            var center = _centerPoints[poly];
+            var interiors = GetInteriors(poly, data);
+            foreach (var interior in interiors)
+            {
+                MergePoint(center, interior, removed);
+            }
+        }
         
+        foreach (var edge in data.GetAll<MapPolygonEdge>())
+        {
+            if (_edgePoints.ContainsKey(edge) == false) continue;
+            var edgeWp = _edgePoints[edge];
+            if (edgeWp.WaypointData.Value() is SeaNav == false) continue;
+            var hi = _centerPoints[edge.HighPoly.Entity(data)];
+            MergePoint(hi, edgeWp, removed);
+        }
+        
+        foreach (var nexus in data.GetAll<MapPolyNexus>())
+        {
+            var nexusWp = _nexusPoints[nexus];
+            if (nexusWp.WaypointData.Value() is SeaNav == false) continue;
+            var hi = nexus.IncidentPolys.Items(data)
+                .OrderByDescending(i => i.Id).First();
+            var hiWp = _centerPoints[hi];
+            MergePoint(hiWp, nexusWp, removed);
+        }
     }
 
+    private void MergeClose(HashSet<int> removed, Data data)
+    {
+        foreach (var poly in data.GetAll<MapPolygon>())
+        {
+            if (poly.IsWater()) continue;
+            var center = _centerPoints[poly];
+            var edges = poly.GetEdges(data);
+            foreach (var edge in edges)
+            {
+                if (edge.GetLength(data) > _nonRiverEdgeSplitLength) continue;
+                var hiNexWp = _nexusPoints[edge.HiNexus.Entity(data)];
+                var loNexWp = _nexusPoints[edge.LoNexus.Entity(data)];
+                
+                if (hiNexWp.WaypointData.Value().GetType() != loNexWp.WaypointData.Value().GetType())
+                {
+                    continue;
+                }
+                var hiInterior = _interiorPoints[new Vector2(center.Id, hiNexWp.Id)];
+                var loInterior = _interiorPoints[new Vector2(center.Id, loNexWp.Id)];
+                
+                // if (removed.Contains(hiNexWp.Id) || removed.Contains(loNexWp.Id)) continue;
+
+                if (_edgePoints.ContainsKey(edge))
+                {
+                    var edgeWp = _edgePoints[edge];
+                    var edgeInterior = _interiorPoints[new Vector2(center.Id, edgeWp.Id)];
+                    MergePoint(edgeInterior, loInterior, removed);
+                    MergePoint(edgeInterior, hiInterior, removed);
+                }
+                else
+                {
+                    MergePoint(hiInterior, loInterior, removed);
+                
+                    if (edge.HighPoly.RefId == poly.Id)
+                    {
+                        MergePoint(hiNexWp, loNexWp, removed);
+                    } 
+                }
+            }
+        }
+    }
+    
+    private void MergePoint(Waypoint mergingPoint, Waypoint toMerge, HashSet<int> removed)
+    {
+        foreach (var n in toMerge.Neighbors)
+        {
+            var nWaypoint = _key.Data.Planet.Nav.Waypoints[n];
+            nWaypoint.Neighbors.Remove(toMerge.Id);
+            mergingPoint.Neighbors.Add(n);
+            nWaypoint.Neighbors.Add(mergingPoint.Id);
+        }
+        toMerge.Neighbors.Clear();
+        removed.Add(toMerge.Id);
+    }
+
+    private void MakePolyPaths()
+    {
+        var nav = _key.Data.Planet.Nav;
+        foreach (var edge in _key.Data.GetAll<MapPolygonEdge>())
+        {
+            var hi = edge.HighPoly.Entity(_key.Data);
+            var lo = edge.LowPoly.Entity(_key.Data);
+            var path = PathFinder.FindNavPath(hi, lo, _key.Data);
+            if (path != null)
+            {
+                if (path.Count > 1)
+                {
+                    // GD.Print("found");
+                    nav.PolyNavPaths.Add(new Vector2(hi.Id, lo.Id), 
+                        path.Select(w => w.Id).ToList());
+                }
+                else if (path.Count == 1)
+                {
+                    // GD.Print("1 path leads to neighbor poly wp " + (path.First() == nav.GetPolyWaypoint(nPoly)));
+                    // GD.Print("nWp is neighbor to poly wp " + nav.GetPolyWaypoint(poly).Neighbors.Contains(nav.GetPolyWaypoint(nPoly).Id));
+                }
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
+    }
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-public partial class EntityOverviewWindow : Window
+public partial class EntityOverviewWindow : ClosableWindow
 {
     public static EntityOverviewWindow Get(Data data)
     {
