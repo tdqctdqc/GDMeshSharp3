@@ -8,6 +8,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
     public BuildingIcons BuildingIcons { get; private set; }
     public SettlementIcons SettlementIcons { get; private set; }
     public ConstructionIcons ConstructionIcons { get; private set; }
+    public InfrastructureIcons InfrastructureIcons { get; private set; }
     public IconsChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(IconsChunkModule))
     {
         ConstructionIcons = new ConstructionIcons(chunk, data);
@@ -18,6 +19,9 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         
         BuildingIcons = new BuildingIcons(chunk, data);
         AddNode(BuildingIcons);
+
+        InfrastructureIcons = new InfrastructureIcons(chunk, data);
+        AddNode(InfrastructureIcons);
     }
     
     public static ChunkGraphicLayer<IconsChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)

@@ -10,12 +10,14 @@ public partial class TabWindow : ClosableWindow
     public TabWindow()
     {
         _container = new TabContainer();
+        _container.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
+        _container.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         AddChild(_container);
     }
 
     protected void AddTab(Control tab)
     {
-        tab.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        tab.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         _container.AddChild(tab);
     }
 

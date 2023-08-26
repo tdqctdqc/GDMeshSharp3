@@ -38,9 +38,9 @@ public partial class RegimeAiOverviewWindow : TabWindow
     {
         var c = new ScrollContainer();
         var vbox = new VBoxContainer();
-        c.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        c.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         c.AddChild(vbox);
-        vbox.SetAnchorsPreset(Control.LayoutPreset.FullRect);
+        vbox.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         
         vbox.CreateLabelAsChild("WISHLIST");
         var income = r.Flows[data.Models.Flows.Income].Net();

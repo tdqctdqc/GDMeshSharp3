@@ -41,7 +41,8 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
                 _submitTurn.Text = "Submit Turn";
                 _submitTurn.Disabled = false;
             }, this);
-
+        
+        
         
         AddChild(new ItemBar(data));
     }

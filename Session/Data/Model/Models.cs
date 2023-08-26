@@ -23,6 +23,7 @@ public class Models
     public CultureManager Cultures { get; private set; }
     public RegimeTemplateManager RegimeTemplates { get; private set; }
     public FoodProdTechniqueList FoodProdTechniques { get; private set; }
+    public InfraList Infras { get; private set; }
     public FlowList Flows { get; private set; }
     public Models(Data data)
     {
@@ -63,7 +64,8 @@ public class Models
         FoodProdTechniques = new FoodProdTechniqueList(PeepJobs);
         AddManager(FoodProdTechniques);
 
-        
+        Infras = new InfraList(PeepJobs, Items);
+        AddManager(Infras);
 
         SetIds();
     }

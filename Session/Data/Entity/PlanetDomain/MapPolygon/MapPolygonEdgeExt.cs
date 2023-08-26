@@ -5,6 +5,12 @@ using Godot;
 
 public static class MapPolygonEdgeExt
 {
+    public static Vector2 Position(this MapPolygonEdge edge, Data d)
+    {
+        var p1 = edge.HighPoly.Entity(d);
+        var p2 = edge.LowPoly.Entity(d);
+        return d.Planet.ClampPosition(p1.Center + p1.GetOffsetTo(p2, d));
+    }
     public static List<LineSegment> GetSegsAbs(this MapPolygonEdge b, Data data)
     {
         return b.HighSegsRel(data).Segments

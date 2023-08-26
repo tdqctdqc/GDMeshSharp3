@@ -30,9 +30,9 @@ public class PlanetDomain : Domain
         ResourceDepositAux = new ResourceDepositAux(Data);
     }
     
-    public static Vector2 GetOffsetTo(Vector2 p1, Vector2 p2, Data data)
+    public Vector2 GetOffsetTo(Vector2 p1, Vector2 p2)
     {
-        var w = data.Planet.Width;
+        var w = Data.Planet.Width;
         var off1 = p2 - p1;
         var off2 = (off1 + Vector2.Right * w);
         var off3 = (off1 + Vector2.Left * w);
@@ -41,8 +41,8 @@ public class PlanetDomain : Domain
         return off3;
     }
 
-    public static Vector2 ClampPosition(Vector2 pos, Data data)
+    public Vector2 ClampPosition(Vector2 pos)
     {
-        return GetOffsetTo(Vector2.Zero, pos, data);
+        return GetOffsetTo(Vector2.Zero, pos);
     }
 }

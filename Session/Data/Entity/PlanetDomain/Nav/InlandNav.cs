@@ -7,7 +7,7 @@ public class InlandNav : LandNav
 {
     public static InlandNav Construct(params MapPolygon[] polys)
     {
-        return null;
+        return new InlandNav();
     }
 
     public InlandNav() : base(0f)

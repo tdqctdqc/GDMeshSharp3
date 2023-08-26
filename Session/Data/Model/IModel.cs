@@ -6,7 +6,6 @@ using Godot;
 public interface IModel : IIdentifiable
 {
     string Name { get; }
-    int Id { get; }
 }
 
 public static class IModelExt

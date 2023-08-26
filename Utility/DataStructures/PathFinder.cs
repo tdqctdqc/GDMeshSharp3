@@ -8,15 +8,12 @@ using Priority_Queue;
 
 public static class PathFinder
 {
-    public static List<MapPolygon> FindRoadBuildPath(MapPolygon s1, MapPolygon s2, RoadModel road, Data data,
-        bool international, Func<MapPolygon, MapPolygon, float> buildRoadEdgeCost = null)
+    public static List<MapPolygon> FindRoadBuildPath(MapPolygon s1, MapPolygon s2, Data data,
+        bool international)
     {
-        if (buildRoadEdgeCost == null)
-        {
-            buildRoadEdgeCost = (p, q) => BuildRoadEdgeCost(p, q, road, data, international);
-        }
-        return PathFinder<MapPolygon>.FindPath(s1, s2, p => p.Neighbors.Items(data),
-            buildRoadEdgeCost, 
+        return PathFinder<MapPolygon>.FindPath(s1, s2, 
+            p => p.Neighbors.Items(data).Where(n => n.IsLand),
+            (p, q) => BuildRoadEdgeCost(p, q, data, international), 
             (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
     public static List<Waypoint> FindNavPath(MapPolygon s1, MapPolygon s2, Data data)
@@ -24,27 +21,37 @@ public static class PathFinder
         var nav = data.Planet.Nav;
         var w1 = nav.GetPolyCenterWaypoint(s1);
         var w2 = nav.GetPolyCenterWaypoint(s2);
+
+        if (s1.IsLand && s2.IsLand)
+        {
+            var path = PathFinder<Waypoint>.FindPath(w1, w2, 
+                p => p.Neighbors
+                    .Select(nId => nav.Waypoints[nId])
+                    .Where(n => n.WaypointData.Value() is SeaNav == false),
+                (w,p) => EdgeRoughnessCost(w, p, data), 
+                (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
+            if (path == null)
+            {
+                GD.Print("bad land path " + s1.Id + " " + s2.Id);
+                foreach (var wp in s1.GetAssocWaypoints(data))
+                {
+                    foreach (var nWp in wp.Neighbors.Select(n => nav.Waypoints[n]))
+                    {
+                        if (nWp.Neighbors.Contains(wp.Id) == false) 
+                            throw new Exception("unsymmetrical waypoint");
+                    }
+                }
+            }
+            else return path;
+        }
         return PathFinder<Waypoint>.FindPath(w1, w2, 
-            p => p.Neighbors.Select(nId => nav.Waypoints[nId]),
-            (w,p) => EdgeCost(w, p, data), 
-            (p1, p2) => PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length());
-    }
-    private static float TravelEdgeCost(MapPolygon p1, MapPolygon p2, Data data)
-    {
-        var e = p1.GetEdge(p2, data);
-        if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;
-        var dist = p1.GetOffsetTo(p2, data).Length();
-        if (data.Infrastructure.RoadAux.ByEdgeId[e.Id] is RoadSegment r)
-        {
-            return dist / r.Road.Model(data).Speed;
-        }
-        else
-        {
-            return dist * (p1.Roughness + p2.Roughness);
-        }
+            p => p.Neighbors
+                .Select(nId => nav.Waypoints[nId]),
+            (w,p) => EdgeRoughnessCost(w, p, data), 
+            (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
     }
     
-    private static float BuildRoadEdgeCost(MapPolygon p1, MapPolygon p2, RoadModel road, Data data, bool international = true)
+    public static float BuildRoadEdgeCost(MapPolygon p1, MapPolygon p2, Data data, bool international = true)
     {
         if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;
         if (international == false && p1.Regime.RefId != p2.Regime.RefId) return Mathf.Inf;
@@ -55,31 +62,51 @@ public static class PathFinder
         {
             var from = path.ElementAt(i);
             var to = path.ElementAt(i + 1);
-            cost += EdgeCost(from, to, data);
+            cost += EdgeRoughnessCost(from, to, data);
         }
         
         return cost;
     }
-    private static float BuildRoadEdgeCost(Waypoint p1, Waypoint p2, Data data)
-    {
-        var n1 = (LandNav) p1.WaypointData.Value();
-        var n2 = (LandNav) p2.WaypointData.Value();
-        var dist =  PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length();
-        return dist * (n1.Roughness + n2.Roughness) / 2f;
-    }
     
-    private static float EdgeCost(Waypoint p1, Waypoint p2, Data data)
+    
+    public static float LandEdgeCost(Waypoint p1, Waypoint p2, Data data)
     {
-        var cost = PlanetDomain.GetOffsetTo(p1.Pos, p2.Pos, data).Length();
-        if (p1.WaypointData.Value() is LandNav n1)
+        var d1 = p1.WaypointData.Value();
+        var d2 = p2.WaypointData.Value();
+        
+        if (d1 is SeaNav) return Mathf.Inf;
+        if (d2 is SeaNav) return Mathf.Inf;
+        
+        
+        var cost = data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length();
+        if (d1 is LandNav n1)
         {
             cost *= 1f + n1.Roughness;
         }
-        if (p2.WaypointData.Value() is LandNav n2)
+        if (d2 is LandNav n2)
         {
             cost *= 1f + n2.Roughness;
         }
+        
         return cost;
+    }
+    public static float EdgeRoughnessCost(Waypoint p1, Waypoint p2, Data data)
+    {
+        var d1 = p1.WaypointData.Value();
+        var d2 = p2.WaypointData.Value();
+        
+        
+        var cost = data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length();
+        var roughCost = 0f;
+        if (d1 is LandNav n1)
+        {
+            roughCost += 1f + n1.Roughness;
+        }
+        if (d2 is LandNav n2)
+        {
+            roughCost += 1f + n2.Roughness;
+        }
+        return cost + roughCost * roughCost;
     }
 }
 public static class PathFinder<T>

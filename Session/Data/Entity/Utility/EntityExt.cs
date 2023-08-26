@@ -8,14 +8,4 @@ public static class EntityExt
     {
         return new EntityRef<T>(t);
     }
-    public static Vector2 GetV2EdgeKey(this IIdentifiable p, IIdentifiable n)
-    {
-        var hi = p.Id > n.Id
-            ? p.Id
-            : n.Id;
-        var lo = p.Id > n.Id
-            ? n.Id
-            : p.Id;
-        return new Vector2(hi, lo);
-    }
 }

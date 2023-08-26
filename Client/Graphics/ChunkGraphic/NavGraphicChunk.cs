@@ -52,7 +52,7 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
                 {
                     var n = d.Planet.Nav.Waypoints[nId];
                     var nOffset = chunk.RelTo.GetOffsetTo(n.Pos, d);
-                    mb.AddLine(offset, nOffset, Colors.White, .5f);
+                    mb.AddLine(offset, nOffset, Colors.Red, 2.5f);
                 }
                 catch
                 {

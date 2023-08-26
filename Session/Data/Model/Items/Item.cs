@@ -8,15 +8,15 @@ public abstract class Item : IModel
     public Color Color { get; private set; }
     public int Id { get; private set; }
     public Icon Icon { get; } 
-    public AttributeHolder<ItemAttribute> Attributes { get; private set; }
+    public TypeHolder<ItemAttribute> Types { get; private set; }
     
     protected Item(string name, Color color, 
         params ItemAttribute[] attributes)
     {
-        Attributes = new AttributeHolder<ItemAttribute>();
+        Types = new TypeHolder<ItemAttribute>();
         foreach (var attribute in attributes)
         {
-            Attributes.Add(attribute);
+            Types.Add(attribute);
         }
         Name = name;
         Color = color;

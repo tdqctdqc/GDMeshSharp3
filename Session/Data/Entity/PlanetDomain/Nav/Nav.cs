@@ -24,9 +24,9 @@ public class Nav : Entity
         PolyNavPaths = polyNavPaths;
     }
 
-    public void MakeCenterPoint(MapPolygon poly, Waypoint p, GenWriteKey key)
+    public void MakeCenterPoint(MapPolygon poly, Waypoint wp, GenWriteKey key)
     {
-        PolyCenterIds.Add(poly.Id, p.Id);
+        PolyCenterIds.Add(poly.Id, wp.Id);
     }
 
     public Waypoint GetPolyCenterWaypoint(MapPolygon poly)

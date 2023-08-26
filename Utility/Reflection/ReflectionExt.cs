@@ -96,32 +96,8 @@ public static class ReflectionExt
     {
         return c.GetCustomAttributesData().Any(d => d.AttributeType == typeof(TAttribute));
     }
-
-    public static T MakeStaticMethodDelegate<T>(this MethodInfo m) where T : Delegate
-    {
-        return (T)Delegate.CreateDelegate(typeof(T), m);
-    }
-
-    public static Delegate MakeStaticMethodDelegate(this MethodInfo m, Type delegateType)
-    {
-        return Delegate.CreateDelegate(delegateType, m);
-    }
-
-    public static Type MakeCustomDelegateType(Type baseType, Type[] argTypes)
-    {
-        return baseType.MakeGenericType(argTypes);
-    }
     public static T MakeInstanceMethodDelegate<T>(this MethodInfo m) where T : Delegate
     {
         return (T)Delegate.CreateDelegate(typeof(T), null, m);
-    }
-
-    public static Type GetMethodDelType(this MethodInfo mi)
-    {
-        return Delegate.CreateDelegate(null, mi).GetType();
-    }
-    public static Delegate MakeInstanceMethodDelegate(this MethodInfo m, Type delegateType)
-    {
-        return Delegate.CreateDelegate(delegateType, null, m);
     }
 }

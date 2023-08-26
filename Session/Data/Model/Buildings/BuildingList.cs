@@ -9,7 +9,6 @@ public class BuildingList : ModelList<BuildingModel>
     public Mine HeavyMetalMine { get; private set; } 
     public Factory Factory { get; private set; }
     public TownHall TownHall { get; private set; }
-    public Port Port { get; private set; }
     public BuildingList(Items items, FlowList flows, PeepJobList jobs)
     {
         IronMine = new Mine(nameof(IronMine), items.Iron, items, jobs);
@@ -17,6 +16,5 @@ public class BuildingList : ModelList<BuildingModel>
         HeavyMetalMine = new Mine(nameof(HeavyMetalMine), items.HeavyMetal, items, jobs);
         Factory = new Factory(items, flows, jobs);
         TownHall = new TownHall(items, jobs);
-        Port = new Port(jobs, items);
     }
 }

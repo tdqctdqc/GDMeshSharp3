@@ -10,10 +10,11 @@ public partial class PromptSidebar : ScrollContainer
     {
         CustomMinimumSize = new Vector2(100f, 500f);
         _vBox = new VBoxContainer();
-        _vBox.SetAnchorsPreset(LayoutPreset.FullRect);
+        _vBox.AnchorsPreset = (int)LayoutPreset.FullRect;
+        
         AddChild(_vBox);
         var p = new Panel();
-        p.SetAnchorsPreset(LayoutPreset.FullRect);
+        p.AnchorsPreset = (int)LayoutPreset.FullRect;
         AddChild(p);
     }
 

@@ -38,4 +38,19 @@ public static class ButtonExt
         settingsWindowBtn.Text = name;
         n.AddChild(settingsWindowBtn);
     }
+
+    public static void AddIntButton(this Node n, string name, Action<int> action)
+    {
+        var hbox = new HBoxContainer();
+        var spinbox = new SpinBox();
+        spinbox.Rounded = true;
+        spinbox.Step = 1;
+        spinbox.MinValue = 0;
+        spinbox.MaxValue = 1_000_000;
+        spinbox.UpdateOnTextChanged = true;
+        spinbox.FocusMode = Control.FocusModeEnum.None;
+        hbox.AddButton(name, () => action.Invoke((int)spinbox.Value));
+        hbox.AddChild(spinbox);
+        n.AddChild(hbox);
+    }
 }

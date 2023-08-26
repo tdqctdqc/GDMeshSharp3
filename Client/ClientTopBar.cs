@@ -15,6 +15,12 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
         this.AddButton("Test Serialization", () => session.Data.Serializer.Test(session.Data));
         this.AddButton("Save", () => Saver.Save(session.Data));
         this.AddButton("Load", () => Saver.Load());
+        this.AddIntButton("Jump to Poly", i =>
+        {
+            var poly = session.Data.Get<MapPolygon>(i);
+            if (poly == null) return;
+            client.Cam().JumpTo(poly.Center);
+        });
         var uiFrame = client.GetComponent<UiFrame>();
         uiFrame.AddTopBar(this);
     }

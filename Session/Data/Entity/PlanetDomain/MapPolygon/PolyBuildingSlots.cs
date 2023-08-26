@@ -28,6 +28,7 @@ public class PolyBuildingSlots
         var industrySlots = 5;
         var govSlots = 1;
         var extrSlots = 5;
+        var infraSlots = 5;
         var totalSlots = industrySlots + govSlots + extrSlots;
         
         AvailableSlots.Clear();

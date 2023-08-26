@@ -34,12 +34,6 @@ public abstract class Count<T>
         }
         Contents[t] -= amount;
     }
-
-    public void TransferFrom<R>(R t, float amount, Count<R> destination) where R : T
-    {
-        Remove(t, amount);
-        destination.Add(t, amount);
-    }
     
     public void Clear()
     {

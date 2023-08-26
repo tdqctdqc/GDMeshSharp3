@@ -10,6 +10,10 @@ public static class MapPolygonExt
     {
         return data.Planet.Nav.GetPolyCenterWaypoint(poly);
     }
+    public static IEnumerable<Waypoint> GetAssocWaypoints(this MapPolygon poly, Data data)
+    {
+        return data.Planet.Nav.GetPolyAssocWaypoints(poly, data);
+    }
     public static bool PointInPolyAbs(this MapPolygon poly, Vector2 posAbs, Data data)
     {
         var posRel = poly.GetOffsetTo(posAbs, data);

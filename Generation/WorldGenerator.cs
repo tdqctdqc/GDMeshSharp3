@@ -81,10 +81,10 @@ public class WorldGenerator
         
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyTriGenerator());
-        RunGenerator(new NavGenerator());
+        RunGenerator(new SimpleNavGenerator());
         RunGenerator(new RegimeGenerator());
         RunGenerator(new LocationGenerator());
-        RunGenerator(new RoadGenerator());
+        RunGenerator(new InfrastructureGenerator());
         RunGenerator(new PeepGenerator());
         
         _totalTime.Stop();

@@ -35,21 +35,20 @@ public class WorldGenLogic : ILogic
         var w = new WorldGenerator((GenData)_session.Data, _session,
             () => _justGenned = true);
         w.Generate();
-        
-        // try
-        // {       
-        //     GD.Print("TRYING GEN");
-        //     
-        // }
-        // catch (Exception e)
-        // {
-        //     if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
-        //     {
-        //         GD.Print("RETRYING GEN");
-        //         RetryGen();
-        //     }
-        //     else throw e;
-        // }
+
+        try
+        {       
+            GD.Print("TRYING GEN");
+        }
+        catch
+        {
+            if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
+            {
+                GD.Print("RETRYING GEN");
+                RetryGen();
+            }
+            else throw;
+        }
         
         Generating = false;
     }

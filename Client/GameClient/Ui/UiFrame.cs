@@ -14,23 +14,28 @@ public partial class UiFrame : VBoxContainer, IClientComponent
         
     }
 
+    public override void _Ready()
+    {
+        CustomMinimumSize = GetViewportRect().Size;
+    }
+
     public UiFrame(Client client)
     {
         MouseFilter = MouseFilterEnum.Ignore;
-        SetAnchorsPreset(LayoutPreset.FullRect);
+        AnchorsPreset = (int)LayoutPreset.FullRect;
+        
         TopBars = new VBoxContainer();
         AddChild(TopBars);
         var sidebars = new HBoxContainer();
         sidebars.MouseFilter = MouseFilterEnum.Ignore;
         AddChild(sidebars);
 
-        sidebars.SizeFlagsHorizontal = SizeFlags.ExpandFill;
         sidebars.SetAnchorsPreset(LayoutPreset.HcenterWide);
+        sidebars.AnchorsPreset = (int)(LayoutPreset.HcenterWide);
             
         LeftSidebar = new VBoxContainer();
         LeftSidebar.SetAnchorsPreset(LayoutPreset.LeftWide);
         sidebars.AddChild(LeftSidebar);
-
         var filler = new Control();
         filler.GrowHorizontal = GrowDirection.Both;
         filler.SizeFlagsHorizontal = SizeFlags.ExpandFill;
@@ -41,6 +46,7 @@ public partial class UiFrame : VBoxContainer, IClientComponent
         RightSidebar = new VBoxContainer();
         RightSidebar.SetAnchorsPreset(LayoutPreset.RightWide);
         sidebars.AddChild(RightSidebar);
+        
 
         client.UiLayer.AddChild(this);
     }

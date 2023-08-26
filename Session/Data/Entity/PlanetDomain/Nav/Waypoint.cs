@@ -46,4 +46,13 @@ public class Waypoint : IIdentifiable
                || AssociatedPolyIds.Z == poly.Id
                || AssociatedPolyIds.W == poly.Id;
     }
+
+    public int NumAssocPolys()
+    {
+        if (AssociatedPolyIds.X == -1) return 0;
+        if (AssociatedPolyIds.Y == -1) return 1;
+        if (AssociatedPolyIds.Z == -1) return 2;
+        if (AssociatedPolyIds.W == -1) return 3;
+        return 4;
+    }
 }

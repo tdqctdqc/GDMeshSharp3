@@ -77,7 +77,6 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             : polyR.Entity(d).Name);
         return NodeExt.CreateLabel(txt);
     }
-
     private static Control GetPeeps(PolyTriPosition t, Data d)
     {
         var peeps = t.Poly(d).GetPeep(d);

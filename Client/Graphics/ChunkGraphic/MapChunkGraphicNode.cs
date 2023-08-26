@@ -123,7 +123,10 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
     {
         node.Position = Chunk.RelTo.GetOffsetTo(poly, data);
     }
-    
+    protected void SetRelPos(Node2D node, Vector2 pos, Data data)
+    {
+        node.Position = Chunk.RelTo.GetOffsetTo(pos, data);
+    }
     protected abstract Node2D MakeGraphic(TKey element, Data data);
     protected abstract IEnumerable<TKey> GetKeys(Data data);
     protected abstract bool Ignore(TKey element, Data data);

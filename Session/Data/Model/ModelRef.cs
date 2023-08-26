@@ -7,7 +7,6 @@ using MessagePack;
 public class ModelRef<T> : IRef where T : class, IModel
 {
     public int ModelId { get; private set; }
-
     public ModelRef(T model, CreateWriteKey key)
     {
         ModelId = model.Id;

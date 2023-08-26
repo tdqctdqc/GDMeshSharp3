@@ -1,62 +1,47 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class RoadChunkGraphicNode : MapChunkGraphicNode<int>
+public partial class RoadChunkGraphicNode : MapChunkGraphicModule
 {
-    private MeshBuilder _mb;
-
-    private RoadChunkGraphicNode() { }
-
-    public RoadChunkGraphicNode(MapChunk chunk, Data data) 
-        : base(nameof(RoadChunkGraphicNode), data, chunk)
+    
+    public RoadChunkGraphicNode(MapChunk chunk, Data d) 
+        : base(chunk, nameof(RoadChunkGraphicNode))
     {
-        _mb = new MeshBuilder();
+        var nav = d.Planet.Nav;
+        var mb = new MeshBuilder();
+        DrawRoads(chunk, d, nav, mb);
+        if (mb.Tris.Count == 0) return;
+        AddChild(mb.GetMeshInstance());
     }
 
-    protected override Node2D MakeGraphic(int element, Data data)
+    private static void DrawRoads(MapChunk chunk, Data d, Nav nav, MeshBuilder mb)
     {
-        _mb.Clear();
-        var seg = data.Get<RoadSegment>(element);
-        
-        for (var i = 0; i < seg.WaypointIds.Count - 1; i++)
+        var wps = chunk.Polys.SelectMany(p => d.Planet.Nav.GetPolyAssocWaypoints(p, d))
+            .Distinct();
+        foreach (var wp in wps)
         {
-            var from = data.Planet.Nav.Waypoints[seg.WaypointIds[i]];
-            var to = data.Planet.Nav.Waypoints[seg.WaypointIds[i + 1]];
-            seg.Road.Model(data).Draw(_mb, Chunk.RelTo.GetOffsetTo(from.Pos, data), 
-                Chunk.RelTo.GetOffsetTo(to.Pos, data), 10f);
-        }
-        
-        var mesh = _mb.GetMeshInstance();
-        _mb.Clear();
-        return mesh;
-    }
-
-    protected override IEnumerable<int> GetKeys(Data data)
-    {
-        var res = new List<int>();
-        foreach (var p in Chunk.Polys)
-        {
-            foreach (var n in p.Neighbors.Items(data))
+            foreach (var n in wp.Neighbors)
             {
-                if (p.Id > n.Id)
+                if (n > wp.Id) continue;
+                var nWp = nav.Waypoints[n];
+                if (d.Infrastructure.RoadNetwork.Get(wp, nWp, d) is RoadModel r)
                 {
-                    var border = p.GetEdge(n, data);
-                    if (data.Infrastructure.RoadAux.ByEdgeId.ContainsKey(border.Id))
-                    {
-                        var seg = data.Infrastructure.RoadAux.ByEdgeId[border.Id];
-                        res.Add(seg.Id);
-                    }
+                    r.Draw(mb, chunk.RelTo.GetOffsetTo(wp.Pos, d), 
+                        chunk.RelTo.GetOffsetTo(nWp.Pos, d), 10f);
                 }
             }
         }
-
-        return res;
+        var edges = d.Infrastructure.RoadNetwork.Roads.Dic.Keys
+            .Where(k => chunk.Polys.Contains(d[(int)k.X]));
+        
     }
-
-    protected override bool Ignore(int element, Data data)
+    public static ChunkGraphicLayer<RoadChunkGraphicNode> GetLayer(Data d, GraphicsSegmenter segmenter)
     {
-        return false;
+        var l = new ChunkGraphicLayer<RoadChunkGraphicNode>("Roads", segmenter, 
+            c => new RoadChunkGraphicNode(c, d), d);
+        return l;
     }
 }

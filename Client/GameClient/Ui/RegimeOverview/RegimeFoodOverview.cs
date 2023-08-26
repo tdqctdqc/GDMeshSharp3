@@ -9,9 +9,9 @@ public partial class RegimeFoodOverview : ScrollContainer
     public RegimeFoodOverview()
     {
         Name = "Agriculture";
-        SetAnchorsPreset(LayoutPreset.FullRect);
+        AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
-        _container.SetAnchorsPreset(LayoutPreset.FullRect);
+        _container.AnchorsPreset = (int)LayoutPreset.FullRect;
         AddChild(_container);
     }
     public void Setup(Regime regime, Data data)

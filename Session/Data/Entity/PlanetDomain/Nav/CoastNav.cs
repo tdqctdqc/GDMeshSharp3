@@ -5,13 +5,21 @@ using MessagePack;
 
 public class CoastNav : LandNav
 {
-    public List<int> Seas { get; private set; }
-    public static CoastNav Construct(List<int> seas)
+    public int Sea { get; private set; }
+    public bool Port { get; private set; }
+    public static CoastNav Construct(int sea)
     {
-        return new CoastNav(seas);
+        return new CoastNav(sea, false);
     }
-    [SerializationConstructor] private CoastNav(List<int> seas) : base(0f)
+    [SerializationConstructor] private CoastNav(int sea, bool port) 
+        : base(0f)
     {
-        Seas = seas;
+        Port = port;
+        Sea = sea;
+    }
+
+    public void SetPort(bool port, GenWriteKey key)
+    {
+        Port = port;
     }
 }

@@ -48,7 +48,6 @@ public partial class DebugCameraController : Camera2D
         {
             _zoomLevel += _zoomIncr;
             UpdateZoom();
-
         }
 
     }

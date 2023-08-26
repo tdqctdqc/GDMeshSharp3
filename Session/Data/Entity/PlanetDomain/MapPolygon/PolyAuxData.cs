@@ -22,7 +22,8 @@ public class PolyAuxData
         var nbs = p.NeighborBorders.Values.ToList();
         if (nbs.Count() > 0)
         {
-            var source = p.Neighbors.Items(data).Select(n => p.GetBorder(n.Id).Segments).ToList();
+            var source = p.Neighbors.Items(data)
+                .Select(n => p.GetBorder(n.Id).Segments).ToList();
             MakeBoundarySegs(p, data, source);   
         }
     }
@@ -36,20 +37,30 @@ public class PolyAuxData
         }
         catch
         {
-            var ex = new GeometryException("couldnt make boundary segs");
-            ex.AddSegLayer(source.SelectMany(l => l).ToList(), "source neighbor segs");
-            ex.AddSegLayer(p.Neighbors.Items(data)
-            .Select(n => p.GetOffsetTo(n, data))
-            .Select(o => new LineSegment(Vector2.Zero, o))
-            .ToList(), "neighbors");
             
-            ex.AddSegLayer(data.GetAll<MapPolygon>()
-                .Where(e => p.GetOffsetTo(e, data).Length() < 1000f)
-                .Select(n => p.GetOffsetTo(n, data))
-                .Select(o => new LineSegment(Vector2.Zero, o))
-                .ToList(), "near");
-            if(_orderedBoundarySegs != null) ex.AddSegLayer(_orderedBoundarySegs, "old segs");
-            throw ex;
+            GD.Print("Couldn't make boundary segs " + p.Center);
+            try
+            {
+                ordered = FixBoundarySegs(p, data, source);
+                GD.Print("fixed boundary segs " + p.Center);
+            }
+            catch (Exception e)
+            {
+                var ex = new GeometryException("couldnt make boundary segs");
+                ex.AddSegLayer(source.SelectMany(l => l).ToList(), "source neighbor segs");
+                ex.AddSegLayer(p.Neighbors.Items(data)
+                    .Select(n => p.GetOffsetTo(n, data))
+                    .Select(o => new LineSegment(Vector2.Zero, o))
+                    .ToList(), "neighbors");
+            
+                ex.AddSegLayer(data.GetAll<MapPolygon>()
+                    .Where(e => p.GetOffsetTo(e, data).Length() < 1000f)
+                    .Select(n => p.GetOffsetTo(n, data))
+                    .Select(o => new LineSegment(Vector2.Zero, o))
+                    .ToList(), "near");
+                if(_orderedBoundarySegs != null) ex.AddSegLayer(_orderedBoundarySegs, "old segs");
+                throw ex;
+            }
         }
         
         if (ordered.IsChain() == false)
@@ -74,6 +85,13 @@ public class PolyAuxData
         GraphicalCenter = OrderedBoundarySegs.Average();
     }
 
+    private List<LineSegment> FixBoundarySegs(MapPolygon p, Data data, List<List<LineSegment>> source)
+    {
+        var points = source.SelectMany(s => s)
+            .GetPoints();
+        points.OrderByClockwise(Vector2.Zero, v => v);
+        return points.GetLineSegments().ToList();
+    }
     public bool PointInPoly(MapPolygon poly, Vector2 pointRel, Data data)
     
     {

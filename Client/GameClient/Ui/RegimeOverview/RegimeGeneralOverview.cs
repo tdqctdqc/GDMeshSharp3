@@ -6,11 +6,17 @@ using Godot;
 public partial class RegimeGeneralOverview : ScrollContainer
 {
     private VBoxContainer _container;
+    public override void _Ready()
+    {
+        base._Ready();
+    }
+
     public RegimeGeneralOverview()
     {
-        SetAnchorsPreset(LayoutPreset.FullRect);
+        AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         AddChild(_container);
+        _container.AnchorsPreset = (int)LayoutPreset.FullRect;
     }
     public void Setup(Regime regime, Data data)
     {

@@ -69,11 +69,11 @@ public partial class GeneratorUi : Node, IClientComponent
     private void PressedGenerate()
     {
         if (_logic.Generating) return;
-        _logic.TryGenerate();
+        // _logic.TryGenerate();
         try
         {
             // await Task.Run(_logic.TryGenerate);
-            
+            _logic.TryGenerate();
         }
         catch (Exception e)
         {
@@ -100,11 +100,13 @@ public partial class GeneratorUi : Node, IClientComponent
     private void DisplayException(DisplayableException d)
     {
         var display = new Node2D();
-        GD.Print(d.StackTrace);
+        if(d.InnerException != null) GD.Print(d.InnerException.StackTrace);
                 
         var graphic = d.GetGraphic();
         display.AddChild(graphic);
         Game.I.Client.GraphicsLayer.AddChild(display);
+        
+        Game.I.Client.RemoveComponent<WorldCameraController>();
     }
     
     Node IClientComponent.Node => this;

@@ -9,6 +9,8 @@ public partial class WorldCameraController : Camera2D, ICameraController
     public float ZoomOut => Zoom.X;
     public float MaxZoomOut => _maxZoom;
     public Action Disconnect { get; set; }
+    public float XScrollRatio { get; private set; }
+
     public void Process(float delta)
     {
         var mult = 1f;
@@ -42,6 +44,14 @@ public partial class WorldCameraController : Camera2D, ICameraController
         //     Position += Vector2.Right * delta / Zoom * _udScrollSpeed * mult;
         // }
     }
+
+    public void JumpTo(Vector2 worldPos)
+    {
+        var y = worldPos.Y;
+        var xRatio = 
+        Position = new Vector2(0f, y);
+        XScrollRatio = worldPos.X / _data.Planet.Width;
+    }
     public void Process(InputEvent e)
     {
         if (e is InputEventMouseButton mb)
@@ -58,7 +68,6 @@ public partial class WorldCameraController : Camera2D, ICameraController
     private float _minZoom = .5f;
     private float _minZoomLevel = .05f;
     private float _maxZoomLevel = .9f;
-    public float XScrollRatio { get; private set; }
     private Data _data;
 
     public static WorldCameraController Construct(Data data)
@@ -76,17 +85,6 @@ public partial class WorldCameraController : Camera2D, ICameraController
     public void Setup(Data data)
     {
         _data = data;
-    }
-
-
-    private Vector2 GetOffset(Vector2 mapPos)
-    {
-        var off1 = mapPos - Position;
-        var off2 = (off1 + Vector2.Right * _data.Planet.Width);
-        var off3 = (off1 + Vector2.Left * _data.Planet.Width);
-        if (off1.Length() < off2.Length() && off1.Length() < off3.Length()) return off1;
-        if (off2.Length() < off1.Length() && off2.Length() < off3.Length()) return off2;
-        return off3;
     }
 
     public Vector2 GetMousePosInMapSpace()

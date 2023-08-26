@@ -148,46 +148,6 @@ public class PeepGenerator : Generator
 
         return townHall.GetComponent<Workplace>().TotalLaborReq() * settlements.Count();
     }
-
-    private void GenerateInfrastructureBuildings(Regime r, float popBudget)
-    {
-        if (popBudget <= 0) return;
-        
-        
-    }
-
-    private void GeneratePorts(Regime r, float popBudget)
-    {
-        var coasts = new Dictionary<Sea, HashSet<MapPolygon>>();
-        var seas = _key.Data.Planet.PolygonAux.LandSea.SeaDic;
-        foreach (var poly in r.GetPolys(_key.Data))
-        {
-            var seaNs = poly.Neighbors.Items(_key.Data)
-                .Where(n => n.IsWater())
-                .Select(n => seas[n])
-                .Distinct();
-            foreach (var sea in seaNs)
-            {
-                coasts.AddOrUpdate(sea, poly);
-            }
-        }
-
-        var port = _key.Data.Models.Buildings.Port;
-        var portLaborReq = port.GetComponent<Workplace>().TotalLaborReq();
-        var coastLists = coasts.Values.ToList();
-        var portions = Apportioner.ApportionLinear(popBudget,
-            coastLists, c => c.Count);
-        for (var i = 0; i < portions.Count; i++)
-        {
-            var coast = coastLists[i];
-            var portion = portions[i];
-            var numPorts = Mathf.FloorToInt(portion / portLaborReq);
-            if (numPorts > 0)
-            {
-                
-            }
-        }
-    }
     private void GenerateFactories(Regime r, float popBudget)
     {
         if (popBudget <= 0) return;

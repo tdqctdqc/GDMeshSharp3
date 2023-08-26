@@ -19,13 +19,11 @@ public partial class Client : Node, IClient
     }
     private void Setup()
     {
-        
         Key = new ClientWriteKey(_session.Data, _session);
         GraphicsLayer = new Node2D();
         AddChild(GraphicsLayer);
         var ui = new CanvasLayer();
         UiLayer = new Control();
-        UiLayer.SetAnchorsPreset(Control.LayoutPreset.FullRect);
         UiLayer.MouseFilter = Control.MouseFilterEnum.Pass;
         ui.AddChild(UiLayer);
         UiLayer.FocusMode = Control.FocusModeEnum.None;

@@ -114,6 +114,7 @@ public static class NodeExt
 
     public static void ClearChildren(this Node n)
     {
+        if (n == null) throw new Exception();
         while (n.GetChildCount() > 0)
         {
             var c = n.GetChild(0);
