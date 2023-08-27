@@ -29,7 +29,6 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
                 if (path == null) continue;
                 for (var i = 0; i < path.Count() - 1; i++)
                 {
-                    // GD.Print("adding graphic");
                     var path1Offset = chunk.RelTo.GetOffsetTo(path.ElementAt(i).Pos, d);
                     var path2Offset = chunk.RelTo.GetOffsetTo(path.ElementAt(i + 1).Pos, d);
                     mb.AddLine(path1Offset, path2Offset, Colors.Red, 10f);
@@ -48,16 +47,9 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
             var offset = chunk.RelTo.GetOffsetTo(point.Pos, d);
             foreach (var nId in point.Neighbors)
             {
-                try
-                {
-                    var n = d.Planet.Nav.Waypoints[nId];
-                    var nOffset = chunk.RelTo.GetOffsetTo(n.Pos, d);
-                    mb.AddLine(offset, nOffset, Colors.Red, 2.5f);
-                }
-                catch
-                {
-                    GD.Print("missing waypoint");
-                }
+                var n = d.Planet.Nav.Waypoints[nId];
+                var nOffset = chunk.RelTo.GetOffsetTo(n.Pos, d);
+                mb.AddLine(offset, nOffset, Colors.Red, 2.5f);
             }
 
             Color color;
@@ -72,7 +64,7 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
             else if (point.WaypointData.Value() is InlandNav n)
             {
                 var roughness = n.Roughness;
-                color = Colors.Red.Darkened(roughness);
+                color = Colors.White.Darkened(roughness);
             }
             else if (point.WaypointData.Value() is CoastNav)
             {

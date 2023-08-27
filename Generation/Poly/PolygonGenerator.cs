@@ -96,7 +96,6 @@ public class PolygonGenerator : Generator
         rHash.Add(info.CornerPolys[3]);
 
         var borderChains = new ConcurrentDictionary<PolyBorderChain, PolyBorderChain>();
-        // var partitions = graph.Elements.Partition(10);
         var ps = graph.Elements.ToList();
         ps.ForEach(p => BuildBorderSegs(p, info, rHash, graph, key, borderChains));
         
@@ -260,128 +259,6 @@ public class PolygonGenerator : Generator
             var n1 = key.Data.Get<MapPolyNexus>((int)kvp.Value.X);
             var n2 = key.Data.Get<MapPolyNexus>((int)kvp.Value.Y);
             edge.SetNexi(n1, n2, key);
-        }
-    }
-    
-
-    private static void FixShortEdges(GenWriteKey key)
-    {
-        var minLength = River.WidthCeil;
-        // var shortEdges = key.Data.Planet.PolyEdges.Entities.Where(e => e.GetLength() < minLength);
-        var sw = new Stopwatch();
-        sw.Start();
-        var maxTime = 1f;
-
-        var numFixed = 0;
-        var numCouldntFix = 0;
-        MapPolygonEdge getShortEdge()
-        {
-            return key.Data.GetAll<MapPolygonEdge>().FirstOrDefault(e => e.GetLength(key.Data) < minLength);
-        }
-        while (getShortEdge() is MapPolygonEdge shortEdge && sw.Elapsed.TotalSeconds < maxTime)
-        {
-            var hiPoly = shortEdge.HighPoly.Entity(key.Data);
-            
-            var seg = shortEdge.GetSegsRel(hiPoly, key.Data)[0];
-            
-            var oldPAbs = seg.From;
-            var shiftAxis = (seg.To - seg.From).Normalized();
-            var missingDist = minLength - shortEdge.GetLength(key.Data);
-            var newPRelToHiPoly = oldPAbs - shiftAxis * missingDist * 1.1f;
-            var newPAbs = newPRelToHiPoly + hiPoly.Center;
-            
-
-            var success = tryP(shortEdge, oldPAbs, shiftAxis,
-                missingDist, newPAbs, hiPoly.Neighbors.Items(key.Data));
-            
-            if (success == false)
-            {
-                oldPAbs = seg.To;
-                shiftAxis = (seg.From - seg.To).Normalized();
-                
-                newPRelToHiPoly = oldPAbs - shiftAxis * missingDist * 1.1f;
-                newPAbs = newPRelToHiPoly + hiPoly.Center;
-
-
-                success = tryP(shortEdge, oldPAbs, shiftAxis, 
-                    missingDist, newPAbs, hiPoly.Neighbors.Items(key.Data));
-                if (success == false)
-                {
-                    numCouldntFix++;
-                    continue;
-                    // var e = new GeometryException("failed new point");
-                    // var segs = new List<LineSegment>();
-                    // var borderSegs = hiPoly.GetPolyBorders().SelectMany(b => b.Segments).ToList();
-                    //
-                    // foreach (var n in hiPoly.Neighbors)
-                    // {
-                    //     borderSegs.AddRange(n.GetPolyBorders()
-                    //         .SelectMany(b => b.Segments.Select(ls => ls.Translate(hiPoly.GetOffsetTo(n, key.Data)))));
-                    // }
-                    //
-                    // borderSegs.Add(new LineSegment(Vector2.Zero, toShift));
-                    // borderSegs.Add(new LineSegment(Vector2.Zero, newPRelToHiPoly));
-                    // e.AddSegLayer(borderSegs, "border");
-                    // throw e;
-                }
-                else
-                {
-                    numFixed++;
-                }
-            }
-            else
-            {
-                numFixed++;
-            }
-
-        }
-        GD.Print($"Fixed {numFixed} Couldnt fix {numCouldntFix}");
-        bool tryP(MapPolygonEdge shortEdge, Vector2 oldPAbs, Vector2 shiftAxis,
-            float missingDist, Vector2 newPAbs, IEnumerable<MapPolygon> incidentPolys)
-        {
-            if (oldPAbs.Y == 0f || oldPAbs.Y == key.Data.Planet.Height) return false;
-            var hiPoly = shortEdge.HighPoly.Entity(key.Data);
-
-            var incPolys = shortEdge.HiNexus.Entity(key.Data).IncidentPolys.Items(key.Data)
-                .Union(shortEdge.LoNexus.Entity(key.Data).IncidentPolys.Items(key.Data))
-                .Distinct();
-            foreach (var poly in incPolys)
-            {
-                var newPRel = poly.GetOffsetTo(newPAbs, key.Data);
-                var oldPRel = poly.GetOffsetTo(oldPAbs, key.Data);
-                foreach (var border in poly.GetPolyBorders())
-                {
-                    if (border.Segments.Count > 1) throw new Exception();
-                    var borderSeg = border.Segments[0];
-                    if (borderSeg.From.DistanceTo(oldPRel) < .1f
-                        && borderSeg.From.DistanceTo(newPRel) < minLength)
-                    {
-                        return false;
-                    }
-                }
-            }
-            
-            foreach (var poly in incidentPolys)
-            {
-                var affectedEdges = poly.GetEdges(key.Data);
-                var newPRel = poly.GetOffsetTo(newPAbs, key.Data);
-                var oldPRel = poly.GetOffsetTo(oldPAbs, key.Data);
-                foreach (var affectedEdge in affectedEdges)
-                {
-                    var hiSegs = affectedEdge.GetSegsRel(poly, key.Data).Segments;
-                    if (hiSegs.Count != 1) throw new Exception();
-                    var seg = hiSegs[0];
-                    var newFrom = seg.From;
-                    var newTo = seg.To;
-                    
-                    if (seg.From.DistanceTo(oldPRel) < .1f) newFrom = newPRel;
-                    else if (seg.To.DistanceTo(oldPRel) < .1f) newTo = newPRel;
-
-                    var newSeg = new LineSegment(newFrom, newTo).Translate(poly.Center);
-                    affectedEdge.ReplacePoints(poly, new List<LineSegment>{newSeg}, key);
-                }
-            }
-            return true;
         }
     }
 }

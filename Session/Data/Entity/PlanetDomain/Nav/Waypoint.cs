@@ -47,6 +47,15 @@ public class Waypoint : IIdentifiable
                || AssociatedPolyIds.W == poly.Id;
     }
 
+    public IEnumerable<MapPolygon> AssocPolys(Data data)
+    {
+        IEnumerable<MapPolygon> res = new MapPolygon[0];
+        if (AssociatedPolyIds.X != -1) res = res.Union(data.Get<MapPolygon>(AssociatedPolyIds.X).Yield());
+        if (AssociatedPolyIds.Y != -1) res = res.Union(data.Get<MapPolygon>(AssociatedPolyIds.Y).Yield());
+        if (AssociatedPolyIds.Z != -1) res = res.Union(data.Get<MapPolygon>(AssociatedPolyIds.Z).Yield());
+        if (AssociatedPolyIds.W != -1) res = res.Union(data.Get<MapPolygon>(AssociatedPolyIds.W).Yield());
+        return res;
+    }
     public int NumAssocPolys()
     {
         if (AssociatedPolyIds.X == -1) return 0;
