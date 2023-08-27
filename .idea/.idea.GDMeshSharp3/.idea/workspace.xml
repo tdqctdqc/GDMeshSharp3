@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="doot">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/NavGraphicChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/NavGraphicChunk.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolygonGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolygonGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/SimpleNavGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Waypoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Waypoint.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -240,6 +235,7 @@
       <workItem from="1692752067079" duration="2957000" />
       <workItem from="1693071450961" duration="15124000" />
       <workItem from="1693087782021" duration="7385000" />
+      <workItem from="1693149974670" duration="1541000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -467,7 +463,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693091215894</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="doot">
+      <option name="closed" value="true" />
+      <created>1693150210822</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1693150210822</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -497,7 +501,6 @@
     <MESSAGE value="doo" />
     <MESSAGE value="made ref Entity() take data as param" />
     <MESSAGE value="added reverse multi indexer, made valchangeaction class" />
-    <MESSAGE value="doot" />
     <MESSAGE value="Working on proposals" />
     <MESSAGE value="removed domainType member from entities, moved registers to data class" />
     <MESSAGE value="removing var updates, make entity methods call the notice if needed" />
@@ -514,6 +517,7 @@
     <MESSAGE value="removed static access to models" />
     <MESSAGE value="fixed weird navPath bug, dk how. fixed window container children not going full rect (have to set the int property for some reason)" />
     <MESSAGE value="reworked nav waypoint generation" />
-    <option name="LAST_COMMIT_MESSAGE" value="reworked nav waypoint generation" />
+    <MESSAGE value="doot" />
+    <option name="LAST_COMMIT_MESSAGE" value="doot" />
   </component>
 </project>

@@ -69,39 +69,9 @@ public class NavGenerator : Generator
         {
             var incidentPolys = nexus.IncidentPolys.Items(key.Data).Distinct();
             if (incidentPolys.Any(p => p.IsWater())) continue;
-            if (incidentPolys.Count() == 3)
+            if (incidentPolys.Count() >= 3)
             {
-                var p0 = incidentPolys.ElementAt(0);
-                var p1 = incidentPolys.ElementAt(1);
-                var p2 = incidentPolys.ElementAt(2);
-
-                IEnumerable<Waypoint> edgeWps = new Waypoint[0];
-                if (p0.Neighbors.Contains(p1)
-                    && byEdge.TryGetValue(p0.GetEdge(p1, key.Data), out var e01))
-                {
-                    edgeWps = edgeWps.Union(e01.Yield());
-                }
-
-                if (p1.Neighbors.Contains(p2)
-                    && byEdge.TryGetValue(p1.GetEdge(p2, key.Data), out var e12))
-                {
-                    edgeWps = edgeWps.Union(e12.Yield());
-                }
-
-                if (p2.Neighbors.Contains(p0)
-                    && byEdge.TryGetValue(p2.GetEdge(p0, key.Data), out var e20))
-                {
-                    edgeWps = edgeWps.Union(e20.Yield());
-                }
-
-                foreach (var e1 in edgeWps)
-                {
-                    foreach (var e2 in edgeWps)
-                    {
-                        if (e1 == e2) continue;
-                        Connect(e1, e2);
-                    }
-                }
+                connectAll(incidentPolys.ToArray());
             }
             else if (incidentPolys.Count() == 2)
             {
@@ -117,6 +87,32 @@ public class NavGenerator : Generator
                 foreach (var incidentPoly in incidentPolys)
                 {
                     GD.Print($"\t at {incidentPoly.Id}");
+                }
+                throw new Exception();
+            }
+        }
+
+        void connectAll(params MapPolygon[] polys)
+        {
+            IEnumerable<Waypoint> toConnect = new Waypoint[0];
+            foreach (var p1 in polys)
+            {
+                foreach (var p2 in polys)
+                {
+                    if (p1 == p2) continue;
+                    if (p1.Neighbors.Contains(p2)
+                        && byEdge.TryGetValue(p1.GetEdge(p2, key.Data), out var e12))
+                    {
+                        toConnect = toConnect.Union(e12.Yield());
+                    }
+                }
+            }
+            foreach (var wp1 in toConnect)
+            {
+                foreach (var wp2 in toConnect)
+                {
+                    if (wp1 == wp2) continue;
+                    Connect(wp1, wp2);
                 }
             }
         }
