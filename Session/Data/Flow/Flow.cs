@@ -14,6 +14,6 @@ public abstract class Flow : IModel
         Name = name;
         Icon = Icon.Create(GetType().Name, Icon.AspectRatio._1x1, 25f);
     }
-    public abstract float GetNonBuildingFlow(Regime r, Data d);
+    public abstract float GetNonBuildingSupply(Regime r, Data d);
     public abstract float GetConsumption(Regime r, Data d);
 }

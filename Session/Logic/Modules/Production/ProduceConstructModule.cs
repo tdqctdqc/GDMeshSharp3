@@ -11,8 +11,8 @@ public class ProduceConstructModule : LogicModule
 {
     private ConcurrentDictionary<int, ItemCount> 
         _regimeProdWallets = new ConcurrentDictionary<int, ItemCount>();
-    private ConcurrentDictionary<int, PolyEmploymentReport> 
-        _polyEmployReps = new ConcurrentDictionary<int, PolyEmploymentReport>();
+    private ConcurrentDictionary<int, PeepEmploymentReport> 
+        _polyEmployReps = new ConcurrentDictionary<int, PeepEmploymentReport>();
     private ConcurrentDictionary<int, PolyEmploymentScratch>
         _polyScratches = new ConcurrentDictionary<int, PolyEmploymentScratch>();
 
@@ -62,7 +62,7 @@ public class ProduceConstructModule : LogicModule
         {
             var scratch = _polyScratches[poly.Id];
             var numUnemployed = scratch.Available;
-            var employment = _polyEmployReps.GetOrAdd(poly.Id, p => PolyEmploymentReport.Construct());
+            var employment = _polyEmployReps.GetOrAdd(poly.Id, p => PeepEmploymentReport.Construct());
             employment.Clear();
             employment.Counts.AddOrSum(unemployedJob.Id, numUnemployed);
             proc.EmploymentReports[poly.Id] = employment;
@@ -76,18 +76,15 @@ public class ProduceConstructModule : LogicModule
 
     private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
     {
-        var builderJob = data.Models.PeepJobs.Builder;
         var regimePolys = regime.GetPolys(data);
         var construction = data.Infrastructure.CurrentConstruction.ByPoly;
 
-        var constructionCapNeeded = regime.GetPolys(data)
-            .Where(p => construction.ContainsKey(p.Id))
-            .Select(p => construction[p.Id].Sum(c => c.Model.Model(data).ConstructionCapPerTick))
-            .Sum();
+        var constrCap = data.Models.Flows.ConstructionCap;
+        var constrFlowIn = constrCap.GetNonBuildingSupply(regime, data);
+        var constrFlowOut = constrCap.GetConsumption(regime, data);
         
-        if (constructionCapNeeded == 0) return;
-        var constructionCap = regime.Flows[data.Models.Flows.ConstructionCap].Net();
-        var constructRatio = Mathf.Clamp((float)constructionCap / (float)constructionCapNeeded, 0f, 1f);
+        if (constrFlowOut == 0) return;
+        var constructRatio = Mathf.Clamp((float)constrFlowIn / (float)constrFlowOut, 0f, 1f);
         foreach (var poly in regimePolys)
         {
             ConstructForPoly(regime, poly, constructRatio, proc, data);
@@ -129,7 +126,6 @@ public class ProduceConstructModule : LogicModule
         foreach (var construction in constructions)
         {
             var spend = ratio * construction.Model.Model(data).ConstructionCapPerTick;
-            proc.RegimeFlows[r.Id][data.Models.Flows.ConstructionCap].AddFlowOut(spend);
             proc.ConstructionProgresses.TryAdd(construction.Pos, ratio);
         }
     }
@@ -139,7 +135,7 @@ public class ProduceConstructModule : LogicModule
         foreach (var kvp in data.Models.GetModels<Flow>())
         {
             var flow = kvp.Value;
-            var amt = flow.GetNonBuildingFlow(r, data);
+            var amt = flow.GetNonBuildingSupply(r, data);
             var flows = proc.RegimeFlows.GetOrAdd(r.Id, i => new RegimeFlows(new Dictionary<int, FlowData>()));
             var consumption = flow.GetConsumption(r, data);
             proc.RegimeFlows[r.Id].AddFlowIn(flow, amt);

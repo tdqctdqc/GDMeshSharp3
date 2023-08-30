@@ -8,10 +8,12 @@ public class BuildingConstructionPriority : BudgetPriority
 {
     private Func<BuildingModel, bool> _relevant;
     private Func<BuildingModel, int> _utility;
-    public BuildingConstructionPriority(Func<BuildingModel, bool> relevant, 
+    public BuildingConstructionPriority(
+        string name,
+        Func<BuildingModel, bool> relevant, 
         Func<BuildingModel, int> utility,
         Func<Data, Regime, float> getWeight) 
-        : base(getWeight)
+        : base(name, getWeight)
     {
         _relevant = relevant;
         _utility = utility;
@@ -150,7 +152,8 @@ public class BuildingConstructionPriority : BudgetPriority
         foreach (var kvp in buildingVars)
         {
             var projVar = kvp.Value;
-            var projPrice = kvp.Key.BuildCosts.Sum(kvp => prices[kvp.Key] * kvp.Value);
+            var projPrice = kvp.Key.BuildCosts
+                .Sum(kvp => prices[kvp.Key] * kvp.Value);
             creditConstraint.SetCoefficient(projVar, projPrice);
         }
     }

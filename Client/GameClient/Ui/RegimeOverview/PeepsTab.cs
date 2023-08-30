@@ -2,11 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+namespace Ui.RegimeOverview;
 
-public partial class RegimePeepsOverview : ScrollContainer
+public partial class PeepsTab : ScrollContainer
 {
     private VBoxContainer _container;
-    public RegimePeepsOverview()
+    public PeepsTab()
     {
         Name = "Peeps";
         AnchorsPreset = (int)LayoutPreset.FullRect;
@@ -24,7 +25,8 @@ public partial class RegimePeepsOverview : ScrollContainer
         var peepCount = peeps.Count();
         var peepSize = peeps.Sum(p => p.Size);
         var jobs = populatedPolys
-            .SelectMany(p => p.PolyEmployment.Counts)
+            .Select(p => p.GetPeep(data))
+            .SelectMany(p => p.Employment.Counts)
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);
         _container.CreateLabelAsChild("Peeps: " + peepCount);
         _container.CreateLabelAsChild("Population: " + peepSize);

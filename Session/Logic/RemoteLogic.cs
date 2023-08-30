@@ -29,7 +29,7 @@ public class RemoteLogic : ILogic
         if (u is FinishedStateSyncUpdate su)
         {
             _inited = true;
-            var creations = _syncingUpdates.SelectWhereOfType<Update, EntityCreationUpdate>();
+            var creations = _syncingUpdates.SelectWhereOfType<EntityCreationUpdate>();
             EntitiesCreationUpdate.Create(creations, PKey).Enact(PKey);
             su.Enact(PKey);
             return;

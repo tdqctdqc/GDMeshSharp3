@@ -17,7 +17,7 @@ public abstract class Entity : IIdentifiable
         Id = id;
         var meta = key.Data.GetEntityMeta(this.GetType());
         foreach (var refCollection in meta.GetPropertyValues(this)
-                     .SelectWhereOfType<object, IReadOnlyRefCollection>())
+                     .SelectWhereOfType<IReadOnlyRefCollection>())
         {
             refCollection.UpdateOwnerId(id, key);
         }

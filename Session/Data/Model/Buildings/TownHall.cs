@@ -4,9 +4,10 @@ using System.Linq;
 
 public class TownHall : BuildingModel
 {
-    public TownHall(Items items, PeepJobList jobs) 
+    public TownHall(Items items, PeepJobList jobs, FlowList flows) 
         : base(BuildingType.Government, nameof(TownHall), 
-            50, 500, 0,
+            50, 
+            500, 
             new List<BuildingModelComponent>
             {
                 new Workplace(new Dictionary<PeepJob, int>

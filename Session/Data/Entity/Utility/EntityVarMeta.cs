@@ -18,7 +18,17 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
             GD.Print($"No get method for {PropertyName}");
             throw new SerializationException($"No get method for {PropertyName}");
         }
-        GetProperty = getMi.MakeInstanceMethodDelegate<Func<TEntity, TProperty>>();
+
+        try
+        {
+            GetProperty = getMi.MakeInstanceMethodDelegate<Func<TEntity, TProperty>>();
+
+        }
+        catch (Exception e)
+        {
+            GD.Print("couldnt make delegate for " + PropertyName);
+            throw;
+        }
         
         var setMi = prop.GetSetMethod(true);
         if (setMi == null)

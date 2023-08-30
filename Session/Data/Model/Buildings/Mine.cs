@@ -6,10 +6,9 @@ using Godot;
 public class Mine : BuildingModel
 {
     public NaturalResource MinedItem { get; private set; }
-    public Mine(string name, NaturalResource prodItem, Items items, PeepJobList jobs) 
+    public Mine(string name, NaturalResource prodItem, Items items, PeepJobList jobs, FlowList flows) 
         : base(BuildingType.Extraction, name, 
             150, 3000,
-            150, 
             new List<BuildingModelComponent>
             {
                 new ExtractionProd(prodItem, 20),

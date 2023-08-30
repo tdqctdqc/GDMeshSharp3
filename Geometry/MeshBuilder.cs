@@ -86,6 +86,11 @@ public class MeshBuilder
         }
     }
 
+    public void DrawMapPolyEdge2(MapPolygon poly, MapPolygon n, Data data, float innerThickness,
+        Color color, Vector2 offset)
+    {
+        
+    }
     public void DrawMapPolyEdge(MapPolygon poly, MapPolygon n, Data data, float innerThickness, 
         Color color, Vector2 offset)
     {

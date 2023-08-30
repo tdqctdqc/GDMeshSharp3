@@ -11,6 +11,7 @@ public class InfrastructureGenerator : Generator
 {
     private GenData _data;
     private GenWriteKey _key;
+    private static int _bigCitySizeThreshold = 35;
     public override GenReport Generate(GenWriteKey key)
     {
         _key = key;
@@ -34,8 +35,8 @@ public class InfrastructureGenerator : Generator
                 var edges = kvp.Value;
                 foreach (var edge in edges)
                 {
-                    var wp1 = _data.Planet.Nav.Waypoints[(int) edge.X];
-                    var wp2 = _data.Planet.Nav.Waypoints[(int) edge.Y];
+                    var wp1 = _data.Planet.Nav.Get((int)edge.X);
+                    var wp2 = _data.Planet.Nav.Get((int)edge.Y);
                     roads.Roads.TryAdd(wp1, wp2, road);
                 }
             }
@@ -71,7 +72,7 @@ public class InfrastructureGenerator : Generator
             res[dirt].AddRange(dirtRoads);
         }
 
-        var big = settlements.Where(s => s.Size > 35).ToList();
+        var big = settlements.Where(s => s.Size > _bigCitySizeThreshold).ToList();
         if(big.Count() > 2)
         {
             var stoneRoads = BuildRoadLevel(big);
@@ -133,34 +134,24 @@ public class InfrastructureGenerator : Generator
     }
     private void GenerateRegimeLmFragmentPorts(List<MapPolygon> polys)
     {
-        var coasts = new Dictionary<Sea, HashSet<MapPolygon>>();
-        var seas = _key.Data.Planet.PolygonAux.LandSea.SeaDic;
-
-        var coastPolys = polys
+        var coastCityPolys = polys
+            .Where(p => p.HasSettlement(_key.Data))
             .Where(p => p.Neighbors.Items(_key.Data)
                 .Any(n => n.IsWater()));
-        var coastNavs = coastPolys
-                .SelectMany(p => p.GetAssocWaypoints(_key.Data))
-            .Where(wp => wp.WaypointData.Value() is CoastNav)
-            .Where(wp => wp.NumAssocPolys() == 2)
-            .Distinct()
-            .SortInto(wp => ((CoastNav)wp.WaypointData.Value()).Sea);
-
-        var navPointsPerPort = 10;
-        foreach (var kvp in coastNavs)
+        
+        foreach (var poly in coastCityPolys)
         {
-            var navPs = kvp.Value;
-            if (navPs.Count() == 0) continue;
-            var numPorts = Mathf.CeilToInt(navPs.Count() / navPointsPerPort);
-            numPorts = Mathf.Max(1, numPorts);
-            var portNavs = navPs.GetDistinctRandomElements(numPorts);
-            foreach (var portNav in portNavs)
+            var wps = poly.GetAssocWaypoints(_key.Data)
+                .SelectWhereOfType<ICoastWaypoint>();
+            var polySeaIds = new HashSet<int>();
+            foreach (var coastWaypoint in wps)
             {
-                ((CoastNav)portNav.WaypointData.Value()).SetPort(true, _key);
+                if (polySeaIds.Contains(coastWaypoint.Sea)) continue;
+                polySeaIds.Add(coastWaypoint.Sea);
+                coastWaypoint.SetPort(true, _key);
             }
         }
     }
-
     private void BuildPortRoads(Landmass lm, Dictionary<RoadModel,HashSet<Vector2>> res)
     {
         var stoneRoad = _key.Data.Models.RoadList.StoneRoad;
@@ -177,7 +168,7 @@ public class InfrastructureGenerator : Generator
 
         var portWps = lm.Polys
             .SelectMany(p => _key.Data.Planet.Nav.GetPolyAssocWaypoints(p, _key.Data))
-            .Distinct().Where(wp => wp.WaypointData.Value() is CoastNav c && c.Port);
+            .Distinct().Where(wp => wp is CoastWaypoint c && c.Port);
 
         var settlementWps = settlementPolys
             .Select(p => nav.GetPolyCenterWaypoint(p)).ToHashSet();
@@ -186,14 +177,21 @@ public class InfrastructureGenerator : Generator
         {
             var path = PathFinder<Waypoint>.FindPathMultipleEnds(portWp,
                 wp => settlementWps.Contains(wp),
-                wp => wp.Neighbors.Select(n => nav.Waypoints[n])
-                    .Where(n => n.WaypointData.Value() is SeaNav == false),
+                wp => wp.Neighbors.Select(n => nav.Get(n))
+                    .Where(n => n is SeaWaypoint == false),
                 (w, v) => PathFinder.LandEdgeCost(w, v, _data));
             if (path == null) continue;
+            var settlement = path.Last().AssocPolys(_key.Data).First().GetSettlement(_key.Data);
             for (var i = 0; i < path.Count - 1; i++)
             {
-                res[stoneRoad].Add(path[i].GetIdEdgeKey(path[i + 1]));
-                res[dirtRoad].Remove(path[i].GetIdEdgeKey(path[i + 1]));
+                RoadModel use = settlement.Size >= _bigCitySizeThreshold
+                    ? stoneRoad
+                    : dirtRoad;
+                RoadModel erase = settlement.Size >= _bigCitySizeThreshold
+                    ? dirtRoad
+                    : stoneRoad;
+                res[use].Add(path[i].GetIdEdgeKey(path[i + 1]));
+                res[erase].Remove(path[i].GetIdEdgeKey(path[i + 1]));
             }
         }
     }

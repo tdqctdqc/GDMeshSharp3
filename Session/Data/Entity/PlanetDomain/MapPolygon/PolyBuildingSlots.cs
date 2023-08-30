@@ -27,9 +27,10 @@ public class PolyBuildingSlots
     {
         var industrySlots = 5;
         var govSlots = 1;
-        var extrSlots = 5;
+        var extractSlots = 5;
         var infraSlots = 5;
-        var totalSlots = industrySlots + govSlots + extrSlots;
+        var financialSlots = 3;
+        var totalSlots = industrySlots + govSlots + extractSlots + financialSlots;
         
         AvailableSlots.Clear();
         var tris = poly.Tris.Tris.Where(t => t.Landform(key.Data).IsLand)
@@ -43,9 +44,10 @@ public class PolyBuildingSlots
             throw new Exception($"{totalSlots} slots {tris.Count} tris");
         }
         
-        AddSlots(BuildingType.Industry, poly, tris, 5);
-        AddSlots(BuildingType.Government, poly, tris, 1);
-        AddSlots(BuildingType.Extraction, poly, tris, 5);
+        AddSlots(BuildingType.Industry, poly, tris, industrySlots);
+        AddSlots(BuildingType.Government, poly, tris, govSlots);
+        AddSlots(BuildingType.Extraction, poly, tris, extractSlots);
+        AddSlots(BuildingType.Financial, poly, tris, financialSlots);
     }
     private void AddSlots(BuildingType type, MapPolygon poly, HashSet<byte> availTriIds, int num)
     {

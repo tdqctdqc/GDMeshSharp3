@@ -5,7 +5,7 @@ using System.Linq;
 public class Factory : BuildingModel
 {
     public Factory(Items items, FlowList flows, PeepJobList jobs) : 
-        base(BuildingType.Industry, nameof(Factory),100, 
+        base(BuildingType.Industry, nameof(Factory),
         2000, 100,
         
         new List<BuildingModelComponent>

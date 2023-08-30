@@ -21,7 +21,7 @@ public static class RegimeExt
     {
         return data.Planet.PolygonAux.PolysByRegime[r];
     }
-    public static IEnumerable<PolyPeep> GetPeeps(this Regime r, Data data)
+    public static IEnumerable<Peep> GetPeeps(this Regime r, Data data)
     {
         return r.GetPolys(data).SelectWhere(p => p.HasPeep(data))
             .Select(p => p.GetPeep(data));

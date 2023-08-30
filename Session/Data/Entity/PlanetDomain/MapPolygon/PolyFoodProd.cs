@@ -26,9 +26,4 @@ public class PolyFoodProd
         Nums.AddOrSum(tech.Id, num);
     }
     
-
-    public int Income(Data data)
-    {
-        return Nums.Sum(kvp => ((FoodProdTechnique) data.Models[kvp.Key]).Income * kvp.Value);
-    }
 }

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class RegimeConstructionOverview : ScrollContainer
+namespace Ui.RegimeOverview;
+
+public partial class ConstructionTab : ScrollContainer
 {
     private VBoxContainer _container;
-    public RegimeConstructionOverview()
+    public ConstructionTab()
     {
         Name = "Construction";
         AnchorsPreset = (int)LayoutPreset.FullRect;

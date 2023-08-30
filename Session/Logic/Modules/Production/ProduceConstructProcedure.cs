@@ -11,20 +11,20 @@ public class ProduceConstructProcedure : Procedure
 {
     public ConcurrentDictionary<int, ItemCount> RegimeResourceProds { get; private set; }
     public ConcurrentDictionary<int, RegimeFlows> RegimeFlows { get; private set; }
-    public ConcurrentDictionary<int, PolyEmploymentReport> EmploymentReports { get; private set; }
+    public ConcurrentDictionary<int, PeepEmploymentReport> EmploymentReports { get; private set; }
     public ConcurrentDictionary<PolyTriPosition, float> ConstructionProgresses { get; private set; }
 
     public static ProduceConstructProcedure Create()
     {
         return new ProduceConstructProcedure(
             new ConcurrentDictionary<int, ItemCount>(), 
-            new ConcurrentDictionary<int, PolyEmploymentReport>(),
+            new ConcurrentDictionary<int, PeepEmploymentReport>(),
             new ConcurrentDictionary<PolyTriPosition, float>(),
             new ConcurrentDictionary<int, RegimeFlows>());
     }
     [SerializationConstructor] private ProduceConstructProcedure(
         ConcurrentDictionary<int, ItemCount> regimeResourceProds, 
-        ConcurrentDictionary<int, PolyEmploymentReport> employmentReports,
+        ConcurrentDictionary<int, PeepEmploymentReport> employmentReports,
         ConcurrentDictionary<PolyTriPosition, float> constructionProgresses,
         ConcurrentDictionary<int, RegimeFlows> regimeFlows)
     {
@@ -52,7 +52,7 @@ public class ProduceConstructProcedure : Procedure
         foreach (var kvp in EmploymentReports)
         {
             var poly = key.Data.Get<MapPolygon>(kvp.Key);
-            poly.SetEmploymentReport(kvp.Value, key);
+            poly.GetPeep(key.Data).SetEmploymentReport(kvp.Value, key);
         }
     }
 
@@ -83,7 +83,6 @@ public class ProduceConstructProcedure : Procedure
         }
     }
     
-
     private void EnactConstruct(ProcedureWriteKey key)
     {
         foreach (var kvp in ConstructionProgresses)

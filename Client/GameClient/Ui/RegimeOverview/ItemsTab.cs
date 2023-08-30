@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+namespace Ui.RegimeOverview;
 
-public partial class RegimeWalletOverview : ScrollContainer
+public partial class ItemsTab : ScrollContainer
 {
     private VBoxContainer _container;
-    public RegimeWalletOverview()
+    public ItemsTab()
     {
-        Name = "Wallet";
+        Name = "Items";
 
         CustomMinimumSize = new Vector2(200f, 400f);
         _container = new VBoxContainer();

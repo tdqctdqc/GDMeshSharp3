@@ -46,7 +46,7 @@ public class FoodAndPopGrowthProcedure : Procedure
     {
         foreach (var kvp in Growths)
         {
-            var peep = key.Data.Get<PolyPeep>(kvp.Key);
+            var peep = key.Data.Get<Peep>(kvp.Key);
             var growth = kvp.Value;
             //todo divide by class
             if (growth < 0)

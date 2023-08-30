@@ -26,7 +26,7 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
             foreach (var n in wp.Neighbors)
             {
                 if (n > wp.Id) continue;
-                var nWp = nav.Waypoints[n];
+                var nWp = nav.Get(n);
                 if (d.Infrastructure.RoadNetwork.Get(wp, nWp, d) is RoadModel r)
                 {
                     r.Draw(mb, chunk.RelTo.GetOffsetTo(wp.Pos, d), 

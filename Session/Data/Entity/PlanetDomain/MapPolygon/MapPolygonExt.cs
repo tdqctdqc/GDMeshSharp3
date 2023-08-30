@@ -112,7 +112,7 @@ public static class MapPolygonExt
     {
         return data.Infrastructure.SettlementAux.ByPoly.ContainsKey(p) ? data.Infrastructure.SettlementAux.ByPoly[p] : null;
     }
-    public static PolyPeep GetPeep(this MapPolygon poly, Data data)
+    public static Peep GetPeep(this MapPolygon poly, Data data)
     {
         return data.Society.PolyPeepAux.ByPoly[poly];
     }

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bu4lo86gleh7e"
-path="res://.godot/imported/UnderConstruction.svg-ef360e440cb15a3e493a766e686c1770.ctex"
+uid="uid://rdvh2k5s8hlx"
+path="res://.godot/imported/Bank.svg-7752301c9276ad76b8f35e20cbe9ccc3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Textures/Icons/Misc/UnderConstruction.svg"
-dest_files=["res://.godot/imported/UnderConstruction.svg-ef360e440cb15a3e493a766e686c1770.ctex"]
+source_file="res://Assets/Textures/Icons/Building/Bank.svg"
+dest_files=["res://.godot/imported/Bank.svg-7752301c9276ad76b8f35e20cbe9ccc3.ctex"]
 
 [params]
 

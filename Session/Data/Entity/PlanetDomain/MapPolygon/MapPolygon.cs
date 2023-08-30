@@ -17,13 +17,12 @@ public partial class MapPolygon : Entity
     public EntityRef<Regime> Regime { get; protected set; }
     public PolyTris Tris { get; protected set; }
     public bool IsLand { get; protected set; }
-    public PolyEmploymentReport PolyEmployment { get; private set; }
     public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
     [SerializationConstructor] private MapPolygon(int id, Vector2 center, EntRefCol<MapPolygon> neighbors, 
         Dictionary<int, PolyBorderChain> neighborBorders, Color color, float altitude, float roughness, 
         float moisture, EntityRef<Regime> regime, PolyTris tris, bool isLand,
-        PolyEmploymentReport polyEmployment, PolyBuildingSlots polyBuildingSlots, PolyFoodProd polyFoodProd) 
+        PolyBuildingSlots polyBuildingSlots, PolyFoodProd polyFoodProd) 
             : base(id)
     {
         Center = center;
@@ -36,7 +35,6 @@ public partial class MapPolygon : Entity
         Regime = regime;
         Tris = tris;
         IsLand = isLand;
-        PolyEmployment = polyEmployment;
         PolyBuildingSlots = polyBuildingSlots;
         PolyFoodProd = polyFoodProd;
     }
@@ -59,7 +57,6 @@ public partial class MapPolygon : Entity
             new EntityRef<Regime>(-1),
             null,
             true,
-            PolyEmploymentReport.Construct(),
             PolyBuildingSlots.Construct(),
             PolyFoodProd.Construct()
         );
@@ -103,10 +100,7 @@ public partial class MapPolygon : Entity
         IsLand = isLand;
     }
 
-    public void SetEmploymentReport(PolyEmploymentReport polyEmployment, ProcedureWriteKey key)
-    {
-        PolyEmployment.Copy(polyEmployment, key);
-    }
+    
 
     public void SetAltitude(float altitude, GenWriteKey key)
     {

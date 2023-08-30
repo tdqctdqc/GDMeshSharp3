@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class FinancialPower : Item
+public class FinancialPower : TradeableItem
 {
-    public FinancialPower() 
+    public FinancialPower()
         : base(nameof(FinancialPower), Colors.Green, 
-            new ItemAttribute[]{})
+            2f, new ItemAttribute[]{})
     {
     }
 }

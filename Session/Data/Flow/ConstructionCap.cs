@@ -8,9 +8,9 @@ public class ConstructionCap : Flow
     {
     }
 
-    public override float GetNonBuildingFlow(Regime r, Data d)
+    public override float GetNonBuildingSupply(Regime r, Data d)
     {
-        var val = d.Models.Flows.IndustrialPower.GetNonBuildingFlow(r, d)
+        var val = d.Models.Flows.IndustrialPower.GetNonBuildingSupply(r, d)
                   + r.GetPopulation(d);
         return val / 10f;
     }
@@ -18,7 +18,7 @@ public class ConstructionCap : Flow
     public override float GetConsumption(Regime r, Data d)
     {
         return d.Infrastructure.CurrentConstruction.ByPoly
-            .Where(kvp => r.GetPolys(d).Contains(d.Get<MapPolygon>(kvp.Key)))
+            .Where(kvp => d.Get<MapPolygon>(kvp.Key).Regime.RefId == r.Id)
             .Sum(kvp => kvp.Value.Sum(c => c.Model.Model(d).ConstructionCapPerTick));
     }
 }

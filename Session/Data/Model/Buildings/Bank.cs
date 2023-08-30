@@ -4,9 +4,9 @@ using System.Linq;
 
 public class Bank : BuildingModel
 {
-    public Bank(Items items, PeepJobList jobs) 
-        : base( BuildingType.Financial, nameof(Bank), 
-            25, 200, 100,
+    public Bank(Items items, PeepJobList jobs, FlowList flows) 
+        : base(BuildingType.Financial, nameof(Bank), 
+            25, 200, 
             new List<BuildingModelComponent>
             {
                 new Workplace(new Dictionary<PeepJob, int>

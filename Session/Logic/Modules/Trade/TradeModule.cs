@@ -21,17 +21,45 @@ public class TradeModule : LogicModule
         var infos = tradeable.ToDictionary(i => i, i => ItemTradeReport.Construct(i, data));
         var market = data.Society.Market;
 
-        SetupInfos(infos, sellOrders, buyOrders, data, proc);
+        SetupInfosAvoidOverlap(infos, sellOrders, buyOrders, data, proc);
         ExchangeItems(infos, sellOrders, buyOrders, data, proc);
         UpdatePrices(infos, proc, data);
         
         return res;
     }
-
-    private void SetupInfos(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 
+private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 
         List<BuyOrder> buyOrders, Data data, TradeProcedure proc)
     {
-        var tick = data.Tick;
+        
+        var sellByRegime = sellOrders
+            .SortInto(o => new Vector2I(o.RegimeId, o.ItemId));
+        var buyByRegime = buyOrders
+            .SortInto(o => new Vector2I(o.RegimeId, o.ItemId));
+        
+        
+        foreach (var kvp in sellByRegime)
+        {
+            if (buyByRegime.ContainsKey(kvp.Key) == false) continue;
+            var sells = kvp.Value;
+            var buys = buyByRegime[kvp.Key];
+            while (sells.FirstOrDefault(o => o.Quantity > 0) is SellOrder so
+                   && buys.FirstOrDefault(o => o.Quantity > 0) is BuyOrder bo)
+            {
+                var diff = Mathf.Abs(so.Quantity - bo.Quantity);
+                if (so.Quantity > bo.Quantity)
+                {
+                    so.Quantity = diff;
+                    bo.Quantity = 0;
+                }
+                else
+                {
+                    bo.Quantity = diff;
+                    so.Quantity = 0;
+                }
+            }
+            
+        }
+        
         foreach (var sellOrder in sellOrders)
         {
             var item = (TradeableItem) data.Models[sellOrder.ItemId];
@@ -44,10 +72,10 @@ public class TradeModule : LogicModule
             var price = data.Society.Market.Prices[item.Id];
             infos[item].TotalDemanded += buyOrder.Quantity;
         }
-        
-        foreach (var kvp in infos)
+            
+        foreach (var kvp2 in infos)
         {
-            var info = kvp.Value;
+            var info = kvp2.Value;
             if (info.TotalOffered == 0 || info.TotalDemanded == 0)
             {
                 info.SellSatisfyRatio = 0f;
@@ -58,9 +86,45 @@ public class TradeModule : LogicModule
                 info.SellSatisfyRatio = Mathf.Clamp(info.TotalDemanded / info.TotalOffered, 0f, 1f);
                 info.BuySatisfyRatio = Mathf.Clamp(info.TotalOffered / info.TotalDemanded, 0f, 1f);
             }
-            proc.ItemTradeInfos.Add(kvp.Key.Id, info);
+            proc.ItemTradeInfos.Add(kvp2.Key.Id, info);
         }
+        
+        
+        
     }
+    // private void SetupInfos(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 
+    //     List<BuyOrder> buyOrders, Data data, TradeProcedure proc)
+    // {
+    //     
+    //     foreach (var sellOrder in sellOrders)
+    //     {
+    //         var item = (TradeableItem) data.Models[sellOrder.ItemId];
+    //         var price = data.Society.Market.Prices[item.Id];
+    //         infos[item].TotalOffered += sellOrder.Quantity;
+    //     }
+    //     foreach (var buyOrder in buyOrders)
+    //     {
+    //         var item = (TradeableItem) data.Models[buyOrder.ItemId];
+    //         var price = data.Society.Market.Prices[item.Id];
+    //         infos[item].TotalDemanded += buyOrder.Quantity;
+    //     }
+    //     
+    //     foreach (var kvp in infos)
+    //     {
+    //         var info = kvp.Value;
+    //         if (info.TotalOffered == 0 || info.TotalDemanded == 0)
+    //         {
+    //             info.SellSatisfyRatio = 0f;
+    //             info.BuySatisfyRatio = 0f;
+    //         }
+    //         else
+    //         {
+    //             info.SellSatisfyRatio = Mathf.Clamp(info.TotalDemanded / info.TotalOffered, 0f, 1f);
+    //             info.BuySatisfyRatio = Mathf.Clamp(info.TotalOffered / info.TotalDemanded, 0f, 1f);
+    //         }
+    //         proc.ItemTradeInfos.Add(kvp.Key.Id, info);
+    //     }
+    // }
 
     private void ExchangeItems(Dictionary<Item, ItemTradeReport> tradeReports, List<SellOrder> sellOrders, 
         List<BuyOrder> buyOrders, Data data, TradeProcedure proc)

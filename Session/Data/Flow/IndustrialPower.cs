@@ -9,7 +9,7 @@ public class IndustrialPower : Flow
     {
     }
 
-    public override float GetNonBuildingFlow(Regime r, Data d)
+    public override float GetNonBuildingSupply(Regime r, Data d)
     {
         return 0f;
     }

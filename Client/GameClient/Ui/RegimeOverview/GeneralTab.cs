@@ -2,8 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+namespace Ui.RegimeOverview;
 
-public partial class RegimeGeneralOverview : ScrollContainer
+public partial class GeneralTab : ScrollContainer
 {
     private VBoxContainer _container;
     public override void _Ready()
@@ -11,7 +12,7 @@ public partial class RegimeGeneralOverview : ScrollContainer
         base._Ready();
     }
 
-    public RegimeGeneralOverview()
+    public GeneralTab()
     {
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();

@@ -6,9 +6,9 @@ using System.Linq;
 public static class EnumerableExt
 {
     private static RandomNumberGenerator _rand = new RandomNumberGenerator();
-    public static IEnumerable<TSub> SelectWhereOfType<T, TSub>(this IEnumerable<T> enumerable)
+    public static IEnumerable<TSub> SelectWhereOfType<TSub>(this IEnumerable<object> enumerable)
     {
-        return enumerable.Where(e => e is TSub).Select(e => (TSub)(object) e);
+        return enumerable.Where(e => e is TSub).Select(e => (TSub)e);
     }
     public static IEnumerable<T> Yield<T>(this T item)
     {

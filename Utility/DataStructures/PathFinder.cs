@@ -26,27 +26,15 @@ public static class PathFinder
         {
             var path = PathFinder<Waypoint>.FindPath(w1, w2, 
                 p => p.Neighbors
-                    .Select(nId => nav.Waypoints[nId])
-                    .Where(n => n.WaypointData.Value() is SeaNav == false),
+                    .Select(nId => nav.Get(nId))
+                    .Where(n => n is SeaWaypoint == false),
                 (w,p) => EdgeRoughnessCost(w, p, data), 
                 (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
-            if (path == null)
-            {
-                GD.Print("bad land path " + s1.Id + " " + s2.Id);
-                foreach (var wp in s1.GetAssocWaypoints(data))
-                {
-                    foreach (var nWp in wp.Neighbors.Select(n => nav.Waypoints[n]))
-                    {
-                        if (nWp.Neighbors.Contains(wp.Id) == false) 
-                            throw new Exception("unsymmetrical waypoint");
-                    }
-                }
-            }
-            else return path;
+            return path;
         }
         return PathFinder<Waypoint>.FindPath(w1, w2, 
             p => p.Neighbors
-                .Select(nId => nav.Waypoints[nId]),
+                .Select(nId => nav.Get(nId)),
             (w,p) => EdgeRoughnessCost(w, p, data), 
             (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
     }
@@ -71,19 +59,15 @@ public static class PathFinder
     
     public static float LandEdgeCost(Waypoint p1, Waypoint p2, Data data)
     {
-        var d1 = p1.WaypointData.Value();
-        var d2 = p2.WaypointData.Value();
-        
-        if (d1 is SeaNav) return Mathf.Inf;
-        if (d2 is SeaNav) return Mathf.Inf;
-        
+        if (p1 is SeaWaypoint) return Mathf.Inf;
+        if (p2 is SeaWaypoint) return Mathf.Inf;
         
         var cost = data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length();
-        if (d1 is LandNav n1)
+        if (p1 is ILandWaypoint n1)
         {
             cost *= 1f + n1.Roughness;
         }
-        if (d2 is LandNav n2)
+        if (p2 is ILandWaypoint n2)
         {
             cost *= 1f + n2.Roughness;
         }
@@ -92,17 +76,13 @@ public static class PathFinder
     }
     public static float EdgeRoughnessCost(Waypoint p1, Waypoint p2, Data data)
     {
-        var d1 = p1.WaypointData.Value();
-        var d2 = p2.WaypointData.Value();
-        
-        
         var cost = data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length();
         var roughCost = 0f;
-        if (d1 is LandNav n1)
+        if (p1 is ILandWaypoint n1)
         {
             roughCost += 1f + n1.Roughness;
         }
-        if (d2 is LandNav n2)
+        if (p2 is ILandWaypoint n2)
         {
             roughCost += 1f + n2.Roughness;
         }

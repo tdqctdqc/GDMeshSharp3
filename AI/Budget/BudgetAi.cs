@@ -6,16 +6,19 @@ using Godot;
 public class BudgetAi 
 {
     private Regime _regime;
-    private List<BudgetPriority> _priorities;
+    public List<BudgetPriority> Priorities { get; private set; }
     public IncomeBudget IncomeBudget { get; private set; }
     public BudgetItemReserve Reserve { get; private set; }
     
     public BudgetAi(Data data, Regime regime)
     {
         _regime = regime;
-        _priorities = new List<BudgetPriority>
+        Priorities = new List<BudgetPriority>
         {
-               new FlowProdBuildingConstructionPriority(data.Models.Flows.IndustrialPower, (r,d) => 1f),
+               new FlowProdBuildingConstructionPriority(
+                   data.Models.Flows.IndustrialPower, (r,d) => 1f),
+               new FlowProdBuildingConstructionPriority(
+                   data.Models.Flows.Income, (r,d) => .5f),
         };
         IncomeBudget = new IncomeBudget();
         Reserve = new BudgetItemReserve();
@@ -27,10 +30,10 @@ public class BudgetAi
         IncomeBudget.Calculate(data);
         Reserve.Calculate(_regime, data);
         var prices = data.Society.Market.Prices
-            .ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
+            .ToDictionary(kvp => (Item)data.Models[kvp.Key], 
+                kvp => kvp.Value);
         
-        
-        foreach (var p in _priorities)
+        foreach (var p in Priorities)
         {
             p.SetWeight(data, _regime);
         }
@@ -44,7 +47,7 @@ public class BudgetAi
     private void DoMainRound(BudgetScratch scratch, Data data,
         Dictionary<Item, float> prices, MajorTurnOrders orders)
     {
-        var totalPriorityWeight = _priorities.Sum(p => p.Weight);
+        var totalPriorityWeight = Priorities.Sum(p => p.Weight);
         var totalLaborAvail = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
         var totalPrice =
             _regime.Items.Contents.Sum(kvp =>
@@ -53,13 +56,12 @@ public class BudgetAi
                     ? prices[(Item) data.Models[kvp.Key]] * _regime.Items[kvp.Key]
                     : 1f;
             });
-        foreach (var p in _priorities)
+        foreach (var p in Priorities)
         {
             var weight = p.Weight;
             var share = weight / totalPriorityWeight;
             scratch.TakeShare(share, _regime.Items, _regime.Flows, totalLaborAvail, 
                 Mathf.FloorToInt(totalPrice));
-            
             p.Calculate(_regime, data, scratch, prices, orders);
         }
     }
@@ -67,12 +69,11 @@ public class BudgetAi
         Dictionary<Item, float> prices, MajorTurnOrders orders)
     {
         scratch.MaxCredit();
-        foreach (var p in _priorities)
+        foreach (var p in Priorities)
         {
             p.Calculate(_regime, data, scratch, prices, orders);
         }
     }
-
     public Dictionary<Item, int> GetItemWishlist(Data data, float credit)
     {
         var buyItemsIncome = Mathf.Floor(credit * IncomeBudget.BuyWishlistItemsRatio);
@@ -80,9 +81,9 @@ public class BudgetAi
         var prices = market.Prices.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
         
         var totalLaborAvail = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
-        var totalPriorityWeight = _priorities.Sum(p => p.Weight);
+        var totalPriorityWeight = Priorities.Sum(p => p.Weight);
         var creditBig = Mathf.Clamp(credit * 10, 0f, 1_000_000f);
-        return _priorities.Select(p =>
+        return Priorities.Select(p =>
             {
                 var priorityWeight = p.Weight;
                 var priorityShare = priorityWeight / totalPriorityWeight;
@@ -127,8 +128,6 @@ public class BudgetAi
             if (deficit > 0)
             {
                 var qToBuy = Math.Min(deficit, Mathf.FloorToInt(stockUpReserveItemsIncome / price));
-                // GD.Print($"Deficit of {deficit} {item.Name}, buying {qToBuy}");
-
                 var spent = qToBuy * price;
                 stockUpReserveItemsIncome -= spent;
                 orders.TradeOrders.BuyOrders.Add(new BuyOrder(item.Id, _regime.Id, qToBuy));

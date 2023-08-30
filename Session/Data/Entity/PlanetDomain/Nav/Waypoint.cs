@@ -10,9 +10,9 @@ public class Waypoint : IIdentifiable
     public HashSet<int> Neighbors { get; private set; }
     public Vector2 Pos { get; private set; }
     public Vector4I AssociatedPolyIds { get; private set; }
-    public PolymorphMember<WaypointData> WaypointData { get; private set; }
+    // public PolymorphMember<WaypointData> WaypointData { get; private set; }
 
-    public static Waypoint Construct(GenWriteKey key, int id, Vector2 pos, MapPolygon poly1,
+    protected Waypoint(GenWriteKey key, int id, Vector2 pos, MapPolygon poly1,
         MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null)
     {
         var associatedPolyIds = new Vector4I(poly1.Id, 
@@ -20,24 +20,20 @@ public class Waypoint : IIdentifiable
             poly3 != null ? poly3.Id : -1,            
             poly4 != null ? poly4.Id : -1
         );
-        return new Waypoint(id, poly1.GetChunk(key.Data).Coords, new HashSet<int>(), associatedPolyIds,
-            pos, PolymorphMember<WaypointData>.Construct(null));
+        AssociatedPolyIds = associatedPolyIds;
+        Id = id;
+        Neighbors = new HashSet<int>();
+        Pos = pos;
     }
-    [SerializationConstructor] private Waypoint(int id, Vector2 chunkCoords, 
-        HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos, 
-        PolymorphMember<WaypointData> waypointData)
+    [SerializationConstructor] protected Waypoint(int id, Vector2 chunkCoords, 
+        HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos)
     {
         AssociatedPolyIds = associatedPolyIds;
         Id = id;
         Neighbors = neighbors;
         Pos = pos;
-        WaypointData = waypointData;
     }
 
-    public void SetType(WaypointData t, GenWriteKey key)
-    {
-        WaypointData = PolymorphMember<WaypointData>.Construct(t);
-    }
 
     public bool AssociatedWithPoly(MapPolygon poly)
     {

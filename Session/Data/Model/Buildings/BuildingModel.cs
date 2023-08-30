@@ -12,12 +12,11 @@ public abstract class BuildingModel : IModel
     public int ConstructionCapPerTick { get; private set; }
     public BuildingType BuildingType { get; private set; }
     public List<BuildingModelComponent> Components { get; private set; }
-    public int Income { get; private set; }
     public Icon Icon { get; }
     public Dictionary<Item, int> BuildCosts { get; private set; }
 
     public BuildingModel(BuildingType buildingType, string name, int numTicksToBuild, int constructionCapPerTick,
-        int income, List<BuildingModelComponent> components, Dictionary<Item, int> buildCosts)
+        List<BuildingModelComponent> components, Dictionary<Item, int> buildCosts)
     {
         BuildingType = buildingType;
         Name = name;
@@ -25,7 +24,6 @@ public abstract class BuildingModel : IModel
         ConstructionCapPerTick = constructionCapPerTick;
         Icon = Icon.Create(Name, Icon.AspectRatio._1x1, 25f);
         Components = components;
-        Income = income;
         BuildCosts = buildCosts;
     }
 

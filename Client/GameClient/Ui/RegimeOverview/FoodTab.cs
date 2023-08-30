@@ -2,13 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+namespace Ui.RegimeOverview;
 
-public partial class RegimeFoodOverview : ScrollContainer
+public partial class FoodTab : ScrollContainer
 {
     private VBoxContainer _container;
-    public RegimeFoodOverview()
+    public FoodTab()
     {
-        Name = "Agriculture";
+        Name = "Food";
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         _container.AnchorsPreset = (int)LayoutPreset.FullRect;
@@ -20,8 +21,17 @@ public partial class RegimeFoodOverview : ScrollContainer
         
         var actualProd = regime.History.ItemHistory.Latest(data.Models.Items.Food).Produced;
         var actualCons = regime.History.ItemHistory.Latest(data.Models.Items.Food).Consumed;
+        var demand = regime.GetPeeps(data).Sum(p => p.Size)
+                     * data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         _container.CreateLabelAsChild($"Last Prod: {actualProd}");
         _container.CreateLabelAsChild($"Consumption: {actualCons}");
+        _container.CreateLabelAsChild($"Net: {actualProd - actualCons}");
+        _container.CreateLabelAsChild($"Demand: {demand}");
+        if (demand > actualCons)
+        {
+            _container.CreateLabelAsChild($"Deficit of {demand - actualCons}");
+        }
+        
         
         
         var populatedPolys = regime.GetPolys(data)
@@ -31,7 +41,8 @@ public partial class RegimeFoodOverview : ScrollContainer
         var peepCount = peeps.Count();
         var peepSize = peeps.Sum(p => p.Size);
         var jobs = populatedPolys
-            .SelectMany(p => p.PolyEmployment.Counts)
+            .Select(p => p.GetPeep(data))
+            .SelectMany(p => p.Employment.Counts)
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);
 
         var techniqueCounts = populatedPolys

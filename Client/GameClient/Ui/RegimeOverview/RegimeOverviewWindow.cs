@@ -2,39 +2,50 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Ui.RegimeOverview;
 
 public partial class RegimeOverviewWindow : TabWindow
 {
-    private RegimeGeneralOverview _general;
-    private RegimeConstructionOverview _construction;
-    private RegimePeepsOverview _peeps;
-    private RegimeWalletOverview _wallet;
-    private RegimeFoodOverview _ag;
+    private GeneralTab _general;
+    private ConstructionTab _construction;
+    private PeepsTab _peeps;
+    private ItemsTab _items;
+    private FoodTab _ag;
+    private BudgetTab _budget;
+    private FlowsTab _flows;
     public RegimeOverviewWindow()
     {
-        MinSize = new Vector2I(500, 500);
+        MinSize = new Vector2I(1000, 1000);
 
-        _general = new RegimeGeneralOverview();
+        _general = new GeneralTab();
         AddTab(_general);
         
-        _construction = new RegimeConstructionOverview();
+        _construction = new ConstructionTab();
         AddTab(_construction);
 
-        _peeps = new RegimePeepsOverview();
+        _peeps = new PeepsTab();
         AddTab(_peeps);
 
-        _wallet = new RegimeWalletOverview();
-        AddTab(_wallet);
+        _items = new ItemsTab();
+        AddTab(_items);
 
-        _ag = new RegimeFoodOverview();
+        _ag = new FoodTab();
         AddTab(_ag);
+
+        _budget = new BudgetTab();
+        AddTab(_budget);
+
+        _flows = new FlowsTab();
+        AddTab(_flows);
     }
     public void Setup(Regime regime, Data data)
     {
         _general.Setup(regime, data);
         _construction.Setup(regime, data);
         _peeps.Setup(regime, data);
-        _wallet.Setup(regime, data);
+        _items.Setup(regime, data);
         _ag.Setup(regime, data);
+        _budget.Setup(regime, data);
+        _flows.Setup(regime, data);
     }
 }

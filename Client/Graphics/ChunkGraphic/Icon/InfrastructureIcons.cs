@@ -16,7 +16,7 @@ public partial class InfrastructureIcons : MapChunkGraphicNode<Waypoint>
     }
     protected override Node2D MakeGraphic(Waypoint element, Data data)
     {
-        if (element.WaypointData.Value() is CoastNav c && c.Port)
+        if (element is CoastWaypoint c && c.Port)
         {
             var icon = data.Models.Infras.Port.Icon.GetMeshInstance();
             SetRelPos(icon, element.Pos, data);
@@ -30,7 +30,7 @@ public partial class InfrastructureIcons : MapChunkGraphicNode<Waypoint>
     {
         return Chunk.Polys.SelectMany(p => p.GetAssocWaypoints(data))
             .Distinct()
-            .Where(wp => wp.WaypointData.Value() is CoastNav c && c.Port);
+            .Where(wp => wp is CoastWaypoint c && c.Port);
     }
 
     protected override bool Ignore(Waypoint element, Data data)

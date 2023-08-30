@@ -10,7 +10,9 @@ public class ItemProdBuildingConstructionPriority : BuildingConstructionPriority
 {
     public Item ProducedItem { get; private set; }
     public ItemProdBuildingConstructionPriority(Item producedItem, Func<Data, Regime, float> getWeight) 
-        : base(b => b.GetComponent<ItemProd>(p => p.ProdItem == producedItem) != null,
+        : base(
+            $"{producedItem.Name} Item Prod",
+            b => b.GetComponent<ItemProd>(p => p.ProdItem == producedItem) != null,
             b => b.GetComponent<ItemProd>(p => p.ProdItem == producedItem).ProdCap,
             getWeight)
     {

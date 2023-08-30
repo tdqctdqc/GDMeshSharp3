@@ -5,7 +5,6 @@ using Godot;
 
 public partial class ConstructionIcons : MapChunkGraphicNode<Construction>
 {
-    private static Texture2D _underConstruction => TextureManager.Textures["UnderConstruction"];
     public ConstructionIcons(MapChunk chunk, Data data) 
         : base(nameof(ConstructionIcons), data, chunk)
     {        
@@ -21,7 +20,7 @@ public partial class ConstructionIcons : MapChunkGraphicNode<Construction>
         var mesh = new QuadMesh();
         mesh.Size = Vector2.One * 25f;
         constrSignMesh.Mesh = mesh;
-        constrSignMesh.Texture = _underConstruction;
+        constrSignMesh.Texture = data.Models.Flows.ConstructionCap.Icon.BaseTexture;
         icon.AddChild(constrSignMesh);
         SetRelPos(icon, construction.Pos, data);
         return icon;

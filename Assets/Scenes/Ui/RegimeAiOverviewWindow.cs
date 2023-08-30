@@ -42,6 +42,9 @@ public partial class RegimeAiOverviewWindow : TabWindow
         c.AddChild(vbox);
         vbox.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         
+        
+        
+        
         vbox.CreateLabelAsChild("WISHLIST");
         var income = r.Flows[data.Models.Flows.Income].Net();
         var buyItemsIncome = Mathf.Floor(income * ai.Budget.IncomeBudget.BuyWishlistItemsRatio);

@@ -10,63 +10,45 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
     {
         var nav = d.Planet.Nav;
         var mb = new MeshBuilder();
-        AddWaypointConnections(chunk, d, nav, mb);
 
         AddWaypointMarkers(nav, mb, chunk, d);
         AddChild(mb.GetMeshInstance());
-    }
-
-    private static void AddWaypointConnections(MapChunk chunk, Data d, Nav nav, MeshBuilder mb)
-    {
-        foreach (var poly in chunk.Polys)
-        {
-            if (poly.IsWater()) continue;
-            var ns = poly.Neighbors.Items(d);
-            foreach (var n in ns)
-            {
-                if (n.IsWater()) continue;
-                var path = nav.GetPolyPath(poly, n);
-                if (path == null) continue;
-                for (var i = 0; i < path.Count() - 1; i++)
-                {
-                    var path1Offset = chunk.RelTo.GetOffsetTo(path.ElementAt(i).Pos, d);
-                    var path2Offset = chunk.RelTo.GetOffsetTo(path.ElementAt(i + 1).Pos, d);
-                    mb.AddLine(path1Offset, path2Offset, Colors.Red, 10f);
-                }
-            }
-        }
     }
 
     private void AddWaypointMarkers(Nav nav, MeshBuilder mb, MapChunk chunk, Data d)
     {
         foreach (var kvp in nav.Waypoints
                      .Where(kvp2 => 
-                         chunk.Polys.Contains(d.Get<MapPolygon>(kvp2.Value.AssociatedPolyIds.X))))
+                         chunk.Polys.Contains(d.Get<MapPolygon>(kvp2.Value.Value().AssociatedPolyIds.X))))
         {
-            var point = kvp.Value;
+            var point = kvp.Value.Value();
             var offset = chunk.RelTo.GetOffsetTo(point.Pos, d);
             foreach (var nId in point.Neighbors)
             {
-                var n = d.Planet.Nav.Waypoints[nId];
+                var n = d.Planet.Nav.Get(nId);
                 var nOffset = chunk.RelTo.GetOffsetTo(n.Pos, d);
                 mb.AddLine(offset, nOffset, Colors.Red, 2.5f);
             }
 
             Color color;
-            if (point.WaypointData.Value() is RiverNav)
+            if (point is RiverMouthWaypoint)
+            {
+                color = Colors.DodgerBlue.Darkened(.4f);
+            }
+            else if (point is RiverWaypoint)
             {
                 color = Colors.DodgerBlue;
             }
-            else if (point.WaypointData.Value() is SeaNav)
+            else if (point is SeaWaypoint)
             {
                 color = Colors.DarkBlue;
             }
-            else if (point.WaypointData.Value() is InlandNav n)
+            else if (point is InlandWaypoint n)
             {
                 var roughness = n.Roughness;
                 color = Colors.White.Darkened(roughness);
             }
-            else if (point.WaypointData.Value() is CoastNav)
+            else if (point is CoastWaypoint)
             {
                 color = Colors.Green;
             }

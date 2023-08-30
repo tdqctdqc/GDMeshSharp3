@@ -25,7 +25,7 @@ public class PeepGenerator : Generator
         
         foreach (var p in _data.GetAll<MapPolygon>())
         {
-            if(p.IsLand) PolyPeep.Create(p, key);
+            if(p.IsLand) Peep.Create(p, key);
         }
         
         foreach (var r in _data.GetAll<Regime>())
@@ -47,8 +47,16 @@ public class PeepGenerator : Generator
         if (popSurplus <= 0) return;
         var extractionLabor = GenerateExtractionBuildings(r);
         var adminLabor = GenerateTownHalls(r);
-        var forFactories = (employed - (extractionLabor + adminLabor));
-        GenerateFactories(r, forFactories);
+        var surplus = (employed - (extractionLabor + adminLabor));
+        var forFactories = surplus * .75f;
+        var forBanks = surplus * .25f;
+        GenerateBuildingType(_key.Data.Models.Buildings.Factory, r, forFactories,
+            p => Mathf.Max(0f, p.Moisture - p.Roughness));
+        GenerateBuildingType(_key.Data.Models.Buildings.Bank, r, forBanks,
+            p => Mathf.Max(0f, 
+                p.HasSettlement(_key.Data) 
+            ? p.GetSettlement(_key.Data).Size
+            : 0f));
         GenerateLaborers(r, employed);
         GenerateUnemployed(r, Mathf.FloorToInt(popSurplus * unemployedRatio));
     }
@@ -93,7 +101,7 @@ public class PeepGenerator : Generator
         foreach (var kvp in t)
         {
             var model = kvp.Value;
-            var comps = model.Components.SelectWhereOfType<BuildingModelComponent, ExtractionProd>();
+            var comps = model.Components.SelectWhereOfType<ExtractionProd>();
             foreach (var extractionProd in comps)
             {
                 extractBuildings.AddOrUpdate(extractionProd.ProdItem, model);
@@ -148,35 +156,59 @@ public class PeepGenerator : Generator
 
         return townHall.GetComponent<Workplace>().TotalLaborReq() * settlements.Count();
     }
-    private void GenerateFactories(Regime r, float popBudget)
+    // private void GenerateFactories(Regime r, float popBudget)
+    // {
+    //     if (popBudget <= 0) return;
+    //     var factory = _data.Models.Buildings.Factory;
+    //
+    //     var polys = r.GetPolys(_data).Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
+    //     var portions = Apportioner.ApportionLinear(popBudget, polys,
+    //         p =>
+    //         {
+    //             return Mathf.Max(0f, p.Moisture - p.Roughness);
+    //             // var ps = p.GetPeeps(_data);
+    //             // if (ps == null) return 0f;
+    //             // return p.GetPeeps(_data).Sum(x => x.Size);
+    //         }
+    //     );
+    //     var factoryLaborReq = factory.GetComponent<Workplace>().TotalLaborReq();
+    //     for (var i = 0; i < polys.Count; i++)
+    //     {
+    //         var p = polys[i];
+    //         var pop = portions[i];
+    //         var numFactories = Mathf.Round(pop / factoryLaborReq);
+    //         numFactories = Mathf.Min(p.PolyBuildingSlots[BuildingType.Industry], numFactories);
+    //         
+    //         for (var j = 0; j < numFactories; j++)
+    //         {
+    //             MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, factory, _key);
+    //         }
+    //     }
+    // }
+    
+    private void GenerateBuildingType(BuildingModel model, Regime r, float popBudget,
+        Func<MapPolygon, float> suitability)
     {
         if (popBudget <= 0) return;
-        var factory = _data.Models.Buildings.Factory;
 
-        var polys = r.GetPolys(_data).Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
-        var portions = Apportioner.ApportionLinear(popBudget, polys,
-            p =>
-            {
-                return Mathf.Max(0f, p.Moisture - p.Roughness);
-                // var ps = p.GetPeeps(_data);
-                // if (ps == null) return 0f;
-                // return p.GetPeeps(_data).Sum(x => x.Size);
-            }
-        );
-        var factoryLaborReq = factory.GetComponent<Workplace>().TotalLaborReq();
+        var polys = r.GetPolys(_data)
+            .Where(p => model.CanBuildInPoly(p, _key.Data)).ToList();
+        var portions = Apportioner.ApportionLinear(popBudget, polys, suitability);
+        var laborReq = model.GetComponent<Workplace>().TotalLaborReq();
         for (var i = 0; i < polys.Count; i++)
         {
             var p = polys[i];
             var pop = portions[i];
-            var numFactories = Mathf.Round(pop / factoryLaborReq);
-            numFactories = Mathf.Min(p.PolyBuildingSlots[BuildingType.Industry], numFactories);
+            var num = Mathf.Round(pop / laborReq);
+            num = Mathf.Min(p.PolyBuildingSlots[model.BuildingType], num);
             
-            for (var j = 0; j < numFactories; j++)
+            for (var j = 0; j < num; j++)
             {
-                MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, factory, _key);
+                MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, model, _key);
             }
         }
     }
+    
     private void GenerateLaborers(Regime r, float popSurplus)
     {
         if (popSurplus <= 0) return;

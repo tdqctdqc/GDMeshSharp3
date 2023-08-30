@@ -33,7 +33,7 @@ public class BudgetScratch
         }
 
         Unemployed += totalUnemployed * share;
-        Credit += totalUnemployed * share;
+        Credit += totalCredit * share;
     }
 
     public void SubtractCredit(float credit)

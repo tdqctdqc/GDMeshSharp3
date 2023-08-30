@@ -9,22 +9,15 @@ public class Income : Flow
     {
     }
 
-    public override float GetNonBuildingFlow(Regime r, Data d)
+    public override float GetNonBuildingSupply(Regime r, Data d)
     {
-        var fromBuildings = r.GetPolys(d)
-            .Where(p => p.GetBuildings(d) != null)
-            .Sum(p =>
-                {
-                    var bs = p.GetBuildings(d);
-                    if(bs == null) return 0;
-
-                    return bs.Select(b => b.Model.Model(d)).Sum(b => b.Income);
-                }
-            );
-        var fromAgriculture = r.GetPolys(d).Sum(p => p.PolyFoodProd.Income(d));
+        var fromPeeps = r.GetPolys(d)
+            .Select(p => p.GetPeep(d))
+            .Select(p => p.Employment)
+            .Sum(p => p.Counts
+                .Sum(kvp => ((PeepJob)d.Models[kvp.Key]).Income * kvp.Value));
         var tradeBalance = r.Finance.LastTradeBalance;
-        
-        return fromBuildings + fromAgriculture + tradeBalance;
+        return fromPeeps + tradeBalance;
     }
 
     public override float GetConsumption(Regime r, Data d)

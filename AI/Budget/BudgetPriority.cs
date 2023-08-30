@@ -5,10 +5,12 @@ using System.Text.RegularExpressions;
 
 public abstract class BudgetPriority
 {
+    public string Name { get; private set; }
     private Func<Data, Regime, float> _getWeight;
     public float Weight { get; private set; }
-    public BudgetPriority(Func<Data, Regime, float> getWeight)
+    public BudgetPriority(string name, Func<Data, Regime, float> getWeight)
     {
+        Name = name;
         _getWeight = getWeight;
     }
 

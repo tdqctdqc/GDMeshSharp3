@@ -18,7 +18,7 @@ public class RuleVars : Entity
         var v = new RuleVars(
             4,
             2,
-            .01f,
+            .05f,
             1f,
             .02f,
             .1f,
