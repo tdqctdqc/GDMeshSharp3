@@ -13,7 +13,9 @@ public class PlanetSettings : Settings
     public FloatSettingsOption Seed { get; private set; }
         = new FloatSettingsOption("Seed", 0f, 0f, 1000f, 1f, true);
     public FloatSettingsOption PreferredMinPolyEdgeLength { get; private set; }
-        = new FloatSettingsOption("PreferredMinPolyEdgeLength", 50f, 10f, 100f, 1f, false);
+        = new FloatSettingsOption("Preferred Min Poly Edge Length", 50f, 10f, 100f, 1f, false);
+   
+    
     public PlanetSettings() : base("Planet")
     {
     }

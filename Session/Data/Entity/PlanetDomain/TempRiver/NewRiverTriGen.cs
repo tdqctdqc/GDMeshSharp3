@@ -131,10 +131,6 @@ public class NewRiverTriGen
         List<PolyTri> tris, Vector2[] insetPoints, GenWriteKey key)
     {
         var innerBoundarySegs = new HashSet<LineSegment>();
-            // .AddRange(
-            //     poly.GetOrderedBoundarySegs(data).Select(ls => new LineSegStructNoFlip(ls))
-            // );
-        
         var edges = poly.GetEdges(data);
         var bPoints = poly.GetOrderedBoundaryPoints(data);
         //a. make pivot tris and bank tris
@@ -153,8 +149,6 @@ public class NewRiverTriGen
             var fromClose = insetPoints[nexiCloseIndices[fromTo.from]];
             var toPivot = edgeSegs[edgeSegs.Count - 1].From;
             var toClose = insetPoints[nexiCloseIndices[fromTo.to]];
-            
-            var isShort = edge.GetLength(data) < 10f && edge.IsRiver() == false;
             
             if (fromTo.from.IsRiverNexus(data))
             {
@@ -179,8 +173,6 @@ public class NewRiverTriGen
             {
                 innerBoundarySegs.Add(edgeSegs[edgeSegs.Count - 1]);
             }
-
-            
 
             var innerEdgeHash = new HashSet<int>();
             if (edge.IsRiver())
@@ -284,24 +276,6 @@ public class NewRiverTriGen
                 ex.AddSegLayer(innerBoundarySegs.ToList(), "inner boundary");
                 throw ex;
             }
-            
-            // var e = new GeometryException("fail to triangulate inner boundary tris");
-            // e.AddSegLayer(poly.GetOrderedBoundarySegs(data), "boundary");
-            // e.AddSegLayer(innerBoundarySegs.ToList(), "inner boundary");
-            // e.AddSegLayer(insetPoints.ToList().GetLineSegments(true).ToList(), "inset");
-            // e.AddSegLayer(poly.GetOrderedBoundarySegs(data).Union(innerBoundarySegs)
-            //     .Union(poly.GetOrderedBoundarySegs(data)).ToList(), "union");
-            // throw e;
         }
-    }
-    
-    private static Vector2 GetPivot(MapPolygon poly, EdgeEndKey key, TempRiverData rData, Data data)
-    {
-        var pivot = rData.HiPivots[key];
-        if (poly != key.Edge.HighPoly.Entity(data))
-        {
-            pivot += poly.GetOffsetTo(key.Edge.HighPoly.Entity(data), data);
-        }
-        return pivot;
     }
 }

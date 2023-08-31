@@ -4,6 +4,8 @@ using System.Linq;
 
 public class MoistureSettings : Settings
 {
+    public FloatSettingsOption Scale { get; private set; }
+        = new FloatSettingsOption("Scale", 1f, 0f, 2f, .1f, false);
     public FloatSettingsOption EquatorDistMoistureMultWeight { get; private set; }
         = new FloatSettingsOption("Equator Dist Moisture Mult Weight", .5f, 0f, 1f, .1f, false);
     public FloatSettingsOption RiverFlowPerMoisture { get; private set; }

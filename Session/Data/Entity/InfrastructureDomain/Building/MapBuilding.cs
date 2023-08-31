@@ -18,7 +18,8 @@ public class MapBuilding : Entity
         var slots = poly.PolyBuildingSlots;
         if (slots.AvailableSlots.TryGetValue(model.BuildingType, out var numSlots) == false || numSlots.Count < 1)
         {
-            throw new Exception();
+            return null;
+            // throw new Exception();
         }
         var pos = slots.AvailableSlots[model.BuildingType].First.Value;
         slots.AvailableSlots[model.BuildingType].RemoveFirst();

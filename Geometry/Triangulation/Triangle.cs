@@ -97,9 +97,9 @@ public class Triangle
     }
     public bool IntersectsRay(Vector2 ray)
     {
-        return Vector2Ext.LineSegmentsIntersect(Vector2.Zero, ray, A, B)
-               || Vector2Ext.LineSegmentsIntersect(Vector2.Zero, ray, B, C)
-               || Vector2Ext.LineSegmentsIntersect(Vector2.Zero, ray, C, A);
+        return Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, ray, A, B)
+               || Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, ray, B, C)
+               || Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, ray, C, A);
     }
     public override string ToString()
     {

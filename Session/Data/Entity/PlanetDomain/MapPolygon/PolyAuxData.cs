@@ -92,8 +92,9 @@ public class PolyAuxData
         points.OrderByClockwise(Vector2.Zero, v => v);
         return points.GetLineSegments().ToList();
     }
-    public bool PointInPoly(MapPolygon poly, Vector2 pointRel, Data data)
+
     
+    public bool PointInPoly(MapPolygon poly, Vector2 pointRel, Data data)
     {
         // return poly.GetOrderedBoundarySegs(data)
         //     .Any(s => TriangleExt.ContainsPoint(s.From, s.To, Vector2.Zero, pointRel));

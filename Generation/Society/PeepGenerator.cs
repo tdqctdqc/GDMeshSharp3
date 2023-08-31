@@ -63,7 +63,7 @@ public class PeepGenerator : Generator
 
     private float GenerateFoodProducers(Regime r)
     {
-        var developmentRatio = .5f;
+        var developmentScale = _data.GenMultiSettings.SocietySettings.DevelopmentScale.Value;
         var foodConsPerPeep = _data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         var territory = r.GetPolys(_data);
         var foodSurplus = new ConcurrentBag<float>();
@@ -79,7 +79,8 @@ public class PeepGenerator : Generator
             Parallel.ForEach(territory, p =>
             {
                 var tris = p.Tris.Tris;
-                var numBuilding = Mathf.FloorToInt(technique.NumForPoly(p, _data) * developmentRatio);
+                var numBuilding = Mathf
+                    .RoundToInt(technique.NumForPoly(p, _data) * developmentScale);
                 if (numBuilding == 0) return;
                 foodSurplus.Add(buildingSurplus * numBuilding);
                 p.GetPeep(_key.Data)

@@ -202,13 +202,16 @@ public class GeologyGenerator : Generator
 
     private void DoContinentFriction()
     {
-        var faultRangeSetting = Data.GenMultiSettings.GeologySettings.FaultLineRange.Value;
-        var frictionAltEffectSetting = Data.GenMultiSettings.GeologySettings.FrictionAltEffect.Value;
-        var roughnessErosionMult = Data.GenMultiSettings.GeologySettings.RoughnessErosionMult.Value;
+        var gSettings = Data.GenMultiSettings.GeologySettings;
+        var roughnessScale = gSettings.RoughnessScale.Value;
+        var altScale = gSettings.FaultLineAltitudeScale.Value;
+        
+        var faultRangeSetting = gSettings.FaultLineRange.Value * roughnessScale;
+        var frictionAltEffect = gSettings.FrictionAltEffect.Value * altScale;
+        var roughnessErosionMult = gSettings.RoughnessErosionMult.Value * roughnessScale;
         var oscilMetric = new OscillatingDownFunction(50f, 1f, 0f, 100f);
-        var passMetric = new OscillatingFunction(50f, 1f, 0f);
-        var seaLevelSetting = Data.GenMultiSettings.GeologySettings.SeaLevel.Value;
-        var frictionRoughnessEffectSetting = Data.GenMultiSettings.GeologySettings.FrictionRoughnessEffect.Value;
+        var seaLevel = gSettings.SeaLevel.Value;
+        var frictionRoughnessEffectSetting = gSettings.FrictionRoughnessEffect.Value * roughnessScale;
         ConcurrentBag<FaultLine> faults = new ConcurrentBag<FaultLine>();
         Parallel.ForEach(Data.GenAuxData.Plates, setFriction);
         foreach (var f in faults)
@@ -226,7 +229,7 @@ public class GeologyGenerator : Generator
         });
         foreach (var poly in Data.GetAll<MapPolygon>())
         {
-            poly.SetIsLand(poly.Altitude > seaLevelSetting, _key);
+            poly.SetIsLand(poly.Altitude > seaLevel, _key);
         }
         
         
@@ -285,17 +288,15 @@ public class GeologyGenerator : Generator
             var dist = close.DistanceTo(fault.Origin.GetOffsetTo(poly, Data));
             var faultRange = fault.Friction * faultRangeSetting;
             var distRatio = (faultRange - dist) / faultRange;
-            var spineOsc =
-                // 1f;
-                oscilMetric.Calc(dist);
+            var spineOsc = oscilMetric.Calc(dist);
             
             var distFactor = distRatio * spineOsc;
-            var altEffect = fault.Friction * frictionAltEffectSetting * distFactor;
+            var altEffect = fault.Friction * frictionAltEffect * distFactor;
             poly.SetAltitude(Mathf.Min(1f, poly.Altitude + altEffect), _key);
             
             
             float roughnessErosion = 0f;
-            if (poly.Altitude < seaLevelSetting) roughnessErosion 
+            if (poly.Altitude < seaLevel) roughnessErosion 
                 = poly.Altitude * roughnessErosionMult;
             
             var frictionEffect = fault.Friction * frictionRoughnessEffectSetting * distFactor;

@@ -4,6 +4,12 @@ using System.Linq;
 
 public class GeologySettings : Settings
 {
+    public FloatSettingsOption RoughnessScale { get; private set; }
+        = new FloatSettingsOption("Roughness Scale", 1f, 0f, 2f, .1f, false);
+    
+    public FloatSettingsOption FaultLineAltitudeScale { get; private set; }
+        = new FloatSettingsOption("Fault Altitude Scale", 1f, 0f, 2f, .1f, false);
+
     public FloatSettingsOption LandRatio { get; private set; }
         = new FloatSettingsOption("Land Ratio", .3f, .05f, 1f, .05f, false);
     public FloatSettingsOption NumContinents { get; private set; }

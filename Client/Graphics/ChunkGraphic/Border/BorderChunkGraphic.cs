@@ -30,7 +30,7 @@ public partial class BorderChunkNode : MapChunkGraphicNode<MapPolygon>
         foreach (var n in element.Neighbors.Items(data))
         {
             if (_inUnion(n, element)) continue;
-            mb.DrawMapPolyEdge(element, n, data, _getThickness(element, n), color, offset);
+            mb.DrawPolyEdge(element, n, _getColor, _getThickness(element, n), Chunk.RelTo, data);
         }
 
         if (mb.Tris.Count == 0) return new Node2D();

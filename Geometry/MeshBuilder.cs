@@ -85,48 +85,58 @@ public class MeshBuilder
             }
         }
     }
-
-    public void DrawMapPolyEdge2(MapPolygon poly, MapPolygon n, Data data, float innerThickness,
-        Color color, Vector2 offset)
+    public void DrawPolyEdge(MapPolygon poly, MapPolygon n, Func<MapPolygon, Color> color,
+        float thickness, MapPolygon relTo, Data d)
     {
-        
-    }
-    public void DrawMapPolyEdge(MapPolygon poly, MapPolygon n, Data data, float innerThickness, 
-        Color color, Vector2 offset)
-    {
-        var border = poly.GetBorder(n.Id);
-        var segs = border.Segments;
-        var edges = poly.GetPolyBorders();
-        var first = segs[0].From;
-        var firstPrev = edges
-            .FirstOrDefault(b => b.Segments.Last().To == first)
-            ?.Segments.Last();
-        var last = segs.Last().To;
-        var lastNext = edges
-            .FirstOrDefault(b => b.Segments[0].From == last)
-            ?.Segments[0];
-        
-        var firstInner = segs[0].From - segs[0].GetNormalizedPerpendicular() * innerThickness;
-        if (firstPrev != null) firstInner = firstPrev.GetCornerPoint(segs[0], innerThickness);
-
-        var lastInner = segs.Last().To - segs.Last().GetNormalizedPerpendicular() * innerThickness;
-        if (lastNext != null) lastInner = segs.Last().GetCornerPoint(lastNext, innerThickness);
-
-        var currInner = firstInner;
+        var offset = relTo.GetOffsetTo(poly, d);
+        var edge = poly.GetEdge(n, d);
+        var segs = edge.GetSegsRel(poly, d).Segments;
         for (var i = 0; i < segs.Count; i++)
         {
-            
             var seg = segs[i];
-            var axis = (seg.To - seg.From).Normalized();
-            var nextInner = i == segs.Count - 1
-                ? lastInner
-                : seg.GetCornerPoint(segs[i + 1], innerThickness);
-            
-            AddTri(seg.From + offset, currInner + offset, seg.To + offset, color);
-            AddTri(nextInner + offset, currInner + offset, seg.To + offset, color);
-            
-            currInner = nextInner;
+            var axis = seg.GetNormalizedAxis();
+            var perp = axis.Orthogonal() * thickness;
+            if (thickness > seg.From.Length()) continue;
+            if (thickness > seg.To.Length()) continue;
+
+            var toPerp = seg.To - perp;
+            var fromPerp = seg.From - perp;
+
+            var toInnerV = Geometry2D.LineIntersectsLine(toPerp, axis, 
+                Vector2.Zero, seg.To);
+            var fromInnerV = Geometry2D.LineIntersectsLine(fromPerp, axis, 
+                Vector2.Zero, seg.From);
+            if (toInnerV.Obj is Vector2 toInner && fromInnerV.Obj is Vector2 fromInner)
+            {
+                AddTri(new Triangle(seg.From, seg.To, fromInner).Transpose(offset), color(poly));
+                AddTri(new Triangle(toInner, seg.To, fromInner).Transpose(offset), color(poly));
+                // AddLine(seg.To + offset, toInner + offset, color(poly), 2.5f);
+                // AddLine(fromInner + offset, toInner + offset, color(poly), 2.5f);
+                // AddPointMarker(toPerp + offset, 10f, color(poly));
+                // AddPointMarker(toInner + offset, 10f, color(poly));
+                // AddPointMarker(fromInner + offset, 10f, color(poly));
+            }
         }
+
+        Vector2 getInner(Vector2 point, float theta)
+        {
+            if (Mathf.Sin(theta) == 0f) throw new Exception();
+            return point.Normalized() * Mathf.Abs(point.Length() - thickness) / Mathf.Sin(theta);
+        }
+        // var adjHi = edge.HiNexus
+        //     .Entity(d).IncidentEdges
+        //     .Items(d).Where(e => e != edge && e.EdgeToPoly(poly)).FirstOrDefault();
+        // if (adjHi != null)
+        // {
+        //     
+        // }
+        // var adjLo = edge.LoNexus
+        //     .Entity(d).IncidentEdges
+        //     .Items(d).Where(e => e != edge && e.EdgeToPoly(poly)).FirstOrDefault();
+        // if (adjLo != null)
+        // {
+        //     
+        // }
     }
 
     public void AddLine(Vector2 from, Vector2 to, Color color, float thickness)

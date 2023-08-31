@@ -31,8 +31,6 @@ public class PolyTriGenerator : Generator
         
         report.StartSection();
         var edgeTris = new ConcurrentBag<(PolyTriPosition[], PolyTriPosition[])>();
-        Parallel.ForEach(polyEdges, p => CollectEdgeTris(edgeTris, p, key));
-        Parallel.ForEach(polys, p => p.Tris.SetNeighbors(p, key)); 
         report.StopSection("making poly tri paths");
         
         _data.Notices.SetPolyShapes.Invoke();

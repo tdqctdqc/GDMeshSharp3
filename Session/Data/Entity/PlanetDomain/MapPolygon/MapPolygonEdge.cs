@@ -47,7 +47,6 @@ public class MapPolygonEdge : Entity
     public static PolyBorderChain ConstructBorderChain(MapPolygon native, MapPolygon foreign, 
         List<LineSegment> segmentsRel, Data data)
     {
-        
         return PolyBorderChain.Construct(native, foreign, segmentsRel);
     }
     private List<LineSegment> RelativizeSegments(List<LineSegment> abs, MapPolygon poly, Data data)
@@ -95,19 +94,6 @@ public class MapPolygonEdge : Entity
         
         hiPoly.SetNeighborBorder(loPoly, hiChain, key);
         loPoly.SetNeighborBorder(hiPoly, loChain, key);
-        
-        key.Data.Planet.PolygonAux.AuxDatas.Dic[hiPoly].MarkStale(key);
-        key.Data.Planet.PolygonAux.AuxDatas.Dic[loPoly].MarkStale(key);
-    }
-    public void ReplacePoints(MapPolygon poly, List<LineSegment> newSegsRel, GenWriteKey key)
-    {
-        var hiPoly = HighPoly.Entity(key.Data);
-        var loPoly = LowPoly.Entity(key.Data);
-
-        var otherPoly = poly == hiPoly ? loPoly : hiPoly;
-        var newChain = PolyBorderChain.Construct(poly, otherPoly, newSegsRel);
-        
-        poly.SetNeighborBorder(otherPoly, newChain, key);
         
         key.Data.Planet.PolygonAux.AuxDatas.Dic[hiPoly].MarkStale(key);
         key.Data.Planet.PolygonAux.AuxDatas.Dic[loPoly].MarkStale(key);

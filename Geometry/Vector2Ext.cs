@@ -87,7 +87,7 @@ public static class Vector2Ext
                 && point.Y <= Mathf.Max(from.Y, to.Y);
     }
 
-    public static bool LineSegmentsIntersect(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
+    public static bool LineSegmentsIntersectInclusive(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
     {
         if (GetLineIntersection(p1, p2, q1, q2, out var intersect))
         {
@@ -97,6 +97,21 @@ public static class Vector2Ext
             var minQX = Mathf.Min(q1.X, q2.X);
             return intersect.X <= maxPX && intersect.X >= minPX
                                         && intersect.X <= maxQX && intersect.X >= minQX;
+        }
+
+        return false;
+    }
+    
+    public static bool LineSegmentsIntersectExclusive(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
+    {
+        if (GetLineIntersection(p1, p2, q1, q2, out var intersect))
+        {
+            var maxPX = Mathf.Max(p1.X, p2.X);
+            var minPX = Mathf.Min(p1.X, p2.X);
+            var maxQX = Mathf.Max(q1.X, q2.X);
+            var minQX = Mathf.Min(q1.X, q2.X);
+            return intersect.X < maxPX && intersect.X > minPX
+                                        && intersect.X < maxQX && intersect.X > minQX;
         }
 
         return false;

@@ -30,17 +30,19 @@ public class MoistureGenerator : Generator
     }
     private void SetPolyMoistures()
     {
+        var scale = Data.GenMultiSettings.MoistureSettings.Scale.Value;
         var plateMoistures = new ConcurrentDictionary<GenPlate, float>();
         var equatorDistMultWeight = Data.GenMultiSettings.MoistureSettings.EquatorDistMoistureMultWeight.Value;
         var roughnessCostMult = Data.GenMultiSettings.MoistureSettings.MoistureFlowRoughnessCostMult.Value;
         Parallel.ForEach(Data.GenAuxData.Plates, p =>
         {
             var distFromEquator = Mathf.Abs(Data.Planet.Height / 2f - p.Center.Y);
-            var altMult = (1f - equatorDistMultWeight) + equatorDistMultWeight * (1f - distFromEquator / (Data.Planet.Height / 2f));
+            var altMult = (1f - equatorDistMultWeight) 
+                          + equatorDistMultWeight * (1f - distFromEquator / (Data.Planet.Height / 2f));
             var polyGeos = p.Cells.SelectMany(c => c.PolyGeos).ToList();
             var count = polyGeos.Count;
             var waterCount = polyGeos.Where(g => g.IsWater()).Count();
-            var score = altMult * waterCount / count;
+            var score = scale * altMult * waterCount / count;
             plateMoistures.TryAdd(p, score);
         });
 
@@ -52,7 +54,8 @@ public class MoistureGenerator : Generator
         {
             diffuse();
         }
-        var landPlateMoistureShaping = Data.GenMultiSettings.MoistureSettings.LandPlateMoistureShaping.Value;
+        var landPlateMoistureShaping = Data.GenMultiSettings.MoistureSettings
+            .LandPlateMoistureShaping.Value;
         Parallel.ForEach(Data.GenAuxData.Plates, setPlateMoistures);
         void setPlateMoistures(GenPlate plate)
         {
