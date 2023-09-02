@@ -56,7 +56,7 @@ public class PolyTri : Triangle
 
         return false;
     }
-
+    
     public PolyTriPosition GetPosition()
     {
         return new PolyTriPosition(PolyId, Index);

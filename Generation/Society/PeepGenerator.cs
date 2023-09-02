@@ -55,7 +55,7 @@ public class PeepGenerator : Generator
         GenerateBuildingType(_key.Data.Models.Buildings.Bank, r, forBanks,
             p => Mathf.Max(0f, 
                 p.HasSettlement(_key.Data) 
-            ? p.GetSettlement(_key.Data).Size
+            ? 1f//p.GetSettlement(_key.Data).Size
             : 0f));
         GenerateLaborers(r, employed);
         GenerateUnemployed(r, Mathf.FloorToInt(popSurplus * unemployedRatio));

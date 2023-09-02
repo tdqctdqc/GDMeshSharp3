@@ -84,9 +84,10 @@ public class WorldGenerator
         RunGenerator(new NavGenerator());
         RunGenerator(new RegimeGenerator());
         RunGenerator(new LocationGenerator());
-        RunGenerator(new InfrastructureGenerator());
         RunGenerator(new PeepGenerator());
-        
+        // RunGenerator(new NewLocationGenerator());
+        RunGenerator(new InfrastructureGenerator());
+
         _totalTime.Stop();
         Game.I.Logger.Log("Total gen time: " + _totalTime.Elapsed.TotalMilliseconds,
             LogType.Generation);

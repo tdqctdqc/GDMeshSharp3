@@ -41,4 +41,11 @@ public class Settlement : Location
         Tier = tier.MakeRef();
         key.Data.Infrastructure.SettlementAux.ChangedTier.Invoke(this, tier, old);
     }
+
+    public void SetSizeGen(int size, GenWriteKey key)
+    {
+        Size = size;
+        var tier = key.Data.Models.Settlements.GetTier(size);
+        Tier = tier.MakeRef();
+    }
 }

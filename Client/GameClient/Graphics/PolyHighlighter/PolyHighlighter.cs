@@ -81,7 +81,6 @@ public partial class PolyHighlighter : Node2D
     {
         DrawBoundarySegments(poly, mb, data);
         DrawPolyTriBorders(poly, mb, data);
-        DrawPolyTriNetwork(pos, poly, mb, data);
     }
 
     private static void DrawIncidentEdges(MapPolygon poly, MeshBuilder mb, Data data)
@@ -151,21 +150,7 @@ public partial class PolyHighlighter : Node2D
             mb.AddArrow(inscribed.C, inscribed.A, 1f, col);
         }
     }
-    private static void DrawPolyTriNetwork(PolyTriPosition pos, MapPolygon poly, MeshBuilder mb, Data data)
-    {
-        var pts = poly.Tris.Tris;
-
-        var mouseOver = pos.Tri(data);
-        mb.AddTri(mouseOver, Colors.White);
-        
-        for (var i = 0; i < mouseOver.NeighborCount; i++)
-        {
-            var n = poly.Tris.TriNeighbors[i + mouseOver.NeighborStartIndex];
-            var nTri = pts[n];
-            mb.AddTri(nTri, Colors.Red);
-            mb.AddTriOutline(nTri, 2f, Colors.Black);
-        }
-    }
+    
 
     private void TakeFromMeshBuilder(MeshBuilder mb)
     {
