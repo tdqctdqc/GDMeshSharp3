@@ -18,16 +18,25 @@ public class ManufacturingQueue
 
     public void Manufacture(float ip, Regime r, ProcedureWriteKey key)
     {
+        if (Queue.Count == 0) return;
         while (ip > 0 && Queue.Count > 0)
         {
             var curr = Queue.Peek().Value();
             var actual = Mathf.Min(curr.Remaining(key.Data), ip);
+            GD.Print($"{r.Name} working on manuf for {actual} ip");
+            
             ip -= actual;
             curr.Work(r, key, actual);
             if (curr.IsComplete(key.Data))
             {
                 Queue.Dequeue();
             }
+            else
+            {
+                break;
+            }
         }
+        GD.Print($"{ip} ip left");
+
     }
 }

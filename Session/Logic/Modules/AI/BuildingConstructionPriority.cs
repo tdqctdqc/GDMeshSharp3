@@ -52,7 +52,7 @@ public class BuildingConstructionPriority : BudgetPriority
         SelectBuildSitesAndAddRequest(regime, data, buildings, prices, scratch, orders);
     }
 
-    public override Dictionary<Item, int> GetItemWishlist(Regime regime, Data data, 
+    public override Dictionary<Item, int> GetTradeWishlist(Regime regime, Data data, 
         Dictionary<Item, float> prices, int credit, int availLabor)
     {
         var solver = MakeSolver();

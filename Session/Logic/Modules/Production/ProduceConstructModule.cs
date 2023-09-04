@@ -30,7 +30,7 @@ public class ProduceConstructModule : LogicModule
         
         Parallel.ForEach(data.GetAll<Regime>(), 
             regime => CalculateForRegime(regime, data, proc));
-        
+        DoManufacturing(orders, proc);
         res.Messages.Add(proc);
         return res;
     }
@@ -130,6 +130,25 @@ public class ProduceConstructModule : LogicModule
         }
     }
 
+    private void DoManufacturing(List<TurnOrders> orders, ProduceConstructProcedure proc)
+    {
+        foreach (var turnOrders in orders)
+        {
+            if (turnOrders is MajorTurnOrders m == false) throw new Exception();
+            var regime = turnOrders.Regime.RefId;
+            foreach (var polymorphMessage in m.ManufacturingOrders.ToStart)
+            {
+                proc.ManufacturingProjectsToAddByRegime
+                    .Add(new(regime, polymorphMessage));
+            }
+            
+            foreach (var toCancel in m.ManufacturingOrders.ToCancel)
+            {
+                proc.ManufacturingProjectsToCancelByRegime
+                    .Add(new KeyValuePair<int, int>(regime, toCancel));
+            }
+        }
+    }
     private void DoNonBuildingFlows(Regime r, Data data, ProduceConstructProcedure proc)
     {
         foreach (var kvp in data.Models.GetModels<Flow>())

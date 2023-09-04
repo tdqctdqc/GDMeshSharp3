@@ -24,7 +24,7 @@ public abstract class BudgetPriority
         Dictionary<Item, float> prices,
         MajorTurnOrders orders);
 
-    public abstract Dictionary<Item, int> GetItemWishlist(Regime regime, Data data,
+    public abstract Dictionary<Item, int> GetTradeWishlist(Regime regime, Data data,
         Dictionary<Item, float> prices,
         int credit,
         int availLabor);

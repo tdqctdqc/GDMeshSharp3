@@ -13,25 +13,33 @@ public class ProduceConstructProcedure : Procedure
     public ConcurrentDictionary<int, RegimeFlows> RegimeFlows { get; private set; }
     public ConcurrentDictionary<int, PeepEmploymentReport> EmploymentReports { get; private set; }
     public ConcurrentDictionary<PolyTriPosition, float> ConstructionProgresses { get; private set; }
-
+    public List<KeyValuePair<int, PolymorphMessage<ManufactureProject>>> ManufacturingProjectsToAddByRegime { get; private set; }
+    public List<KeyValuePair<int, int>>  ManufacturingProjectsToCancelByRegime { get; private set; }
+    
     public static ProduceConstructProcedure Create()
     {
         return new ProduceConstructProcedure(
             new ConcurrentDictionary<int, ItemCount>(), 
             new ConcurrentDictionary<int, PeepEmploymentReport>(),
             new ConcurrentDictionary<PolyTriPosition, float>(),
-            new ConcurrentDictionary<int, RegimeFlows>());
+            new ConcurrentDictionary<int, RegimeFlows>(),
+            new List<KeyValuePair<int, PolymorphMessage<ManufactureProject>>>(),
+            new List<KeyValuePair<int, int>>());
     }
     [SerializationConstructor] private ProduceConstructProcedure(
         ConcurrentDictionary<int, ItemCount> regimeResourceProds, 
         ConcurrentDictionary<int, PeepEmploymentReport> employmentReports,
         ConcurrentDictionary<PolyTriPosition, float> constructionProgresses,
-        ConcurrentDictionary<int, RegimeFlows> regimeFlows)
+        ConcurrentDictionary<int, RegimeFlows> regimeFlows,
+        List<KeyValuePair<int, PolymorphMessage<ManufactureProject>>> manufacturingProjectsToAddByRegime,
+        List<KeyValuePair<int, int>>  manufacturingProjectsToCancelByRegime)
     {
         ConstructionProgresses = constructionProgresses;
         RegimeResourceProds = regimeResourceProds;
         EmploymentReports = employmentReports;
         RegimeFlows = regimeFlows;
+        ManufacturingProjectsToAddByRegime = manufacturingProjectsToAddByRegime;
+        ManufacturingProjectsToCancelByRegime = manufacturingProjectsToCancelByRegime;
     }
 
     public override bool Valid(Data data)
@@ -41,19 +49,26 @@ public class ProduceConstructProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
+        GD.Print("starting produce proc");
         var sw = new Stopwatch();
         EnactFlows(key);
-        
+        GD.Print("finished flows");
+
         EnactProduce(key);
+        GD.Print("finished produce");
 
         EnactConstruct(key);
-        
+        GD.Print("finished construct");
+
         EnactManufacture(key);
+        GD.Print("finished manufacture");
+
         foreach (var kvp in EmploymentReports)
         {
             var poly = key.Data.Get<MapPolygon>(kvp.Key);
             poly.GetPeep(key.Data).SetEmploymentReport(kvp.Value, key);
         }
+        GD.Print("finished produce proc");
     }
 
     private void EnactFlows(ProcedureWriteKey key)
@@ -96,6 +111,21 @@ public class ProduceConstructProcedure : Procedure
 
     private void EnactManufacture(ProcedureWriteKey key)
     {
+        foreach (var kvp in ManufacturingProjectsToAddByRegime)
+        {
+            var regime = key.Data.Get<Regime>(kvp.Key);
+            var member = PolymorphMember<ManufactureProject>.Construct(kvp.Value.Get(key.Data));
+            regime.ManufacturingQueue.Queue.Enqueue(member);
+        }
+
+        foreach (var kvp in ManufacturingProjectsToCancelByRegime)
+        {
+            //todo implement 
+            // var regime = key.Data.Get<Regime>(kvp.Key);
+            // var toCancel = kvp.Value;
+            // regime.ManufacturingQueue.Queue.
+        }
+
         foreach (var regime in key.Data.GetAll<Regime>())
         {
             var ip = RegimeFlows[regime.Id][key.Data.Models.Flows.IndustrialPower].Net();

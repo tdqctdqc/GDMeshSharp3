@@ -203,9 +203,12 @@ public class InfrastructureGenerator : Generator
                     wp => wp.Neighbors.Select(n => nav.Get(n))
                         .Where(n => n is SeaWaypoint == false),
                     (w, v) => PathFinder.LandEdgeCost(w, v, _data));
-                for (var i = 1; i < pathToLargeSettlement.Count; i++)
+                if (pathToLargeSettlement != null)
                 {
-                    path.Add(pathToLargeSettlement[i]);
+                    for (var i = 1; i < pathToLargeSettlement.Count; i++)
+                    {
+                        path.Add(pathToLargeSettlement[i]);
+                    }
                 }
             }
             

@@ -18,8 +18,9 @@ public abstract class ManufactureProject
 
     public void Work(Regime r, ProcedureWriteKey key, float ip)
     {
+        if (ip < 0) throw new Exception();
         Progress += ip;
-        if (Progress >= IndustrialCost(key.Data))
+        if (IsComplete(key.Data))
         {
             Complete(r, key);
         }
@@ -32,6 +33,6 @@ public abstract class ManufactureProject
     }
     public float Remaining(Data d)
     {
-        return Mathf.Min(0f, Progress - IndustrialCost(d));
+        return Mathf.Max(0f, IndustrialCost(d) - Progress);
     }
 }
