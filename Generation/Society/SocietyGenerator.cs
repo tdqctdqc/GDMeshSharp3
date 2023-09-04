@@ -1,43 +1,35 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Godot;
 using System.Linq;
 using System.Threading.Tasks;
-using Godot;
-using Google.OrTools.ConstraintSolver;
+using Priority_Queue;
 
-public class PeepGenerator : Generator
+public class SocietyGenerator : Generator
 {
-    private GenData _data;
     private GenWriteKey _key;
-    public PeepGenerator()
-    {
-        
-    }
-
+    private GenData _data;
     public override GenReport Generate(GenWriteKey key)
     {
+        var report = new GenReport("Society");
         _key = key;
         _data = key.GenData;
-        var report = new GenReport(GetType().Name);
-        
-        report.StartSection();
-        
         foreach (var p in _data.GetAll<MapPolygon>())
         {
             if(p.IsLand) Peep.Create(p, key);
         }
-        
         foreach (var r in _data.GetAll<Regime>())
         {
             GenerateForRegime(r);
         }
+        NameSettlements();
         _data.Notices.PopulatedWorld.Invoke();
-        report.StopSection("All");
+        Deforest();
 
         return report;
     }
-
+    
     private void GenerateForRegime(Regime r)
     {
         var popSurplus = GenerateFoodProducers(r);
@@ -45,20 +37,37 @@ public class PeepGenerator : Generator
         var margin = 0f;
         var employed = popSurplus * (1f - (unemployedRatio + margin));
         if (popSurplus <= 0) return;
+
+        var favored = PickFavoredSettlementPolys(r.GetPolys(_data).ToList());
+        
+        
+        float favoredBonus(MapPolygon p)
+        {
+            if (favored.Contains(p)) return 10f;
+            return 1f;
+        }
+
+        float score(MapPolygon p)
+        {
+            var s = (p.GetPeep(_data).Size + PolyHabitability(p)) * favoredBonus(p);
+            return s * s * s;
+        }
+        
+        
         var extractionLabor = GenerateExtractionBuildings(r);
-        var adminLabor = GenerateTownHalls(r);
-        var surplus = (employed - (extractionLabor + adminLabor));
+        // var adminLabor = GenerateTownHalls(r, settlementPolys);
+        var surplus = employed - (extractionLabor);
         var forFactories = surplus * .75f;
         var forBanks = surplus * .25f;
-        GenerateBuildingType(_key.Data.Models.Buildings.Factory, r, forFactories,
-            p => Mathf.Max(0f, p.Moisture - p.Roughness));
-        GenerateBuildingType(_key.Data.Models.Buildings.Bank, r, forBanks,
-            p => Mathf.Max(0f, 
-                p.HasSettlement(_key.Data) 
-            ? 1f//p.GetSettlement(_key.Data).Size
-            : 0f));
+
+        
+        GenerateBuildingType(_key.Data.Models.Buildings.Factory, r, forFactories, score);
+        GenerateBuildingType(_key.Data.Models.Buildings.Bank, r, forBanks, score);
         GenerateLaborers(r, employed);
+        
         GenerateUnemployed(r, Mathf.FloorToInt(popSurplus * unemployedRatio));
+        
+        CreateSettlements(r);
     }
 
     private float GenerateFoodProducers(Regime r)
@@ -70,10 +79,10 @@ public class PeepGenerator : Generator
         
         foreach (var foodProdTechnique in _data.Models.GetModels<FoodProdTechnique>().Values)
         {
-            makeFoodProd(foodProdTechnique);
+            makeFoodProdTechnique(foodProdTechnique);
         }
         
-        void makeFoodProd(FoodProdTechnique technique)
+        void makeFoodProdTechnique(FoodProdTechnique technique)
         {
             var buildingSurplus = technique.BaseProd - technique.BaseLabor * foodConsPerPeep;
             Parallel.ForEach(territory, p =>
@@ -92,6 +101,54 @@ public class PeepGenerator : Generator
         return foodSurplus.Sum() / foodConsPerPeep;
     }
     
+    private HashSet<MapPolygon> PickFavoredSettlementPolys(List<MapPolygon> regimeUnionPolys)
+    {
+        float scorePerSettlement = 1f;
+        var numSettlements = regimeUnionPolys.Count / 3;
+        if (numSettlements == 0) numSettlements = 1;
+        
+        var polyQueue = new SimplePriorityQueue<MapPolygon>();
+        for (var i = 0; i < regimeUnionPolys.Count; i++)
+        {
+            var p = regimeUnionPolys[i];
+            if (p.Tris.Tris.Any(t => t.Landform(_data) != _data.Models.Landforms.Mountain
+                           && t.Landform(_data) != _data.Models.Landforms.Peak
+                           && t.Landform(_data) != _data.Models.Landforms.River))
+            {
+                polyQueue.Enqueue(p, -PolyHabitability(p));
+            }
+        }
+        numSettlements = Math.Min(numSettlements, polyQueue.Count);
+        var settlementPolys = new HashSet<MapPolygon>();
+        var forbidden = new HashSet<MapPolygon>();
+
+        for (var i = 0; i < numSettlements; i++)
+        {
+            if (polyQueue.Count == 0) break;
+            var poly = polyQueue.Dequeue();
+            if (forbidden.Contains(poly)) continue;
+            foreach (var n in poly.Neighbors.Items(_data))
+            {
+                forbidden.Add(n);
+            }
+            settlementPolys.Add(poly);
+        }
+
+        return settlementPolys;
+    }
+    private float PolyHabitability(MapPolygon poly)
+    {
+        var score = 2f * (poly.Moisture + (1f - poly.Roughness * .5f));
+        if (poly.Tris.Tris.Any(t => t.Landform(_data) == _data.Models.Landforms.River))
+        {
+            score *= 1.5f;
+        }
+        if (poly.IsCoast(_data))
+        {
+            score *= 1.5f;
+        }
+        return score;
+    }
     private float GenerateExtractionBuildings(Regime r)
     {
             
@@ -144,48 +201,16 @@ public class PeepGenerator : Generator
 
         return laborDemand;
     }
-    private float GenerateTownHalls(Regime r)
+    private float GenerateTownHalls(Regime r, HashSet<MapPolygon> settlementPolys)
     {
         var townHall = _data.Models.Buildings.TownHall;
-        var settlements = r.GetPolys(_data).Where(p => p.HasSettlement(_data))
-            .Select(p => p.GetSettlement(_data));
-        foreach (var s in settlements)
+        foreach (var p in settlementPolys)
         {
-            var p = s.Poly.Entity(_data);
             MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, townHall, _key);
         }
 
-        return townHall.GetComponent<Workplace>().TotalLaborReq() * settlements.Count();
+        return townHall.GetComponent<Workplace>().TotalLaborReq() * settlementPolys.Count();
     }
-    // private void GenerateFactories(Regime r, float popBudget)
-    // {
-    //     if (popBudget <= 0) return;
-    //     var factory = _data.Models.Buildings.Factory;
-    //
-    //     var polys = r.GetPolys(_data).Where(p => factory.CanBuildInPoly(p, _key.Data)).ToList();
-    //     var portions = Apportioner.ApportionLinear(popBudget, polys,
-    //         p =>
-    //         {
-    //             return Mathf.Max(0f, p.Moisture - p.Roughness);
-    //             // var ps = p.GetPeeps(_data);
-    //             // if (ps == null) return 0f;
-    //             // return p.GetPeeps(_data).Sum(x => x.Size);
-    //         }
-    //     );
-    //     var factoryLaborReq = factory.GetComponent<Workplace>().TotalLaborReq();
-    //     for (var i = 0; i < polys.Count; i++)
-    //     {
-    //         var p = polys[i];
-    //         var pop = portions[i];
-    //         var numFactories = Mathf.Round(pop / factoryLaborReq);
-    //         numFactories = Mathf.Min(p.PolyBuildingSlots[BuildingType.Industry], numFactories);
-    //         
-    //         for (var j = 0; j < numFactories; j++)
-    //         {
-    //             MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, factory, _key);
-    //         }
-    //     }
-    // }
     
     private void GenerateBuildingType(BuildingModel model, Regime r, float popBudget,
         Func<MapPolygon, float> suitability)
@@ -251,17 +276,103 @@ public class PeepGenerator : Generator
 
     private void GenerateUnemployed(Regime r, int pop)
     {
-        var settlementPolys = r.GetPolys(_data)
-            .Where(p => p.HasSettlement(_data))
-            .ToList();
-        var portions = Apportioner.ApportionLinear(pop, settlementPolys, 
-            p => 1);
-        for (var i = 0; i < settlementPolys.Count; i++)
+        var polys = r.GetPolys(_data).ToList();
+        var portions = Apportioner.ApportionLinear(pop, polys, 
+            p => p.GetPeep(_data).Size);
+        for (var i = 0; i < polys.Count; i++)
         {
-            var poly = settlementPolys[i];
+            var poly = polys[i];
             var peep = poly.GetPeep(_data);
             var polyUnemployed = portions[i];
             peep.GrowSize(polyUnemployed, _key);
+        }
+    }
+
+    private void CreateSettlements(Regime r)
+    {
+        var minSize = _data.Models.Settlements.TiersBySize.First().MinSize;
+        var settlementPolys = new HashSet<MapPolygon>();
+        foreach (var p in r.GetPolys(_data))
+        {
+            var settlementSize = p.GetPeep(_data).Size;
+            if (settlementSize < minSize) continue;
+            Settlement.Create("", p, settlementSize, _key);
+            settlementPolys.Add(p);
+        }
+        SetUrbanTris(settlementPolys);
+    }
+    private void SetUrbanTris(HashSet<MapPolygon> settlementPolys)
+    {
+        // var sizeForTri = 500;
+        
+        foreach (var p in settlementPolys)
+        {
+            var availTris = p.Tris.Tris
+                .Where(t => t.Landform(_data) != _data.Models.Landforms.River
+                            && t.Landform(_data) != _data.Models.Landforms.Mountain
+                            && t.Landform(_data) != _data.Models.Landforms.Peak)
+                .OrderBy(t => t.GetCentroid().LengthSquared()).ToList();
+            var settlement = p.GetSettlement(_data);
+            var tier = settlement.Tier.Model(_data);
+            var numUrbanTris = Mathf.Max(1, tier.NumTris);
+            numUrbanTris = Mathf.Min(availTris.Count(), numUrbanTris);
+            if (settlement.Tier.Model(_data) == _data.Models.Settlements.Village)
+            {
+                numUrbanTris = 1;
+            }
+            for (var j = 0; j < numUrbanTris; j++)
+            {
+                availTris[j].SetLandform(_data.Models.Landforms.Urban, _key);
+                availTris[j].SetVegetation(_data.Models.Vegetations.Barren, _key);
+            }
+        }
+    }
+    private void Deforest()
+    {
+        var polys = _data.GetAll<MapPolygon>();
+        foreach (var poly in polys)
+        {
+            if (poly.IsWater()) continue;
+            var forestTris = poly.Tris.Tris
+                .Where(t => t.Vegetation(_data) == _data.Models.Vegetations.Forest);
+            float deforestStr = 0f;
+            if (poly.HasSettlement(_data))
+            {
+                deforestStr = .25f;
+            }
+            else if (poly.Neighbors.Items(_data).Any(n => n.HasSettlement(_data)))
+            {
+                deforestStr = .05f;
+            }
+            else continue;
+            foreach (var tri in forestTris)
+            {
+                var sample = Game.I.Random.Randf();
+                if (sample < deforestStr)
+                {
+                    tri.SetVegetation(_data.Models.Vegetations.Grassland, _key);
+                }
+            }
+        }
+        
+    }
+    
+    private void NameSettlements()
+    {
+        var taken = new HashSet<string>();
+        foreach (var r in _data.GetAll<Regime>())
+        {
+            var settlements = r.GetPolys(_data).Where(p => p.HasSettlement(_data))
+                .Select(p => p.GetSettlement(_data));
+            var names = r.Culture.Model(_data).SettlementNames.Where(n => taken.Contains(n) == false).ToList();
+            if (settlements.Count() > names.Count) continue;
+            int iter = 0;
+            foreach (var settlement in settlements)
+            {
+                taken.Add(names[iter]);
+                settlement.SetName(names[iter], _key);
+                iter++;
+            }
         }
     }
 }

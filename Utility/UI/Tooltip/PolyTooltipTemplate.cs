@@ -16,37 +16,47 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             GetRegime,
             GetLandform,
             GetVeg,
-            GetSlots
         };
     protected override List<Func<PolyTriPosition, Data, Control>> _slowGetters { get; }
         = new List<Func<PolyTriPosition, Data, Control>>
         {
             GetSettlementName,
-            GetSettlementSize, 
+            // GetSettlementSize, 
             GetPeeps,
             GetBuildings,
             GetConstructions,
             GetResourceDeposits,
-            GetAltitude,
-            
+            // GetAltitude,
+            GetSlots
         };
 
     private static Control GetBuildings(PolyTriPosition t, Data d)
     {
         var bs = t.Poly(d).GetBuildings(d);
+        int iter = 0;
+        var label = new Label();
+
         if (bs != null)
         {
-            var label = new Label();
-            var counts = bs.Select(b => b.Model.Model(d)).GetCounts();
-            int iter = 0;
+            var counts = bs
+                .Select(b => b.Model.Model(d)).GetCounts();
             foreach (var kvp in counts)
             {
                 if (iter != 0) label.Text += "\n";
                 iter++;
                 label.Text += $"{kvp.Key.Name} x {kvp.Value}";
             }
-            return label;
         }
+
+        var foods = t.Poly(d).PolyFoodProd.Nums;
+        foreach (var kvp in foods)
+        {
+            var technique = d.Models.GetModel<FoodProdTechnique>(kvp.Key);
+            if (iter != 0) label.Text += "\n";
+            iter++;
+            label.Text += $"{technique.Name} x {kvp.Value}";
+        }
+        if(iter != 0) return label;
         return null;
     }
 
@@ -162,7 +172,7 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
     private static Control GetSettlementSize(PolyTriPosition t, Data d)
     {
         return  d.Infrastructure.SettlementAux.ByPoly[t.Poly(d)] is Settlement s
-            ? NodeExt.CreateLabel("Settlement Size: " + s.Size)
+            ? NodeExt.CreateLabel("Settlement Size: " + t.Poly(d).GetPeep(d).Size)
             : null;
     }
 

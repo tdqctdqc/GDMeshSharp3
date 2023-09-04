@@ -5,14 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Generation/Society/NewLocationGenerator.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Generation/Society/SocietyGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/PolyHighlighter/PolyHighlighter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/PolyHighlighter/PolyHighlighter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/PeepGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/PeepGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/LocationGenerator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/NewLocationGenerator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/PeepGenerator.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyTri/PolyTri.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyTri/PolyTri.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyTri/PolyTris.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyTri/PolyTris.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Location/Settlement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/SettlementTier/SettlementTierList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/SettlementTier/SettlementTierList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Landform/Hill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Landform/Hill.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -248,6 +251,8 @@
       <workItem from="1693357204200" duration="16283000" />
       <workItem from="1693447473470" duration="8811000" />
       <workItem from="1693525574527" duration="3467000" />
+      <workItem from="1693687215294" duration="8348000" />
+      <workItem from="1693770440129" duration="8000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -507,7 +512,15 @@
       <option name="project" value="LOCAL" />
       <updated>1693494404997</updated>
     </task>
-    <option name="localTasksCounter" value="37" />
+    <task id="LOCAL-00037" summary="pre reworking loc gen">
+      <option name="closed" value="true" />
+      <created>1693687601426</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1693687601426</updated>
+    </task>
+    <option name="localTasksCounter" value="38" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -529,7 +542,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="made sure major regimes got strat resources" />
     <MESSAGE value="gave regime FlowCount" />
     <MESSAGE value="adding construction cap as flow" />
     <MESSAGE value="doo" />
@@ -554,6 +566,7 @@
     <MESSAGE value="tweaked nexus waypoint connection" />
     <MESSAGE value="doot" />
     <MESSAGE value="made better scaling options for generation" />
-    <option name="LAST_COMMIT_MESSAGE" value="made better scaling options for generation" />
+    <MESSAGE value="pre reworking loc gen" />
+    <option name="LAST_COMMIT_MESSAGE" value="pre reworking loc gen" />
   </component>
 </project>

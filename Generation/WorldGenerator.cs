@@ -83,9 +83,7 @@ public class WorldGenerator
         RunGenerator(new PolyTriGenerator());
         RunGenerator(new NavGenerator());
         RunGenerator(new RegimeGenerator());
-        RunGenerator(new LocationGenerator());
-        RunGenerator(new PeepGenerator());
-        // RunGenerator(new NewLocationGenerator());
+        RunGenerator(new SocietyGenerator());
         RunGenerator(new InfrastructureGenerator());
 
         _totalTime.Stop();

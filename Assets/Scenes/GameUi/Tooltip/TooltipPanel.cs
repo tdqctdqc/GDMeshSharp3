@@ -67,11 +67,6 @@ public partial class TooltipPanel : Panel
         var entries = _template.GetSlowEntries(_element, data);
         entries.ForEach(e => _container.AddChild(e));
         Resize();
-
-        Task.Run(() =>
-        {
-            Thread.Sleep(1);
-        });
     }
     public void Move(Vector2 globalPos)
     {

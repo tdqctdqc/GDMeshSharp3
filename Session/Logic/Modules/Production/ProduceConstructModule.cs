@@ -68,10 +68,10 @@ public class ProduceConstructModule : LogicModule
             proc.EmploymentReports[poly.Id] = employment;
             foreach (var kvp in scratch.ByJob)
             {
-                // if(kvp.Value.Total > 0) GD.Print(poly.Id + " Writing " + kvp.Value.Total);
                 employment.Counts[kvp.Key.Id] = kvp.Value;
             }
         }
+        
     }
 
     private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc)

@@ -68,7 +68,7 @@ public class NavGenerator : Generator
                 {
                     if (eWp is RiverWaypoint == false && eWp is CoastWaypoint == false)
                     {
-                        // throw new Exception();
+                        // throw new Exception();   
                         GD.Print("strange river mouth wp at poly " + seaPoly.Id);
                     }
 
@@ -117,7 +117,8 @@ public class NavGenerator : Generator
         return false;
     }
 
-    private static void ConnectEdgeWpsAroundNexi(GenWriteKey key, Dictionary<MapPolygonEdge, Waypoint> byEdge, Dictionary<MapPolygon, Waypoint> byPoly)
+    private static void ConnectEdgeWpsAroundNexi(GenWriteKey key, 
+        Dictionary<MapPolygonEdge, Waypoint> byEdge, Dictionary<MapPolygon, Waypoint> byPoly)
     {
         foreach (var nexus in key.Data.GetAll<MapPolyNexus>())
         {
@@ -148,16 +149,17 @@ public class NavGenerator : Generator
 
         void connectAll(params MapPolygon[] polys)
         {
-            IEnumerable<Waypoint> toConnect = new Waypoint[0];
+            HashSet<Waypoint> toConnect = new HashSet<Waypoint>();
             foreach (var p1 in polys)
             {
                 foreach (var p2 in polys)
                 {
                     if (p1 == p2) continue;
+                    if (p1.Id < p2.Id) continue;
                     if (p1.Neighbors.Contains(p2)
                         && byEdge.TryGetValue(p1.GetEdge(p2, key.Data), out var e12))
                     {
-                        toConnect = toConnect.Union(e12.Yield());
+                        toConnect.Add(e12);
                     }
                 }
             }
@@ -168,6 +170,9 @@ public class NavGenerator : Generator
                     if (wp1 == wp2) continue;
                     bool close = Close(50f, wp1, wp2, toConnect, key);
                     if (close == false) Connect(wp1, wp2);
+                    
+                    //todo check here for coast waypoints if the connection is crossing water to 
+                    //another land wp
                 }
             }
         }

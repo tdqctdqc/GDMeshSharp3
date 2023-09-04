@@ -6,8 +6,7 @@ public class Factory : BuildingModel
 {
     public Factory(Items items, FlowList flows, PeepJobList jobs) : 
         base(BuildingType.Industry, nameof(Factory),
-        2000, 100,
-        
+        20, 2000,
         new List<BuildingModelComponent>
             {
                 new FlowProd(100, flows.IndustrialPower),
@@ -18,7 +17,8 @@ public class Factory : BuildingModel
             },
         new Dictionary<Item, int>
         {
-            {items.Iron, 1000}
+            {items.Iron, 500},
+            {items.BuildingMaterial, 1000}
         })
     {
         

@@ -23,7 +23,7 @@ public class Mine : BuildingModel
             })
     {
         MinedItem = prodItem;
-        if (prodItem.Types.Has<MineableAttribute>() == false) throw new Exception();
+        if (prodItem.Attributes.Has<MineableAttribute>() == false) throw new Exception();
     }
 
     protected override bool CanBuildInTriSpec(PolyTri t, Data data) => CanBuildInTri(t, data);

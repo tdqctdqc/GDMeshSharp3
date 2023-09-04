@@ -48,7 +48,7 @@ public class ProduceConstructProcedure : Procedure
 
         EnactConstruct(key);
         
-        
+        EnactManufacture(key);
         foreach (var kvp in EmploymentReports)
         {
             var poly = key.Data.Get<MapPolygon>(kvp.Key);
@@ -91,6 +91,15 @@ public class ProduceConstructProcedure : Procedure
             var r = pos.Poly(key.Data).Regime.Entity(key.Data);
             var construction = key.Data.Infrastructure.CurrentConstruction.ByTri[pos];
             construction.ProgressConstruction(kvp.Value,  key);
+        }
+    }
+
+    private void EnactManufacture(ProcedureWriteKey key)
+    {
+        foreach (var regime in key.Data.GetAll<Regime>())
+        {
+            var ip = RegimeFlows[regime.Id][key.Data.Models.Flows.IndustrialPower].Net();
+            regime.ManufacturingQueue.Manufacture(ip, regime, key);
         }
     }
 }

@@ -11,7 +11,6 @@ public class InfrastructureGenerator : Generator
 {
     private GenData _data;
     private GenWriteKey _key;
-    private static int _bigCitySizeThreshold = 35;
     public override GenReport Generate(GenWriteKey key)
     {
         _key = key;
@@ -56,7 +55,8 @@ public class InfrastructureGenerator : Generator
         var regimeFragments = UnionFind.Find(lm.Polys,
             (p, q) => p.Regime.RefId == q.Regime.RefId,
             p => p.Neighbors.Items(_key.Data));
-        
+        var city = _data.Models.Settlements.City;
+        var town = _data.Models.Settlements.Town;
         var res = new Dictionary<RoadModel, HashSet<Vector2>>();
         var dirt = _key.Data.Models.RoadList.DirtRoad;
         res.Add(dirt, new HashSet<Vector2>());
@@ -66,13 +66,20 @@ public class InfrastructureGenerator : Generator
             .Where(p => p.HasSettlement(_key.Data))
             .Select(p => p.GetSettlement(_key.Data))
             .ToList();
-        if(settlements.Count() > 2)
+
+        var towns = settlements
+            .Where(s => s.Poly.Entity(_data).GetPeep(_data).Size >= town.MinSize)
+            .ToList();
+        
+        if(towns.Count() > 2)
         {
-            var dirtRoads = BuildRoadLevel(settlements);
+            var dirtRoads = BuildRoadLevel(towns);
             res[dirt].AddRange(dirtRoads);
         }
 
-        var big = settlements.Where(s => s.Size > _bigCitySizeThreshold).ToList();
+        var big = settlements
+            .Where(s => s.Poly.Entity(_data).GetPeep(_data).Size >= city.MinSize)
+            .ToList();
         if(big.Count() > 2)
         {
             var stoneRoads = BuildRoadLevel(big);
@@ -157,13 +164,17 @@ public class InfrastructureGenerator : Generator
         var stoneRoad = _key.Data.Models.RoadList.StoneRoad;
         var dirtRoad = _key.Data.Models.RoadList.DirtRoad;
         var nav = _key.Data.Planet.Nav;
-        
+        var city = _data.Models.Settlements.City;
+        var town = _data.Models.Settlements.Town;
+        var village = _data.Models.Settlements.Village;
         if (res.ContainsKey(stoneRoad) == false)
         {
             res.Add(stoneRoad, new HashSet<Vector2>());
         }
         var settlementPolys = lm.Polys
             .Where(p => p.HasSettlement(_data));
+        var largeSettlementPolys =
+            settlementPolys.Where(p => p.GetSettlement(_data).Tier.Model(_data) != village);
         if (settlementPolys.Count() < 3) return;
 
         var portWps = lm.Polys
@@ -172,7 +183,8 @@ public class InfrastructureGenerator : Generator
 
         var settlementWps = settlementPolys
             .Select(p => nav.GetPolyCenterWaypoint(p)).ToHashSet();
-        
+        var largeSettlementWps = largeSettlementPolys
+            .Select(p => nav.GetPolyCenterWaypoint(p)).ToHashSet();
         foreach (var portWp in portWps)
         {
             var path = PathFinder<Waypoint>.FindPathMultipleEnds(portWp,
@@ -182,12 +194,27 @@ public class InfrastructureGenerator : Generator
                 (w, v) => PathFinder.LandEdgeCost(w, v, _data));
             if (path == null) continue;
             var settlement = path.Last().AssocPolys(_key.Data).First().GetSettlement(_key.Data);
+            
+
+            if (settlement.Tier.Model(_data) == village)
+            {
+                var pathToLargeSettlement = PathFinder<Waypoint>.FindPathMultipleEnds(portWp,
+                    wp => largeSettlementWps.Contains(wp),
+                    wp => wp.Neighbors.Select(n => nav.Get(n))
+                        .Where(n => n is SeaWaypoint == false),
+                    (w, v) => PathFinder.LandEdgeCost(w, v, _data));
+                for (var i = 1; i < pathToLargeSettlement.Count; i++)
+                {
+                    path.Add(pathToLargeSettlement[i]);
+                }
+            }
+            
             for (var i = 0; i < path.Count - 1; i++)
             {
-                RoadModel use = settlement.Size >= _bigCitySizeThreshold
+                RoadModel use = settlement.Poly.Entity(_data).GetPeep(_data).Size >= city.MinSize
                     ? stoneRoad
                     : dirtRoad;
-                RoadModel erase = settlement.Size >= _bigCitySizeThreshold
+                RoadModel erase = settlement.Poly.Entity(_data).GetPeep(_data).Size >= city.MinSize
                     ? dirtRoad
                     : stoneRoad;
                 res[use].Add(path[i].GetIdEdgeKey(path[i + 1]));
