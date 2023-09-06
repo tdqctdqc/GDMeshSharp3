@@ -1,0 +1,30 @@
+using System.Collections.Generic;
+using Godot;
+
+public class Barracks : BuildingModel
+{
+    public Barracks(Items items, FlowList flows, PeepJobList jobs) 
+        : base(BuildingType.Military, 
+            nameof(Barracks), 10,
+            500, 
+            new List<BuildingModelComponent>
+            {
+                new ItemProd(items.Recruits, 100)
+            }, 
+            new Dictionary<Item, int>
+            {
+                {items.BuildingMaterial, 500}
+            })
+    {
+    }
+
+    protected override bool CanBuildInTriSpec(PolyTri t, Data data)
+    {
+        return true;
+    }
+
+    public override bool CanBuildInPoly(MapPolygon p, Data data)
+    {
+        return p.IsLand;
+    }
+}

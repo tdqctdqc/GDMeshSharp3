@@ -10,6 +10,7 @@ public class BuildingList : ModelList<BuildingModel>
     public Factory Factory { get; private set; }
     public TownHall TownHall { get; private set; }
     public Bank Bank { get; private set; }
+    public Barracks Barracks { get; private set; }
     public BuildingList(Items items, FlowList flows, PeepJobList jobs)
     {
         IronMine = new Mine(nameof(IronMine), items.Iron, items, jobs, flows);
@@ -18,5 +19,6 @@ public class BuildingList : ModelList<BuildingModel>
         Factory = new Factory(items, flows, jobs);
         TownHall = new TownHall(items, jobs, flows);
         Bank = new Bank(items, jobs, flows);
+        Barracks = new Barracks(items, flows, jobs);
     }
 }

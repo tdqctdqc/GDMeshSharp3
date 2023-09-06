@@ -8,5 +8,6 @@ public enum BuildingType
     Financial,
     Government,
     Extraction,
-    Infrastructure
+    Infrastructure,
+    Military
 }

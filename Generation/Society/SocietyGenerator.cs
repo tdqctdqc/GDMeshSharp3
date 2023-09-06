@@ -57,17 +57,23 @@ public class SocietyGenerator : Generator
         var extractionLabor = GenerateExtractionBuildings(r);
         // var adminLabor = GenerateTownHalls(r, settlementPolys);
         var surplus = employed - (extractionLabor);
-        var forFactories = surplus * .75f;
-        var forBanks = surplus * .25f;
+        var forFactories = surplus * .9f;
+        var forBanks = surplus * .1f;
 
         
-        GenerateBuildingType(_key.Data.Models.Buildings.Factory, r, forFactories, score);
-        GenerateBuildingType(_key.Data.Models.Buildings.Bank, r, forBanks, score);
+        GenerateWorkBuildingType(_key.Data.Models.Buildings.Factory, r, forFactories, score);
+        GenerateWorkBuildingType(_key.Data.Models.Buildings.Bank, r, forBanks, score);
         GenerateLaborers(r, employed);
         
         GenerateUnemployed(r, Mathf.FloorToInt(popSurplus * unemployedRatio));
         
         CreateSettlements(r);
+        GenerateNonWorkBuildingType(_key.Data.Models.Buildings.Barracks, r,
+            p =>
+            {
+                if (p.HasSettlement(_key.Data) == false) return 0;
+                return 1;
+            });
     }
 
     private float GenerateFoodProducers(Regime r)
@@ -212,7 +218,7 @@ public class SocietyGenerator : Generator
         return townHall.GetComponent<Workplace>().TotalLaborReq() * settlementPolys.Count();
     }
     
-    private void GenerateBuildingType(BuildingModel model, Regime r, float popBudget,
+    private void GenerateWorkBuildingType(BuildingModel model, Regime r, float popBudget,
         Func<MapPolygon, float> suitability)
     {
         if (popBudget <= 0) return;
@@ -234,7 +240,24 @@ public class SocietyGenerator : Generator
             }
         }
     }
-    
+    private void GenerateNonWorkBuildingType(BuildingModel model, Regime r,
+        Func<MapPolygon, int> numToBuild)
+    {
+        var polys = r.GetPolys(_data)
+            .Where(p => model.CanBuildInPoly(p, _key.Data))
+            .ToList();
+        
+        for (var i = 0; i < polys.Count; i++)
+        {
+            var p = polys[i];
+            var num = numToBuild(p);
+            num = Mathf.Min(p.PolyBuildingSlots[model.BuildingType], num);
+            for (var j = 0; j < num; j++)
+            {
+                MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, model, _key);
+            }
+        }
+    }
     private void GenerateLaborers(Regime r, float popSurplus)
     {
         if (popSurplus <= 0) return;

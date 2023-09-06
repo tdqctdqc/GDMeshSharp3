@@ -65,7 +65,7 @@ public partial class Icon : MeshTexture
         rect.Size = dim;
         rect.CustomMinimumSize = dim;
         rect.Texture = BaseTexture;
-        rect.FlipH = true;
+        // rect.FlipH = true;
         return rect;
     }
 }

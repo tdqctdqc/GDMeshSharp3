@@ -45,16 +45,7 @@ public partial class RegimeAiOverviewWindow : TabWindow
         
         
         
-        vbox.CreateLabelAsChild("WISHLIST");
-        var income = r.Flows[data.Models.Flows.Income].Net();
-        var buyItemsIncome = Mathf.Floor(income * ai.Budget.IncomeBudget.BuyWishlistItemsRatio);
-        var wishlist = ai.Budget.GetItemWishlist(data, buyItemsIncome);
-        foreach (var kvp in wishlist)
-        {
-            var item = kvp.Key;
-            var num = kvp.Value;
-            vbox.CreateLabelAsChild($"{item.Name}: {num}");
-        }
+        
         
         return c;
     }

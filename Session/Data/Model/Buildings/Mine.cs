@@ -19,7 +19,8 @@ public class Mine : BuildingModel
             },
             new Dictionary<Item, int>
             {
-                {items.Iron, 1000}
+                {items.Iron, 1000},
+                {items.BuildingMaterial, 1000}
             })
     {
         MinedItem = prodItem;

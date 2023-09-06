@@ -16,7 +16,7 @@ public class TownHall : BuildingModel
                 })
             },new Dictionary<Item, int>
             {
-                {items.Iron, 200}
+                {items.BuildingMaterial, 500}
             })
     {
     }

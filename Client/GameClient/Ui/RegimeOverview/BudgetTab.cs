@@ -26,14 +26,5 @@ public partial class BudgetTab : ScrollContainer
         {
             _container.CreateLabelAsChild($"\t{priority.GetType().Name}: {priority.Weight}");
         }
-        
-        _container.CreateLabelAsChild("ITEM RESERVES");
-        foreach (var kvp in budget.Reserve.DesiredReserves)
-        {
-            var item = kvp.Key;
-            var q = kvp.Value;
-            var actual = regime.Items[item];
-            _container.CreateLabelAsChild($"\t{item.Name}: {actual} / {q}");
-        }
     }
 }

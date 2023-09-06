@@ -5,17 +5,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Budget/NewBudgetAi.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ManufacturingTab.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Barracks.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/LocationGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/NewLocationGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/PeepGenerator.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Location/Settlement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/SettlementTier/SettlementTierList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/SettlementTier/SettlementTierList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Landform/Hill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Landform/Hill.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetScratch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAccount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyBuildingSlots.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyBuildingSlots.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ProdQueue/ItemManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ProdQueue/ItemManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ProdQueue/ManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ProdQueue/ManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ProdQueue/ManufacturingQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ProdQueue/ManufacturingQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/RegimeFlows.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/RegimeFlows.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Bank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Bank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Mine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Mine.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/TownHall.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/TownHall.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Models.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Models.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/AI/BuildingConstructionPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Count/FlowCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Count/FlowCount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Count/ItemCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Count/ItemCount.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,7 +70,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/6b/6f51637d/Control.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b34296d7545f4a54bda041aecea156b4b1d878/1c/94f3ee6b/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -252,7 +266,11 @@
       <workItem from="1693447473470" duration="8811000" />
       <workItem from="1693525574527" duration="3467000" />
       <workItem from="1693687215294" duration="8348000" />
-      <workItem from="1693770440129" duration="8000" />
+      <workItem from="1693770443973" duration="14407000" />
+      <workItem from="1693840130294" duration="31000" />
+      <workItem from="1693856276374" duration="3457000" />
+      <workItem from="1693863809766" duration="2885000" />
+      <workItem from="1694033449547" duration="6869000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -520,7 +538,23 @@
       <option name="project" value="LOCAL" />
       <updated>1693687601426</updated>
     </task>
-    <option name="localTasksCounter" value="38" />
+    <task id="LOCAL-00038" summary="adding manufacturing queue">
+      <option name="closed" value="true" />
+      <created>1693834129765</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1693834129765</updated>
+    </task>
+    <task id="LOCAL-00039" summary="fixed manufacturing bugs">
+      <option name="closed" value="true" />
+      <created>1693839956119</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1693839956119</updated>
+    </task>
+    <option name="localTasksCounter" value="40" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -542,8 +576,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="gave regime FlowCount" />
-    <MESSAGE value="adding construction cap as flow" />
     <MESSAGE value="doo" />
     <MESSAGE value="made ref Entity() take data as param" />
     <MESSAGE value="added reverse multi indexer, made valchangeaction class" />
@@ -567,6 +599,8 @@
     <MESSAGE value="doot" />
     <MESSAGE value="made better scaling options for generation" />
     <MESSAGE value="pre reworking loc gen" />
-    <option name="LAST_COMMIT_MESSAGE" value="pre reworking loc gen" />
+    <MESSAGE value="adding manufacturing queue" />
+    <MESSAGE value="fixed manufacturing bugs" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed manufacturing bugs" />
   </component>
 </project>

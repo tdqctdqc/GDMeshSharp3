@@ -98,7 +98,7 @@ public class Models
             }
         }
     }
-    public T GetModel<T>(int id)
+    public T GetModel<T>(int id) where T : IModel
     {
         return (T)_models[id];
     }

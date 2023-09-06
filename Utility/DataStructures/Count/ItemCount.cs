@@ -23,9 +23,31 @@ public class ItemCount : Count<int>
         if (amount == 0) return;
         Add(item.Id, amount);
     }
-    public void Remove(Item item, int amount)
+    public void Remove(Item item, float amount)
     {
         if (amount == 0) return;
         Remove(item.Id, amount);
+    }
+
+    public static ItemCount Union(params ItemCount[] counts)
+    {
+        var res = ItemCount.Construct();
+        foreach (var count in counts)
+        {
+            foreach (var kvp in count.Contents)
+            {
+                res.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        return res;
+    }
+
+    public void Subtract(ItemCount take)
+    {
+        foreach (var kvp in take.Contents)
+        {
+            Remove(kvp.Key, kvp.Value);
+        }
     }
 }

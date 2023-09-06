@@ -24,4 +24,15 @@ public class RegimeFlows
         if(Flows.ContainsKey(flow.Id) == false) Flows.Add(flow.Id, new FlowData(0f, 0f));
         this[flow].AddFlowOut(flowOut);
     }
+
+    public FlowCount GetNetCount()
+    {
+        var count = FlowCount.Construct();
+        foreach (var kvp in Flows)
+        {
+            count.Add(kvp.Key, kvp.Value.Net());
+        }
+
+        return count;
+    }
 }

@@ -9,6 +9,7 @@ public abstract class ManufactureProject
     public float Progress { get; private set; }
     public abstract float IndustrialCost(Data d);
     public abstract IEnumerable<KeyValuePair<Item, int>> ItemCosts(Data d);
+    public abstract Control GetDisplay(Data d);
 
     protected ManufactureProject(int id, float progress)
     {
