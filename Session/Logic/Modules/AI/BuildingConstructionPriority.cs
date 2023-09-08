@@ -50,22 +50,21 @@ public class BuildingConstructionPriority : BudgetPriority
         SelectBuildSitesAndAddRequest(regime, data, buildings, orders, usedItem, usedFlow, ref usedLabor);
     }
 
-    public override Dictionary<Item, int> GetTradeWishlist(Regime regime, Data data, 
-        Dictionary<Item, float> prices, float credit, int availLabor)
+    public override Dictionary<Item, int> GetWishlist(Regime regime, Data data, 
+        int availLabor, int availConstructCap)
     {
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, data);
         
         SetBuildingLaborConstraint(solver, availLabor, projVars);
-        SetCreditConstraint(solver, data, credit, prices, projVars);
-        SetConstructCapConstraint(solver, availLabor, projVars);
+        // SetCreditConstraint(solver, data, credit, prices, projVars);
+        SetConstructCapConstraint(solver, availConstructCap, projVars);
         SetSlotConstraints(solver, regime, projVars, data);
         
         var success = Solve(solver, projVars);
         if (success == false)
         {
             GD.Print("PLANNING FAILED");
-            GD.Print("credits " + credit);
             GD.Print("labor " + availLabor);
         }
         return projVars.GetCounts(kvp => kvp.Key.BuildCosts, 
@@ -208,7 +207,6 @@ public class BuildingConstructionPriority : BudgetPriority
         var currConstruction = data.Infrastructure.CurrentConstruction;
         var availPolys = regime.GetPolys(data);
         
-        //sort buildings by type then assign polys from that
         foreach (var kvp in toBuild)
         {
             var building = kvp.Key;
@@ -232,7 +230,7 @@ public class BuildingConstructionPriority : BudgetPriority
                 foreach (var cost in building.BuildCosts)
                 {
                     Account.Items.Remove(cost.Key, cost.Value);
-                    usedItem.Add(data.Models.GetModel<Item>(cost.Value));
+                    usedItem.Add(cost.Key);
                 }
                 
                 Account.Flows.Remove(data.Models.Flows.ConstructionCap, building.ConstructionCapPerTick);

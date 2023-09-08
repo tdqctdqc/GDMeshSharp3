@@ -17,9 +17,7 @@ public class SocietyDomain : Domain
     }
     public override void Setup()
     {
-        
         RegimeAux = new RegimeAux(Data);
-
         PolyPeepAux = new PolyPeepAux(Data);
         AllianceAux = new AllianceAux(Data);
         _market = new SingletonAux<Market>(Data);

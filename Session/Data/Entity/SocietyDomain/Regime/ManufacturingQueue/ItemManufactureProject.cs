@@ -34,13 +34,19 @@ public class ItemManufactureProject : ManufactureProject
         var texture = icon.GetTextureRect(Vector2.One * 50f);
         hbox.AddChild(texture);
         var completedRatio = Progress / IndustrialCost(d);
-        hbox.CreateLabelAsChild($"{((1f - completedRatio) * Amount).RoundTo2Digits()} {Item.Model(d).Name}");
+        
+        hbox.CreateLabelAsChild($"{(completedRatio * Amount).RoundTo2Digits()}/{Amount.RoundTo2Digits()}");
+        
+        
         return hbox;
     }
-
-    protected override void Complete(Regime r, ProcedureWriteKey key)
+    public override void Work(Regime r, ProcedureWriteKey key, float ip)
     {
-        GD.Print($"{r.Name} completed manuf of {Amount} {Item.Model(key.Data).Name} ");
-        r.Items.Add(Item.Model(key.Data), Amount);
+        if (ip < 0) throw new Exception();
+        Progress += ip;
+        var item = Item.Model(key.Data);
+        var itemCost = item.Attributes.Get<ManufactureableAttribute>().IndustrialCost;
+        var amountProd = ip / itemCost;
+        r.Items.Add(item, amountProd);
     }
 }

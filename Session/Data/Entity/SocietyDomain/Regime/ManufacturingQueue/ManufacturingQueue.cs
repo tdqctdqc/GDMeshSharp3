@@ -19,7 +19,6 @@ public class ManufacturingQueue
     public void Manufacture(float ip, Regime r, ProcedureWriteKey key)
     {
         if (Queue.Count == 0) return;
-        GD.Print($"{r.Name} working on manuf for {ip} ip");
 
         while (ip > 0 && Queue.Count > 0)
         {
@@ -38,7 +37,5 @@ public class ManufacturingQueue
                 break;
             }
         }
-        GD.Print($"{ip} ip left");
-
     }
 }

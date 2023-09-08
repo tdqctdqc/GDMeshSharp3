@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public class RegimeFlows
 {
@@ -25,12 +26,12 @@ public class RegimeFlows
         this[flow].AddFlowOut(flowOut);
     }
 
-    public FlowCount GetNetCount()
+    public FlowCount GetSurplusCount()
     {
         var count = FlowCount.Construct();
         foreach (var kvp in Flows)
         {
-            count.Add(kvp.Key, kvp.Value.Net());
+            count.Add(kvp.Key, Mathf.Max(0f, kvp.Value.Net()));
         }
 
         return count;

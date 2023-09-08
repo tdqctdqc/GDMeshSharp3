@@ -24,7 +24,29 @@ public partial class BudgetTab : ScrollContainer
         _container.CreateLabelAsChild("BUDGET PRIORITIES");
         foreach (var priority in budget.Priorities)
         {
-            _container.CreateLabelAsChild($"\t{priority.GetType().Name}: {priority.Weight}");
+            var panel = new Panel();
+            panel.Size = new Vector2(300f, 500f);
+            _container.CreateLabelAsChild($"\t{priority.Name.ToUpper()}");
+        
+            _container.CreateLabelAsChild($"\t\tWeight: {priority.Weight}");
+            _container.CreateLabelAsChild($"\t\tAccount");
+            foreach (var kvp in priority.Account.Items.Contents)
+            {
+                if (kvp.Value == 0f) continue;
+                var item = data.Models.GetModel<Item>(kvp.Key);
+                _container.CreateLabelAsChild($"\t\t{item.Name}: {kvp.Value.RoundTo2Digits()}");
+            }
+            
+            var wishlist = priority.Wishlist;
+            if (wishlist != null)
+            {
+                _container.CreateLabelAsChild($"\t\tWishlist");
+                foreach (var kvp in wishlist)
+                {
+                    if (kvp.Value == 0f) continue;
+                    _container.CreateLabelAsChild($"\t\t{kvp.Key.Name}: {kvp.Value}");
+                }
+            }
         }
     }
 }

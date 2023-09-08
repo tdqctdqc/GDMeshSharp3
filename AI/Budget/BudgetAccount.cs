@@ -20,7 +20,7 @@ public class BudgetAccount
         foreach (var kvp in pool.AvailItems.Contents.ToArray())
         {
             var item = kvp.Key;
-            var q = share * pool.OrigItems[item];
+            var q = Mathf.Min(pool.AvailItems[item], share * pool.OrigItems[item]);
             Items.Add(item, q);
             pool.AvailItems.Remove(item, q);
         }

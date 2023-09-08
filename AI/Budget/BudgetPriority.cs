@@ -35,10 +35,8 @@ public abstract class BudgetPriority
         HashSet<Flow> usedFlow,
         ref bool usedLabor);
 
-    public abstract Dictionary<Item, int> GetTradeWishlist(Regime regime, Data data,
-        Dictionary<Item, float> prices,
-        float credit,
-        int availLabor);
+    public abstract Dictionary<Item, int> GetWishlist(Regime regime, Data data,
+        int availLabor, int availConstructCap);
 
     public void Wipe()
     {
@@ -49,10 +47,10 @@ public abstract class BudgetPriority
         Wishlist.Clear();
     }
 
-    public void SetWishlist(Regime r, Data d,
-        Dictionary<Item, float> prices, float credit, float availLabor)
+    public void SetWishlist(Regime r, Data d, float availLabor, float availConstructCap)
     {
-        Wishlist = GetTradeWishlist(r, d, prices, credit, Mathf.FloorToInt(availLabor));
+        Wishlist = GetWishlist(r, d, 
+            Mathf.FloorToInt(availLabor), Mathf.FloorToInt(availConstructCap));
     }
     public void FirstRound(MajorTurnOrders orders, Regime regime, float proportion, 
         BudgetPool pool, Data data)
@@ -62,7 +60,6 @@ public abstract class BudgetPriority
         Account.Add(taken);
         Calculate(regime, data, orders, _usedItems,
             _usedFlows, ref _usedLabor);
-        ReturnUnused(taken, pool, data);
     }
 
     public void SecondRound(MajorTurnOrders orders, Regime regime, float proportion, 
@@ -70,22 +67,23 @@ public abstract class BudgetPriority
     {
         proportion = Mathf.Min(1f, multiplier * proportion);
         FirstRound(orders, regime, proportion, pool, data);
+        ReturnUnused(pool, data);
     }
 
-    private void ReturnUnused(BudgetAccount taken, BudgetPool pool, Data data)
+    private void ReturnUnused(BudgetPool pool, Data data)
     {
-        foreach (var kvp in taken.Items.Contents)
+        foreach (var kvp in Account.Items.Contents)
         {
             var item = data.Models.GetModel<Item>(kvp.Key);
             var q = kvp.Value;
-            if (_usedItems.Contains(item) == false)
+            if (_usedItems.Contains(item) == false && Wishlist.ContainsKey(item) == false)
             {
                 Account.Items.Remove(item, q);
                 pool.AvailItems.Add(item, q);
             }
         }
         
-        foreach (var kvp in taken.Flows.Contents)
+        foreach (var kvp in Account.Flows.Contents)
         {
             var flow = data.Models.GetModel<Flow>(kvp.Key);
             var q = kvp.Value;
