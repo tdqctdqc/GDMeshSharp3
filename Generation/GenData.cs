@@ -8,9 +8,9 @@ public class GenData : Data
     public GenAuxiliaryData GenAuxData { get; private set; }
     public MapGenInfo GenInfo { get; set; }
     public GenerationMultiSettings GenMultiSettings { get; private set; }
-    public GenData(GenerationMultiSettings genMultiSettings)
+    public GenData()
     {
-        GenMultiSettings = genMultiSettings;
+        GenMultiSettings = GenerationMultiSettings.Load(this);
     }
 
     protected override void Init()

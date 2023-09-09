@@ -32,8 +32,10 @@ public class WorldGenLogic : ILogic
         _tries = 0;
         Succeeded = false;
         Generating = true;
-        var w = new WorldGenerator((GenData)_session.Data, _session,
+        var genData = (GenData)_session.Data;
+        var w = new WorldGenerator(genData, _session,
             () => _justGenned = true);
+        genData.GenMultiSettings.Save(Data);
         w.Generate();
 
         try

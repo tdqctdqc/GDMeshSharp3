@@ -4,17 +4,19 @@ using System.Linq;
 
 public class ClientSettings : Settings
 {
-    private static ClientSettings _settings;
+
     public static ClientSettings Load()
     {
-        if(_settings == null) _settings = new ClientSettings();
-        return _settings;
+        return new ClientSettings("Client",
+            new EnumSettingsOption<PolyHighlighter.Modes>("Poly Highlight Mode", PolyHighlighter.Modes.Simple));
     }
 
-    private ClientSettings() : base("Client")
+    public EnumSettingsOption<PolyHighlighter.Modes> PolyHighlightMode { get; private set; }
+
+    private ClientSettings(string name,
+        EnumSettingsOption<PolyHighlighter.Modes> polyHighlightMode)
+        : base(name)
     {
+        PolyHighlightMode = polyHighlightMode;
     }
-    
-    public EnumSettingsOption<PolyHighlighter.Modes> PolyHighlightMode { get; private set; } 
-        = new EnumSettingsOption<PolyHighlighter.Modes>("Poly Highlight Mode", PolyHighlighter.Modes.Simple);
 }

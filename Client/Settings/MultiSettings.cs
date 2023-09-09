@@ -7,9 +7,9 @@ public class MultiSettings
     public string Name { get; private set; }
     public List<ISettings> Settings { get; private set; }
 
-    public MultiSettings(string name)
+    public MultiSettings(string name, List<ISettings> settings)
     {
         Name = name;
-        Settings = new List<ISettings>();
+        Settings = settings;
     }
 }

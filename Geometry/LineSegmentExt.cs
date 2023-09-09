@@ -28,6 +28,10 @@ public static class LineSegmentExt
     {
         return Vector2Ext.LineSegmentsIntersectExclusive(ls.From, ls.To, a, b);
     }
+    public static bool IntersectsInclusive(this LineSegment ls, Vector2 a, Vector2 b)
+    {
+        return Vector2Ext.LineSegmentsIntersectInclusive(ls.From, ls.To, a, b);
+    }
     public static bool Intersects(this LineSegment ls, Vector2 point, Vector2 dir)
     {
         var intersect = Geometry2D.LineIntersectsLine(ls.From, ls.GetNormalizedAxis(), point, dir);

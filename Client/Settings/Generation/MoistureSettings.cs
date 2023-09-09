@@ -1,25 +1,42 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class MoistureSettings : Settings
 {
     public FloatSettingsOption Scale { get; private set; }
-        = new FloatSettingsOption("Scale", 1f, 0f, 2f, .1f, false);
     public FloatSettingsOption EquatorDistMoistureMultWeight { get; private set; }
-        = new FloatSettingsOption("Equator Dist Moisture Mult Weight", .5f, 0f, 1f, .1f, false);
     public FloatSettingsOption RiverFlowPerMoisture { get; private set; }
-        = new FloatSettingsOption("River Flow Per Moisture", 10f, 0f, 50f, 1f, false);
     public FloatSettingsOption BaseRiverFlowCost { get; private set; }
-        = new FloatSettingsOption("Base River Flow Cost", 100f, 0f, 1000f, 10f, false);
     public FloatSettingsOption RiverFlowCostRoughnessMult { get; private set; }
-        = new FloatSettingsOption("River Flow Cost Roughness Mult", 1f, 0f, 10f, 1f, false);
     public FloatSettingsOption MoistureFlowRoughnessCostMult { get; private set; }
-        = new FloatSettingsOption("Moisture Flow Roughness Cost Mult", .5f, 0f, 1f, .1f, false);
     public FloatSettingsOption LandPlateMoistureShaping { get; private set; }
-        = new FloatSettingsOption("Land Plate Moisture Shaping", 1f, .1f, 3f, .25f, false);
-
-    public MoistureSettings() : base("Moisture")
+    public static MoistureSettings Construct()
     {
+        return new MoistureSettings("Moisture",
+            new FloatSettingsOption("Scale", 1f, 0f, 2f, .1f, false),
+            new FloatSettingsOption("Equator Dist Moisture Mult Weight", .5f, 0f, 1f, .1f, false),
+            new FloatSettingsOption("River Flow Per Moisture", 10f, 0f, 50f, 1f, false),
+            new FloatSettingsOption("Base River Flow Cost", 100f, 0f, 1000f, 10f, false),
+            new FloatSettingsOption("River Flow Cost Roughness Mult", 1f, 0f, 10f, 1f, false),
+            new FloatSettingsOption("Moisture Flow Roughness Cost Mult", .5f, 0f, 1f, .1f, false),
+            new FloatSettingsOption("Land Plate Moisture Shaping", 1f, .1f, 3f, .25f, false)
+        );
+    }
+    [SerializationConstructor] private MoistureSettings(string name, 
+        FloatSettingsOption scale, FloatSettingsOption equatorDistMoistureMultWeight, 
+        FloatSettingsOption riverFlowPerMoisture, FloatSettingsOption baseRiverFlowCost, 
+        FloatSettingsOption riverFlowCostRoughnessMult, FloatSettingsOption moistureFlowRoughnessCostMult, 
+        FloatSettingsOption landPlateMoistureShaping) 
+        : base(name)
+    {
+        Scale = scale;
+        EquatorDistMoistureMultWeight = equatorDistMoistureMultWeight;
+        RiverFlowPerMoisture = riverFlowPerMoisture;
+        BaseRiverFlowCost = baseRiverFlowCost;
+        RiverFlowCostRoughnessMult = riverFlowCostRoughnessMult;
+        MoistureFlowRoughnessCostMult = moistureFlowRoughnessCostMult;
+        LandPlateMoistureShaping = landPlateMoistureShaping;
     }
 }

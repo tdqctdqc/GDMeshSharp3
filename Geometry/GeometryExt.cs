@@ -15,7 +15,10 @@ public static class GeometryExt
     {
         return (360f * rad / (Mathf.Pi * 2f));
     }
-
+    public static float DegreesToRad(this float degrees)
+    {
+        return Mathf.Pi * 2f * degrees / 360f;
+    }
     public static bool PointIsOnLineSegment(this Vector2 point, Vector2 seg1, Vector2 seg2)
     {
         var axis = (seg1 - seg2).Normalized();

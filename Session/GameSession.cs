@@ -47,7 +47,7 @@ public partial class GameSession : Node, ISession
     {
         var server = new DummyServer();
         StartServer(server);
-        Data = new GenData(new GenerationMultiSettings());
+        Data = new GenData();
         StartClient();
         
         var worldGen = new WorldGenLogic(this);
@@ -60,7 +60,7 @@ public partial class GameSession : Node, ISession
     {
         ((Node)Server)?.QueueFree();
         Server = null;
-        Data = new GenData(worldGen.Data.GenMultiSettings);
+        Data = new GenData();
         StartClient();
         Client.SetupForGenerator(worldGen);
     }

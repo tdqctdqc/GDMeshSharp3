@@ -4,13 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="reworked price setting">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/Triangle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Triangulation/Triangle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Trade/TradeModule.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,6 +48,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/6b/6f51637d/Control.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b34296d7545f4a54bda041aecea156b4b1d878/1c/94f3ee6b/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Geometry/LineSegmentExt.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/Data/Model/Buildings/Bank.cs" root0="SKIP_HIGHLIGHTING" />
@@ -256,7 +253,7 @@
       <workItem from="1694099589752" duration="1023000" />
       <workItem from="1694198423673" duration="3782000" />
       <workItem from="1694206453273" duration="7222000" />
-      <workItem from="1694272924135" duration="5699000" />
+      <workItem from="1694272924135" duration="6637000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -564,7 +561,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694277181981</updated>
     </task>
-    <option name="localTasksCounter" value="43" />
+    <task id="LOCAL-00043" summary="fixed coast waypoint links to each other / river mouths going over sea">
+      <option name="closed" value="true" />
+      <created>1694280452867</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1694280452867</updated>
+    </task>
+    <option name="localTasksCounter" value="44" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -586,7 +591,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="Working on proposals" />
     <MESSAGE value="removed domainType member from entities, moved registers to data class" />
     <MESSAGE value="removing var updates, make entity methods call the notice if needed" />
     <MESSAGE value="adding entityResolver for messagepack so can get rid of entityRef" />
@@ -611,6 +615,7 @@
     <MESSAGE value="new budget ai with accounts for each priority, removed reserve" />
     <MESSAGE value="implementing and bugfixing budget priority accounts" />
     <MESSAGE value="reworked price setting" />
-    <option name="LAST_COMMIT_MESSAGE" value="reworked price setting" />
+    <MESSAGE value="fixed coast waypoint links to each other / river mouths going over sea" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed coast waypoint links to each other / river mouths going over sea" />
   </component>
 </project>

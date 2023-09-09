@@ -21,7 +21,7 @@ public partial class SettingsControls : ScrollContainer
     private void Setup(ISettings settings)
     {
         Name = settings.Name;
-        foreach (var option in settings.Options)
+        foreach (var option in settings.Options())
         {
             SetupOption(option);
         }

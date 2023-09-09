@@ -6,6 +6,33 @@ using Godot;
 
 public class GodotFileExt
 {
+    public static void SaveFile<T>(T t, string path, string name, Data data)
+    {
+        var bytes = data.Serializer.MP.Serialize(t);
+        var dir = DirAccess.Open(path);
+        var fileAccess = FileAccess.Open(name, FileAccess.ModeFlags.Write);
+        fileAccess.StoreBuffer(bytes);
+        fileAccess.Close();
+    }
+    public static T LoadFileAs<T>(string path, string name, string ext, Data data)
+    {
+        var filePaths = GetAllFilePathsOfType(path, ext);
+        foreach (var filePath in filePaths)
+        {
+            var fileName = GetFileName(filePath);
+            GD.Print(fileName);
+            if (fileName == name)
+            {
+                var fullPath = path + name + ext;
+                GD.Print(fullPath);
+                var f = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
+                var bytes = f.GetBuffer((long)f.GetLength());
+                f.Close();
+                return data.Serializer.MP.Deserialize<T>(bytes);
+            }
+        }
+        throw new Exception($"couldn't find {name} in {path}");
+    }
     public static List<string> GetAllFilePathsOfType(string path, string type)
     {
         var filePaths = new List<string>();

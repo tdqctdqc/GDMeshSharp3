@@ -5,5 +5,5 @@ using System.Linq;
 public interface ISettings
 {
     string Name { get; }
-    IReadOnlyList<ISettingsOption> Options { get; }
+    List<ISettingsOption> Options();
 }

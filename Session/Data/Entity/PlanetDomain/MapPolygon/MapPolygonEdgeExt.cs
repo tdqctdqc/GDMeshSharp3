@@ -107,4 +107,13 @@ public static class MapPolygonEdgeExt
     {
         return edge.HighPoly.RefId == poly.Id || edge.LowPoly.RefId == poly.Id;
     }
+
+    public static bool LineCrosses(this MapPolygonEdge edge, Vector2 absA, Vector2 absB, Data data)
+    {
+        var hiSegs = edge.HighSegsRel(data);
+        var hi = edge.HighPoly.Entity(data);
+        var relA = hi.GetOffsetTo(absA, data);
+        var relB = hi.GetOffsetTo(absB, data);
+        return hiSegs.Segments.Any(s => s.IntersectsInclusive(relA, relB));
+    }
 }

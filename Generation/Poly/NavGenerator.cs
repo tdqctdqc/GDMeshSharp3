@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Godot;
 
@@ -7,6 +8,8 @@ using Godot;
 public class NavGenerator : Generator
 {
     private GenWriteKey _key;
+    private static float _angleThreshold = GeometryExt.DegreesToRad(5f);
+    
     public override GenReport Generate(GenWriteKey key)
     {
         _key = key;
@@ -25,6 +28,8 @@ public class NavGenerator : Generator
         ConnectPolyEdgeWps(key, byEdge);
         
         ConnectEdgeWpsAroundNexi(key, byEdge, byPoly);
+
+        ConnectEdgeWpsToLateralPolyCenters(byEdge, byPoly);
         
         ConnectInterior(key, nav);
         
@@ -33,6 +38,60 @@ public class NavGenerator : Generator
         SetLandWaypointProperties();
 
         return report;
+    }
+
+    private void ConnectEdgeWpsToLateralPolyCenters(Dictionary<MapPolygonEdge, Waypoint> byEdge,
+        Dictionary<MapPolygon, Waypoint> byPoly)
+    {
+        foreach (var kvp in byEdge)
+        {
+            var edge = kvp.Key;
+            var wp = kvp.Value;
+            var hiNexus = edge.HiNexus.Entity(_key.Data);
+            var loNexus = edge.LoNexus.Entity(_key.Data);
+            var laterals = hiNexus.IncidentPolys.Items(_key.Data)
+                .Union(loNexus.IncidentPolys.Items(_key.Data))
+                .Where(p => edge.EdgeToPoly(p) == false);
+            if (laterals.Count() > 2)
+            {
+                // GD.Print(laterals.Count() + " laterals at " + edge.HighPoly.RefId + ":" + edge.LowPoly.RefId);
+            }
+            foreach (var lateral in laterals)
+            {
+                if (lateral.IsWater()) continue;
+                MapPolyNexus nexus;
+                var nexi = lateral.GetNexi(_key.Data);
+                
+                if (hiNexus.IncidentPolys.Items(_key.Data).Contains(lateral))
+                {
+                    nexus = hiNexus;
+                }
+                else if (loNexus.IncidentPolys.Items(_key.Data).Contains(lateral))
+                {
+                    nexus = loNexus;
+                }
+                else throw new Exception();
+                var lateralWp = byPoly[lateral];
+
+                if (nexus.IncidentEdges.Items(_key.Data)
+                    .Any(e => e.IsRiver() 
+                              && e.LineCrosses(lateralWp.Pos, wp.Pos, _key.Data)))
+                {
+                    continue;
+                }
+                
+                var relevantWps = 
+                    edge.HighPoly.Entity(_key.Data).GetAssocWaypoints(_key.Data)
+                    .Union(edge.LowPoly.Entity(_key.Data).GetAssocWaypoints(_key.Data))
+                    .Union(lateral.GetAssocWaypoints(_key.Data))
+                    .Distinct();
+                if (CloseByDist(wp, lateralWp, 10f, relevantWps, _key))
+                {
+                    continue;
+                }
+                Connect(wp, lateralWp);
+            }
+        }
     }
 
     private static void AddRiverMouthWps(GenWriteKey key, IdDispenser id, Dictionary<MapPolygon, Waypoint> byPoly, Dictionary<MapPolygonEdge, Waypoint> byEdge, Nav nav)
@@ -67,9 +126,8 @@ public class NavGenerator : Generator
             {
                 if (byEdge.TryGetValue(incidentEdge, out var eWp))
                 {
-                    if (eWp is RiverWaypoint == false && eWp is CoastWaypoint == false)
+                    if (eWp is ICoastWaypoint == false && eWp is RiverWaypoint == false)
                     {
-                        // throw new Exception();   
                         GD.Print("strange river mouth wp at poly " + seaPoly.Id);
                     }
 
@@ -93,26 +151,37 @@ public class NavGenerator : Generator
                 foreach (var wp2 in assoc)
                 {
                     if (wp1 == wp2) continue;
-                    if (Close(50f, wp1, wp2, assoc, key)) continue;
+                    if (CloseByAngle(wp1, wp2, assoc, key)) continue;
                     Connect(wp1, wp2);
                 }
             }
         }
     }
+    private static bool CloseByDist(Waypoint wp1, Waypoint wp2, float dist, IEnumerable<Waypoint> wps,
+        GenWriteKey key)
+    {
+        foreach (var wp3 in wps)
+        {
+            if (wp1 == wp3 || wp2 == wp3) continue;
+            var pos1 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp1.Pos);
+            var pos2 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp2.Pos);
+            if (Vector2.Zero.DistToLine(pos1, pos2) < dist) return true;
+        }
 
-    private static bool Close(float dist, Waypoint wp1, Waypoint wp2, IEnumerable<Waypoint> wps,
+        return false;
+    }
+    private static bool CloseByAngle(Waypoint wp1, Waypoint wp2, IEnumerable<Waypoint> wps,
          GenWriteKey key)
     {
         foreach (var wp3 in wps)
         {
             if (wp1 == wp3 || wp2 == wp3) continue;
-            var axis = key.Data.Planet.GetOffsetTo(wp1.Pos, wp2.Pos);
-            var offset = key.Data.Planet.GetOffsetTo(wp1.Pos, wp3.Pos);
-            var close = Geometry2D.GetClosestPointToSegment(offset, Vector2.Zero, axis);
-            if (offset.DistanceTo(close) < 50f)
-            {
-                return true;
-            }
+            var pos1 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp1.Pos);
+            var pos2 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp2.Pos);
+
+            var angle1 = -pos1.AngleTo(pos2 - pos1);
+            var angle2 = -pos2.AngleTo(pos1 - pos2);
+            if (angle1 < _angleThreshold || angle2 < _angleThreshold) return true;
         }
 
         return false;
@@ -169,7 +238,7 @@ public class NavGenerator : Generator
                 foreach (var wp2 in toConnect)
                 {
                     if (wp1 == wp2) continue;
-                    bool close = Close(50f, wp1, wp2, toConnect, key);
+                    bool close = CloseByAngle(wp1, wp2, toConnect, key);
                     if (close) continue;
                     
                     if (close == false) Connect(wp1, wp2);
@@ -329,7 +398,12 @@ public class NavGenerator : Generator
                     .OrderBy(t => t.GetCentroid().DistanceTo(offset))
                     .Take(4);
                 if (roughSample.Count() == 0) continue;
-                var roughVal = roughSample.Average(t => t.Landform(_key.Data).MinRoughness);
+                var totalArea = roughSample.Sum(s => s.GetArea());
+                var totalRoughness = roughSample.Sum(s => s.Landform(_key.Data).MinRoughness * s.GetArea());
+
+
+
+                var roughVal = totalRoughness / totalArea;
                 
                 if (float.IsNaN(roughVal) == false)
                 {
