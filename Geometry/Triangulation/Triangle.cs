@@ -84,16 +84,11 @@ public class Triangle
     {
         return (A + B + C) / 3f;
     }
-
-    public bool InSection(Vector2 startRot, Vector2 endRot)
+    public bool IntersectsLineSegExclusive(Vector2 p1, Vector2 p2)
     {
-        
-        return startRot.GetCCWAngleTo(A) < startRot.GetCCWAngleTo(endRot)
-               || startRot.GetCCWAngleTo(B) < startRot.GetCCWAngleTo(endRot)
-               || startRot.GetCCWAngleTo(C) < startRot.GetCCWAngleTo(endRot);
-        // return startRot.AngleTo(A) > 0f && endRot.AngleTo(A) < 0f
-        //        || startRot.AngleTo(B) > 0f && endRot.AngleTo(B) < 0f
-        //        || startRot.AngleTo(C) > 0f && endRot.AngleTo(C) < 0f;
+        return Vector2Ext.LineSegmentsIntersectExclusive(p1, p2, A, B)
+               || Vector2Ext.LineSegmentsIntersectInclusive(p1, p2, B, C)
+               || Vector2Ext.LineSegmentsIntersectInclusive(p1, p2, C, A);
     }
     public bool IntersectsRay(Vector2 ray)
     {

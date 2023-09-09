@@ -147,4 +147,10 @@ public static class MapPolygonExt
         return p.GetChunk(d).Yield()
             .Union(p.Neighbors.Items(d).Select(n => n.GetChunk(d))).Distinct();
     }
+
+    public static bool LineEntersPoly(this MapPolygon poly, Vector2 aRel, Vector2 bRel, Data data)
+    {
+        return poly.GetOrderedBoundaryPoints(data)
+            .Any(p => Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, p, aRel, bRel));
+    }
 }

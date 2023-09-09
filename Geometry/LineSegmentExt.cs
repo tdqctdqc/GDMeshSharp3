@@ -23,6 +23,11 @@ public static class LineSegmentExt
 
         return null;
     }
+
+    public static bool IntersectsExclusive(this LineSegment ls, Vector2 a, Vector2 b)
+    {
+        return Vector2Ext.LineSegmentsIntersectExclusive(ls.From, ls.To, a, b);
+    }
     public static bool Intersects(this LineSegment ls, Vector2 point, Vector2 dir)
     {
         var intersect = Geometry2D.LineIntersectsLine(ls.From, ls.GetNormalizedAxis(), point, dir);
@@ -30,14 +35,6 @@ public static class LineSegmentExt
         var inX = (ls.From.X <= v.X && v.X <= ls.To.X) || (ls.From.X >= v.X && v.X >= ls.To.X);
         var inY = (ls.From.Y <= v.Y && v.Y <= ls.To.Y) || (ls.From.Y >= v.Y && v.Y >= ls.To.Y);
         return inX && inY;
-    }
-    public static Vector2 IntersectOrInf(this LineSegment ls, Vector2 point, Vector2 dir)
-    {
-        var intersect = Geometry2D.LineIntersectsLine(ls.From, ls.GetNormalizedAxis(), point, dir);
-        if (intersect.Obj is Vector2 v == false) return Vector2.Inf;
-        var inX = (ls.From.X <= v.X && v.X <= ls.To.X) || (ls.From.X >= v.X && v.X >= ls.To.X);
-        var inY = (ls.From.Y <= v.Y && v.Y <= ls.To.Y) || (ls.From.Y >= v.Y && v.Y >= ls.To.Y);
-        return inX && inY ? v : Vector2.Inf;
     }
     public static float GetAngleAroundSum(this List<LineSegment> segs, Vector2 center)
     {

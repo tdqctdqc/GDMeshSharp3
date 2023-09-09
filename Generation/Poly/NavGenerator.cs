@@ -20,7 +20,6 @@ public class NavGenerator : Generator
         
         AddPolyEdgeWps(key, byPoly, id, byEdge, nav);
         
-        
         AddRiverMouthWps(key, id, byPoly, byEdge, nav);
         
         ConnectPolyEdgeWps(key, byEdge);
@@ -28,6 +27,8 @@ public class NavGenerator : Generator
         ConnectEdgeWpsAroundNexi(key, byEdge, byPoly);
         
         ConnectInterior(key, nav);
+        
+        RemoveBadConnections();
         
         SetLandWaypointProperties();
 
@@ -92,8 +93,8 @@ public class NavGenerator : Generator
                 foreach (var wp2 in assoc)
                 {
                     if (wp1 == wp2) continue;
-                    bool close = Close(50f, wp1, wp2, assoc, key);
-                    if (close == false) Connect(wp1, wp2);
+                    if (Close(50f, wp1, wp2, assoc, key)) continue;
+                    Connect(wp1, wp2);
                 }
             }
         }
@@ -169,15 +170,16 @@ public class NavGenerator : Generator
                 {
                     if (wp1 == wp2) continue;
                     bool close = Close(50f, wp1, wp2, toConnect, key);
-                    if (close == false) Connect(wp1, wp2);
+                    if (close) continue;
                     
-                    //todo check here for coast waypoints if the connection is crossing water to 
-                    //another land wp
+                    if (close == false) Connect(wp1, wp2);
                 }
             }
         }
+        
+        
     }
-
+    
     private static void ConnectPolyEdgeWps(GenWriteKey key, Dictionary<MapPolygonEdge, Waypoint> byEdge)
     {
         foreach (var poly in key.Data.GetAll<MapPolygon>())
@@ -205,6 +207,7 @@ public class NavGenerator : Generator
                 }
             }
         }
+
     }
 
     private static void AddPolyEdgeWps(GenWriteKey key, Dictionary<MapPolygon, Waypoint> byPoly, IdDispenser id, Dictionary<MapPolygonEdge, Waypoint> byEdge, Nav nav)
@@ -257,7 +260,11 @@ public class NavGenerator : Generator
         wp1.Neighbors.Add(wp2.Id);
         wp2.Neighbors.Add(wp1.Id);
     }
-
+    private static void Disconnect(Waypoint wp1, Waypoint wp2)
+    {
+        wp1.Neighbors.Remove(wp2.Id);
+        wp2.Neighbors.Remove(wp1.Id);
+    }
     private static void AddPolyCenterWps(GenWriteKey key, IdDispenser id, Nav nav, Dictionary<MapPolygon, Waypoint> byPoly)
     {
         foreach (var poly in key.Data.GetAll<MapPolygon>())
@@ -276,7 +283,32 @@ public class NavGenerator : Generator
             byPoly.Add(poly, wp);
         }
     }
-    
+
+    private void RemoveBadConnections()
+    {
+        var nav = _key.Data.Planet.Nav;
+        foreach (var pm in nav.Waypoints.Values)
+        {
+            var wp = pm.Value();
+            if (wp is CoastWaypoint == false) continue;
+            var assocPolys = wp.AssocPolys(_key.Data).Where(p => p.IsWater());
+            if (assocPolys.Count() == 0) continue;
+            foreach (var p in assocPolys)
+            {
+                var wpPos = p.GetOffsetTo(wp.Pos, _key.Data);
+                foreach (var nId in wp.Neighbors.ToList())
+                {
+                    var nWp = nav.Waypoints[nId].Value();
+                    if (nWp is SeaWaypoint) continue;
+                    var nWpPos = p.GetOffsetTo(nWp.Pos, _key.Data);
+                    if (p.LineEntersPoly(wpPos, nWpPos, _key.Data))
+                    {
+                        Disconnect(wp, nWp);
+                    }
+                }
+            }
+        }
+    }
     private void SetLandWaypointProperties()
     {
         var nav = _key.Data.Planet.Nav;

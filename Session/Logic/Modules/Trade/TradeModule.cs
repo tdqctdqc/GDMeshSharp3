@@ -88,9 +88,6 @@ private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, Lis
             }
             proc.ItemTradeInfos.Add(kvp2.Key.Id, info);
         }
-        
-        
-        
     }
     
     private void ExchangeItems(Dictionary<Item, ItemTradeReport> tradeReports, List<SellOrder> sellOrders, 
@@ -179,83 +176,10 @@ private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, Lis
             
             var adjustment = (targetPrice - price) * PriceAdjustmentRatio;
             var newPrice = price + adjustment;
-            newPrice = Mathf.Clamp(newPrice, item.DefaultPrice / MaxPriceDeviationRatioFromDefault,
+            newPrice = Mathf.Clamp(newPrice, 
+                item.DefaultPrice / MaxPriceDeviationRatioFromDefault,
                 item.DefaultPrice * MaxPriceDeviationRatioFromDefault);
             proc.NewPrices.Add(item.Id, newPrice);
         }
-    }
-    
-
-    private void UpdatePrices(Dictionary<Item, ItemTradeReport> infos, TradeProcedure proc, Data data)
-    {
-        var market = data.Society.Market;
-        foreach (var kvp in infos)
-        {
-            var info = kvp.Value;
-            var item = (TradeableItem)kvp.Key;
-            var price = market.Prices[item.Id];
-            var offered = info.TotalOffered;
-            var demanded = info.TotalDemanded;
-            if (offered > demanded)
-            {
-                var minPrice = item.DefaultPrice / MaxPriceDeviationRatioFromDefault;
-                if (price == minPrice)
-                {
-                    // GD.Print($"Price of {item.Name} stuck at min price {minPrice}");
-                }
-                else
-                {
-                    var adjustmentRatio = 0f;
-                    var diffRatio = (float)(offered - demanded) / (offered + demanded);
-                    
-                    if (demanded == 0) adjustmentRatio = PriceAdjustmentRatio;
-                    else adjustmentRatio = Mathf.Min(1f, diffRatio) * PriceAdjustmentRatio;
-
-                    var newPrice = price * (1f - adjustmentRatio);
-                
-                    if (newPrice > minPrice)
-                    {
-                        if (newPrice < price)
-                        {
-                            proc.NewPrices.Add(item.Id, newPrice);
-                        }
-                    }
-                    else 
-                    {
-                        proc.NewPrices.Add(item.Id, minPrice);
-                    }
-                }
-            }
-            else if (demanded > offered)
-            {
-                var maxPrice = item.DefaultPrice * MaxPriceDeviationRatioFromDefault;
-                if (price == maxPrice)
-                {
-                }
-                else
-                {
-                    var adjustmentRatio = 0f;
-                    var diffRatio = (float)(demanded - offered) / (offered + demanded);
-                
-                    if (offered == 0) adjustmentRatio = PriceAdjustmentRatio;
-                    else adjustmentRatio = Mathf.Min(1f, diffRatio) * PriceAdjustmentRatio;
-
-                    var newPrice = price * (1f + adjustmentRatio);
-                
-                    if (demanded == 0) adjustmentRatio = PriceAdjustmentRatio;
-                    else adjustmentRatio = Mathf.Min(1f, diffRatio) * PriceAdjustmentRatio;
-                
-                    if (newPrice < maxPrice)
-                    {
-                        proc.NewPrices.Add(item.Id, newPrice);
-                    }
-                    else 
-                    {
-                        proc.NewPrices.Add(item.Id, maxPrice);
-                    }
-                }
-            }
-        }
-        
     }
 }
