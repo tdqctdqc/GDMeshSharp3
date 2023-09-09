@@ -30,7 +30,12 @@ public abstract class Count<T>
         }
         if(Contents[t] < amount && CanBeNegative == false)
         {
-            throw new Exception("Trying to remove more than in wallet");
+            var diff = Contents[t] - amount;
+            if(Mathf.Abs(diff) >= .1f)
+            {
+                throw new Exception("Trying to remove more than in wallet, diff is " + diff);
+            }
+            amount = Contents[t];
         }
         Contents[t] -= amount;
     }

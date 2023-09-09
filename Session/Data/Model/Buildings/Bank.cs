@@ -13,7 +13,6 @@ public class Bank : BuildingModel
                     {
                         {jobs.Bureaucrat, 500}
                     }),
-                new ItemProd(items.FinancialPower, 100),
                 new FlowProd(100, flows.Income)
             },
             new Dictionary<Item, int>

@@ -49,26 +49,20 @@ public class ProduceConstructProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        GD.Print("starting produce proc");
         var sw = new Stopwatch();
         EnactFlows(key);
-        GD.Print("finished flows");
 
         EnactProduce(key);
-        GD.Print("finished produce");
 
         EnactConstruct(key);
-        GD.Print("finished construct");
 
         EnactManufacture(key);
-        GD.Print("finished manufacture");
 
         foreach (var kvp in EmploymentReports)
         {
             var poly = key.Data.Get<MapPolygon>(kvp.Key);
             poly.GetPeep(key.Data).SetEmploymentReport(kvp.Value, key);
         }
-        GD.Print("finished produce proc");
     }
 
     private void EnactFlows(ProcedureWriteKey key)

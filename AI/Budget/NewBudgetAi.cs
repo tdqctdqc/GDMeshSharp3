@@ -9,7 +9,6 @@ public class NewBudgetAi
     public List<BudgetPriority> Priorities { get; private set; }
     
     public IncomeBudget IncomeBudget { get; private set; }
-
     public NewBudgetAi(Data data, Regime regime)
     {
         _regime = regime;
@@ -20,7 +19,8 @@ public class NewBudgetAi
             new FlowProdBuildingConstructionPriority(
                 data.Models.Flows.Income, (r, d) => .5f),
             new ItemProdBuildingConstructionPriority(
-                data.Models.Items.Recruits, (r, d) => .1f)
+                data.Models.Items.Recruits, (r, d) => .1f),
+            new FoodReservePriority()
         };
     }
 
@@ -30,17 +30,41 @@ public class NewBudgetAi
         {
             priority.SetWeight(data, _regime);
         }
+
+        var itemsToDistribute = GetItemsToDistribute(data);
+        var labor = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
+        var pool = new BudgetPool(itemsToDistribute, _regime.Flows.GetSurplusCount(), labor);
+        DoPriorities(orders, pool, data);
+    }
+
+    private ItemCount GetItemsToDistribute(Data data)
+    {
         var itemsToDistribute = ItemCount.Construct(_regime.Items);
         var itemsInAccounts = ItemCount.Union(Priorities
             .Select(v => v.Account.Items).ToArray());
+        foreach (var kvp in itemsInAccounts.Contents)
+        {
+            var item = data.Models.GetModel<Item>(kvp.Key);
+            var inAccountsQ = kvp.Value;
+            var realQ = itemsToDistribute[item];
+            if (inAccountsQ > realQ)
+            {
+                var ratio = realQ / inAccountsQ;
+                if (float.IsNaN(ratio)) ratio = 0f;
+                var newQ = 0f;
+                foreach (var priority in Priorities)
+                {
+                    priority.Account.Items.Contents[item.Id] *= ratio;
+                    newQ += priority.Account.Items.Contents[item.Id];
+                }
+        
+                itemsInAccounts.Contents[item.Id] = newQ;
+            }
+        }
         itemsToDistribute.Subtract(itemsInAccounts);
-        var labor = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
-        var pool = new BudgetPool(itemsToDistribute, _regime.Flows.GetSurplusCount(), labor);
-        
-        DoPriorities(orders, pool, data);
-        
+        return itemsToDistribute;
     }
-
+    
     private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, Data data)
     {
         var market = data.Society.Market;
@@ -161,6 +185,20 @@ public class NewBudgetAi
              if (buyQ < 0) throw new Exception();
              orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, 
                  buyQ));
+         }
+         
+         foreach (var kvp in pool.AvailItems.Contents)
+         {
+             var item = data.Models.GetModel<Item>(kvp.Key);
+             if (item is TradeableItem t == false) continue;
+             var q = Mathf.FloorToInt(kvp.Value / 2);
+             if (wishlist.ContainsKey(item))
+             {
+                 if (wishlist[item] >= q) continue;
+                 q -= wishlist[item];
+             }
+             orders.TradeOrders.SellOrders.Add(new SellOrder(kvp.Key, _regime.Id,
+                 q));
          }
      }
 }
