@@ -19,9 +19,9 @@ public partial class NavGraphicChunk : MapChunkGraphicModule
     {
         foreach (var kvp in nav.Waypoints
                      .Where(kvp2 => 
-                         chunk.Polys.Contains(d.Get<MapPolygon>(kvp2.Value.Value().AssociatedPolyIds.X))))
+                         chunk.Polys.Contains(d.Get<MapPolygon>(kvp2.Value.Waypoint().AssociatedPolyIds.X))))
         {
-            var point = kvp.Value.Value();
+            var point = kvp.Value.Waypoint();
             var offset = chunk.RelTo.GetOffsetTo(point.Pos, d);
             foreach (var nId in point.Neighbors)
             {

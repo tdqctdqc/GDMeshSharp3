@@ -32,7 +32,7 @@ public class MessagePackManager
             // enable extension packages first
             GodotCustomResolver.Instance, 
             MessagePack.Resolvers.ContractlessStandardResolver.Instance,
-            MessagePack.Resolvers.StandardResolverAllowPrivate.Instance,
+            MessagePack.Resolvers.StandardResolver.Instance,
             // finally use standard (default) resolver
             StandardResolver.Instance
         );

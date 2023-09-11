@@ -9,7 +9,7 @@
     <PackageReference Include="GeometRi" Version="1.4.0.3" />
     <PackageReference Include="Google.OrTools" Version="9.7.2996" />
     <PackageReference Include="MarkovNextGen" Version="1.2.6" />
-    <PackageReference Include="MessagePack" Version="2.5.124" />
+    <PackageReference Include="MessagePack" Version="2.6.100-alpha" />
     <PackageReference Include="MIConvexHull" Version="1.1.19.1019" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.4" />
     <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />

@@ -4,13 +4,18 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class Waypoint : IIdentifiable
+
+[MessagePack.Union(0, typeof(CoastWaypoint))]
+[MessagePack.Union(1, typeof(InlandWaypoint))]
+[MessagePack.Union(2, typeof(RiverMouthWaypoint))]
+[MessagePack.Union(3, typeof(RiverWaypoint))]
+[MessagePack.Union(4, typeof(SeaWaypoint))]
+public abstract class Waypoint : IIdentifiable
 {
     public int Id { get; private set; }
     public HashSet<int> Neighbors { get; private set; }
     public Vector2 Pos { get; private set; }
     public Vector4I AssociatedPolyIds { get; private set; }
-    // public PolymorphMember<WaypointData> WaypointData { get; private set; }
 
     protected Waypoint(GenWriteKey key, int id, Vector2 pos, MapPolygon poly1,
         MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null)

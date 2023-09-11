@@ -135,7 +135,7 @@ public class NavGenerator : Generator
                 }
             }
 
-            nav.Waypoints.Add(wp.Id, PolymorphWrapper<Waypoint>.Construct(wp));
+            nav.Waypoints.Add(wp.Id, WaypointPolymorph.Construct(wp));
         }
     }
 
@@ -314,7 +314,7 @@ public class NavGenerator : Generator
             }
             byEdge.Add(edge, wp);
 
-            nav.Waypoints.Add(wp.Id, PolymorphWrapper<Waypoint>.Construct(wp));
+            nav.Waypoints.Add(wp.Id, WaypointPolymorph.Construct(wp));
             var hiWp = byPoly[hi];
             var loWp = byPoly[lo];
             Connect(wp, hiWp);
@@ -347,7 +347,7 @@ public class NavGenerator : Generator
             {
                 wp = new InlandWaypoint(key, id.GetID(), poly.Center, poly);
             }
-            nav.Waypoints.Add(wp.Id, PolymorphWrapper<Waypoint>.Construct(wp));
+            nav.Waypoints.Add(wp.Id, WaypointPolymorph.Construct(wp));
             nav.MakeCenterPoint(poly, wp, key);
             byPoly.Add(poly, wp);
         }
@@ -358,7 +358,7 @@ public class NavGenerator : Generator
         var nav = _key.Data.Planet.Nav;
         foreach (var pm in nav.Waypoints.Values)
         {
-            var wp = pm.Value();
+            var wp = pm.Waypoint();
             if (wp is CoastWaypoint == false) continue;
             var assocPolys = wp.AssocPolys(_key.Data).Where(p => p.IsWater());
             if (assocPolys.Count() == 0) continue;
@@ -367,7 +367,7 @@ public class NavGenerator : Generator
                 var wpPos = p.GetOffsetTo(wp.Pos, _key.Data);
                 foreach (var nId in wp.Neighbors.ToList())
                 {
-                    var nWp = nav.Waypoints[nId].Value();
+                    var nWp = nav.Waypoints[nId].Waypoint();
                     if (nWp is SeaWaypoint) continue;
                     var nWpPos = p.GetOffsetTo(nWp.Pos, _key.Data);
                     if (p.LineEntersPoly(wpPos, nWpPos, _key.Data))
@@ -381,7 +381,7 @@ public class NavGenerator : Generator
     private void SetLandWaypointProperties()
     {
         var nav = _key.Data.Planet.Nav;
-        var waypoints = nav.Waypoints.Values.Select(p => p.Value());
+        var waypoints = nav.Waypoints.Values.Select(p => p.Waypoint());
         foreach (var waypoint in waypoints)
         {
             if (waypoint is ILandWaypoint n == false) continue;

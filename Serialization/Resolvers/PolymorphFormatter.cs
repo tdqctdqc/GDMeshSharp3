@@ -9,25 +9,27 @@ using MessagePack.Formatters;
 public class PolymorphFormatter<T> : IMessagePackFormatter<T>
     where T : Polymorph
 {
+    public static PolymorphFormatter<T> Construct()
+    {
+        return new PolymorphFormatter<T>();
+    }
     public void Serialize(ref MessagePackWriter writer, T value, MessagePackSerializerOptions options)
     {
-        GD.Print("writing");
+        // GD.Print("writing");
         if (value == null)
         {
             throw new Exception();
         }
         
         var type = value.Value.GetType();
-        GD.Print($"serializing inner type as {type.Name}");
+        // GD.Print($"serializing inner type as {type.Name}");
         var typeBytes = Game.I.Client.Key.Data.Serializer.MP
             .Serialize(type, typeof(Type));
         
         
         var objectBytes = Game.I.Client.Key.Data.Serializer.MP
             .Serialize(value.Value, type);
-        // writer.WriteBinHeader(typeLength);
         writer.Write(typeBytes);
-        // writer.WriteBinHeader(objectLength);
         writer.Write(objectBytes);
     }
 

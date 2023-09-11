@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using Godot;
 using MessagePack;
 using MessagePack.Formatters;
@@ -42,7 +43,27 @@ internal static class GodotResolverGetFormatterHelper
         {typeof(Color), new ColorFormatter()},
         {typeof(WaypointPolymorph), new PolymorphFormatter<WaypointPolymorph>()}
     };
-    
+
+    static Dictionary<Type, object> GetMap()
+    {
+        var map = new Dictionary<Type, object>()
+        {
+            { typeof(Vector2), new Vector2Formatter() },
+            { typeof(Color), new ColorFormatter() }
+        };
+        // var polymorphTypes = Assembly.GetExecutingAssembly()
+        //     .GetConcreteTypesOfType<Polymorph>();
+        //
+        // foreach (var polymorphType in polymorphTypes)
+        // {
+        //     var formatter = typeof(PolymorphFormatter<>)
+        //         .MakeGenericType(polymorphType)
+        //         .GetMethod(nameof(PolymorphFormatter<Polymorph>.Construct), BindingFlags.Static | BindingFlags.Public)
+        //         .Invoke(null, new object[0]);
+        //     map.Add(polymorphType, formatter);
+        // }
+        return map;
+    }
     internal static object GetFormatter(Type t)
     {
         object formatter;

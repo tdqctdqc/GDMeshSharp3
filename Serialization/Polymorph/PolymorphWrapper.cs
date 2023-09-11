@@ -11,7 +11,7 @@ public class PolymorphWrapper<T>
     
     public static PolymorphWrapper<T> Construct(T t)
     {
-        return new PolymorphWrapper<T>(new Polymorph(t));
+        return new PolymorphWrapper<T>(new DefaultPolymorph(t));
     }
     [SerializationConstructor] public PolymorphWrapper(Polymorph polymorph)
     {
