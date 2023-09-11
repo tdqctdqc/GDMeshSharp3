@@ -26,7 +26,6 @@ public class WorldGenerator
         GenerateInner(report);
         Data.Generated = true;
         Generating = false;
-        GD.Print("generated");
         _succeeded.Invoke();
         return report;
     }

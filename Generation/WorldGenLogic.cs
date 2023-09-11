@@ -40,13 +40,11 @@ public class WorldGenLogic : ILogic
 
         try
         {       
-            GD.Print("TRYING GEN");
         }
         catch
         {
             if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
             {
-                GD.Print("RETRYING GEN");
                 RetryGen();
             }
             else throw;
@@ -69,11 +67,9 @@ public class WorldGenLogic : ILogic
         {
             if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
             {
-                GD.Print("RETRYING GEN FAILED");
                 if (_tries > 10) throw e;
                 else
                 {
-                    GD.Print("RE RETRYING GEN");
                     RetryGen();
                 }
             }

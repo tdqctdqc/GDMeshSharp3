@@ -74,7 +74,9 @@ public class Data
         _idDispenser.SetMin(e.Id);
         if (EntitiesById.ContainsKey(e.Id))
         {
-            GD.Print($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} with {e.GetType().ToString()}");
+            GD.Print($"trying to overwrite id {e.Id} " +
+                     $"{EntitiesById[e.Id].GetType().ToString()} " +
+                     $"with {e.GetType().ToString()}");
         }
         EntitiesById.Add(e.Id, e);
         _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
@@ -93,16 +95,24 @@ public class Data
     public void LoadEntities(IReadOnlyList<Entity> es, StrongWriteKey key) 
     {
         var hash = new HashSet<int>();
+        GD.Print("players " + es.Where(e => e is Player).Count());
+
         foreach (var e in es)
         {
             var t = e.GetType();
+            if (e.GetType().ToString() == "Player")
+            {
+                GD.Print("loading player");
+            }
             if (_entityTypeTree.Nodes.ContainsKey(t) == false)
             {
                 AddEntityType(t);
             }
             if (EntitiesById.ContainsKey(e.Id))
             {
-                GD.Print($"{e.Id} trying to overwrite {EntitiesById[e.Id].GetType().ToString()} with {e.GetType().ToString()}");
+                continue;
+                GD.Print($"{e.Id} trying to overwrite " +
+                         $"{EntitiesById[e.Id].GetType()} with {e.GetType()}");
             }
             EntitiesById.Add(e.Id, e);
         }

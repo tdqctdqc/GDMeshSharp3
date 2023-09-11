@@ -42,9 +42,6 @@ public partial class AllianceChunkModule : MapChunkGraphicModule
         var relevant = Chunk.Polys.Union(Chunk.Bordering)
             .Where(p => p.Regime.RefId == regime.Id);
         if (relevant.Count() == 0) return;
-        // GD.Print($"relevant regime alliance change " +
-        //          $"{regime.Name} {regime.Id} had relation change w alliance of " +
-        //          $"{newA.Leader.Entity(d).Name} {newA.Id}");
         foreach (var p in relevant)
         {
             if(Chunk.Polys.Contains(p)) _fill.Updates.Add(p);
@@ -53,7 +50,6 @@ public partial class AllianceChunkModule : MapChunkGraphicModule
     }
     private void HandlePolygonRegimeChange(ValChangeNotice<MapPolygon, Regime> notice, Data data)
     {
-        // GD.Print("relevant polygon regime change");
         _fill.Updates.Add(notice.Entity);
         _borders.QueueChangeAll();
     }

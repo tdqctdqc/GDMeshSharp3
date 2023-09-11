@@ -67,21 +67,18 @@
             
             if (adjRegions.Count == 0)
             {
-                // GD.Print("adding new region");
                 var cont = ContiguousRegion<TNode>.Construct(t, Graph);
                 AddContRegion(cont);
                 _nodeDic.Add(t, cont);
             }
             else if (adjRegions.Count == 1)
             {
-                // GD.Print("joining to existing region");
                 var cont = adjRegions.First();
                 cont.AddNode(t);
                 _nodeDic.Add(t, cont);
             }
             else 
             {
-                // GD.Print($"merging {adjRegions.Count} regions");
                 foreach (var cont in adjRegions)
                 {
                     _contiguous.Remove(cont);
@@ -98,7 +95,6 @@
                     _nodeDic[node] = newCont;
                 }
             }
-            // PrintRegionCounts();
         }
 
         public void RemoveElement(TNode t)
@@ -111,17 +107,9 @@
             {
                 RemoveContRegion(cont);
             }
-            // PrintRegionCounts();
         }
 
-        private void PrintRegionCounts()
-        {
-            GD.Print("region count " + _contiguous.Count);
-            foreach (var c in _contiguous)
-            {
-                GD.Print(c.Elements.Count);
-            }
-        }
+        
         public Color GetRegionColor(IContiguousRegion<TNode> r)
         {
             return _contCols[r];

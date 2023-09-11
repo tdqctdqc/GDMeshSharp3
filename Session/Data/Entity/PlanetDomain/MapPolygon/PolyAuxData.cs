@@ -37,12 +37,9 @@ public class PolyAuxData
         }
         catch
         {
-            
-            GD.Print("Couldn't make boundary segs " + p.Center);
             try
             {
                 ordered = FixBoundarySegs(p, data, source);
-                GD.Print("fixed boundary segs " + p.Center);
             }
             catch (Exception e)
             {

@@ -79,7 +79,6 @@ public static class LineSegmentExt
         var to = start.To;
         var from = start.From;
 
-        // GD.Print("starting tos");
         while (hash.Count > 0)
         {
             var nextTo = hash.FirstOrDefault(ls => ls.From == to || ls.To == to);

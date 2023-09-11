@@ -184,7 +184,6 @@ public static class EnumerableExt
         }
         catch (Exception e)
         {
-            GD.Print($"getting {i % list.Count} of {list.Count}");
             throw;
         }
     }

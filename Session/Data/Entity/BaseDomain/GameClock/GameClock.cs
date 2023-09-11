@@ -5,7 +5,7 @@ using MessagePack;
 
 public class GameClock : Entity
 {
-    public int Tick { get; protected set; }
+    public int Tick { get; private set; }
     public static GameClock Create(GenWriteKey key)
     {
         var gc = new GameClock(-1, 0);

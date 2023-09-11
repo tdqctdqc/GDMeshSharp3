@@ -43,7 +43,6 @@ public static class SerializeChecker<TEntity> where TEntity : Entity
         
         if (constructors.Count() > 1)
         {
-            GD.Print();
             foreach (var con in constructors)
             {
                 GD.Print(con.GetParameters().Select(p => p.Name + " " +  p.ParameterType.ToString()).ToArray());
@@ -79,12 +78,6 @@ public static class SerializeChecker<TEntity> where TEntity : Entity
             var minFirst = char.ToLower(fieldName[0]) + fieldName.Substring(1);
             if (paramInfos.ContainsKey(minFirst) == false)
             {
-                GD.Print("Params ");
-                foreach (var keyValuePair in paramInfos)
-                {
-                    GD.Print(keyValuePair.Key);
-                }
-                GD.Print($"No matching param found for var {minFirst} for {typeof(TEntity)}");
                 throw new SerializationException($"No matching param found for var {minFirst} for {typeof(TEntity)}");
             }
 

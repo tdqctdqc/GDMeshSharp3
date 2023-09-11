@@ -120,12 +120,10 @@ public class PolygonGenerator : Generator
     
     private void FlipEdgeSegsToClockwise(MapPolygon poly)
     {
-        // GD.Print(poly.Id);
         var borders = poly.GetPolyBorders();
         
         var allEdgeSegs = borders.SelectMany(b => b.Segments).ToList();
         if (allEdgeSegs.Count == 0) throw new Exception();
-        // GD.Print(poly.Id + " 1");
         try
         {
             allEdgeSegs = allEdgeSegs.FlipChainify();

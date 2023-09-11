@@ -21,7 +21,6 @@ public partial class StartScene : Node
 
     private void StartAsHost()
     {
-        GD.Print("starting as host");
         Game.I.StartHostSession();
         QueueFree();
     }

@@ -17,14 +17,6 @@ public static class MathExt
 
         if (f % 1f != 0f)
         {
-            GD.Print("f: " + f);
-            GD.Print("i: " + i);
-            GD.Print("tenths: " + tenths);
-            GD.Print("hundredths: " + hundredths);
-            GD.Print("r: " + r);
-            GD.Print("rem: " + r % 1f);
-            GD.Print("r2: " + r % .01f);
-            GD.Print("r3: " + (r - (r % .01f)));
 
             throw new Exception();
         }

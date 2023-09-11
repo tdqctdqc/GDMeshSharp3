@@ -26,12 +26,10 @@ public class Serializer
             var meta = node.Meta;
             if(e != null)
             {
-                GD.Print("testing " + e.GetType());
                 res = res && meta.TestSerialization(e, data);
             }
             else
             {
-                GD.Print($"no {eType} to test");
             }
         }
 

@@ -48,9 +48,6 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
             .Where(p => p.Regime.RefId == regime.Id
             || (p.Regime.Fulfilled() && p.Regime.Entity(d).GetAlliance(d) == newA));
         if (relevant.Count() == 0) return;
-        // GD.Print($"relevant regime alliance change " +
-        //          $"{regime.Name} {regime.Id} had relation change w alliance of " +
-        //          $"{newA.Leader.Entity(d).Name} {newA.Id}");
         foreach (var p in relevant)
         {
             if(Chunk.Polys.Contains(p)) _diplomacyFill.Updates.Add(p);
@@ -67,9 +64,6 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
         var polys = Chunk.Polys.Where(p => a1.Members.RefIds.Contains(p.Regime.RefId)
                                            || a2.Members.RefIds.Contains(p.Regime.RefId));
         if (polys.Count() == 0) return;
-        // GD.Print($"relevant alliance relation change between " +
-        //          $"{a1.Leader.Entity(d).Name} {a1.Id} " +
-        //          $"and {a2.Leader.Entity(d).Name} {a2.Id}");
         _diplomacyFill.Updates.AddRange(polys);
     }
     private void HandlePlayerRegimeChange(ValChangeNotice<Player, Regime> n, Data d)
@@ -102,7 +96,6 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
         }
         
         if (updated == false) return;
-        // GD.Print("relevant player regime change");
         _allianceBorder.QueueChangeAll();
 
         _diplomacyFill.Update(d, Game.I.Client.GetComponent<MapGraphics>().UpdateQueue);
@@ -119,7 +112,6 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
     }
     private void HandlePolygonRegimeChange(ValChangeNotice<MapPolygon, Regime> notice, Data data)
     {
-        // GD.Print("relevant polygon regime change");
         _diplomacyFill.Updates.Add(notice.Entity);
         _allianceBorder.QueueChangeAll();
     }

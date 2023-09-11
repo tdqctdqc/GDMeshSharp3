@@ -23,8 +23,6 @@ public class SaveFile
                 var e = (Entity)data.Serializer.MP.Deserialize(u.Bytes, u.Type);
                 return e;
             }).ToList();
-        GD.Print(entities.First().GetType());
-        GD.Print(loaded.First().GetType());
         if (loaded.Count != entities.Count) throw new Exception("diff number entities");
         for (var i = 0; i < entities.Count; i++)
         {

@@ -66,24 +66,6 @@ public class PolyTriGenerator : Generator
                     var loAbs = loSegs[loI].To + lo.Center;
                     if (hiAbs.DistanceTo(loAbs) > 0f)
                     { 
-                        // GD.Print($"{hi.Center} {lo.Center}");
-                        GD.Print($"{hiAbs} {loAbs}");
-                        GD.Print($"{hiAbs.X - (int)(hiAbs.X)} {hiAbs.Y - (int)(hiAbs.Y)}");
-                        GD.Print($"{loAbs.X - (int)(loAbs.X)} {loAbs.Y - (int)(loAbs.Y)}");
-
-                        
-                        
-                        // GD.Print($"{hiSegs[i].From} {loSegs[loI].To}");
-                        // GD.Print($"{hiAbs.X - loAbs.X} {hiAbs.Y - loAbs.Y}");
-                        // GD.Print(hiAbs - loAbs);
-
-                        // var hiX = hiAbs.X.ToString().ToFloat();
-                        // var hiY = hiAbs.Y.ToString().ToFloat();
-                        // var loX = loAbs.X.ToString().ToFloat();
-                        // var loY = loAbs.Y.ToString().ToFloat();
-                        // var hiStringed = new Vector2(hiX, hiY);
-                        // var loStringed = new Vector2(loX, loY);
-                        // GD.Print($"{hiStringed} {loStringed} {hiStringed == loStringed}");
                         throw new Exception($"{hiAbs} {loAbs} {hiAbs.DistanceTo(loAbs)}");
                     }
                 }

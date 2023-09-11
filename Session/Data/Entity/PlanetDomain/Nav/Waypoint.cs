@@ -17,6 +17,11 @@ public abstract class Waypoint : IIdentifiable
     public Vector2 Pos { get; private set; }
     public Vector4I AssociatedPolyIds { get; private set; }
 
+    static Waypoint()
+    {
+        GD.Print("static waypoint constru");
+    }
+
     protected Waypoint(GenWriteKey key, int id, Vector2 pos, MapPolygon poly1,
         MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null)
     {

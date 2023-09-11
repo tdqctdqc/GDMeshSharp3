@@ -1,214 +1,204 @@
-// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-// using Godot;
-//
-// public class BudgetAi 
-// {
-//     private Regime _regime;
-//     public List<BudgetPriority> Priorities { get; private set; }
-//     public IncomeBudget IncomeBudget { get; private set; }
-//     public BudgetItemReserve Reserve { get; private set; }
-//     
-//     public BudgetAi(Data data, Regime regime)
-//     {
-//         _regime = regime;
-//         Priorities = new List<BudgetPriority>
-//         {
-//                new FlowProdBuildingConstructionPriority(
-//                    data.Models.Flows.IndustrialPower, (r,d) => 1f),
-//                new FlowProdBuildingConstructionPriority(
-//                    data.Models.Flows.Income, (r,d) => .5f),
-//                new ItemProdBuildingConstructionPriority(
-//                    data.Models.Items.Recruits, (r,d) => .1f)
-//         };
-//         IncomeBudget = new IncomeBudget();
-//         Reserve = new BudgetItemReserve();
-//     }
-//
-//     public void Calculate(Data data, 
-//         MajorTurnOrders orders)
-//     {
-//         IncomeBudget.Calculate(data);
-//         Reserve.Calculate(_regime, data);
-//         var prices = data.Society.Market.Prices
-//             .ToDictionary(kvp => (Item)data.Models[kvp.Key], 
-//                 kvp => kvp.Value);
-//         
-//         foreach (var p in Priorities)
-//         {
-//             p.SetWeight(data, _regime);
-//         }
-//         var scratch = new BudgetAccount();
-//         
-//         DoMainRound(scratch, data, prices, orders);
-//         DoCleanupRound(scratch, data, prices, orders);
-//         HandleWishlistAndReserve(data, orders, scratch.Items);
-//     }
-//
-//     private void DoMainRound(BudgetAccount account, Data data,
-//         Dictionary<Item, float> prices, MajorTurnOrders orders)
-//     {
-//         var totalPriorityWeight = Priorities.Sum(p => p.Weight);
-//         var totalLaborAvail = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
-//         var totalPrice =
-//             _regime.Items.Contents.Sum(kvp =>
-//             {
-//                 return prices.ContainsKey((Item) data.Models[kvp.Key])
-//                     ? prices[(Item) data.Models[kvp.Key]] * _regime.Items[kvp.Key]
-//                     : 1f;
-//             });
-//         foreach (var p in Priorities)
-//         {
-//             var weight = p.Weight;
-//             var share = weight / totalPriorityWeight;
-//             account.TakeShare(share, _regime.Items, _regime.Flows, totalLaborAvail, 
-//                 Mathf.FloorToInt(totalPrice));
-//             p.Calculate(_regime, data, account, prices, orders);
-//         }
-//     }
-//     private void DoCleanupRound(BudgetAccount account, Data data,
-//         Dictionary<Item, float> prices, MajorTurnOrders orders)
-//     {
-//         account.MaxCredit();
-//         foreach (var p in Priorities)
-//         {
-//             p.Calculate(_regime, data, account, prices, orders);
-//         }
-//     }
-//     public Dictionary<Item, int> GetItemWishlist(Data data, float credit)
-//     {
-//         var buyItemsIncome = Mathf.Floor(credit * IncomeBudget.BuyWishlistItemsRatio);
-//         var market = data.Society.Market;
-//         var prices = market.Prices.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
-//         
-//         var totalLaborAvail = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
-//         var totalPriorityWeight = Priorities.Sum(p => p.Weight);
-//         var creditBig = Mathf.Clamp(credit * 10, 0f, 1_000_000f);
-//         return Priorities.Select(p =>
-//             {
-//                 var priorityWeight = p.Weight;
-//                 var priorityShare = priorityWeight / totalPriorityWeight;
-//                 var credit = buyItemsIncome * priorityShare;
-//                 var noCreditLimit = p.GetTradeWishlist(_regime, data, prices,
-//                     Mathf.FloorToInt(creditBig), totalLaborAvail);
-//                 var priceTotal = noCreditLimit.Sum(kvp => prices[kvp.Key] * kvp.Value);
-//                 var ratioFulfil = Mathf.Clamp(credit / priceTotal, 0f, 1f);
-//                 if (priceTotal == 0f) ratioFulfil = 1f;
-//                 return noCreditLimit.ToDictionary(kvp => kvp.Key, kvp => Mathf.FloorToInt(kvp.Value * ratioFulfil));
-//             })
-//             .GetCounts(t => t);
-//     }
-//
-//     private void HandleWishlistAndReserve(Data data, MajorTurnOrders orders, ItemCount itemBudget)
-//     {
-//         var income = _regime.Flows[data.Models.Flows.Income].Net();
-//         var buyWishlistItemsIncome = Mathf.Floor(income * IncomeBudget.BuyWishlistItemsRatio);
-//         var stockUpReserveItemsIncome = Mathf.Floor(income * IncomeBudget.BuyReserveItemsRatio);
-//         var wishlist = GetItemWishlist(data, buyWishlistItemsIncome);
-//
-//         var reserveWishlist = new Dictionary<Item, int>();
-//         foreach (var kvp in itemBudget.Contents)
-//         {
-//             var item = (Item)data.Models[kvp.Key];
-//             if (item is TradeableItem t == false) continue;
-//             var q = Mathf.FloorToInt(kvp.Value);
-//             var reserve = Reserve.DesiredReserves.ContainsKey(item)
-//                 ? Reserve.DesiredReserves[item]
-//                 : 0;
-//             var needed = reserve - q;
-//             reserveWishlist.Add(item, needed);
-//         }
-//         Manufacture(data, wishlist, itemBudget, reserveWishlist, orders);
-//         
-//         DoTradeOrders(data, orders, itemBudget, buyWishlistItemsIncome, 
-//             stockUpReserveItemsIncome, wishlist, reserveWishlist);
-//     }
-//
-//     private void Manufacture(Data data, Dictionary<Item, int> wishlist, ItemCount itemBudget,
-//         Dictionary<Item, int> reserveWishlist, MajorTurnOrders turnOrders)
-//     {
-//         var ip = data.Models.Flows.IndustrialPower;
-//         var backlogRatio = 3f;
-//         var ipUsed = _regime.ManufacturingQueue.Queue
-//             .Sum(m => m.Value().Remaining(data));
-//         var ipAvail = _regime.Flows[ip].Net() * backlogRatio - ipUsed;
-//         if (ipAvail <= 0) return;
-//
-//         var itemsWished = wishlist.ToList();
-//         for (var i = 0; i < itemsWished.Count; i++)
-//         {
-//             if (ipAvail <= 0) return;
-//             var kvp = itemsWished[i];
-//             manufacture(wishlist, kvp.Key, kvp.Value);
-//         }
-//
-//         var reserveWished = reserveWishlist.ToList();
-//         for (var i = 0; i < reserveWished.Count; i++)
-//         {
-//             if (ipAvail <= 0) return;
-//             var kvp = reserveWished[i];
-//             manufacture(reserveWishlist, kvp.Key, kvp.Value);
-//         }
-//
-//         void manufacture(Dictionary<Item, int> dic, Item item, int q)
-//         {
-//             if (item.Attributes.Has<ManufactureableAttribute>() == false) return;
-//             var manuf = item.Attributes.Get<ManufactureableAttribute>();
-//             var costPer = manuf.IndustrialCost;
-//             var itemCosts = manuf.ItemCosts;
-//             
-//             var minFulfilledItemRatio = itemCosts.Count > 0
-//                 ? itemCosts.Min(kvp =>
-//                 Mathf.Clamp(itemBudget[kvp.Key] / kvp.Value, 0f, 1f))
-//                 : 1f;
-//             
-//             var possibleQ = Mathf.FloorToInt(Mathf.Min(q * minFulfilledItemRatio, ipAvail / costPer));
-//             if (possibleQ <= 0) return;
-//             var totalCost = costPer * possibleQ;
-//             ipAvail -= totalCost;
-//             dic[item] -= possibleQ;
-//             foreach (var kvp in itemCosts)
-//             {
-//                 var inputItem = kvp.Key;
-//                 var inputItemQ = kvp.Value * possibleQ;
-//                 itemBudget.Remove(inputItem, inputItemQ);
-//             }
-//             var order = new ItemManufactureProject(-1, 0f, possibleQ, item.MakeRef());
-//             turnOrders.ManufacturingOrders.ToStart.Add(
-//                 PolymorphMessage<ManufactureProject>.Construct(order, data));
-//             // GD.Print($"{_regime.Name} adding manuf project {possibleQ} {item.Name}");
-//         }
-//     }
-//     private void DoTradeOrders(Data data, MajorTurnOrders orders, ItemCount itemBudget,
-//         float buyItemsIncome,
-//         float stockUpReserveItemsIncome,
-//         Dictionary<Item, int> wishlist,
-//         Dictionary<Item, int> reserveWishlist)
-//     {
-//         var market = data.Society.Market;
-//         
-//         foreach (var kvp in wishlist)
-//         {
-//             orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, kvp.Value));
-//         }
-//         foreach (var kvp in reserveWishlist)
-//         {
-//             var item = kvp.Key;
-//             var needed = kvp.Value;
-//             if (needed == 0) continue;
-//             if (needed < 0)
-//             {
-//                 orders.TradeOrders.SellOrders.Add(new SellOrder(item.Id, _regime.Id, -needed));
-//             }
-//             else if (needed > 0)
-//             {
-//                 var price = market.Prices[item.Id];
-//                 var qToBuy = Math.Min(needed, Mathf.FloorToInt(stockUpReserveItemsIncome / price));
-//                 var spent = qToBuy * price;
-//                 stockUpReserveItemsIncome -= spent;
-//                 orders.TradeOrders.BuyOrders.Add(new BuyOrder(item.Id, _regime.Id, qToBuy));
-//             }
-//         }
-//     }
-// }
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Godot;
+
+public class BudgetAi
+{
+    private Regime _regime;
+    public List<BudgetPriority> Priorities { get; private set; }
+    
+    public IncomeBudget IncomeBudget { get; private set; }
+    public BudgetAi(Data data, Regime regime)
+    {
+        _regime = regime;
+        Priorities = new List<BudgetPriority>
+        {
+            new FlowProdBuildingConstructionPriority(
+                data.Models.Flows.IndustrialPower, (r, d) => 1f),
+            new FlowProdBuildingConstructionPriority(
+                data.Models.Flows.Income, (r, d) => .5f),
+            new ItemProdBuildingConstructionPriority(
+                data.Models.Items.Recruits, (r, d) => .1f),
+            new FoodReservePriority()
+        };
+    }
+
+    public void Calculate(Data data, MajorTurnOrders orders)
+    {
+        foreach (var priority in Priorities)
+        {
+            priority.SetWeight(data, _regime);
+        }
+
+        var itemsToDistribute = GetItemsToDistribute(data);
+        var labor = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
+        var pool = new BudgetPool(itemsToDistribute, _regime.Flows.GetSurplusCount(), labor);
+        DoPriorities(orders, pool, data);
+    }
+
+    private ItemCount GetItemsToDistribute(Data data)
+    {
+        var itemsToDistribute = ItemCount.Construct(_regime.Items);
+        var itemsInAccounts = ItemCount.Union(Priorities
+            .Select(v => v.Account.Items).ToArray());
+        foreach (var kvp in itemsInAccounts.Contents)
+        {
+            var item = data.Models.GetModel<Item>(kvp.Key);
+            var inAccountsQ = kvp.Value;
+            var realQ = itemsToDistribute.Get(item);
+            if (inAccountsQ > realQ)
+            {
+                var ratio = realQ / inAccountsQ;
+                if (float.IsNaN(ratio)) ratio = 0f;
+                var newQ = 0f;
+                foreach (var priority in Priorities)
+                {
+                    priority.Account.Items.Contents[item.Id] *= ratio;
+                    newQ += priority.Account.Items.Contents[item.Id];
+                }
+        
+                itemsInAccounts.Contents[item.Id] = newQ;
+            }
+        }
+        itemsToDistribute.Subtract(itemsInAccounts);
+        return itemsToDistribute;
+    }
+    
+    private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, Data data)
+    {
+        var market = data.Society.Market;
+        var prices = market.Prices.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
+        var totalPriority = Priorities.Sum(p => p.Weight);
+        if (totalPriority <= 0f) throw new Exception();
+        foreach (var priority in Priorities)
+        {
+            priority.Wipe();
+            var proportion = priority.Weight / totalPriority;
+            priority.SetWishlist(_regime, data, pool.AvailLabor * proportion,
+                pool.AvailFlows[data.Models.Flows.ConstructionCap] * proportion);
+            priority.FirstRound(orders, _regime, proportion, pool, data);
+        }
+        foreach (var priority in Priorities)
+        {
+            var proportion = priority.Weight / totalPriority;
+            priority.SecondRound(orders, _regime, proportion, pool, data, 3f);
+        }
+        var allWishlists = new Dictionary<Item, int>();
+        foreach (var priority in Priorities)
+        {
+            var wishlist = priority.Wishlist;
+            foreach (var kvp in wishlist)
+            {
+                if (kvp.Value < 0) throw new Exception();
+                allWishlists.AddOrSum(kvp.Key, kvp.Value);
+            }
+        }
+        Manufacture(data, allWishlists, pool, orders);
+        DoTradeOrders(data, orders, pool, allWishlists);
+    }
+    
+    private void Manufacture(Data data, Dictionary<Item, int> wishlist, BudgetPool pool,
+         MajorTurnOrders turnOrders)
+     {
+         var ip = data.Models.Flows.IndustrialPower;
+         var backlogRatio = 3f;
+         var ipUsed = _regime.ManufacturingQueue.Queue
+             .Sum(m => m.Value().Remaining(data));
+         var ipAvail = _regime.Flows.Get(ip).Net() * backlogRatio - ipUsed;
+         if (ipAvail <= 0) return;
+
+         var itemsWished = wishlist.ToList();
+         
+         for (var i = 0; i < itemsWished.Count; i++)
+         {
+             if (ipAvail <= 0) return;
+             var item = itemsWished[i].Key;
+             var q = wishlist[item];
+             if (q < 0) throw new Exception();
+             manufacture(item, q);
+         }
+
+         void manufacture(Item item, int q)
+         {
+             if (item.Attributes.Has<ManufactureableAttribute>() == false) return;
+             var manuf = item.Attributes.Get<ManufactureableAttribute>();
+             var costPer = manuf.IndustrialCost;
+             var itemCosts = manuf.ItemCosts;
+             
+             var minFulfilledItemRatio = itemCosts.Count > 0
+                 ? itemCosts.Min(
+                     kvp =>
+                        Mathf.Clamp(pool.AvailItems.Get(kvp.Key) / kvp.Value, 0f, 1f))
+                 : 1f;
+
+             var inputItemLimit = q * minFulfilledItemRatio;
+             var ipLimit = ipAvail / costPer;
+             var possibleQ = Mathf.FloorToInt(Mathf.Min(inputItemLimit, ipLimit));
+             possibleQ = Mathf.Min(wishlist[item], possibleQ);
+             if (possibleQ == 0) return;
+             if (possibleQ < 0) throw new Exception();
+             var totalCost = costPer * possibleQ;
+             ipAvail -= totalCost;
+             wishlist[item] -= possibleQ;
+             foreach (var kvp in itemCosts)
+             {
+                 var inputItem = kvp.Key;
+                 var inputItemQ = kvp.Value * possibleQ;
+                 pool.AvailItems.Remove(inputItem, inputItemQ);
+             }
+
+             var order = new ItemManufactureProject(-1, 0f, possibleQ, item.MakeRef());
+             turnOrders.ManufacturingOrders.ToStart.Add(
+                 PolymorphMessage<ManufactureProject>.Construct(order, data));
+         }
+     }
+    private void DoTradeOrders(Data data, MajorTurnOrders orders, BudgetPool pool, 
+        Dictionary<Item, int> wishlist)
+     {
+         var market = data.Society.Market;
+         var credits = pool.AvailFlows[data.Models.Flows.Income];
+
+         var plausibleCosts = new Dictionary<Item, float>();
+         foreach (var kvp in wishlist)
+         {
+             var price = market.Prices[kvp.Key.Id];
+             var latest = market.TradeHistory.GetLatest(kvp.Key);
+             var plausibleCost = 0f;
+             if (latest != null)
+             {
+                 plausibleCost = kvp.Value * latest.BuySatisfyRatio * price;
+             }
+             else plausibleCost = kvp.Value * price;
+
+             plausibleCosts.Add(kvp.Key, plausibleCost);
+         }
+        
+         var totalCost = plausibleCosts.Sum(kvp => kvp.Value);
+         var buyRatio = Mathf.Clamp(credits / totalCost, 0f, 1f);
+         
+         if (float.IsNaN(buyRatio)) buyRatio = 0;
+         
+         foreach (var kvp in wishlist)
+         {
+             var buyQ = Mathf.FloorToInt(kvp.Value * buyRatio);
+             if (buyQ < 0) throw new Exception();
+             orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, 
+                 buyQ));
+         }
+         
+         foreach (var kvp in pool.AvailItems.Contents)
+         {
+             var item = data.Models.GetModel<Item>(kvp.Key);
+             if (item is TradeableItem t == false) continue;
+             var q = Mathf.FloorToInt(kvp.Value / 2);
+             if (wishlist.ContainsKey(item))
+             {
+                 if (wishlist[item] >= q) continue;
+                 q -= wishlist[item];
+             }
+             orders.TradeOrders.SellOrders.Add(new SellOrder(kvp.Key, _regime.Id,
+                 q));
+         }
+     }
+}

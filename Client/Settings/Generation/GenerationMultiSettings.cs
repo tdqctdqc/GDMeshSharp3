@@ -43,7 +43,6 @@ public class GenerationMultiSettings : MultiSettings
 
     public void Save(Data data)
     {
-        GD.Print("saving settings");
         GodotFileExt.SaveFile(this, "", "genSettings", ".stng", data);
     }
 }

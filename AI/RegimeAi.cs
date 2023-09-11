@@ -5,12 +5,12 @@ using Godot;
 public class RegimeAi
 {
     public Regime Regime { get; private set; }
-    public NewBudgetAi Budget { get; private set; }
+    public BudgetAi Budget { get; private set; }
     public DiplomacyAi Diplomacy { get; private set; }
     public RegimeAi(Regime regime, Data data)
     {
         Regime = regime;
-        Budget = new NewBudgetAi(data, regime);
+        Budget = new BudgetAi(data, regime);
         Diplomacy = new DiplomacyAi(regime);
     }
 

@@ -15,14 +15,12 @@ public class PolymorphFormatter<T> : IMessagePackFormatter<T>
     }
     public void Serialize(ref MessagePackWriter writer, T value, MessagePackSerializerOptions options)
     {
-        // GD.Print("writing");
         if (value == null)
         {
             throw new Exception();
         }
         
         var type = value.Value.GetType();
-        // GD.Print($"serializing inner type as {type.Name}");
         var typeBytes = Game.I.Client.Key.Data.Serializer.MP
             .Serialize(type, typeof(Type));
         
@@ -35,8 +33,6 @@ public class PolymorphFormatter<T> : IMessagePackFormatter<T>
 
     public T Deserialize(ref MessagePackReader reader, MessagePackSerializerOptions options)
     {
-        GD.Print("reading");
-
         if (reader.TryReadNil())
         {
             throw new Exception();
@@ -46,7 +42,6 @@ public class PolymorphFormatter<T> : IMessagePackFormatter<T>
         var type = Game.I.Client.Key.Data.Serializer.MP
             .Deserialize<Type>(typeBytes);
 
-        GD.Print("deserialized type as " + type.Name);
         var objectBytes = reader.ReadBytes().Value.ToArray();
         var obj = Game.I.Client.Key.Data.Serializer.MP
             .Deserialize(objectBytes, type);

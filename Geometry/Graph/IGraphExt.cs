@@ -250,7 +250,6 @@ public static class IGraphExt
         var borderPairs = GetOrderedBorderPairs(graph, regionElements);
         if (borderPairs.Count == 0)
         {
-            GD.Print("no pairs");
             return new List<Segment<TNode>>();
         }
         var from = borderPairs[0].Native;

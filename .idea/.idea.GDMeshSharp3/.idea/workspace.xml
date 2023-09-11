@@ -4,25 +4,38 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="fiddling with messagepack, polymorph serialization not working right">
-      <change afterPath="$PROJECT_DIR$/Serialization/Polymorph/DefaultPolymorph.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Serialization/Polymorph/Mock.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Serialization/Polymorph/Polymorph.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Serialization/Polymorph/WaypointPolymorph.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="ditto">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/ClientTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientTopBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/NewBudgetAi.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/BuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BuildingConstructionPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/StartScene.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/StartScene.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/AllianceChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/AllianceChunkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/DiplomacyChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/DiplomacyChunkModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/NavGraphicChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/NavGraphicChunk.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/GDMeshSharp3.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/Generation/GenerationMultiSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/Generation/GenerationMultiSettings.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/MessagePackManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/MessagePackManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/PolymorphMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Polymorph/PolymorphMessage.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/PolymorphWrapper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Polymorph/PolymorphWrapper.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/GodotResolver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Resolvers/GodotResolver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolygonGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolygonGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IGraphExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/IGraphExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/PolymorphFormatter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Resolvers/PolymorphFormatter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Save/SaveFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Save/SaveFile.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Serialization/Save/Saver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Save/Saver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/SerializeChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/SerializeChecker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Serializer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Serializer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Data.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/GameClock/GameClock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/GameClock/GameClock.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyAuxData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyAuxData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Nav.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Nav.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Waypoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Waypoint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Region/Region.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Region/Region.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/EnumerableExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/EnumerableExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MathExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MathExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/save.sv" beforeDir="false" afterPath="$PROJECT_DIR$/save.sv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -276,7 +289,7 @@
       <workItem from="1694293077207" duration="10631000" />
       <workItem from="1694363511304" duration="7924000" />
       <workItem from="1694376366735" duration="9127000" />
-      <workItem from="1694453485437" duration="8230000" />
+      <workItem from="1694453485437" duration="10667000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -608,7 +621,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694457331629</updated>
     </task>
-    <option name="localTasksCounter" value="46" />
+    <task id="LOCAL-00046" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1694462512608</created>
+      <option name="number" value="00046" />
+      <option name="presentableId" value="LOCAL-00046" />
+      <option name="project" value="LOCAL" />
+      <updated>1694462512608</updated>
+    </task>
+    <option name="localTasksCounter" value="47" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -633,7 +654,6 @@
     <MESSAGE value="adding entityResolver for messagepack so can get rid of entityRef" />
     <MESSAGE value="reforming entity system, getting rid of register, allowing generic typed entities" />
     <MESSAGE value="refactored refCollection" />
-    <MESSAGE value="ditto" />
     <MESSAGE value="working on map chunk graphics and associated ui" />
     <MESSAGE value="make EntityMultiIndexer use actual entities instead of keys" />
     <MESSAGE value="made valueChangeNotice typed by entity as well" />
@@ -655,6 +675,7 @@
     <MESSAGE value="fixed coast waypoint links to each other / river mouths going over sea" />
     <MESSAGE value="added saved settings" />
     <MESSAGE value="fiddling with messagepack, polymorph serialization not working right" />
-    <option name="LAST_COMMIT_MESSAGE" value="fiddling with messagepack, polymorph serialization not working right" />
+    <MESSAGE value="ditto" />
+    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
   </component>
 </project>

@@ -9,60 +9,44 @@ public class Saver
     public static void Save(Data data, WriteKey key)
     {
         var file = SaveFile.Save(data, key);
+        
+        
+        var loaded = file.Entities
+            .Select(eBytes =>
+            {
+                var u = data.Serializer.MP
+                    .Deserialize<PolymorphMessage<Entity>>(eBytes);
+                var e = (Entity)data.Serializer.MP.Deserialize(u.Bytes, u.Type);
+                return e;
+            }).ToList();
+
+        if (loaded.Count() != data.EntitiesById.Count())
+        {
+            GD.Print($"{data.EntitiesById.Count()} entities became {loaded.Count()}");
+        }
+
+        var loadedIds = loaded.Select(l => l.Id).Distinct();
+        if (loadedIds.Count() != loaded.Count())
+        {
+            GD.Print($"{loaded.Count()} with {loadedIds.Count()} distinct ids");
+        }
+        
+        foreach (var loadedEntity in loaded)
+        {
+            var entity = data[loadedEntity.Id];
+            if (entity.GetType() != loadedEntity.GetType())
+            {
+                GD.Print($"{entity.GetType()} {entity.Id} became {loadedEntity.GetType()}");
+            }
+        }
+        
+        
+        
         GodotFileExt.SaveFile(file, "", "save", ".sv", data);
     }
 
     public static void Test(Data data)
     {
-        // TestWaypointPolymorph(data);
-        // TestNav(data);
-        TestMock(data);
-    }
-
-    private static void TestWaypointPolymorph(Data data)
-    {
-        var nav = data.Planet.Nav;
-        var kvp = nav.Waypoints.First();
-        var wp = kvp.Value;
-        var deserialized = SerializeAndDeserialize(wp, data);
-
-        
-        var nWp = deserialized;
-        if (wp.Waypoint().GetType() != nWp.Waypoint().GetType())
-        {
-            GD.Print($"{wp.Waypoint().GetType()} {nWp.Waypoint().GetType()}");
-        }
-    }
-
-    private static void TestNav(Data data)
-    {
-        var nav = data.Planet.Nav;
-        var navDeserialized = SerializeAndDeserialize(nav, data);
-        if (navDeserialized == null) throw new Exception();
-        if (navDeserialized.Waypoints == null) throw new Exception();
-
-        var kvp = nav.Waypoints.First();
-        var wp = kvp.Value;
-        var nWp = navDeserialized.Waypoints[kvp.Key];
-        if (nWp == null) throw new Exception();
-    }
-
-    
-    private static void TestMock(Data data)
-    {
-        var nav = data.Planet.Nav;
-        var kvp = nav.Waypoints.First();
-        var wp = kvp.Value.Waypoint();
-        var mock = Mock<Waypoint>.Construct(wp, 27);
-        var wpSerialized = data.Serializer.MP.Serialize(wp);
-        var wpJson = MessagePackSerializer.ConvertToJson(wpSerialized);
-        GD.Print("json: " + wpJson);
-        
-        var mockSerialized = data.Serializer.MP.Serialize(mock);
-        var mockDeserialized = SerializeAndDeserialize(mock, data);
-        
-        var mockJson = MessagePackSerializer.ConvertToJson(mockSerialized);
-        GD.Print("mock json: " + mockJson);
     }
     private static T SerializeAndDeserialize<T>(T t, Data data)
     {
@@ -82,7 +66,8 @@ public class Saver
         var entities = saveFile.Entities
             .Select(eBytes =>
             {
-                var u = data.Serializer.MP.Deserialize<PolymorphMessage<Entity>>(eBytes);
+                var u = data.Serializer.MP
+                    .Deserialize<PolymorphMessage<Entity>>(eBytes);
                 var e = (Entity)data.Serializer.MP.Deserialize(u.Bytes, u.Type);
                 return e;
             }).ToList();

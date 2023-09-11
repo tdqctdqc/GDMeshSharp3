@@ -36,12 +36,10 @@ public class BuildingConstructionPriority : BudgetPriority
         var success = Solve(solver, projVars);
         if (success == false)
         {
-            GD.Print("PLANNING FAILED");
             foreach (var kvp in Account.Items.Contents)
             {
                 var item = (Item) data.Models[kvp.Key];
                 var q = kvp.Value;
-                GD.Print($"{item.Name} {q}");
             }
         }
         
@@ -64,8 +62,6 @@ public class BuildingConstructionPriority : BudgetPriority
         var success = Solve(solver, projVars);
         if (success == false)
         {
-            GD.Print("PLANNING FAILED");
-            GD.Print("labor " + availLabor);
         }
         return projVars.GetCounts(kvp => kvp.Key.BuildCosts, 
             (kvp, i) => Mathf.CeilToInt(i * kvp.Value.SolutionValue()));
@@ -110,10 +106,6 @@ public class BuildingConstructionPriority : BudgetPriority
             objective.SetCoefficient(projVar, benefit);
         }
         var status = solver.Solve();
-        // if (status != Solver.ResultStatus.OPTIMAL && status != Solver.ResultStatus.FEASIBLE)
-        // {
-        //     GD.Print("FAILED");
-        // }
         return status == Solver.ResultStatus.OPTIMAL || status == Solver.ResultStatus.FEASIBLE;
     }
     
