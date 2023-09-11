@@ -15,7 +15,6 @@ public class Data
     public DataNotices Notices { get; private set; }
     public DataHandles Handles { get; private set; }
     public Models Models { get; private set; }
-    // public RefFulfiller RefFulfiller { get; private set; }
     public Dictionary<int, Entity> EntitiesById { get; private set; }
     public Entity this[int id] => EntitiesById[id];
     public BaseDomain BaseDomain { get; private set; }
@@ -91,7 +90,27 @@ public class Data
             AddEntity(e, key);
         }
     }
-
+    public void LoadEntities(IReadOnlyList<Entity> es, StrongWriteKey key) 
+    {
+        var hash = new HashSet<int>();
+        foreach (var e in es)
+        {
+            var t = e.GetType();
+            if (_entityTypeTree.Nodes.ContainsKey(t) == false)
+            {
+                AddEntityType(t);
+            }
+            if (EntitiesById.ContainsKey(e.Id))
+            {
+                GD.Print($"{e.Id} trying to overwrite {EntitiesById[e.Id].GetType().ToString()} with {e.GetType().ToString()}");
+            }
+            EntitiesById.Add(e.Id, e);
+        }
+        foreach (var e in es)
+        {
+            _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
+        }
+    }
     private void SetupEntity(Entity e, StrongWriteKey key)
     {
         var t = e.GetType();

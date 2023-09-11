@@ -38,7 +38,7 @@ public class FoodAndPopGrowthProcedure : Procedure
         {
             var regime = key.Data.Get<Regime>(kvp.Key);
             var cons = kvp.Value;
-            regime.History.ItemHistory.Latest(food).Consumed += cons;
+            regime.History.ItemHistory.GetLatest(food).Consumed += cons;
             regime.Items.Remove(food, cons);
         }
     }

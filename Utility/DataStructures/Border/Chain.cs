@@ -8,7 +8,6 @@ public class Chain<TSeg, TPrim> : IChain<TSeg, TPrim>,
     ISegment<TPrim> 
     where TSeg : ISegment<TPrim>
 {
-    public TSeg this[int i] => Segments[i];
     public List<TSeg> Segments { get; private set; }
     public Chain(List<TSeg> segments)
     {

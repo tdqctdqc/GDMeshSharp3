@@ -124,7 +124,7 @@ public class BuildingConstructionPriority : BudgetPriority
         var itemNumConstraints = new Dictionary<int, Constraint>();
         items.ForEach(i =>
         {
-            var itemConstraint = solver.MakeConstraint(0f, budget[i]);
+            var itemConstraint = solver.MakeConstraint(0f, budget.Get(i));
             itemNumConstraints.Add(i, itemConstraint);
         });
         foreach (var kvp in buildingVars)

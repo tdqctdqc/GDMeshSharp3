@@ -80,7 +80,6 @@ public partial class GameSession : Node, ISession
         hServer.Setup(logic, Data, this);
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
-        logic.Start();
         SetupPlayer(new HostWriteKey(hServer, logic, Data, this));
         StartClient();
         Client.SetupForGameplay(true, Data);
@@ -94,7 +93,7 @@ public partial class GameSession : Node, ISession
         hServer.Setup(logic, Data, this);
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
-        logic.Start();
+        logic.FirstTurn();
         SetupPlayer(new HostWriteKey(hServer, logic, Data, this));
         Client.SetupForGameplay(true, Data);
     }

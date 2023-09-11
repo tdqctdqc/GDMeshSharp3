@@ -40,7 +40,8 @@ public class StartConstructionProcedure : Procedure
             return false;
         }
 
-        if (Construction.Model.Model(data).BuildCosts.Any(kvp => regime.Items[kvp.Key] < kvp.Value))
+        if (Construction.Model.Model(data).BuildCosts
+            .Any(kvp => regime.Items.Get(kvp.Key) < kvp.Value))
         {
             return false;
         }
@@ -55,7 +56,7 @@ public class StartConstructionProcedure : Procedure
         foreach (var kvp in Construction.Model.Model(key.Data).BuildCosts)
         {
             regime.Items.Remove(kvp.Key, kvp.Value);
-            regime.History.ItemHistory.Latest(kvp.Key).Consumed += kvp.Value;
+            regime.History.ItemHistory.GetLatest(kvp.Key).Consumed += kvp.Value;
         }
         key.Data.Infrastructure.CurrentConstruction.StartConstruction(Construction, key);
     }

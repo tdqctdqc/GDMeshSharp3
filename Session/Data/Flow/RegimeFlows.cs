@@ -5,7 +5,7 @@ using Godot;
 
 public class RegimeFlows
 {
-    public FlowData this[Flow flow] => Flows[flow.Id];
+    public FlowData Get(Flow flow) => Flows[flow.Id];
     public Dictionary<int, FlowData> Flows { get; private set; }
 
     public RegimeFlows(Dictionary<int, FlowData> flows)
@@ -17,13 +17,13 @@ public class RegimeFlows
     public void AddFlowIn(Flow flow, float flowIn)
     {
         if(Flows.ContainsKey(flow.Id) == false) Flows.Add(flow.Id, new FlowData(0f, 0f));
-        this[flow].AddFlowIn(flowIn);
+        Get(flow).AddFlowIn(flowIn);
     }
 
     public void AddFlowOut(Flow flow, float flowOut)
     {
         if(Flows.ContainsKey(flow.Id) == false) Flows.Add(flow.Id, new FlowData(0f, 0f));
-        this[flow].AddFlowOut(flowOut);
+        Get(flow).AddFlowOut(flowOut);
     }
 
     public FlowCount GetSurplusCount()

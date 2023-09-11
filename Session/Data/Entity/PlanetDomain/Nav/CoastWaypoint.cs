@@ -18,10 +18,10 @@ public class CoastWaypoint : Waypoint, ICoastWaypoint, ILandWaypoint
         Port = port;
     }
 
-    [SerializationConstructor] protected CoastWaypoint(int id, 
-        float roughness, Vector2 chunkCoords, HashSet<int> neighbors, Vector4I associatedPolyIds, 
+    [SerializationConstructor] private CoastWaypoint(int id, 
+        float roughness, HashSet<int> neighbors, Vector4I associatedPolyIds, 
         Vector2 pos, int sea, bool port) 
-        : base(id, chunkCoords, neighbors, associatedPolyIds, pos)
+        : base(id, neighbors, associatedPolyIds, pos)
     {
         Roughness = roughness;
         Sea = sea;

@@ -9,12 +9,14 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
 
     public ClientTopBar(Client client, GameSession session)
     {
+        var key = new WriteKey(session.Data, session);
         this.AddWindowButton<LoggerWindow>("Logger");
         this.AddWindowButton<EntityOverviewWindow>("Entities");
         this.AddWindowButton<ClientSettingsWindow>("Settings");
         this.AddButton("Test Serialization", () => session.Data.Serializer.Test(session.Data));
-        this.AddButton("Save", () => Saver.Save(session.Data));
+        this.AddButton("Save", () => Saver.Save(session.Data, key));
         this.AddButton("Load", () => Saver.Load());
+        this.AddButton("Test Nav", () => Saver.TestNav(session.Data));
         this.AddIntButton("Jump to Poly", i =>
         {
             var poly = session.Data.Get<MapPolygon>(i);

@@ -54,7 +54,7 @@ public class TradeProcedure : Procedure
                 regime.Items.Remove(item, -q);
             }
 
-            var itemReport = regime.History.ItemHistory[item, tick];
+            var itemReport = regime.History.ItemHistory.Get(item, tick);
             itemReport.Bought = tradeReport.QuantityBought;
             itemReport.Sold = tradeReport.QuantitySold;
             itemReport.Offered = tradeReport.QuantityOffered;

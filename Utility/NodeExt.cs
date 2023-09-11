@@ -22,7 +22,7 @@ public static class NodeExt
             () =>
             {
                 var regime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
-                var f = regime.Flows[flow];
+                var f = regime.Flows.Get(flow);
                 // return $"In: {f.FlowIn} \n Out: {f.FlowOut} \n Net: {f.Net()}";
                 return $"{f.Net()}";
             },

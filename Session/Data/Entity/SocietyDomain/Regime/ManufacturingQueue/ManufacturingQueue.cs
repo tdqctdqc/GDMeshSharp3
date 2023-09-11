@@ -6,12 +6,12 @@ using MessagePack;
 
 public class ManufacturingQueue
 {
-    public Queue<PolymorphMember<ManufactureProject>> Queue { get; private set; }
+    public Queue<PolymorphWrapper<ManufactureProject>> Queue { get; private set; }
     public static ManufacturingQueue Construct()
     {
-        return new ManufacturingQueue(new Queue<PolymorphMember<ManufactureProject>>());
+        return new ManufacturingQueue(new Queue<PolymorphWrapper<ManufactureProject>>());
     }
-    [SerializationConstructor] private ManufacturingQueue(Queue<PolymorphMember<ManufactureProject>> queue)
+    [SerializationConstructor] private ManufacturingQueue(Queue<PolymorphWrapper<ManufactureProject>> queue)
     {
         Queue = queue;
     }

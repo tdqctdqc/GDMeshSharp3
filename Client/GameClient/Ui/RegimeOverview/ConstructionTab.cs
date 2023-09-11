@@ -22,9 +22,10 @@ public partial class ConstructionTab : ScrollContainer
         var constructions = data.Infrastructure.CurrentConstruction
             .ByPoly.Where(kvp => regime.GetPolys(data).Contains(data.Get<MapPolygon>(kvp.Key)))
             .SelectMany(kvp => kvp.Value).ToList();
-        _container.CreateLabelAsChild($"Cap: {regime.Flows[data.Models.Flows.ConstructionCap].FlowIn}");
-        _container.CreateLabelAsChild($"In Use: {regime.Flows[data.Models.Flows.ConstructionCap].FlowOut}");
-        _container.CreateLabelAsChild($"Available: {regime.Flows[data.Models.Flows.ConstructionCap].Net()}");
+        var constrFlow = regime.Flows.Get(data.Models.Flows.ConstructionCap);
+        _container.CreateLabelAsChild($"Cap: {constrFlow.FlowIn}");
+        _container.CreateLabelAsChild($"In Use: {constrFlow.FlowOut}");
+        _container.CreateLabelAsChild($"Available: {constrFlow.Net()}");
         
         foreach (var construction in constructions)
         {

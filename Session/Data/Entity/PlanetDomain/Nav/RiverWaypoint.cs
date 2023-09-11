@@ -13,9 +13,9 @@ public class RiverWaypoint : Waypoint, IWaterWaypoint, IRiverWaypoint
         HasBridge = false;
     }
 
-    [SerializationConstructor] protected RiverWaypoint(int id, bool hasBridge, Vector2 chunkCoords, 
+    [SerializationConstructor] private RiverWaypoint(int id, bool hasBridge, 
         HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos)
-        : base(id, chunkCoords, neighbors, associatedPolyIds, pos)
+        : base(id, neighbors, associatedPolyIds, pos)
     {
         HasBridge = hasBridge;
     }

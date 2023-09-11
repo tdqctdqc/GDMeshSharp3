@@ -20,7 +20,7 @@ public class BudgetAccount
         foreach (var kvp in pool.AvailItems.Contents.ToArray())
         {
             var item = kvp.Key;
-            var q = Mathf.Min(pool.AvailItems[item], share * pool.OrigItems[item]);
+            var q = Mathf.Min(pool.AvailItems.Get(item), share * pool.OrigItems.Get(item));
             Items.Add(item, q);
             pool.AvailItems.Remove(item, q);
         }
@@ -28,7 +28,7 @@ public class BudgetAccount
         {
             var flow = kvp.Key;
             var net = kvp.Value;
-            var q = Mathf.Max(0f, share * pool.OrigFlows[flow]);
+            var q = Mathf.Max(0f, share * pool.OrigFlows.Get(flow));
             Flows.Add(flow, q);
             pool.AvailFlows.Remove(flow, q);
         }

@@ -28,7 +28,7 @@ public partial class ItemBar : HBoxContainer
             () =>
             {
                 var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
-                return r != null ? r.Items[sr].ToString() : 0.ToString();
+                return r != null ? r.Items.Get(sr).ToString() : 0.ToString();
             }, 
             10f,
             data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank,

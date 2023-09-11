@@ -9,7 +9,7 @@ public abstract class Count<T>
 {
     public Dictionary<T, float> Contents { get; private set; }
     public bool CanBeNegative { get; private set; }
-    public float this[T t] => Contents.ContainsKey(t) ? Contents[t] : 0;
+    public float Get(T t) => Contents.ContainsKey(t) ? Contents[t] : 0;
     [SerializationConstructor] protected Count(Dictionary<T, float> contents, bool canBeNegative)
     {
         Contents = contents;

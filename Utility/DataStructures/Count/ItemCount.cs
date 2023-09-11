@@ -5,7 +5,7 @@ using MessagePack;
 
 public class ItemCount : Count<int>
 {
-    public float this[Item item] => this[item.Id];
+    public float Get(Item item) => Get(item.Id);
     public static ItemCount Construct()
     {
         return new ItemCount(new Dictionary<int, float>());
@@ -14,7 +14,8 @@ public class ItemCount : Count<int>
     {
         return new ItemCount(new Dictionary<int, float>(toCopy.Contents));
     }
-    [SerializationConstructor] public ItemCount(Dictionary<int, float> contents) : base(contents, false)
+    [SerializationConstructor] public ItemCount(Dictionary<int, float> contents) 
+        : base(contents, false)
     {
     }
 

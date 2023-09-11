@@ -14,9 +14,9 @@ public class InlandWaypoint : Waypoint, ILandWaypoint
     {
     }
 
-    [SerializationConstructor] protected InlandWaypoint(int id, float roughness, Vector2 chunkCoords, 
+    [SerializationConstructor] private InlandWaypoint(int id, float roughness, 
         HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos) 
-        : base(id, chunkCoords, neighbors, associatedPolyIds, pos)
+        : base(id, neighbors, associatedPolyIds, pos)
     {
         Roughness = roughness;
     }

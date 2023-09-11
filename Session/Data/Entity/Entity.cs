@@ -7,7 +7,7 @@ using MessagePack;
 public abstract class Entity : IIdentifiable
 {
     public int Id { get; protected set; }
-    protected Entity(int id)
+    [SerializationConstructor] protected Entity(int id)
     {
         Id = id;
     }

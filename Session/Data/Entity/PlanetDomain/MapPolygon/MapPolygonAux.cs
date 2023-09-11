@@ -30,7 +30,8 @@ public class MapPolygonAux
         ChangedRegime = new ValChangeAction<MapPolygon, Regime>();
 
         PolysByRegime = new EntityMultiIndexer<Regime, MapPolygon>(data,
-            p => p.Regime.Entity(data), new RefAction[] { }, ChangedRegime);
+            p => p.Regime.Entity(data), 
+            new RefAction[] { }, ChangedRegime);
         
         data.Notices.SetLandAndSea.Subscribe(() =>
         {

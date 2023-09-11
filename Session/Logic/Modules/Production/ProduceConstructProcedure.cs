@@ -85,7 +85,7 @@ public class ProduceConstructProcedure : Procedure
             {
                 var item = (Item)key.Data.Models[kvp2.Key];
                 var gain = kvp2.Value;
-                var itemReport = r.History.ItemHistory[item, tick];
+                var itemReport = r.History.ItemHistory.Get(item, tick);
                 itemReport.Produced += gain;
                 r.Items.Add(item, gain);
             }
@@ -108,7 +108,7 @@ public class ProduceConstructProcedure : Procedure
         foreach (var kvp in ManufacturingProjectsToAddByRegime)
         {
             var regime = key.Data.Get<Regime>(kvp.Key);
-            var member = PolymorphMember<ManufactureProject>.Construct(kvp.Value.Get(key.Data));
+            var member = PolymorphWrapper<ManufactureProject>.Construct(kvp.Value.Get(key.Data));
             regime.ManufacturingQueue.Queue.Enqueue(member);
         }
 
@@ -122,7 +122,7 @@ public class ProduceConstructProcedure : Procedure
 
         foreach (var regime in key.Data.GetAll<Regime>())
         {
-            var ip = RegimeFlows[regime.Id][key.Data.Models.Flows.IndustrialPower].Net();
+            var ip = RegimeFlows[regime.Id].Get(key.Data.Models.Flows.IndustrialPower).Net();
             regime.ManufacturingQueue.Manufacture(ip, regime, key);
         }
     }

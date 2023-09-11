@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public partial class MapPolygon : Entity
+public class MapPolygon : Entity
 {
     public Vector2 Center { get; protected set; }
     public EntRefCol<MapPolygon> Neighbors { get; protected set; }

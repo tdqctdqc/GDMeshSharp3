@@ -15,7 +15,7 @@ public class FoodAndPopGrowthModule : LogicModule
         {
             var pop = regime.GetPopulation(data);
             var foodDemanded = foodConsPerPop * pop;
-            var foodStock = Mathf.FloorToInt(regime.Items[data.Models.Items.Food]);
+            var foodStock = Mathf.FloorToInt(regime.Items.Get(data.Models.Items.Food));
             var actualCons = Math.Min(foodStock, foodDemanded);
             var surplusRatio = (float) foodStock / foodDemanded - 1f;
             foodConsByRegime.Add(regime.Id, actualCons);

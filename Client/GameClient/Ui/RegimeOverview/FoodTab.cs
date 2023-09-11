@@ -19,8 +19,8 @@ public partial class FoodTab : ScrollContainer
     {
         _container.ClearChildren();
         
-        var actualProd = regime.History.ItemHistory.Latest(data.Models.Items.Food).Produced;
-        var actualCons = regime.History.ItemHistory.Latest(data.Models.Items.Food).Consumed;
+        var actualProd = regime.History.ItemHistory.GetLatest(data.Models.Items.Food).Produced;
+        var actualCons = regime.History.ItemHistory.GetLatest(data.Models.Items.Food).Consumed;
         var demand = regime.GetPeeps(data).Sum(p => p.Size)
                      * data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         _container.CreateLabelAsChild($"Last Prod: {actualProd}");

@@ -16,10 +16,10 @@ public class RiverMouthWaypoint : Waypoint, IRiverWaypoint,
     {
         Sea = sea;
     }
-    [SerializationConstructor] protected RiverMouthWaypoint(int id, int sea, bool hasBridge,
-        bool port, Vector2 chunkCoords, HashSet<int> neighbors, 
+    [SerializationConstructor] private RiverMouthWaypoint(int id, int sea, bool hasBridge,
+        bool port, HashSet<int> neighbors, 
         Vector4I associatedPolyIds, Vector2 pos) 
-        : base(id, chunkCoords, neighbors, associatedPolyIds, pos)
+        : base(id, neighbors, associatedPolyIds, pos)
     {
         HasBridge = hasBridge;
         Sea = sea;

@@ -25,7 +25,7 @@ public class Waypoint : IIdentifiable
         Neighbors = new HashSet<int>();
         Pos = pos;
     }
-    [SerializationConstructor] protected Waypoint(int id, Vector2 chunkCoords, 
+    [SerializationConstructor] protected Waypoint(int id, 
         HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos)
     {
         AssociatedPolyIds = associatedPolyIds;

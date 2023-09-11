@@ -6,11 +6,11 @@ using Godot;
 
 public class GodotFileExt
 {
-    public static void SaveFile<T>(T t, string path, string name, Data data)
+    public static void SaveFile<T>(T t, string path, string name, string ext, Data data)
     {
         var bytes = data.Serializer.MP.Serialize(t);
         var dir = DirAccess.Open(path);
-        var fileAccess = FileAccess.Open(name, FileAccess.ModeFlags.Write);
+        var fileAccess = FileAccess.Open(name+ext, FileAccess.ModeFlags.Write);
         fileAccess.StoreBuffer(bytes);
         fileAccess.Close();
     }
@@ -20,11 +20,9 @@ public class GodotFileExt
         foreach (var filePath in filePaths)
         {
             var fileName = GetFileName(filePath);
-            GD.Print(fileName);
             if (fileName == name)
             {
                 var fullPath = path + name + ext;
-                GD.Print(fullPath);
                 var f = FileAccess.Open(fullPath, FileAccess.ModeFlags.Read);
                 var bytes = f.GetBuffer((long)f.GetLength());
                 f.Close();

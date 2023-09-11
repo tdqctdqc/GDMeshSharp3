@@ -19,7 +19,8 @@ public class Regime : Entity
     public bool IsMajor { get; private set; }
     public ManufacturingQueue ManufacturingQueue { get; private set; }
 
-    [SerializationConstructor] private Regime(int id, string name, Color primaryColor, Color secondaryColor, 
+    [SerializationConstructor] private Regime(int id, string name, 
+        Color primaryColor, Color secondaryColor, 
         EntityRef<MapPolygon> capital,
         ItemCount items, RegimeHistory history, ModelRef<Culture> culture,
         ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, 

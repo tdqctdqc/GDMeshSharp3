@@ -46,7 +46,7 @@ public class NewBudgetAi
         {
             var item = data.Models.GetModel<Item>(kvp.Key);
             var inAccountsQ = kvp.Value;
-            var realQ = itemsToDistribute[item];
+            var realQ = itemsToDistribute.Get(item);
             if (inAccountsQ > realQ)
             {
                 var ratio = realQ / inAccountsQ;
@@ -105,7 +105,7 @@ public class NewBudgetAi
          var backlogRatio = 3f;
          var ipUsed = _regime.ManufacturingQueue.Queue
              .Sum(m => m.Value().Remaining(data));
-         var ipAvail = _regime.Flows[ip].Net() * backlogRatio - ipUsed;
+         var ipAvail = _regime.Flows.Get(ip).Net() * backlogRatio - ipUsed;
          if (ipAvail <= 0) return;
 
          var itemsWished = wishlist.ToList();
@@ -129,7 +129,7 @@ public class NewBudgetAi
              var minFulfilledItemRatio = itemCosts.Count > 0
                  ? itemCosts.Min(
                      kvp =>
-                        Mathf.Clamp(pool.AvailItems[kvp.Key] / kvp.Value, 0f, 1f))
+                        Mathf.Clamp(pool.AvailItems.Get(kvp.Key) / kvp.Value, 0f, 1f))
                  : 1f;
 
              var inputItemLimit = q * minFulfilledItemRatio;
@@ -163,7 +163,7 @@ public class NewBudgetAi
          foreach (var kvp in wishlist)
          {
              var price = market.Prices[kvp.Key.Id];
-             var latest = market.TradeHistory.Latest(kvp.Key);
+             var latest = market.TradeHistory.GetLatest(kvp.Key);
              var plausibleCost = 0f;
              if (latest != null)
              {

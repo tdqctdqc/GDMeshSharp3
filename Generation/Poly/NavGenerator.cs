@@ -135,7 +135,7 @@ public class NavGenerator : Generator
                 }
             }
 
-            nav.Waypoints.Add(wp.Id, PolymorphMember<Waypoint>.Construct(wp));
+            nav.Waypoints.Add(wp.Id, PolymorphWrapper<Waypoint>.Construct(wp));
         }
     }
 
@@ -314,7 +314,7 @@ public class NavGenerator : Generator
             }
             byEdge.Add(edge, wp);
 
-            nav.Waypoints.Add(wp.Id, PolymorphMember<Waypoint>.Construct(wp));
+            nav.Waypoints.Add(wp.Id, PolymorphWrapper<Waypoint>.Construct(wp));
             var hiWp = byPoly[hi];
             var loWp = byPoly[lo];
             Connect(wp, hiWp);
@@ -347,7 +347,7 @@ public class NavGenerator : Generator
             {
                 wp = new InlandWaypoint(key, id.GetID(), poly.Center, poly);
             }
-            nav.Waypoints.Add(wp.Id, PolymorphMember<Waypoint>.Construct(wp));
+            nav.Waypoints.Add(wp.Id, PolymorphWrapper<Waypoint>.Construct(wp));
             nav.MakeCenterPoint(poly, wp, key);
             byPoly.Add(poly, wp);
         }

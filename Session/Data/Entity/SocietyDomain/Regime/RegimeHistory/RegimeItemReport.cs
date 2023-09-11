@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class RegimeItemReport
 {
@@ -15,7 +16,7 @@ public class RegimeItemReport
     {
         return new RegimeItemReport(0, 0, 0, 0, 0, 0);
     }
-    private RegimeItemReport(float produced, float demanded, float offered, float bought, float sold, float consumed)
+    [SerializationConstructor] private RegimeItemReport(float produced, float demanded, float offered, float bought, float sold, float consumed)
     {
         Produced = produced;
         Demanded = demanded;

@@ -22,15 +22,15 @@ public class PolyAuxData
         var nbs = p.NeighborBorders.Values.ToList();
         if (nbs.Count() > 0)
         {
-            var source = p.Neighbors.Items(data)
-                .Select(n => p.GetBorder(n.Id).Segments).ToList();
-            MakeBoundarySegs(p, data, source);   
+            MakeBoundarySegs(p, data);   
         }
     }
 
-    private void MakeBoundarySegs(MapPolygon p, Data data, List<List<LineSegment>> source)
+    private void MakeBoundarySegs(MapPolygon p, Data data)
     {
         List<LineSegment> ordered;
+        var source = p.Neighbors.Items(data)
+            .Select(n => p.GetBorder(n.Id).Segments).ToList();
         try
         {
             ordered = source.Chainify();
@@ -46,7 +46,8 @@ public class PolyAuxData
             }
             catch (Exception e)
             {
-                var ex = new GeometryException("couldnt make boundary segs");
+                throw;
+                var ex = new GeometryException("couldnt fix boundary segs");
                 ex.AddSegLayer(source.SelectMany(l => l).ToList(), "source neighbor segs");
                 ex.AddSegLayer(p.Neighbors.Items(data)
                     .Select(n => p.GetOffsetTo(n, data))
@@ -87,7 +88,8 @@ public class PolyAuxData
 
     private List<LineSegment> FixBoundarySegs(MapPolygon p, Data data, List<List<LineSegment>> source)
     {
-        var points = source.SelectMany(s => s)
+        var points = source
+            .SelectMany(s => s)
             .GetPoints();
         points.OrderByClockwise(Vector2.Zero, v => v);
         return points.GetLineSegments().ToList();

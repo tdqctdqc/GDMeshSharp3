@@ -5,7 +5,7 @@ using MessagePack;
 
 public class ModelCount<T> : Count<int> where T : IModel
 {
-    public float this[T model] => this[model.Id];
+    public float this[T model] => Get(model.Id);
     [SerializationConstructor] protected ModelCount(Dictionary<int, float> contents, bool canBeNegative) 
         : base(contents, canBeNegative)
     {

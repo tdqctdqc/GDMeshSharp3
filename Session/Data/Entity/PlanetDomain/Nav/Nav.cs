@@ -7,18 +7,20 @@ using MessagePack;
 public class Nav : Entity
 {
     public Waypoint Get(int id) => Waypoints[id].Value();
-    public Dictionary<int, PolymorphMember<Waypoint>> Waypoints { get; private set; }
+    public Dictionary<int, PolymorphWrapper<Waypoint>> Waypoints { get; private set; }
     public Dictionary<int, int> PolyCenterIds { get; private set; }
     public Dictionary<Vector2, List<int>> PolyNavPaths { get; private set; }
     public static Nav Create(GenWriteKey key)
     {
-        var n = new Nav(-1, new Dictionary<int, PolymorphMember<Waypoint>>(), new Dictionary<int, int>(),
+        var n = new Nav(-1, new Dictionary<int, PolymorphWrapper<Waypoint>>(), new Dictionary<int, int>(),
             new Dictionary<Vector2, List<int>>());
         key.Create(n);
         return n;
     }
-    [SerializationConstructor] private Nav(int id, Dictionary<int, PolymorphMember<Waypoint>> waypoints,
-        Dictionary<int, int> polyCenterIds, Dictionary<Vector2, List<int>> polyNavPaths) : base(id)
+    [SerializationConstructor] private Nav(int id, 
+        Dictionary<int, PolymorphWrapper<Waypoint>> waypoints,
+        Dictionary<int, int> polyCenterIds, 
+        Dictionary<Vector2, List<int>> polyNavPaths) : base(id)
     {
         Waypoints = waypoints;
         PolyCenterIds = polyCenterIds;

@@ -5,44 +5,43 @@ using Godot;
 using MessagePack;
 public class History<TValue> where TValue : class
 {
-    public TValue this[int tick] => _dic[tick];
-    private Dictionary<int, TValue> _dic;
-    private int _latest;
+    public Dictionary<int, TValue> Dic { get; private set; }
+    public int LatestTick { get; private set; }
     public static History<TValue> Construct()
     {
         return new History<TValue>(new Dictionary<int, TValue>(), -1);
     }
-    [SerializationConstructor] private History(Dictionary<int, TValue> dic, int latest)
+    [SerializationConstructor] private History(Dictionary<int, TValue> dic, int latestTick)
     {
-        _dic = dic;
-        _latest = latest;
+        Dic = dic;
+        LatestTick = latestTick;
     }
-
+    public TValue Get(int tick) => Dic[tick];
     public void Add(int tick, TValue val)
     {
-        if (_latest >= tick)
+        if (LatestTick >= tick)
         {
-            throw new Exception($"adding to history out of order adding {tick} over {_latest}");
+            throw new Exception($"adding to history out of order adding {tick} over {LatestTick}");
         }
-        _latest = tick;
+        LatestTick = tick;
         
-        _dic.Add(tick, val);
+        Dic.Add(tick, val);
     }
 
-    public TValue Latest()
+    public TValue GetLatest()
     {
-        return this[_latest];
+        return Get(LatestTick);
     }
     public List<TValue> GetOrdered()
     {
-        return _dic.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList();
+        return Dic.OrderBy(kvp => kvp.Key).Select(kvp => kvp.Value).ToList();
     }
 }
 public class History<TValue, TKey> where TKey : IIdentifiable where TValue : class
 {
-    public TValue this[TKey k1, int tick] => _dic[new Vector2(k1.Id, tick)];
-    private Dictionary<Vector2, TValue> _dic;
-    private Dictionary<int, int> _latestTickByKeyId;
+    public TValue Get(TKey k1, int tick) => Dic[new Vector2(k1.Id, tick)];
+    public Dictionary<Vector2, TValue> Dic { get; private set; }
+    public Dictionary<int, int> LatestTickByKeyId { get; private set; }
     public static History<TValue, TKey> Construct()
     {
         return new History<TValue, TKey>(new Dictionary<Vector2, TValue>(), new Dictionary<int, int>());
@@ -50,33 +49,33 @@ public class History<TValue, TKey> where TKey : IIdentifiable where TValue : cla
     [SerializationConstructor] private History(Dictionary<Vector2, TValue> dic,
         Dictionary<int, int> latestTickByKeyId)
     {
-        _dic = dic;
-        _latestTickByKeyId = latestTickByKeyId;
+        Dic = dic;
+        LatestTickByKeyId = latestTickByKeyId;
     }
 
     public void Add(TKey k1, int tick, TValue val)
     {
-        if (_latestTickByKeyId.ContainsKey(k1.Id))
+        if (LatestTickByKeyId.ContainsKey(k1.Id))
         {
-            if (_latestTickByKeyId[k1.Id] >= tick) throw new Exception("adding to history out of order");
+            if (LatestTickByKeyId[k1.Id] >= tick) throw new Exception("adding to history out of order");
         }
-        _latestTickByKeyId[k1.Id] = tick;
+        LatestTickByKeyId[k1.Id] = tick;
         
         var key = new Vector2(k1.Id, tick);
-        _dic.Add(key, val);
+        Dic.Add(key, val);
     }
 
-    public TValue Latest(TKey k)
+    public TValue GetLatest(TKey k)
     {
-        if (_latestTickByKeyId.ContainsKey(k.Id))
+        if (LatestTickByKeyId.ContainsKey(k.Id))
         {
-            return this[k, _latestTickByKeyId[k.Id]];
+            return Get(k, LatestTickByKeyId[k.Id]);
         }
         return null;
     }
     public List<TValue> GetOrdered(TKey k1)
     {
-        return _dic.Where(kvp => kvp.Key.X == k1.Id)
+        return Dic.Where(kvp => kvp.Key.X == k1.Id)
             .OrderBy(kvp => kvp.Key.Y).Select(kvp => kvp.Value).ToList();
     }
 }
@@ -85,9 +84,9 @@ public class History<TValue, TKey> where TKey : IIdentifiable where TValue : cla
 public class History<TValue, TKey1, TKey2> where TKey1 : IIdentifiable where TKey2 : IIdentifiable
     where TValue : class
 {
-    public TValue this[TKey1 k1, TKey2 k2, int tick] => _dic[new Vector3(k1.Id, k2.Id, tick)];
-    private Dictionary<Vector3, TValue> _dic;
-    private Dictionary<Vector2, int> _latestTickByKeyId;
+    public TValue Get(TKey1 k1, TKey2 k2, int tick) => Dic[new Vector3(k1.Id, k2.Id, tick)];
+    public Dictionary<Vector3, TValue> Dic { get; private set; }
+    public Dictionary<Vector2, int> LatestTickByKeyId { get; private set; }
     public static History<TValue, TKey1, TKey2> Construct()
     {
         return new History<TValue, TKey1, TKey2>(new Dictionary<Vector3, TValue>(), new Dictionary<Vector2, int>());
@@ -95,40 +94,40 @@ public class History<TValue, TKey1, TKey2> where TKey1 : IIdentifiable where TKe
     [SerializationConstructor] private History(Dictionary<Vector3, TValue> dic,
         Dictionary<Vector2, int> latestTickByKeyId)
     {
-        _dic = dic;
-        _latestTickByKeyId = latestTickByKeyId;
+        Dic = dic;
+        LatestTickByKeyId = latestTickByKeyId;
     }
 
     public void Add(TKey1 k1, TKey2 k2, int tick, TValue val)
     {
         var subKey = new Vector2(k1.Id, k2.Id);
-        if (_latestTickByKeyId.ContainsKey(subKey))
+        if (LatestTickByKeyId.ContainsKey(subKey))
         {
-            if (_latestTickByKeyId[subKey] >= tick) throw new Exception("adding to history out of order");
+            if (LatestTickByKeyId[subKey] >= tick) throw new Exception("adding to history out of order");
         }
-        _latestTickByKeyId[subKey] = tick;
+        LatestTickByKeyId[subKey] = tick;
         
         var key = new Vector3(k1.Id, k2.Id, tick);
-        _dic.Add(key, val);
+        Dic.Add(key, val);
     }
     public void Remove(TKey1 k1, TKey2 k2, int tick)
     {
         var key = new Vector3(k1.Id, k2.Id, tick);
-        _dic.Remove(key);
+        Dic.Remove(key);
     }
     
-    public TValue Latest(TKey1 k1, TKey2 k2)
+    public TValue GetLatest(TKey1 k1, TKey2 k2)
     {
-        if (_latestTickByKeyId.ContainsKey(new Vector2(k1.Id, k2.Id)))
+        if (LatestTickByKeyId.ContainsKey(new Vector2(k1.Id, k2.Id)))
         {
-            return this[k1, k2, _latestTickByKeyId[new Vector2(k1.Id, k2.Id)]];
+            return Get(k1, k2, LatestTickByKeyId[new Vector2(k1.Id, k2.Id)]);
         }
         return null;
     }
 
     public List<TValue> GetOrdered(TKey1 k1, TKey2 k2)
     {
-        return _dic.Where(kvp => kvp.Key.X == k1.Id && kvp.Key.Y == k2.Id)
+        return Dic.Where(kvp => kvp.Key.X == k1.Id && kvp.Key.Y == k2.Id)
             .OrderBy(kvp => kvp.Key.Z).Select(kvp => kvp.Value).ToList();
     }
 }

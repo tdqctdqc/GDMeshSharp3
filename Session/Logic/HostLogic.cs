@@ -47,8 +47,8 @@ public class HostLogic : ILogic
         
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank.Subscribe(CalcAiTurnOrders);
     }
-
-    public void Start()
+    
+    public void FirstTurn()
     {
         ProcessTurnBeginning();
     }

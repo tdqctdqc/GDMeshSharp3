@@ -12,28 +12,11 @@ public class MessagePackManager
     private MessagePackSerializerOptions _options;
     public byte[] Serialize<T>(T t)
     {
-        try
-        {
-            return MessagePackSerializer.Serialize(t, _options);
-        }
-        catch (Exception e)
-        {
-            // GD.Print();
-            // throw new SerializationException("couldnt serialize " + t.GetType());
-            throw e;
-        }
+        return MessagePackSerializer.Serialize(t.GetType(), t, _options);
     }
     public byte[] Serialize(object t, Type type)
     {
-        try
-        {
-            return MessagePackSerializer.Serialize(type, t, _options);
-        }
-        catch (Exception e)
-        {
-            GD.Print("couldnt serialize " + type);
-            throw;
-        }
+        return MessagePackSerializer.Serialize(type, t, _options);
     }
     public T Deserialize<T>(byte[] bytes)
     {
@@ -47,7 +30,7 @@ public class MessagePackManager
     {
         var resolver = MessagePack.Resolvers.CompositeResolver.Create(
             // enable extension packages first
-            GodotCustomResolver.Instance, //need this one to make fe Color transfer lossless
+            GodotCustomResolver.Instance, 
             MessagePack.Resolvers.ContractlessStandardResolver.Instance,
             MessagePack.Resolvers.StandardResolverAllowPrivate.Instance,
             // finally use standard (default) resolver

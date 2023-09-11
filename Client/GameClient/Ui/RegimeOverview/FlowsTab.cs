@@ -22,8 +22,8 @@ public partial class FlowsTab : ScrollContainer
         
         foreach (var flow in flowIds)
         {
-            var flowIn = regime.Flows[flow].FlowIn;
-            var flowOut = regime.Flows[flow].FlowOut;
+            var flowIn = regime.Flows.Get(flow).FlowIn;
+            var flowOut = regime.Flows.Get(flow).FlowOut;
             
             var hbox = new HBoxContainer();
             

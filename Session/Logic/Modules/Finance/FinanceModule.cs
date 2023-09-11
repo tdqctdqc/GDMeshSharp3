@@ -12,7 +12,7 @@ public class FinanceModule : LogicModule
         foreach (var regime in data.GetAll<Regime>())
         {
             //todo get from 'flow dic' on regime or something
-            var income = regime.Flows[data.Models.Flows.Income].Net();
+            var income = regime.Flows.Get(data.Models.Flows.Income).Net();
             income = Mathf.Clamp(income / 5f, 0f, float.MaxValue);
             proc.GrowthsByRegimeId.Add(regime.Id, Mathf.FloorToInt(income));
         }

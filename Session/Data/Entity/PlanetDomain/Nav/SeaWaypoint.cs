@@ -12,9 +12,9 @@ public class SeaWaypoint : Waypoint, IWaterWaypoint
     {
     }
 
-    [SerializationConstructor] protected SeaWaypoint(int id, Vector2 chunkCoords, HashSet<int> neighbors, 
+    [SerializationConstructor] private SeaWaypoint(int id, HashSet<int> neighbors, 
         Vector4I associatedPolyIds, Vector2 pos) 
-            : base(id, chunkCoords, neighbors, associatedPolyIds, pos)
+            : base(id, neighbors, associatedPolyIds, pos)
     {
     }
 }
