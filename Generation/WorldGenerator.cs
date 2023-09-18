@@ -43,12 +43,7 @@ public class WorldGenerator
         
         Game.I.Logger.RunAndLogTime(() =>
         {
-            IdDispenser.Create(_key);
-            GameClock.Create(_key);
-            PlanetInfo.Create(Data.GenMultiSettings.Dimensions, _key);
-            Market.Create(_key);
-            RuleVars.CreateDefault(_key);
-            CurrentConstruction.Create(_key);
+            Data.CreateFirstTime(_key);
         }, "Init", LogType.Generation);
         
         List<Vector2> points = null;

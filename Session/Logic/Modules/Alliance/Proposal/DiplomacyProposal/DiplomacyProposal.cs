@@ -9,9 +9,9 @@ public abstract class DiplomacyProposal : Proposal
 
     protected DiplomacyProposal(int alliance0, int alliance1, 
         int id, EntityRef<Regime> proposer,
-        HashSet<int> inFavor, HashSet<int> against, float priority) 
+        HashSet<int> inFavor, HashSet<int> against) 
         : base(id, proposer, new HashSet<int>{alliance0, alliance1}, 
-            inFavor, against, priority)
+            inFavor, against)
     {
         Alliance0 = alliance0;
         Alliance1 = alliance1;
@@ -47,11 +47,5 @@ public abstract class DiplomacyProposal : Proposal
         var a0 = AllianceInFavor(data.Get<Alliance>(Alliance0), data);
         var a1 = AllianceInFavor(data.Get<Alliance>(Alliance1), data);
         return a0.And(a1);
-    }
-
-    public override bool Undecided(Data data)
-    {
-        return AllianceUndecided(data.Get<Alliance>(Alliance0), data)
-            || AllianceUndecided(data.Get<Alliance>(Alliance1), data);
     }
 }

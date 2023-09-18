@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class AllianceAffairsModule : LogicModule
+public class ProposalsModule : LogicModule
 {
     public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
-        var proposals = data.Handles.Proposals.Values.ToList();
+        var proposals = data.Society.Proposals.Proposals.Values.ToList();
         ReceiveProposalDecisions(orders, data, res);
-        UpdateProposalPriorities(data, res);
         ResolveProposals(proposals, data, res);
         AddProposals(orders, res, data);
         RemoveInvalidProposals(data, res);
@@ -42,28 +41,17 @@ public class AllianceAffairsModule : LogicModule
             .ToHashSet();
         if (readyProposals.Count() > 0)
         {
-            var proposal = readyProposals
-                .OrderByDescending(p => p.Priority).First();
+            var proposal = readyProposals.First();
             resolved.Add(proposal.Id);
             var decision = proposal.GetResolution(data);
             var resolve = new ResolveProposalProcedure(decision.IsTrue(), proposal.Id);
             res.Messages.Add(resolve);
         }
     }
-    private void UpdateProposalPriorities(Data data, LogicResults res)
-    {
-        var proc = UpdateAllianceProposalPrioritiesProc.Construct();
-        foreach (var proposal in data.Handles.Proposals.Values)
-        {
-            var growth = proposal.GetPriorityGrowth(data);
-            proc.ProposalIds.Add(proposal.Id);
-            proc.NewPriorities.Add(proposal.Priority + growth);
-        }
-        res.Messages.Add(proc);
-    }
+    
     private void RemoveInvalidProposals(Data data, LogicResults res)
     {
-        var invalids = data.Handles.Proposals.Values.Where(p => p.Valid(data) == false);
+        var invalids = data.Society.Proposals.Proposals.Values.Where(p => p.Valid(data) == false);
         foreach (var invalid in invalids)
         {
             res.Messages.Add(new CancelProposalProcedure(invalid.Id));
@@ -79,7 +67,8 @@ public class AllianceAffairsModule : LogicModule
             var regime = turnOrders.Regime.Entity(data);
             foreach (var proposal in m.DiplomacyOrders.ProposalsMade)
             {
-                proposal.SetId(data.IdDispenser.TakeId());
+                var id = data.IdDispenser.TakeId();
+                proposal.SetId(id);
                 var proc = MakeProposalProcedure.Construct(proposal, data);
                 res.Messages.Add(proc);
             }

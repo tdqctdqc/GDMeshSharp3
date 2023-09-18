@@ -18,6 +18,16 @@ public class GenData : Data
         GenAuxData = new GenAuxiliaryData(this);
         base.Init();
     }
+    public void CreateFirstTime(GenWriteKey key)
+    {
+        IdDispenser.Create(key);
+        GameClock.Create(key);
+        PlanetInfo.Create(GenMultiSettings.Dimensions, key);
+        Market.Create(key);
+        RuleVars.CreateDefault(key);
+        CurrentConstruction.Create(key);
+        ProposalList.Create(key);
+    }
     public void ClearAuxData()
     {
         GenAuxData = null;

@@ -63,7 +63,6 @@ public class Serializer
             );
         foreach (var polymorphType in parentPolymorphTypes)
         {
-            GD.Print("checking " + polymorphType.Name);
             if (polymorphType.HasAttribute<UnionAttribute>() == false)
             {
                 throw new Exception(polymorphType.Name 
@@ -71,10 +70,6 @@ public class Serializer
             }
             var derived = polymorphType
                 .GetDerivedTypes(polymorphTypes);
-            foreach (var type in derived)
-            {
-                GD.Print("\tDerived " + type.Name);
-            }
             if (derived.Any(d => d.HasAttribute<UnionAttribute>()))
             {
                 GD.Print(polymorphType.Name + " has derived w union attribute");
@@ -103,6 +98,7 @@ public class Serializer
             {
                 GD.Print(polymorphType.Name 
                          + " has repeated union attributes for some derived type");
+                throw new Exception();
             }
             var ids = unionAttributes
                 .Select(u => (int)u.Key).Distinct();

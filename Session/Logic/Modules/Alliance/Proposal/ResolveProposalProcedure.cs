@@ -14,10 +14,10 @@ public class ResolveProposalProcedure : Procedure
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        if (key.Data.Handles.Proposals.ContainsKey(ProposalId) == false) return;
-        var proposal = key.Data.Handles.Proposals[ProposalId];
+        if (key.Data.Society.Proposals.Proposals.ContainsKey(ProposalId) == false) return;
+        var proposal = key.Data.Society.Proposals.Proposals[ProposalId];
         proposal.Resolve(Accepted, key);
-        key.Data.Handles.Proposals.Remove(proposal.Id);
+        key.Data.Society.Proposals.Proposals.Remove(proposal.Id);
     }
     public override bool Valid(Data data)
     {

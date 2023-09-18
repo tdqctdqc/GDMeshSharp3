@@ -13,7 +13,6 @@ public class Data
     public ClientPlayerData ClientPlayerData { get; private set; }
     public HostLogicData HostLogicData { get; private set; }
     public DataNotices Notices { get; private set; }
-    public DataHandles Handles { get; private set; }
     public Models Models { get; private set; }
     public Dictionary<int, Entity> EntitiesById { get; private set; }
     public Entity this[int id] => EntitiesById[id];
@@ -34,10 +33,7 @@ public class Data
     }
     protected virtual void Init()
     {
-        GD.Print("doot");
-
         Notices = new DataNotices();
-        // RefFulfiller = new RefFulfiller(this);
         Models = new Models(this);
         EntitiesById = new Dictionary<int, Entity>();
         
@@ -54,6 +50,7 @@ public class Data
         HostLogicData = new HostLogicData(this);
     }
 
+    
     private void AddEntityType(Type t)
     {
         _entityTypeTree.Get(t);
@@ -103,8 +100,6 @@ public class Data
     }
     public void LoadEntities(IReadOnlyList<Entity> es, StrongWriteKey key) 
     {
-        var hash = new HashSet<int>();
-        GD.Print("players " + es.Where(e => e is Player).Count());
 
         foreach (var e in es)
         {
@@ -161,7 +156,6 @@ public class Data
         var e = EntitiesById[eId];
         key.Data._entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
         EntitiesById.Remove(eId);
-        // RefFulfiller.EntityRemoved(eId);
         if (key is HostWriteKey hKey)
         {
             hKey.HostServer.QueueMessage(EntityDeletionUpdate.Create(eId, hKey));

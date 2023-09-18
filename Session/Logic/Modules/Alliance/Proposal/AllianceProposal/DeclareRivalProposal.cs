@@ -10,12 +10,12 @@ public class DeclareRivalProposal : AllianceProposal
     public static DeclareRivalProposal Construct(Regime proposer, Alliance target, Data data)
     {
         var p = new DeclareRivalProposal(-1, target.Id, proposer.MakeRef(), proposer.GetAlliance(data).Id,
-            new HashSet<int>(), new HashSet<int>(), 0f);
+            new HashSet<int>(), new HashSet<int>());
         return p;
     }
     [SerializationConstructor] private DeclareRivalProposal(int id, int targetAllianceId, EntityRef<Regime> proposer, int allianceId, 
-        HashSet<int> inFavor, HashSet<int> against, float priority) 
-        : base(id, proposer, allianceId, inFavor, against, priority)
+        HashSet<int> inFavor, HashSet<int> against) 
+        : base(id, proposer, allianceId, inFavor, against)
     {
         TargetAllianceId = targetAllianceId;
     }

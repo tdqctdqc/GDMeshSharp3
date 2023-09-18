@@ -13,13 +13,13 @@ public class CancelProposalProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        var p = key.Data.Handles.Proposals[ProposalId];
+        var p = key.Data.Society.Proposals.Proposals[ProposalId];
         p.CleanUp(key);
-        key.Data.Handles.Proposals.Remove(ProposalId);
+        key.Data.Society.Proposals.Proposals.Remove(ProposalId);
     }
 
     public override bool Valid(Data data)
     {
-        return data.Handles.Proposals.ContainsKey(ProposalId);
+        return data.Society.Proposals.Proposals.ContainsKey(ProposalId);
     }
 }

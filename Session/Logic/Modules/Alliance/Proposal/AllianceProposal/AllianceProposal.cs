@@ -8,8 +8,9 @@ public abstract class AllianceProposal : Proposal
 {
     public int AllianceId { get; protected set; }   
     [SerializationConstructor] protected AllianceProposal(int id, EntityRef<Regime> proposer, 
-        int allianceId, HashSet<int> inFavor, HashSet<int> against, float priority) 
-        : base(id, proposer, new HashSet<int>{allianceId}, inFavor, against, priority)
+        int allianceId, HashSet<int> inFavor, HashSet<int> against) 
+        : base(id, proposer, new HashSet<int>{allianceId}, inFavor, 
+            against)
     {
         AllianceId = allianceId;
     }
@@ -44,10 +45,5 @@ public abstract class AllianceProposal : Proposal
     public override bool Valid(Data data)
     {
         return data.EntitiesById.ContainsKey(AllianceId);
-    }
-
-    public override bool Undecided(Data data)
-    {
-        return AllianceUndecided(data.Get<Alliance>(AllianceId), data);
     }
 }

@@ -18,14 +18,15 @@ public class MakeProposalProcedure : Procedure
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        if (key.Data.Handles.Proposals.ContainsKey(Proposal.Id))
+        if (key.Data.Society.Proposals.Proposals.ContainsKey(Proposal.Id))
         {
-            var already = key.Data.Handles.Proposals[Proposal.Id];
-            throw new Exception($"Can't add {Proposal.GetType()} already proposal " + already.GetType());
+            var already = key.Data.Society.Proposals.Proposals[Proposal.Id];
+            throw new Exception($"Can't add {Proposal.GetType()}" +
+                                $" already proposal " + already.GetType());
         }
         else
         {
-            key.Data.Handles.Proposals.Add(Proposal.Id, Proposal);
+            key.Data.Society.Proposals.Proposals.Add(Proposal.Id, Proposal);
             Proposal.Propose(key);
         }
     }

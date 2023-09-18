@@ -38,7 +38,7 @@ public class HostLogic : ILogic
             new FoodAndPopGrowthModule(),
             new FinanceModule(),
             new TradeModule(),
-            new AllianceAffairsModule()
+            new ProposalsModule()
         };
         _minorTurnStartModules = new LogicModule[] { };
         _minorTurnEndModules = new LogicModule[] { };

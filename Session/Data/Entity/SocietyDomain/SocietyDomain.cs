@@ -7,6 +7,9 @@ public class SocietyDomain : Domain
 {
     public Market Market => _market != null ? _market.Value : null;
     private SingletonAux<Market> _market;
+    
+    public ProposalList Proposals => _proposals != null ? _proposals.Value : null;
+    private SingletonAux<ProposalList> _proposals;
     public RegimeAux RegimeAux { get; private set; }
     public PolyPeepAux PolyPeepAux { get; private set; }
     public AllianceAux AllianceAux { get; private set; }
@@ -21,5 +24,6 @@ public class SocietyDomain : Domain
         PolyPeepAux = new PolyPeepAux(Data);
         AllianceAux = new AllianceAux(Data);
         _market = new SingletonAux<Market>(Data);
+        _proposals = new SingletonAux<ProposalList>(Data);
     }
 }

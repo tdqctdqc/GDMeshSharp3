@@ -11,7 +11,7 @@ public class Alliance : Entity
     public EntRefCol<Alliance> AtWar { get; private set; }
     public HashSet<int> ProposalIds { get; private set; }
     public IEnumerable<Proposal> Proposals(Data data) =>
-        ProposalIds.Select(id => data.Handles.Proposals[id]);
+        ProposalIds.Select(id => data.Society.Proposals.Proposals[id]);
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
         var members = EntRefCol<Regime>.Construct(nameof(Members), -1,

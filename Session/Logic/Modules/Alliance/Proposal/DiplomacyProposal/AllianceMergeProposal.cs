@@ -9,14 +9,12 @@ public class AllianceMergeProposal : DiplomacyProposal
     public static AllianceMergeProposal Construct(Regime proposer, Alliance target, Data data)
     {
         var p = new AllianceMergeProposal(proposer.GetAlliance(data).Id, target.Id, 
-            -1, proposer.MakeRef(),
-            new HashSet<int>(), new HashSet<int>(), 0f);
+            -1, proposer.MakeRef(), new HashSet<int>(), new HashSet<int>());
         return p;
     }
     [SerializationConstructor] private AllianceMergeProposal(int alliance0, int alliance1, int id, EntityRef<Regime> proposer, 
-        HashSet<int> inFavor, HashSet<int> against, float priority) 
-        : base(alliance0, alliance1, id, proposer, inFavor, 
-            against, priority)
+        HashSet<int> inFavor, HashSet<int> against) 
+        : base(alliance0, alliance1, id, proposer, inFavor, against)
     {
     }
 
