@@ -9,6 +9,8 @@ public class BaseDomain : Domain
     private GameClockAux _gameClockAux;
     public RuleVars Rules => _ruleVarsAux.Value;
     private SingletonAux<RuleVars> _ruleVarsAux;
+    public IdDispenser IdDispenser => _idAux.Value;
+    private SingletonAux<IdDispenser> _idAux;
     public BaseDomain(Data data) : base(typeof(BaseDomain), data)
     {
         
@@ -19,5 +21,6 @@ public class BaseDomain : Domain
         PlayerAux = new PlayerAux(Data);
         _gameClockAux = new GameClockAux(Data);
         _ruleVarsAux = new SingletonAux<RuleVars>(Data);
+        _idAux = new SingletonAux<IdDispenser>(Data);
     }
 }

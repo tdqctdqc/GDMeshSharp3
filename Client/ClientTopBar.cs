@@ -16,7 +16,7 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
         this.AddButton("Test Serialization", () => session.Data.Serializer.Test(session.Data));
         this.AddButton("Save", () => Saver.Save(session.Data, key));
         this.AddButton("Load", () => Saver.Load());
-        this.AddButton("Test", () => Saver.Test(session.Data));
+        this.AddButton("Test", () => Serializer.TestCustom(session.Data));
         this.AddIntButton("Jump to Poly", i =>
         {
             var poly = session.Data.Get<MapPolygon>(i);

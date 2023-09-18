@@ -40,8 +40,7 @@ internal static class GodotResolverGetFormatterHelper
     static readonly Dictionary<Type, object> formatterMap = new Dictionary<Type, object>()
     {
         {typeof(Vector2), new Vector2Formatter()},
-        {typeof(Color), new ColorFormatter()},
-        {typeof(WaypointPolymorph), new PolymorphFormatter<WaypointPolymorph>()}
+        {typeof(Color), new ColorFormatter()}
     };
 
     static Dictionary<Type, object> GetMap()

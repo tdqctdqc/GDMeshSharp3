@@ -104,7 +104,7 @@ public class BudgetAi
          var ip = data.Models.Flows.IndustrialPower;
          var backlogRatio = 3f;
          var ipUsed = _regime.ManufacturingQueue.Queue
-             .Sum(m => m.Value().Remaining(data));
+             .Sum(m => m.Remaining(data));
          var ipAvail = _regime.Flows.Get(ip).Net() * backlogRatio - ipUsed;
          if (ipAvail <= 0) return;
 
@@ -149,8 +149,7 @@ public class BudgetAi
              }
 
              var order = new ItemManufactureProject(-1, 0f, possibleQ, item.MakeRef());
-             turnOrders.ManufacturingOrders.ToStart.Add(
-                 PolymorphMessage<ManufactureProject>.Construct(order, data));
+             turnOrders.ManufacturingOrders.ToStart.Add(order);
          }
      }
     private void DoTradeOrders(Data data, MajorTurnOrders orders, BudgetPool pool, 

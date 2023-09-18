@@ -6,35 +6,32 @@ using MessagePack;
 
 public class MakeProposalProcedure : Procedure
 {
-    public PolymorphMessage<Proposal> Proposal { get; private set; }
+    public Proposal Proposal { get; private set; }
     public static MakeProposalProcedure Construct(Proposal p, Data d)
     {
-        return new MakeProposalProcedure(PolymorphMessage<Proposal>.Construct(p, d));
+        return new MakeProposalProcedure(p);
     }
-    [SerializationConstructor] private MakeProposalProcedure(PolymorphMessage<Proposal> proposal)
+    [SerializationConstructor] 
+    private MakeProposalProcedure(Proposal proposal)
     {
         Proposal = proposal;
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        var p = Proposal.Get(key.Data);
-        var holder = Holder<Proposal>.Create(p, key);
-        p.SetId(holder.Id);
-        if (key.Data.Handles.Proposals.ContainsKey(p.Id))
+        if (key.Data.Handles.Proposals.ContainsKey(Proposal.Id))
         {
-            var already = key.Data.Handles.Proposals[p.Id];
-            throw new Exception($"Can't add {p.GetType()} already proposal " + already.GetType());
+            var already = key.Data.Handles.Proposals[Proposal.Id];
+            throw new Exception($"Can't add {Proposal.GetType()} already proposal " + already.GetType());
         }
         else
         {
-            key.Data.Handles.Proposals.Add(p.Id, p);
-            p.Propose(key);
+            key.Data.Handles.Proposals.Add(Proposal.Id, Proposal);
+            Proposal.Propose(key);
         }
-        
     }
 
     public override bool Valid(Data data)
     {
-        return true;
+        return Proposal.Valid(data);
     }
 }

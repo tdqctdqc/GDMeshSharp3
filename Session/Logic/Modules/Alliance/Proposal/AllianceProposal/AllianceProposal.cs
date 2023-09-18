@@ -9,7 +9,7 @@ public abstract class AllianceProposal : Proposal
     public int AllianceId { get; protected set; }   
     [SerializationConstructor] protected AllianceProposal(int id, EntityRef<Regime> proposer, 
         int allianceId, HashSet<int> inFavor, HashSet<int> against, float priority) 
-        : base(id, proposer, inFavor, against, priority)
+        : base(id, proposer, new HashSet<int>{allianceId}, inFavor, against, priority)
     {
         AllianceId = allianceId;
     }
@@ -17,19 +17,7 @@ public abstract class AllianceProposal : Proposal
     public override void Propose(ProcedureWriteKey key)
     {
         var alliance = key.Data.Get<Alliance>(AllianceId);
-        var holder = key.Data.Get<Holder<Proposal>>(Id);
-        alliance.Proposals.Add(holder, key);
-    }
-
-    public override void CleanUp(ProcedureWriteKey key)
-    {
-        var holder = key.Data.Get<Holder<Proposal>>(Id);
-
-        if (key.Data.EntitiesById.ContainsKey(AllianceId))
-        {
-            var alliance = key.Data.Get<Alliance>(AllianceId);
-            alliance.Proposals.Remove(holder, key);
-        }
+        alliance.ProposalIds.Add(Id);
     }
 
     public override TriBool GetResolution(Data data)

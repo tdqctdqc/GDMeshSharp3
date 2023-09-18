@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 public class GeologyGenerator : Generator
 {
     public GenData Data { get; private set; }
-    private IdDispenser _id;
     private GenWriteKey _key;
     public GeologyGenerator()
     {
@@ -19,7 +18,6 @@ public class GeologyGenerator : Generator
     {
         var report = new GenReport(GetType().Name);
         _key = key;
-        _id = new IdDispenser();
         Data = key.GenData;
         
         report.StartSection(); 
@@ -85,10 +83,11 @@ public class GeologyGenerator : Generator
 
     private void BuildPlates()
     {
+        var id = Data.IdDispenser;
         var cellsPerPlate = 3;
         var numPlates = Data.GenAuxData.Cells.Count / cellsPerPlate;
         var plateSeeds = Picker.PickSeeds(Data.GenAuxData.Cells, new[] {numPlates})[0];
-        var plates = plateSeeds.Select(s => new GenPlate(s, _id.GetID(), _key)).ToList();
+        var plates = plateSeeds.Select(s => new GenPlate(s, id.TakeId(), _key)).ToList();
         
         Data.GenAuxData.Plates.AddRange(plates);
         var cellsNotTaken = Data.GenAuxData.Cells.Except(plateSeeds);
@@ -110,10 +109,12 @@ public class GeologyGenerator : Generator
 
     private void BuildMasses()
     {
+        var id = Data.IdDispenser;
+
         var platesPerMass = 3;
         var numMasses = Data.GenAuxData.Plates.Count / 3;
         var massSeeds = Picker.PickSeeds(Data.GenAuxData.Plates, new int[] {numMasses})[0];
-        var masses = massSeeds.Select(s => new GenMass(s, _id.GetID())).ToList();
+        var masses = massSeeds.Select(s => new GenMass(s, id.TakeId())).ToList();
 
         var platesNotTaken = Data.GenAuxData.Plates.Except(massSeeds);
         var remainder = Picker.PickInTurnHeuristic(platesNotTaken, masses,
@@ -128,6 +129,8 @@ public class GeologyGenerator : Generator
 
     private void BuildContinents()
     {
+        var id = Data.IdDispenser;
+
         var numMasses = Data.GenAuxData.Masses.Count;
         var numLandConts = (int) Data.GenMultiSettings.GeologySettings.NumContinents.Value;
         var numSeas = (int) Data.GenMultiSettings.GeologySettings.NumSeas.Value;
@@ -146,11 +149,11 @@ public class GeologyGenerator : Generator
         var waterSeeds = seeds[1].ToHashSet();
         var allSeeds = landSeeds.Union(waterSeeds);
         var landConts = landSeeds
-            .Select(s => new GenContinent(s, _id.GetID(), Game.I.Random.RandfRange(landMinAlt, landMaxAlt)))
+            .Select(s => new GenContinent(s, id.TakeId(), Game.I.Random.RandfRange(landMinAlt, landMaxAlt)))
             .ToList();
         //todo make delaunay graph for landConts and put a sea on each edge
         var seaConts = waterSeeds
-            .Select(s => new GenContinent(s, _id.GetID(), Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt)))
+            .Select(s => new GenContinent(s, id.TakeId(), Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt)))
             .ToList();
         var width = Data.GenMultiSettings.Dimensions.X;
         var landRemainder = Picker.PickInTurnToLimitHeuristic(
@@ -172,7 +175,7 @@ public class GeologyGenerator : Generator
             var unions = UnionFind.Find(seaRemainder, (g, h) => true, m => m.Neighbors);
             foreach (var u in unions)
             {
-                var cont = new GenContinent(u.First(), _id.GetID(), Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt));
+                var cont = new GenContinent(u.First(), id.TakeId(), Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt));
                 for (var i = 1; i < u.Count; i++)
                 {
                     cont.AddMass(u[i]);
@@ -195,7 +198,6 @@ public class GeologyGenerator : Generator
                 var altNoise = Data.GenAuxData.GetAltPerlin(poly.Center);
                 var altValue = cont.Altitude + .2f * altNoise;
                 poly.SetAltitude(altValue, _key);
-                // poly.Set<float>(nameof(MapPolygon.Altitude), altValue, _key);
             }
         });
     }

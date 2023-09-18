@@ -23,7 +23,7 @@ public partial class ManufacturingTab : ScrollContainer
         var manufacturing = regime.ManufacturingQueue.Queue;
         for (var i = 0; i < manufacturing.Count; i++)
         {
-            var project = manufacturing.ElementAt(i).Value();
+            var project = manufacturing.ElementAt(i);
             _container.AddChild(project.GetDisplay(data));
         }
     }

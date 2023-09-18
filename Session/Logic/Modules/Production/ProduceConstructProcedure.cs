@@ -13,7 +13,7 @@ public class ProduceConstructProcedure : Procedure
     public ConcurrentDictionary<int, RegimeFlows> RegimeFlows { get; private set; }
     public ConcurrentDictionary<int, PeepEmploymentReport> EmploymentReports { get; private set; }
     public ConcurrentDictionary<PolyTriPosition, float> ConstructionProgresses { get; private set; }
-    public List<KeyValuePair<int, PolymorphMessage<ManufactureProject>>> ManufacturingProjectsToAddByRegime { get; private set; }
+    public List<KeyValuePair<int, ManufactureProject>> ManufacturingProjectsToAddByRegime { get; private set; }
     public List<KeyValuePair<int, int>>  ManufacturingProjectsToCancelByRegime { get; private set; }
     
     public static ProduceConstructProcedure Create()
@@ -23,7 +23,7 @@ public class ProduceConstructProcedure : Procedure
             new ConcurrentDictionary<int, PeepEmploymentReport>(),
             new ConcurrentDictionary<PolyTriPosition, float>(),
             new ConcurrentDictionary<int, RegimeFlows>(),
-            new List<KeyValuePair<int, PolymorphMessage<ManufactureProject>>>(),
+            new List<KeyValuePair<int, ManufactureProject>>(),
             new List<KeyValuePair<int, int>>());
     }
     [SerializationConstructor] private ProduceConstructProcedure(
@@ -31,7 +31,7 @@ public class ProduceConstructProcedure : Procedure
         ConcurrentDictionary<int, PeepEmploymentReport> employmentReports,
         ConcurrentDictionary<PolyTriPosition, float> constructionProgresses,
         ConcurrentDictionary<int, RegimeFlows> regimeFlows,
-        List<KeyValuePair<int, PolymorphMessage<ManufactureProject>>> manufacturingProjectsToAddByRegime,
+        List<KeyValuePair<int, ManufactureProject>> manufacturingProjectsToAddByRegime,
         List<KeyValuePair<int, int>>  manufacturingProjectsToCancelByRegime)
     {
         ConstructionProgresses = constructionProgresses;
@@ -108,7 +108,7 @@ public class ProduceConstructProcedure : Procedure
         foreach (var kvp in ManufacturingProjectsToAddByRegime)
         {
             var regime = key.Data.Get<Regime>(kvp.Key);
-            var member = PolymorphWrapper<ManufactureProject>.Construct(kvp.Value.Get(key.Data));
+            var member = kvp.Value;
             regime.ManufacturingQueue.Queue.Enqueue(member);
         }
 

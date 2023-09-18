@@ -9,8 +9,9 @@ public class Alliance : Entity
     public EntRefCol<Regime> Members { get; private set; }
     public EntRefCol<Alliance> Rivals { get; private set; }
     public EntRefCol<Alliance> AtWar { get; private set; }
-    public EntRefCol<Holder<Proposal>> Proposals { get; private set; }
-    
+    public HashSet<int> ProposalIds { get; private set; }
+    public IEnumerable<Proposal> Proposals(Data data) =>
+        ProposalIds.Select(id => data.Handles.Proposals[id]);
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
         var members = EntRefCol<Regime>.Construct(nameof(Members), -1,
@@ -19,8 +20,7 @@ public class Alliance : Entity
             new HashSet<int>{}, key.Data);
         var atWar = EntRefCol<Alliance>.Construct(nameof(AtWar), -1,
             new HashSet<int>{}, key.Data);
-        var proposals = EntRefCol<Holder<Proposal>>.Construct(nameof(Proposals), -1,
-            new HashSet<int>(), key.Data);
+        var proposals = new HashSet<int>();
         
         var a = new Alliance(founder.MakeRef(), members, enemies, atWar,
             proposals,
@@ -33,20 +33,13 @@ public class Alliance : Entity
         EntRefCol<Regime> members, 
         EntRefCol<Alliance> rivals, 
         EntRefCol<Alliance> atWar, 
-        EntRefCol<Holder<Proposal>> proposals,
+        HashSet<int> proposalIds,
         int id) : base(id)
     {
         Leader = leader;
         Members = members;
-        Proposals = proposals;
+        ProposalIds = proposalIds;
         Rivals = rivals;
         AtWar = atWar;
     }
-
-    // public void SetWar(Alliance a, ProcedureWriteKey key)
-    // {
-    //     if (a == this) throw new Exception();
-    //     if(Rivals.Contains(a) == false) throw new Exception();
-    //     AtWar.Add(a, key);
-    // }
 }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+//todo get rid of this
 public class PolymorphMessage<T>
 {
     public Type Type { get; private set; }

@@ -10,7 +10,7 @@ using MessagePack;
 [MessagePack.Union(2, typeof(RiverMouthWaypoint))]
 [MessagePack.Union(3, typeof(RiverWaypoint))]
 [MessagePack.Union(4, typeof(SeaWaypoint))]
-public abstract class Waypoint : IIdentifiable
+public abstract class Waypoint : IIdentifiable, IPolymorph
 {
     public int Id { get; private set; }
     public HashSet<int> Neighbors { get; private set; }

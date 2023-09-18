@@ -17,7 +17,7 @@ public class NavGenerator : Generator
         var nav = Nav.Create(key);
         var byPoly = new Dictionary<MapPolygon, Waypoint>();
         var byEdge = new Dictionary<MapPolygonEdge, Waypoint>();
-        var id = new IdDispenser();
+        var id = key.Data.IdDispenser;
         
         AddPolyCenterWps(key, id, nav, byPoly);
         
@@ -105,7 +105,7 @@ public class NavGenerator : Generator
 
             var sea = key.Data.Planet.PolygonAux.LandSea.SeaDic[seaPoly];
             var count = incidentPolys.Count();
-            var wp = new RiverMouthWaypoint(key, id.GetID(), nexus.Point,
+            var wp = new RiverMouthWaypoint(key, id.TakeId(), nexus.Point,
                 sea.Id,
                 count > 0 ? incidentPolys.ElementAt(0) : null,
                 count > 1 ? incidentPolys.ElementAt(1) : null,
@@ -288,21 +288,21 @@ public class NavGenerator : Generator
             Waypoint wp;
             if (hi.IsWater() && lo.IsWater())
             {
-                wp = new SeaWaypoint(key, id.GetID(), p, hi, lo);
+                wp = new SeaWaypoint(key, id.TakeId(), p, hi, lo);
             }
             else if (hi.IsWater() || lo.IsWater())
             {
                 var water = hi.IsWater() ? hi : lo;
                 var sea = key.Data.Planet.PolygonAux.LandSea.SeaDic[water];
-                wp = new CoastWaypoint(key, sea.Id, false, id.GetID(), p, hi, lo);
+                wp = new CoastWaypoint(key, sea.Id, false, id.TakeId(), p, hi, lo);
             }
             else if (edge.IsRiver())
             {
-                wp = new RiverWaypoint(key, id.GetID(), p, hi, lo);
+                wp = new RiverWaypoint(key, id.TakeId(), p, hi, lo);
             }
             else
             {
-                wp = new InlandWaypoint(key, id.GetID(), p, hi, lo);
+                wp = new InlandWaypoint(key, id.TakeId(), p, hi, lo);
             }
             byEdge.Add(edge, wp);
 
@@ -333,11 +333,11 @@ public class NavGenerator : Generator
             Waypoint wp;
             if (poly.IsWater())
             {
-                wp = new SeaWaypoint(key, id.GetID(), poly.Center, poly);
+                wp = new SeaWaypoint(key, id.TakeId(), poly.Center, poly);
             }
             else
             {
-                wp = new InlandWaypoint(key, id.GetID(), poly.Center, poly);
+                wp = new InlandWaypoint(key, id.TakeId(), poly.Center, poly);
             }
             nav.Waypoints.Add(wp.Id, wp);
             nav.MakeCenterPoint(poly, wp, key);

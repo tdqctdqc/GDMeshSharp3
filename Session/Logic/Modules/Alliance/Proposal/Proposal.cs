@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public abstract class Proposal
+[MessagePack.Union(0, typeof(AllianceMergeProposal))]
+[MessagePack.Union(1, typeof(DeclareRivalProposal))]
+[MessagePack.Union(2, typeof(DeclareWarProposal))]
+public abstract class Proposal : IPolymorph
 {
     public int Id { get; private set; }
     public EntityRef<Regime> Proposer { get; protected set; }
+    public HashSet<int> AllianceIds { get; private set; }
     public HashSet<int> InFavor { get; protected set; }
     public HashSet<int> Against { get; protected set; }
     public float Priority { get; protected set; }
 
     [SerializationConstructor] protected Proposal(int id, EntityRef<Regime> proposer, 
-        HashSet<int> inFavor, HashSet<int> against, float priority)
+        HashSet<int> allianceIds, HashSet<int> inFavor, HashSet<int> against, float priority)
     {
         Id = id;
+        AllianceIds = allianceIds;
         Proposer = proposer;
         InFavor = inFavor;
         Against = against;
@@ -50,6 +55,20 @@ public abstract class Proposal
             Against.Add(regime);
         };
     }
+    public TriBool AllianceInFavor(Alliance alliance, Data data)
+    {
+        var inFavor = InFavor.Where(f => alliance.Members.RefIds.Contains(f));
+        var against = Against.Where(f => alliance.Members.RefIds.Contains(f));
+        var undecided = alliance.Members.RefIds.Except(inFavor).Except(against);
+        var forWeight = inFavor.Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));
+        var againstWeight = against.Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));
+        var undecidedWeight = undecided.Sum(f => alliance.GetWeightInAlliance(data.Get<Regime>(f), data));
+        if (AllianceUndecided(alliance, data))
+        {
+            return TriBool.Undecided;
+        }
+        return new TriBool(forWeight > againstWeight);
+    }
     public void SetId(int id)
     {
         Id = id;
@@ -74,7 +93,19 @@ public abstract class Proposal
     public abstract TriBool GetResolution(Data data);
     
     protected abstract void ResolveInner(bool accepted, ProcedureWriteKey key);
-    public abstract void CleanUp(ProcedureWriteKey key);
+
+    public void CleanUp(ProcedureWriteKey key)
+    {
+        foreach (var allianceId in AllianceIds)
+        {
+            if (key.Data.EntitiesById.ContainsKey(allianceId))
+            {
+                var alliance = key.Data.Get<Alliance>(allianceId);
+                alliance.ProposalIds.Remove(Id);
+            }
+        }
+        key.Data.Handles.Proposals.Remove(Id);
+    }
     public abstract float GetPriorityGrowth(Data data);
     public abstract bool Valid(Data data);
 }

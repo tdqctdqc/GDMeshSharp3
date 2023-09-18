@@ -43,6 +43,7 @@ public class WorldGenerator
         
         Game.I.Logger.RunAndLogTime(() =>
         {
+            IdDispenser.Create(_key);
             GameClock.Create(_key);
             PlanetInfo.Create(Data.GenMultiSettings.Dimensions, _key);
             Market.Create(_key);
@@ -86,6 +87,12 @@ public class WorldGenerator
         RunGenerator(new InfrastructureGenerator());
 
         _totalTime.Stop();
+        Game.I.Logger.Log("Total entities genned: " 
+                          + Data.EntitiesById.Count,
+            LogType.Generation);
+        Game.I.Logger.Log("Total id count: " 
+                          + Data.IdDispenser.Index,
+            LogType.Generation);
         Game.I.Logger.Log("Total gen time: " + _totalTime.Elapsed.TotalMilliseconds,
             LogType.Generation);
     }

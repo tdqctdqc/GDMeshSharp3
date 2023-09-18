@@ -6,12 +6,12 @@ using MessagePack;
 
 public class ManufacturingQueue
 {
-    public Queue<PolymorphWrapper<ManufactureProject>> Queue { get; private set; }
+    public Queue<ManufactureProject> Queue { get; private set; }
     public static ManufacturingQueue Construct()
     {
-        return new ManufacturingQueue(new Queue<PolymorphWrapper<ManufactureProject>>());
+        return new ManufacturingQueue(new Queue<ManufactureProject>());
     }
-    [SerializationConstructor] private ManufacturingQueue(Queue<PolymorphWrapper<ManufactureProject>> queue)
+    [SerializationConstructor] private ManufacturingQueue(Queue<ManufactureProject> queue)
     {
         Queue = queue;
     }
@@ -22,7 +22,7 @@ public class ManufacturingQueue
 
         while (ip > 0 && Queue.Count > 0)
         {
-            var curr = Queue.Peek().Value();
+            var curr = Queue.Peek();
             var actual = Mathf.Min(curr.Remaining(key.Data), ip);
             if (actual < 0f) throw new Exception();
             

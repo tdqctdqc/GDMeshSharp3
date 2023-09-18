@@ -1,25 +1,32 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using MessagePack;
 
-public class IdDispenser
+public class IdDispenser : Entity
 {
-    private int _index = 0;
+    public int Index { get; private set; }
 
-    public IdDispenser()
+    public static IdDispenser Create(GenWriteKey key)
     {
-        
+        var d = new IdDispenser(0, -1);
+        key.Create(d);
+        return d;
     }
-    public int GetID()
+    [SerializationConstructor] private IdDispenser(int index, int id) : base(id)
     {
-        _index++;
-        if (_index == int.MaxValue) throw new Exception("Max Ids reached");
-        int id = _index;
+        Index = index;
+    }
+    public int TakeId()
+    {
+        Index++;
+        if (Index == int.MaxValue) throw new Exception("Max Ids reached");
+        int id = Index;
         return id;
     }
 
     public void SetMin(int taken)
     {
-        _index = Mathf.Max(taken, _index);
+        Index = Mathf.Max(taken, Index);
     }
 }

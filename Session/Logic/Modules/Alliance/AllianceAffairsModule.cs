@@ -5,13 +5,13 @@ using Godot;
 
 public class AllianceAffairsModule : LogicModule
 {
-    private IdDispenser _id = new ();
     public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
+        var proposals = data.Handles.Proposals.Values.ToList();
         ReceiveProposalDecisions(orders, data, res);
         UpdateProposalPriorities(data, res);
-        ResolveProposals(orders, data, res);
+        ResolveProposals(proposals, data, res);
         AddProposals(orders, res, data);
         RemoveInvalidProposals(data, res);
         return res;
@@ -26,35 +26,29 @@ public class AllianceAffairsModule : LogicModule
             var regime = m.Regime.RefId;
             foreach (var kvp in m.DiplomacyOrders.ProposalDecisions)
             {
-                var decision = new DecideOnProposalProcedure(regime, kvp.Value, kvp.Key);
+                var decision = new DecideOnProposalProcedure(regime, kvp.Value,
+                    kvp.Key);
                 res.Messages.Add(decision);
             }
         }
     }
-    private void ResolveProposals(List<TurnOrders> orders, Data data, LogicResults res)
+    private void ResolveProposals(List<Proposal> proposals, Data data, LogicResults res)
     {
         var resolved = new HashSet<int>();
-        
-        foreach (var alliance in data.GetAll<Alliance>())
+        var readyProposals = proposals
+            .Where(p => resolved.Contains(p.Id) == false)
+            .Where(p => p.Valid(data))
+            .Where(p => p.Undecided(data) == false)
+            .ToHashSet();
+        if (readyProposals.Count() > 0)
         {
-            var readyProposals = alliance.Proposals.Items(data)
-                .Select(h => h.Value)
-                .Where(p => resolved.Contains(p.Id) == false)
-                .Where(p => p.Valid(data))
-                .Where(p => p.Undecided(data) == false)
-                .ToHashSet();
-            if (readyProposals.Count() > 0)
-            {
-                var proposal = readyProposals
-                    .OrderByDescending(p => p.Priority).First();
-                resolved.Add(proposal.Id);
-                var decision = proposal.GetResolution(data);
-                var resolve = new ResolveProposalProcedure(decision.IsTrue(), proposal.Id);
-                res.Messages.Add(resolve);
-            }
+            var proposal = readyProposals
+                .OrderByDescending(p => p.Priority).First();
+            resolved.Add(proposal.Id);
+            var decision = proposal.GetResolution(data);
+            var resolve = new ResolveProposalProcedure(decision.IsTrue(), proposal.Id);
+            res.Messages.Add(resolve);
         }
-        
-        
     }
     private void UpdateProposalPriorities(Data data, LogicResults res)
     {
@@ -85,6 +79,7 @@ public class AllianceAffairsModule : LogicModule
             var regime = turnOrders.Regime.Entity(data);
             foreach (var proposal in m.DiplomacyOrders.ProposalsMade)
             {
+                proposal.SetId(data.IdDispenser.TakeId());
                 var proc = MakeProposalProcedure.Construct(proposal, data);
                 res.Messages.Add(proc);
             }

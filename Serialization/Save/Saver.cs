@@ -45,14 +45,7 @@ public class Saver
         GodotFileExt.SaveFile(file, "", "save", ".sv", data);
     }
 
-    public static void Test(Data data)
-    {
-    }
-    private static T SerializeAndDeserialize<T>(T t, Data data)
-    {
-        var serialized = data.Serializer.MP.Serialize(t, t.GetType());
-        return (T)data.Serializer.MP.Deserialize(serialized, t.GetType());
-    }
+    
     public static void Load()
     {
         var fileAccess = FileAccess.Open("save.sv", FileAccess.ModeFlags.Read);

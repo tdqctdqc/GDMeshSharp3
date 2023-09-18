@@ -8,7 +8,7 @@ using System.Reflection;
 
 public class Data
 {
-    private IdDispenser _idDispenser;
+    public IdDispenser IdDispenser => BaseDomain.IdDispenser;
     public LogicRequests Requests { get; private set; }
     public ClientPlayerData ClientPlayerData { get; private set; }
     public HostLogicData HostLogicData { get; private set; }
@@ -29,7 +29,6 @@ public class Data
     {
         Serializer = new Serializer();
         Requests = new LogicRequests();
-        _idDispenser = new IdDispenser();
         _entityTypeTree = new EntityTypeTree(this);
         Init();
     }
@@ -53,7 +52,6 @@ public class Data
         
         ClientPlayerData = new ClientPlayerData(this);
         HostLogicData = new HostLogicData(this);
-        Handles = new DataHandles();
     }
 
     private void AddEntityType(Type t)
@@ -67,11 +65,20 @@ public class Data
         {
             AddEntityType(t);
         }
+
+        
         if (e.Id == -1)
         {
-            e.SetId(_idDispenser.GetID(), key);
+            if (e is IdDispenser id)
+            {
+                e.SetId(id.TakeId(), key);
+            }
+            else
+            {
+                e.SetId(IdDispenser.TakeId(), key);
+            }
         }
-        _idDispenser.SetMin(e.Id);
+        
         if (EntitiesById.ContainsKey(e.Id))
         {
             GD.Print($"trying to overwrite id {e.Id} " +
@@ -84,6 +91,8 @@ public class Data
         {
             hKey.HostServer.QueueMessage(EntityCreationUpdate.Create(e, hKey));
         }
+        
+        IdDispenser.SetMin(e.Id);
     }
     public void AddEntities<TEntity>(IReadOnlyList<TEntity> es, StrongWriteKey key) where TEntity : Entity
     {
@@ -130,9 +139,9 @@ public class Data
         }
         if (e.Id == -1)
         {
-            e.SetId(_idDispenser.GetID(), key);
+            e.SetId(IdDispenser.TakeId(), key);
         }
-        _idDispenser.SetMin(e.Id);
+        IdDispenser.SetMin(e.Id);
         if (EntitiesById.ContainsKey(e.Id))
         {
             throw new EntityTypeException($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} " +

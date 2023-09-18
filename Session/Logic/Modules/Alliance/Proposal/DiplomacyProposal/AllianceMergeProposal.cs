@@ -8,7 +8,8 @@ public class AllianceMergeProposal : DiplomacyProposal
 {
     public static AllianceMergeProposal Construct(Regime proposer, Alliance target, Data data)
     {
-        var p = new AllianceMergeProposal(proposer.GetAlliance(data).Id, target.Id, -1, proposer.MakeRef(),
+        var p = new AllianceMergeProposal(proposer.GetAlliance(data).Id, target.Id, 
+            -1, proposer.MakeRef(),
             new HashSet<int>(), new HashSet<int>(), 0f);
         return p;
     }

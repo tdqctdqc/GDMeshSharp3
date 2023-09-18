@@ -28,29 +28,39 @@ public static class ReflectionExt
              .Select(p => (T)p.GetValue(instance))
              .ToList();
      }
+     public static List<Type> GetTypesOfType<TAbstract>(this Assembly assembly)
+     {
+         return assembly.GetTypes()
+             .Where(t => typeof(TAbstract).IsAssignableFrom(t))
+             .ToList();
+     }
     public static List<Type> GetConcreteTypesOfType<TAbstract>(this Assembly assembly)
     {
         return assembly.GetTypes()
-            .Where(t => t.IsInterface == false && t.IsAbstract == false && typeof(TAbstract).IsAssignableFrom(t)).ToList();
+            .Where(t => t.IsConcreteType()
+                        && typeof(TAbstract).IsAssignableFrom(t))
+            .ToList();
     }
     public static List<Type> GetConcreteTypesOfType(this Assembly assembly, Type abstractType)
     {
         return assembly.GetTypes()
-            .Where(t => t.IsInterface == false && t.IsAbstract == false && abstractType.IsAssignableFrom(t)).ToList();
+            .Where(t => t.IsConcreteType() && abstractType.IsAssignableFrom(t)).ToList();
     }
 
+    public static bool IsConcreteType(this Type t)
+    {
+        return t.IsInterface == false && t.IsAbstract == false;
+    }
     public static List<Type> GetDirectlyDerivedTypes(this Type baseType, Type[] types)
     {
         return baseType.GetDerivedTypes(types).Where(t => t.BaseType == baseType).ToList();
     }
-    public static List<Type> GetDerivedTypes(this Type baseType, Type[] types)
+    public static List<Type> GetDerivedTypes(this Type baseType, IEnumerable<Type> types)
     {
         // Get all types from the given assembly
         List<Type> derivedTypes = new List<Type>();
-
-        for (int i = 0, count = types.Length; i < count; i++)
+        foreach (var type in types)
         {
-            Type type = types[i];
             if (IsSubclassOf(type, baseType))
             {
                 // The current type is derived from the base type,

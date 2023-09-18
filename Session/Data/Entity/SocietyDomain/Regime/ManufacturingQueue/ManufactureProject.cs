@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public abstract class ManufactureProject
+[MessagePack.Union(0, typeof(ItemManufactureProject))]
+public abstract class ManufactureProject : IPolymorph
 {
     public int Id { get; protected set; }
     public float Progress { get; protected set; }

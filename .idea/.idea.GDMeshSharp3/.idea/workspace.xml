@@ -4,38 +4,44 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="ditto">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="tidying up proposal, added IdDispenser as entity">
+      <change afterPath="$PROJECT_DIR$/Serialization/Polymorph/IPolymorph.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/NewBudgetAi.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/BuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BuildingConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/StartScene.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/StartScene.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/AllianceChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/AllianceChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/DiplomacyChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/DiplomacyChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/NavGraphicChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/NavGraphicChunk.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/Generation/GenerationMultiSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/Generation/GenerationMultiSettings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ClientTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientTopBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ManufacturingTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ManufacturingTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/NavGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolygonGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolygonGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IGraphExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/IGraphExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/PolymorphFormatter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Resolvers/PolymorphFormatter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/Save/SaveFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Save/SaveFile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/DefaultPolymorph.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/Mock.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/MockList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/Polymorph.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/PolymorphMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Polymorph/PolymorphMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/PolymorphWrapper.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/WaypointPolymorph.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/GodotResolver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Resolvers/GodotResolver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/PolymorphFormatter.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Serialization/Save/Saver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Save/Saver.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Serialization/SerializeChecker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/SerializeChecker.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Serialization/Serializer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Serialization/Serializer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Data.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/GameClock/GameClock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/GameClock/GameClock.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyAuxData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/PolyAuxData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Nav.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Nav.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/BaseDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/BaseDomain/BaseDomain.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Waypoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Waypoint.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Region/Region.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Region/Region.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/EnumerableExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/EnumerableExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/MathExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MathExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/save.sv" beforeDir="false" afterPath="$PROJECT_DIR$/save.sv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufacturingQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufacturingQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/Utility/Holder.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/AllianceAffairsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/AllianceAffairsModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/AllianceProposal/AllianceProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/AllianceProposal/AllianceProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/DiplomacyProposal/DiplomacyProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/DiplomacyProposal/DiplomacyProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/MakeProposalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/MakeProposalProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/Proposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Alliance/Proposal/Proposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/ProduceConstructProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/TurnOrders/TurnOrderModules/ManufacturingOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/TurnOrders/TurnOrderModules/ManufacturingOrders.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/IdDispenser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/IdDispenser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Reflection/ReflectionExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Reflection/ReflectionExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -77,11 +83,13 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/6b/6f51637d/Control.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b34296d7545f4a54bda041aecea156b4b1d878/1c/94f3ee6b/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/25b7a8e363cf4f9521afbcde038b888809e22255c8a1e06c5ba0d0b8aa7b2/Attributes.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8be73ec14cdbb4d3b59b395937d47ef7cf72e9398e7189c8be8861f9efd/MessagePackWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9f6eb4020bb69f92834e6525579fb08899521b2d8dbaf42dbb6eda2ba15d3/MessagePackSerializer.NonGeneric.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Budget/BudgetAccount.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Nav.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -289,7 +297,8 @@
       <workItem from="1694293077207" duration="10631000" />
       <workItem from="1694363511304" duration="7924000" />
       <workItem from="1694376366735" duration="9127000" />
-      <workItem from="1694453485437" duration="10667000" />
+      <workItem from="1694453485437" duration="17706000" />
+      <workItem from="1695049926747" duration="1877000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -629,7 +638,15 @@
       <option name="project" value="LOCAL" />
       <updated>1694462512608</updated>
     </task>
-    <option name="localTasksCounter" value="47" />
+    <task id="LOCAL-00047" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1694471857902</created>
+      <option name="number" value="00047" />
+      <option name="presentableId" value="LOCAL-00047" />
+      <option name="project" value="LOCAL" />
+      <updated>1694471857902</updated>
+    </task>
+    <option name="localTasksCounter" value="48" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -651,7 +668,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="adding entityResolver for messagepack so can get rid of entityRef" />
     <MESSAGE value="reforming entity system, getting rid of register, allowing generic typed entities" />
     <MESSAGE value="refactored refCollection" />
     <MESSAGE value="working on map chunk graphics and associated ui" />
@@ -676,6 +692,7 @@
     <MESSAGE value="added saved settings" />
     <MESSAGE value="fiddling with messagepack, polymorph serialization not working right" />
     <MESSAGE value="ditto" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
+    <MESSAGE value="tidying up proposal, added IdDispenser as entity" />
+    <option name="LAST_COMMIT_MESSAGE" value="tidying up proposal, added IdDispenser as entity" />
   </component>
 </project>
