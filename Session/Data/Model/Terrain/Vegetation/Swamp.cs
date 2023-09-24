@@ -6,8 +6,8 @@ using Godot;
 public class Swamp : Vegetation
 {
     public Swamp(LandformList lfs) 
-        : base(new HashSet<Landform>{lfs.Plain}, .7f, .25f, Colors.DarkOliveGreen, "Swamp",
-            true)
+        : base(new HashSet<Landform>{lfs.Plain}, .7f, 
+            .25f, Colors.DarkOliveGreen, "Swamp")
     {
     }
 
@@ -15,6 +15,6 @@ public class Swamp : Vegetation
     {
         return base.Allowed(p, moisture, lf, data) 
                // && p.Altitude < .6f 
-            && p.Roughness < .15f;
+            && p.Roughness < .1f;
     }
 }

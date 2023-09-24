@@ -6,6 +6,11 @@ using Godot;
 
 public static class MapPolygonExt
 {
+    public static float DistFromEquatorRatio(this MapPolygon p, Data data)
+    {
+        var mapHeight = data.Planet.Height;
+        return Mathf.Abs((.5f * mapHeight - p.Center.Y) / mapHeight);
+    }
     public static PolyAuxData GetAuxData(this MapPolygon poly, Data data)
     {
         return data.Planet.PolygonAux.AuxDatas[poly];

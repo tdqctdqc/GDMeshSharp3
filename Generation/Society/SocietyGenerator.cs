@@ -338,11 +338,12 @@ public class SocietyGenerator : Generator
             var settlement = p.GetSettlement(_data);
             var tier = settlement.Tier.Model(_data);
             var numUrbanTris = Mathf.Max(1, tier.NumTris);
-            numUrbanTris = Mathf.Min(availTris.Count(), numUrbanTris);
             if (settlement.Tier.Model(_data) == _data.Models.Settlements.Village)
             {
                 numUrbanTris = 1;
             }
+            numUrbanTris = Mathf.Min(availTris.Count, numUrbanTris);
+            
             for (var j = 0; j < numUrbanTris; j++)
             {
                 availTris[j].SetLandform(_data.Models.Landforms.Urban, _key);
@@ -353,11 +354,24 @@ public class SocietyGenerator : Generator
     private void Deforest()
     {
         var polys = _data.GetAll<MapPolygon>();
+        var forest = _data.Models.Vegetations.Forest;
+        var jungle = _data.Models.Vegetations.Jungle;
+        var grassland = _data.Models.Vegetations.Grassland;
+        var tundra = _data.Models.Vegetations.Tundra;
         foreach (var poly in polys)
         {
             if (poly.IsWater()) continue;
-            var forestTris = poly.Tris.Tris
-                .Where(t => t.Vegetation(_data) == _data.Models.Vegetations.Forest);
+            
+            
+            var beneath = grassland;
+            if (poly.DistFromEquatorRatio(_data) >= tundra.MinDistFromEquatorRatio)
+            {
+                beneath = tundra;
+            }
+            
+            var choppableTris = poly.Tris.Tris
+                .Where(t => t.Vegetation(_data) == forest
+                    || t.Vegetation(_data) == jungle);
             float deforestStr = 0f;
             if (poly.HasSettlement(_data))
             {
@@ -368,12 +382,12 @@ public class SocietyGenerator : Generator
                 deforestStr = .05f;
             }
             else continue;
-            foreach (var tri in forestTris)
+            foreach (var tri in choppableTris)
             {
                 var sample = Game.I.Random.Randf();
                 if (sample < deforestStr)
                 {
-                    tri.SetVegetation(_data.Models.Vegetations.Grassland, _key);
+                    tri.SetVegetation(beneath, _key);
                 }
             }
         }

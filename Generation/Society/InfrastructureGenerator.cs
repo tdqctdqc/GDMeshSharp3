@@ -21,47 +21,49 @@ public class InfrastructureGenerator : Generator
         var roads = RoadNetwork.Create(key);
         var nav = key.Data.Planet.Nav;
         
-        var allSegs = new ConcurrentBag<IDictionary<RoadModel, HashSet<Vector2>>>();
+        var segs = new ConcurrentDictionary<Vector2, RoadModel>();
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
         {
-            allSegs.Add(GenerateForLandmass(lm));
+            GenerateForLandmass(lm, segs);
         });
-        foreach (var dic in allSegs)
+        
+        foreach (var kvp in segs)
         {
-            foreach (var kvp in dic)
-            {
-                var road = kvp.Key.MakeRef();
-                var edges = kvp.Value;
-                foreach (var edge in edges)
-                {
-                    var wp1 = _data.Planet.Nav.Get((int)edge.X);
-                    var wp2 = _data.Planet.Nav.Get((int)edge.Y);
-                    roads.Roads.TryAdd(wp1, wp2, road);
-                }
-            }
+            var edge = kvp.Key;
+            var road = kvp.Value;
+            var wp1 = _data.Planet.Nav.Get((int)edge.X);
+            var wp2 = _data.Planet.Nav.Get((int)edge.Y);
+            roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
         }
         genReport.StopSection(nameof(GenerateForLandmass));
         return genReport;
     }
-    private IDictionary<RoadModel, HashSet<Vector2>> GenerateForLandmass(Landmass lm)
+
+    private void AddSeg(RoadModel r, Vector2 edgeKey, IDictionary<Vector2, RoadModel> segs)
+    {
+        if (segs.ContainsKey(edgeKey) == false
+            || r.Speed > segs[edgeKey].Speed)
+        {
+            segs[edgeKey] = r;
+        }
+    }
+    private void GenerateForLandmass(Landmass lm,
+        IDictionary<Vector2, RoadModel> segs)
     {
         GeneratePorts(lm);
-        var res = BuildLmRoadNetwork(lm);
-        BuildPortRoads(lm, res);
-        return res;
+        BuildLmRoadNetwork(lm, segs);
+        BuildPortRoads(lm, segs);
     }
-    private Dictionary<RoadModel, HashSet<Vector2>> BuildLmRoadNetwork(Landmass lm)
+    private void BuildLmRoadNetwork(Landmass lm,
+        IDictionary<Vector2, RoadModel> segs)
     {
         var regimeFragments = UnionFind.Find(lm.Polys,
             (p, q) => p.Regime.RefId == q.Regime.RefId,
             p => p.Neighbors.Items(_key.Data));
         var city = _data.Models.Settlements.City;
         var town = _data.Models.Settlements.Town;
-        var res = new Dictionary<RoadModel, HashSet<Vector2>>();
         var dirt = _key.Data.Models.RoadList.DirtRoad;
-        res.Add(dirt, new HashSet<Vector2>());
         var stone = _key.Data.Models.RoadList.StoneRoad;
-        res.Add(stone, new HashSet<Vector2>());
         var settlements = lm.Polys
             .Where(p => p.HasSettlement(_key.Data))
             .Select(p => p.GetSettlement(_key.Data))
@@ -74,7 +76,10 @@ public class InfrastructureGenerator : Generator
         if(towns.Count() > 2)
         {
             var dirtRoads = BuildRoadLevel(towns);
-            res[dirt].AddRange(dirtRoads);
+            foreach (var edgeKey in dirtRoads)
+            {
+                AddSeg(dirt, edgeKey, segs);
+            }
         }
 
         var big = settlements
@@ -83,11 +88,11 @@ public class InfrastructureGenerator : Generator
         if(big.Count() > 2)
         {
             var stoneRoads = BuildRoadLevel(big);
-            res[stone].AddRange(stoneRoads);
-            stoneRoads.ForEach(v => res[dirt].Remove(v));
+            foreach (var edgeKey in stoneRoads)
+            {
+                AddSeg(stone, edgeKey, segs);
+            }
         }
-
-        return res;
     }
 
     private List<Vector2> BuildRoadLevel(List<Settlement> settlements)
@@ -159,7 +164,8 @@ public class InfrastructureGenerator : Generator
             }
         }
     }
-    private void BuildPortRoads(Landmass lm, Dictionary<RoadModel,HashSet<Vector2>> res)
+    private void BuildPortRoads(Landmass lm, 
+        IDictionary<Vector2, RoadModel> segs)
     {
         var stoneRoad = _key.Data.Models.RoadList.StoneRoad;
         var dirtRoad = _key.Data.Models.RoadList.DirtRoad;
@@ -167,10 +173,7 @@ public class InfrastructureGenerator : Generator
         var city = _data.Models.Settlements.City;
         var town = _data.Models.Settlements.Town;
         var village = _data.Models.Settlements.Village;
-        if (res.ContainsKey(stoneRoad) == false)
-        {
-            res.Add(stoneRoad, new HashSet<Vector2>());
-        }
+        
         var settlementPolys = lm.Polys
             .Where(p => p.HasSettlement(_data));
         var largeSettlementPolys =
@@ -217,11 +220,7 @@ public class InfrastructureGenerator : Generator
                 RoadModel use = settlement.Poly.Entity(_data).GetPeep(_data).Size >= city.MinSize
                     ? stoneRoad
                     : dirtRoad;
-                RoadModel erase = settlement.Poly.Entity(_data).GetPeep(_data).Size >= city.MinSize
-                    ? dirtRoad
-                    : stoneRoad;
-                res[use].Add(path[i].GetIdEdgeKey(path[i + 1]));
-                res[erase].Remove(path[i].GetIdEdgeKey(path[i + 1]));
+                AddSeg(use, path[i].GetIdEdgeKey(path[i + 1]), segs);
             }
         }
     }

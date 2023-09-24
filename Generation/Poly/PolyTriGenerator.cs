@@ -167,6 +167,10 @@ public class PolyTriGenerator : Generator
         var swampNoise = new FastNoiseLite();
         swampNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
         swampNoise.Frequency = .01f;
+        
+        var grassland = key.Data.Models.Vegetations.Grassland;
+        var tundra = key.Data.Models.Vegetations.Tundra;
+
         Parallel.ForEach(polys, poly =>
         {
             foreach (var tri in poly.Tris.Tris)
@@ -195,6 +199,7 @@ public class PolyTriGenerator : Generator
 
         void irrigate(MapPolygon poly, PolyTri tri)
         {
+            if (poly.DistFromEquatorRatio(_data) >= tundra.MinDistFromEquatorRatio) return;
             if (tri.Landform(_data).IsLand
                 && tri.Vegetation(_data).MinMoisture < _data.Models.Vegetations.Grassland.MinMoisture
                 && _data.Models.Vegetations.Grassland.AllowedLandforms.Contains(tri.Landform(_data))
@@ -225,6 +230,7 @@ public class PolyTriGenerator : Generator
                 }
                 else if (noise < -.2f)
                 {
+                    
                     tri.SetVegetation(_data.Models.Vegetations.Grassland, key);
                 }
             }

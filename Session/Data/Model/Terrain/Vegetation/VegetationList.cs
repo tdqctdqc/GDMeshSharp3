@@ -12,6 +12,8 @@ public class VegetationList : ModelList<Vegetation>
     public Vegetation Steppe { get; private set; }
     public Vegetation Desert { get; private set; }
     public Vegetation Barren { get; private set; }
+    public Vegetation Jungle { get; private set; }
+    public Tundra Tundra { get; private set; }
     public List<Vegetation> ByPriority { get; private set; }
     public Dictionary<byte, Vegetation> ByMarker { get; private set; }
 
@@ -24,11 +26,15 @@ public class VegetationList : ModelList<Vegetation>
         Steppe = new Steppe(lfs);
         Desert = new Vegetation(
             new HashSet<Landform>{lfs.Hill, lfs.Plain}, 
-            0f, .0f, Colors.Tan, "Desert", true);
+            0f, .0f, Colors.Tan, "Desert");
         Barren = new Vegetation(
             new HashSet<Landform>{lfs.Mountain, lfs.Peak, lfs.Urban, lfs.River, lfs.Sea}, 
-            0f, 0f, Colors.Transparent, "Barren", true);
-        ByPriority = new List<Vegetation> { Swamp, Forest, Grassland, Steppe, Arid, Desert, Barren };
+            0f, 0f, Colors.Transparent, "Barren");
+        Jungle = new Jungle(lfs);
+        Tundra = new Tundra(lfs);
+        
+        ByPriority = new List<Vegetation> { Swamp, Jungle, Forest, Tundra,
+            Grassland, Steppe, Arid, Desert, Barren };
         ByMarker = new Dictionary<byte, Vegetation>();
         for (var i = 0; i < ByPriority.Count; i++)
         {
