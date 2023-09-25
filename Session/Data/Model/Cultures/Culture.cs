@@ -8,10 +8,12 @@ using Godot;
 public class Culture : IModel
 {
     public string Name { get; }
+    IReadOnlyList<IModelAttribute> IModel.AttributeList => new IModelAttribute[]{};
+    // public AttributeHolder<IModelAttribute> Attributes { get; }
     public int Id { get; private set; }
     public List<string> SettlementNames { get; private set; }
     public List<RegimeTemplate> RegimeTemplates { get; private set; }
-
+    
     public Culture(string json)
     {
         var d = JsonSerializer.Deserialize<JsonObject>(json);

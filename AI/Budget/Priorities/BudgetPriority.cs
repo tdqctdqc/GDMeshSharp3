@@ -3,24 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Godot;
+using Google.OrTools.LinearSolver;
+
 
 public abstract class BudgetPriority
 {
     public string Name { get; private set; }
     public Dictionary<Item, int> Wishlist { get; private set; }
     private Func<Data, Regime, float> _getWeight;
-    private HashSet<Item> _usedItems;
-    private HashSet<Flow> _usedFlows;
-    private bool _usedLabor;
     public float Weight { get; private set; }
     public BudgetAccount Account { get; private set; }
     public BudgetPriority(string name, Func<Data, Regime, float> getWeight)
     {
         Name = name;
         _getWeight = getWeight;
-        _usedItems = new HashSet<Item>();
-        _usedFlows = new HashSet<Flow>();
-        _usedLabor = false;
         Account = new BudgetAccount();
         Wishlist = new Dictionary<Item, int>();
     }
@@ -31,26 +27,20 @@ public abstract class BudgetPriority
     }
 
     public abstract void Calculate(Regime regime, Data data,
-        MajorTurnOrders orders, HashSet<Item> usedItem,
-        HashSet<Flow> usedFlow,
-        ref bool usedLabor);
+        MajorTurnOrders orders);
 
     public abstract Dictionary<Item, int> GetWishlist(Regime regime, Data data,
-        int availLabor, int availConstructCap);
+        BudgetPool pool, float proportion);
 
     public void Wipe()
     {
-        Account.UseLabor(Account.Labor);
-        _usedItems.Clear();
-        _usedFlows.Clear();
-        _usedLabor = false;
+        Account.Clear();
         Wishlist.Clear();
     }
 
-    public void SetWishlist(Regime r, Data d, float availLabor, float availConstructCap)
+    public void SetWishlist(Regime r, Data d, BudgetPool pool, float proportion)
     {
-        Wishlist = GetWishlist(r, d, 
-            Mathf.FloorToInt(availLabor), Mathf.FloorToInt(availConstructCap));
+        Wishlist = GetWishlist(r, d, pool, proportion);
     }
     public void FirstRound(MajorTurnOrders orders, Regime regime, float proportion, 
         BudgetPool pool, Data data)
@@ -58,8 +48,7 @@ public abstract class BudgetPriority
         var taken = new BudgetAccount();
         taken.TakeShare(proportion, pool, data);
         Account.Add(taken);
-        Calculate(regime, data, orders, _usedItems,
-            _usedFlows, ref _usedLabor);
+        Calculate(regime, data, orders);
     }
 
     public void SecondRound(MajorTurnOrders orders, Regime regime, float proportion, 
@@ -76,7 +65,8 @@ public abstract class BudgetPriority
         {
             var item = data.Models.GetModel<Item>(kvp.Key);
             var q = kvp.Value;
-            if (_usedItems.Contains(item) == false && Wishlist.ContainsKey(item) == false)
+            if (Account.UsedItem.Contains(item) == false 
+                && Wishlist.ContainsKey(item) == false)
             {
                 Account.Items.Remove(item, q);
                 pool.AvailItems.Add(item, q);
@@ -87,18 +77,35 @@ public abstract class BudgetPriority
         {
             var flow = data.Models.GetModel<Flow>(kvp.Key);
             var q = kvp.Value;
-            if (_usedFlows.Contains(flow) == false)
+            if (Account.UsedFlow.Contains(flow) == false)
             {
                 Account.Flows.Remove(flow, q);
                 pool.AvailFlows.Add(flow, q);
             }
         }
 
-        if (_usedLabor == false)
+        if (Account.UsedLabor == false)
         {
             var labor = Account.Labor;
             Account.UseLabor(labor);
             pool.AvailLabor += labor;
         }
+    }
+    
+    
+
+    
+    
+    
+    protected Solver MakeSolver()
+    {
+        var solver = Solver.CreateSolver("CBC_MIXED_INTEGER_PROGRAMMING");
+        // var solver = Solver.CreateSolver("GLOP");
+        if (solver is null)
+        {
+            throw new Exception("solver null");
+        }
+
+        return solver;
     }
 }

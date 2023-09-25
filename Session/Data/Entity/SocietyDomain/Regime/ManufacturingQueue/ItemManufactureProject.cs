@@ -18,12 +18,12 @@ public class ItemManufactureProject : ManufactureProject
 
     public override float IndustrialCost(Data d)
     {
-        return Item.Model(d).Attributes.Get<ManufactureableAttribute>().IndustrialCost * Amount;
+        return Item.Model(d).Attributes.Get<MakeableAttribute>().IndustrialCost * Amount;
     }
 
     public override IEnumerable<KeyValuePair<Item, int>> ItemCosts(Data d)
     {
-        return Item.Model(d).Attributes.Get<ManufactureableAttribute>().ItemCosts
+        return Item.Model(d).Attributes.Get<MakeableAttribute>().ItemCosts
             .Select(kvp => new KeyValuePair<Item, int>(kvp.Key, Mathf.FloorToInt(kvp.Value * Amount)));
     }
 
@@ -45,7 +45,7 @@ public class ItemManufactureProject : ManufactureProject
         if (ip < 0) throw new Exception();
         Progress += ip;
         var item = Item.Model(key.Data);
-        var itemCost = item.Attributes.Get<ManufactureableAttribute>().IndustrialCost;
+        var itemCost = item.Attributes.Get<MakeableAttribute>().IndustrialCost;
         var amountProd = ip / itemCost;
         r.Items.Add(item, amountProd);
     }

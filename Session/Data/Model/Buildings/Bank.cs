@@ -15,11 +15,16 @@ public class Bank : BuildingModel
                     }),
                 new FlowProd(100, flows.Income)
             },
-            new Dictionary<Item, int>
-            {
-                {items.FinancialPower, 10_000},
-                {items.BuildingMaterial, 500},
-            })
+            new AttributeHolder<IModelAttribute>(
+                new MakeableAttribute(
+                        new Dictionary<Item, int>
+                        {
+                            {items.FinancialPower, 10_000},
+                            {items.BuildingMaterial, 500},
+                        }, 0f
+                    )  
+                )
+            )
     {
     }
     protected override bool CanBuildInTriSpec(PolyTri t, Data data)

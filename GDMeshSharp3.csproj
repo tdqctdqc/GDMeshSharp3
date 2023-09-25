@@ -16,7 +16,4 @@
     <PackageReference Include="RandomFriendlyNameGenerator" Version="1.0.7" />
     <PackageReference Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Session\Data\Attributes\" />
-  </ItemGroup>
 </Project>

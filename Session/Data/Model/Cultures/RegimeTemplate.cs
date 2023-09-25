@@ -7,6 +7,8 @@ using Godot;
 public class RegimeTemplate : IModel
 {
     public string Name { get; private set; }
+    IReadOnlyList<IModelAttribute> IModel.AttributeList => new IModelAttribute[]{};
+    // public AttributeHolder<IModelAttribute> Attributes { get; }
     public int Id { get; private set; }
     public string Adjective { get; private set; }
     public string PrimaryColor { get; private set; }

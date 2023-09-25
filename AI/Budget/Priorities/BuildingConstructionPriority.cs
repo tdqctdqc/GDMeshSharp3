@@ -19,17 +19,15 @@ public class BuildingConstructionPriority : BudgetPriority
         _utility = utility;
     }
 
-    public override void Calculate(Regime regime, Data data,
-        MajorTurnOrders orders, HashSet<Item> usedItem, HashSet<Flow> usedFlow, ref bool usedLabor)
+    public override void Calculate(Regime regime, Data data, MajorTurnOrders orders)
     {
-        usedLabor = false;
         if (Account.Labor <= 0) return;
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, data);
         
-        SetBuildingLaborConstraint(solver, Mathf.FloorToInt(Account.Labor), projVars);
-        SetItemConstraints(solver, data, Account.Items, projVars);
-        SetConstructCapConstraint(solver, 
+        solver.SetBuildingLaborConstraint(Mathf.FloorToInt(Account.Labor), projVars);
+        solver.SetItemConstraints(data, Account.Items, projVars);
+        solver.SetConstructCapConstraint( 
             Mathf.FloorToInt(Account.Flows[data.Models.Flows.ConstructionCap]), projVars);
         SetSlotConstraints(solver, regime, projVars, data);
         
@@ -43,50 +41,32 @@ public class BuildingConstructionPriority : BudgetPriority
             }
         }
         
-        
         var buildings = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        SelectBuildSitesAndAddRequest(regime, data, buildings, orders, usedItem, usedFlow, ref usedLabor);
+        Complete(regime, data, buildings, orders);
     }
 
     public override Dictionary<Item, int> GetWishlist(Regime regime, Data data, 
-        int availLabor, int availConstructCap)
+        BudgetPool pool, float proportion)
     {
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, data);
-        
-        SetBuildingLaborConstraint(solver, availLabor, projVars);
-        // SetCreditConstraint(solver, data, credit, prices, projVars);
-        SetConstructCapConstraint(solver, availConstructCap, projVars);
+        var availConstructCap = Mathf.FloorToInt(pool.AvailFlows[data.Models.Flows.ConstructionCap] * proportion);
+        var availLabor = Mathf.FloorToInt(pool.AvailLabor * proportion);
+        solver.SetBuildingLaborConstraint(availLabor, projVars);
+        solver.SetConstructCapConstraint(availConstructCap, projVars);
         SetSlotConstraints(solver, regime, projVars, data);
         
         var success = Solve(solver, projVars);
         if (success == false)
         {
         }
-        return projVars.GetCounts(kvp => kvp.Key.BuildCosts, 
+        return projVars.GetCounts(
+            kvp => kvp.Key.Attributes.Get<MakeableAttribute>().ItemCosts, 
             (kvp, i) => Mathf.CeilToInt(i * kvp.Value.SolutionValue()));
     }
-
-    private Solver MakeSolver()
-    {
-        var solver = Solver.CreateSolver("CBC_MIXED_INTEGER_PROGRAMMING");
-        // var solver = Solver.CreateSolver("GLOP");
-        if (solver is null)
-        {
-            throw new Exception("solver null");
-        }
-
-        return solver;
-    }
-
-    private IEnumerable<BuildingModel> GetRelevantBuildings(Data data)
-    {
-        return data.Models.GetModels<BuildingModel>().Values.Where(_relevant);
-    }
-
     private Dictionary<BuildingModel, Variable> MakeProjVars(Solver solver, Data data)
     {
-        var buildings = GetRelevantBuildings(data);
+        var buildings = data.Models.GetModels<BuildingModel>().Values.Where(_relevant);
         return buildings.Select(b =>
         {
             var projVar = solver.MakeIntVar(0, 1000, b.Name);
@@ -108,70 +88,9 @@ public class BuildingConstructionPriority : BudgetPriority
         var status = solver.Solve();
         return status == Solver.ResultStatus.OPTIMAL || status == Solver.ResultStatus.FEASIBLE;
     }
+
     
-    private void SetItemConstraints(Solver solver, Data data, ItemCount budget,
-        Dictionary<BuildingModel, Variable> buildingVars)
-    {
-        var items = data.Models.GetModels<Item>().Select(kvp => kvp.Value.Id).ToList();
-        var itemNumConstraints = new Dictionary<int, Constraint>();
-        items.ForEach(i =>
-        {
-            var itemConstraint = solver.MakeConstraint(0f, budget.Get(i));
-            itemNumConstraints.Add(i, itemConstraint);
-        });
-        foreach (var kvp in buildingVars)
-        {
-            var b = kvp.Key;
-            var projVar = kvp.Value;
-            foreach (var kvp2 in b.BuildCosts)
-            {
-                var item = kvp2.Key;
-                var num = kvp2.Value;
-                var itemConstraint = itemNumConstraints[item.Id];
-                itemConstraint.SetCoefficient(projVar, num);
-            }
-        }
-    }
-
-    private void SetCreditConstraint(Solver solver, Data data, float credit,
-        Dictionary<Item, float> prices, 
-        Dictionary<BuildingModel, Variable> buildingVars)
-    {
-        var creditConstraint = solver.MakeConstraint(0f, credit, "Credits");
-        foreach (var kvp in buildingVars)
-        {
-            var projVar = kvp.Value;
-            var projPrice = kvp.Key.BuildCosts
-                .Sum(kvp => prices[kvp.Key] * kvp.Value);
-            creditConstraint.SetCoefficient(projVar, projPrice);
-        }
-    }
-
-    private void SetConstructCapConstraint(Solver solver, int availConstructCap, 
-        Dictionary<BuildingModel, Variable> buildingVars)
-    {
-        var constructLaborConstraint = solver.MakeConstraint(0, availConstructCap, "ConstructLabor");
-        foreach (var kvp in buildingVars)
-        {
-            var projVar = kvp.Value;
-            var b = kvp.Key;
-            constructLaborConstraint.SetCoefficient(projVar, b.ConstructionCapPerTick);
-        }
-    }
-    private void SetBuildingLaborConstraint(Solver solver, int laborAvail, 
-        Dictionary<BuildingModel, Variable> buildingVars)
-    {
-        var buildingLaborConstraint = solver.MakeConstraint(0, laborAvail, "BuildingLabor");
-        foreach (var kvp in buildingVars)
-        {
-            var projVar = kvp.Value;
-            var b = kvp.Key;
-            if(b.HasComponent<Workplace>())
-            {
-                buildingLaborConstraint.SetCoefficient(projVar, b.GetComponent<Workplace>().TotalLaborReq());
-            }
-        }
-    }
+    
 
     private void SetSlotConstraints(Solver solver, Regime regime, Dictionary<BuildingModel, Variable> buildingVars, Data data)
     {
@@ -192,9 +111,9 @@ public class BuildingConstructionPriority : BudgetPriority
             slotConstraint.SetCoefficient(projVar, 1);
         }
     }
-    private void SelectBuildSitesAndAddRequest(Regime regime, Data data, 
+    private void Complete(Regime regime, Data data, 
         Dictionary<BuildingModel, int> toBuild,
-        MajorTurnOrders orders, HashSet<Item> usedItem, HashSet<Flow> usedFlow, ref bool usedLabor)
+        MajorTurnOrders orders)
     {
         var currConstruction = data.Infrastructure.CurrentConstruction;
         var availPolys = regime.GetPolys(data);
@@ -205,7 +124,6 @@ public class BuildingConstructionPriority : BudgetPriority
             int labor = 0;
             if (building.HasComponent<Workplace>())
             {
-                usedLabor = true;
                 labor = building.GetComponent<Workplace>().TotalLaborReq();
             }
             var num = kvp.Value;
@@ -218,15 +136,13 @@ public class BuildingConstructionPriority : BudgetPriority
                 if (poly == null) continue;
                 orders.StartConstructions.ConstructionsToStart
                     .Add(StartConstructionRequest.Construct(building, poly));
-                
-                foreach (var cost in building.BuildCosts)
+
+                var buildCosts = building.Attributes.Get<MakeableAttribute>().ItemCosts;
+                foreach (var cost in buildCosts)
                 {
-                    Account.Items.Remove(cost.Key, cost.Value);
-                    usedItem.Add(cost.Key);
+                    Account.UseItem(cost.Key, cost.Value);
                 }
-                
-                Account.Flows.Remove(data.Models.Flows.ConstructionCap, building.ConstructionCapPerTick);
-                
+                Account.UseFlow(data.Models.Flows.ConstructionCap, building.ConstructionCapPerTick);
                 Account.UseLabor(labor);
             }
         }

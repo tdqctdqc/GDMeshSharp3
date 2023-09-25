@@ -6,6 +6,8 @@ using Godot;
 public class RoadModel : IModel
 {
     public string Name { get; private set; }
+    IReadOnlyList<IModelAttribute> IModel.AttributeList => Attributes;
+    public AttributeHolder<IModelAttribute> Attributes { get; }
     public Color Color { get; private set; }
     public int Speed { get; private set; }
     public int Id { get; private set; }
@@ -16,6 +18,7 @@ public class RoadModel : IModel
         Color = color;
         Name = name;
         Speed = speed;
+        Attributes = new AttributeHolder<IModelAttribute>();
     }
 
     public virtual void Draw(MeshBuilder mb, Vector2 from, Vector2 to, float width)

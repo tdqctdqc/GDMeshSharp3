@@ -40,7 +40,8 @@ public class StartConstructionProcedure : Procedure
             return false;
         }
 
-        if (Construction.Model.Model(data).BuildCosts
+        if (Construction.Model.Model(data)
+            .Attributes.Get<MakeableAttribute>().ItemCosts
             .Any(kvp => regime.Items.Get(kvp.Key) < kvp.Value))
         {
             return false;
@@ -53,7 +54,8 @@ public class StartConstructionProcedure : Procedure
         Construction.Pos.Poly(key.Data).PolyBuildingSlots
             .RemoveSlot(Construction.Model.Model(key.Data).BuildingType, Construction.Pos);
         var regime = Construction.Pos.Poly(key.Data).Regime.Entity(key.Data);
-        foreach (var kvp in Construction.Model.Model(key.Data).BuildCosts)
+        foreach (var kvp in Construction.Model.Model(key.Data)
+                     .Attributes.Get<MakeableAttribute>().ItemCosts)
         {
             regime.Items.Remove(kvp.Key, kvp.Value);
             regime.History.ItemHistory.GetLatest(kvp.Key).Consumed += kvp.Value;

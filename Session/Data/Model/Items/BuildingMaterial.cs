@@ -8,7 +8,7 @@ public class BuildingMaterial : TradeableItem
         : base("BuildingMaterial", Colors.OrangeRed, 1, 
             new []
             {
-                new ManufactureableAttribute(
+                new MakeableAttribute(
                     new Dictionary<Item, int>(),
                     1f
                     )

@@ -5,6 +5,8 @@ using System.Linq;
 public abstract class FoodProdTechnique : IModel
 {
     public string Name { get; private set; }
+    IReadOnlyList<IModelAttribute> IModel.AttributeList => Attributes;
+    public AttributeHolder<IModelAttribute> Attributes { get; }
     public int Id { get; private set; }
     public int BaseProd { get; private set; }
     public int BaseLabor { get; private set; }
@@ -20,6 +22,7 @@ public abstract class FoodProdTechnique : IModel
         Icon = Icon.Create(name, Icon.AspectRatio._1x1, 25f);
         Income = income;
         JobType = jobType;
+        Attributes = new AttributeHolder<IModelAttribute>();
     }
 
     public abstract int NumForPoly(MapPolygon poly, Data data);

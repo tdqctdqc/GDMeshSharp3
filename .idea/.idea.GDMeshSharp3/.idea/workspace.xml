@@ -5,22 +5,62 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Jungle.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Tundra.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetConstrainer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BuildPriority.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Budget/Priorities/TroopBuildPriority.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/FileLoader.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Attributes/AttributeHolder.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Attributes/IModelAttribute.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/Rifle/Infantry.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/Rifle/Rifle1.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/Troop.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/TroopAttributes/ITroopAttribute.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/TroopDomain.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/TroopType.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/TroopTypes.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Session/Data/Model/Troops/Troops.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/MoistureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/SocietyGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/DataHandles.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Arid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Arid.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Forest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Forest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Grassland.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Grassland.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Steppe.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Steppe.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Swamp.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Swamp.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Vegetation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Vegetation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetAccount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAccount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/BuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BuildingConstructionPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/FoodReservePriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/FoodReservePriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Cultures/CultureLoader.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/GDMeshSharp3.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Peep/Job/PeepJob.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Peep/Job/PeepJob.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ItemManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ItemManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Flow/Flow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Bank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Bank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Barracks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Barracks.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/BuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Factory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/Mine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/Mine.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Buildings/TownHall.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Buildings/TownHall.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Cultures/Culture.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Cultures/Culture.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Cultures/CultureManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Cultures/CultureManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Cultures/RegimeTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Cultures/RegimeTemplate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/IModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/IModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Infrastructure/InfraModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Infrastructure/InfraModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/BuildingMaterial.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/BuildingMaterial.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/FinancialPower.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/FinancialPower.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/Item.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/Item.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/ItemAttributes/ExtractableAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Attributes/ExtractableAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/ItemAttributes/GameAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Attributes/IGameAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/ItemAttributes/ItemAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Attributes/IItemAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/ItemAttributes/ManufactureableAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Attributes/MakeableAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/ItemAttributes/MineableAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Attributes/MineableAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/NaturalResource.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/NaturalResource.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Items/TradeableItem.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Items/TradeableItem.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Models.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Models.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/RoadModels/RoadModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/RoadModels/RoadModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/SettlementTier/SettlementTier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/SettlementTier/SettlementTier.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/TerrainAspect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/TerrainAspect.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Tundra.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/Tundra.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/VegetationList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Data/Model/Terrain/Vegetation/VegetationList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Logic/Modules/Production/StartConstructionProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Logic/Modules/Production/StartConstructionProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/TypeHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/TypeHolder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -69,10 +109,9 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Entity/PlanetDomain/Nav/Nav.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/Data/Entity/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Session/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/Data/Model/Terrain/Vegetation/Arid.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -281,6 +320,9 @@
       <workItem from="1694453485437" duration="17706000" />
       <workItem from="1695049926747" duration="6982000" />
       <workItem from="1695067838387" duration="3656000" />
+      <workItem from="1695573768775" duration="9432000" />
+      <workItem from="1695596001245" duration="3635000" />
+      <workItem from="1695677942410" duration="539000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -492,14 +534,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00031" summary="fixed weird navPath bug, dk how. fixed window container children not going full rect (have to set the int property for some reason)">
-      <option name="closed" value="true" />
-      <created>1692238853132</created>
-      <option name="number" value="00031" />
-      <option name="presentableId" value="LOCAL-00031" />
-      <option name="project" value="LOCAL" />
-      <updated>1692238853132</updated>
-    </task>
     <task id="LOCAL-00032" summary="reworked nav waypoint generation">
       <option name="closed" value="true" />
       <created>1693091215894</created>
@@ -644,7 +678,15 @@
       <option name="project" value="LOCAL" />
       <updated>1695056343178</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="added tundra, jungle">
+      <option name="closed" value="true" />
+      <created>1695573886663</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1695573886663</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -666,7 +708,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="reforming entity system, getting rid of register, allowing generic typed entities" />
     <MESSAGE value="refactored refCollection" />
     <MESSAGE value="working on map chunk graphics and associated ui" />
     <MESSAGE value="make EntityMultiIndexer use actual entities instead of keys" />
@@ -691,6 +732,7 @@
     <MESSAGE value="fiddling with messagepack, polymorph serialization not working right" />
     <MESSAGE value="tidying up proposal, added IdDispenser as entity" />
     <MESSAGE value="ditto" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
+    <MESSAGE value="added tundra, jungle" />
+    <option name="LAST_COMMIT_MESSAGE" value="added tundra, jungle" />
   </component>
 </project>

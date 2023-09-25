@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class GameAttribute
+public interface IGameAttribute
 {
     
 }

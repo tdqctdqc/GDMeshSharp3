@@ -9,14 +9,13 @@ public class FoodReservePriority : BudgetPriority
     {
     }
 
-    public override void Calculate(Regime regime, Data data, MajorTurnOrders orders, 
-        HashSet<Item> usedItem, HashSet<Flow> usedFlow,
-        ref bool usedLabor)
+    public override void Calculate(Regime regime, Data data, MajorTurnOrders orders)
     {
         return;
     }
 
-    public override Dictionary<Item, int> GetWishlist(Regime regime, Data data, int availLabor, int availConstructCap)
+    public override Dictionary<Item, int> GetWishlist(Regime regime, Data data, 
+        BudgetPool pool, float proportion)
     {
         var food = data.Models.Items.Food;
         var foodCons = data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;

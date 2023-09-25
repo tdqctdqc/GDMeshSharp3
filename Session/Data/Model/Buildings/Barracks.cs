@@ -11,10 +11,13 @@ public class Barracks : BuildingModel
             {
                 new ItemProd(items.Recruits, 100)
             }, 
-            new Dictionary<Item, int>
-            {
-                {items.BuildingMaterial, 500}
-            })
+            new AttributeHolder<IModelAttribute>(
+                new MakeableAttribute(new Dictionary<Item, int>
+                {
+                    {items.BuildingMaterial, 500}
+                }, 0f)
+            )
+        )
     {
     }
 

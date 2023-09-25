@@ -57,6 +57,5 @@ public class VegetationList : ModelList<Vegetation>
             GD.Print($"cant find veg for lf {lf.Name} and moisture score {score}");
             throw;
         }
-
     }
 }

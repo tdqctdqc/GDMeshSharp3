@@ -25,6 +25,8 @@ public class Models
     public FoodProdTechniqueList FoodProdTechniques { get; private set; }
     public InfraList Infras { get; private set; }
     public FlowList Flows { get; private set; }
+    public TroopTypes TroopTypes { get; private set; }
+    public Troops Troops { get; private set; }
     public Models(Data data)
     {
         _managers = new Dictionary<Type, IModelManager>();
@@ -66,6 +68,14 @@ public class Models
 
         Infras = new InfraList(PeepJobs, Items);
         AddManager(Infras);
+        
+        TroopTypes = new TroopTypes();
+        AddManager(TroopTypes);
+        
+        Troops = new Troops(Items, TroopTypes);
+        AddManager(Troops);
+
+        
 
         SetIds();
     }

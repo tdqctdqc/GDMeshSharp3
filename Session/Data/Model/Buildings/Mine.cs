@@ -17,11 +17,14 @@ public class Mine : BuildingModel
                     {jobs.Miner, 500}
                 })
             },
-            new Dictionary<Item, int>
-            {
-                {items.Iron, 1000},
-                {items.BuildingMaterial, 1000}
-            })
+            new AttributeHolder<IModelAttribute>(
+                new MakeableAttribute(new Dictionary<Item, int>
+                {
+                    {items.Iron, 1000},
+                    {items.BuildingMaterial, 1000}
+                }, 0f)
+            )
+        )
     {
         MinedItem = prodItem;
         if (prodItem.Attributes.Has<MineableAttribute>() == false) throw new Exception();

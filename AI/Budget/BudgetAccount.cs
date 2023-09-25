@@ -8,6 +8,9 @@ public class BudgetAccount
     public ItemCount Items { get; private set; }
     public FlowCount Flows { get; private set; }
     public float Labor { get; private set; }
+    public HashSet<Item> UsedItem { get; private set; }
+    public HashSet<Flow> UsedFlow { get; private set; }
+    public bool UsedLabor { get; private set; }
 
     public BudgetAccount()
     {
@@ -40,7 +43,27 @@ public class BudgetAccount
 
     public void UseLabor(float labor)
     {
+        if (labor == 0f) return;
         Labor -= labor;
+        UsedLabor = true;
+    }
+
+    public void UseItem(Item item, float q)
+    {
+        Items.Remove(item, q);
+        UsedItem.Add(item);
+    }
+    public void UseFlow(Flow flow, float q)
+    {
+        Flows.Remove(flow, q);
+        UsedFlow.Add(flow);
+    }
+    public void Clear()
+    {
+        Labor = 0f;
+        UsedItem.Clear();
+        UsedFlow.Clear();
+        UsedLabor = false;
     }
 
     public void Add(BudgetAccount toAdd)

@@ -7,7 +7,7 @@ public class FinancialPower : TradeableItem
 {
     public FinancialPower()
         : base(nameof(FinancialPower), Colors.Green, 
-            2f, new ItemAttribute[]{})
+            2f, new IItemAttribute[]{})
     {
     }
 }

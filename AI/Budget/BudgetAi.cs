@@ -75,8 +75,7 @@ public class BudgetAi
         {
             priority.Wipe();
             var proportion = priority.Weight / totalPriority;
-            priority.SetWishlist(_regime, data, pool.AvailLabor * proportion,
-                pool.AvailFlows[data.Models.Flows.ConstructionCap] * proportion);
+            priority.SetWishlist(_regime, data, pool, proportion);
             priority.FirstRound(orders, _regime, proportion, pool, data);
         }
         foreach (var priority in Priorities)
@@ -121,8 +120,8 @@ public class BudgetAi
 
          void manufacture(Item item, int q)
          {
-             if (item.Attributes.Has<ManufactureableAttribute>() == false) return;
-             var manuf = item.Attributes.Get<ManufactureableAttribute>();
+             if (item.Attributes.Has<MakeableAttribute>() == false) return;
+             var manuf = item.Attributes.Get<MakeableAttribute>();
              var costPer = manuf.IndustrialCost;
              var itemCosts = manuf.ItemCosts;
              

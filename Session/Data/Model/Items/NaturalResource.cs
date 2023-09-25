@@ -5,7 +5,7 @@ using Godot;
 
 public abstract class NaturalResource : TradeableItem
 {
-    protected NaturalResource(string name, Color color, float initialPrice, params ItemAttribute[] attributes) 
+    protected NaturalResource(string name, Color color, float initialPrice, params IItemAttribute[] attributes) 
         : base(name, color, initialPrice, attributes)
     {
     }

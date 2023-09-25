@@ -5,6 +5,9 @@ using System.Linq;
 public class SettlementTier : IModel
 {
     public string Name { get; }
+    IReadOnlyList<IModelAttribute> IModel.AttributeList => Attributes;
+
+    public AttributeHolder<IModelAttribute> Attributes { get; }
     public int Id { get; private set; }
     public int MinSize { get; private set; }
     public int NumTris { get; private set; }
@@ -16,5 +19,6 @@ public class SettlementTier : IModel
         Name = name;
         MinSize = minSize;
         Icon = Icon.Create(Name, Icon.AspectRatio._1x1, 50f);
+        Attributes = new AttributeHolder<IModelAttribute>();
     }
 }

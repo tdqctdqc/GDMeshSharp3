@@ -14,10 +14,13 @@ public class TownHall : BuildingModel
                 {
                     {jobs.Bureaucrat, 100}
                 })
-            },new Dictionary<Item, int>
+            },
+        new AttributeHolder<IModelAttribute>(
+            new MakeableAttribute(new Dictionary<Item, int>
             {
                 {items.BuildingMaterial, 500}
-            })
+            }, 0f))
+        )
     {
     }
 

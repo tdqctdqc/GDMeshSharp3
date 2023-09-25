@@ -15,11 +15,15 @@ public class Factory : BuildingModel
                     {jobs.Prole, 500}
                 })
             },
-        new Dictionary<Item, int>
-        {
-            {items.Iron, 500},
-            {items.BuildingMaterial, 1000}
-        })
+        new AttributeHolder<IModelAttribute>(
+                new MakeableAttribute(new Dictionary<Item, int>
+                    {
+                        {items.Iron, 500},
+                        {items.BuildingMaterial, 1000}
+                    }, 0f
+                )
+            )
+        )
     {
         
     }

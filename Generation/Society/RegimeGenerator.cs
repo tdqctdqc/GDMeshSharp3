@@ -34,6 +34,7 @@ public class RegimeGenerator : Generator
         var polysPerRegime = 30;
         var lmPickers = new ConcurrentDictionary<HashSet<MapPolygon>, WandererPicker>();
         var templates = _data.Models.RegimeTemplates.Models.Values.ToHashSet();
+        
         _data.Planet.PolygonAux.LandSea.Landmasses.ForEach(lm =>
         {
             var picker = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);

@@ -21,7 +21,7 @@ public class TypeHolder<TAttr>
     {
         return Elements.ContainsKey(typeof(T));
     }
-    public bool Has(GameAttribute att)
+    public bool Has(IGameAttribute att)
     {
         return Elements.ContainsKey(att.GetType());
     }
