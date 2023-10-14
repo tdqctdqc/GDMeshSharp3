@@ -5,8 +5,8 @@ using Godot;
 
 public class BudgetAccount
 {
-    public ItemCount Items { get; private set; }
-    public FlowCount Flows { get; private set; }
+    public IdCount<Item> Items { get; private set; }
+    public IdCount<Flow> Flows { get; private set; }
     public float Labor { get; private set; }
     public HashSet<Item> UsedItem { get; private set; }
     public HashSet<Flow> UsedFlow { get; private set; }
@@ -14,8 +14,11 @@ public class BudgetAccount
 
     public BudgetAccount()
     {
-        Items = new ItemCount(new Dictionary<int, float>());
-        Flows = new FlowCount(new Dictionary<int, float>());
+        UsedItem = new HashSet<Item>();
+        UsedFlow = new HashSet<Flow>();
+        UsedLabor = false;
+        Items = IdCount<Item>.Construct();
+        Flows = IdCount<Flow>.Construct();
         Labor = 0f;
     }
     public void TakeShare(float share, BudgetPool pool, Data data)
@@ -32,6 +35,7 @@ public class BudgetAccount
             var flow = kvp.Key;
             var net = kvp.Value;
             var q = Mathf.Max(0f, share * pool.OrigFlows.Get(flow));
+            q = Mathf.Min(q, pool.AvailFlows.Get(flow));
             Flows.Add(flow, q);
             pool.AvailFlows.Remove(flow, q);
         }
@@ -47,7 +51,7 @@ public class BudgetAccount
         Labor -= labor;
         UsedLabor = true;
     }
-
+    
     public void UseItem(Item item, float q)
     {
         Items.Remove(item, q);

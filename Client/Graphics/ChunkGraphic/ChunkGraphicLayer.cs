@@ -85,35 +85,17 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
         }, _segmenter);
         Settings.Add(option);
     }
-    public void AddTransparencySetting()
-    {
-        var option = new FloatSettingsOption("Transparency", 1f, 0f, 1f, .05f, false);
-        option.SettingChanged.SubscribeForNode(() =>
-        {
-            foreach (var module in ByChunkCoords.Values)
-            {
-                module.Node.Modulate = new Color(Colors.White, option.Value);
-            }
-        }, _segmenter);
-        Settings.Add(option);
-    }
     public void AddTransparencySetting(Func<TGraphic, Node2D> getNode)
     {
         var option = new FloatSettingsOption("Transparency", 1f, 0f, 1f, .05f, false);
-        option.SettingChanged.SubscribeForNode(() =>
-        {
-            foreach (var module in ByChunkCoords.Values)
-            {
-                getNode(module).Modulate = new Color(Colors.White, option.Value);
-            }
-        }, _segmenter);
-        Settings.Add(option);
+        AddSetting(option, (module, value) => getNode(module).Modulate = new Color(Colors.White, option.Value));
     }
 }
 
 public static class MapChunkGraphicNodeExt
 {
-    public static void RegisterForEntityLifetime<TEntity, TGraphic>(this ChunkGraphicLayer<TGraphic> l, 
+    public static void RegisterForEntityLifetime<TEntity, TGraphic>(
+        this ChunkGraphicLayer<TGraphic> l, 
         Func<TEntity, MapChunk> getChunk, Func<TGraphic,  MapChunkGraphicNode<TEntity>> getNode, Data d) 
         where TGraphic : Node2D, IMapChunkGraphicNode where TEntity : Entity
     {

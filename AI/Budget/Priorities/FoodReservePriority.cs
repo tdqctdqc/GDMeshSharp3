@@ -2,19 +2,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class FoodReservePriority : BudgetPriority
+public class FoodReservePriority : ReservePriority
 {
     public FoodReservePriority() 
-        : base("Food Reserve", (r,d) => .5f)
+        : base("Food Reserve")
     {
     }
-
-    public override void Calculate(Regime regime, Data data, MajorTurnOrders orders)
-    {
-        return;
-    }
-
-    public override Dictionary<Item, int> GetWishlist(Regime regime, Data data, 
+    public override Dictionary<Item, int> CalculateWishlist(Regime regime, Data data, 
         BudgetPool pool, float proportion)
     {
         var food = data.Models.Items.Food;
@@ -26,4 +20,5 @@ public class FoodReservePriority : BudgetPriority
         if (toBuy <= 0) return new Dictionary<Item, int>();
         return new Dictionary<Item, int> { { food, foodNeed } };
     }
+
 }

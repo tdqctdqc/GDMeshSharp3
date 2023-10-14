@@ -80,9 +80,7 @@ public partial class GameSession : Node, ISession
         hServer.Setup(logic, Data, this);
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
-        // SetupPlayer(new HostWriteKey(hServer, logic, Data, this));
         StartClient();
-        // Client.SetupForGameplay(true, Data);
         Client.SetupForGameData(Data);
     }
     public void GeneratorToGameTransition()
@@ -116,10 +114,4 @@ public partial class GameSession : Node, ISession
         ((Node)server).Name = "Server";
         AddChild((Node)server);
     }
-
-    // public override void _UnhandledInput(InputEvent e)
-    // {
-    //     var delta = (float)GetProcessDeltaTime();
-    //     Client?.HandleInput(e, delta);
-    // }
 }

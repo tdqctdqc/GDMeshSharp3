@@ -34,7 +34,7 @@ public class SocietyGenerator : Generator
     {
         var popSurplus = GenerateFoodProducers(r);
         var unemployedRatio = .2f;
-        var margin = 0f;
+        var margin = .2f;
         var employed = popSurplus * (1f - (unemployedRatio + margin));
         if (popSurplus <= 0) return;
 
@@ -399,9 +399,12 @@ public class SocietyGenerator : Generator
         var taken = new HashSet<string>();
         foreach (var r in _data.GetAll<Regime>())
         {
-            var settlements = r.GetPolys(_data).Where(p => p.HasSettlement(_data))
+            var settlements = r.GetPolys(_data)
+                .Where(p => p.HasSettlement(_data))
                 .Select(p => p.GetSettlement(_data));
-            var names = r.Culture.Model(_data).SettlementNames.Where(n => taken.Contains(n) == false).ToList();
+            var names = r.Culture.Model(_data)
+                .SettlementNames.Where(n => taken.Contains(n) == false)
+                .ToList();
             if (settlements.Count() > names.Count) continue;
             int iter = 0;
             foreach (var settlement in settlements)

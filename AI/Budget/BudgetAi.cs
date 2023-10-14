@@ -6,21 +6,27 @@ using Godot;
 public class BudgetAi
 {
     private Regime _regime;
-    public List<BudgetPriority> Priorities { get; private set; }
-    
+    public List<IBudgetPriority> Priorities { get; private set; }
     public IncomeBudget IncomeBudget { get; private set; }
-    public BudgetAi(Data data, Regime regime)
+    public BudgetAi(MilitaryAi milAi, Data data, Regime regime)
     {
         _regime = regime;
-        Priorities = new List<BudgetPriority>
+        Priorities = new List<IBudgetPriority>
         {
             new FlowProdBuildingConstructionPriority(
-                data.Models.Flows.IndustrialPower, (r, d) => 1f),
+                data.Models.Flows.IndustrialPower, (d, r) => 1f),
             new FlowProdBuildingConstructionPriority(
-                data.Models.Flows.Income, (r, d) => .5f),
+                data.Models.Flows.Income, (d, r) => .5f),
             new ItemProdBuildingConstructionPriority(
-                data.Models.Items.Recruits, (r, d) => .1f),
-            new FoodReservePriority()
+                data.Models.Items.Recruits, (d, r) => .1f),
+            // new ReserveTroopBuildPriority("Infantry", 
+            //     (d, r) => .2f * milAi.ForceComposition.BuildTroopWeight, 
+            //     t => true, 
+            //     t => 1f),
+            new TroopBuildForTemplatePriority("Unit", regime, 
+                (d,r) => 1f,
+                u => true, u => 1f),
+            new FoodReservePriority(),
         };
     }
 
@@ -32,16 +38,17 @@ public class BudgetAi
         }
 
         var itemsToDistribute = GetItemsToDistribute(data);
-        var labor = _regime.GetPolys(data).Sum(p => p.GetLaborSurplus(data));
+        var labor = _regime.GetPolys(data)
+            .Sum(p => p.GetLaborSurplus(data));
         var pool = new BudgetPool(itemsToDistribute, _regime.Flows.GetSurplusCount(), labor);
         DoPriorities(orders, pool, data);
     }
 
-    private ItemCount GetItemsToDistribute(Data data)
+    private IdCount<Item> GetItemsToDistribute(Data data)
     {
-        var itemsToDistribute = ItemCount.Construct(_regime.Items);
-        var itemsInAccounts = ItemCount.Union(Priorities
-            .Select(v => v.Account.Items).ToArray());
+        var itemsToDistribute = IdCount<Item>.Construct(_regime.Items);
+        var itemsInAccounts = 
+            IdCount<Item>.Union(Priorities.Select(v => v.Account.Items).ToArray());
         foreach (var kvp in itemsInAccounts.Contents)
         {
             var item = data.Models.GetModel<Item>(kvp.Key);
@@ -54,6 +61,10 @@ public class BudgetAi
                 var newQ = 0f;
                 foreach (var priority in Priorities)
                 {
+                    if (priority.Account.Items.Contents.ContainsKey(item.Id) == false)
+                    {
+                        continue;
+                    }
                     priority.Account.Items.Contents[item.Id] *= ratio;
                     newQ += priority.Account.Items.Contents[item.Id];
                 }
@@ -67,8 +78,6 @@ public class BudgetAi
     
     private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, Data data)
     {
-        var market = data.Society.Market;
-        var prices = market.Prices.ToDictionary(kvp => (Item)data.Models[kvp.Key], kvp => kvp.Value);
         var totalPriority = Priorities.Sum(p => p.Weight);
         if (totalPriority <= 0f) throw new Exception();
         foreach (var priority in Priorities)
@@ -120,12 +129,11 @@ public class BudgetAi
 
          void manufacture(Item item, int q)
          {
-             if (item.Attributes.Has<MakeableAttribute>() == false) return;
-             var manuf = item.Attributes.Get<MakeableAttribute>();
-             var costPer = manuf.IndustrialCost;
-             var itemCosts = manuf.ItemCosts;
+             if (item is IMakeable m == false) return;
+             var costPer = m.Makeable.IndustrialCost;
+             var itemCosts = m.Makeable.ItemCosts.GetEnumerableModel(data);
              
-             var minFulfilledItemRatio = itemCosts.Count > 0
+             var minFulfilledItemRatio = itemCosts.Count() > 0
                  ? itemCosts.Min(
                      kvp =>
                         Mathf.Clamp(pool.AvailItems.Get(kvp.Key) / kvp.Value, 0f, 1f))
@@ -155,11 +163,12 @@ public class BudgetAi
         Dictionary<Item, int> wishlist)
      {
          var market = data.Society.Market;
-         var credits = pool.AvailFlows[data.Models.Flows.Income];
+         var credits = pool.AvailFlows.Get(data.Models.Flows.Income);
 
          var plausibleCosts = new Dictionary<Item, float>();
          foreach (var kvp in wishlist)
          {
+             if (kvp.Key is TradeableItem == false) continue;
              var price = market.Prices[kvp.Key.Id];
              var latest = market.TradeHistory.GetLatest(kvp.Key);
              var plausibleCost = 0f;
@@ -179,6 +188,7 @@ public class BudgetAi
          
          foreach (var kvp in wishlist)
          {
+             if (kvp.Key is TradeableItem == false) continue;
              var buyQ = Mathf.FloorToInt(kvp.Value * buyRatio);
              if (buyQ < 0) throw new Exception();
              orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, 

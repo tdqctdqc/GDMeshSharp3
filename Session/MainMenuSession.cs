@@ -12,7 +12,6 @@ public partial class MainMenuSession : Node
         Server = new DummyServer();
         var client = new MainMenuClient();
         AddChild(client);
-        // Client = client;
     }
 
     public void Setup()
