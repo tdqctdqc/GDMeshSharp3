@@ -9,7 +9,7 @@ public class Player : Entity
     public EntityRef<Regime> Regime { get; private set; }
     public static Player Create(Guid guid, string name, CreateWriteKey key)
     {
-        var p = new Player(-1, guid, name, new EntityRef<Regime>(-1));
+        var p = new Player(key.Data.IdDispenser.TakeId(), guid, name, new EntityRef<Regime>(-1));
         key.Create(p);
         return p;
     }

@@ -8,7 +8,7 @@ public class ProposalList : Entity
 
     public static ProposalList Create(GenWriteKey key)
     {
-        var p = new ProposalList(-1, new Dictionary<int, Proposal>());
+        var p = new ProposalList(key.Data.IdDispenser.TakeId(), new Dictionary<int, Proposal>());
         key.Create(p);
         return p;
     }

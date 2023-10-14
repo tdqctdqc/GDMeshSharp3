@@ -12,10 +12,11 @@ public class MapPolyNexus : Entity
     public static MapPolyNexus Create(Vector2 point, List<MapPolygonEdge> edges, List<MapPolygon> polys,
         GenWriteKey key)
     {
-        var n = new MapPolyNexus(-1, point, 
-            EntRefCol<MapPolygonEdge>.Construct(nameof(IncidentEdges), -1,
+        var id = key.Data.IdDispenser.TakeId();
+        var n = new MapPolyNexus(id, point, 
+            EntRefCol<MapPolygonEdge>.Construct(nameof(IncidentEdges), id,
                 edges.Select(e => e.Id).ToHashSet(), key.Data),
-            EntRefCol<MapPolygon>.Construct(nameof(IncidentPolys), -1,
+            EntRefCol<MapPolygon>.Construct(nameof(IncidentPolys), id,
                 polys.Select(p => p.Id).ToHashSet(), key.Data));
         key.Create(n);
         return n;

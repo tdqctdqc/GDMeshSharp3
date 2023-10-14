@@ -30,7 +30,7 @@ public class UnitTemplate : Entity, IMakeable
         }
         return new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
             regime.MakeRef(),
-            -1,
+            key.Data.IdDispenser.TakeId(),
             new MakeableAttribute(itemCosts, industrialCost),
             domain);
     }

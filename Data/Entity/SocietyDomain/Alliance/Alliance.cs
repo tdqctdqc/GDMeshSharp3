@@ -14,17 +14,18 @@ public class Alliance : Entity
         ProposalIds.Select(id => data.Society.Proposals.Proposals[id]);
     public static Alliance Create(Regime founder, CreateWriteKey key)
     {
-        var members = EntRefCol<Regime>.Construct(nameof(Members), -1,
+        var id = key.Data.IdDispenser.TakeId();
+        var members = EntRefCol<Regime>.Construct(nameof(Members), id,
             new HashSet<int>{founder.Id}, key.Data);
-        var enemies = EntRefCol<Alliance>.Construct(nameof(Rivals), -1,
+        var enemies = EntRefCol<Alliance>.Construct(nameof(Rivals), id,
             new HashSet<int>{}, key.Data);
-        var atWar = EntRefCol<Alliance>.Construct(nameof(AtWar), -1,
+        var atWar = EntRefCol<Alliance>.Construct(nameof(AtWar), id,
             new HashSet<int>{}, key.Data);
         var proposals = new HashSet<int>();
         
         var a = new Alliance(founder.MakeRef(), members, enemies, atWar,
             proposals,
-            -1);
+            id);
         
         key.Create(a);
         return a;

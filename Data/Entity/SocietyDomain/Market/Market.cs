@@ -14,7 +14,7 @@ public class Market : Entity
         var prices = key.Data.Models.GetModels<Item>().Values
             .SelectWhereOfType<TradeableItem>()
             .ToDictionary(item => item.Id, item => item.DefaultPrice);
-        var m = new Market(-1, prices,
+        var m = new Market(key.Data.IdDispenser.TakeId(), prices,
             TradeHistory.Construct());
         key.Create(m);
         return m;

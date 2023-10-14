@@ -71,11 +71,11 @@ public class Data
         {
             if (e is IdDispenser id)
             {
-                e.SetId(id.TakeId(), key);
+                // e.SetId(id.TakeId(), key);
             }
             else
             {
-                e.SetId(IdDispenser.TakeId(), key);
+                // e.SetId(IdDispenser.TakeId(), key);
             }
         }
         
@@ -137,7 +137,7 @@ public class Data
         }
         if (e.Id == -1)
         {
-            e.SetId(IdDispenser.TakeId(), key);
+            // e.SetId(IdDispenser.TakeId(), key);
         }
         IdDispenser.SetMin(e.Id);
         if (EntitiesById.ContainsKey(e.Id))

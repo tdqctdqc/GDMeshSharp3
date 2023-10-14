@@ -37,7 +37,7 @@ public class MapPolygonEdge : Entity
         lowId.Entity(key.Data).AddNeighbor(highId.Entity(key.Data), lowChain, key);
         highId.Entity(key.Data).AddNeighbor(lowId.Entity(key.Data), hiChain, key);
         var b = new MapPolygonEdge(
-            -1, 0f, lowId, highId,
+            key.Data.IdDispenser.TakeId(), 0f, lowId, highId,
             new Dictionary<byte, byte>(), new Dictionary<byte, byte>(),
             null, null);
         key.Create(b);

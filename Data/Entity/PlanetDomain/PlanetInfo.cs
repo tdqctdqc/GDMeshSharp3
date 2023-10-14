@@ -9,7 +9,7 @@ public class PlanetInfo : Entity
     public Vector2 Dimensions { get; protected set; }
     public static PlanetInfo Create(Vector2 dimensions, CreateWriteKey key)
     {
-        var pi =  new PlanetInfo(-1, dimensions);
+        var pi =  new PlanetInfo(key.Data.IdDispenser.TakeId(), dimensions);
         key.Create(pi);
         return pi;
     }

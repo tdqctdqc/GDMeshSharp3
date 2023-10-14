@@ -12,7 +12,7 @@ public class Peep : Entity
     public static Peep Create(MapPolygon poly, CreateWriteKey key)
     {
         var p = new Peep(PeepEmploymentReport.Construct(), poly.MakeRef(), 0, 
-            -1);
+            key.Data.IdDispenser.TakeId());
         key.Create(p);
         return p;
     }

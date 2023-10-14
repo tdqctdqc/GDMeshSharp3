@@ -45,10 +45,11 @@ public class MapPolygon : Entity
         if (mapCenter.X > mapWidth) mapCenter = new Vector2(mapCenter.X - mapWidth, center.Y);
         if (mapCenter.X < 0f) mapCenter = new Vector2(mapCenter.X + mapWidth, center.Y);
 
-        
-        var p = new MapPolygon(-1, mapCenter,
+        var id = key.Data.IdDispenser.TakeId();
+        var p = new MapPolygon(id, mapCenter,
             EntRefCol<MapPolygon>
-                .Construct(nameof(Neighbors), -1, new HashSet<int>(), key.Data),
+                .Construct(nameof(Neighbors), 
+                    id, new HashSet<int>(), key.Data),
             new Dictionary<int, PolyBorderChain>(),
             ColorsExt.GetRandomColor(),
             0f,

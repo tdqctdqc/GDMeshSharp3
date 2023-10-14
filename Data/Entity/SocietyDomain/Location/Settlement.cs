@@ -14,7 +14,7 @@ public class Settlement : Location
     public static Settlement Create(string name, MapPolygon poly, int size, CreateWriteKey key)
     {
         var tier = key.Data.Models.Settlements.GetTier(size);
-        var s = new Settlement(-1, poly.MakeRef(), 
+        var s = new Settlement(key.Data.IdDispenser.TakeId(), poly.MakeRef(), 
             tier.MakeRef(), name);
         key.Create(s);
         return s;

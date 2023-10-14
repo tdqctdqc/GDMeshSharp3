@@ -5,28 +5,28 @@ using MessagePack;
 
 public class IdDispenser : Entity
 {
-    public int Index { get; private set; }
-
+    public int Index => _index;
+    private int _index;
     public static IdDispenser Create(GenWriteKey key)
     {
-        var d = new IdDispenser(0, -1);
+        var d = new IdDispenser(0, 0);
         key.Create(d);
+        d.SetId(d.TakeId(), key);
         return d;
     }
     [SerializationConstructor] private IdDispenser(int index, int id) : base(id)
     {
-        Index = index;
+        _index = index;
     }
     public int TakeId()
     {
-        Index++;
-        if (Index == int.MaxValue) throw new Exception("Max Ids reached");
-        int id = Index;
+        if (_index == int.MaxValue) throw new Exception("Max Ids reached");
+        int id = System.Threading.Interlocked.Increment(ref _index);
         return id;
     }
 
     public void SetMin(int taken)
     {
-        Index = Mathf.Max(taken, Index);
+        _index = Mathf.Max(taken, _index);
     }
 }

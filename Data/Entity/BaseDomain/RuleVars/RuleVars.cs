@@ -24,7 +24,7 @@ public class RuleVars : Entity
             .1f,
             1f,
             .2f,
-            -1);
+            key.Data.IdDispenser.TakeId());
         key.Create(v);
         return v;
     }

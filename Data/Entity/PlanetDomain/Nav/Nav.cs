@@ -12,7 +12,7 @@ public class Nav : Entity
     public Dictionary<Vector2, List<int>> PolyNavPaths { get; private set; }
     public static Nav Create(GenWriteKey key)
     {
-        var n = new Nav(-1, new Dictionary<int, Waypoint>(), new Dictionary<int, int>(),
+        var n = new Nav(key.Data.IdDispenser.TakeId(), new Dictionary<int, Waypoint>(), new Dictionary<int, int>(),
             new Dictionary<Vector2, List<int>>());
         key.Create(n);
         return n;

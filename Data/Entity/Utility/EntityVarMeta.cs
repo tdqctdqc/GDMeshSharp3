@@ -34,9 +34,9 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
         if (setMi == null)
         {
             GD.Print($"No set method for {PropertyName}");
-            throw new SerializationException($"No set method for {PropertyName}");
+            // throw new SerializationException($"No set method for {PropertyName}");
         }
-        SetProperty = setMi.MakeInstanceMethodDelegate<Action<TEntity, TProperty>>();
+        // SetProperty = setMi.MakeInstanceMethodDelegate<Action<TEntity, TProperty>>();
     }
     public object GetForSerialize(Entity e)
     {

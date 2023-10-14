@@ -52,8 +52,8 @@ public class Regime : Entity
         flows.AddFlowIn(key.Data.Models.Flows.Income, 0f);
         flows.AddFlowIn(key.Data.Models.Flows.ConstructionCap, 0f);
         flows.AddFlowIn(key.Data.Models.Flows.IndustrialPower, 0f);
-        
-        var r = new Regime(-1, regimeTemplate.Name, 
+        var id = key.Data.IdDispenser.TakeId();
+        var r = new Regime(id, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
             new EntityRef<MapPolygon>(seed.Id),

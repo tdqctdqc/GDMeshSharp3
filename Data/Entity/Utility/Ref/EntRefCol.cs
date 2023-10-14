@@ -44,10 +44,10 @@ public class EntRefCol<TRef>
     public void Remove(TRef t, StrongWriteKey key)
     {
         RefIds.Remove(t.Id);
-        
         if (key.Data.EntitiesById.ContainsKey(OwnerEntityId))
         {
             var owner = key.Data[OwnerEntityId];
+            GD.Print("owner type " + owner.GetType().Name);
             key.Data.GetEntityMeta(key.Data[OwnerEntityId].GetType())
                 .GetRefColMeta<TRef>(Name).RaiseRemoved(owner, t);
         }

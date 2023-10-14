@@ -9,7 +9,7 @@ public class ResourceDeposit : Entity
     public EntityRef<MapPolygon> Poly { get; protected set; }
     public static ResourceDeposit Create(Item resource, MapPolygon poly, int size, CreateWriteKey key)
     {
-        var d = new ResourceDeposit(-1, resource.MakeRef(), poly.MakeRef(), size);
+        var d = new ResourceDeposit(key.Data.IdDispenser.TakeId(), resource.MakeRef(), poly.MakeRef(), size);
         key.Create(d);
         return d;
     }

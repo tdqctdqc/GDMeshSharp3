@@ -10,7 +10,7 @@ public class CurrentConstruction : Entity
     public Dictionary<int, List<Construction>> ByPoly { get; private set; }
     public static CurrentConstruction Create(GenWriteKey key)
     {
-        var cc = new CurrentConstruction(-1, 
+        var cc = new CurrentConstruction(key.Data.IdDispenser.TakeId(), 
             new Dictionary<PolyTriPosition, Construction>(),
             new Dictionary<int, List<Construction>>());
         key.Create(cc);
