@@ -11,15 +11,4 @@ public abstract class Entity : IIdentifiable
     {
         Id = id;
     }
-
-    public void SetId(int id, StrongWriteKey key)
-    {
-        Id = id;
-        var meta = key.Data.GetEntityMeta(this.GetType());
-        foreach (var refCollection in meta.GetPropertyValues(this)
-                     .SelectWhereOfType<IReadOnlyRefCollection>())
-        {
-            refCollection.UpdateOwnerId(id, key);
-        }
-    }
 }

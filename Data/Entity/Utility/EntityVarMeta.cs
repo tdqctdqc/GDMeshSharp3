@@ -8,7 +8,6 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
 {
     public string PropertyName { get; private set; }
     protected Func<TEntity, TProperty> GetProperty { get; private set; }
-    protected Action<TEntity, TProperty> SetProperty { get; private set; }
     public EntityVarMeta(PropertyInfo prop)
     {
         PropertyName = prop.Name;
@@ -29,14 +28,6 @@ public class EntityVarMeta<TEntity, TProperty> : IEntityVarMeta<TEntity> where T
             GD.Print("couldnt make delegate for " + PropertyName);
             throw;
         }
-        
-        var setMi = prop.GetSetMethod(true);
-        if (setMi == null)
-        {
-            GD.Print($"No set method for {PropertyName}");
-            // throw new SerializationException($"No set method for {PropertyName}");
-        }
-        // SetProperty = setMi.MakeInstanceMethodDelegate<Action<TEntity, TProperty>>();
     }
     public object GetForSerialize(Entity e)
     {

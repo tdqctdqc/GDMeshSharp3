@@ -65,7 +65,6 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
         if (propType.IsGenericType 
             && propType.GetGenericTypeDefinition().IsAssignableFrom(typeof(EntRefCol<>)))
         {
-            GD.Print("setting up refcol " + prop.Name + " for " + typeof(TEntity).Name);
             var genericParam = propType.GenericTypeArguments[0];
             this.InvokeGeneric(nameof(SetupColType),
                 new[] {genericParam}, new []{prop});

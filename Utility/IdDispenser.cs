@@ -11,7 +11,7 @@ public class IdDispenser : Entity
     {
         var d = new IdDispenser(0, 0);
         key.Create(d);
-        d.SetId(d.TakeId(), key);
+        d.Id = d.TakeId();
         return d;
     }
     [SerializationConstructor] private IdDispenser(int index, int id) : base(id)

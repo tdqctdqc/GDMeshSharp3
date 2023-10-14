@@ -65,19 +65,6 @@ public class Data
         {
             AddEntityType(t);
         }
-
-        
-        if (e.Id == -1)
-        {
-            if (e is IdDispenser id)
-            {
-                // e.SetId(id.TakeId(), key);
-            }
-            else
-            {
-                // e.SetId(IdDispenser.TakeId(), key);
-            }
-        }
         
         if (EntitiesById.ContainsKey(e.Id))
         {
@@ -134,10 +121,6 @@ public class Data
         if (_entityTypeTree.Nodes.ContainsKey(t) == false)
         {
             AddEntityType(t);
-        }
-        if (e.Id == -1)
-        {
-            // e.SetId(IdDispenser.TakeId(), key);
         }
         IdDispenser.SetMin(e.Id);
         if (EntitiesById.ContainsKey(e.Id))
