@@ -13,7 +13,7 @@ public class Unit : Entity
     public static Unit Create(UnitTemplate template, 
         Regime regime,
         Vector2 position,
-        CreateWriteKey key)
+        ICreateWriteKey key)
     {
         var u = new Unit(-1, regime.MakeRef(), template.MakeRef(),
             IdCount<Troop>.Construct(template.TroopCounts),

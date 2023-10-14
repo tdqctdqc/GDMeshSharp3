@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class HostWriteKey : CreateWriteKey
+public class HostWriteKey : StrongWriteKey, ICreateWriteKey
 {
     public HostServer HostServer { get; private set; }
     public HostLogic Logic { get; private set; }
@@ -9,5 +9,15 @@ public class HostWriteKey : CreateWriteKey
     {
         Logic = logic;
         HostServer = hostServer;
+    }
+
+    public void Create<TEntity>(TEntity t) where TEntity : Entity
+    {
+        Data.AddEntity(t, this);
+    }
+
+    public void Remove<TEntity>(TEntity t) where TEntity : Entity
+    {
+        Data.RemoveEntity(t.Id, this);
     }
 }

@@ -27,6 +27,8 @@ public class GenData : Data
         RuleVars.CreateDefault(key);
         CurrentConstruction.Create(key);
         ProposalList.Create(key);
+        ClientPlayerData.SetLocalPlayerGuid(new Guid());
+        Player.Create(ClientPlayerData.LocalPlayerGuid, "Doot", key);
     }
     public void ClearAuxData()
     {

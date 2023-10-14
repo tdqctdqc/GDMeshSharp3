@@ -7,7 +7,8 @@ public class MapBuilding : Entity
     public PolyTriPosition Position { get; protected set; }
     public ModelRef<BuildingModel> Model { get; protected set; }
     
-    public static MapBuilding Create(PolyTriPosition pos, int assocWaypoint, BuildingModel model, CreateWriteKey key)
+    public static MapBuilding Create(PolyTriPosition pos, 
+        int assocWaypoint, BuildingModel model, ICreateWriteKey key)
     {
         var b = new MapBuilding(key.Data.IdDispenser.TakeId(), pos, model.MakeRef(), assocWaypoint);
         key.Create(b);

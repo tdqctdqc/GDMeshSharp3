@@ -8,7 +8,7 @@ public class EntitiesCreationUpdate : Update
     public Type[] EntityTypes { get; private set; }
     public byte[][] EntityBytes { get; private set; }
     
-    public static EntitiesCreationUpdate Create(IReadOnlyList<Entity> entities, CreateWriteKey key)
+    public static EntitiesCreationUpdate Create(IReadOnlyList<Entity> entities, ICreateWriteKey key)
     {
         var entityBytes = entities.Select(e => key.Data.Serializer.MP.Serialize(e, e.GetType())).ToArray();
         var entityTypes = entities.Select(e => e.GetType()).ToArray();

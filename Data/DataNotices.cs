@@ -14,7 +14,7 @@ public class DataNotices
     public RefAction FinishedTurnStartCalc { get; private set; }
     public RefAction SetPolyShapes { get; private set; }
     public RefAction SetLandAndSea { get; private set; }
-    
+    public RefAction ExitedGen { get; private set; }
     public DataNotices()
     {
         PopulatedWorld = new RefAction();
@@ -25,6 +25,7 @@ public class DataNotices
         FinishedTurnStartCalc = new RefAction();
         SetPolyShapes = new RefAction();
         SetLandAndSea = new RefAction();
+        ExitedGen = new RefAction();
     }
 }
 

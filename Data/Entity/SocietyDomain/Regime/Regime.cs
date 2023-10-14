@@ -44,7 +44,7 @@ public class Regime : Entity
 
     public static Regime Create(MapPolygon seed, 
         RegimeTemplate regimeTemplate, bool isMajor, 
-        CreateWriteKey key)
+        ICreateWriteKey key)
     {
         var items = IdCount<Item>.Construct();
         var troopReserve = IdCount<Troop>.Construct();
@@ -68,13 +68,12 @@ public class Regime : Entity
             ManufacturingQueue.Construct()
         );
         key.Create(r);
-        seed.SetRegime(r, key);
         Alliance.Create(r, key);
         UnitTemplate.CreateDefaultTemplatesForRegime(r, key);
         return r;
     }
 
-    public void SetIsMajor(bool isMajor, CreateWriteKey key)
+    public void SetIsMajor(bool isMajor, ICreateWriteKey key)
     {
         IsMajor = isMajor;
     }

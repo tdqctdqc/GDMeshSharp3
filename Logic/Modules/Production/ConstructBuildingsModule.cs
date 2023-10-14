@@ -5,9 +5,11 @@ using Godot;
 
 public class ConstructBuildingsModule : LogicModule
 {
-    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
+    public override LogicResults Calculate(List<TurnOrders> orders, 
+        Data data)
     {
         var res = new LogicResults();
+        var key = new LogicWriteKey(data, res, null);
         var finished = new HashSet<Construction>();
         var clear = ClearFinishedConstructionsProcedure.Construct();
         foreach (var r in data.GetAll<Regime>())
@@ -23,11 +25,8 @@ public class ConstructBuildingsModule : LogicModule
         foreach (var c in finished)
         {
             clear.Positions.Add(c.Pos);
-            Func<HostWriteKey, Entity> create = k =>
-            {
-                return MapBuilding.Create(c.Pos, c.Waypoint, c.Model.Model(k.Data), k);
-            };
-            res.CreateEntities.Add(create);
+            MapBuilding.Create(c.Pos, c.Waypoint, 
+                c.Model.Model(key.Data), key);
         }
         
         for (var i = 0; i < orders.Count; i++)

@@ -217,11 +217,6 @@ public class HostLogic : ILogic
         {
             logicResult.Messages[i].Enact(PKey);
         }
-        for (int i = 0; i < logicResult.CreateEntities.Count; i++)
-        {
-            var entity = logicResult.CreateEntities[i].Invoke(_hKey);
-            logicResult.Messages.Add(EntityCreationUpdate.Create(entity, _hKey));
-        }
         _server.ReceiveLogicResult(logicResult, _hKey);
         _server.PushPackets(_hKey);
     }

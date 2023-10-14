@@ -74,11 +74,6 @@ public class Data
         }
         EntitiesById.Add(e.Id, e);
         _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
-        if (key is HostWriteKey hKey)
-        {
-            hKey.HostServer.QueueMessage(EntityCreationUpdate.Create(e, hKey));
-        }
-        
         IdDispenser.SetMin(e.Id);
     }
     public void AddEntities<TEntity>(IReadOnlyList<TEntity> es, StrongWriteKey key) where TEntity : Entity
@@ -142,10 +137,6 @@ public class Data
         var e = EntitiesById[eId];
         key.Data._entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
         EntitiesById.Remove(eId);
-        if (key is HostWriteKey hKey)
-        {
-            hKey.HostServer.QueueMessage(EntityDeletionUpdate.Create(eId, hKey));
-        }
     }
 
     public void SubscribeForCreation<TEntity>(Action<EntityCreatedNotice> callback) where TEntity : Entity

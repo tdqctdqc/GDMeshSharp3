@@ -9,7 +9,7 @@ public class UnitTemplate : Entity, IMakeable
     public EntityRef<Regime> Regime { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public TroopDomain Domain { get; private set; }
-    public static UnitTemplate Create(CreateWriteKey key, 
+    public static UnitTemplate Create(ICreateWriteKey key, 
         string name,
         Dictionary<Troop, float> troopCounts,
         TroopDomain domain,
@@ -28,11 +28,13 @@ public class UnitTemplate : Entity, IMakeable
 
             industrialCost += troop.Makeable.IndustrialCost * numTroop;
         }
-        return new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
+        var u = new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
             regime.MakeRef(),
             key.Data.IdDispenser.TakeId(),
             new MakeableAttribute(itemCosts, industrialCost),
             domain);
+        key.Create(u);
+        return u;
     }
     [SerializationConstructor] protected UnitTemplate(string name,
         IdCount<Troop> troopCounts, EntityRef<Regime> regime, int id, 
@@ -46,7 +48,8 @@ public class UnitTemplate : Entity, IMakeable
         Domain = domain;
     }
 
-    public static void CreateDefaultTemplatesForRegime(Regime r, CreateWriteKey key)
+    public static void CreateDefaultTemplatesForRegime(Regime r, 
+        ICreateWriteKey key)
     {
         var inf = Create(key, "Infantry Division",
             new Dictionary<Troop, float>
@@ -54,6 +57,5 @@ public class UnitTemplate : Entity, IMakeable
                     {key.Data.Models.Troops.Rifle1, 10f}
                 }, TroopDomain.Land,
             r);
-        key.Create(inf);
     }
 }

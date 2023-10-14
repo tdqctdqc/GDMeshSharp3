@@ -7,9 +7,11 @@ public class ResourceDeposit : Entity
     public ModelRef<Item> Item { get; protected set; }
     public int Size { get; protected set; }
     public EntityRef<MapPolygon> Poly { get; protected set; }
-    public static ResourceDeposit Create(Item resource, MapPolygon poly, int size, CreateWriteKey key)
+    public static ResourceDeposit Create(Item resource,
+        MapPolygon poly, int size, ICreateWriteKey key)
     {
-        var d = new ResourceDeposit(key.Data.IdDispenser.TakeId(), resource.MakeRef(), poly.MakeRef(), size);
+        var d = new ResourceDeposit(key.Data.IdDispenser.TakeId(),
+            resource.MakeRef(), poly.MakeRef(), size);
         key.Create(d);
         return d;
     }

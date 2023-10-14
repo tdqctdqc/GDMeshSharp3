@@ -8,12 +8,13 @@ public class FormUnitsModule : LogicModule
     public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
-        GD.Print("DOING FORM UNITS MODULE");
-        orders.ForEach(o => FormUnits((MajorTurnOrders)o, data, res));
+        var key = new LogicWriteKey(data, res, null);
+        orders.ForEach(o => FormUnits((MajorTurnOrders)o, data, key));
         return res;
     }
 
-    private void FormUnits(MajorTurnOrders orders, Data data, LogicResults res)
+    private void FormUnits(MajorTurnOrders orders, Data data, 
+        LogicWriteKey key)
     {
         var regime = orders.Regime.Entity(data);
         var capitalPos = regime.Capital.Entity(data).Center;
@@ -48,8 +49,8 @@ public class FormUnitsModule : LogicModule
                 useTroops.UsageByTroopId.AddOrSum(troop.Id, (int)num);
                 availTroops[troop] -= num;
             }
-            res.CreateEntities.Add(k => Unit.Create(template, regime, capitalPos, k));
+            Unit.Create(template, regime, capitalPos, key);
         }
-        res.Messages.Add(useTroops);
+        key.Results.Messages.Add(useTroops);
     }
 }

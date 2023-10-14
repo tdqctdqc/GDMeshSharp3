@@ -31,7 +31,7 @@ public partial class GameSession : Node, ISession
     private GameSession()
     {
     }
-    private void SetupPlayer(CreateWriteKey key)
+    private void SetupPlayer(ICreateWriteKey key)
     {
         Data.ClientPlayerData.SetLocalPlayerGuid(new Guid());
         Player.Create(Data.ClientPlayerData.LocalPlayerGuid, "Doot", key);
@@ -85,6 +85,7 @@ public partial class GameSession : Node, ISession
     }
     public void GeneratorToGameTransition()
     {
+        Data.Notices.ExitedGen.Invoke();
         var hServer = new HostServer();
         var logic = new HostLogic(Data);
         _logic = logic;
@@ -92,7 +93,6 @@ public partial class GameSession : Node, ISession
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
         logic.FirstTurn();
-        SetupPlayer(new HostWriteKey(hServer, logic, Data, this));
         Client.SetupForGameplay(true, Data);
     }
     

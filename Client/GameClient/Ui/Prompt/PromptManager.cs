@@ -19,7 +19,7 @@ public partial class PromptManager : Node, IClientComponent
     {
         _client = client;
         _windows = new Dictionary<Prompt, PromptWindow>();
-        data.BaseDomain.PlayerAux.SetLocalPlayer.SubscribeForNode(
+        data.Notices.ExitedGen.SubscribeForNode(
             () =>
             {
                 var p = data.BaseDomain.PlayerAux.LocalPlayer;

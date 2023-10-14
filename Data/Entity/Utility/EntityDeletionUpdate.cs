@@ -5,7 +5,7 @@ using MessagePack;
 public class EntityDeletionUpdate : Update
 {
     public int EntityId { get; private set; }
-    public static EntityDeletionUpdate Create(int entityId, HostWriteKey key)
+    public static EntityDeletionUpdate Create(int entityId, StrongWriteKey key)
     {
         return new EntityDeletionUpdate(entityId);
     }

@@ -62,9 +62,9 @@ public static class GraphGenerator
                 var border = discard.GetEdge(discardN, key.Data);
                 discardN.RemoveNeighbor(discard, key);
                 discard.RemoveNeighbor(discardN, key);
-                key.Data.RemoveEntity(border.Id, key);
+                key.Remove(border);
             }
-            key.Data.RemoveEntity(discard.Id, key);
+            key.Remove(discard);
         });
         check.ForEach(n =>
         {

@@ -12,7 +12,7 @@ public class Alliance : Entity
     public HashSet<int> ProposalIds { get; private set; }
     public IEnumerable<Proposal> Proposals(Data data) =>
         ProposalIds.Select(id => data.Society.Proposals.Proposals[id]);
-    public static Alliance Create(Regime founder, CreateWriteKey key)
+    public static Alliance Create(Regime founder, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
         var members = EntRefCol<Regime>.Construct(nameof(Members), id,

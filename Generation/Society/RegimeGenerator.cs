@@ -80,6 +80,8 @@ public class RegimeGenerator : Generator
             var template = templates.GetRandomElement();
             // templates.Remove(template);
             var regime = Regime.Create(seeds[i], template, false, _key);
+            seeds[i].SetRegime(regime, _key);
+
             int numToPick = 0;
             if (num6s > 0)
             {
@@ -135,6 +137,7 @@ public class RegimeGenerator : Generator
             // templates.Remove(template);
             var isMajor = union.Count >= _polysForRegimeAvg * .75;
             var regime = Regime.Create(union[0], template, isMajor, _key);
+            union[0].SetRegime(regime, _key);
             for (var i = 1; i < union.Count; i++)
             {
                 var p = union[i];

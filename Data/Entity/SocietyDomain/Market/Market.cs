@@ -9,7 +9,7 @@ public class Market : Entity
 {
     public Dictionary<int, float> Prices { get; private set; }
     public TradeHistory TradeHistory { get; private set; }
-    public static Market Create(CreateWriteKey key)
+    public static Market Create(ICreateWriteKey key)
     {
         var prices = key.Data.Models.GetModels<Item>().Values
             .SelectWhereOfType<TradeableItem>()
