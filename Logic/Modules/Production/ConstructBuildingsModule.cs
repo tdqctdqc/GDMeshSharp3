@@ -5,7 +5,7 @@ using Godot;
 
 public class ConstructBuildingsModule : LogicModule
 {
-    public override LogicResults Calculate(List<TurnOrders> orders, 
+    public override LogicResults Calculate(List<RegimeTurnOrders> orders, 
         Data data)
     {
         var res = new LogicResults();

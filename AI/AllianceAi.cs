@@ -9,4 +9,9 @@ public class AllianceAi
         Alliance = alliance;
         MilitaryAi = new AllianceMilitaryAi(alliance);
     }
+
+    public AllianceTurnOrders GetOrders(Data data)
+    {
+        return new AllianceTurnOrders();
+    }
 }

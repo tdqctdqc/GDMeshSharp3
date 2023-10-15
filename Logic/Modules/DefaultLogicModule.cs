@@ -11,7 +11,7 @@ public class DefaultLogicModule : LogicModule
         _func = func;
     }
 
-    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
+    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         res.Messages.Add(_func());

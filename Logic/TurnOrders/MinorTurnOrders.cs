@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class MinorTurnOrders : TurnOrders
+public class MinorTurnOrders : RegimeTurnOrders
 {
     public static MinorTurnOrders Construct(int tick, Regime regime)
     {

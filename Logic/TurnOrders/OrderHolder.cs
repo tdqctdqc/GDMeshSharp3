@@ -6,27 +6,21 @@ using System.Threading.Tasks;
 
 public class OrderHolder
 {
-    public ConcurrentDictionary<Player, TurnOrders> PlayerTurnOrders { get; private set; }
-    public ConcurrentDictionary<Player, TurnOrders> PlayerAllianceOrders { get; private set; }
-    public ConcurrentDictionary<Regime, Task<TurnOrders>> AiTurnOrders { get; private set; }
-    public ConcurrentDictionary<Alliance, Task<TurnOrders>> AiAllianceTurnOrders { get; private set; }
+    public ConcurrentDictionary<Player, RegimeTurnOrders> PlayerTurnOrders { get; private set; }
+    public ConcurrentDictionary<Regime, Task<RegimeTurnOrders>> AiTurnOrders { get; private set; }
 
     public OrderHolder()
     {
-        PlayerTurnOrders = new ConcurrentDictionary<Player, TurnOrders>();
-        PlayerAllianceOrders = new ConcurrentDictionary<Player, TurnOrders>();
-        AiTurnOrders = new ConcurrentDictionary<Regime, Task<TurnOrders>>();
-        AiAllianceTurnOrders = new ConcurrentDictionary<Alliance, Task<TurnOrders>>();
+        PlayerTurnOrders = new ConcurrentDictionary<Player, RegimeTurnOrders>();
+        AiTurnOrders = new ConcurrentDictionary<Regime, Task<RegimeTurnOrders>>();
     }
 
     public void Clear()
     {
         PlayerTurnOrders.Clear();
-        PlayerAllianceOrders.Clear();
         AiTurnOrders.Clear();
-        AiAllianceTurnOrders.Clear();
     }
-    public void SubmitPlayerTurnOrders(Player player, TurnOrders orders, Data data)
+    public void SubmitPlayerTurnOrders(Player player, RegimeTurnOrders orders, Data data)
     {
         if (orders.Tick != data.BaseDomain.GameClock.Tick) throw new Exception();
         var added = PlayerTurnOrders.TryAdd(player, orders);
@@ -36,31 +30,34 @@ public class OrderHolder
     {
         if (data.BaseDomain.GameClock.MajorTurn(data))
         {
-            inner(r => data.HostLogicData.RegimeAis[r].GetMajorTurnOrders(data));
+            GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetMajorTurnOrders(data), data);
         }
         else
         {
-            inner(r => data.HostLogicData.RegimeAis[r].GetMinorTurnOrders(data));
+            GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetMinorTurnOrders(data), data);
         }
         
-        void inner(Func<Regime, TurnOrders> getOrders)
+        
+    }
+    private void GetAiRegimeOrders(Func<Regime, RegimeTurnOrders> getOrders, Data data)
+    {
+        var aiRegimes = data.GetAll<Regime>()
+            .Where(r => r.IsPlayerRegime(data) == false);
+        foreach (var aiRegime in aiRegimes)
         {
-            var aiRegimes = data.GetAll<Regime>()
-                .Where(r => r.IsPlayerRegime(data) == false);
-            foreach (var aiRegime in aiRegimes)
+            if (AiTurnOrders.ContainsKey(aiRegime) == false)
             {
-                if (AiTurnOrders.ContainsKey(aiRegime) == false)
+                var task = Task.Run(() =>
                 {
-                    var task = Task.Run(() =>
-                    {
-                        return (TurnOrders) getOrders(aiRegime);
-                    });
-                    AiTurnOrders.TryAdd(aiRegime, task);
-                }
+                    return (RegimeTurnOrders) getOrders(aiRegime);
+                });
+                AiTurnOrders.TryAdd(aiRegime, task);
             }
         }
     }
-    public bool CheckReadyForFrame(Data data)
+
+    
+    public bool CheckReadyForFrame(Data data, bool majorTurn)
     {
         var players = data.GetAll<Player>();
         var aiRegimes = data.GetAll<Regime>().Where(r => r.IsPlayerRegime(data) == false);
@@ -85,15 +82,11 @@ public class OrderHolder
 
         var allAisCompleted = AiTurnOrders.All(kvp => kvp.Value.IsCompleted);
 
-        var allPlayerLedAlliancesSubmitted = playerLedAlliances
-            .All(a => PlayerAllianceOrders.ContainsKey(a.Leader.Entity(data).GetPlayer(data)));
-        var allAiAlliancesHaveEntry = aiLedAlliances.All(a => AiAllianceTurnOrders.ContainsKey(a));
-        var allAiAlliancesCompleted = AiAllianceTurnOrders.All(kvp => kvp.Value.IsCompleted);
         
-        return allPlayersHaveRegime && allPlayersSubmitted 
-                                    && allAisHaveEntry && allAisCompleted
-            // && allPlayerLedAlliancesSubmitted && allAiAlliancesHaveEntry
-            // && allAiAlliancesCompleted
-            ;
+        var regimeOrdersReady = allPlayersHaveRegime && allPlayersSubmitted
+                                                     && allAisHaveEntry && allAisCompleted;
+
+        
+        return regimeOrdersReady;
     }
 }

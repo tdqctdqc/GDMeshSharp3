@@ -5,7 +5,7 @@ using Godot;
 
 public class FinanceModule : LogicModule
 {
-    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
+    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         var proc = GrowFinancialPowerProcedure.Construct();

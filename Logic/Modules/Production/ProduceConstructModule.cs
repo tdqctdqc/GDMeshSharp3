@@ -21,7 +21,7 @@ public class ProduceConstructModule : LogicModule
         foreach (var kvp in _regimeProdWallets) { kvp.Value.Clear(); }
         foreach (var kvp in _polyEmployReps) { kvp.Value.Counts.Clear(); }
     }
-    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
+    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
     {
         Clear();
         var res = new LogicResults();
@@ -130,7 +130,7 @@ public class ProduceConstructModule : LogicModule
         }
     }
 
-    private void DoManufacturing(List<TurnOrders> orders, ProduceConstructProcedure proc)
+    private void DoManufacturing(List<RegimeTurnOrders> orders, ProduceConstructProcedure proc)
     {
         foreach (var turnOrders in orders)
         {

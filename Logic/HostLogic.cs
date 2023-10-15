@@ -10,12 +10,6 @@ using System.Threading.Tasks;
 public class HostLogic : ILogic
 {
     public ConcurrentQueue<Command> CommandQueue { get; }
-    
-    // private ConcurrentDictionary<Player, TurnOrders> _playerTurnOrders;
-    // private ConcurrentDictionary<Player, TurnOrders> _playerAllianceOrders;
-    // private ConcurrentDictionary<Regime, Task<TurnOrders>> _aiTurnOrders;
-    // private ConcurrentDictionary<Alliance, Task<TurnOrders>> _aiAllianceTurnOrders;
-    //
     public OrderHolder OrderHolder { get; private set; }
     private HostServer _server; 
     private HostWriteKey _hKey;
@@ -75,11 +69,12 @@ public class HostLogic : ILogic
     {
         if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Waiting)
         {
+            var majorTurn = _data.BaseDomain.GameClock.MajorTurn(_data);
             DoCommands();
-            if(OrderHolder.CheckReadyForFrame(_data))
+            if(OrderHolder.CheckReadyForFrame(_data, majorTurn))
             {
                 List<LogicModule> modules;
-                if (_data.BaseDomain.GameClock.MajorTurn(_data))
+                if (majorTurn)
                 {
                     modules = _majorTurnEndModules.ToList();
                 }

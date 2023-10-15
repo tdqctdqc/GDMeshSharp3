@@ -5,14 +5,14 @@ using MessagePack;
 
 public class SubmitTurnCommand : Command
 {
-    public TurnOrders Orders { get; private set; }
+    public RegimeTurnOrders Orders { get; private set; }
 
-    public static SubmitTurnCommand Construct(TurnOrders orders, Guid guid)
+    public static SubmitTurnCommand Construct(RegimeTurnOrders orders, Guid guid)
     {
         
         return new SubmitTurnCommand(orders, guid);
     }
-    [SerializationConstructor] private SubmitTurnCommand(TurnOrders orders, Guid commandingPlayerGuid)
+    [SerializationConstructor] private SubmitTurnCommand(RegimeTurnOrders orders, Guid commandingPlayerGuid)
         : base(commandingPlayerGuid)
     {
         Orders = orders;

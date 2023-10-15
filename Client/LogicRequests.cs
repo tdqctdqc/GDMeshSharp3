@@ -6,10 +6,10 @@ using Godot;
 public class LogicRequests
 {
     public RefAction<Command> QueueCommand { get; private set; }
-    public RefAction<(Player, TurnOrders)> SubmitPlayerOrders { get; private set; }
+    public RefAction<(Player, RegimeTurnOrders)> SubmitPlayerOrders { get; private set; }
     public LogicRequests()
     {
         QueueCommand = new RefAction<Command>();
-        SubmitPlayerOrders = new RefAction<(Player, TurnOrders)>();
+        SubmitPlayerOrders = new RefAction<(Player, RegimeTurnOrders)>();
     }
 }

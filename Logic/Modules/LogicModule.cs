@@ -5,6 +5,6 @@ using Godot;
 
 public abstract class LogicModule
 {
-    public abstract LogicResults Calculate(List<TurnOrders> orders, 
+    public abstract LogicResults Calculate(List<RegimeTurnOrders> orders, 
         Data data);
 }

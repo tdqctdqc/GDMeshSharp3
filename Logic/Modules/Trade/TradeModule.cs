@@ -8,7 +8,7 @@ public class TradeModule : LogicModule
 {
     public static float MaxPriceDeviationRatioFromDefault { get; private set; } = 10f;
     public static float PriceAdjustmentRatio { get; private set; } = .25f;
-    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
+    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         var proc = TradeProcedure.Construct();

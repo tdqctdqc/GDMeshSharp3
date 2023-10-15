@@ -10,7 +10,7 @@ public class TurnCalculator
     public bool Calculating { get; private set; }
     public TurnCalcState State { get; private set; }
     private List<LogicModule> _modules;
-    private List<TurnOrders> _orders;
+    private List<RegimeTurnOrders> _orders;
     private Data _data;
     private Task<LogicResults> _currTask;
     private Action<LogicResults> _enact;
@@ -74,10 +74,10 @@ public class TurnCalculator
         State = TurnCalcState.Waiting;
     }
 
-    private List<TurnOrders> GetOrdersList(IDictionary<Player, TurnOrders> playerTurnOrders,
-        IDictionary<Regime, Task<TurnOrders>> aiTurnOrders)
+    private List<RegimeTurnOrders> GetOrdersList(IDictionary<Player, RegimeTurnOrders> playerTurnOrders,
+        IDictionary<Regime, Task<RegimeTurnOrders>> aiTurnOrders)
     {
-        var res = new List<TurnOrders>();
+        var res = new List<RegimeTurnOrders>();
         foreach (var kvp in playerTurnOrders)
         {
             if (kvp.Key.Regime.Entity(_data).IsPlayerRegime(_data) == false) continue;

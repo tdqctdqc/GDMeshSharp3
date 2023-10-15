@@ -5,7 +5,7 @@ using System.Linq;
 public class DiplomaticCalcModule : LogicModule
 {
 
-    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
+    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
     {
         return new LogicResults();
     }

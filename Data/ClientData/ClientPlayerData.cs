@@ -9,6 +9,7 @@ public class ClientPlayerData
     // public TurnOrders Orders { get; private set; }
     public MajorTurnOrders MajorOrders { get; private set; }
     public MinorTurnOrders MinorOrders { get; private set; }
+    public AllianceTurnOrders AllianceOrders { get; private set; }
     public ClientPlayerData(Data data)
     {
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>
@@ -63,7 +64,7 @@ public class ClientPlayerData
 
     public void SubmitOrders(Data data)
     {
-        TurnOrders orders;
+        RegimeTurnOrders orders;
         if (data.BaseDomain.GameClock.MajorTurn(data))
         {
             orders = MajorOrders;

@@ -5,7 +5,7 @@ using Godot;
 
 public class ProposalsModule : LogicModule
 {
-    public override LogicResults Calculate(List<TurnOrders> orders, Data data)
+    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         var proposals = data.Society.Proposals.Proposals.Values.ToList();
@@ -17,7 +17,7 @@ public class ProposalsModule : LogicModule
     }
 
     
-    private void ReceiveProposalDecisions(List<TurnOrders> orders, Data data, LogicResults res)
+    private void ReceiveProposalDecisions(List<RegimeTurnOrders> orders, Data data, LogicResults res)
     {
         foreach (var turnOrders in orders)
         {
@@ -57,7 +57,7 @@ public class ProposalsModule : LogicModule
             res.Messages.Add(new CancelProposalProcedure(invalid.Id));
         }
     }
-    private void AddProposals(List<TurnOrders> orders, LogicResults res, Data data)
+    private void AddProposals(List<RegimeTurnOrders> orders, LogicResults res, Data data)
     {
         var tick = data.BaseDomain.GameClock.Tick;
         foreach (var turnOrders in orders)
