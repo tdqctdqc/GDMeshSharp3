@@ -46,7 +46,12 @@ public class HostLogic : ILogic
         _turnEndCalculator = new TurnCalculator(EnactResults, data);
         
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank
-            .Subscribe(() => OrderHolder.CalcAiTurnOrders(_data));
+            .Subscribe(
+                () =>
+                {
+                    OrderHolder.CalcAiTurnOrders(_data);
+                }
+            );
     }
     
     public void FirstTurn()

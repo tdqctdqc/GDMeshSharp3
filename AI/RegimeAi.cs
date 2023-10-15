@@ -22,6 +22,12 @@ public class RegimeAi
         Budget.Calculate(data, orders);
         Diplomacy.Calculate(data, orders);
         Military.Calculate(data, orders);
+        var alliance = Regime.GetAlliance(data);
+        var allianceLeader = alliance.Leader.Entity(data);
+        if (allianceLeader == Regime)
+        {
+            data.HostLogicData.AllianceAis[alliance].Calculate(orders.AllianceOrders, data);
+        }
         return orders; 
     }
     public MinorTurnOrders GetMinorTurnOrders(Data data)

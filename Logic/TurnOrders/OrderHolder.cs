@@ -36,8 +36,6 @@ public class OrderHolder
         {
             GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetMinorTurnOrders(data), data);
         }
-        
-        
     }
     private void GetAiRegimeOrders(Func<Regime, RegimeTurnOrders> getOrders, Data data)
     {
