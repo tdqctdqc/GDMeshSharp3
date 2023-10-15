@@ -4,39 +4,49 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="ditto">
-      <change afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ClientTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientTopBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapInputCatcher.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapInputCatcher.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/ChooseRegimePrompt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/ChooseRegimePrompt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/PromptManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/PromptManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/DataNotices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/DataNotices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/BaseDomain/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/BaseDomain/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Building/MapBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Building/MapBuilding.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/BudgetTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/BudgetTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ConstructionTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ConstructionTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FlowsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FlowsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ItemsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ItemsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ManufacturingTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ManufacturingTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TroopReserveTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TroopReserveTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/MainMenuClient/MainMenuClient.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Road/RoadNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Road/RoadNetwork.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/PlanetInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/PlanetInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Alliance/Alliance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Location/Settlement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Market/Market.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Market/Market.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Peep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Peep.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/Regime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntitiesCreationUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/Utility/EntitiesCreationUpdate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntityDeletionUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/Utility/EntityDeletionUpdate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/ModelRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ModelRef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/GenData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/GenData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Game.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/WorldGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/LogicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/LogicModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/LogicResults.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/LogicResults.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/FormUnitsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/FormUnitsModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ConstructBuildingsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ConstructBuildingsModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/CreateWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/RemoteLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/RemoteLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ClientWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/ClientWriteKey.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/GenWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/GenWriteKey.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/HostWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/HostWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ProcedureWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/ProcedureWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ServerWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/ServerWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/StrongWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/StrongWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Session/GameSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GameSession.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/MainMenuSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/MainMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/HostServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/RemoteServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/RemoteServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,6 +98,7 @@
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Data.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Entity/BaseDomain/GameClock/GameClock.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/Nav.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Entity/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Entity/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Entity/SocietyDomain/Proposals/ProposalList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Entity/Utility/EntityVarMeta.cs" root0="SKIP_HIGHLIGHTING" />
@@ -314,7 +325,9 @@
       <workItem from="1696790671655" duration="583000" />
       <workItem from="1697045157357" duration="6008000" />
       <workItem from="1697064854799" duration="3842000" />
-      <workItem from="1697301051009" duration="6474000" />
+      <workItem from="1697301051009" duration="6724000" />
+      <workItem from="1697314663018" duration="1998000" />
+      <workItem from="1697320899228" duration="2942000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -526,14 +539,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00036" summary="made better scaling options for generation">
-      <option name="closed" value="true" />
-      <created>1693494404997</created>
-      <option name="number" value="00036" />
-      <option name="presentableId" value="LOCAL-00036" />
-      <option name="project" value="LOCAL" />
-      <updated>1693494404997</updated>
-    </task>
     <task id="LOCAL-00037" summary="pre reworking loc gen">
       <option name="closed" value="true" />
       <created>1693687601426</created>
@@ -678,7 +683,15 @@
       <option name="project" value="LOCAL" />
       <updated>1697303659547</updated>
     </task>
-    <option name="localTasksCounter" value="55" />
+    <task id="LOCAL-00055" summary="ditto reforming entity creation">
+      <option name="closed" value="true" />
+      <created>1697308485708</created>
+      <option name="number" value="00055" />
+      <option name="presentableId" value="LOCAL-00055" />
+      <option name="project" value="LOCAL" />
+      <updated>1697308485708</updated>
+    </task>
+    <option name="localTasksCounter" value="56" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -700,7 +713,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="made valueChangeNotice typed by entity as well" />
     <MESSAGE value="working on client, ui, new svgs" />
     <MESSAGE value="fixed graphic switch layer bug w/ not updating hidden layers, made MapChunkGraphicNode.cs only update all entities at once" />
     <MESSAGE value="made closeableWindow pass mouse button input to mapGraphics when outside the box" />
@@ -725,6 +737,7 @@
     <MESSAGE value="added units" />
     <MESSAGE value="added thread-safe id taking" />
     <MESSAGE value="ditto" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
+    <MESSAGE value="ditto reforming entity creation" />
+    <option name="LAST_COMMIT_MESSAGE" value="ditto reforming entity creation" />
   </component>
 </project>

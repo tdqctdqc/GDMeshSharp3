@@ -3,12 +3,10 @@ using System;
 
 public class HostWriteKey : StrongWriteKey, ICreateWriteKey
 {
-    public HostServer HostServer { get; private set; }
     public HostLogic Logic { get; private set; }
-    public HostWriteKey(HostServer hostServer, HostLogic logic, Data data, ISession session) : base(data, session)
+    public HostWriteKey(HostLogic logic, Data data) : base(data)
     {
         Logic = logic;
-        HostServer = hostServer;
     }
 
     public void Create<TEntity>(TEntity t) where TEntity : Entity

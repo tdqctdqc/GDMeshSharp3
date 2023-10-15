@@ -11,6 +11,7 @@ public class WorldGenLogic : ILogic
     private GameSession _session;
     public GenData Data => (GenData) _session.Data;
     public Action FinishedGenSuccessfully { get; set; }
+    public Action FinalizeGen { get; set; }
     public bool Succeeded { get; private set; }
 
     public WorldGenLogic(GameSession session)

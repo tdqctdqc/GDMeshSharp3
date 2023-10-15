@@ -27,7 +27,7 @@ public partial class Game : Node
 	}
 	public void StartMainMenuSession()
 	{
-		AddChild(new MainMenuSession());
+		AddChild(new MainMenu());
 	}
 	public void StartClientSession()
 	{

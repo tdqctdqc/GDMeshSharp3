@@ -10,7 +10,7 @@ public class RemoteLogic : ILogic
     private List<Update> _syncingUpdates;
     public RemoteLogic(Data data, GameSession session)
     {
-        PKey = new ProcedureWriteKey(data, session);
+        PKey = new ProcedureWriteKey(data);
         _inited = false;
         _syncingUpdates = new List<Update>();
     }

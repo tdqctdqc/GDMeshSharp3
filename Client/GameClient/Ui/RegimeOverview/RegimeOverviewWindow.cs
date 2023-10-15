@@ -46,16 +46,16 @@ public partial class RegimeOverviewWindow : TabWindow
         _troop = new TroopReserveTab();
         AddTab(_troop);
     }
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
-        _general.Setup(regime, data);
-        _construction.Setup(regime, data);
-        _peeps.Setup(regime, data);
-        _items.Setup(regime, data);
-        _ag.Setup(regime, data);
-        _budget.Setup(regime, data);
-        _flows.Setup(regime, data);
-        _manuf.Setup(regime, data);
-        _troop.Setup(regime, data);
+        _general.Setup(regime, client);
+        _construction.Setup(regime, client);
+        _peeps.Setup(regime, client);
+        _items.Setup(regime, client);
+        _ag.Setup(regime, client);
+        _budget.Setup(regime, client);
+        _flows.Setup(regime, client);
+        _manuf.Setup(regime, client);
+        _troop.Setup(regime, client);
     }
 }

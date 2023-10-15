@@ -15,7 +15,7 @@ public partial class ManufacturingTab : ScrollContainer
         AddChild(_container);
     }
     
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
         _container.CreateLabelAsChild("MANUFACTURING QUEUE");
@@ -24,7 +24,7 @@ public partial class ManufacturingTab : ScrollContainer
         for (var i = 0; i < manufacturing.Count; i++)
         {
             var project = manufacturing.ElementAt(i);
-            _container.AddChild(project.GetDisplay(data));
+            _container.AddChild(project.GetDisplay(client.Data));
         }
     }
 }

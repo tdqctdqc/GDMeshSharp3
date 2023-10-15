@@ -19,28 +19,28 @@ public partial class MapGraphics : Node2D, IClientComponent
     Node IClientComponent.Node => this;
     public Action Disconnect { get; set; }
 
-    public MapGraphics(Data data, Client client)
+    public MapGraphics(Client client)
     {
         var sw = new Stopwatch();
         sw.Start();
 
         UpdateQueue = new ConcurrentQueue<Action>();
         
-        _segmenter = new GraphicsSegmenter(10, data);
+        _segmenter = new GraphicsSegmenter(10, client.Data);
         AddChild(_segmenter);
         _hook = new Node2D();
         AddChild(_hook);
-        GraphicLayerHolder = new GraphicLayerHolder(_segmenter, _hook, data);
+        GraphicLayerHolder = new GraphicLayerHolder(_segmenter, _hook, client.Data);
 
-        Highlighter = new PolyHighlighter(data);
+        Highlighter = new PolyHighlighter(client.Data);
         AddChild(Highlighter);
         
-        InputCatcher = new MapInputCatcher(data);
+        InputCatcher = new MapInputCatcher(client);
         AddChild(InputCatcher);
         
         client.GraphicsLayer.AddChild(this);
         
-        data.Notices.Ticked.Blank.SubscribeForNode(() => Task.Run(() => Update(data)), this);
+        client.Data.Notices.Ticked.Blank.SubscribeForNode(() => Task.Run(() => Update(client.Data)), this);
 
         sw.Stop();
         Game.I.Logger.Log("map graphics setup time " + sw.Elapsed.TotalMilliseconds, LogType.Graphics);

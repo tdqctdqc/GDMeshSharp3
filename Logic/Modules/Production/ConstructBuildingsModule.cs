@@ -9,7 +9,7 @@ public class ConstructBuildingsModule : LogicModule
         Data data)
     {
         var res = new LogicResults();
-        var key = new LogicWriteKey(data, res, null);
+        var key = new LogicWriteKey(data, res);
         var finished = new HashSet<Construction>();
         var clear = ClearFinishedConstructionsProcedure.Construct();
         foreach (var r in data.GetAll<Regime>())

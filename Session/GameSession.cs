@@ -31,11 +31,6 @@ public partial class GameSession : Node, ISession
     private GameSession()
     {
     }
-    private void SetupPlayer(ICreateWriteKey key)
-    {
-        Data.ClientPlayerData.SetLocalPlayerGuid(new Guid());
-        Player.Create(Data.ClientPlayerData.LocalPlayerGuid, "Doot", key);
-    }
     public override void _Process(double deltaD)
     {
         var delta = (float) deltaD;
@@ -45,14 +40,15 @@ public partial class GameSession : Node, ISession
 
     public WorldGenLogic SetAsGenerator()
     {
-        var server = new DummyServer();
+        var server = new HostServer();
         StartServer(server);
         Data = new GenData();
         StartClient();
         
         var worldGen = new WorldGenLogic(this);
         _logic = worldGen;
-        worldGen.FinishedGenSuccessfully = () => Client.SetupForGameData(Data);
+        worldGen.FinishedGenSuccessfully = () => Client.SetupForGameData();
+        worldGen.FinalizeGen += GeneratorToGameTransition;
         Client.SetupForGenerator(worldGen);
         return worldGen;
     }
@@ -68,7 +64,7 @@ public partial class GameSession : Node, ISession
     public void StartClient()
     {
         Client?.QueueFree();
-        Client = new Client(this);
+        Client = new Client(Data, Server);
         AddChild(Client);
     }
     private void LoadAsHost(Data data)
@@ -81,7 +77,7 @@ public partial class GameSession : Node, ISession
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
         StartClient();
-        Client.SetupForGameData(Data);
+        Client.SetupForGameData();
     }
     public void GeneratorToGameTransition()
     {
@@ -92,8 +88,9 @@ public partial class GameSession : Node, ISession
         hServer.Setup(logic, Data, this);
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
+        Client.SetServer(hServer);
         logic.FirstTurn();
-        Client.SetupForGameplay(true, Data);
+        Client.SetupForGameplay(true);
     }
     
     public void SetAsRemote()
@@ -105,7 +102,7 @@ public partial class GameSession : Node, ISession
         server.Setup(this, logic, Data);
         StartServer(server);
         StartClient();
-        Client.SetupForGameplay(false, Data);
+        Client.SetupForGameplay(false);
     }
 
     private void StartServer(IServer server)

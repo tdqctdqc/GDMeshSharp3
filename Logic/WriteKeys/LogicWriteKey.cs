@@ -2,7 +2,7 @@
 public class LogicWriteKey : StrongWriteKey, ICreateWriteKey
 {
     public LogicResults Results { get; private set; }
-    public LogicWriteKey(Data data, LogicResults results, ISession session) : base(data, session)
+    public LogicWriteKey(Data data, LogicResults results) : base(data)
     {
         Results = results;
     }

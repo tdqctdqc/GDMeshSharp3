@@ -149,8 +149,8 @@ public class HostLogic : ILogic
     {
         _data = data;
         _server = server;
-        _hKey = new HostWriteKey(server, this, data, session);
-        PKey = new ProcedureWriteKey(data, session);
+        _hKey = new HostWriteKey(this, data);
+        PKey = new ProcedureWriteKey(data);
     }
 
     public void SubmitPlayerTurnOrders(Player player, TurnOrders orders)

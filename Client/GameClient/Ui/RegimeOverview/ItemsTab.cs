@@ -16,11 +16,11 @@ public partial class ItemsTab : ScrollContainer
         _container.CustomMinimumSize = CustomMinimumSize;
         AddChild(_container);
     }
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
-        var itemIds = data.Models.GetModels<Item>().Values;
-        var tick = data.BaseDomain.GameClock.Tick;
+        var itemIds = client.Data.Models.GetModels<Item>().Values;
+        var tick = client.Data.BaseDomain.GameClock.Tick;
         
         foreach (var item in itemIds)
         {

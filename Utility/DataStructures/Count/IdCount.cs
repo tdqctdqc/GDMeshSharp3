@@ -21,7 +21,7 @@ public class IdCount<T> : Count<int>
         return new IdCount<T>(toCopy.ToDictionary(kvp => kvp.Key.Id, kvp => kvp.Value),
             false);
     }
-    [SerializationConstructor] protected IdCount(Dictionary<int, float> contents, bool canBeNegative) 
+    [SerializationConstructor] private IdCount(Dictionary<int, float> contents, bool canBeNegative) 
         : base(contents, canBeNegative)
     {
     }

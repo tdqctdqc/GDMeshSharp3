@@ -20,7 +20,7 @@ public partial class RemoteServer : Node, IServer
 
     public void Setup(GameSession session, RemoteLogic logic, Data data)
     {
-        _key = new ServerWriteKey(data, session);
+        _key = new ServerWriteKey(data);
         _streamPeer = new StreamPeerTcp();
         if (
             // _streamPeer.IsConnectedToHost() == false

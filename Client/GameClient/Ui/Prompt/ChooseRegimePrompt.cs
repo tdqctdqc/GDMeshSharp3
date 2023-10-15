@@ -4,16 +4,16 @@ using System.Linq;
 
 public class ChooseRegimePrompt : Prompt
 {
-    public ChooseRegimePrompt(Data data) 
+    public ChooseRegimePrompt(Client client) 
         : base("Choose Regime", new List<Action>(), new List<string>())
     {
-        var availRegimes = data.GetAll<Regime>()
-            .Where(r => r.IsPlayerRegime(data) == false);
+        var availRegimes = client.Data.GetAll<Regime>()
+            .Where(r => r.IsPlayerRegime(client.Data) == false);
         Action<Regime> action = r =>
         {
             var com = new ChooseRegimeCommand(r.MakeRef(), 
-                data.ClientPlayerData.LocalPlayerGuid);
-            Game.I.Client.Key.Session.Server.QueueCommandLocal(com);
+                client.Data.ClientPlayerData.LocalPlayerGuid);
+            client.HandleCommand(com);
         };
         foreach (var r in availRegimes)
         {

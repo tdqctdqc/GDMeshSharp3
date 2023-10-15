@@ -6,10 +6,10 @@ using Godot;
 public partial class MapInputCatcher : Node
 {
     private MouseOverPolyHandler _mouseOverHandler;
-    private Data _data;
-    public MapInputCatcher(Data data)
+    private Client _client;
+    public MapInputCatcher(Client client)
     {
-        _data = data;
+        _client = client;
         _mouseOverHandler = new MouseOverPolyHandler();
     }
 
@@ -22,7 +22,7 @@ public partial class MapInputCatcher : Node
         {
             var mapPos = Game.I.Client.Cam().GetMousePosInMapSpace();
             var d = GetProcessDeltaTime();
-            _mouseOverHandler.Process((float) d, _data, mapPos);
+            _mouseOverHandler.Process((float) d, _client.Data, mapPos);
         }
         if(e.IsAction("Open Regime Overview"))
         {
@@ -39,9 +39,9 @@ public partial class MapInputCatcher : Node
         if (poly == null) return;
         if (poly.Regime.Fulfilled())
         {
-            var r = poly.Regime.Entity(_data);
+            var r = poly.Regime.Entity(_client.Data);
             var w = Game.I.Client.GetComponent<WindowManager>().OpenWindow<RegimeOverviewWindow>();
-            w.Setup(r, _data);
+            w.Setup(r, _client);
         }
     }
 }

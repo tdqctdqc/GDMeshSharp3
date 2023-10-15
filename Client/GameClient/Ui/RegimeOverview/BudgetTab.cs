@@ -14,10 +14,10 @@ public partial class BudgetTab : ScrollContainer
         _container.AnchorsPreset = (int)LayoutPreset.FullRect;
     }
     
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
-        var ais = data.HostLogicData.AIs;
+        var ais = client.Data.HostLogicData.AIs;
         if (ais.Dic.ContainsKey(regime) == false) return;
         var ai = ais[regime];
         var budget = ai.Budget;
@@ -33,7 +33,7 @@ public partial class BudgetTab : ScrollContainer
             foreach (var kvp in priority.Account.Items.Contents)
             {
                 if (kvp.Value == 0f) continue;
-                var item = data.Models.GetModel<Item>(kvp.Key);
+                var item = client.Data.Models.GetModel<Item>(kvp.Key);
                 _container.CreateLabelAsChild($"\t\t{item.Name}: {kvp.Value.RoundTo2Digits()}");
             }
             

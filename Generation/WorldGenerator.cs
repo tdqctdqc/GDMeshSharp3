@@ -15,7 +15,7 @@ public class WorldGenerator
     {
         _succeeded = succeeded;
         Data = data;
-        _key = new GenWriteKey(Data, session);
+        _key = new GenWriteKey(Data);
         _totalTime = new Stopwatch();
     }
     public GenReport Generate()

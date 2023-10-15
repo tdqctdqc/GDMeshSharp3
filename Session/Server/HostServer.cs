@@ -21,7 +21,7 @@ public partial class HostServer : Node, IServer
     public void Setup(HostLogic logic, Data data, GameSession session)
     {
         _logic = logic;
-        _key = new HostWriteKey(this, logic, data, session);
+        _key = new HostWriteKey(logic, data);
     }
     public override void _Process(double delta)
     {

@@ -14,11 +14,11 @@ public partial class FlowsTab : ScrollContainer
         _container.CustomMinimumSize = CustomMinimumSize;
         AddChild(_container);
     }
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
-        var flowIds = data.Models.GetModels<Flow>().Values;
-        var tick = data.BaseDomain.GameClock.Tick;
+        var flowIds = client.Data.Models.GetModels<Flow>().Values;
+        var tick = client.Data.BaseDomain.GameClock.Tick;
         
         foreach (var flow in flowIds)
         {

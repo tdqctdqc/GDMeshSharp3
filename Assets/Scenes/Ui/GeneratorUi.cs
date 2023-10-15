@@ -14,13 +14,12 @@ public partial class GeneratorUi : Node, IClientComponent
 
     private WorldGenLogic _logic;
     private Label _progress;
-    private GameSession _session;
     
     public GeneratorSettingsWindow GenSettingsWindow { get; private set; }
-    public static GeneratorUi Construct(Client client, GameSession session, WorldGenLogic wrapper)
+    public static GeneratorUi Construct(Client client, WorldGenLogic wrapper)
     {
         var ui = new GeneratorUi();
-        ui.Setup(client, session, wrapper);
+        ui.Setup(client, wrapper);
         return ui;
     }
 
@@ -28,9 +27,8 @@ public partial class GeneratorUi : Node, IClientComponent
     {
         
     }
-    public void Setup(Client client, GameSession session, WorldGenLogic wrapper)
+    public void Setup(Client client, WorldGenLogic wrapper)
     {
-        _session = session;
         _logic = wrapper;
         var uiFrame = client.GetComponent<UiFrame>();
 
@@ -42,7 +40,7 @@ public partial class GeneratorUi : Node, IClientComponent
         {
             if(wrapper.Succeeded)
             {
-                _session.GeneratorToGameTransition();
+                wrapper.FinalizeGen?.Invoke();
             }
         });
         topBar.AddWindowButton<GeneratorSettingsWindow>("Gen Settings");

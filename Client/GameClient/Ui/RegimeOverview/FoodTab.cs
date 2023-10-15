@@ -15,14 +15,14 @@ public partial class FoodTab : ScrollContainer
         _container.AnchorsPreset = (int)LayoutPreset.FullRect;
         AddChild(_container);
     }
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
         
-        var actualProd = regime.History.ItemHistory.GetLatest(data.Models.Items.Food).Produced;
-        var actualCons = regime.History.ItemHistory.GetLatest(data.Models.Items.Food).Consumed;
-        var demand = regime.GetPeeps(data).Sum(p => p.Size)
-                     * data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
+        var actualProd = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Produced;
+        var actualCons = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Consumed;
+        var demand = regime.GetPeeps(client.Data).Sum(p => p.Size)
+                     * client.Data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         _container.CreateLabelAsChild($"Last Prod: {actualProd}");
         _container.CreateLabelAsChild($"Consumption: {actualCons}");
         _container.CreateLabelAsChild($"Net: {actualProd - actualCons}");
@@ -34,20 +34,20 @@ public partial class FoodTab : ScrollContainer
         
         
         
-        var populatedPolys = regime.GetPolys(data)
-            .Where(p => p.HasPeep(data));
+        var populatedPolys = regime.GetPolys(client.Data)
+            .Where(p => p.HasPeep(client.Data));
         var peeps = populatedPolys
-            .Select(p => p.GetPeep(data));
+            .Select(p => p.GetPeep(client.Data));
         var peepCount = peeps.Count();
         var peepSize = peeps.Sum(p => p.Size);
         var jobs = populatedPolys
-            .Select(p => p.GetPeep(data))
+            .Select(p => p.GetPeep(client.Data))
             .SelectMany(p => p.Employment.Counts)
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);
 
         var techniqueCounts = populatedPolys
             .SelectMany(p => p.PolyFoodProd.Nums)
-            .SortInto(p => data.Models.GetModel<FoodProdTechnique>(p.Key), p => p.Value);
+            .SortInto(p => client.Data.Models.GetModel<FoodProdTechnique>(p.Key), p => p.Value);
         
         
         foreach (var kvp in techniqueCounts)

@@ -15,17 +15,17 @@ public partial class PromptManager : Node, IClientComponent
     private float _timer;
     private float _period = 1f;
     private Client _client;
-    public PromptManager(Client client, Data data)
+    public PromptManager(Client client)
     {
         _client = client;
         _windows = new Dictionary<Prompt, PromptWindow>();
-        data.Notices.ExitedGen.SubscribeForNode(
+        client.Data.Notices.ExitedGen.SubscribeForNode(
             () =>
             {
-                var p = data.BaseDomain.PlayerAux.LocalPlayer;
+                var p = client.Data.BaseDomain.PlayerAux.LocalPlayer;
                 if (p.Regime.Empty())
                 {
-                    AddPrompt(new ChooseRegimePrompt(data));
+                    AddPrompt(new ChooseRegimePrompt(client));
                 }
             }, this);
         client.UiLayer.AddChild(this);

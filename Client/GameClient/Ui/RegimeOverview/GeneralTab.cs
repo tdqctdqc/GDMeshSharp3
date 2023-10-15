@@ -19,7 +19,7 @@ public partial class GeneralTab : ScrollContainer
         AddChild(_container);
         _container.AnchorsPreset = (int)LayoutPreset.FullRect;
     }
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
         Name = regime.Name;
         _container.ClearChildren();
@@ -29,30 +29,30 @@ public partial class GeneralTab : ScrollContainer
         regimeFlagRect.StretchMode = TextureRect.StretchModeEnum.Scale;
         regimeFlagRect.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
         regimeFlagRect.SizeFlagsVertical = SizeFlags.ShrinkBegin;
-        regimeFlagRect.Texture = regime.Template.Model(data).Flag;
+        regimeFlagRect.Texture = regime.Template.Model(client.Data).Flag;
         regimeFlagRect.CustomMinimumSize = new Vector2(150f, 100f);
         _container.AddChild(regimeFlagRect);
         
-        if (regime.IsPlayerRegime(data) == false)
+        if (regime.IsPlayerRegime(client.Data) == false)
         {
             var button = ButtonExt.GetButton(() =>
             {
                 var com = new ChooseRegimeCommand(regime.MakeRef(),
-                    data.ClientPlayerData.LocalPlayerGuid);
-                Game.I.Client.HandleCommand(com);
+                    client.Data.ClientPlayerData.LocalPlayerGuid);
+                client.HandleCommand(com);
             });
             button.Text = "Choose Regime";
             _container.AddChild(button);
         }
 
-        _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(data).Id);
+        _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(client.Data).Id);
         _container.CreateLabelAsChild("ALLIANCE LEADER: " 
-                                      + regime.GetAlliance(data).Leader.Entity(data).Name
-                                      + " " + regime.GetAlliance(data).Leader.Entity(data).Id);
+                                      + regime.GetAlliance(client.Data).Leader.Entity(client.Data).Name
+                                      + " " + regime.GetAlliance(client.Data).Leader.Entity(client.Data).Id);
         _container.CreateLabelAsChild("RIVALS");
-        foreach (var rival in regime.GetAlliance(data).Rivals.Items(data))
+        foreach (var rival in regime.GetAlliance(client.Data).Rivals.Items(client.Data))
         {
-            _container.CreateLabelAsChild(rival.Leader.Entity(data).Name);
+            _container.CreateLabelAsChild(rival.Leader.Entity(client.Data).Name);
         }
     }
 }

@@ -8,7 +8,7 @@ public class FormUnitsModule : LogicModule
     public override LogicResults Calculate(List<TurnOrders> orders, Data data)
     {
         var res = new LogicResults();
-        var key = new LogicWriteKey(data, res, null);
+        var key = new LogicWriteKey(data, res);
         orders.ForEach(o => FormUnits((MajorTurnOrders)o, data, key));
         return res;
     }

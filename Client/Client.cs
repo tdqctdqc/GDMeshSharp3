@@ -5,21 +5,23 @@ using Godot;
 
 public partial class Client : Node, IClient
 {
+    public Data Data { get; private set; }
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiRequests UiRequests { get; private set; }
     public Control UiLayer { get; private set; }
     public Node2D GraphicsLayer { get; private set; }
+    public IServer Server { get; private set; }
     public Dictionary<Type, IClientComponent> Components { get; private set; }
-    private GameSession _session;
-    public Client(GameSession session)
+    public Client(Data data, IServer server)
     {
-        _session = session;
+        Data = data;
+        Server = server;
         Setup();
     }
     private void Setup()
     {
-        Key = new ClientWriteKey(_session.Data, _session);
+        Key = new ClientWriteKey(Data);
         GraphicsLayer = new Node2D();
         AddChild(GraphicsLayer);
         var ui = new CanvasLayer();
@@ -29,13 +31,12 @@ public partial class Client : Node, IClient
         UiLayer.FocusMode = Control.FocusModeEnum.None;
         AddChild(ui);
         
-        _session = _session;
         Components = new Dictionary<Type, IClientComponent>();
         UiRequests = new UiRequests();
         Settings = ClientSettings.Load();
         AddComponent(new UiFrame(this));
         
-        var cam = WorldCameraController.Construct(_session.Data);
+        var cam = WorldCameraController.Construct(Data);
         AddComponent(cam);
         AddChild(cam);
         
@@ -43,12 +44,16 @@ public partial class Client : Node, IClient
         GetComponent<WindowManager>().AddWindow(ClientSettingsWindow.Get(Settings));
         
         
-        AddComponent(new PromptManager(this, _session.Data));
-        AddComponent(new ClientTopBar(this, _session));
+        AddComponent(new PromptManager(this));
+        AddComponent(new ClientTopBar(this));
         
-        AddComponent(new TooltipManager(_session.Data, this));
+        AddComponent(new TooltipManager(Data, this));
     }
 
+    public void SetServer(IServer server)
+    {
+        Server = server;
+    }
     public override void _Process(double delta)
     {
         var values = Components.Values.ToList();
@@ -94,7 +99,7 @@ public partial class Client : Node, IClient
 
     public void HandleCommand(Command c)
     {
-        _session.Server.QueueCommandLocal(c);
+        Server.QueueCommandLocal(c);
     }
 
     void IClient.HandleInput(InputEvent e, float delta)
@@ -112,26 +117,26 @@ public partial class Client : Node, IClient
 
     public void SetupForGenerator(WorldGenLogic wrapper)
     {
-        var genUi = GeneratorUi.Construct(this, _session, wrapper);
+        var genUi = GeneratorUi.Construct(this, wrapper);
         AddComponent(genUi);
     }
-    public void SetupForGameplay(bool host, Data data)
+    public void SetupForGameplay(bool host)
     {
         RemoveComponent<GeneratorUi>();
-        var gameUi = new GameplayUi(this, data, host);
+        var gameUi = new GameplayUi(this, Data, host);
         AddComponent(gameUi);
     }
 
-    public void SetupForGameData(Data data)
+    public void SetupForGameData()
     {
-        var mapGraphics = new MapGraphics(data, this);
+        var mapGraphics = new MapGraphics(this);
         AddComponent(mapGraphics);
         
         var mapGraphicsOptions = new MapGraphicsOptions(this);
         AddComponent(mapGraphicsOptions);
         
         GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
-        GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(data));
+        GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(Data));
     }
 }
 

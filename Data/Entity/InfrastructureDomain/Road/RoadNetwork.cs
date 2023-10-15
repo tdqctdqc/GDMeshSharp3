@@ -9,7 +9,7 @@ public class RoadNetwork : Entity
     
     public static RoadNetwork Create(GenWriteKey key)
     {
-        var n = new RoadNetwork(-1, IdGraph<Waypoint, ModelRef<RoadModel>>.Construct());
+        var n = new RoadNetwork(key.Data.IdDispenser.TakeId(), IdGraph<Waypoint, ModelRef<RoadModel>>.Construct());
         key.Create(n);
         return n;
     }

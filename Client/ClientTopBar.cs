@@ -7,19 +7,18 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
 {
     public Action Disconnect { get; set; }
 
-    public ClientTopBar(Client client, GameSession session)
+    public ClientTopBar(Client client)
     {
-        var key = new WriteKey(session.Data, session);
+        var key = new WriteKey(client.Data);
         this.AddWindowButton<LoggerWindow>("Logger");
         this.AddWindowButton<EntityOverviewWindow>("Entities");
         this.AddWindowButton<ClientSettingsWindow>("Settings");
-        this.AddButton("Test Serialization", () => session.Data.Serializer.Test(session.Data));
-        this.AddButton("Save", () => Saver.Save(session.Data, key));
+        this.AddButton("Save", () => Saver.Save(client.Data, key));
         this.AddButton("Load", () => Saver.Load());
-        this.AddButton("Test", () => Serializer.TestCustom(session.Data));
+        this.AddButton("Test", () => Serializer.TestCustom(client.Data));
         this.AddIntButton("Jump to Poly", i =>
         {
-            var poly = session.Data.Get<MapPolygon>(i);
+            var poly = client.Data.Get<MapPolygon>(i);
             if (poly == null) return;
             client.Cam().JumpTo(poly.Center);
         });

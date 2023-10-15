@@ -14,11 +14,11 @@ public partial class TroopReserveTab : ScrollContainer
         _container.CustomMinimumSize = CustomMinimumSize;
         AddChild(_container);
     }
-    public void Setup(Regime regime, Data data)
+    public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
-        var troops = data.Models.GetModels<Troop>().Values;
-        var tick = data.BaseDomain.GameClock.Tick;
+        var troops = client.Data.Models.GetModels<Troop>().Values;
+        var tick = client.Data.BaseDomain.GameClock.Tick;
         
         foreach (var troop in troops)
         {

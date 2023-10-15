@@ -6,7 +6,7 @@ using Godot;
 public class GenWriteKey : StrongWriteKey, ICreateWriteKey
 {
     public GenData GenData => (GenData) Data;
-    public GenWriteKey(GenData data, ISession session) : base(data, session)
+    public GenWriteKey(GenData data) : base(data)
     {
     }
 
