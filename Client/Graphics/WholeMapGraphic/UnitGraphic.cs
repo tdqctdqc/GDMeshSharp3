@@ -17,9 +17,16 @@ public partial class UnitGraphic : MeshInstance2D
     {
         Position = unit.Regime.Entity(d).Capital.Entity(d).Center;
         var m = new QuadMesh();
-        m.Size = Vector2.One * 10f;
+        m.Size = Vector2.One * 20f;
         Mesh = m;
-        Modulate = unit.Regime.Entity(d).PrimaryColor;
+
+        var subMesh = new QuadMesh();
+        subMesh.Size = m.Size * .8f;
+        var sub = new MeshInstance2D();
+        sub.Mesh = subMesh;
+        AddChild(sub);
+        Modulate = unit.Regime.Entity(d).SecondaryColor;
+        sub.Modulate = unit.Regime.Entity(d).PrimaryColor;
         segmenter.AddElement(this, unit.Position);
     }
     public void Update(Unit unit, Data data, GraphicsSegmenter segmenter,

@@ -7,9 +7,17 @@ public class ForceCompositionAi
 {
     public float BuildTroopWeight { get; private set; }
     public IBudgetPriority[] Priorities { get; private set; }
-    public ForceCompositionAi()
+    public ForceCompositionAi(Regime regime)
     {
         BuildTroopWeight = 1f;
+        Priorities = new IBudgetPriority[]
+        {
+            new FormUnitPriority("Form unit",
+                d => regime.GetUnitTemplates(d),
+                (d,r) => 1f,
+                t => true,
+                t => 1f)
+        };
     }
 
     public void Calculate(Regime regime, Data data, MajorTurnOrders orders,
@@ -32,13 +40,20 @@ public class ForceCompositionAi
     private void BuildUnits(IdCount<Troop> reserve, Data data, Regime regime, 
         MajorTurnOrders orders)
     {
-        var templates = data.Military.UnitAux.UnitTemplates[regime];
-        orders.MilitaryOrders.UnitTemplatesToBuild.Add(templates.First().Id);
+        var pool = new BudgetPool(
+            IdCount<Item>.Construct(),
+            IdCount<IModel>.Construct<IModel, Troop>(regime.TroopReserve), 
+            0f);
+        DoPriorities(orders, pool, data, regime);
     }
     
     private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, Data data,
          Regime regime)
     {
+        foreach (var bp in Priorities)
+        {
+            bp.SetWeight(data, regime);
+        }
         var totalPriority = Priorities.Sum(p => p.Weight);
         if (totalPriority <= 0f) throw new Exception();
         foreach (var priority in Priorities)

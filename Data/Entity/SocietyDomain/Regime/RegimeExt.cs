@@ -4,6 +4,10 @@ using System.Linq;
 
 public static class RegimeExt
 {
+    public static IEnumerable<UnitTemplate> GetUnitTemplates(this Regime r, Data d)
+    {
+        return d.Military.UnitAux.UnitTemplates[r];
+    }
     public static bool IsPlayerRegime(this Regime r, Data data)
     {
         return data.BaseDomain.PlayerAux.ByRegime.ContainsKey(r);

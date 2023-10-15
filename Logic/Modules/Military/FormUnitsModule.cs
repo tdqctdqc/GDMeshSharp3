@@ -19,13 +19,12 @@ public class FormUnitsModule : LogicModule
         var regime = orders.Regime.Entity(data);
         var capitalPos = regime.Capital.Entity(data).Center;
         var useTroops = RegimeUseTroopsProcedure.Construct(regime);
-        var regimeTroops = regime.TroopReserve;
-
+        
         var availTroops =
             regime.TroopReserve.GetEnumerableModel(data)
                 .ToDictionary(kvp => kvp.Key,
                     kvp => kvp.Value);
-        foreach (var id in orders.MilitaryOrders.UnitTemplatesToBuild)
+        foreach (var id in orders.MilitaryOrders.UnitTemplatesToForm)
         {
             var template = data.Get<UnitTemplate>(id);
             var troopCosts = template
@@ -35,7 +34,7 @@ public class FormUnitsModule : LogicModule
             {
                 var troop = kvp.Key;
                 var num = kvp.Value;
-                if(regimeTroops.Get(troop) < num)
+                if(availTroops[troop] < num)
                 {
                     build = false;
                     break;
@@ -46,7 +45,8 @@ public class FormUnitsModule : LogicModule
             {
                 var troop = kvp.Key;
                 var num = kvp.Value;
-                useTroops.UsageByTroopId.AddOrSum(troop.Id, (int)num);
+                useTroops.UsageByTroopId.AddOrSum(troop.Id, 
+                    num);
                 availTroops[troop] -= num;
             }
             Unit.Create(template, regime, capitalPos, key);

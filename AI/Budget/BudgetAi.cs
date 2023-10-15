@@ -8,7 +8,7 @@ public class BudgetAi
     private Regime _regime;
     public List<IBudgetPriority> Priorities { get; private set; }
     public IncomeBudget IncomeBudget { get; private set; }
-    public BudgetAi(MilitaryAi milAi, Data data, Regime regime)
+    public BudgetAi(RegimeMilitaryAi milAi, Data data, Regime regime)
     {
         _regime = regime;
         Priorities = new List<IBudgetPriority>
@@ -40,7 +40,9 @@ public class BudgetAi
         var itemsToDistribute = GetItemsToDistribute(data);
         var labor = _regime.GetPolys(data)
             .Sum(p => p.GetLaborSurplus(data));
-        var pool = new BudgetPool(itemsToDistribute, _regime.Flows.GetSurplusCount(), labor);
+        var pool = new BudgetPool(itemsToDistribute, 
+            IdCount<IModel>.Construct<IModel, Flow>(
+                _regime.Flows.GetSurplusCount()), labor);
         DoPriorities(orders, pool, data);
     }
 
@@ -163,7 +165,7 @@ public class BudgetAi
         Dictionary<Item, int> wishlist)
      {
          var market = data.Society.Market;
-         var credits = pool.AvailFlows.Get(data.Models.Flows.Income);
+         var credits = pool.AvailModels.Get(data.Models.Flows.Income);
 
          var plausibleCosts = new Dictionary<Item, float>();
          foreach (var kvp in wishlist)

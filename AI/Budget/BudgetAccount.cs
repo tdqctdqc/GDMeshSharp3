@@ -6,19 +6,19 @@ using Godot;
 public class BudgetAccount
 {
     public IdCount<Item> Items { get; private set; }
-    public IdCount<Flow> Flows { get; private set; }
+    public IdCount<IModel> Models { get; private set; }
     public float Labor { get; private set; }
     public HashSet<Item> UsedItem { get; private set; }
-    public HashSet<Flow> UsedFlow { get; private set; }
+    public HashSet<IModel> UsedModel { get; private set; }
     public bool UsedLabor { get; private set; }
 
     public BudgetAccount()
     {
         UsedItem = new HashSet<Item>();
-        UsedFlow = new HashSet<Flow>();
+        UsedModel = new HashSet<IModel>();
         UsedLabor = false;
         Items = IdCount<Item>.Construct();
-        Flows = IdCount<Flow>.Construct();
+        Models = IdCount<IModel>.Construct();
         Labor = 0f;
     }
     public void TakeShare(float share, BudgetPool pool, Data data)
@@ -30,14 +30,14 @@ public class BudgetAccount
             Items.Add(item, q);
             pool.AvailItems.Remove(item, q);
         }
-        foreach (var kvp in pool.AvailFlows.Contents.ToArray())
+        foreach (var kvp in pool.AvailModels.Contents.ToArray())
         {
             var flow = kvp.Key;
             var net = kvp.Value;
-            var q = Mathf.Max(0f, share * pool.OrigFlows.Get(flow));
-            q = Mathf.Min(q, pool.AvailFlows.Get(flow));
-            Flows.Add(flow, q);
-            pool.AvailFlows.Remove(flow, q);
+            var q = Mathf.Max(0f, share * pool.OrigModels.Get(flow));
+            q = Mathf.Min(q, pool.AvailModels.Get(flow));
+            Models.Add(flow, q);
+            pool.AvailModels.Remove(flow, q);
         }
 
         var labor = pool.OrigLabor * share;
@@ -59,22 +59,22 @@ public class BudgetAccount
     }
     public void UseFlow(Flow flow, float q)
     {
-        Flows.Remove(flow, q);
-        UsedFlow.Add(flow);
+        Models.Remove(flow, q);
+        UsedModel.Add(flow);
     }
     public void Clear()
     {
         Labor = 0f;
         UsedItem.Clear();
-        UsedFlow.Clear();
+        UsedModel.Clear();
         UsedLabor = false;
     }
 
     public void Add(BudgetAccount toAdd)
     {
-        foreach (var kvp in toAdd.Flows.Contents)
+        foreach (var kvp in toAdd.Models.Contents)
         {
-            Flows.Add(kvp.Key, kvp.Value);
+            Models.Add(kvp.Key, kvp.Value);
         }
         foreach (var kvp in toAdd.Items.Contents)
         {

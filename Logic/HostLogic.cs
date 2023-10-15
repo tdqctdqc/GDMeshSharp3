@@ -10,14 +10,18 @@ using System.Threading.Tasks;
 public class HostLogic : ILogic
 {
     public ConcurrentQueue<Command> CommandQueue { get; }
+    
     private ConcurrentDictionary<Player, TurnOrders> _playerTurnOrders;
+    private ConcurrentDictionary<Player, TurnOrders> _playerAllianceOrders;
     private ConcurrentDictionary<Regime, Task<TurnOrders>> _aiTurnOrders;
+    private ConcurrentDictionary<Alliance, Task<TurnOrders>> _aiAllianceTurnOrders;
+    
     private HostServer _server; 
     private HostWriteKey _hKey;
     public ProcedureWriteKey PKey { get; private set; }
     private Data _data;
-    private Task<bool> _calculatingAiOrders;
-    private LogicModule[] _majorTurnStartModules, _majorTurnEndModules, _minorTurnStartModules, _minorTurnEndModules;
+    private LogicModule[] _majorTurnStartModules, _majorTurnEndModules, 
+        _minorTurnStartModules, _minorTurnEndModules;
     private TurnCalculator _turnStartCalculator, _turnEndCalculator;
     private bool _turnStartDone = false;
     public HostLogic(Data data)
@@ -164,6 +168,11 @@ public class HostLogic : ILogic
     {
         var players = _data.GetAll<Player>();
         var aiRegimes = _data.GetAll<Regime>().Where(r => r.IsPlayerRegime(_data) == false);
+
+        var playerLedAlliances = _data.GetAll<Alliance>()
+            .Where(a => a.Leader.Entity(_data).IsPlayerRegime(_data));
+        var aiLedAlliances = _data.GetAll<Alliance>().Except(playerLedAlliances);
+        
         foreach (var kvp in _aiTurnOrders)
         {
             if (kvp.Value.IsFaulted)
@@ -180,19 +189,28 @@ public class HostLogic : ILogic
 
         var allAisCompleted = _aiTurnOrders.All(kvp => kvp.Value.IsCompleted);
 
-        return allPlayersHaveRegime && allPlayersSubmitted && allAisHaveEntry && allAisCompleted;
+        var allPlayerLedAlliancesSubmitted = playerLedAlliances
+            .All(a => _playerAllianceOrders.ContainsKey(a.Leader.Entity(_data).GetPlayer(_data)));
+        var allAiAlliancesHaveEntry = aiLedAlliances.All(a => _aiAllianceTurnOrders.ContainsKey(a));
+        var allAiAlliancesCompleted = _aiAllianceTurnOrders.All(kvp => kvp.Value.IsCompleted);
+        
+        return allPlayersHaveRegime && allPlayersSubmitted 
+            && allAisHaveEntry && allAisCompleted
+            // && allPlayerLedAlliancesSubmitted && allAiAlliancesHaveEntry
+            // && allAiAlliancesCompleted
+            ;
     }
     private void CalcAiTurnOrders()
     {
         if (_data.BaseDomain.GameClock.MajorTurn(_data))
         {
-            inner(r => _data.HostLogicData.AIs[r].GetMajorTurnOrders(_data));
+            inner(r => _data.HostLogicData.RegimeAis[r].GetMajorTurnOrders(_data));
         }
         else
         {
-            inner(r => _data.HostLogicData.AIs[r].GetMinorTurnOrders(_data));
+            inner(r => _data.HostLogicData.RegimeAis[r].GetMinorTurnOrders(_data));
         }
-
+        
         void inner(Func<Regime, TurnOrders> getOrders)
         {
             var aiRegimes = _data.GetAll<Regime>()

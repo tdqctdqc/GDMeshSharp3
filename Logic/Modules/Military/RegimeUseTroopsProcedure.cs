@@ -5,13 +5,15 @@ using MessagePack;
 public class RegimeUseTroopsProcedure : Procedure
 {
     public EntityRef<Regime> Regime { get; private set; }
-    public Dictionary<int, int> UsageByTroopId { get; private set; }
+    public Dictionary<int, float> UsageByTroopId { get; private set; }
 
     public static RegimeUseTroopsProcedure Construct(Regime r)
     {
-        return new RegimeUseTroopsProcedure(r.MakeRef(), new Dictionary<int, int>());
+        return new RegimeUseTroopsProcedure(r.MakeRef(), 
+            new Dictionary<int, float>());
     }
-    [SerializationConstructor] private RegimeUseTroopsProcedure(EntityRef<Regime> regime, Dictionary<int, int> usageByTroopId)
+    [SerializationConstructor] private RegimeUseTroopsProcedure
+        (EntityRef<Regime> regime, Dictionary<int, float> usageByTroopId)
     {
         Regime = regime;
         UsageByTroopId = usageByTroopId;

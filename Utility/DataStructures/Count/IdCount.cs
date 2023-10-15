@@ -16,6 +16,11 @@ public class IdCount<T> : Count<int>
     {
         return new IdCount<T>(new Dictionary<int, float>(toCopy.Contents), false);
     }
+    public static IdCount<TSuper> Construct<TSuper, TSub>(IdCount<TSub> toCopy)
+        where TSuper : IIdentifiable where TSub : IIdentifiable
+    {
+        return new IdCount<TSuper>(new Dictionary<int, float>(toCopy.Contents), false);
+    }
     public static IdCount<T> Construct(Dictionary<T, float> toCopy)
     {
         return new IdCount<T>(toCopy.ToDictionary(kvp => kvp.Key.Id, kvp => kvp.Value),

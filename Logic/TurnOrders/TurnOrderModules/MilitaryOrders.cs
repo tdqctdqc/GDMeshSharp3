@@ -3,7 +3,7 @@ using MessagePack;
 
 public class MilitaryOrders
 {
-    public List<int> UnitTemplatesToBuild { get; private set; }
+    public List<int> UnitTemplatesToForm { get; private set; }
 
     public static MilitaryOrders Construct()
     {
@@ -11,6 +11,6 @@ public class MilitaryOrders
     }
     [SerializationConstructor] protected MilitaryOrders()
     {
-        UnitTemplatesToBuild = new List<int>();
+        UnitTemplatesToForm = new List<int>();
     }
 }

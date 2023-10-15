@@ -1,14 +1,14 @@
 
-public class MilitaryAi
+public class RegimeMilitaryAi
 {
     private Regime _regime;
     public ForceCompositionAi ForceComposition { get; private set; }
     
 
-    public MilitaryAi(Regime regime)
+    public RegimeMilitaryAi(Regime regime)
     {
         _regime = regime;
-        ForceComposition = new ForceCompositionAi();
+        ForceComposition = new ForceCompositionAi(regime);
     }
 
     public void Calculate(Data data, MajorTurnOrders orders)

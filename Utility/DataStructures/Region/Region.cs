@@ -86,7 +86,8 @@
 
                 var els = adjRegions.SelectMany(a => a.Elements).ToHashSet();
                 els.Add(t);
-                var newConts = ContiguousRegion<TNode>.GetRegions(Graph, els).ToList();
+                var newConts 
+                    = ContiguousRegion<TNode>.GetRegions(Graph, els).ToList();
                 if (newConts.Count() != 1) throw new Exception();
                 var newCont = newConts.First();
                 AddContRegion(newCont);

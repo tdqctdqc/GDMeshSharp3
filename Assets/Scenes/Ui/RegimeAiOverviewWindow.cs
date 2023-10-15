@@ -11,7 +11,7 @@ public partial class RegimeAiOverviewWindow : TabWindow
     {
         var res = new RegimeAiOverviewWindow();
         res._data = data;
-        res._aiRegimes = data.HostLogicData.AIs;
+        res._aiRegimes = data.HostLogicData.RegimeAis;
         return res;
     }
 

@@ -22,7 +22,7 @@ public class ConstructionPriority : SolverPriority<BuildingModel>
         solver.SetBuildingLaborConstraint(Mathf.FloorToInt(Account.Labor), projVars);
         solver.SetItemsConstraints(data, Account.Items, projVars);
         solver.SetConstructCapConstraint( 
-            Mathf.FloorToInt(Account.Flows.Get(data.Models.Flows.ConstructionCap)), projVars);
+            Mathf.FloorToInt(Account.Models.Get(data.Models.Flows.ConstructionCap)), projVars);
         solver.SetBuildingSlotConstraints(r, projVars, data);
     }
 
@@ -30,7 +30,7 @@ public class ConstructionPriority : SolverPriority<BuildingModel>
         Dictionary<BuildingModel, Variable> projVars, Data data, 
         BudgetPool pool, float proportion)
     {
-        var availConstructCap = Mathf.FloorToInt(pool.AvailFlows.Get(data.Models.Flows.ConstructionCap) * proportion);
+        var availConstructCap = Mathf.FloorToInt(pool.AvailModels.Get(data.Models.Flows.ConstructionCap) * proportion);
         var availLabor = Mathf.FloorToInt(pool.AvailLabor * proportion);
         solver.SetBuildingLaborConstraint(availLabor, projVars);
         solver.SetConstructCapConstraint(availConstructCap, projVars);

@@ -153,14 +153,14 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
             }
         }
         
-        foreach (var kvp in Account.Flows.Contents)
+        foreach (var kvp in Account.Models.Contents)
         {
-            var flow = data.Models.GetModel<Flow>(kvp.Key);
+            var model = data.Models.GetModel<IModel>(kvp.Key);
             var q = kvp.Value;
-            if (Account.UsedFlow.Contains(flow) == false)
+            if (Account.UsedModel.Contains(model) == false)
             {
-                Account.Flows.Remove(flow, q);
-                pool.AvailFlows.Add(flow, q);
+                Account.Models.Remove(model, q);
+                pool.AvailModels.Add(model, q);
             }
         }
 

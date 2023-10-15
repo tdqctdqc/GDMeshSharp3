@@ -7,11 +7,11 @@ public class RegimeAi
     public Regime Regime { get; private set; }
     public BudgetAi Budget { get; private set; }
     public DiplomacyAi Diplomacy { get; private set; }
-    public MilitaryAi Military { get; private set; }
+    public RegimeMilitaryAi Military { get; private set; }
     public RegimeAi(Regime regime, Data data)
     {
         Regime = regime;
-        Military = new MilitaryAi(regime);
+        Military = new RegimeMilitaryAi(regime);
         Budget = new BudgetAi(Military, data, regime);
         Diplomacy = new DiplomacyAi(regime);
     }

@@ -8,12 +8,6 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
 {
     private Dictionary<string, IRefColMeta> _refCols;
 
-    public void ForReference()
-    {
-        return;
-        new EntityMeta<TEntity>();
-    }
-
     public static EntityMeta<TEntity> Construct()
     {
         return new EntityMeta<TEntity>();

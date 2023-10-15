@@ -9,7 +9,7 @@ public class TroopBuildForTemplatePriority : SolverPriority<UnitTemplate>
     public TroopBuildForTemplatePriority(string name, Regime regime, Func<Data, Regime, float> getWeight, 
         Func<UnitTemplate, bool> relevant, Func<UnitTemplate, float> utility) 
         : base(name, 
-            d => d.Military.UnitAux.UnitTemplates[regime],
+            d => regime.GetUnitTemplates(d),
             getWeight, relevant, utility)
     {
     }

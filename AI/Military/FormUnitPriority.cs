@@ -38,7 +38,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
         {
             for (var i = 0; i < kvp.Value; i++)
             {
-                orders.MilitaryOrders.UnitTemplatesToBuild.Add(kvp.Key.Id);
+                orders.MilitaryOrders.UnitTemplatesToForm.Add(kvp.Key.Id);
             }
         }
     }
