@@ -28,12 +28,12 @@ public class TurnCalculator
         State = TurnCalcState.Waiting;
     }
     public void Calculate(List<LogicModule> modules,
-        IDictionary<Player, TurnOrders> playerTurnOrders,
-        IDictionary<Regime, Task<TurnOrders>> aiTurnOrders, Data d)
+        OrderHolder orderHolder, Data d)
     {
         State = TurnCalcState.Calculating;
         _modules = modules;
-        _orders = GetOrdersList(playerTurnOrders, aiTurnOrders);
+        _orders = GetOrdersList(orderHolder.PlayerTurnOrders, 
+            orderHolder.AiTurnOrders);
         StartNextModule();
     }
     public void CheckOnCalculation()
