@@ -23,7 +23,7 @@ public class BudgetAi
             //     (d, r) => .2f * milAi.ForceComposition.BuildTroopWeight, 
             //     t => true, 
             //     t => 1f),
-            new TroopBuildForTemplatePriority("Unit", regime, 
+            new TroopBuildForTemplatePriority("Troops for templates", regime, 
                 (d,r) => 1f,
                 u => true, u => 1f),
             new FoodReservePriority(),

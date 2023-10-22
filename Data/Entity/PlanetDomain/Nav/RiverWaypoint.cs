@@ -14,8 +14,9 @@ public class RiverWaypoint : Waypoint, IWaterWaypoint, IRiverWaypoint
     }
 
     [SerializationConstructor] private RiverWaypoint(int id, bool hasBridge, 
-        HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos)
-        : base(id, neighbors, associatedPolyIds, pos)
+        HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos,
+        EntityRef<Alliance> controller)
+        : base(id, neighbors, associatedPolyIds, pos, controller)
     {
         HasBridge = hasBridge;
     }

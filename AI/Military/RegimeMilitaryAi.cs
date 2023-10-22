@@ -10,10 +10,10 @@ public class RegimeMilitaryAi
         _regime = regime;
         ForceComposition = new ForceCompositionAi(regime);
     }
-
-    public void Calculate(Data data, MajorTurnOrders orders)
+    
+    public void CalculateMajor(Data data, MajorTurnOrders orders)
     {
-        var reserve = IdCount<Troop>.Construct(_regime.TroopReserve);
+        var reserve = IdCount<Troop>.Construct(_regime.Military.TroopReserve);
         ForceComposition.Calculate(_regime, data, orders, reserve);
     }
 }

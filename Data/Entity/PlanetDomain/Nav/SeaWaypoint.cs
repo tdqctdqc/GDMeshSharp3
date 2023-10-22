@@ -13,8 +13,8 @@ public class SeaWaypoint : Waypoint, IWaterWaypoint
     }
 
     [SerializationConstructor] private SeaWaypoint(int id, HashSet<int> neighbors, 
-        Vector4I associatedPolyIds, Vector2 pos) 
-            : base(id, neighbors, associatedPolyIds, pos)
+        Vector4I associatedPolyIds, Vector2 pos, EntityRef<Alliance> controller) 
+            : base(id, neighbors, associatedPolyIds, pos, controller)
     {
     }
 }

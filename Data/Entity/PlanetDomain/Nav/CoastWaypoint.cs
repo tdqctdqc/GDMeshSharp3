@@ -19,8 +19,8 @@ public class CoastWaypoint : Waypoint, ICoastWaypoint, ILandWaypoint
 
     [SerializationConstructor] private CoastWaypoint(int id, 
         float roughness, HashSet<int> neighbors, Vector4I associatedPolyIds, 
-        Vector2 pos, int sea, bool port) 
-        : base(id, neighbors, associatedPolyIds, pos)
+        Vector2 pos, int sea, bool port, EntityRef<Alliance> controller) 
+        : base(id, neighbors, associatedPolyIds, pos, controller)
     {
         Roughness = roughness;
         Sea = sea;

@@ -1,5 +1,5 @@
 
-public interface ICoastWaypoint
+public interface ICoastWaypoint : IWaypoint
 {
     int Sea { get; }
     bool Port { get; }

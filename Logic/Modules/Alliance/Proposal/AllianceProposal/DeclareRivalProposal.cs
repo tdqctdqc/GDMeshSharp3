@@ -34,6 +34,10 @@ public class DeclareRivalProposal : AllianceProposal
             alliance.Rivals.Add(target, key);
             target.Rivals.Add(alliance, key);
         }
+        Game.I.Logger.Log($"{alliance.Leader.Entity(key.Data).Name} and " +
+                 $"{target.Leader.Entity(key.Data).Name}" +
+                 $" are now rivals", LogType.Diplomacy);
+
     }
 
     public override bool Valid(Data data)

@@ -28,19 +28,16 @@ public class OrderHolder
     }
     public void CalcAiTurnOrders(Data data)
     {
-        if (data.BaseDomain.GameClock.MajorTurn(data))
-        {
-            GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetMajorTurnOrders(data), data);
-        }
-        else
-        {
-            GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetMinorTurnOrders(data), data);
-        }
+        var major = data.BaseDomain.GameClock.MajorTurn(data);
+        
+        GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetTurnOrders(data), data);
     }
-    private void GetAiRegimeOrders(Func<Regime, RegimeTurnOrders> getOrders, Data data)
+    private async void GetAiRegimeOrders(Func<Regime, RegimeTurnOrders> getOrders, Data data)
     {
         var aiRegimes = data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(data) == false);
+        await Task.Run(() => data.HostLogicData.Context.Calculate(data));
+        
         foreach (var aiRegime in aiRegimes)
         {
             if (AiTurnOrders.ContainsKey(aiRegime) == false)
@@ -84,7 +81,6 @@ public class OrderHolder
         var regimeOrdersReady = allPlayersHaveRegime && allPlayersSubmitted
                                                      && allAisHaveEntry && allAisCompleted;
 
-        
         return regimeOrdersReady;
     }
 }

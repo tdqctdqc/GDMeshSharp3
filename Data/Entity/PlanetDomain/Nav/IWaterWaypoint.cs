@@ -1,5 +1,5 @@
 
-public interface IWaterWaypoint
+public interface IWaterWaypoint : IWaypoint
 {
     
 }

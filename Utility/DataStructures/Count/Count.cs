@@ -23,17 +23,18 @@ public abstract class Count<T>
     }
     public void Remove(T t, float amount)
     {
-        if (amount < 0f) throw new Exception("Trying to remove negative amount from wallet");
+        if (amount < 0f) 
+            throw new Exception($"Trying to remove negative amount from wallet");
         if(Contents.ContainsKey(t) == false)
         {
-            throw new Exception("Trying to remove whats not in wallet");
+            throw new Exception($"Trying to remove which is not in wallet");
         }
         if(Contents[t] < amount && CanBeNegative == false)
         {
             var diff = Contents[t] - amount;
             if(Mathf.Abs(diff) >= .1f)
             {
-                throw new Exception("Trying to remove more than in wallet, diff is " + diff);
+                throw new Exception($"Trying to remove more than in wallet, diff is " + diff);
             }
             amount = Contents[t];
         }

@@ -10,20 +10,20 @@ public class MajorTurnOrders : RegimeTurnOrders
     public DiplomacyOrders DiplomacyOrders { get; private set; }
     public ManufacturingOrders ManufacturingOrders { get; private set; }
     public MilitaryOrders MilitaryOrders { get; private set; }
-    public AllianceTurnOrders AllianceOrders { get; private set; }
+    public AllianceMajorTurnOrders AllianceMajorOrders { get; private set; }
     public static MajorTurnOrders Construct(int tick, Regime regime)
     {
         return new MajorTurnOrders(tick, regime.MakeRef(), StartConstructionsOrders.Construct(),
             TradeOrders.Construct(), DiplomacyOrders.Construct(), 
             ManufacturingOrders.Construct(), MilitaryOrders.Construct(),
-            AllianceTurnOrders.Construct());
+            AllianceMajorTurnOrders.Construct());
     }
     [SerializationConstructor] private MajorTurnOrders(int tick, EntityRef<Regime> regime,
         StartConstructionsOrders startConstructions, TradeOrders tradeOrders, 
         DiplomacyOrders diplomacyOrders, 
         ManufacturingOrders manufacturingOrders, 
         MilitaryOrders militaryOrders,
-        AllianceTurnOrders allianceOrders) 
+        AllianceMajorTurnOrders allianceMajorOrders) 
         : base(tick, regime)
     {
         StartConstructions = startConstructions;
@@ -31,6 +31,6 @@ public class MajorTurnOrders : RegimeTurnOrders
         DiplomacyOrders = diplomacyOrders;
         ManufacturingOrders = manufacturingOrders;
         MilitaryOrders = militaryOrders;
-        AllianceOrders = allianceOrders;
+        AllianceMajorOrders = allianceMajorOrders;
     }
 }

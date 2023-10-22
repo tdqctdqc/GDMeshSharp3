@@ -37,11 +37,6 @@ public class ReserveTroopBuildPriority : SolverPriority<Troop>
             if (num == 0) continue;
             for (var i = 0; i < num; i++)
             {
-                var buildCosts = troop.Makeable.ItemCosts.GetEnumerableModel(data);
-                foreach (var cost in buildCosts)
-                {
-                    Account.UseItem(cost.Key, cost.Value);
-                }
                 var proj = new TroopManufactureProject(-1, 0f, num, troop.MakeRef());
                 orders.ManufacturingOrders.ToStart.Add(proj);
             }

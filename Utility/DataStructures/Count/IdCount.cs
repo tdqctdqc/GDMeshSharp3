@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using MessagePack;
 
 public class IdCount<T> : Count<int> 
@@ -51,7 +52,15 @@ public class IdCount<T> : Count<int>
     public void Remove(T model, float amount)
     {
         if (amount == 0) return;
-        Remove(model.Id, amount);
+        try
+        {
+            Remove(model.Id, amount);
+        }
+        catch (Exception e)
+        {
+            GD.Print("problem removing " + model.GetType().Name);
+            throw;
+        }
     }
     public static IdCount<T> Union<T>(params IdCount<T>[] counts)
         where T : IIdentifiable

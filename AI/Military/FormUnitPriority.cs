@@ -17,7 +17,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
             data.Models.GetModels<Troop>().Values.ToList(),
             t => t.TroopCounts.GetEnumerableModel(data)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
-            data, r.TroopReserve, projVars);
+            data, r.Military.TroopReserve, projVars);
     }
 
     protected override void SetWishlistConstraints(Solver solver, Regime r, 
@@ -28,7 +28,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
             data.Models.GetModels<Troop>().Values.ToList(),
             t => t.TroopCounts.GetEnumerableModel(data)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
-            data, r.TroopReserve, projVars);
+            data, r.Military.TroopReserve, projVars);
     }
 
     protected override void Complete(Regime r, MajorTurnOrders orders, 

@@ -1,5 +1,5 @@
 
-public interface IRiverWaypoint
+public interface IRiverWaypoint : IWaypoint
 {
     bool HasBridge { get; }
 }

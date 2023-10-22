@@ -10,11 +10,10 @@ public class PlanetDomain
     public PolyEdgeAux PolyEdgeAux { get; private set; }
     public PlanetInfo Info => _planetInfoAux != null ? _planetInfoAux.Value : null;
     private SingletonAux<PlanetInfo> _planetInfoAux;
+    public NavAux NavAux { get; private set; }
     public Nav Nav => _polyNav.Value;
     private SingletonAux<Nav> _polyNav;
-    
     public ResourceDepositAux ResourceDepositAux { get; private set; }
-
     public float Width => _planetInfoAux.Value.Dimensions.X;
     public float Height => _planetInfoAux.Value.Dimensions.Y;
     private Data _data;
@@ -28,6 +27,7 @@ public class PlanetDomain
         _polyNav = new SingletonAux<Nav>(_data);
         PolygonAux = new MapPolygonAux(_data);
         PolyEdgeAux = new PolyEdgeAux(_data);
+        NavAux = new NavAux(_data);
         ResourceDepositAux = new ResourceDepositAux(_data);
     }
     

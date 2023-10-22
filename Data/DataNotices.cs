@@ -13,6 +13,7 @@ public class DataNotices
     public RefAction<int> Ticked { get; private set; }
     public RefAction FinishedTurnStartCalc { get; private set; }
     public RefAction SetPolyShapes { get; private set; }
+    public RefAction MadeWaypoints { get; private set; }
     public RefAction SetLandAndSea { get; private set; }
     public RefAction ExitedGen { get; private set; }
     public DataNotices()
@@ -26,6 +27,7 @@ public class DataNotices
         SetPolyShapes = new RefAction();
         SetLandAndSea = new RefAction();
         ExitedGen = new RefAction();
+        MadeWaypoints = new RefAction();
     }
 }
 

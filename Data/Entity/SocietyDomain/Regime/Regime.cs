@@ -12,23 +12,23 @@ public class Regime : Entity
     public Color PrimaryColor { get; protected set; }
     public Color SecondaryColor { get; protected set; }
     public IdCount<Item> Items { get; protected set; }
-    public IdCount<Troop> TroopReserve { get; private set; }
     public RegimeFlows Flows { get; private set; }
     public RegimeHistory History { get; private set; }
     public string Name { get; protected set; }
     public RegimeFinance Finance { get; private set; }
     public bool IsMajor { get; private set; }
     public ManufacturingQueue ManufacturingQueue { get; private set; }
+    public RegimeMilitary Military { get; private set; }
 
     [SerializationConstructor] private Regime(int id, string name, 
         Color primaryColor, Color secondaryColor, 
         EntityRef<MapPolygon> capital,
-        IdCount<Item> items, IdCount<Troop> troopReserve, RegimeHistory history, ModelRef<Culture> culture,
+        IdCount<Item> items, RegimeHistory history, ModelRef<Culture> culture,
         ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, 
-        RegimeFlows flows, ManufacturingQueue manufacturingQueue) : base(id)
+        RegimeFlows flows, ManufacturingQueue manufacturingQueue,
+        RegimeMilitary military) : base(id)
     {
         Items = items;
-        TroopReserve = troopReserve;
         PrimaryColor = primaryColor;
         SecondaryColor = secondaryColor;
         Name = name;
@@ -40,6 +40,7 @@ public class Regime : Entity
         IsMajor = isMajor;
         Flows = flows;
         ManufacturingQueue = manufacturingQueue;
+        Military = military;
     }
 
     public static Regime Create(MapPolygon seed, 
@@ -47,7 +48,6 @@ public class Regime : Entity
         ICreateWriteKey key)
     {
         var items = IdCount<Item>.Construct();
-        var troopReserve = IdCount<Troop>.Construct();
         var flows = new RegimeFlows(new Dictionary<int, FlowData>());
         flows.AddFlowIn(key.Data.Models.Flows.Income, 0f);
         flows.AddFlowIn(key.Data.Models.Flows.ConstructionCap, 0f);
@@ -58,14 +58,14 @@ public class Regime : Entity
             new Color(regimeTemplate.SecondaryColor), 
             new EntityRef<MapPolygon>(seed.Id),
             items,
-            troopReserve,
             RegimeHistory.Construct(key.Data), 
             regimeTemplate.Culture.MakeRef(),
             regimeTemplate.MakeRef(),
             RegimeFinance.Construct(),
             isMajor,
             flows,
-            ManufacturingQueue.Construct()
+            ManufacturingQueue.Construct(),
+            RegimeMilitary.Construct(id)
         );
         key.Create(r);
         Alliance.Create(r, key);

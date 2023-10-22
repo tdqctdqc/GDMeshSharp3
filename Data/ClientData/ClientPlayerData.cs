@@ -9,7 +9,7 @@ public class ClientPlayerData
     // public TurnOrders Orders { get; private set; }
     public MajorTurnOrders MajorOrders { get; private set; }
     public MinorTurnOrders MinorOrders { get; private set; }
-    public AllianceTurnOrders AllianceOrders { get; private set; }
+    public AllianceMajorTurnOrders AllianceMajorOrders { get; private set; }
     public ClientPlayerData(Data data)
     {
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>

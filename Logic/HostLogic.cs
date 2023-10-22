@@ -28,6 +28,7 @@ public class HostLogic : ILogic
             .Subscribe(x => OrderHolder.SubmitPlayerTurnOrders(x.Item1, x.Item2, _data));
         _majorTurnStartModules = new LogicModule[]
         {
+            new SetFrontsModule(data.HostLogicData.Context)
         };
         _majorTurnEndModules = new LogicModule[]
         {
@@ -40,7 +41,10 @@ public class HostLogic : ILogic
             new ProposalsModule(),
             new FormUnitsModule()
         };
-        _minorTurnStartModules = new LogicModule[] { };
+        _minorTurnStartModules = new LogicModule[]
+        {
+            new SetFrontsModule(data.HostLogicData.Context)
+        };
         _minorTurnEndModules = new LogicModule[] { };
         _turnStartCalculator = new TurnCalculator(EnactResults, data);
         _turnEndCalculator = new TurnCalculator(EnactResults, data);
@@ -69,25 +73,45 @@ public class HostLogic : ILogic
             ProcessTurnBeginning();
         }
     }
-
+    
+    private bool ProcessTurnBeginning()
+    {
+        if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Waiting)
+        {
+            DoCommands();
+            _turnStartCalculator.Calculate(GetModules(true), 
+                OrderHolder, _data);
+        }
+        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Calculating)
+        {
+            _turnStartCalculator.CheckOnCalculation();
+        }
+        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Finished)
+        {
+            //todo ticking for remote as well?
+            OrderHolder.Clear();
+            _turnStartCalculator.MarkDone();
+            _turnStartDone = true;
+            var proc = new FinishedTurnStartCalcProc();
+            var res = new LogicResults();
+            res.Messages.Add(proc);
+            EnactResults(res);
+            DoCommands();
+            OrderHolder.CalcAiTurnOrders(_data);
+            return true;
+        }
+        return false;
+    }
+    
     private bool ProcessTurnEnd()
     {
+        var majorTurn = _data.BaseDomain.GameClock.MajorTurn(_data);
         if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Waiting)
         {
-            var majorTurn = _data.BaseDomain.GameClock.MajorTurn(_data);
             DoCommands();
             if(OrderHolder.CheckReadyForFrame(_data, majorTurn))
             {
-                List<LogicModule> modules;
-                if (majorTurn)
-                {
-                    modules = _majorTurnEndModules.ToList();
-                }
-                else
-                {
-                    modules = _minorTurnEndModules.ToList();
-                }
-                _turnEndCalculator.Calculate(modules, 
+                _turnEndCalculator.Calculate(GetModules(false), 
                     OrderHolder, _data);
             }
         }
@@ -112,42 +136,11 @@ public class HostLogic : ILogic
         return false;
     }
 
-    private bool ProcessTurnBeginning()
+    private List<LogicModule> GetModules(bool start)
     {
-        if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Waiting)
-        {
-            DoCommands();
-            List<LogicModule> modules;
-            if (_data.BaseDomain.GameClock.MajorTurn(_data))
-            {
-                modules = _majorTurnStartModules.ToList();
-            }
-            else
-            {
-                modules = _minorTurnStartModules.ToList();
-            }
-            _turnStartCalculator.Calculate(modules, 
-                OrderHolder, _data);
-        }
-        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Calculating)
-        {
-            _turnStartCalculator.CheckOnCalculation();
-        }
-        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Finished)
-        {
-            //todo ticking for remote as well?
-            OrderHolder.Clear();
-            _turnStartCalculator.MarkDone();
-            _turnStartDone = true;
-            var proc = new FinishedTurnStartCalcProc();
-            var res = new LogicResults();
-            res.Messages.Add(proc);
-            EnactResults(res);
-            DoCommands();
-            OrderHolder.CalcAiTurnOrders(_data);
-            return true;
-        }
-        return false;
+        var majorTurn = _data.BaseDomain.GameClock.MajorTurn(_data);
+        if (majorTurn) return start ? _majorTurnStartModules.ToList() : _majorTurnEndModules.ToList();
+        else return start ? _minorTurnStartModules.ToList() : _minorTurnEndModules.ToList();
     }
     public void SetDependencies(HostServer server, GameSession session, Data data)
     {
@@ -156,7 +149,6 @@ public class HostLogic : ILogic
         _hKey = new HostWriteKey(this, data);
         PKey = new ProcedureWriteKey(data);
     }
-
     
     private void EnactResults(LogicResults logicResult)
     {

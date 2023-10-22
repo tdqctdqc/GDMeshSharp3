@@ -14,7 +14,7 @@ public partial class RegimeOverviewWindow : TabWindow
     private BudgetTab _budget;
     private FlowsTab _flows;
     private ManufacturingTab _manuf;
-    private TroopReserveTab _troop;
+    private MilitaryTab _troop;
     public RegimeOverviewWindow()
     {
         MinSize = new Vector2I(1000, 1000);
@@ -43,7 +43,7 @@ public partial class RegimeOverviewWindow : TabWindow
         _manuf = new ManufacturingTab();
         AddTab(_manuf);
 
-        _troop = new TroopReserveTab();
+        _troop = new MilitaryTab();
         AddTab(_troop);
     }
     public void Setup(Regime regime, Client client)

@@ -33,6 +33,6 @@ public class TroopManufactureProject : ManufactureProject
         var item = Troop.Model(key.Data);
         var itemCost = item.Makeable.IndustrialCost;
         var amountProd = ip / itemCost;
-        r.TroopReserve.Add(item, amountProd);
+        r.Military.TroopReserve.Add(item, amountProd);
     }
 }

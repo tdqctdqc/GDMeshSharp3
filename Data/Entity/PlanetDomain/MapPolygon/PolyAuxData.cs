@@ -95,8 +95,6 @@ public class PolyAuxData
     
     public bool PointInPoly(MapPolygon poly, Vector2 pointRel, Data data)
     {
-        // return poly.GetOrderedBoundarySegs(data)
-        //     .Any(s => TriangleExt.ContainsPoint(s.From, s.To, Vector2.Zero, pointRel));
         return Geometry2D.IsPointInPolygon(pointRel, _orderedBoundaryPoints);
     }
     public void MarkStale(GenWriteKey key)

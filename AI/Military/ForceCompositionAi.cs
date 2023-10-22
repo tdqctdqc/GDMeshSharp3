@@ -42,7 +42,7 @@ public class ForceCompositionAi
     {
         var pool = new BudgetPool(
             IdCount<Item>.Construct(),
-            IdCount<IModel>.Construct<IModel, Troop>(regime.TroopReserve), 
+            IdCount<IModel>.Construct<IModel, Troop>(regime.Military.TroopReserve), 
             0f);
         DoPriorities(orders, pool, data, regime);
     }

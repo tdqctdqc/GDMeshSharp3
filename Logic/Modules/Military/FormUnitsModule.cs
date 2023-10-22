@@ -21,7 +21,7 @@ public class FormUnitsModule : LogicModule
         var useTroops = RegimeUseTroopsProcedure.Construct(regime);
         
         var availTroops =
-            regime.TroopReserve.GetEnumerableModel(data)
+            regime.Military.TroopReserve.GetEnumerableModel(data)
                 .ToDictionary(kvp => kvp.Key,
                     kvp => kvp.Value);
         foreach (var id in orders.MilitaryOrders.UnitTemplatesToForm)

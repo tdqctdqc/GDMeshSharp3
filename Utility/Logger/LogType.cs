@@ -3,5 +3,6 @@ public enum LogType
     Logic,
     Generation,
     Market,
-    Graphics
+    Graphics,
+    Diplomacy
 }

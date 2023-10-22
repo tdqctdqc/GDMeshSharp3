@@ -16,21 +16,28 @@ public class RegimeAi
         Diplomacy = new DiplomacyAi(regime);
     }
 
-    public MajorTurnOrders GetMajorTurnOrders(Data data)
+    public RegimeTurnOrders GetTurnOrders(Data data)
+    {
+        var major = data.BaseDomain.GameClock.MajorTurn(data);
+        return major ? GetMajorTurnOrders(data) : GetMinorTurnOrders(data);
+    }
+    private MajorTurnOrders GetMajorTurnOrders(Data data)
     {
         var orders = MajorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, Regime);
-        Budget.Calculate(data, orders);
-        Diplomacy.Calculate(data, orders);
-        Military.Calculate(data, orders);
         var alliance = Regime.GetAlliance(data);
         var allianceLeader = alliance.Leader.Entity(data);
         if (allianceLeader == Regime)
         {
-            data.HostLogicData.AllianceAis[alliance].Calculate(orders.AllianceOrders, data);
+            data.HostLogicData.AllianceAis[alliance].Calculate(orders.AllianceMajorOrders, data);
         }
+        
+        Budget.Calculate(data, orders);
+        Diplomacy.Calculate(data, orders);
+        Military.CalculateMajor(data, orders);
+        
         return orders; 
     }
-    public MinorTurnOrders GetMinorTurnOrders(Data data)
+    private MinorTurnOrders GetMinorTurnOrders(Data data)
     {
         var orders = MinorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, Regime);
 

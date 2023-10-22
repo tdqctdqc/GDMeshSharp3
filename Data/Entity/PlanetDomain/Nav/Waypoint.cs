@@ -10,13 +10,13 @@ using MessagePack;
 [MessagePack.Union(2, typeof(RiverMouthWaypoint))]
 [MessagePack.Union(3, typeof(RiverWaypoint))]
 [MessagePack.Union(4, typeof(SeaWaypoint))]
-public abstract class Waypoint : IIdentifiable, IPolymorph
+public abstract class Waypoint 
+    : IWaypoint, IIdentifiable, IPolymorph
 {
     public int Id { get; private set; }
     public HashSet<int> Neighbors { get; private set; }
     public Vector2 Pos { get; private set; }
     public Vector4I AssociatedPolyIds { get; private set; }
-
 
     protected Waypoint(GenWriteKey key, int id, Vector2 pos, MapPolygon poly1,
         MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null)
@@ -32,14 +32,14 @@ public abstract class Waypoint : IIdentifiable, IPolymorph
         Pos = pos;
     }
     [SerializationConstructor] protected Waypoint(int id, 
-        HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos)
+        HashSet<int> neighbors, Vector4I associatedPolyIds, Vector2 pos,
+        EntityRef<Alliance> controller)
     {
         AssociatedPolyIds = associatedPolyIds;
         Id = id;
         Neighbors = neighbors;
         Pos = pos;
     }
-
 
     public bool AssociatedWithPoly(MapPolygon poly)
     {

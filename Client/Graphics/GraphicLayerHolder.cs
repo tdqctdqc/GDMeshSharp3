@@ -16,7 +16,8 @@ public class GraphicLayerHolder
         Layers.Add(Roads(segmenter, data));
         Layers.Add(IconsChunkModule.GetLayer(data, segmenter));
         Layers.Add(ResourceChunkModule.GetLayer(data, segmenter));
-        Layers.Add(NavGraphicChunk.GetLayer(data, segmenter));
+        Layers.Add(WaypointTypeGraphicChunk.GetLayer(data, segmenter));
+        Layers.Add(WaypointFrontlineGraphicChunk.GetLayer(data, segmenter));
         Layers.Add(new UnitGraphicLayer(segmenter, data));
     }
 

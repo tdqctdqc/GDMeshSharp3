@@ -37,6 +37,7 @@ public class NavGenerator : Generator
         
         SetLandWaypointProperties();
 
+        key.Data.Notices.MadeWaypoints.Invoke();
         return report;
     }
 
@@ -383,6 +384,7 @@ public class NavGenerator : Generator
             var numAssoc = assoc.Count();
             foreach (var poly in assoc)
             {
+                
                 var offset = poly.GetOffsetTo(waypoint.Pos, _key.Data);
                 var roughSample= poly.Tris.Tris
                     .Where(t => t.Landform(_key.Data).IsLand)
