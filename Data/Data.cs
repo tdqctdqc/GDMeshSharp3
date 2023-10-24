@@ -21,6 +21,8 @@ public class Data
     public SocietyDomain Society { get; private set; }
     public MilitaryDomain Military { get; private set; }
     public InfrastructureDomain Infrastructure { get; private set; }
+    public Context Context { get; private set; }
+
     private EntityTypeTree _entityTypeTree;
     public int Tick => BaseDomain.GameClock.Tick;
     public Serializer Serializer { get; private set; }
@@ -37,7 +39,7 @@ public class Data
         Notices = new DataNotices();
         Models = new Models(this);
         EntitiesById = new Dictionary<int, Entity>();
-        
+        Context = new Context();
         BaseDomain = new BaseDomain();
         Planet = new PlanetDomain(this);
         Society = new SocietyDomain();

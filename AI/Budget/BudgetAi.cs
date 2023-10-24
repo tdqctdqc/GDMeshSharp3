@@ -16,13 +16,9 @@ public class BudgetAi
             new FlowProdBuildingConstructionPriority(
                 data.Models.Flows.IndustrialPower, (d, r) => 1f),
             new FlowProdBuildingConstructionPriority(
-                data.Models.Flows.Income, (d, r) => .5f),
+                data.Models.Flows.Income, (d, r) => .25f),
             new ItemProdBuildingConstructionPriority(
                 data.Models.Items.Recruits, (d, r) => .1f),
-            // new ReserveTroopBuildPriority("Infantry", 
-            //     (d, r) => .2f * milAi.ForceComposition.BuildTroopWeight, 
-            //     t => true, 
-            //     t => 1f),
             new TroopBuildForTemplatePriority("Troops for templates", regime, 
                 (d,r) => 1f,
                 u => true, u => 1f),
@@ -158,7 +154,7 @@ public class BudgetAi
              }
 
              var order = new ItemManufactureProject(-1, 0f, possibleQ, item.MakeRef());
-             turnOrders.ManufacturingOrders.ToStart.Add(order);
+             turnOrders.Manufacturing.ToStart.Add(order);
          }
      }
     private void DoTradeOrders(Data data, MajorTurnOrders orders, BudgetPool pool, 

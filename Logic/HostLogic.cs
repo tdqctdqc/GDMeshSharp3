@@ -28,7 +28,8 @@ public class HostLogic : ILogic
             .Subscribe(x => OrderHolder.SubmitPlayerTurnOrders(x.Item1, x.Item2, _data));
         _majorTurnStartModules = new LogicModule[]
         {
-            new SetFrontsModule(data.HostLogicData.Context)
+            new DefaultLogicModule(() => new SetContextProcedure()),
+            new TrimFrontsModule()
         };
         _majorTurnEndModules = new LogicModule[]
         {
@@ -39,13 +40,17 @@ public class HostLogic : ILogic
             new FinanceModule(),
             new TradeModule(),
             new ProposalsModule(),
-            new FormUnitsModule()
+            new FormUnitsModule(),
+            new AllianceOrdersModule()
         };
         _minorTurnStartModules = new LogicModule[]
         {
-            new SetFrontsModule(data.HostLogicData.Context)
+            new DefaultLogicModule(() => new SetContextProcedure()),
         };
-        _minorTurnEndModules = new LogicModule[] { };
+        _minorTurnEndModules = new LogicModule[]
+        {
+            new HandleUnitOrdersModule()
+        };
         _turnStartCalculator = new TurnCalculator(EnactResults, data);
         _turnEndCalculator = new TurnCalculator(EnactResults, data);
         

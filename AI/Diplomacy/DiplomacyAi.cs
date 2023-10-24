@@ -39,7 +39,7 @@ public class DiplomacyAi
             if (proposal.Against.Contains(_regime.Id)
                 || proposal.InFavor.Contains(_regime.Id)) continue;
             var decision = proposal.GetDecisionForAi(_regime, data);
-            orders.DiplomacyOrders.ProposalDecisions[proposal.Id] = decision;
+            orders.Diplomacy.ProposalDecisions[proposal.Id] = decision;
         }
     }
     private void FindEnemies(Data data, MajorTurnOrders orders, float friendPower,
@@ -64,7 +64,7 @@ public class DiplomacyAi
         {
             var proposal = DeclareRivalProposal.Construct(_regime, newRival, data);
             proposal.InFavor.Add(_regime.Id);
-            orders.DiplomacyOrders.ProposalsMade.Add(proposal);
+            orders.Diplomacy.ProposalsMade.Add(proposal);
         }
     }
 
@@ -100,7 +100,7 @@ public class DiplomacyAi
         {
             var proposal = AllianceMergeProposal.Construct(_regime, newFriend, data);
             proposal.InFavor.Add(_regime.Id);
-            orders.DiplomacyOrders.ProposalsMade.Add(proposal);
+            orders.Diplomacy.ProposalsMade.Add(proposal);
         }
     }
     private float GetFriendScore(Alliance alliance, Alliance target, Data data)
@@ -132,7 +132,7 @@ public class DiplomacyAi
         {
             var target = nonEnemyRivals.OrderBy(r => r.GetPowerScore(data)).First();
             var proposal = DeclareWarProposal.Construct(_regime, target, data);
-            orders.DiplomacyOrders.ProposalsMade.Add(proposal);
+            orders.Diplomacy.ProposalsMade.Add(proposal);
         }
     }
 }

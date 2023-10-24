@@ -23,7 +23,7 @@ public class ProposalsModule : LogicModule
         {
             if (turnOrders is MajorTurnOrders m == false) throw new Exception();
             var regime = m.Regime.RefId;
-            foreach (var kvp in m.DiplomacyOrders.ProposalDecisions)
+            foreach (var kvp in m.Diplomacy.ProposalDecisions)
             {
                 var decision = new DecideOnProposalProcedure(regime, kvp.Value,
                     kvp.Key);
@@ -65,7 +65,7 @@ public class ProposalsModule : LogicModule
             if (turnOrders is MajorTurnOrders m == false) throw new Exception();
             if (turnOrders.Tick != tick) throw new Exception();
             var regime = turnOrders.Regime.Entity(data);
-            foreach (var proposal in m.DiplomacyOrders.ProposalsMade)
+            foreach (var proposal in m.Diplomacy.ProposalsMade)
             {
                 var id = data.IdDispenser.TakeId();
                 proposal.SetId(id);

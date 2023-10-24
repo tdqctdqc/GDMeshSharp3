@@ -136,13 +136,13 @@ public class ProduceConstructModule : LogicModule
         {
             if (turnOrders is MajorTurnOrders m == false) throw new Exception();
             var regime = turnOrders.Regime.RefId;
-            foreach (var project in m.ManufacturingOrders.ToStart)
+            foreach (var project in m.Manufacturing.ToStart)
             {
                 proc.ManufacturingProjectsToAddByRegime
                     .Add(new(regime, project));
             }
             
-            foreach (var toCancel in m.ManufacturingOrders.ToCancel)
+            foreach (var toCancel in m.Manufacturing.ToCancel)
             {
                 proc.ManufacturingProjectsToCancelByRegime
                     .Add(new KeyValuePair<int, int>(regime, toCancel));

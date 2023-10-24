@@ -108,12 +108,20 @@ public class ProduceConstructProcedure : Procedure
         foreach (var kvp in ManufacturingProjectsToAddByRegime)
         {
             var regime = key.Data.Get<Regime>(kvp.Key);
-            var member = kvp.Value;
-            foreach (var kvp2 in member.ItemCosts(key.Data))
+            var project = kvp.Value;
+            try
             {
-                regime.Items.Remove(kvp2.Key, kvp2.Value);
+                foreach (var kvp2 in project.ItemCosts(key.Data))
+                {
+                    regime.Items.Remove(kvp2.Key, kvp2.Value);
+                }
+                regime.ManufacturingQueue.Queue.Enqueue(project);
             }
-            regime.ManufacturingQueue.Queue.Enqueue(member);
+            catch (Exception e)
+            {
+                GD.Print("problem enacting manuf project " + project.GetType().Name);
+            }
+            
         }
 
         foreach (var kvp in ManufacturingProjectsToCancelByRegime)

@@ -2,12 +2,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using Godot;
 
-public class UnitGraphicLayer : WholeMapGraphicLayer<Unit, UnitGraphic>
+public class FrontGraphicLayer : WholeMapGraphicLayer<Front, FrontGraphic>
 {
-    public UnitGraphicLayer(GraphicsSegmenter segmenter, Data d) 
-        : base("Units", segmenter, new List<ISettingsOption>())
+    public FrontGraphicLayer(GraphicsSegmenter segmenter, Data d) : base("Fronts", segmenter, new List<ISettingsOption>())
     {
         this.RegisterForEntityLifetime(d);
     }
@@ -22,8 +20,8 @@ public class UnitGraphicLayer : WholeMapGraphicLayer<Unit, UnitGraphic>
         }
     }
 
-    protected override UnitGraphic GetGraphic(Unit key, Data d)
+    protected override FrontGraphic GetGraphic(Front key, Data d)
     {
-        return new UnitGraphic(key, _segmenter, d);
+        return new FrontGraphic(key, _segmenter, d);
     }
 }

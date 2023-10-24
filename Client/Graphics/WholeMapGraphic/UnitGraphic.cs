@@ -7,15 +7,8 @@ public partial class UnitGraphic : MeshInstance2D
 {
     private UnitGraphic() { }
     private int _currSegment = -1;
-
-    public static UnitGraphic Construct(Unit unit, GraphicsSegmenter segmenter,
-        Data d)
+    public UnitGraphic(Unit unit, GraphicsSegmenter segmenter, Data d)
     {
-        return new UnitGraphic(unit, segmenter, d);
-    }
-    protected UnitGraphic(Unit unit, GraphicsSegmenter segmenter, Data d)
-    {
-        Position = unit.Regime.Entity(d).Capital.Entity(d).Center;
         var m = new QuadMesh();
         m.Size = Vector2.One * 20f;
         Mesh = m;

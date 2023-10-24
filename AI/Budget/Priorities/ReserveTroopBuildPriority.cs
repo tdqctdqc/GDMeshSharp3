@@ -6,7 +6,6 @@ using Google.OrTools.LinearSolver;
 
 public class ReserveTroopBuildPriority : SolverPriority<Troop>
 {
-    //USE FOR RESERVE 
     public ReserveTroopBuildPriority(string name, 
         Func<Data, Regime, float> getWeight, 
         Func<Troop, bool> relevant, Func<Troop, float> utility) 
@@ -38,7 +37,7 @@ public class ReserveTroopBuildPriority : SolverPriority<Troop>
             for (var i = 0; i < num; i++)
             {
                 var proj = new TroopManufactureProject(-1, 0f, num, troop.MakeRef());
-                orders.ManufacturingOrders.ToStart.Add(proj);
+                orders.Manufacturing.ToStart.Add(proj);
             }
         }
     }

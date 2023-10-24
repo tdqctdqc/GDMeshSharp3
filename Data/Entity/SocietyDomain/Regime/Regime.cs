@@ -65,7 +65,7 @@ public class Regime : Entity
             isMajor,
             flows,
             ManufacturingQueue.Construct(),
-            RegimeMilitary.Construct(id)
+            RegimeMilitary.Construct(id, key.Data)
         );
         key.Create(r);
         Alliance.Create(r, key);

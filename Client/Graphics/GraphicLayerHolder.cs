@@ -19,6 +19,7 @@ public class GraphicLayerHolder
         Layers.Add(WaypointTypeGraphicChunk.GetLayer(data, segmenter));
         Layers.Add(WaypointFrontlineGraphicChunk.GetLayer(data, segmenter));
         Layers.Add(new UnitGraphicLayer(segmenter, data));
+        Layers.Add(new FrontGraphicLayer(segmenter, data));
     }
 
     public void Update(Data d, ConcurrentQueue<Action> queue)

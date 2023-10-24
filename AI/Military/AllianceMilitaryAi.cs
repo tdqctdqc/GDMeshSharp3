@@ -8,7 +8,6 @@ public class AllianceMilitaryAi
     private Alliance _alliance;
     public List<List<Waypoint>> FrontlineWaypoints { get; private set; }
     public HashSet<Waypoint> FrontlineHash { get; private set; }
-    public Dictionary<Regime, List<List<Waypoint>>> Fronts { get; private set; }
 
     public AllianceMilitaryAi(Alliance alliance)
     {
@@ -19,22 +18,24 @@ public class AllianceMilitaryAi
     public void Calculate(Data data, Alliance alliance, 
         AllianceMajorTurnOrders orders)
     {
-        if (data.HostLogicData.Context.ControlledAreas.ContainsKey(alliance) == false)
+        if (data.Context.ControlledAreas.ContainsKey(alliance) == false)
         {
             GD.Print("no control areas for alliance at poly " 
                      + alliance.Leader.Entity(data).GetPolys(data).First().Id);
             return;
         }
         var controlled = 
-            data.HostLogicData.Context.ControlledAreas[alliance];
+            data.Context.ControlledAreas[alliance];
         
-        CalculateFrontlines(controlled, orders, data);
+        CalculateFrontlineWaypoints(controlled, orders, data);
+        var uncovered = FindUncoveredFrontlineWaypoints(FrontlineHash, orders, data);
+        CoverUncoveredFrontlines(uncovered, orders, data);
     }
 
-    private void CalculateFrontlines(IEnumerable<Waypoint> controlled, 
+    private void CalculateFrontlineWaypoints(IEnumerable<Waypoint> controlled, 
         AllianceMajorTurnOrders orders, Data d)
     {
-        var forceBalances = d.HostLogicData.Context.WaypointForceBalances;
+        var forceBalances = d.Context.WaypointForceBalances;
         var frontlineWps = controlled.Where(frontline);
         FrontlineWaypoints = UnionFind.Find(frontlineWps,
             (wp1, wp2) => true,
@@ -59,8 +60,42 @@ public class AllianceMilitaryAi
         }
     }
 
-    private void ExpandFrontsAndFillGaps()
+    private List<List<Waypoint>> FindUncoveredFrontlineWaypoints(HashSet<Waypoint> frontlineHash, 
+        AllianceMajorTurnOrders orders,
+        Data data)
     {
+        var uncovered = frontlineHash.ToHashSet();
+        foreach (var regime in _alliance.Members.Items(data))
+        {
+            foreach (var front in regime.Military.Fronts.Items(data))
+            {
+                foreach (var wp in front.WaypointIds)
+                {
+                    uncovered.Remove(data.Planet.Nav.Waypoints[wp]);
+                }
+            }
+        }
         
+        return UnionFind.Find(
+            uncovered, (w, v) => true,
+            w => w.GetNeighboringWaypoints(data));
+    }
+
+    private void CoverUncoveredFrontlines(List<List<Waypoint>> uncoveredUnions,
+        AllianceMajorTurnOrders orders, Data data)
+    {
+        var forceBalances = data.Context.WaypointForceBalances;
+
+        foreach (var uncoveredUnion in uncoveredUnions)
+        {
+            var regime = GetRegimeToCover(uncoveredUnion, data);
+            orders.NewFrontWaypointsByRegimeId.Add((regime.Id,
+                uncoveredUnion.Select(wp => wp.Id).ToList()));
+        }
+    }
+
+    private Regime GetRegimeToCover(List<Waypoint> uncovered, Data data)
+    {
+        return _alliance.Members.Items(data).First();
     }
 }

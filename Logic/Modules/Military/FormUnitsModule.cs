@@ -24,7 +24,7 @@ public class FormUnitsModule : LogicModule
             regime.Military.TroopReserve.GetEnumerableModel(data)
                 .ToDictionary(kvp => kvp.Key,
                     kvp => kvp.Value);
-        foreach (var id in orders.MilitaryOrders.UnitTemplatesToForm)
+        foreach (var id in orders.Military.UnitTemplatesToForm)
         {
             var template = data.Get<UnitTemplate>(id);
             var troopCosts = template

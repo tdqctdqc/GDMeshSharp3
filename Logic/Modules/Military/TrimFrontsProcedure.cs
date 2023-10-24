@@ -1,14 +1,39 @@
-
 using System.Collections.Generic;
+using MessagePack;
 
 public class TrimFrontsProcedure : Procedure
 {
+    public HashSet<int> FrontsToRemove { get; private set; }
+    public Dictionary<int, HashSet<int>> WaypointsToTrimByFrontId { get; private set; }
+
+    public static TrimFrontsProcedure Construct()
+    {
+        return new TrimFrontsProcedure(new HashSet<int>(), new Dictionary<int, HashSet<int>>());
+    }
+    [SerializationConstructor] private TrimFrontsProcedure(HashSet<int> frontsToRemove,
+        Dictionary<int, HashSet<int>> waypointsToTrimByFrontId)
+    {
+        FrontsToRemove = frontsToRemove;
+        WaypointsToTrimByFrontId = waypointsToTrimByFrontId;
+    }
     public override void Enact(ProcedureWriteKey key)
     {
-        var regimes = key.Data.GetAll<Regime>();
-        foreach (var regime in regimes)
+        foreach (var i in FrontsToRemove)
         {
-            regime.Military.TrimFronts(key);
+            var front = key.Data.Get<Front>(i);
+            var regime = front.Regime.Entity(key.Data);
+            regime.Military.Fronts.Remove(front, key);
+            key.Data.RemoveEntity(front.Id, key);
+        }
+
+        foreach (var kvp in WaypointsToTrimByFrontId)
+        {
+            var front = key.Data.Get<Front>(kvp.Key);
+            var toTrim = kvp.Value;
+            foreach (var i in toTrim)
+            {
+                front.WaypointIds.Remove(i);
+            }
         }
     }
 
@@ -16,4 +41,6 @@ public class TrimFrontsProcedure : Procedure
     {
         return true;
     }
+    
+    
 }

@@ -1,38 +1,31 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using MessagePack;
 
-public class Front
+public class Front : Entity
 {
-    public HashSet<Waypoint> Frontline { get; private set; }
-
-    public static Front Construct()
+    public EntityRef<Regime> Regime { get; private set; }
+    public HashSet<int> WaypointIds { get; private set; }
+    public static Front Create(Regime r, IEnumerable<int> frontline,
+        ICreateWriteKey key)
     {
-        return new Front(new HashSet<Waypoint>());
+        var f = new Front(r.MakeRef(), frontline.ToHashSet(), key.Data.IdDispenser.TakeId());
+        key.Create(f);
+        return f;
+    }
+    
+    [SerializationConstructor] private Front(EntityRef<Regime> regime,
+        HashSet<int> waypointIds, int id)
+        : base(id)
+    {
+        Regime = regime;
+        WaypointIds = waypointIds;
     }
 
-    [SerializationConstructor]
-    private Front(HashSet<Waypoint> frontline)
+    public Vector2 RelTo(Data d)
     {
-        Frontline = frontline;
-    }
-    public bool Trim(HashSet<Waypoint> controlled, ProcedureWriteKey key)
-    {
-        foreach (var wp in Frontline.ToList())
-        {
-            if (controlled.Contains(wp) == false)
-            {
-                Frontline.Remove(wp);
-            }
-        }
-
-        if (Frontline.Count() == 0) return false;
-        var floodFill = FloodFill<Waypoint>
-            .GetFloodFill(Frontline.First(),
-                controlled.Contains,
-                w => w.GetNeighboringWaypoints(key.Data));
-        if (floodFill.Count() != Frontline.Count()) return false;
-        return true;
+        return d.Planet.Nav.Waypoints[WaypointIds.First()].Pos;
     }
 }

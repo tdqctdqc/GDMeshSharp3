@@ -34,4 +34,9 @@ public class Unit : Entity
         Position = position;
         Domain = domain;
     }
+
+    public void SetPosition(Vector2 pos, ProcedureWriteKey key)
+    {
+        Position = pos;
+    }
 }

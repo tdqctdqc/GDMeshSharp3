@@ -48,7 +48,7 @@ public partial class GraphicsSegmenter : Node2D, IGraphicsSegmenter
     public void RemoveElement<T>(T e, int segmentIndex) where T : Node2D
     {
         _segments[segmentIndex].Remove(e);
-        _segmentNodes[segmentIndex].RemoveChild(e);
+        _segmentNodes[segmentIndex].RemoveChildDeferred(e);
     }
 
     public int SwitchSegments(Node2D node, Vector2 pos, int oldSegIndex)

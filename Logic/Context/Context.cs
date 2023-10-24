@@ -18,6 +18,7 @@ public class Context
     }
     public void Calculate(Data data)
     {
+        CalculateWaypointsAndForceBalances(data);
     }
     public void CalculateWaypointsAndForceBalances(Data data)
     {

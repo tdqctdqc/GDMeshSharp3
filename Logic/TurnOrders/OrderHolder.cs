@@ -36,7 +36,6 @@ public class OrderHolder
     {
         var aiRegimes = data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(data) == false);
-        await Task.Run(() => data.HostLogicData.Context.Calculate(data));
         
         foreach (var aiRegime in aiRegimes)
         {

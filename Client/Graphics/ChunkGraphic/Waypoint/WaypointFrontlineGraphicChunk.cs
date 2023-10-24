@@ -11,7 +11,7 @@ public partial class WaypointFrontlineGraphicChunk : WaypointGraphicChunk
 
     public override (Color inner, Color border) GetColor(Waypoint wp, Data data)
     {
-        var forceBalances = data.HostLogicData.Context.WaypointForceBalances;
+        var forceBalances = data.Context.WaypointForceBalances;
         var player = data.BaseDomain.PlayerAux
             .LocalPlayer;
         var transparent = (Colors.Transparent, Colors.Transparent);
