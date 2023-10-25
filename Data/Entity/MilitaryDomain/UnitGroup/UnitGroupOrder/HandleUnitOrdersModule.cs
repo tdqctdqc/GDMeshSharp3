@@ -7,7 +7,7 @@ public class HandleUnitOrdersModule : LogicModule
     {
         var res = new LogicResults();
         
-        var proc = new HandleUnitOrdersProcedure();
+        var proc = HandleUnitOrdersProcedure.Construct();
         foreach (var group in data.GetAll<UnitGroup>())
         {
             group.Order.Handle(group, data, proc);

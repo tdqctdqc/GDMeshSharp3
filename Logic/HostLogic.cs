@@ -40,7 +40,7 @@ public class HostLogic : ILogic
             new FinanceModule(),
             new TradeModule(),
             new ProposalsModule(),
-            new FormUnitsModule(),
+            new FormUnitsAndGroupsModule(),
             new AllianceOrdersModule()
         };
         _minorTurnStartModules = new LogicModule[]

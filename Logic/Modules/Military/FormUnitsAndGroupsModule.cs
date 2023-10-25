@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class FormUnitsModule : LogicModule
+public class FormUnitsAndGroupsModule : LogicModule
 {
     public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
     {
         var res = new LogicResults();
         var key = new LogicWriteKey(data, res);
-        orders.ForEach(o => FormUnits((MajorTurnOrders)o, data, key));
+        orders.ForEach(o =>
+        {
+            FormUnits((MajorTurnOrders)o, data, key);
+            FormGroups((MajorTurnOrders)o, data, key);
+        });
         return res;
     }
 
@@ -52,5 +56,15 @@ public class FormUnitsModule : LogicModule
             Unit.Create(template, regime, capitalPos, key);
         }
         key.Results.Messages.Add(useTroops);
+    }
+
+    private void FormGroups(MajorTurnOrders orders, Data data, 
+        LogicWriteKey key)
+    {
+        foreach (var newGroupUnits in orders.Military.NewGroupUnits)
+        {
+            UnitGroup.Create(orders.Regime.Entity(data),
+                newGroupUnits, key);
+        }
     }
 }

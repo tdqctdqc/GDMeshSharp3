@@ -6,7 +6,7 @@ public static class RegimeExt
 {
     public static IEnumerable<Unit> GetUnits(this Regime r, Data d)
     {
-        return d.Military.UnitAux.ByRegime[r];
+        return d.Military.UnitAux.UnitByRegime[r];
     }
     public static IEnumerable<UnitTemplate> GetUnitTemplates(this Regime r, Data d)
     {

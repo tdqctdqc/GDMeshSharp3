@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 
+[MessagePack.Union(0, typeof(FrontAssignment))]
 public abstract class ForceAssignment : IPolymorph
 {
     public HashSet<UnitGroup> Groups { get; private set; }
