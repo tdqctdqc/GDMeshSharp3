@@ -17,14 +17,7 @@ public class DeploymentAi
     }
     public void CalculateMinor(Regime regime, Data data, MinorTurnOrders orders)
     {
-        var fronts = regime.Military.Fronts.Items(data);
-        var openFronts = fronts
-            ?.Where(f => ForceAssignments
-                .Any(a => a is FrontAssignment fa && fa.Front == f) == false);
-        var freeGroups = data.Military.UnitAux.UnitGroupByRegime[regime]
-            ?.Where(g => ForceAssignments.Any(f => f.Groups.Contains(g)) == false)
-            .ToHashSet();
-        
+        FillExposedFronts(regime, data, orders);
     }
 
     private void AssignFreeUnitsToGroups(Regime regime, Data data, MajorTurnOrders orders)
@@ -45,5 +38,44 @@ public class DeploymentAi
             iter++;
         }
         orders.Military.NewGroupUnits.AddRange(newGroups);
+    }
+
+    private void FillExposedFronts(Regime regime, Data data, MinorTurnOrders orders)
+    {
+        var fronts = data.Military.FrontAux.Fronts[regime];
+        if (fronts == null) return;
+        var exposed = fronts
+            ?.Where(f => ForceAssignments.Any(a => a is FrontAssignment fa && fa.Front == f) == false)
+            .ToList();
+        if (exposed.Count == 0) return;
+        GD.Print($"{exposed.Count} exposed fronts");
+        var occupiedGroups = ForceAssignments.SelectMany(f => f.Groups).ToHashSet();
+        
+        
+        var freeGroups = data.Military.UnitAux.UnitGroupByRegime[regime]
+            ?.Except(occupiedGroups)
+            ?.ToList();
+        if (freeGroups == null || freeGroups.Count == 0) return;
+        var frontGroups = exposed
+            .ToDictionary(f => f, f => new List<UnitGroup>());
+        var iter = 0;
+        for (var i = 0; i < freeGroups.Count; i++)
+        {
+            var group = freeGroups[i];
+            var front = exposed.Modulo(iter);
+            iter++;
+            frontGroups[front].Add(group);
+        }
+        
+        foreach (var kvp in frontGroups)
+        {
+            var assignment = new FrontAssignment(kvp.Key);
+            foreach (var unitGroup in kvp.Value)
+            {
+                assignment.Groups.Add(unitGroup);
+            }
+
+            ForceAssignments.Add(assignment);
+        }
     }
 }

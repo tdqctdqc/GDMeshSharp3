@@ -67,7 +67,9 @@ public class AllianceMilitaryAi
         var uncovered = frontlineHash.ToHashSet();
         foreach (var regime in _alliance.Members.Items(data))
         {
-            foreach (var front in regime.Military.Fronts.Items(data))
+            var fronts = data.Military.FrontAux.Fronts[regime];
+            if (fronts == null) continue;
+            foreach (var front in fronts)
             {
                 foreach (var wp in front.WaypointIds)
                 {

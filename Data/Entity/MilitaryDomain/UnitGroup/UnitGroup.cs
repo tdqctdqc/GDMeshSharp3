@@ -14,7 +14,6 @@ public class UnitGroup : Entity
         var units = EntRefCol<Unit>.Construct(nameof(Units), id, unitIds.ToHashSet(), key.Data);
         var u = new UnitGroup(id, r.MakeRef(), units,
             new DoNothingUnitOrder());
-        GD.Print("made unit group");
         key.Create(u);
         return u;
     }

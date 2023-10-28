@@ -22,7 +22,6 @@ public class TrimFrontsProcedure : Procedure
         {
             var front = key.Data.Get<Front>(i);
             var regime = front.Regime.Entity(key.Data);
-            regime.Military.Fronts.Remove(front, key);
             key.Data.RemoveEntity(front.Id, key);
         }
 

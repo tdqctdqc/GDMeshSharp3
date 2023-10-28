@@ -26,7 +26,7 @@ public class TrimFrontsModule : LogicModule
         
         foreach (var regime in regimes)
         {
-            foreach (var front in regime.Military.Fronts.Items(data))
+            foreach (var front in data.Military.FrontAux.Fronts[regime])
             {
                 CheckFront(front, proc, controlled, data, key);
             }
