@@ -4,18 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/AI/Military/FrontAux.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="working on fronts">
+      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/State.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/StateMachine.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/AllianceMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/AllianceMilitaryAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/ForceAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/ForceAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/MilitaryDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/MilitaryDomain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeMilitary/RegimeMilitary.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeMilitary/RegimeMilitary.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/TrimFrontsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/TrimFrontsModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/TrimFrontsProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/TrimFrontsProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnCalculator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/GameSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GameSession.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -65,10 +66,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9f6eb4020bb69f92834e6525579fb08899521b2d8dbaf42dbb6eda2ba15d3/MessagePackSerializer.NonGeneric.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/DeploymentAi.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/AllianceMilitaryAi.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/Nav.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -308,7 +310,7 @@
       <workItem from="1698105834837" duration="4268000" />
       <workItem from="1698255925990" duration="3053000" />
       <workItem from="1698266592488" duration="3336000" />
-      <workItem from="1698512939706" duration="796000" />
+      <workItem from="1698512939706" duration="4080000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -520,14 +522,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00044" summary="added saved settings">
-      <option name="closed" value="true" />
-      <created>1694303779249</created>
-      <option name="number" value="00044" />
-      <option name="presentableId" value="LOCAL-00044" />
-      <option name="project" value="LOCAL" />
-      <updated>1694303779249</updated>
-    </task>
     <task id="LOCAL-00045" summary="fiddling with messagepack, polymorph serialization not working right">
       <option name="closed" value="true" />
       <created>1694457331629</created>
@@ -672,7 +666,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698269528190</updated>
     </task>
-    <option name="localTasksCounter" value="63" />
+    <task id="LOCAL-00063" summary="working on fronts">
+      <option name="closed" value="true" />
+      <created>1698514527960</created>
+      <option name="number" value="00063" />
+      <option name="presentableId" value="LOCAL-00063" />
+      <option name="project" value="LOCAL" />
+      <updated>1698514527961</updated>
+    </task>
+    <option name="localTasksCounter" value="64" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -694,7 +696,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="tweaked nexus waypoint connection" />
     <MESSAGE value="doot" />
     <MESSAGE value="made better scaling options for generation" />
     <MESSAGE value="pre reworking loc gen" />
@@ -719,6 +720,7 @@
     <MESSAGE value="started on Military systems and ai" />
     <MESSAGE value="ditto" />
     <MESSAGE value="added unit groups" />
-    <option name="LAST_COMMIT_MESSAGE" value="added unit groups" />
+    <MESSAGE value="working on fronts" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on fronts" />
   </component>
 </project>

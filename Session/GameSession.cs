@@ -89,7 +89,7 @@ public partial class GameSession : Node, ISession
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
         Client.SetServer(hServer);
-        logic.FirstTurn();
+        logic.Start();
         Client.SetupForGameplay(true);
     }
     

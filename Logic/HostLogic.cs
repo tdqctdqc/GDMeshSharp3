@@ -10,15 +10,13 @@ using System.Threading.Tasks;
 public class HostLogic : ILogic
 {
     public ConcurrentQueue<Command> CommandQueue { get; }
+    private StateMachine _stateMachine;
+    private TurnState _start, _middle, _end;
     public OrderHolder OrderHolder { get; private set; }
     private HostServer _server; 
     private HostWriteKey _hKey;
     public ProcedureWriteKey PKey { get; private set; }
     private Data _data;
-    private LogicModule[] _majorTurnStartModules, _majorTurnEndModules, 
-        _minorTurnStartModules, _minorTurnEndModules;
-    private TurnCalculator _turnStartCalculator, _turnEndCalculator;
-    private bool _turnStartDone = false;
     public HostLogic(Data data)
     {
         OrderHolder = new OrderHolder();
@@ -26,33 +24,6 @@ public class HostLogic : ILogic
         data.Requests.QueueCommand.Subscribe(CommandQueue.Enqueue);
         data.Requests.SubmitPlayerOrders
             .Subscribe(x => OrderHolder.SubmitPlayerTurnOrders(x.Item1, x.Item2, _data));
-        _majorTurnStartModules = new LogicModule[]
-        {
-            new DefaultLogicModule(() => new SetContextProcedure()),
-            new TrimFrontsModule()
-        };
-        _majorTurnEndModules = new LogicModule[]
-        {
-            new DefaultLogicModule(() => new PrepareNewHistoriesProcedure()),
-            new ProduceConstructModule(),
-            new ConstructBuildingsModule(),
-            new FoodAndPopGrowthModule(),
-            new FinanceModule(),
-            new TradeModule(),
-            new ProposalsModule(),
-            new FormUnitsAndGroupsModule(),
-            new AllianceOrdersModule()
-        };
-        _minorTurnStartModules = new LogicModule[]
-        {
-            new DefaultLogicModule(() => new SetContextProcedure()),
-        };
-        _minorTurnEndModules = new LogicModule[]
-        {
-            new HandleUnitOrdersModule()
-        };
-        _turnStartCalculator = new TurnCalculator(EnactResults, data);
-        _turnEndCalculator = new TurnCalculator(EnactResults, data);
         
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank
             .Subscribe(
@@ -61,98 +32,29 @@ public class HostLogic : ILogic
                     OrderHolder.CalcAiTurnOrders(_data);
                 }
             );
+        _start = new TurnStartState(data);
+        _middle = new TurnMiddleState(data, OrderHolder);
+        _end = new TurnEndState(data);
+        _start.SetNextState(_middle);
+        _middle.SetNextState(_end);
+        _end.SetNextState(_start);
     }
     
-    public void FirstTurn()
-    {
-        ProcessTurnBeginning();
-    }
-    public void Process(float delta)
-    {
-        if (_turnStartDone)
-        {
-            ProcessTurnEnd();
-        }
-        else
-        {
-            ProcessTurnBeginning();
-        }
-    }
-    
-    private bool ProcessTurnBeginning()
-    {
-        if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Waiting)
-        {
-            DoCommands();
-            _turnStartCalculator.Calculate(GetModules(true), 
-                OrderHolder, _data);
-        }
-        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Calculating)
-        {
-            _turnStartCalculator.CheckOnCalculation();
-        }
-        else if (_turnStartCalculator.State == TurnCalculator.TurnCalcState.Finished)
-        {
-            //todo ticking for remote as well?
-            OrderHolder.Clear();
-            _turnStartCalculator.MarkDone();
-            _turnStartDone = true;
-            var proc = new FinishedTurnStartCalcProc();
-            var res = new LogicResults();
-            res.Messages.Add(proc);
-            EnactResults(res);
-            DoCommands();
-            OrderHolder.CalcAiTurnOrders(_data);
-            return true;
-        }
-        return false;
-    }
-    
-    private bool ProcessTurnEnd()
-    {
-        var majorTurn = _data.BaseDomain.GameClock.MajorTurn(_data);
-        if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Waiting)
-        {
-            DoCommands();
-            if(OrderHolder.CheckReadyForFrame(_data, majorTurn))
-            {
-                _turnEndCalculator.Calculate(GetModules(false), 
-                    OrderHolder, _data);
-            }
-        }
-        else if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Calculating)
-        {
-            _turnEndCalculator.CheckOnCalculation();
-        }
-        else if (_turnEndCalculator.State == TurnCalculator.TurnCalcState.Finished)
-        {
-            //todo ticking for remote as well?
-            OrderHolder.Clear();
-            var tick = new TickProcedure();
-            var res = new LogicResults();
-            res.Messages.Add(tick);
-            EnactResults(res);
-            _turnEndCalculator.MarkDone();
-            _turnStartDone = false;
-            DoCommands();
-            ProcessTurnBeginning();
-            return true;
-        }
-        return false;
-    }
 
-    private List<LogicModule> GetModules(bool start)
-    {
-        var majorTurn = _data.BaseDomain.GameClock.MajorTurn(_data);
-        if (majorTurn) return start ? _majorTurnStartModules.ToList() : _majorTurnEndModules.ToList();
-        else return start ? _minorTurnStartModules.ToList() : _minorTurnEndModules.ToList();
-    }
     public void SetDependencies(HostServer server, GameSession session, Data data)
     {
         _data = data;
         _server = server;
         _hKey = new HostWriteKey(this, data);
         PKey = new ProcedureWriteKey(data);
+    }
+    public void Process(float delta)
+    {
+        _stateMachine.Process();
+    }
+    public void Start()
+    {
+        _stateMachine = new StateMachine(_start);
     }
     
     private void EnactResults(LogicResults logicResult)
@@ -164,24 +66,14 @@ public class HostLogic : ILogic
         _server.ReceiveLogicResult(logicResult, _hKey);
         _server.PushPackets(_hKey);
     }
-
     private void DoCommands()
     {
-        var queuedProcs = new List<Procedure>();
-        var logicResult = new LogicResults(new List<Message>(), new List<Func<HostWriteKey, Entity>>());
-        var commandCount = CommandQueue.Count;
-        for (var i = 0; i < commandCount; i++)
+        while (CommandQueue.TryDequeue(out var command))
         {
-            if (CommandQueue.TryDequeue(out var command))
-            {
-                if(command.Valid(_data)) command.Enact(PKey);
-            }
+            if(command.Valid(_data)) command.Enact(PKey);
         }
-        for (var i = 0; i < logicResult.Messages.Count; i++)
-        {
-            logicResult.Messages[i].Enact(PKey);
-        }
-        _server.ReceiveLogicResult(logicResult, _hKey);
         _server.PushPackets(_hKey);
     }
+
+    
 }

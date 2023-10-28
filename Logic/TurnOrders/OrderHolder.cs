@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -29,8 +30,24 @@ public class OrderHolder
     public void CalcAiTurnOrders(Data data)
     {
         var major = data.BaseDomain.GameClock.MajorTurn(data);
-        
         GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetTurnOrders(data), data);
+    }
+    public List<RegimeTurnOrders> GetOrdersList(Data data)
+    {
+        var res = new List<RegimeTurnOrders>();
+        foreach (var kvp in PlayerTurnOrders)
+        {
+            if (kvp.Key.Regime.Entity(data).IsPlayerRegime(data) == false) continue;
+            var orders = kvp.Value;
+            res.Add(orders);
+        }
+        foreach (var kvp in AiTurnOrders)
+        {
+            if (kvp.Key.IsPlayerRegime(data)) continue;
+            var orders = kvp.Value.Result;
+            res.Add(orders);
+        }
+        return res;
     }
     private async void GetAiRegimeOrders(Func<Regime, RegimeTurnOrders> getOrders, Data data)
     {
