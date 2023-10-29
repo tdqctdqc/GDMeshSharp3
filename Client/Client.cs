@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -9,6 +10,7 @@ public partial class Client : Node, IClient
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiRequests UiRequests { get; private set; }
+    public ConcurrentQueue<Action> QueuedUpdates { get; }
     public Control UiLayer { get; private set; }
     public Node2D GraphicsLayer { get; private set; }
     public IServer Server { get; private set; }
@@ -17,6 +19,7 @@ public partial class Client : Node, IClient
     {
         Data = data;
         Server = server;
+        QueuedUpdates = new ConcurrentQueue<Action>();
         Setup();
     }
     private void Setup()
@@ -60,6 +63,11 @@ public partial class Client : Node, IClient
         foreach (var component in values)
         {
             component.Process((float)delta);
+        }
+
+        while (QueuedUpdates.TryDequeue(out var u))
+        {
+            u.Invoke();
         }
     }
 

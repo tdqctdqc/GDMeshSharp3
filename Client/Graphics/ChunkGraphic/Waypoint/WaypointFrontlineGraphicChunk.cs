@@ -48,8 +48,7 @@ public partial class WaypointFrontlineGraphicChunk : WaypointGraphicChunk
         {
             foreach (var wpChunk in l.ByChunkCoords.Values)
             {
-                wpChunk.ClearChildren();
-                wpChunk.Draw(wpChunk.Chunk, d);
+                wpChunk.MarkStale();
             }
         };
         d.Notices.FinishedTurnStartCalc.Subscribe(update);

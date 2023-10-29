@@ -27,11 +27,10 @@ public abstract class TurnState : State
     }
     public override void Enter()
     {
-        GD.Print("entering state " + GetType().Name);
+        Game.I.Logger.Log("Entering state "  + GetType().Name, LogType.Logic);
         if (_calculation != null) throw new Exception();
         _calculation = Task.Run(Calculate);
     }
-
     private void Calculate()
     {
         if (_data.BaseDomain.GameClock.MajorTurn(_data))
@@ -43,7 +42,6 @@ public abstract class TurnState : State
             CalculateMinor();
         }
     }
-
     private void CalculateMajor()
     {
         foreach (var module in _majorModules)
@@ -52,7 +50,6 @@ public abstract class TurnState : State
                 _sendMessage);
         }
     }
-
     private void CalculateMinor()
     {
         foreach (var module in _minorModules)

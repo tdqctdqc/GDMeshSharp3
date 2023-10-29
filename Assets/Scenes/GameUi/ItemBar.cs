@@ -5,15 +5,15 @@ using Godot;
 
 public partial class ItemBar : HBoxContainer
 {
-    public ItemBar(Data data)
+    public ItemBar(Client client, Data data)
     {
-        AddFlow(data.Models.Flows.ConstructionCap, data);
-        AddFlow(data.Models.Flows.IndustrialPower, data);
-        AddFlow(data.Models.Flows.Income, data);
+        AddFlow(client, data.Models.Flows.ConstructionCap, data);
+        AddFlow(client, data.Models.Flows.IndustrialPower, data);
+        AddFlow(client, data.Models.Flows.Income, data);
 
         foreach (var kvp in data.Models.GetModels<Item>())
         {
-            AddItem(kvp.Value, data);
+            AddItem(client, kvp.Value, data);
         }
     }
 
@@ -21,9 +21,10 @@ public partial class ItemBar : HBoxContainer
     {
     }
 
-    private void AddItem(Item sr, Data data)
+    private void AddItem(Client client, Item sr, Data data)
     {
         var hBox = sr.Icon.MakeIconStatDisplay(
+            client,
             data, 
             () =>
             {
@@ -38,9 +39,9 @@ public partial class ItemBar : HBoxContainer
         this.AddChildWithVSeparator(hBox);
     }
 
-    private void AddFlow(Flow flow, Data data)
+    private void AddFlow(Client client, Flow flow, Data data)
     {
-        var conCap = NodeExt.MakeFlowStatDisplay(flow, 
+        var conCap = NodeExt.MakeFlowStatDisplay(client, flow, 
             data, 
             10f,
             data.Notices.Ticked.Blank,

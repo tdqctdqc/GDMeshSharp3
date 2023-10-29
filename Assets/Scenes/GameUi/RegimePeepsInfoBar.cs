@@ -6,17 +6,17 @@ using Godot;
 
 public partial class RegimePeepsInfoBar : HBoxContainer
 {
-    public RegimePeepsInfoBar(Data data)
+    public RegimePeepsInfoBar(Client client, Data data)
     {
         var sizeLabel = new Label();
         var deltaLabel = new Label();
-        var popSize = StatLabel.Construct<int>("Pop Size", sizeLabel,
+        var popSize = StatLabel.Construct<int>(client, "Pop Size", sizeLabel,
             () => GetPopulationCount(data));
         popSize.AddTrigger(data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         popSize.AddTrigger(data.Notices.Ticked.Blank);
         popSize.AddTrigger(data.Notices.FinishedTurnStartCalc);
         AddChild(sizeLabel);
-        var popGrowth = StatLabel.Construct<int>("Pop Growth", deltaLabel,
+        var popGrowth = StatLabel.Construct<int>(client, "Pop Growth", deltaLabel,
             () => GetPeepDelta(data));
         popGrowth.AddTrigger(data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         popGrowth.AddTrigger(data.Notices.Ticked.Blank);

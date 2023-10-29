@@ -19,10 +19,10 @@ public static class NodeExt
         return SubscribedNodeToken.Construct(node, update, triggers);
     }
 
-    public static HBoxContainer MakeFlowStatDisplay(Flow flow, Data data, float height,
+    public static HBoxContainer MakeFlowStatDisplay(Client client, Flow flow, Data data, float height,
         params RefAction[] triggers)
     {
-        var h = flow.Icon.MakeIconStatDisplay(data,
+        var h = flow.Icon.MakeIconStatDisplay(client, data,
             () =>
             {
                 var regime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
@@ -50,7 +50,9 @@ public static class NodeExt
         };
         c.MouseFilter = Control.MouseFilterEnum.Stop;
     }
-    public static HBoxContainer MakeIconStatDisplay(this Icon icon, Data data, 
+    public static HBoxContainer MakeIconStatDisplay(this Icon icon, 
+        Client client,
+        Data data, 
         Func<string> getStat, float height,
         params RefAction[] triggers)
     {
@@ -62,6 +64,7 @@ public static class NodeExt
         hBox.AddChild(amount);
         iconRect.Scale = new Vector2(1f, -1f);
         var stat = StatLabel.Construct<string>(
+            client,
             "", 
             amount,
             getStat

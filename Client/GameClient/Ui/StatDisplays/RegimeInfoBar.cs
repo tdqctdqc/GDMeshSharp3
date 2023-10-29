@@ -1,13 +1,12 @@
-
 using Godot;
 
 public partial class RegimeInfoBar : HBoxContainer
 {
-    public RegimeInfoBar(Data data, bool host)
+    public RegimeInfoBar(Client client, Data data, bool host)
     {
         var player = data.BaseDomain.PlayerAux.LocalPlayer;
         
-        this.AddChildWithVSeparator(TickDisplay.Create(data));
+        this.AddChildWithVSeparator(TickDisplay.Create(client, data));
         var hostClientLabel = new Label();
         hostClientLabel.Text = host ? "Host" : "Client";
         this.AddChildWithVSeparator(hostClientLabel);
@@ -33,10 +32,10 @@ public partial class RegimeInfoBar : HBoxContainer
         AddChild(regimeFlagRect);
         
         var regimeNameLabel = new Label();
-        StatLabel.Construct<string>("", regimeNameLabel, 
+        StatLabel.Construct<string>(client, "", regimeNameLabel, 
             () => data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data)?.Name,
             data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
         this.AddChildWithVSeparator(regimeNameLabel);
-        this.AddChildWithVSeparator(new RegimePeepsInfoBar(data));
+        this.AddChildWithVSeparator(new RegimePeepsInfoBar(client, data));
     }
 }

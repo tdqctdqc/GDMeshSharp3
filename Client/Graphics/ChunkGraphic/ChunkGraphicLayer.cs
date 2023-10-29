@@ -74,7 +74,8 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
         }, _segmenter);
     }
 
-    public void AddSetting<T>(SettingsOption<T> option, Action<TGraphic, T> update)
+    public void AddSetting<T>(SettingsOption<T> option, 
+        Action<TGraphic, T> update)
     {
         option.SettingChanged.SubscribeForNode(() =>
         {

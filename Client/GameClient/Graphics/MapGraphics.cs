@@ -55,21 +55,10 @@ public partial class MapGraphics : Node2D, IClientComponent
     }
     public void Process(float delta)
     {
-        // var sw = new Stopwatch();
-        // sw.Start();
-        // while (UpdateQueue.Count() > 0 && sw.Elapsed.TotalMilliseconds < _msToProcessUpdates)
-        // {
-        //     UpdateQueue.TryDequeue(out var u);
-        //     u?.Invoke();
-        // }
-        Task.Run(() =>
+        while (UpdateQueue.TryDequeue(out var u))
         {
-            while (UpdateQueue.Count() > 0)
-            {
-                UpdateQueue.TryDequeue(out var u);
-                u?.Invoke();
-            }
-        });
+            u?.Invoke();
+        }
         if(Game.I.Client?.Cam() is ICameraController c)
         {
             _segmenter.Update(c.XScrollRatio);

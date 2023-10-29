@@ -8,15 +8,17 @@ public partial class StatLabel : SubscribedNodeToken
     private Action _update;
 
     public static StatLabel Construct<TProperty>(
+        IClient client,
         string prefix, Label label,
         Func<TProperty> getStat,
         params RefAction[] triggers)
     {
         var s = new StatLabel();
-        s.Setup(prefix, label, getStat, triggers);
+        s.Setup(client, prefix, label, getStat, triggers);
         return s;
     }
     protected void Setup<TProperty>(
+        IClient client,
         string prefix, Label label,
         Func<TProperty> getStat,
         params RefAction[] triggers)
@@ -25,14 +27,17 @@ public partial class StatLabel : SubscribedNodeToken
         if (_label == null) throw new Exception();
         Action update = () =>
         {
-            if (prefix != "")
+            client.QueuedUpdates.Enqueue(() =>
             {
-                _label.Text = $"{prefix}: {getStat().ToString()}";
-            }
-            else
-            {
-                _label.Text = $"{getStat().ToString()}";
-            }
+                if (prefix != "")
+                {
+                    _label.Text = $"{prefix}: {getStat().ToString()}";
+                }
+                else
+                {
+                    _label.Text = $"{getStat().ToString()}";
+                }
+            });
         };
         
         base.Setup(_label, update, triggers);

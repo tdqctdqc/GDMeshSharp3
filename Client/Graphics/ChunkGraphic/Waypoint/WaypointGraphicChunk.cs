@@ -1,48 +1,85 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract partial class WaypointGraphicChunk : MapChunkGraphicModule
+public abstract partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
 {
-    public WaypointGraphicChunk(MapChunk chunk, Data d) 
-        : base(chunk, nameof(WaypointGraphicChunk))
+    private MapChunk _chunk;
+    public string Name { get; private set; }
+    Node2D IMapChunkGraphicNode.Node => this;
+    private Dictionary<Waypoint, int> _ids;
+    private MultiMeshInstance2D _inner, _outer;
+    private Func<Waypoint, Data, (Color, Color)> _getColor; 
+    protected bool _stale;
+    public WaypointGraphicChunk(MapChunk chunk, Data d)
     {
-        var nav = d.Planet.Nav;
-        var mb = new MeshBuilder();
-
-        AddWaypointMarkers(nav, mb, chunk, d);
-        AddChild(mb.GetMeshInstance());
+        _chunk = chunk;
+        _stale = false;
     }
 
-    public void Draw(MapChunk chunk, Data d)
+    public void MarkStale()
     {
-        var nav = d.Planet.Nav;
-        var mb = new MeshBuilder();
-        AddWaypointMarkers(nav, mb, chunk, d);
-        AddChild(mb.GetMeshInstance());
+        _stale = true;
     }
-    private void AddWaypointMarkers(Nav nav, MeshBuilder mb, MapChunk chunk, Data d)
+    
+    public abstract (Color inner, Color border) GetColor(Waypoint wp, Data data);
+
+    public void Init(Data data)
     {
-        foreach (var kvp in nav.Waypoints
-                     .Where(kvp2 => 
-                         chunk.Polys.Contains(d.Get<MapPolygon>(kvp2.Value.AssociatedPolyIds.X))))
+        var nav = data.Planet.Nav;
+        var chunkWps = nav.Waypoints
+            .Values
+            .Where(wp => _chunk.Polys.Contains(data.Get<MapPolygon>(wp.AssociatedPolyIds.X)))
+            .ToList();
+        _ids = new Dictionary<Waypoint, int>();
+        _outer = new MultiMeshInstance2D();
+        _outer.Multimesh = new MultiMesh();
+        var outerQuad = new QuadMesh();
+        outerQuad.Size = 12f * Vector2.One;
+        _outer.Multimesh.Mesh = outerQuad;
+        _outer.Multimesh.UseColors = true;
+        AddChild(_outer);
+        _outer.Multimesh.InstanceCount = chunkWps.Count();
+        
+        _inner = new MultiMeshInstance2D();
+        _inner.Multimesh = new MultiMesh();
+        var innerQuad = new QuadMesh();
+        innerQuad.Size = 10f * Vector2.One;
+        _inner.Multimesh.Mesh = innerQuad;
+        _inner.Multimesh.UseColors = true;
+        AddChild(_inner);
+        _inner.Multimesh.InstanceCount = chunkWps.Count();
+        for (var i = 0; i < chunkWps.Count; i++)
         {
-            var point = kvp.Value;
-            var offset = chunk.RelTo.GetOffsetTo(point.Pos, d);
-            foreach (var nId in point.Neighbors)
-            {
-                var n = d.Planet.Nav.Get(nId);
-                var nOffset = chunk.RelTo.GetOffsetTo(n.Pos, d);
-                mb.AddLine(offset, nOffset, Colors.Red, 2.5f);
-            }
-
-            var colors = GetColor(point, d);
-            mb.AddCircle(offset, 10f, 6, colors.Item2);
-            mb.AddCircle(offset, 8f, 6, colors.Item1);
+            var wp = chunkWps[i];
+            var colors = GetColor(wp, data);
+            var offset = _chunk.RelTo.GetOffsetTo(wp.Pos, data);
+            _inner.Multimesh.SetInstanceColor(i, colors.inner);
+            _inner.Multimesh.SetInstanceTransform2D(i, new Transform2D(0f, offset));
+            _outer.Multimesh.SetInstanceColor(i, colors.border);
+            _outer.Multimesh.SetInstanceTransform2D(i, new Transform2D(0f, offset));
+            _ids.Add(wp, i);
         }
     }
-
-    public abstract (Color inner, Color border) GetColor(Waypoint wp, Data data);
-    
+    public void Update(Data d, ConcurrentQueue<Action> queue)
+    {
+        if (_stale)
+        {
+            queue.Enqueue(() => Update(d));
+            _stale = false;
+        }
+    }
+    private void Update(Data data)
+    {
+        foreach (var kvp in _ids)
+        {
+            var wp = kvp.Key;
+            var id = kvp.Value;
+            var colors = GetColor(wp, data);
+            _inner.Multimesh.SetInstanceColor(id, colors.inner);
+            _outer.Multimesh.SetInstanceColor(id, colors.border);
+        }
+    }
 }

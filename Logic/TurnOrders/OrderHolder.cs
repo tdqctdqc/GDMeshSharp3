@@ -60,6 +60,7 @@ public class OrderHolder
     }
     private async void CalcAiRegimeOrders(Regime r, Data data)
     {
+        if (r == null) return;
         Orders[r] = null;
         var source = new CancellationTokenSource();
         _aiCalcCancelTokens[r] = source;

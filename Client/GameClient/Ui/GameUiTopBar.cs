@@ -15,7 +15,7 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         var frame = client.GetComponent<UiFrame>();
         frame.AddTopBar(this);
         
-        var regimeInfoBar = new RegimeInfoBar(data, host);
+        var regimeInfoBar = new RegimeInfoBar(client, data, host);
         
         
         var general = new HBoxContainer();
@@ -37,14 +37,16 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
             }
         });
         data.Notices.Ticked.SubscribeForNode(i =>
-            {
-                _submitTurn.Text = "Submit Turn";
-                _submitTurn.Disabled = false;
-            }, this);
-        
-        
-        
-        AddChild(new ItemBar(data));
+        {
+            client.QueuedUpdates.Enqueue(
+                () =>
+                {
+                    _submitTurn.Text = "Submit Turn";
+                    _submitTurn.Disabled = false; 
+                }
+            );
+        }, this);
+        AddChild(new ItemBar(client, data));
     }
 
     private GameUiTopBar()
