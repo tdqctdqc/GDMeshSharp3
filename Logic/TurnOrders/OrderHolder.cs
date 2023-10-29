@@ -3,100 +3,90 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 public class OrderHolder
 {
-    public ConcurrentDictionary<Player, RegimeTurnOrders> PlayerTurnOrders { get; private set; }
-    public ConcurrentDictionary<Regime, Task<RegimeTurnOrders>> AiTurnOrders { get; private set; }
-
-    public OrderHolder()
+    public ConcurrentDictionary<Regime, RegimeTurnOrders> Orders { get; private set; }
+    private ConcurrentDictionary<Regime, Task<RegimeTurnOrders>> _aiOrderCalcs;
+    private ConcurrentDictionary<Regime, CancellationTokenSource> _aiCalcCancelTokens;
+    private Data _data;
+    public OrderHolder(Data data)
     {
-        PlayerTurnOrders = new ConcurrentDictionary<Player, RegimeTurnOrders>();
-        AiTurnOrders = new ConcurrentDictionary<Regime, Task<RegimeTurnOrders>>();
+        _data = data;
+        Orders = new ConcurrentDictionary<Regime, RegimeTurnOrders>();
+        _aiCalcCancelTokens = new ConcurrentDictionary<Regime, CancellationTokenSource>();
+        _aiOrderCalcs = new ConcurrentDictionary<Regime, Task<RegimeTurnOrders>>();
+        data.BaseDomain.PlayerAux.PlayerChangedRegime
+            .Subscribe(HandlePlayerChangedRegime);
+        data.Requests.SubmitPlayerOrders
+            .Subscribe(x => SubmitPlayerTurnOrders(x.Item1, x.Item2, _data));
     }
 
-    public void Clear()
+    public void HandlePlayerChangedRegime(ValChangeNotice<Player, Regime> notice)
     {
-        PlayerTurnOrders.Clear();
-        AiTurnOrders.Clear();
+        CancelCalcAiRegimeOrders(notice.NewVal, _data);
+        CalcAiRegimeOrders(notice.OldVal, _data);
     }
     public void SubmitPlayerTurnOrders(Player player, RegimeTurnOrders orders, Data data)
     {
         if (orders.Tick != data.BaseDomain.GameClock.Tick) throw new Exception();
-        var added = PlayerTurnOrders.TryAdd(player, orders);
-        if (added == false) throw new Exception();
+        var regime = orders.Regime.Entity(data);
+        if (Orders.ContainsKey(regime) && Orders[regime] != null) throw new Exception();
+        Orders[regime] = orders;
     }
-    public void CalcAiTurnOrders(Data data)
-    {
-        var major = data.BaseDomain.GameClock.MajorTurn(data);
-        GetAiRegimeOrders(r => data.HostLogicData.RegimeAis[r].GetTurnOrders(data), data);
-    }
-    public List<RegimeTurnOrders> GetOrdersList(Data data)
-    {
-        var res = new List<RegimeTurnOrders>();
-        foreach (var kvp in PlayerTurnOrders)
-        {
-            if (kvp.Key.Regime.Entity(data).IsPlayerRegime(data) == false) continue;
-            var orders = kvp.Value;
-            res.Add(orders);
-        }
-        foreach (var kvp in AiTurnOrders)
-        {
-            if (kvp.Key.IsPlayerRegime(data)) continue;
-            var orders = kvp.Value.Result;
-            res.Add(orders);
-        }
-        return res;
-    }
-    private async void GetAiRegimeOrders(Func<Regime, RegimeTurnOrders> getOrders, Data data)
+    public void CalcAiOrders(Data data)
     {
         var aiRegimes = data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(data) == false);
-        
-        foreach (var aiRegime in aiRegimes)
+        foreach (var r in aiRegimes)
         {
-            if (AiTurnOrders.ContainsKey(aiRegime) == false)
-            {
-                var task = Task.Run(() =>
-                {
-                    return (RegimeTurnOrders) getOrders(aiRegime);
-                });
-                AiTurnOrders.TryAdd(aiRegime, task);
-            }
+            CalcAiRegimeOrders(r, data);
         }
     }
+
+    public void Clear()
+    {
+        foreach (var r in Orders.Keys.ToList())
+        {
+            Orders[r] = null;
+            CancelCalcAiRegimeOrders(r, _data);
+        }
+    }
+    public List<RegimeTurnOrders> GetOrdersList(Data data)
+    {
+        return Orders.Values.ToList();
+    }
+    private async void CalcAiRegimeOrders(Regime r, Data data)
+    {
+        Orders[r] = null;
+        var source = new CancellationTokenSource();
+        _aiCalcCancelTokens[r] = source;
+        Func<RegimeTurnOrders> func = () =>
+        {
+            var orders = (RegimeTurnOrders)data.HostLogicData.RegimeAis[r].GetTurnOrders(data);
+            Orders[r] = orders;
+            return orders;
+        };
+        _aiOrderCalcs.TryAdd(r, Task.Run(func, source.Token));
+    }
+
+    private void CancelCalcAiRegimeOrders(Regime r, Data data)
+    {
+        if (r == null) return;
+        if (_aiOrderCalcs.ContainsKey(r) == false) return;
+        _aiCalcCancelTokens[r]?.Cancel();
+        _aiCalcCancelTokens[r] = null;
+        _aiOrderCalcs[r] = null;
+        Orders[r] = null;
+    }
+    
 
     
     public bool CheckReadyForFrame(Data data, bool majorTurn)
     {
-        var players = data.GetAll<Player>();
-        var aiRegimes = data.GetAll<Regime>().Where(r => r.IsPlayerRegime(data) == false);
-
-        var playerLedAlliances = data.GetAll<Alliance>()
-            .Where(a => a.Leader.Entity(data).IsPlayerRegime(data));
-        var aiLedAlliances = data.GetAll<Alliance>().Except(playerLedAlliances);
-        
-        foreach (var kvp in AiTurnOrders)
-        {
-            if (kvp.Value.IsFaulted)
-            {
-                throw kvp.Value.Exception;
-            }
-        }
-
-        var allPlayersHaveRegime = players.All(p => p.Regime.Empty() == false);
-        
-        var allPlayersSubmitted = players.All(p => PlayerTurnOrders.ContainsKey(p));
-
-        var allAisHaveEntry = aiRegimes.All(p => AiTurnOrders.ContainsKey(p));
-
-        var allAisCompleted = AiTurnOrders.All(kvp => kvp.Value.IsCompleted);
-
-        
-        var regimeOrdersReady = allPlayersHaveRegime && allPlayersSubmitted
-                                                     && allAisHaveEntry && allAisCompleted;
-
-        return regimeOrdersReady;
+        var regimes = data.GetAll<Regime>();
+        return regimes.All(r => Orders.ContainsKey(r) && Orders[r] != null);
     }
 }

@@ -6,6 +6,7 @@ public class StateMachine
     public StateMachine(State current)
     {
         Current = current;
+        Current.Enter();
     }
 
     public void Process()

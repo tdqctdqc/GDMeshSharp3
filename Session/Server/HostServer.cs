@@ -55,18 +55,15 @@ public partial class HostServer : Node, IServer
             _peers[i].QueuePacket(bytes);
         }
     }
-    public void ReceiveLogicResult(LogicResults results, HostWriteKey key)
+
+    public void ReceiveMessage(Message m, HostWriteKey k)
     {
-        for (var i = 0; i < results.Messages.Count; i++)
+        var bytes = m.Serialize(_key.Data);
+        for (var j = 0; j < _peers.Count; j++)
         {
-            var bytes = results.Messages[i].Serialize(_key.Data);
-            for (var j = 0; j < _peers.Count; j++)
-            {
-                _peers[j].QueuePacket(bytes);
-            }
+            _peers[j].QueuePacket(bytes);
         }
     }
-
     public void PushPackets(HostWriteKey key)
     {
         _peers.ForEach(p => p.PushPackets(key));

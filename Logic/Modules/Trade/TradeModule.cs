@@ -8,11 +8,10 @@ public class TradeModule : LogicModule
 {
     public static float MaxPriceDeviationRatioFromDefault { get; private set; } = 10f;
     public static float PriceAdjustmentRatio { get; private set; } = .25f;
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data, Action<Message> sendMessage)
     {
-        var res = new LogicResults();
         var proc = TradeProcedure.Construct();
-        res.Messages.Add(proc);
+        sendMessage(proc);
 
         var buyOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.BuyOrders).ToList();
         var sellOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.SellOrders).ToList();
@@ -25,7 +24,6 @@ public class TradeModule : LogicModule
         ExchangeItems(infos, sellOrders, buyOrders, data, proc);
         UpdatePricesNew(infos, proc, data);
         
-        return res;
     }
 private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 
         List<BuyOrder> buyOrders, Data data, TradeProcedure proc)

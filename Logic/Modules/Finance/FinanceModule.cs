@@ -5,9 +5,9 @@ using Godot;
 
 public class FinanceModule : LogicModule
 {
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders,
+        Data data, Action<Message> sendMessage)
     {
-        var res = new LogicResults();
         var proc = GrowFinancialPowerProcedure.Construct();
         foreach (var regime in data.GetAll<Regime>())
         {
@@ -17,7 +17,6 @@ public class FinanceModule : LogicModule
             proc.GrowthsByRegimeId.Add(regime.Id, Mathf.FloorToInt(income));
         }
 
-        res.Messages.Add(proc);
-        return res;
+        sendMessage(proc);
     }
 }

@@ -5,9 +5,9 @@ using Godot;
 
 public class FoodAndPopGrowthModule : LogicModule
 {
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
+        Action<Message> sendMessage)
     {
-        var res = new LogicResults();
         var growthsByPeep = new Dictionary<int, int>();
         var foodConsByRegime = new Dictionary<int, int>();
         var foodConsPerPop = data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
@@ -28,8 +28,7 @@ public class FoodAndPopGrowthModule : LogicModule
                 HandleDecline(regime, -surplusRatio, growthsByPeep, data);
             }
         }
-        res.Messages.Add(new FoodAndPopGrowthProcedure(growthsByPeep, foodConsByRegime));
-        return res;
+        sendMessage(new FoodAndPopGrowthProcedure(growthsByPeep, foodConsByRegime));
     }
 
     private void HandleGrowth(Regime regime, float surplusRatio, Dictionary<int, int> growths,

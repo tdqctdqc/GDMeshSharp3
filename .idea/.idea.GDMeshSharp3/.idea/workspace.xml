@@ -4,19 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="working on fronts">
-      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/State.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/StateMachine.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntityCreationUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/Utility/EntityCreationUpdate.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/TurnCalculator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/DiplomaticCalcModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/DiplomaticCalcModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/ProposalsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/ProposalsModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/DefaultLogicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/DefaultLogicModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Finance/FinanceModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Finance/FinanceModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/LogicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/LogicModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/AllianceOrdersModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/AllianceOrdersModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/FormUnitsAndGroupsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/FormUnitsAndGroupsModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/TrimFrontsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/TrimFrontsModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/PrepareNewHistoriesProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/PrepareNewHistoriesProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ConstructBuildingsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ConstructBuildingsModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConstructModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConstructModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Trade/TradeModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Trade/TradeModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/RemoteLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/RemoteLogic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/GameSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GameSession.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/HostServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/History/History.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/History/History.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/StateMachine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/StateMachine.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,6 +88,7 @@
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/GameSession.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -93,27 +110,28 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;merge&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.keymap&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "merge",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.keymap",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
-      &quot;C:\\Users\\Me\\AppData\\Local\\Symbols\\src&quot;
+  "keyToStringList": {
+    "rider.external.source.directories": [
+      "C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache",
+      "C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache",
+      "C:\\Users\\Me\\AppData\\Local\\Symbols\\src"
     ]
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected="Start and Debug.Editor">
     <configuration name="Editor" type="GODOT_DEBUG_RUN_CONFIGURATION" factoryName="Start and Debug">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.0.3-stable_mono_win64/Godot_v4.0.3-stable_mono_win64.exe" />
@@ -310,7 +328,8 @@
       <workItem from="1698105834837" duration="4268000" />
       <workItem from="1698255925990" duration="3053000" />
       <workItem from="1698266592488" duration="3336000" />
-      <workItem from="1698512939706" duration="4080000" />
+      <workItem from="1698512939706" duration="6864000" />
+      <workItem from="1698530996514" duration="3667000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -522,14 +541,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00045" summary="fiddling with messagepack, polymorph serialization not working right">
-      <option name="closed" value="true" />
-      <created>1694457331629</created>
-      <option name="number" value="00045" />
-      <option name="presentableId" value="LOCAL-00045" />
-      <option name="project" value="LOCAL" />
-      <updated>1694457331629</updated>
-    </task>
     <task id="LOCAL-00046" summary="ditto">
       <option name="closed" value="true" />
       <created>1694462512608</created>
@@ -674,7 +685,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698514527961</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="made state machine for turn logic replacing turnCalculator">
+      <option name="closed" value="true" />
+      <created>1698519807836</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1698519807837</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -696,7 +715,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="doot" />
     <MESSAGE value="made better scaling options for generation" />
     <MESSAGE value="pre reworking loc gen" />
     <MESSAGE value="adding manufacturing queue" />
@@ -721,6 +739,7 @@
     <MESSAGE value="ditto" />
     <MESSAGE value="added unit groups" />
     <MESSAGE value="working on fronts" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on fronts" />
+    <MESSAGE value="made state machine for turn logic replacing turnCalculator" />
+    <option name="LAST_COMMIT_MESSAGE" value="made state machine for turn logic replacing turnCalculator" />
   </component>
 </project>

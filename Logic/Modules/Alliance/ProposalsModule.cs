@@ -5,19 +5,18 @@ using Godot;
 
 public class ProposalsModule : LogicModule
 {
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
+        Action<Message> sendMessage)
     {
-        var res = new LogicResults();
         var proposals = data.Society.Proposals.Proposals.Values.ToList();
-        ReceiveProposalDecisions(orders, data, res);
-        ResolveProposals(proposals, data, res);
-        AddProposals(orders, res, data);
-        RemoveInvalidProposals(data, res);
-        return res;
+        ReceiveProposalDecisions(orders, data, sendMessage);
+        ResolveProposals(proposals, data, sendMessage);
+        AddProposals(orders, sendMessage, data);
+        RemoveInvalidProposals(data, sendMessage);
     }
 
     
-    private void ReceiveProposalDecisions(List<RegimeTurnOrders> orders, Data data, LogicResults res)
+    private void ReceiveProposalDecisions(List<RegimeTurnOrders> orders, Data data, Action<Message> sendMessage)
     {
         foreach (var turnOrders in orders)
         {
@@ -27,11 +26,11 @@ public class ProposalsModule : LogicModule
             {
                 var decision = new DecideOnProposalProcedure(regime, kvp.Value,
                     kvp.Key);
-                res.Messages.Add(decision);
+                sendMessage(decision);
             }
         }
     }
-    private void ResolveProposals(List<Proposal> proposals, Data data, LogicResults res)
+    private void ResolveProposals(List<Proposal> proposals, Data data, Action<Message> sendMessage)
     {
         var resolved = new HashSet<int>();
         var readyProposals = proposals
@@ -45,19 +44,19 @@ public class ProposalsModule : LogicModule
             resolved.Add(proposal.Id);
             var decision = proposal.GetResolution(data);
             var resolve = new ResolveProposalProcedure(decision.IsTrue(), proposal.Id);
-            res.Messages.Add(resolve);
+            sendMessage(resolve);
         }
     }
     
-    private void RemoveInvalidProposals(Data data, LogicResults res)
+    private void RemoveInvalidProposals(Data data, Action<Message> sendMessage)
     {
         var invalids = data.Society.Proposals.Proposals.Values.Where(p => p.Valid(data) == false);
         foreach (var invalid in invalids)
         {
-            res.Messages.Add(new CancelProposalProcedure(invalid.Id));
+            sendMessage(new CancelProposalProcedure(invalid.Id));
         }
     }
-    private void AddProposals(List<RegimeTurnOrders> orders, LogicResults res, Data data)
+    private void AddProposals(List<RegimeTurnOrders> orders, Action<Message> sendMessage, Data data)
     {
         var tick = data.BaseDomain.GameClock.Tick;
         foreach (var turnOrders in orders)
@@ -70,7 +69,7 @@ public class ProposalsModule : LogicModule
                 var id = data.IdDispenser.TakeId();
                 proposal.SetId(id);
                 var proc = MakeProposalProcedure.Construct(proposal, data);
-                res.Messages.Add(proc);
+                sendMessage(proc);
             }
         }
     }

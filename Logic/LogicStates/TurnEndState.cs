@@ -1,11 +1,13 @@
 
+using System;
+
 public class TurnEndState : TurnState
 {
-    public TurnEndState(Data data) : base(data)
+    public TurnEndState(OrderHolder orders, Data data, Action<Message> queueMessage) 
+        : base(data, queueMessage, orders)
     {
         _majorModules = new LogicModule[]
         {
-            new DefaultLogicModule(() => new PrepareNewHistoriesProcedure()),
             new ProduceConstructModule(),
             new ConstructBuildingsModule(),
             new FoodAndPopGrowthModule(),
@@ -13,11 +15,15 @@ public class TurnEndState : TurnState
             new TradeModule(),
             new ProposalsModule(),
             new FormUnitsAndGroupsModule(),
-            new AllianceOrdersModule()
+            new AllianceOrdersModule(),
+            new DefaultLogicModule(() => new TickProcedure()),
+            new ClearOrdersModule(orders)
         };
         _minorModules = new LogicModule[]
         {
-            new HandleUnitOrdersModule()
+            new HandleUnitOrdersModule(),
+            new DefaultLogicModule(() => new TickProcedure()),
+            new ClearOrdersModule(orders)
         };
     }
 }

@@ -21,18 +21,16 @@ public class ProduceConstructModule : LogicModule
         foreach (var kvp in _regimeProdWallets) { kvp.Value.Clear(); }
         foreach (var kvp in _polyEmployReps) { kvp.Value.Counts.Clear(); }
     }
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data, Action<Message> sendMessage)
     {
         Clear();
-        var res = new LogicResults();
         var tick = data.BaseDomain.GameClock.Tick;
         var proc = ProduceConstructProcedure.Create();
         
         Parallel.ForEach(data.GetAll<Regime>(), 
             regime => CalculateForRegime(regime, data, proc));
         DoManufacturing(orders, proc);
-        res.Messages.Add(proc);
-        return res;
+        sendMessage(proc);
     }
 
     private void CalculateForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
@@ -134,7 +132,11 @@ public class ProduceConstructModule : LogicModule
     {
         foreach (var turnOrders in orders)
         {
-            if (turnOrders is MajorTurnOrders m == false) throw new Exception();
+            if (turnOrders is MajorTurnOrders m == false)
+            {
+                GD.Print("orders are " + turnOrders.GetType().Name + " not major");
+                throw new Exception();
+            }
             var regime = turnOrders.Regime.RefId;
             foreach (var project in m.Manufacturing.ToStart)
             {

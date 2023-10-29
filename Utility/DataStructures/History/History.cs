@@ -21,7 +21,7 @@ public class History<TValue> where TValue : class
     {
         if (LatestTick >= tick)
         {
-            throw new Exception($"adding to history out of order adding {tick} over {LatestTick}");
+            // throw new Exception($"adding to history out of order adding {tick} over {LatestTick}");
         }
         LatestTick = tick;
         
@@ -57,7 +57,7 @@ public class History<TValue, TKey> where TKey : IIdentifiable where TValue : cla
     {
         if (LatestTickByKeyId.ContainsKey(k1.Id))
         {
-            if (LatestTickByKeyId[k1.Id] >= tick) throw new Exception("adding to history out of order");
+            if (LatestTickByKeyId[k1.Id] > tick) throw new Exception("adding to history out of order");
         }
         LatestTickByKeyId[k1.Id] = tick;
         

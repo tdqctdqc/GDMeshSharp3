@@ -1,14 +1,14 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 public class AllianceOrdersModule : LogicModule
 {
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, 
-        Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, 
+        Data data, Action<Message> sendMessage)
     {
-        var res = new LogicResults();
-        var key = new LogicWriteKey(data, res);
+        var key = new LogicWriteKey(sendMessage, data);
         var allianceOrders = orders
             .Where(o =>
             {
@@ -25,6 +25,5 @@ public class AllianceOrdersModule : LogicModule
                 var front = Front.Create(regime, kvp.Item2.ToHashSet(), key);
             }
         }
-        return res;
     }
 }

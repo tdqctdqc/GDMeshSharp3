@@ -11,10 +11,9 @@ public class DefaultLogicModule : LogicModule
         _func = func;
     }
 
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
+        Action<Message> sendMessage)
     {
-        var res = new LogicResults();
-        res.Messages.Add(_func());
-        return res;
+        sendMessage(_func());
     }
 }

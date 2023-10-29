@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,14 +8,17 @@ public class TrimFrontsModule : LogicModule
     public TrimFrontsModule()
     {
     }
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, 
-        Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, 
+        Data data, Action<Message> sendMessage)
     {
-        var res = new LogicResults();
-        var key = new LogicWriteKey(data, res);
         var trim = TrimFrontsProcedure.Construct();
-        res.Messages.Add(trim);
-        return res;
+        var key = new LogicWriteKey(sendMessage, data);
+
+        foreach (var alliance in data.GetAll<Alliance>())
+        {
+            TrimFronts(alliance, trim, data, key);
+        }
+        sendMessage(trim);
     }
     public void TrimFronts(Alliance alliance, TrimFrontsProcedure proc,
         Data data, LogicWriteKey key)
@@ -26,7 +30,9 @@ public class TrimFrontsModule : LogicModule
         
         foreach (var regime in regimes)
         {
-            foreach (var front in data.Military.FrontAux.Fronts[regime])
+            var fronts = data.Military.FrontAux.Fronts[regime];
+            if (fronts == null) continue;
+            foreach (var front in fronts)
             {
                 CheckFront(front, proc, controlled, data, key);
             }

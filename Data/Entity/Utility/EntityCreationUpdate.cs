@@ -27,3 +27,26 @@ public sealed partial class EntityCreationUpdate : Update
         key.Data.AddEntity(e, key);
     }
 }
+
+
+
+public sealed partial class EntityCreationUpdate<T> : Update
+    where T : Entity
+{
+    public T Entity { get; private set; }
+    
+    public static EntityCreationUpdate<T> Create(T entity, WriteKey key)
+    {
+        
+        return new EntityCreationUpdate<T>(entity);
+    }
+    [SerializationConstructor] private EntityCreationUpdate(T entity)
+    {
+        Entity = entity;
+    }
+    public override void Enact(ProcedureWriteKey key)
+    {
+        key.Data.AddEntity(Entity, key);
+    }
+}
+

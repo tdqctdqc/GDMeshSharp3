@@ -1,19 +1,17 @@
 
+using System;
 using System.Collections.Generic;
 
 public class HandleUnitOrdersModule : LogicModule
 {
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
+        Action<Message> sendMessage)
     {
-        var res = new LogicResults();
-        
         var proc = HandleUnitOrdersProcedure.Construct();
         foreach (var group in data.GetAll<UnitGroup>())
         {
             group.Order.Handle(group, data, proc);
         }
-        
-        res.Messages.Add(proc);
-        return res;
+        sendMessage(proc);
     }
 }

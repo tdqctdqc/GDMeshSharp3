@@ -1,7 +1,10 @@
 
+using System;
+
 public class TurnMiddleState : TurnState
 {
-    public TurnMiddleState(Data data, OrderHolder holder) : base(data)
+    public TurnMiddleState(OrderHolder holder, Data data, 
+        Action<Message> sendMessage) : base(data, sendMessage, holder)
     {
         _majorModules = new LogicModule[]
         {

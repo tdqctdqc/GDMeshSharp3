@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 
 public class WaitForOrdersToBeSubmittedModule : LogicModule
@@ -8,15 +9,13 @@ public class WaitForOrdersToBeSubmittedModule : LogicModule
     {
         _holder = holder;
     }
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data, Action<Message> sendMessage)
     {
         var res = new LogicResults();
-        _holder.CalcAiTurnOrders(data);
+        _holder.CalcAiOrders(data);
         while (_holder.CheckReadyForFrame(data, data.BaseDomain.GameClock.MajorTurn(data)) == false)
         {
             
         }
-
-        return res;
     }
 }

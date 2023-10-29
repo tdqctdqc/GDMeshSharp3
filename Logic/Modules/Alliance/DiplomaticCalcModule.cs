@@ -4,9 +4,8 @@ using System.Linq;
 
 public class DiplomaticCalcModule : LogicModule
 {
-
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, Data data, Action<Message> queueMessage)
     {
-        return new LogicResults();
+        
     }
 }

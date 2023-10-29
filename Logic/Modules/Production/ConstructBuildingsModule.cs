@@ -5,11 +5,10 @@ using Godot;
 
 public class ConstructBuildingsModule : LogicModule
 {
-    public override LogicResults Calculate(List<RegimeTurnOrders> orders, 
-        Data data)
+    public override void Calculate(List<RegimeTurnOrders> orders, 
+        Data data, Action<Message> sendMessage)
     {
-        var res = new LogicResults();
-        var key = new LogicWriteKey(data, res);
+        var key = new LogicWriteKey(sendMessage, data);
         var finished = new HashSet<Construction>();
         var clear = ClearFinishedConstructionsProcedure.Construct();
         foreach (var r in data.GetAll<Regime>())
@@ -26,7 +25,7 @@ public class ConstructBuildingsModule : LogicModule
         {
             clear.Positions.Add(c.Pos);
             MapBuilding.Create(c.Pos, c.Waypoint, 
-                c.Model.Model(key.Data), key);
+                c.Model.Model(data), key);
         }
         
         for (var i = 0; i < orders.Count; i++)
@@ -52,11 +51,10 @@ public class ConstructBuildingsModule : LogicModule
                     order.Regime,
                     data
                 );
-                res.Messages.Add(proc);
+                sendMessage(proc);
             }
         }
         
-        res.Messages.Add(clear);
-        return res;
+        sendMessage(clear);
     }
 }
