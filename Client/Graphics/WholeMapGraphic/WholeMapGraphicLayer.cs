@@ -66,15 +66,23 @@ public abstract class WholeMapGraphicLayer<TKey, TGraphic> : IGraphicLayer
 public static class WholeMapGraphicLayerExt
 {
     public static void RegisterForEntityLifetime<TEntity, TGraphic>
-        (this WholeMapGraphicLayer<TEntity, TGraphic> layer, Data d)
+        (this WholeMapGraphicLayer<TEntity, TGraphic> layer, Client client,
+            Data d)
         where TGraphic : Node2D where TEntity : Entity
     {
         d.SubscribeForCreation<TEntity>(
-            n => layer.Add((TEntity)n.Entity, d)
+            n =>
+            {
+                if (n.Entity == null) throw new Exception();
+                client.QueuedUpdates.Enqueue(() => layer.Add((TEntity)n.Entity, d));
+            }
         );
         
         d.SubscribeForDestruction<TEntity>(
-            n => layer.Remove((TEntity)n.Entity)
+            n =>
+            {
+                client.QueuedUpdates.Enqueue(() => layer.Remove((TEntity)n.Entity));
+            }
         );
     }
 }

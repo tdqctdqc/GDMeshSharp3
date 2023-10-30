@@ -35,7 +35,6 @@ public class EntityTypeTreeNode<T> : IEntityTypeTreeNode where T : Entity
         n.HandleForTreeNode(this);
         Parent?.BubbleUp(n);
         PushDown(n);
-        n.Return();
     }
     public void BubbleUp(IEntityTypeTreeNotice notice)
     {

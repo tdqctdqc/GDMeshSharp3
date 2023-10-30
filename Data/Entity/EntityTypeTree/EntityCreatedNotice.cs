@@ -6,8 +6,6 @@ using Microsoft.Extensions.ObjectPool;
 
 public class EntityCreatedNotice : IEntityTypeTreeNotice
 {
-    private static ObjectPool<EntityCreatedNotice> _pool =
-        new DefaultPool<EntityCreatedNotice>(() => new EntityCreatedNotice());
     public Entity Entity { get; private set; }
     public Type EntityType => Entity.GetType();
     private EntityCreatedNotice()
@@ -15,7 +13,8 @@ public class EntityCreatedNotice : IEntityTypeTreeNotice
     }
     public static EntityCreatedNotice Get(Entity entity)
     {
-        var n = _pool.Get();
+        if (entity == null) throw new Exception();
+        var n = new EntityCreatedNotice();
         n.Setup(entity);
         return n;
     }
@@ -25,11 +24,6 @@ public class EntityCreatedNotice : IEntityTypeTreeNotice
         Entity = entity;
     }
 
-    public void Return()
-    {
-        Entity = null;
-        _pool.Return(this);
-    }
     public void HandleForTreeNode(IEntityTypeTreeNode node)
     {
         node.AddEntity(Entity);

@@ -5,14 +5,6 @@ using Godot;
 
 public static class NodeExt
 {
-    public static void AddChildDeferred(this Node n, Node c)
-    {
-        n.CallDeferred("add_child", c);
-    }
-    public static void RemoveChildDeferred(this Node n, Node c)
-    {
-        n.CallDeferred("remove_child", c);
-    }
     public static SubscribedNodeToken SubscribeUpdate(this Node node, Action update,
         params RefAction[] triggers)
     {

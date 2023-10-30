@@ -87,7 +87,7 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
         if (Ignore(key, data)) return;
         var graphic = MakeGraphic(key, data);
         _graphics.Add(key, graphic);
-        this.AddChildDeferred(graphic);
+        this.AddChild(graphic);
     }
     private void Change(TKey key, Data data)
     {

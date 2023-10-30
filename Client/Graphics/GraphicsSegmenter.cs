@@ -41,14 +41,18 @@ public partial class GraphicsSegmenter : Node2D, IGraphicsSegmenter
         var segmentIndex = Mathf.FloorToInt(gamePos.X / _segWidth) % _segments.Count;
         e.Position = gamePos - new Vector2(segmentIndex * _segWidth, 0f);
         _segments[segmentIndex].Add(e);
-        _segmentNodes[segmentIndex].AddChildDeferred(e);
+        e.GetParent()?.RemoveChild(e);
+        _segmentNodes[segmentIndex].AddChild(e);
         return segmentIndex;
     }
 
     public void RemoveElement<T>(T e, int segmentIndex) where T : Node2D
     {
+        if (segmentIndex == -1) return;
+        if (e == null) return;
         _segments[segmentIndex].Remove(e);
-        _segmentNodes[segmentIndex].RemoveChildDeferred(e);
+        e.GetParent()?.RemoveChild(e);
+        // _segmentNodes[segmentIndex].RemoveChild(e);
     }
 
     public int SwitchSegments(Node2D node, Vector2 pos, int oldSegIndex)

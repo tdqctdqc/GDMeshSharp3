@@ -8,7 +8,8 @@ using Godot;
 public class GraphicLayerHolder
 {
     public List<IGraphicLayer> Layers { get; private set; }
-    public GraphicLayerHolder(GraphicsSegmenter segmenter, Node2D hook, Data data)
+    public GraphicLayerHolder(Client client, GraphicsSegmenter segmenter, 
+        Node2D hook, Data data)
     {
         Layers = new List<IGraphicLayer>();
         Layers.Add(Terrain(segmenter, data));
@@ -16,10 +17,9 @@ public class GraphicLayerHolder
         Layers.Add(Roads(segmenter, data));
         Layers.Add(IconsChunkModule.GetLayer(data, segmenter));
         Layers.Add(ResourceChunkModule.GetLayer(data, segmenter));
-        Layers.Add(WaypointTypeGraphicChunk.GetLayer(data, segmenter));
-        Layers.Add(WaypointFrontlineGraphicChunk.GetLayer(data, segmenter));
-        Layers.Add(new UnitGraphicLayer(segmenter, data));
-        Layers.Add(new FrontGraphicLayer(segmenter, data));
+        Layers.Add(WaypointGraphicChunk.GetLayer(data, client, segmenter));
+        Layers.Add(new UnitGraphicLayer(client, segmenter, data));
+        Layers.Add(new FrontGraphicLayer(client, segmenter, data));
     }
 
     public void Update(Data d, ConcurrentQueue<Action> queue)

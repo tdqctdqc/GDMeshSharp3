@@ -5,9 +5,9 @@ using System.Collections.Generic;
 
 public class FrontGraphicLayer : WholeMapGraphicLayer<Front, FrontGraphic>
 {
-    public FrontGraphicLayer(GraphicsSegmenter segmenter, Data d) : base("Fronts", segmenter, new List<ISettingsOption>())
+    public FrontGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) : base("Fronts", segmenter, new List<ISettingsOption>())
     {
-        this.RegisterForEntityLifetime(d);
+        this.RegisterForEntityLifetime(client, d);
     }
 
     public override void Update(Data d, ConcurrentQueue<Action> queue)

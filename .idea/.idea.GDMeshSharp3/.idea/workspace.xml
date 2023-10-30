@@ -4,23 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="made graphic updates synchronous by queue">
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/WaypointGraphicChunk.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/Settings/TypedSettingsOption.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/ItemBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/RegimeInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/RegimeInfoBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/TickDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/TickDisplay.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Waypoint/WaypointFrontlineGraphicChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Waypoint/WaypointFrontlineGraphicChunk.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Waypoint/WaypointGraphicChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Waypoint/WaypointGraphicChunk.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/Graphics.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/IClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/IClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/MapChunkGraphicNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Waypoint/WaypointFrontlineGraphicChunk.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Waypoint/WaypointGraphicChunk.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Waypoint/WaypointTypeGraphicChunk.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicsSegmenter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicsSegmenter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/WholeMapGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/WholeMapGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/BoolSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/BoolSettingsOption.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityCreatedNotice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityCreatedNotice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityTypeTreeNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/IEntityTypeTreeNotice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/IEntityTypeTreeNotice.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/StatDisplay/StatLabel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/StatDisplay/StatLabel.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,11 +75,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/ChunkGraphicLayer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/Nav.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Modules/Military/AllianceOrdersModule.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -319,7 +323,7 @@
       <workItem from="1698512939706" duration="6864000" />
       <workItem from="1698530996514" duration="3667000" />
       <workItem from="1698599028547" duration="5980000" />
-      <workItem from="1698619395155" duration="1489000" />
+      <workItem from="1698619395155" duration="5600000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -531,14 +535,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00047" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1694471857902</created>
-      <option name="number" value="00047" />
-      <option name="presentableId" value="LOCAL-00047" />
-      <option name="project" value="LOCAL" />
-      <updated>1694471857902</updated>
-    </task>
     <task id="LOCAL-00048" summary="tidying up proposal, added IdDispenser as entity">
       <option name="closed" value="true" />
       <created>1695051884249</created>
@@ -683,7 +679,15 @@
       <option name="project" value="LOCAL" />
       <updated>1698603356827</updated>
     </task>
-    <option name="localTasksCounter" value="66" />
+    <task id="LOCAL-00066" summary="made graphic updates synchronous by queue">
+      <option name="closed" value="true" />
+      <created>1698621176699</created>
+      <option name="number" value="00066" />
+      <option name="presentableId" value="LOCAL-00066" />
+      <option name="project" value="LOCAL" />
+      <updated>1698621176699</updated>
+    </task>
+    <option name="localTasksCounter" value="67" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -705,7 +709,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="pre reworking loc gen" />
     <MESSAGE value="adding manufacturing queue" />
     <MESSAGE value="fixed manufacturing bugs" />
     <MESSAGE value="new budget ai with accounts for each priority, removed reserve" />
@@ -730,6 +733,7 @@
     <MESSAGE value="working on fronts" />
     <MESSAGE value="made state machine for turn logic replacing turnCalculator" />
     <MESSAGE value="refactored OrderHolder.cs" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactored OrderHolder.cs" />
+    <MESSAGE value="made graphic updates synchronous by queue" />
+    <option name="LAST_COMMIT_MESSAGE" value="made graphic updates synchronous by queue" />
   </component>
 </project>

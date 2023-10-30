@@ -20,7 +20,7 @@ public partial class FrontGraphic : Node2D
     {
         if(_child != null)
         {
-            this.RemoveChildDeferred(_child);
+            this.RemoveChild(_child);
             _child.QueueFree();
         }
         
@@ -45,8 +45,12 @@ public partial class FrontGraphic : Node2D
             }
         }
 
-        _child = mb.GetMeshInstance();
-        this.AddChildDeferred(_child);
+        if (mb.Tris.Count() > 0)
+        {
+            //todo make representation for single waypoint fronts
+            _child = mb.GetMeshInstance();
+            AddChild(_child);
+        }
     }
     
     public void Update(Front front, Data data, GraphicsSegmenter segmenter,
@@ -54,7 +58,7 @@ public partial class FrontGraphic : Node2D
     {
         queue.Enqueue(() =>
         {
-            if(GetParent() is Node n) n.RemoveChildDeferred(this);
+            if(GetParent() is Node n) n.RemoveChild(this);
             Draw(front, segmenter, data);
             _currSegment = segmenter.SwitchSegments(this, front.RelTo(data), _currSegment);
         });

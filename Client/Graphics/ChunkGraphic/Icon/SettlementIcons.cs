@@ -22,6 +22,11 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
         var poly = element.Poly.Entity(data);
         var urbanTris = poly.Tris.Tris
             .Where(t => t.Landform(data) == data.Models.Landforms.Urban);
+        if (urbanTris.Count() == 0)
+        {
+            GD.Print("no urban tri settlement at " + element.Poly.Entity(data).Id);
+            return new Node2D();
+        }
         foreach (var urbanTri in urbanTris)
         {
             var mesh = icon.GetMeshInstance();

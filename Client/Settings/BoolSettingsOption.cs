@@ -16,6 +16,7 @@ public class BoolSettingsOption : SettingsOption<bool>
         hbox.AddChild(label);
         label.Text = $"{Name}: ";
         var check = new CheckBox();
+        check.FocusMode = Control.FocusModeEnum.None;
         check.ToggleMode = true;
         check.Toggled += Set;
         hbox.AddChild(check);
