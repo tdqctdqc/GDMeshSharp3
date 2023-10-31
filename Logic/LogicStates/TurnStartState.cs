@@ -3,8 +3,8 @@ using System;
 
 public class TurnStartState : TurnState
 {
-    public TurnStartState(OrderHolder orders, Data data, Action<Message> queueMessage) 
-        : base(data, queueMessage, orders)
+    public TurnStartState(LogicWriteKey key, OrderHolder orders) 
+        : base(key, orders)
     {
         _majorModules = new LogicModule[]
         {

@@ -10,11 +10,21 @@ public class Context
     public Dictionary<Unit, Waypoint> UnitWaypoints { get; private set; }
     public Dictionary<Waypoint, ForceBalance> WaypointForceBalances { get; private set; }
     public Dictionary<Alliance, HashSet<Waypoint>> ControlledAreas { get; private set; }
-    public Context()
+    public Context(Data data)
     {
         UnitWaypoints = new Dictionary<Unit, Waypoint>();
+        data.Notices.MadeWaypoints.Subscribe(() => AddForceBalances(data));
         WaypointForceBalances = new Dictionary<Waypoint, ForceBalance>();
         ControlledAreas = new Dictionary<Alliance, HashSet<Waypoint>>();
+    }
+
+    private void AddForceBalances(Data d)
+    {
+        WaypointForceBalances.Clear();
+        foreach (var wp in d.Planet.Nav.Waypoints.Values)
+        {
+            WaypointForceBalances.Add(wp, new ForceBalance());
+        }
     }
     public void Calculate(Data data)
     {
@@ -35,11 +45,11 @@ public class Context
         {
             var wp = wpGrid.GetElementAtPoint(u.Position);
             UnitWaypoints[u] = wp;
-            var forceBalance = WaypointForceBalances.GetOrAdd(wp, wp => new ForceBalance());
+            var forceBalance = WaypointForceBalances[wp];
             forceBalance.Add(u, data);
             foreach (var nWp in wp.GetNeighboringWaypoints(data))
             {
-                var nForceBalance = WaypointForceBalances.GetOrAdd(nWp, wp => new ForceBalance());
+                var nForceBalance = WaypointForceBalances[nWp];
                 nForceBalance.DiffuseInto(u, data);
             }
         }
@@ -52,7 +62,7 @@ public class Context
                 .Select(r => r.GetAlliance(data))
                 .Distinct();
             if (alliances.Count() == 0) continue;
-            var forceBalance = WaypointForceBalances.GetOrAdd(wp, wp => new ForceBalance());
+            var forceBalance = WaypointForceBalances[wp];
 
             foreach (var alliance in alliances)
             {

@@ -11,7 +11,7 @@ public static class FloodFill<T>
         var res = new HashSet<T>{start};
         var queue = new Queue<T>();
         queue.Enqueue(start);
-        while (queue.Dequeue() is T curr)
+        while (queue.TryDequeue(out var curr))
         {
             var neighbors = getNeighbors(curr);
             foreach (var neighbor in neighbors)

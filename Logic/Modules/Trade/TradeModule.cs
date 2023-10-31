@@ -8,21 +8,21 @@ public class TradeModule : LogicModule
 {
     public static float MaxPriceDeviationRatioFromDefault { get; private set; } = 10f;
     public static float PriceAdjustmentRatio { get; private set; } = .25f;
-    public override void Calculate(List<RegimeTurnOrders> orders, Data data, Action<Message> sendMessage)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
         var proc = TradeProcedure.Construct();
-        sendMessage(proc);
+        key.SendMessage(proc);
 
         var buyOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.BuyOrders).ToList();
         var sellOrders = orders.SelectMany(o => ((MajorTurnOrders) o).TradeOrders.SellOrders).ToList();
         
-        var tradeable = data.Models.GetModels<Item>().Values.Where(i => i is TradeableItem);
-        var infos = tradeable.ToDictionary(i => i, i => ItemTradeReport.Construct(i, data));
-        var market = data.Society.Market;
+        var tradeable = key.Data.Models.GetModels<Item>().Values.Where(i => i is TradeableItem);
+        var infos = tradeable.ToDictionary(i => i, i => ItemTradeReport.Construct(i, key.Data));
+        var market = key.Data.Society.Market;
 
-        SetupInfosAvoidOverlap(infos, sellOrders, buyOrders, data, proc);
-        ExchangeItems(infos, sellOrders, buyOrders, data, proc);
-        UpdatePricesNew(infos, proc, data);
+        SetupInfosAvoidOverlap(infos, sellOrders, buyOrders, key.Data, proc);
+        ExchangeItems(infos, sellOrders, buyOrders, key.Data, proc);
+        UpdatePricesNew(infos, proc, key.Data);
         
     }
 private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 

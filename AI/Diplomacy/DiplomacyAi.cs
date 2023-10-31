@@ -13,22 +13,22 @@ public class DiplomacyAi
         _regime = regime;
     }
     
-    public void Calculate(Data data, MajorTurnOrders orders)
+    public void Calculate(LogicWriteKey key, MajorTurnOrders orders)
     {
-        var alliance = _regime.GetAlliance(data);
-        var alliancePower = alliance.GetPowerScore(data);
-        var rivalPower = alliance.Rivals.Items(data)
-            .Sum(a => a.GetPowerScore(data));
+        var alliance = _regime.GetAlliance(key.Data);
+        var alliancePower = alliance.GetPowerScore(key.Data);
+        var rivalPower = alliance.Rivals.Items(key.Data)
+            .Sum(a => a.GetPowerScore(key.Data));
         if (alliancePower > rivalPower * DesiredFriendToRivalPowerRatio)
         {
-            FindEnemies(data, orders, alliancePower, rivalPower);
+            FindEnemies(key.Data, orders, alliancePower, rivalPower);
         }
         if (rivalPower / DesiredFriendToRivalPowerRatio > alliancePower)
         {
-            FindFriends(data, orders, alliancePower, rivalPower);
+            FindFriends(key.Data, orders, alliancePower, rivalPower);
         }
-        ProposeWars(data, orders, alliancePower, rivalPower);
-        DecideOnProposals(data, orders);
+        ProposeWars(key.Data, orders, alliancePower, rivalPower);
+        DecideOnProposals(key.Data, orders);
     }
 
     private void DecideOnProposals(Data data, MajorTurnOrders orders)

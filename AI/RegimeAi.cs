@@ -16,31 +16,32 @@ public class RegimeAi
         Diplomacy = new DiplomacyAi(regime);
     }
 
-    public RegimeTurnOrders GetTurnOrders(Data data)
+    public RegimeTurnOrders CalculateAndSendOrders(LogicWriteKey key)
     {
-        var major = data.BaseDomain.GameClock.MajorTurn(data);
-        return major ? GetMajorTurnOrders(data) : GetMinorTurnOrders(data);
+        var major = key.Data.BaseDomain.GameClock.MajorTurn(key.Data);
+        return major ? GetMajorTurnOrders(key) : GetMinorTurnOrders(key);
     }
-    private MajorTurnOrders GetMajorTurnOrders(Data data)
+    private MajorTurnOrders GetMajorTurnOrders(LogicWriteKey key)
     {
-        var orders = MajorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, Regime);
-        var alliance = Regime.GetAlliance(data);
-        var allianceLeader = alliance.Leader.Entity(data);
+        var orders = MajorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
+        var alliance = Regime.GetAlliance(key.Data);
+        var allianceLeader = alliance.Leader.Entity(key.Data);
         if (allianceLeader == Regime)
         {
-            data.HostLogicData.AllianceAis[alliance].Calculate(orders.Alliance, data);
+            var ai = key.Data.HostLogicData.AllianceAis[alliance];
+            ai.Calculate(orders.Alliance, key);
         }
         
-        Budget.Calculate(data, orders);
-        Diplomacy.Calculate(data, orders);
-        Military.CalculateMajor(data, orders);
+        Budget.Calculate(key, orders);
+        Diplomacy.Calculate(key, orders);
+        Military.CalculateMajor(key, orders);
         
         return orders; 
     }
-    private MinorTurnOrders GetMinorTurnOrders(Data data)
+    private MinorTurnOrders GetMinorTurnOrders(LogicWriteKey key)
     {
-        var orders = MinorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, Regime);
-        Military.CalculateMinor(data, orders);
+        var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
+        Military.CalculateMinor(key, orders);
         return orders; 
     }
 }

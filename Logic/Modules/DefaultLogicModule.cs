@@ -11,9 +11,8 @@ public class DefaultLogicModule : LogicModule
         _func = func;
     }
 
-    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
-        Action<Message> sendMessage)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
-        sendMessage(_func());
+        key.SendMessage(_func());
     }
 }

@@ -28,4 +28,32 @@ public class Front : Entity
     {
         return d.Planet.Nav.Waypoints[WaypointIds.First()].Pos;
     }
+
+    public IEnumerable<Waypoint> GetWaypoints(Data data)
+    {
+        return WaypointIds.Select(i => data.Planet.Nav.Waypoints[i]);
+    }
+
+    public List<Waypoint> GetFrontline(Data data)
+    {
+        var context = data.Context;
+        var alliance = Regime.Entity(data).GetAlliance(data);
+        
+        bool frontline(Waypoint wp)
+        {
+            var ns = wp
+                .GetNeighboringWaypoints(data);
+            return ns
+                .Any(nWp => 
+                    context.WaypointForceBalances[nWp]
+                    .GetControllingAlliances()
+                    .Any(a => alliance.Rivals.Contains(a))
+                );
+        }
+        
+        var frontlineWps = GetWaypoints(data)
+            .Where(frontline);
+        //todo have to order these properly!
+        return frontlineWps.ToList();
+    }
 }

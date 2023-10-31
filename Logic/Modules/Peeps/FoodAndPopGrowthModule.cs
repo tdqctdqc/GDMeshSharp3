@@ -5,30 +5,29 @@ using Godot;
 
 public class FoodAndPopGrowthModule : LogicModule
 {
-    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
-        Action<Message> sendMessage)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
         var growthsByPeep = new Dictionary<int, int>();
         var foodConsByRegime = new Dictionary<int, int>();
-        var foodConsPerPop = data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
-        foreach (var regime in data.GetAll<Regime>())
+        var foodConsPerPop = key.Data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
+        foreach (var regime in key.Data.GetAll<Regime>())
         {
-            var pop = regime.GetPopulation(data);
+            var pop = regime.GetPopulation(key.Data);
             var foodDemanded = foodConsPerPop * pop;
-            var foodStock = Mathf.FloorToInt(regime.Items.Get(data.Models.Items.Food));
+            var foodStock = Mathf.FloorToInt(regime.Items.Get(key.Data.Models.Items.Food));
             var actualCons = Math.Min(foodStock, foodDemanded);
             var surplusRatio = (float) foodStock / foodDemanded - 1f;
             foodConsByRegime.Add(regime.Id, actualCons);
             if (surplusRatio > 0f)
             {
-                HandleGrowth(regime, surplusRatio, growthsByPeep, data);
+                HandleGrowth(regime, surplusRatio, growthsByPeep, key.Data);
             }
             else
             {
-                HandleDecline(regime, -surplusRatio, growthsByPeep, data);
+                HandleDecline(regime, -surplusRatio, growthsByPeep, key.Data);
             }
         }
-        sendMessage(new FoodAndPopGrowthProcedure(growthsByPeep, foodConsByRegime));
+        key.SendMessage(new FoodAndPopGrowthProcedure(growthsByPeep, foodConsByRegime));
     }
 
     private void HandleGrowth(Regime regime, float surplusRatio, Dictionary<int, int> growths,

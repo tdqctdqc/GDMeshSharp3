@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using MessagePack;
 
@@ -35,5 +36,17 @@ public class UnitGroup : Entity
         oldG?.Units.Remove(u, key);
         newG?.Units.Add(u, key);
         key.Data.Military.UnitAux.UnitChangedGroup.Invoke(u, newG, oldG);
+    }
+
+    public Waypoint GetWaypoint(Data d)
+    {
+        var p = d.Planet.GetAveragePosition(Units.Items(d).Select(u => u.Position));
+        var wp = d.Planet.NavAux.WaypointGrid.GetElementAtPoint(p);
+        return wp;
+    }
+
+    public void SetOrder(UnitOrder order, ProcedureWriteKey key)
+    {
+        Order = order;
     }
 }

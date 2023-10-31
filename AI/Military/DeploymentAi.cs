@@ -15,9 +15,13 @@ public class DeploymentAi
     {
         AssignFreeUnitsToGroups(regime, data, orders);
     }
-    public void CalculateMinor(Regime regime, Data data, MinorTurnOrders orders)
+    public void CalculateMinor(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
-        FillExposedFronts(regime, data, orders);
+        FillExposedFronts(regime, key.Data, orders);
+        foreach (var forceAssignment in ForceAssignments)
+        {
+            forceAssignment.CalculateOrders(orders, key);
+        }
     }
 
     private void AssignFreeUnitsToGroups(Regime regime, Data data, MajorTurnOrders orders)
@@ -48,7 +52,6 @@ public class DeploymentAi
             ?.Where(f => ForceAssignments.Any(a => a is FrontAssignment fa && fa.Front == f) == false)
             .ToList();
         if (exposed.Count == 0) return;
-        GD.Print($"{exposed.Count} exposed fronts");
         var occupiedGroups = ForceAssignments.SelectMany(f => f.Groups).ToHashSet();
         
         

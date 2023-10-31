@@ -25,6 +25,7 @@ public class ForceBalance : Dictionary<Alliance, float>
     }
     public IEnumerable<Alliance> GetControllingAlliances()
     {
+        if (Values.Count() == 0) return Enumerable.Empty<Alliance>();
         var topPower = Values.Max();
         var minPowerToControl = topPower * PowerRatioToCountAsControlled;
         return this

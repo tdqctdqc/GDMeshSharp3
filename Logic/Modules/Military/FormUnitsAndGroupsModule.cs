@@ -6,15 +6,13 @@ using Godot;
 
 public class FormUnitsAndGroupsModule : LogicModule
 {
-    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
-        Action<Message> sendMessage)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
-        var key = new LogicWriteKey(sendMessage, data);
 
         orders.ForEach(o =>
         {
-            FormUnits((MajorTurnOrders)o, data, sendMessage, key);
-            FormGroups((MajorTurnOrders)o, data, sendMessage, key);
+            FormUnits((MajorTurnOrders)o, key.Data, key.SendMessage, key);
+            FormGroups((MajorTurnOrders)o, key.Data, key.SendMessage, key);
         });
     }
 

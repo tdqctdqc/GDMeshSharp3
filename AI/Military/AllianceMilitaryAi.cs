@@ -15,21 +15,21 @@ public class AllianceMilitaryAi
         FrontlineWaypoints = new List<List<Waypoint>>();
         FrontlineHash = new HashSet<Waypoint>();
     }
-    public void Calculate(Data data, Alliance alliance, 
+    public void Calculate(LogicWriteKey key, Alliance alliance, 
         AllianceMajorTurnOrders orders)
     {
-        if (data.Context.ControlledAreas.ContainsKey(alliance) == false)
+        if (key.Data.Context.ControlledAreas.ContainsKey(alliance) == false)
         {
             GD.Print("no control areas for alliance at poly " 
-                     + alliance.Leader.Entity(data).GetPolys(data).First().Id);
+                     + alliance.Leader.Entity(key.Data).GetPolys(key.Data).First().Id);
             return;
         }
         var controlled = 
-            data.Context.ControlledAreas[alliance];
+            key.Data.Context.ControlledAreas[alliance];
         
-        CalculateFrontlineWaypoints(controlled, orders, data);
-        var uncovered = FindUncoveredFrontlineWaypoints(FrontlineHash, orders, data);
-        CoverUncoveredFrontlines(uncovered, orders, data);
+        CalculateFrontlineWaypoints(controlled, orders, key.Data);
+        var uncovered = FindUncoveredFrontlineWaypoints(FrontlineHash, orders, key.Data);
+        CoverUncoveredFrontlines(uncovered, orders, key.Data);
     }
 
     private void CalculateFrontlineWaypoints(IEnumerable<Waypoint> controlled, 

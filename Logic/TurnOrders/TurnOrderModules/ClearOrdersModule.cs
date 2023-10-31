@@ -11,7 +11,7 @@ public class ClearOrdersModule : LogicModule
         _orders = orders;
     }
 
-    public override void Calculate(List<RegimeTurnOrders> orders, Data data, Action<Message> queueMessage)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
         _orders.Clear();
     }

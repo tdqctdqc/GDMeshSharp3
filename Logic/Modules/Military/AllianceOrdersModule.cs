@@ -6,14 +6,13 @@ using System.Linq;
 public class AllianceOrdersModule : LogicModule
 {
     public override void Calculate(List<RegimeTurnOrders> orders, 
-        Data data, Action<Message> sendMessage)
+        LogicWriteKey key)
     {
-        var key = new LogicWriteKey(sendMessage, data);
         var allianceOrders = orders
             .Where(o =>
             {
-                var r = o.Regime.Entity(data);
-                var a = r.GetAlliance(data);
+                var r = o.Regime.Entity(key.Data);
+                var a = r.GetAlliance(key.Data);
                 return r.Id == a.Leader.RefId;
             })
             .Select(o => ((MajorTurnOrders)o).Alliance);
@@ -21,7 +20,7 @@ public class AllianceOrdersModule : LogicModule
         {
             foreach (var kvp in aOrders.NewFrontWaypointsByRegimeId)
             {
-                var regime = data.Get<Regime>(kvp.Item1);
+                var regime = key.Data.Get<Regime>(kvp.Item1);
                 var front = Front.Create(regime, kvp.Item2.ToHashSet(), key);
             }
         }

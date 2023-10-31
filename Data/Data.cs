@@ -39,7 +39,7 @@ public class Data
         Notices = new DataNotices();
         Models = new Models(this);
         EntitiesById = new Dictionary<int, Entity>();
-        Context = new Context();
+        Context = new Context(this);
         BaseDomain = new BaseDomain();
         Planet = new PlanetDomain(this);
         Society = new SocietyDomain();

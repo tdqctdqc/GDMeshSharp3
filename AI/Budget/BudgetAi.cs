@@ -26,20 +26,20 @@ public class BudgetAi
         };
     }
 
-    public void Calculate(Data data, MajorTurnOrders orders)
+    public void Calculate(LogicWriteKey key, MajorTurnOrders orders)
     {
         foreach (var priority in Priorities)
         {
-            priority.SetWeight(data, _regime);
+            priority.SetWeight(key.Data, _regime);
         }
 
-        var itemsToDistribute = GetItemsToDistribute(data);
-        var labor = _regime.GetPolys(data)
-            .Sum(p => p.GetLaborSurplus(data));
+        var itemsToDistribute = GetItemsToDistribute(key.Data);
+        var labor = _regime.GetPolys(key.Data)
+            .Sum(p => p.GetLaborSurplus(key.Data));
         var pool = new BudgetPool(itemsToDistribute, 
             IdCount<IModel>.Construct<IModel, Flow>(
                 _regime.Flows.GetSurplusCount()), labor);
-        DoPriorities(orders, pool, data);
+        DoPriorities(orders, pool, key.Data);
     }
 
     private IdCount<Item> GetItemsToDistribute(Data data)

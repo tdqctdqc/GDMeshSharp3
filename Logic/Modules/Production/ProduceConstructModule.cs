@@ -21,16 +21,16 @@ public class ProduceConstructModule : LogicModule
         foreach (var kvp in _regimeProdWallets) { kvp.Value.Clear(); }
         foreach (var kvp in _polyEmployReps) { kvp.Value.Counts.Clear(); }
     }
-    public override void Calculate(List<RegimeTurnOrders> orders, Data data, Action<Message> sendMessage)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
         Clear();
-        var tick = data.BaseDomain.GameClock.Tick;
+        var tick = key.Data.BaseDomain.GameClock.Tick;
         var proc = ProduceConstructProcedure.Create();
         
-        Parallel.ForEach(data.GetAll<Regime>(), 
-            regime => CalculateForRegime(regime, data, proc));
+        Parallel.ForEach(key.Data.GetAll<Regime>(), 
+            regime => CalculateForRegime(regime, key.Data, proc));
         DoManufacturing(orders, proc);
-        sendMessage(proc);
+        key.SendMessage(proc);
     }
 
     private void CalculateForRegime(Regime regime, Data data, ProduceConstructProcedure proc)

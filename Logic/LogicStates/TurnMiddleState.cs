@@ -3,8 +3,8 @@ using System;
 
 public class TurnMiddleState : TurnState
 {
-    public TurnMiddleState(OrderHolder holder, Data data, 
-        Action<Message> sendMessage) : base(data, sendMessage, holder)
+    public TurnMiddleState(LogicWriteKey key, OrderHolder holder) 
+        : base(key, holder)
     {
         _majorModules = new LogicModule[]
         {

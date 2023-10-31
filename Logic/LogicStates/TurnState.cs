@@ -6,18 +6,16 @@ using Godot;
 
 public abstract class TurnState : State
 {
-    private Data _data;
     private Task _calculation;
     private TurnState _nextState;
     protected LogicModule[] _majorModules, _minorModules;
     private OrderHolder _orders;
-    private Action<Message> _sendMessage;
+    private LogicWriteKey _key;
 
-    public TurnState(Data data, Action<Message> sendMessage,
+    public TurnState(LogicWriteKey key, 
         OrderHolder orders)
     {
-        _data = data;
-        _sendMessage = sendMessage;
+        _key = key;
         _orders = orders;
     }
 
@@ -33,7 +31,7 @@ public abstract class TurnState : State
     }
     private void Calculate()
     {
-        if (_data.BaseDomain.GameClock.MajorTurn(_data))
+        if (_key.Data.BaseDomain.GameClock.MajorTurn(_key.Data))
         {
             CalculateMajor();
         }
@@ -46,16 +44,14 @@ public abstract class TurnState : State
     {
         foreach (var module in _majorModules)
         {
-            module.Calculate(_orders.GetOrdersList(_data), _data,
-                _sendMessage);
+            module.Calculate(_orders.GetOrdersList(_key.Data), _key);
         }
     }
     private void CalculateMinor()
     {
         foreach (var module in _minorModules)
         {
-            module.Calculate(_orders.GetOrdersList(_data), _data,
-                _sendMessage);
+            module.Calculate(_orders.GetOrdersList(_key.Data), _key);
         }
     }
     public override State Check()

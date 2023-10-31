@@ -12,15 +12,17 @@ public class RegimeMilitaryAi
         Deployment = new DeploymentAi();
     }
     
-    public void CalculateMajor(Data data, MajorTurnOrders orders)
+    public void CalculateMajor(LogicWriteKey key, MajorTurnOrders orders)
     {
         var reserve = IdCount<Troop>.Construct(_regime.Military.TroopReserve);
-        ForceComposition.Calculate(_regime, data, orders, reserve);
-        Deployment.CalculateMajor(_regime, data, orders);
+        ForceComposition.Calculate(_regime, key.Data, orders, reserve);
+        Deployment.CalculateMajor(_regime, key.Data, orders);
+        
     }
 
-    public void CalculateMinor(Data data, MinorTurnOrders orders)
+    public void CalculateMinor(LogicWriteKey key, MinorTurnOrders orders)
     {
-        Deployment.CalculateMinor(_regime, data, orders);
+        Deployment.CalculateMinor(_regime, key, orders);
+        
     }
 }

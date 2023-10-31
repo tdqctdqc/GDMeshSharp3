@@ -6,14 +6,13 @@ using Godot;
 public class ConstructBuildingsModule : LogicModule
 {
     public override void Calculate(List<RegimeTurnOrders> orders, 
-        Data data, Action<Message> sendMessage)
+        LogicWriteKey key)
     {
-        var key = new LogicWriteKey(sendMessage, data);
         var finished = new HashSet<Construction>();
         var clear = ClearFinishedConstructionsProcedure.Construct();
-        foreach (var r in data.GetAll<Regime>())
+        foreach (var r in key.Data.GetAll<Regime>())
         {
-            foreach (var kvp in data.Infrastructure.CurrentConstruction.ByTri)
+            foreach (var kvp in key.Data.Infrastructure.CurrentConstruction.ByTri)
             {
                 if (kvp.Value.TicksLeft < 0)
                 {
@@ -25,7 +24,7 @@ public class ConstructBuildingsModule : LogicModule
         {
             clear.Positions.Add(c.Pos);
             MapBuilding.Create(c.Pos, c.Waypoint, 
-                c.Model.Model(data), key);
+                c.Model.Model(key.Data), key);
         }
         
         for (var i = 0; i < orders.Count; i++)
@@ -36,8 +35,8 @@ public class ConstructBuildingsModule : LogicModule
             for (var j = 0; j < m.StartConstructions.ConstructionsToStart.Count; j++)
             {
                 var toStart = m.StartConstructions.ConstructionsToStart[j];
-                var poly = (MapPolygon) data[toStart.PolyId];
-                var building = (BuildingModel) data.Models[toStart.BuildingModelId];
+                var poly = (MapPolygon) key.Data[toStart.PolyId];
+                var building = (BuildingModel) key.Data.Models[toStart.BuildingModelId];
                 var slots = poly.PolyBuildingSlots.AvailableSlots[building.BuildingType]
                     .Where(pt => newConstructionPoses.Contains(pt) == false);
                 if (slots.Count() == 0) continue;
@@ -47,14 +46,14 @@ public class ConstructBuildingsModule : LogicModule
                 var proc = StartConstructionProcedure.Construct(
                     building.MakeRef<BuildingModel>(),
                     pos,
-                    poly.GetCenterWaypoint(data).Id,
+                    poly.GetCenterWaypoint(key.Data).Id,
                     order.Regime,
-                    data
+                    key.Data
                 );
-                sendMessage(proc);
+                key.SendMessage(proc);
             }
         }
         
-        sendMessage(clear);
+        key.SendMessage(clear);
     }
 }

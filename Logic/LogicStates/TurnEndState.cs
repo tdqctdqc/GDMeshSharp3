@@ -3,8 +3,8 @@ using System;
 
 public class TurnEndState : TurnState
 {
-    public TurnEndState(OrderHolder orders, Data data, Action<Message> queueMessage) 
-        : base(data, queueMessage, orders)
+    public TurnEndState(LogicWriteKey key, OrderHolder orders) 
+        : base(key, orders)
     {
         _majorModules = new LogicModule[]
         {

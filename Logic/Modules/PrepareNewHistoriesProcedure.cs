@@ -7,7 +7,6 @@ public class PrepareNewHistoriesProcedure : Procedure
 {
     public PrepareNewHistoriesProcedure()
     {
-        GD.Print("constructing new hist proc");
     }
     public override void Enact(ProcedureWriteKey key)
     {

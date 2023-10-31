@@ -5,14 +5,13 @@ using Godot;
 
 public class ProposalsModule : LogicModule
 {
-    public override void Calculate(List<RegimeTurnOrders> orders, Data data,
-        Action<Message> sendMessage)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
-        var proposals = data.Society.Proposals.Proposals.Values.ToList();
-        ReceiveProposalDecisions(orders, data, sendMessage);
-        ResolveProposals(proposals, data, sendMessage);
-        AddProposals(orders, sendMessage, data);
-        RemoveInvalidProposals(data, sendMessage);
+        var proposals = key.Data.Society.Proposals.Proposals.Values.ToList();
+        ReceiveProposalDecisions(orders, key.Data, key.SendMessage);
+        ResolveProposals(proposals, key.Data, key.SendMessage);
+        AddProposals(orders, key.SendMessage, key.Data);
+        RemoveInvalidProposals(key.Data, key.SendMessage);
     }
 
     

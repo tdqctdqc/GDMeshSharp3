@@ -9,16 +9,15 @@ public class TrimFrontsModule : LogicModule
     {
     }
     public override void Calculate(List<RegimeTurnOrders> orders, 
-        Data data, Action<Message> sendMessage)
+        LogicWriteKey key)
     {
         var trim = TrimFrontsProcedure.Construct();
-        var key = new LogicWriteKey(sendMessage, data);
 
-        foreach (var alliance in data.GetAll<Alliance>())
+        foreach (var alliance in key.Data.GetAll<Alliance>())
         {
-            TrimFronts(alliance, trim, data, key);
+            TrimFronts(alliance, trim, key.Data, key);
         }
-        sendMessage(trim);
+        key.SendMessage(trim);
     }
     public void TrimFronts(Alliance alliance, TrimFrontsProcedure proc,
         Data data, LogicWriteKey key)
