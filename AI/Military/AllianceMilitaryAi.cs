@@ -29,7 +29,7 @@ public class AllianceMilitaryAi
         
         CalculateFrontlineWaypoints(controlled, orders, key.Data);
         var uncovered = FindUncoveredFrontlineWaypoints(FrontlineHash, orders, key.Data);
-        CoverUncoveredFrontlines(uncovered, orders, key.Data);
+        CoverUncoveredFrontlines(uncovered, orders, key);
     }
 
     private void CalculateFrontlineWaypoints(IEnumerable<Waypoint> controlled, 
@@ -84,15 +84,14 @@ public class AllianceMilitaryAi
     }
 
     private void CoverUncoveredFrontlines(List<List<Waypoint>> uncoveredUnions,
-        AllianceMajorTurnOrders orders, Data data)
+        AllianceMajorTurnOrders orders, LogicWriteKey key)
     {
-        var forceBalances = data.Context.WaypointForceBalances;
+        var forceBalances = key.Data.Context.WaypointForceBalances;
 
         foreach (var uncoveredUnion in uncoveredUnions)
         {
-            var regime = GetRegimeToCover(uncoveredUnion, data);
-            orders.NewFrontWaypointsByRegimeId.Add((regime.Id,
-                uncoveredUnion.Select(wp => wp.Id).ToList()));
+            var regime = GetRegimeToCover(uncoveredUnion, key.Data);
+            var front = Front.Create(regime, uncoveredUnion.Select(wp => wp.Id), key);
         }
     }
 

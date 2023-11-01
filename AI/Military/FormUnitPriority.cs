@@ -32,14 +32,32 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
     }
 
     protected override void Complete(Regime r, MajorTurnOrders orders, 
-        Dictionary<UnitTemplate, int> toBuild, Data data)
+        Dictionary<UnitTemplate, int> toBuild, LogicWriteKey key)
     {
-        foreach (var kvp in toBuild)
+        var regime = orders.Regime.Entity(key.Data);
+        var capitalPos = regime.Capital.Entity(key.Data).Center;
+        var useTroops = RegimeUseTroopsProcedure.Construct(regime);
+
+        bool verifyTroopsInStock(UnitTemplate t, int num)
         {
-            for (var i = 0; i < kvp.Value; i++)
+            var troopCosts = t
+                .TroopCounts.GetEnumerableModel(key.Data);
+            foreach (var (troop, cost) in troopCosts)
             {
-                
-                orders.Military.UnitTemplatesToForm.Add(kvp.Key.Id);
+                if (regime.Military.TroopReserve.Get(troop) < cost * num)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        foreach (var (template, num) in toBuild)
+        {
+            useTroops.AddTroopCosts(template, num, key.Data);
+            for (var i = 0; i < num; i++)
+            {
+                Unit.Create(template, regime, capitalPos, key);
             }
         }
     }

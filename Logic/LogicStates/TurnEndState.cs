@@ -14,7 +14,6 @@ public class TurnEndState : TurnState
             new FinanceModule(),
             new TradeModule(),
             new ProposalsModule(),
-            new FormUnitsAndGroupsModule(),
             new AllianceOrdersModule(),
             new DefaultLogicModule(() => new TickProcedure()),
             new ClearOrdersModule(orders)

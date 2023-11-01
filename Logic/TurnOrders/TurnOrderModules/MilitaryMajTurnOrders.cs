@@ -3,17 +3,15 @@ using MessagePack;
 
 public class MilitaryMajTurnOrders
 {
-    public List<int> UnitTemplatesToForm { get; private set; }
-    public List<List<int>> NewGroupUnits { get; private set; }
+    // public List<int> UnitTemplatesToForm { get; private set; }
+    // public List<List<int>> NewGroupUnits { get; private set; }
     public static MilitaryMajTurnOrders Construct()
     {
-        return new MilitaryMajTurnOrders(new List<int>(),
-            new List<List<int>>());
+        return new MilitaryMajTurnOrders();
     }
-    [SerializationConstructor] protected MilitaryMajTurnOrders(List<int> unitTemplatesToForm,
-        List<List<int>> newGroupUnits)
+    [SerializationConstructor] protected MilitaryMajTurnOrders()
     {
-        UnitTemplatesToForm = unitTemplatesToForm;
-        NewGroupUnits = newGroupUnits;
+        // UnitTemplatesToForm = unitTemplatesToForm;
+        // NewGroupUnits = newGroupUnits;
     }
 }

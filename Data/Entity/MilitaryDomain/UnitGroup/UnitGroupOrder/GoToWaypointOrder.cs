@@ -12,6 +12,29 @@ public class GoToWaypointOrder : UnitOrder
 
     public override void Handle(UnitGroup g, Data d, HandleUnitOrdersProcedure proc)
     {
-        GD.Print("havent implemented go to yet");
+        GD.Print("handling go to waypoint");
+        var context = d.Context;
+        var destWp = d.Planet.Nav.Waypoints[DestinationWaypointId];
+        foreach (var unit in g.Units.Items(d))
+        {
+            var currWp = context.UnitWaypoints[unit];
+            var pos = unit.Position;
+            if (currWp == destWp)
+            {
+                
+            }
+            else
+            {
+                GD.Print("finding path");
+                var path = context.GetWaypointPath(currWp, destWp, d);
+            }
+        }
+
+        // GD.Print("havent implemented go to yet");
+    }
+
+    private void MoveToWaypointCenter(Unit u, Waypoint wp, ref Vector2 pos)
+    {
+        
     }
 }

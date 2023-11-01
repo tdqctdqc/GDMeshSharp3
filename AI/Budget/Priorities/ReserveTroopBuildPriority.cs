@@ -27,7 +27,7 @@ public class ReserveTroopBuildPriority : SolverPriority<Troop>
     }
 
     protected override void Complete(Regime r, MajorTurnOrders orders, 
-        Dictionary<Troop, int> toBuild, Data data)
+        Dictionary<Troop, int> toBuild, LogicWriteKey key)
     {
         foreach (var kvp in toBuild)
         {

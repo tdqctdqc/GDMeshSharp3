@@ -27,13 +27,13 @@ public class TroopBuildForTemplatePriority : SolverPriority<UnitTemplate>
     }
 
     protected override void Complete(Regime r, MajorTurnOrders orders, 
-        Dictionary<UnitTemplate, int> toBuild, Data data)
+        Dictionary<UnitTemplate, int> toBuild, LogicWriteKey key)
     {
         var allTroops = IdCount<Troop>.Construct(new Dictionary<Troop, float>());
         foreach (var kvp1 in toBuild)
         {
             var num = kvp1.Value;
-            var troops = kvp1.Key.TroopCounts.GetEnumerableModel(data);
+            var troops = kvp1.Key.TroopCounts.GetEnumerableModel(key.Data);
             
             foreach (var kvp2 in troops)
             {
@@ -41,9 +41,9 @@ public class TroopBuildForTemplatePriority : SolverPriority<UnitTemplate>
             }
         }
         
-        foreach (var kvp in allTroops.GetEnumerableModel(data))
+        foreach (var kvp in allTroops.GetEnumerableModel(key.Data))
         {
-            var proj = new TroopManufactureProject(data.IdDispenser.TakeId(), 0f, kvp.Value, kvp.Key.MakeRef());
+            var proj = new TroopManufactureProject(key.Data.IdDispenser.TakeId(), 0f, kvp.Value, kvp.Key.MakeRef());
             orders.Manufacturing.ToStart.Add(proj);
         }
     }

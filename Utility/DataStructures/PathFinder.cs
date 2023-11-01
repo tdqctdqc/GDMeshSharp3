@@ -16,7 +16,7 @@ public static class PathFinder
             (p, q) => BuildRoadEdgeCost(p, q, data, international), 
             (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
-    public static List<Waypoint> FindNavPath(MapPolygon s1, MapPolygon s2, Data data)
+    public static List<Waypoint> FindNavPathBetweenPolygons(MapPolygon s1, MapPolygon s2, Data data)
     {
         var nav = data.Planet.Nav;
         var w1 = nav.GetPolyCenterWaypoint(s1);
@@ -38,7 +38,15 @@ public static class PathFinder
             (w,p) => EdgeRoughnessCost(w, p, data), 
             (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
     }
-    
+
+    public static List<Waypoint> FindWaypointPath(Waypoint start, Waypoint dest, Data data)
+    {
+        return PathFinder<Waypoint>.FindPath(start, dest, 
+            p => p.Neighbors
+                .Select(nId => data.Planet.Nav.Get(nId)),
+            (w,p) => data.Planet.GetOffsetTo(w.Pos, p.Pos).Length(), 
+            (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
+    }
     public static float BuildRoadEdgeCost(MapPolygon p1, MapPolygon p2, Data data, bool international = true)
     {
         if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;

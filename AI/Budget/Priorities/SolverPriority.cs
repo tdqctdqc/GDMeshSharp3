@@ -36,24 +36,24 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     {
         Weight = _getWeight(data, regime);
     }
-    public void Calculate(Regime regime, Data data, MajorTurnOrders orders)
+    public void Calculate(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
     {
         var solver = MakeSolver();
-        var projVars = MakeProjVars(solver, data);
-        SetConstraints(solver, regime, projVars, data);
+        var projVars = MakeProjVars(solver, key.Data);
+        SetConstraints(solver, regime, projVars, key.Data);
         
         var success = Solve(solver, projVars);
         if (success == false)
         {
             foreach (var kvp in Account.Items.Contents)
             {
-                var item = (Item) data.Models[kvp.Key];
+                var item = (Item) key.Data.Models[kvp.Key];
                 var q = kvp.Value;
             }
         }
         
         var toBuild = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        Complete(regime, orders, toBuild, data);
+        Complete(regime, orders, toBuild, key);
     }
 
     protected abstract void SetConstraints(Solver solver, Regime r,
@@ -63,7 +63,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         Dictionary<TBuild, Variable> projVars, 
         Data data, BudgetPool pool, float proportion);
     protected abstract void Complete(Regime r, MajorTurnOrders orders,
-        Dictionary<TBuild, int> toBuild, Data data);
+        Dictionary<TBuild, int> toBuild, LogicWriteKey key);
     private bool Solve(Solver solver, Dictionary<TBuild, Variable> projVars)
     {
         var objective = solver.Objective();
@@ -123,20 +123,20 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         Wishlist = CalculateWishlist(r, d, pool, proportion);
     }
     public void FirstRound(MajorTurnOrders orders, Regime regime, float proportion, 
-        BudgetPool pool, Data data)
+        BudgetPool pool, LogicWriteKey key)
     {
         var taken = new BudgetAccount();
-        taken.TakeShare(proportion, pool, data);
+        taken.TakeShare(proportion, pool, key.Data);
         Account.Add(taken);
-        Calculate(regime, data, orders);
+        Calculate(regime, key, orders);
     }
 
     public void SecondRound(MajorTurnOrders orders, Regime regime, float proportion, 
-        BudgetPool pool, Data data, float multiplier)
+        BudgetPool pool, LogicWriteKey key, float multiplier)
     {
         proportion = Mathf.Min(1f, multiplier * proportion);
-        FirstRound(orders, regime, proportion, pool, data);
-        ReturnUnused(pool, data);
+        FirstRound(orders, regime, proportion, pool, key);
+        ReturnUnused(pool, key.Data);
     }
 
     private void ReturnUnused(BudgetPool pool, Data data)

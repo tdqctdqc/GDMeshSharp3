@@ -28,6 +28,14 @@ public class RegimeUseTroopsProcedure : Procedure
         }
     }
 
+    public void AddTroopCosts(UnitTemplate template, int num, Data d)
+    {
+        foreach (var (troop, numTroop) in template.TroopCounts
+                                                        .GetEnumerableModel(d))
+        {
+            UsageByTroopId.AddOrSum(troop.Id, numTroop * num);
+        }
+    }
     public override bool Valid(Data data)
     {
         return true;

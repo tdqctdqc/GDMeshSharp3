@@ -4,5 +4,6 @@ public enum LogType
     Generation,
     Market,
     Graphics,
-    Diplomacy
+    Diplomacy,
+    Temp
 }

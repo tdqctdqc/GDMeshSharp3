@@ -67,7 +67,7 @@ public partial class PolyHighlighter : Node2D
         foreach (var nPoly in poly.Neighbors.Items(data))
         {
             var nPolyWp = nav.GetPolyCenterWaypoint(nPoly);
-            var path = PathFinder.FindNavPath(poly, nPoly, data);
+            var path = PathFinder.FindNavPathBetweenPolygons(poly, nPoly, data);
             for (var i = 0; i < path.Count - 1; i++)
             {
                 var from = path[i];

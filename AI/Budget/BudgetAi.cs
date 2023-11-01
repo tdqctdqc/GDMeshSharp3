@@ -39,7 +39,7 @@ public class BudgetAi
         var pool = new BudgetPool(itemsToDistribute, 
             IdCount<IModel>.Construct<IModel, Flow>(
                 _regime.Flows.GetSurplusCount()), labor);
-        DoPriorities(orders, pool, key.Data);
+        DoPriorities(orders, pool, key);
     }
 
     private IdCount<Item> GetItemsToDistribute(Data data)
@@ -74,7 +74,7 @@ public class BudgetAi
         return itemsToDistribute;
     }
     
-    private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, Data data)
+    private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, LogicWriteKey key)
     {
         var totalPriority = Priorities.Sum(p => p.Weight);
         if (totalPriority <= 0f) throw new Exception();
@@ -82,13 +82,13 @@ public class BudgetAi
         {
             priority.Wipe();
             var proportion = priority.Weight / totalPriority;
-            priority.SetWishlist(_regime, data, pool, proportion);
-            priority.FirstRound(orders, _regime, proportion, pool, data);
+            priority.SetWishlist(_regime, key.Data, pool, proportion);
+            priority.FirstRound(orders, _regime, proportion, pool, key);
         }
         foreach (var priority in Priorities)
         {
             var proportion = priority.Weight / totalPriority;
-            priority.SecondRound(orders, _regime, proportion, pool, data, 3f);
+            priority.SecondRound(orders, _regime, proportion, pool, key, 3f);
         }
         var allWishlists = new Dictionary<Item, int>();
         foreach (var priority in Priorities)
@@ -100,8 +100,8 @@ public class BudgetAi
                 allWishlists.AddOrSum(kvp.Key, kvp.Value);
             }
         }
-        Manufacture(data, allWishlists, pool, orders);
-        DoTradeOrders(data, orders, pool, allWishlists);
+        Manufacture(key.Data, allWishlists, pool, orders);
+        DoTradeOrders(key.Data, orders, pool, allWishlists);
     }
     
     private void Manufacture(Data data, Dictionary<Item, int> wishlist, BudgetPool pool,

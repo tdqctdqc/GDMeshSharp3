@@ -38,10 +38,10 @@ public class ConstructionPriority : SolverPriority<BuildingModel>
     }
 
     protected override void Complete(Regime r, MajorTurnOrders orders, 
-        Dictionary<BuildingModel, int> toBuild, Data data)
+        Dictionary<BuildingModel, int> toBuild, LogicWriteKey key)
     {
-        var currConstruction = data.Infrastructure.CurrentConstruction;
-        var availPolys = r.GetPolys(data);
+        var currConstruction = key.Data.Infrastructure.CurrentConstruction;
+        var availPolys = r.GetPolys(key.Data);
         
         foreach (var kvp in toBuild)
         {
@@ -62,12 +62,12 @@ public class ConstructionPriority : SolverPriority<BuildingModel>
                 orders.StartConstructions.ConstructionsToStart
                     .Add(StartConstructionRequest.Construct(building, poly));
                 
-                var buildCosts = building.Makeable.ItemCosts.GetEnumerableModel(data);
+                var buildCosts = building.Makeable.ItemCosts.GetEnumerableModel(key.Data);
                 foreach (var cost in buildCosts)
                 {
                     Account.UseItem(cost.Key, cost.Value);
                 }
-                Account.UseFlow(data.Models.Flows.ConstructionCap, building.ConstructionCapPerTick);
+                Account.UseFlow(key.Data.Models.Flows.ConstructionCap, building.ConstructionCapPerTick);
                 Account.UseLabor(labor);
             }
         }

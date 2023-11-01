@@ -35,18 +35,18 @@ public class FrontAssignment : ForceAssignment
             else if (units.All(distant))
             {
                 var wp = unitGroup.GetWaypoint(key.Data);
+                if (wp == null) throw new Exception("missing unit waypoint");
                 var close = frontWps
                     .OrderBy(fWp => key.Data.Planet.GetOffsetTo(fWp.Pos, wp.Pos).Length())
                     .First();
                 order = new GoToWaypointOrder(close.Id);
+                GD.Print("assigining go to waypoint");
             }
             else
             {
                 var frontlineIds = frontline.Select(wp => wp.Id).ToList();
                 order = new DeployOnLineOrder(frontlineIds);
             }
-
-            GD.Print("set unit group order " + order.GetType().Name);
             key.SendMessage(new SetUnitOrderProcedure(unitGroup.MakeRef(), order));
         }
     }

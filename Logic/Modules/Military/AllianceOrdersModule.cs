@@ -18,11 +18,7 @@ public class AllianceOrdersModule : LogicModule
             .Select(o => ((MajorTurnOrders)o).Alliance);
         foreach (var aOrders in allianceOrders)
         {
-            foreach (var kvp in aOrders.NewFrontWaypointsByRegimeId)
-            {
-                var regime = key.Data.Get<Regime>(kvp.Item1);
-                var front = Front.Create(regime, kvp.Item2.ToHashSet(), key);
-            }
+            
         }
     }
 }

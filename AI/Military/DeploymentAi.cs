@@ -11,9 +11,9 @@ public class DeploymentAi
         ForceAssignments = new HashSet<ForceAssignment>();
     }
 
-    public void CalculateMajor(Regime regime, Data data, MajorTurnOrders orders)
+    public void CalculateMajor(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
     {
-        AssignFreeUnitsToGroups(regime, data, orders);
+        AssignFreeUnitsToGroups(regime, key, orders);
     }
     public void CalculateMinor(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
@@ -24,24 +24,33 @@ public class DeploymentAi
         }
     }
 
-    private void AssignFreeUnitsToGroups(Regime regime, Data data, MajorTurnOrders orders)
+    private void AssignFreeUnitsToGroups(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
     {
-        var freeUnits = data.Military.UnitAux.UnitByRegime[regime]
+        var freeUnits = key.Data.Military.UnitAux.UnitByRegime[regime]
             ?.Where(u => u != null)
-            .Where(u => data.Military.UnitAux.UnitByGroup[u] == null);
-        if (freeUnits == null) return;
+            .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null);
+        if (freeUnits == null || freeUnits.Count() == 0) return;
         var numGroups = Mathf.CeilToInt((float)freeUnits.Count() / PreferredGroupSize);
         var newGroups = Enumerable.Range(0, numGroups)
-            .Select(i => new List<int>());
+            .Select(i => new List<int>())
+            .ToList();
         
         var iter = 0;
         foreach (var freeUnit in freeUnits)
         {
             var group = iter % numGroups;
+            Game.I.Logger.Log($"adding unit to group pre", LogType.Temp);
+
             newGroups.ElementAt(group).Add(freeUnit.Id);
             iter++;
         }
-        orders.Military.NewGroupUnits.AddRange(newGroups);
+        foreach (var newGroup in newGroups)
+        {
+            Game.I.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
+
+            UnitGroup.Create(orders.Regime.Entity(key.Data),
+                newGroup, key);
+        }
     }
 
     private void FillExposedFronts(Regime regime, Data data, MinorTurnOrders orders)

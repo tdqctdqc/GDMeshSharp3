@@ -15,14 +15,12 @@ public class RegimeMilitaryAi
     public void CalculateMajor(LogicWriteKey key, MajorTurnOrders orders)
     {
         var reserve = IdCount<Troop>.Construct(_regime.Military.TroopReserve);
-        ForceComposition.Calculate(_regime, key.Data, orders, reserve);
-        Deployment.CalculateMajor(_regime, key.Data, orders);
-        
+        ForceComposition.Calculate(_regime, key, orders, reserve);
+        Deployment.CalculateMajor(_regime, key, orders);
     }
 
     public void CalculateMinor(LogicWriteKey key, MinorTurnOrders orders)
     {
         Deployment.CalculateMinor(_regime, key, orders);
-        
     }
 }

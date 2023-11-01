@@ -20,12 +20,12 @@ public class ForceCompositionAi
         };
     }
 
-    public void Calculate(Regime regime, Data data, MajorTurnOrders orders,
+    public void Calculate(Regime regime, LogicWriteKey key, MajorTurnOrders orders,
          IdCount<Troop> reserve)
     {
-        SetBuildTroopWeight(regime, data);
+        SetBuildTroopWeight(regime, key.Data);
         ReinforceUnits(reserve);
-        BuildUnits(reserve, data, regime, orders);
+        BuildUnits(reserve, key, regime, orders);
     }
 
     private void SetBuildTroopWeight(Regime regime, Data data)
@@ -37,22 +37,22 @@ public class ForceCompositionAi
         
     }
 
-    private void BuildUnits(IdCount<Troop> reserve, Data data, Regime regime, 
+    private void BuildUnits(IdCount<Troop> reserve, LogicWriteKey key, Regime regime, 
         MajorTurnOrders orders)
     {
         var pool = new BudgetPool(
             IdCount<Item>.Construct(),
             IdCount<IModel>.Construct<IModel, Troop>(regime.Military.TroopReserve), 
             0f);
-        DoPriorities(orders, pool, data, regime);
+        DoPriorities(orders, pool, key, regime);
     }
     
-    private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, Data data,
+    private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, LogicWriteKey key,
          Regime regime)
     {
         foreach (var bp in Priorities)
         {
-            bp.SetWeight(data, regime);
+            bp.SetWeight(key.Data, regime);
         }
         var totalPriority = Priorities.Sum(p => p.Weight);
         if (totalPriority <= 0f) throw new Exception();
@@ -60,13 +60,13 @@ public class ForceCompositionAi
         {
             priority.Wipe();
             var proportion = priority.Weight / totalPriority;
-            priority.SetWishlist(regime, data, pool, proportion);
-            priority.FirstRound(orders, regime, proportion, pool, data);
+            priority.SetWishlist(regime, key.Data, pool, proportion);
+            priority.FirstRound(orders, regime, proportion, pool, key);
         }
         foreach (var priority in Priorities)
         {
             var proportion = priority.Weight / totalPriority;
-            priority.SecondRound(orders, regime, proportion, pool, data, 3f);
+            priority.SecondRound(orders, regime, proportion, pool, key, 3f);
         }
     }
 }

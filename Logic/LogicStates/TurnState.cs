@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Godot;
 
@@ -42,16 +43,28 @@ public abstract class TurnState : State
     }
     private void CalculateMajor()
     {
+        var sw = new Stopwatch();
         foreach (var module in _majorModules)
         {
+            sw.Reset();
+            sw.Start();
             module.Calculate(_orders.GetOrdersList(_key.Data), _key);
+            sw.Stop();
+            Game.I.Logger.Log($" {module.GetType().Name} time {sw.Elapsed.TotalMilliseconds}",
+                LogType.Logic);   
         }
     }
     private void CalculateMinor()
     {
+        var sw = new Stopwatch();
         foreach (var module in _minorModules)
         {
+            sw.Reset();
+            sw.Start();
             module.Calculate(_orders.GetOrdersList(_key.Data), _key);
+            sw.Stop();
+            Game.I.Logger.Log($" {module.GetType().Name} time {sw.Elapsed.TotalMilliseconds}",
+                LogType.Logic);
         }
     }
     public override State Check()

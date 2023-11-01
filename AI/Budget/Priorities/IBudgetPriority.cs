@@ -11,8 +11,8 @@ public interface IBudgetPriority
     void Wipe();
     void SetWishlist(Regime r, Data d, BudgetPool pool, float proportion);
     void FirstRound(MajorTurnOrders orders, Regime regime, 
-        float proportion, BudgetPool pool, Data data);
+        float proportion, BudgetPool pool, LogicWriteKey key);
 
     void SecondRound(MajorTurnOrders orders, Regime regime, float proportion,
-        BudgetPool pool, Data data, float multiplier);
+        BudgetPool pool, LogicWriteKey key, float multiplier);
 }
