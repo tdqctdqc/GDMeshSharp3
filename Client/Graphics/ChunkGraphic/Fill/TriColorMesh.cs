@@ -18,17 +18,17 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
     private Func<Data, IEnumerable<TElement>> _getElements;
     private ArrayMesh _arrayMesh;
     public TriColorMesh(string name, Func<TElement, Data, Color> getColor,
-        Func<TElement, Data, IEnumerable<Triangle>> getTris, Func<Data, IEnumerable<TElement>> getElements)
+        Func<TElement, Data, IEnumerable<Triangle>> getTris, 
+        Func<Data, IEnumerable<TElement>> getElements,
+        Data data)
     {
         Name = name;
         Updates = new HashSet<TElement>();
         _getColor = getColor;
         _getTris = getTris;
         _getElements = getElements;
-    }
-
-    public void Init(Data data)
-    {
+        
+        
         _triIndicesByElement = new Dictionary<TElement, List<int>>();
         _vertices = new List<Vector2>();
         _colors = new List<Color>();

@@ -21,28 +21,20 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         _chunk = chunk;
         _stale = false;
         _getColor = getColor;
-    }
-
-    public void MarkStale()
-    {
-        _stale = true;
-    }
-    
-    public void Init(Data data)
-    {
-        var nav = data.Planet.Nav;
+        
+        var nav = d.Planet.Nav;
         var chunkWps = nav.Waypoints
             .Values
-            .Where(wp => _chunk.Polys.Contains(data.Get<MapPolygon>(wp.AssociatedPolyIds.X)))
+            .Where(wp => _chunk.Polys.Contains(d.Get<MapPolygon>(wp.AssociatedPolyIds.X)))
             .ToList();
 
         var mb = new MeshBuilder();
         foreach (var chunkWp in chunkWps)
         {
-            var offset = _chunk.RelTo.GetOffsetTo(chunkWp.Pos, data);
-            foreach (var nWp in chunkWp.GetNeighboringWaypoints(data))
+            var offset = _chunk.RelTo.GetOffsetTo(chunkWp.Pos, d);
+            foreach (var nWp in chunkWp.GetNeighboringWaypoints(d))
             {
-                var nOffset = _chunk.RelTo.GetOffsetTo(nWp.Pos, data);
+                var nOffset = _chunk.RelTo.GetOffsetTo(nWp.Pos, d);
                 if (chunkWp.Id <= nWp.Id) continue;
                 mb.AddLine(offset, nOffset, Colors.Red, 5f);
             }
@@ -72,14 +64,19 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         for (var i = 0; i < chunkWps.Count; i++)
         {
             var wp = chunkWps[i];
-            var colors = _getColor(wp, data);
-            var offset = _chunk.RelTo.GetOffsetTo(wp.Pos, data);
+            var colors = _getColor(wp, d);
+            var offset = _chunk.RelTo.GetOffsetTo(wp.Pos, d);
             _inner.Multimesh.SetInstanceColor(i, colors.Item1);
             _inner.Multimesh.SetInstanceTransform2D(i, new Transform2D(0f, offset));
             _outer.Multimesh.SetInstanceColor(i, colors.Item2);
             _outer.Multimesh.SetInstanceTransform2D(i, new Transform2D(0f, offset));
             _ids.Add(wp, i);
         }
+    }
+
+    public void MarkStale()
+    {
+        _stale = true;
     }
     public void Update(Data d, ConcurrentQueue<Action> queue)
     {

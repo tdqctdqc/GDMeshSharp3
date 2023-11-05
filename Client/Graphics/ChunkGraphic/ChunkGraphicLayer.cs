@@ -32,7 +32,6 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     private void Add(MapChunk chunk, Data data)
     {
         var graphic = _getGraphic(chunk);
-        graphic.Init(data);
         ByChunkCoords.Add(chunk.Coords, graphic);
         _segmenter.AddElement(graphic, chunk.RelTo.Center);
         foreach (var kvp in _settingsUpdaters)

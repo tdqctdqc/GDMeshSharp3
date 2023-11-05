@@ -5,7 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class BorderChunkNode : MapChunkGraphicNode<MapPolygon>
+public partial class BorderChunkNode 
+    : MapChunkGraphicNode<MapPolygon>
 {
     private Func<MapPolygon, MapPolygon, float> _getThickness;
     private Func<MapPolygon, Color> _getColor;
@@ -17,31 +18,33 @@ public partial class BorderChunkNode : MapChunkGraphicNode<MapPolygon>
         _getColor = getColor;
         _inUnion = inUnion;
         _getThickness = getThickness;
-        Init(data);
     }
     private BorderChunkNode() : base()
     {
     }
     protected override Node2D MakeGraphic(MapPolygon element, Data data)
     {
-        var mb = new MeshBuilder();
-        var color = _getColor(element);
-        var offset = Chunk.RelTo.GetOffsetTo(element, data);
-        foreach (var n in element.Neighbors.Items(data))
-        {
-            if (_inUnion(n, element)) continue;
-            mb.DrawPolyEdge(element, n, _getColor, _getThickness(element, n), Chunk.RelTo, data);
-        }
 
-        if (mb.Tris.Count == 0) return new Node2D();
-        return mb.GetMeshInstance();
+        return new Node2D();
+        // var mb = new MeshBuilder();
+        // var color = _getColor(element);
+        // var offset = Chunk.RelTo.GetOffsetTo(element, data);
+        // foreach (var n in element.Neighbors.Items(data))
+        // {
+        //     if (_inUnion(n, element)) continue;
+        //     mb.DrawPolyEdge(element, n, _getColor, _getThickness(element, n), Chunk.RelTo, data);
+        // }
+        //
+        // if (mb.Tris.Count == 0) return new Node2D();
+        // return mb.GetMeshInstance();
     }
 
     protected override IEnumerable<MapPolygon> GetKeys(Data data)
     {
-        return Chunk.Polys
-            .Where(p => p.Regime.Empty() == false 
-                        && p.Neighbors.Items(data).Any(n => _inUnion(n, p) == false));
+        return Chunk.Polys;
+            // .Where(p => 
+            //     p.Regime.Fulfilled()
+            //     && p.Neighbors.Items(data).Any(n => _inUnion(n, p) == false));
     }
 
     protected override bool Ignore(MapPolygon element, Data data)

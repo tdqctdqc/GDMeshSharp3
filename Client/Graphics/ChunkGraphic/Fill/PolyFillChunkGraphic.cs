@@ -11,7 +11,7 @@ public partial class PolyFillChunkGraphic : TriColorMesh<MapPolygon>
                 {
                     var offset = chunk.RelTo.GetOffsetTo(p, d);
                     return p.Tris.Tris.Select(t => t.Transpose(offset));
-                }, d => chunk.Polys)
+                }, d => chunk.Polys, data)
     {
     }
 }

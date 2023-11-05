@@ -5,7 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using Godot;
 
-public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraphicNode
+public abstract partial class MapChunkGraphicNode<TKey> 
+    : Node2D, IMapChunkGraphicNode
 {
     public MapChunk Chunk { get; private set; }
     public string Name { get; private set; }
@@ -22,20 +23,13 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
         _queuedToAdd = new HashSet<TKey>();
         _queuedToRemove = new HashSet<TKey>();
         _queuedToChange = new HashSet<TKey>();
-    }
-    protected MapChunkGraphicNode() { }
-    public override void _ExitTree()
-    {
-    }
-
-    public void Init(Data data)
-    {   
-        this.ClearChildren();
-        foreach (var kvp in _graphics)
-        {
-            kvp.Value.QueueFree();
-        }
-        _graphics.Clear();
+        
+        // this.ClearChildren();
+        // foreach (var kvp in _graphics)
+        // {
+        //     kvp.Value.QueueFree();
+        // }
+        // _graphics.Clear();
 
         var keys = GetKeys(data);
         foreach (var key in keys)
@@ -43,6 +37,11 @@ public abstract partial class MapChunkGraphicNode<TKey> : Node2D, IMapChunkGraph
             Add(key, data);
         }
     }
+    protected MapChunkGraphicNode() { }
+    public override void _ExitTree()
+    {
+    }
+
 
     public void Update(Data d, ConcurrentQueue<Action> queue)
     {
@@ -129,7 +128,6 @@ public interface IMapChunkGraphicNode
 {
     string Name { get; }
     Node2D Node { get; }
-    void Init(Data data);
     void Update(Data d, ConcurrentQueue<Action> queue);
 }
 
