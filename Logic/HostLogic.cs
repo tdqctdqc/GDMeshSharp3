@@ -18,23 +18,16 @@ public class HostLogic : ILogic
     private HostWriteKey _hKey;
     public ProcedureWriteKey PKey { get; private set; }
     private Data _data;
-    private static object _lock = new object();
+    private readonly object _lock = new object();
     public HostLogic(Data data)
     {
         CommandQueue = new ConcurrentQueue<Command>();
         data.Requests.QueueCommand.Subscribe(CommandQueue.Enqueue);
         var syncKey = new LogicWriteKey(HandleMessage, data);
-        var concKey = new LogicWriteKey(m =>
-        {
-            lock (_lock)
-            {
-                HandleMessage(m);
-            }
-        }, data);
-        OrderHolder = new OrderHolder(concKey);
-
+        
+        OrderHolder = new OrderHolder(syncKey);
         _start = new TurnStartState(syncKey, OrderHolder);
-        _middle = new TurnMiddleState(concKey, OrderHolder);
+        _middle = new TurnMiddleState(syncKey, OrderHolder);
         _end = new TurnEndState(syncKey, OrderHolder);
         _start.SetNextState(_middle);
         _middle.SetNextState(_end);
@@ -68,18 +61,22 @@ public class HostLogic : ILogic
         _stateMachine = new StateMachine(_start);
     }
 
-    private bool _handling = false;
     private void HandleMessage(Message m)
     {
-        m.Enact(PKey);
+        lock (_lock)
+        {
+            m.Enact(PKey);
+        }
         _server.ReceiveMessage(m, _hKey);
     }
     private void DoCommands()
     {
-        while (CommandQueue.TryDequeue(out var command))
+        lock (_lock)
         {
-            if (_handling == true) throw new Exception();
-            if(command.Valid(_data)) command.Enact(PKey);
+            while (CommandQueue.TryDequeue(out var command))
+            {
+                if(command.Valid(_data)) command.Enact(PKey);
+            }
         }
         _server.PushPackets(_hKey);
     }

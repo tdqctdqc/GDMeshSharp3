@@ -4,11 +4,10 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Godot;
 
-public abstract class WholeMapGraphicLayer<TKey, TGraphic> : IGraphicLayer
+public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
     where TGraphic : Node2D
 {
     public Dictionary<TKey, TGraphic> Graphics { get; private set; }
-    private Node2D _hook;
     public string Name { get; private set; }
     public List<ISettingsOption> Settings { get; }
     private Dictionary<ISettingsOption, Action<TGraphic>> _settingsUpdaters;
@@ -16,7 +15,7 @@ public abstract class WholeMapGraphicLayer<TKey, TGraphic> : IGraphicLayer
     private bool _visible = true;
     protected GraphicsSegmenter _segmenter;
 
-    protected WholeMapGraphicLayer(string name, GraphicsSegmenter segmenter,
+    protected GraphicLayer(string name, GraphicsSegmenter segmenter,
         Action<TKey, TGraphic, GraphicsSegmenter, ConcurrentQueue<Action>> updateGraphic)
     {
         _updateGraphic = updateGraphic;
@@ -103,7 +102,7 @@ public abstract class WholeMapGraphicLayer<TKey, TGraphic> : IGraphicLayer
 public static class WholeMapGraphicLayerExt
 {
     public static void RegisterForEntityLifetime<TEntity, TGraphic>
-        (this WholeMapGraphicLayer<TEntity, TGraphic> layer, Client client,
+        (this GraphicLayer<TEntity, TGraphic> layer, Client client,
             Data d)
         where TGraphic : Node2D where TEntity : Entity
     {

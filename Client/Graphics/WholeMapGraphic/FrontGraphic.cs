@@ -9,11 +9,13 @@ public partial class FrontGraphic : Node2D
 {
     private int _currSegment = -1;
     private FrontGraphic() {}
-    public Node2D Front { get; private set; } 
-    public Node2D Line { get; private set; }
+    public Front Front { get; private set; }
+    public Node2D FrontNode { get; private set; } 
+    public Node2D LineNode { get; private set; }
 
     public FrontGraphic(Front front, GraphicsSegmenter segmenter, Data data)
     {
+        Front = front;
         Draw(front, segmenter, data);
         _currSegment = segmenter.AddElement
             (this, front.RelTo(data));
@@ -27,16 +29,15 @@ public partial class FrontGraphic : Node2D
         DrawFrontWithFill(regime, front, relTo, data);
         // DrawFrontWithLines(regime, front, relTo, data);
         DrawFrontline(regime, front, relTo, data);
-        
     }
 
     private void DrawFrontWithFill(Regime regime, Front front,
         Vector2 relTo, Data data)
     {
-        if (Front != null)
+        if (FrontNode != null)
         {
-            Front.Free();
-            Front = null;
+            FrontNode.Free();
+            FrontNode = null;
         }
         var mb = new MeshBuilder();
         var offsets = front.GetWaypoints(data).Select(wp => data.Planet.GetOffsetTo(relTo, wp.Pos)).ToList();
@@ -69,18 +70,18 @@ public partial class FrontGraphic : Node2D
 
         if (mb.Tris.Count > 0)
         {
-            Front = mb.GetMeshInstance();
-            AddChild(Front);
+            FrontNode = mb.GetMeshInstance();
+            AddChild(FrontNode);
         }
     }
 
     private void DrawFrontWithLines(Regime regime, Front front,
         Vector2 relTo, Data data)
     {
-        if (Front != null)
+        if (FrontNode != null)
         {
-            Front.Free();
-            Front = null;
+            FrontNode.Free();
+            FrontNode = null;
         }
         var mb = new MeshBuilder();
         foreach (var wp in front.GetWaypoints(data))
@@ -96,18 +97,18 @@ public partial class FrontGraphic : Node2D
         }
         if (mb.Tris.Count > 0)
         {
-            Front = mb.GetMeshInstance();
-            AddChild(Front);
+            FrontNode = mb.GetMeshInstance();
+            AddChild(FrontNode);
         }
     }
 
     private void DrawFrontline(Regime regime, Front front, Vector2 relTo, 
         Data data)
     {
-        if (Line != null)
+        if (LineNode != null)
         {
-            Line.Free();
-            Line = null;
+            LineNode.Free();
+            LineNode = null;
         }
         var frontlines = front.GetFrontlines(data);
         var lineColor = regime.PrimaryColor.Darkened(.3f);
@@ -131,9 +132,13 @@ public partial class FrontGraphic : Node2D
         }
         if (mb.Tris.Count > 0)
         {
-            Line = mb.GetMeshInstance();
-            AddChild(Line);
+            LineNode = mb.GetMeshInstance();
         }
+        else
+        {
+            LineNode = new Node2D();
+        }
+        AddChild(LineNode);
     }
     public void Update(Front front, Data data, GraphicsSegmenter segmenter,
         ConcurrentQueue<Action> queue)

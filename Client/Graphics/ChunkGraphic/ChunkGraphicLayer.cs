@@ -39,6 +39,17 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
             kvp.Value.Invoke(graphic);
         }
     }
+
+    public void EnforceSettings()
+    {
+        foreach (var graphic in ByChunkCoords.Values)
+        {
+            foreach (var kvp in _settingsUpdaters)
+            {
+                kvp.Value.Invoke(graphic);
+            }
+        }
+    }
     public bool Visible
     {
         get => _visible;
@@ -69,6 +80,13 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
         foreach (var graphic in ByChunkCoords.Values)
         {
             graphic.Update(d, queue);
+            queue.Enqueue(() =>
+            {
+                foreach (var kvp2 in _settingsUpdaters)
+                {
+                    kvp2.Value.Invoke(graphic);
+                }
+            });
         }
     }
 
@@ -99,9 +117,9 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
         Settings.Add(option);
         _settingsUpdaters.Add(option, g => update(g, option.Value));
     }
-    public void AddTransparencySetting(Func<TGraphic, Node2D> getNode)
+    public void AddTransparencySetting(Func<TGraphic, Node2D> getNode, string label)
     {
-        var option = new FloatSettingsOption("Transparency", 1f, 0f, 1f, .05f, false);
+        var option = new FloatSettingsOption(label, 1f, 0f, 1f, .05f, false);
         AddSetting(option, (module, value) => getNode(module).Modulate = new Color(Colors.White, option.Value));
     }
 }

@@ -35,7 +35,7 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
             segmenter, 
             c => new DiplomacyChunkModule(c, d), 
             d);
-        l.AddTransparencySetting(m => m._diplomacyFill);
+        l.AddTransparencySetting(m => m._diplomacyFill, "Transparency");
         l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedRegime,
             r => r.Entity.GetChunkAndNeighboringChunks(d),
             (n, m) => { m.HandlePolygonRegimeChange(n, d); });

@@ -37,7 +37,6 @@ public sealed partial class EntityCreationUpdate<T> : Update
     
     public static EntityCreationUpdate<T> Create(T entity, WriteKey key)
     {
-        
         return new EntityCreationUpdate<T>(entity);
     }
     [SerializationConstructor] private EntityCreationUpdate(T entity)
@@ -46,6 +45,12 @@ public sealed partial class EntityCreationUpdate<T> : Update
     }
     public override void Enact(ProcedureWriteKey key)
     {
+        if (key.Data.EntitiesById.ContainsKey(Entity.Id))
+        {
+            var other = key.Data.Get<Entity>(Entity.Id);
+            GD.Print("same entity: " + (other == Entity));
+            throw new Exception();
+        }
         key.Data.AddEntity(Entity, key);
     }
 }

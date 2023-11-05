@@ -11,7 +11,7 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
         _fill = new RegimePolyFill(chunk, data);
         AddNode(_fill);
 
-        _borders = new RegimeBordersNode(chunk, 20f, data);
+        _borders = new RegimeBordersNode(chunk, data);
         AddNode(_borders);
     }
 
@@ -22,7 +22,8 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
             segmenter, 
             c => new RegimeChunkModule(c, d), 
             d);
-        l.AddTransparencySetting(m => m._fill);
+        l.AddTransparencySetting(m => m._fill, "Fill Transparency");
+        l.AddTransparencySetting(m => m._borders, "Border Transparency");
         l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedRegime,
             r => r.Entity.GetChunkAndNeighboringChunks(d),
             (n, m) => { m.HandlePolygonRegimeChange(n, d); });

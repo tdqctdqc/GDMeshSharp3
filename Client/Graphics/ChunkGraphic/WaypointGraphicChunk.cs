@@ -165,7 +165,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
     public static ChunkGraphicLayer<WaypointGraphicChunk> GetLayer(
         Data d, Client client, GraphicsSegmenter segmenter)
     {
-        var l = new ChunkGraphicLayer<WaypointGraphicChunk>("Waypoint Frontline", segmenter,
+        var l = new ChunkGraphicLayer<WaypointGraphicChunk>("Waypoints", segmenter,
             c => new WaypointGraphicChunk(GetWaypointTypeColor, c, d), d);
         Action markAllStale = () =>
         {
@@ -205,6 +205,8 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
                     c._links.Visible = b;
                 });
             });
+        
+        l.EnforceSettings();
         return l;
     }
 }

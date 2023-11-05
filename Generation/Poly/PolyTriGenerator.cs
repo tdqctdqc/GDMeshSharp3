@@ -45,33 +45,6 @@ public class PolyTriGenerator : Generator
 
         return report;
     }
-
-    private void CheckJoins(GenWriteKey key)
-    {
-        foreach (var poly in key.Data.GetAll<MapPolygon>())
-        {
-            foreach (var n in poly.Neighbors.Items(key.Data))
-            {
-                if(n.Id < poly.Id) continue;
-                var edge = poly.GetEdge(n, key.Data);
-                var hi = edge.HighPoly.Entity(key.Data);
-                var lo = edge.LowPoly.Entity(key.Data);
-                var hiSegs = edge.HighSegsRel(key.Data).Segments;
-                var loSegs = edge.LowSegsRel(key.Data).Segments;
-                
-                for (var i = 0; i < hiSegs.Count; i++)
-                {
-                    var loI = hiSegs.Count - i - 1;
-                    var hiAbs = hiSegs[i].From + hi.Center;
-                    var loAbs = loSegs[loI].To + lo.Center;
-                    if (hiAbs.DistanceTo(loAbs) > 0f)
-                    { 
-                        throw new Exception($"{hiAbs} {loAbs} {hiAbs.DistanceTo(loAbs)}");
-                    }
-                }
-            }
-        }
-    }
     private void BuildTris(MapPolygon poly, TempRiverData rd, GenWriteKey key)
     {
         List<PolyTri> tris;
@@ -113,50 +86,8 @@ public class PolyTriGenerator : Generator
     {
         var borderPs = poly.GetOrderedBoundaryPoints(_data);
         List<PolyTri> tris = borderPs.PolyTriangulate(key.Data, poly);
-
         return tris;
     }
-
-    
-
-    private void CollectEdgeTris(ConcurrentBag<(PolyTriPosition[], PolyTriPosition[])> edgeTris,
-        MapPolygonEdge edge, GenWriteKey key)
-    {
-        var lo = edge.LowPoly.Entity(key.Data);
-        var hi = edge.HighPoly.Entity(key.Data);
-
-        var loSegs = lo.GetBorder(hi.Id).Segments;
-        var hiSegs = hi.GetBorder(lo.Id).Segments;
-        
-        var loEdgeTris = lo.Tris.Tris
-            .Where(t => t.AnyPoint(p => loSegs.Any(ls => ls.ContainsVertex(p)))).ToArray();
-        var hiEdgeTris = hi.Tris.Tris
-            .Where(t => t.AnyPoint(p => hiSegs.Any(ls => ls.ContainsVertex(p)))).ToArray();
-
-        // for (var i = 0; i < hiSegs.Count; i++)
-        // {
-        //     var loIndex = loSegs.Count - 1 - i;
-        //     var loP = loSegs[loIndex].To;
-        //     var hiP = hiSegs[i].From;
-        //     var loTris = loEdgeTris.Where(t => t.PointIsVertex(loP)).ToArray();
-        //     var hiTris = hiEdgeTris.Where(t => t.PointIsVertex(hiP)).ToArray();
-        //     foreach (var loTri in loTris)
-        //     {
-        //         var loPos = new PolyTriPosition(lo.Id, loTri.Index);
-        //         foreach (var hiTri in hiTris)
-        //         {
-        //             var hiPos = new PolyTriPosition(hi.Id, hiTri.Index);
-        //             // foreignNeighbors.Add(new Edge<PolyTriPosition>(loPos, hiPos, ptp => ptp.PolyId));
-        //         }
-        //     }
-        // }
-        //
-        // void linkP()
-        // {
-        //     
-        // }
-    }
-
     private void Postprocess(GenWriteKey key)
     {
         var polys = key.Data.GetAll<MapPolygon>();
@@ -166,7 +97,7 @@ public class PolyTriGenerator : Generator
         mountainNoise.Frequency = .002f;
         var swampNoise = new FastNoiseLite();
         swampNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
-        swampNoise.Frequency = .01f;
+        swampNoise.Frequency = .005f;
         
         var grassland = key.Data.Models.Vegetations.Grassland;
         var tundra = key.Data.Models.Vegetations.Tundra;

@@ -76,7 +76,6 @@ public class Data
         }
         EntitiesById.Add(e.Id, e);
         _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
-        IdDispenser.SetMin(e.Id);
     }
     public void AddEntities<TEntity>(IReadOnlyList<TEntity> es, StrongWriteKey key) where TEntity : Entity
     {
@@ -119,7 +118,6 @@ public class Data
         {
             AddEntityType(t);
         }
-        IdDispenser.SetMin(e.Id);
         if (EntitiesById.ContainsKey(e.Id))
         {
             throw new EntityTypeException($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} " +

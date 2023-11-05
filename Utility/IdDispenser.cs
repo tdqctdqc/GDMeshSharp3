@@ -14,19 +14,20 @@ public class IdDispenser : Entity
         d.Id = d.TakeId();
         return d;
     }
-    [SerializationConstructor] private IdDispenser(int index, int id) : base(id)
+    [SerializationConstructor] private IdDispenser(int index, int id)
+        : base(id)
     {
         _index = index;
     }
+
+    private readonly object _lock = new object();
     public int TakeId()
     {
         if (_index == int.MaxValue) throw new Exception("Max Ids reached");
-        int id = System.Threading.Interlocked.Increment(ref _index);
-        return id;
-    }
-
-    public void SetMin(int taken)
-    {
-        _index = Mathf.Max(taken, _index);
+        lock (_lock)
+        {
+            System.Threading.Interlocked.Increment(ref _index);
+            return _index;
+        }
     }
 }

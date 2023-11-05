@@ -18,6 +18,7 @@ public class EnumSettingsOption<TEnum> : SettingsOption<TEnum> where TEnum : Enu
             i => allVals[i],
             i => () => { Set((TEnum) Enum.Parse(typeof(TEnum), allVals[i])); }
         );
+        list.Select(0);
         return list;
     }
 }

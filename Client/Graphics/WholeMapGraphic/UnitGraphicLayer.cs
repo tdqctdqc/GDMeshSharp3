@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Godot;
 
-public class UnitGraphicLayer : WholeMapGraphicLayer<Unit, UnitGraphic>
+public class UnitGraphicLayer : GraphicLayer<Unit, UnitGraphic>
 {
     public UnitGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) 
         : base("Units", segmenter,

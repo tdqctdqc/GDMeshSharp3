@@ -12,16 +12,21 @@ public class GraphicLayerHolder
         Node2D hook, Data data)
     {
         Layers = new List<IGraphicLayer>();
-        Layers.Add(Terrain(segmenter, data));
-        Layers.Add(PolyFill(segmenter, data));
-        Layers.Add(Roads(segmenter, data));
-        Layers.Add(IconsChunkModule.GetLayer(data, segmenter));
-        Layers.Add(ResourceChunkModule.GetLayer(data, segmenter));
-        Layers.Add(new UnitGraphicLayer(client, segmenter, data));
-        Layers.Add(FrontGraphicLayer.GetLayer(client, segmenter, data));
-        Layers.Add(WaypointGraphicChunk.GetLayer(data, client, segmenter));
+        AddLayer(Terrain(segmenter, data), true);
+        AddLayer(PolyFill(segmenter, data), true);
+        AddLayer(Roads(segmenter, data), true);
+        AddLayer(IconsChunkModule.GetLayer(data, segmenter), true);
+        AddLayer(ResourceChunkModule.GetLayer(data, segmenter), false);
+        AddLayer(new UnitGraphicLayer(client, segmenter, data), true);
+        AddLayer(FrontGraphicLayer.GetLayer(client, segmenter, data), true);
+        AddLayer(WaypointGraphicChunk.GetLayer(data, client, segmenter), false);
     }
 
+    private void AddLayer(IGraphicLayer layer, bool startVisible)
+    {
+        layer.Visible = startVisible;
+        Layers.Add(layer);
+    }
     public void Update(Data d, ConcurrentQueue<Action> queue)
     {
         var sw = new Stopwatch();

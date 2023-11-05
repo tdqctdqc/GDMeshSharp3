@@ -27,7 +27,9 @@ public partial class AllianceChunkModule : MapChunkGraphicModule
             segmenter, 
             c => new AllianceChunkModule(c, d), 
             d);
-        l.AddTransparencySetting(m => m._fill);
+        l.AddTransparencySetting(m => m._fill, "Fill Transparency");
+        l.AddTransparencySetting(m => m._borders, "Border Transparency");
+        
         l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedRegime,
             r =>
             {

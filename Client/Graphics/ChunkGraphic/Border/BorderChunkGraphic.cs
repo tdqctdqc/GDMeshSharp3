@@ -5,46 +5,49 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class BorderChunkNode 
+public abstract partial class BorderChunkNode 
     : MapChunkGraphicNode<MapPolygon>
 {
-    private Func<MapPolygon, MapPolygon, float> _getThickness;
-    private Func<MapPolygon, Color> _getColor;
-    private Func<MapPolygon, MapPolygon, bool> _inUnion;
-    public BorderChunkNode(string name, MapChunk chunk, Func<MapPolygon, MapPolygon, bool> inUnion, 
-        Func<MapPolygon, Color> getColor, Func<MapPolygon, MapPolygon, float> getThickness, Data data)
+    public BorderChunkNode(string name, MapChunk chunk, 
+        Data data)
         : base(name, data, chunk)
     {
-        _getColor = getColor;
-        _inUnion = inUnion;
-        _getThickness = getThickness;
     }
     private BorderChunkNode() : base()
     {
     }
+
+    protected abstract bool InUnion(MapPolygon p1, MapPolygon p2, Data data);
+    protected abstract float GetThickness(MapPolygon p1, MapPolygon p2, Data data);
+    protected abstract Color GetColor(MapPolygon p1, Data data);
+    
     protected override Node2D MakeGraphic(MapPolygon element, Data data)
     {
-
-        return new Node2D();
-        // var mb = new MeshBuilder();
-        // var color = _getColor(element);
-        // var offset = Chunk.RelTo.GetOffsetTo(element, data);
-        // foreach (var n in element.Neighbors.Items(data))
-        // {
-        //     if (_inUnion(n, element)) continue;
-        //     mb.DrawPolyEdge(element, n, _getColor, _getThickness(element, n), Chunk.RelTo, data);
-        // }
-        //
-        // if (mb.Tris.Count == 0) return new Node2D();
-        // return mb.GetMeshInstance();
+        var mb = new MeshBuilder();
+        var color = GetColor(element, data);
+        var offset = Chunk.RelTo.GetOffsetTo(element, data);
+        foreach (var n in element.Neighbors.Items(data))
+        {
+            if (InUnion(n, element, data)) continue;
+            mb.DrawPolyEdge(element, n, p => GetColor(p, data), GetThickness(element, n, data), Chunk.RelTo, data);
+        }
+        
+        if (mb.Tris.Count == 0) return new Node2D();
+        return mb.GetMeshInstance();
     }
 
     protected override IEnumerable<MapPolygon> GetKeys(Data data)
     {
-        return Chunk.Polys;
-            // .Where(p => 
-            //     p.Regime.Fulfilled()
-            //     && p.Neighbors.Items(data).Any(n => _inUnion(n, p) == false));
+        return Chunk.Polys
+            .Where(p =>
+            {
+                var ns = p.Neighbors.Items(data);
+                var r = p.Regime;
+                var rFulfilled = p.Regime.Fulfilled();
+                var nNotInUnion = ns.Any(n => InUnion(n, p, data) == false);
+                return rFulfilled
+                       && nNotInUnion;
+            });
     }
 
     protected override bool Ignore(MapPolygon element, Data data)

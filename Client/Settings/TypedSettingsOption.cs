@@ -28,6 +28,7 @@ public class TypedSettingsOption<T> : SettingsOption<T>
             t => _names[t],
             t => () => Set(t)
         );
+        list.Select(0);
         return list;
     }
 }

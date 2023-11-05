@@ -22,7 +22,7 @@ public partial class ResourceChunkModule : MapChunkGraphicModule
             segmenter, 
             c => new ResourceChunkModule(c, d), 
             d);
-        l.AddTransparencySetting(m => m._fill);
+        l.AddTransparencySetting(m => m._fill, "Transparency");
         return l;
     }
 }

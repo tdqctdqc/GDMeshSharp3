@@ -18,6 +18,7 @@ public class BoolSettingsOption : SettingsOption<bool>
         var check = new CheckBox();
         check.FocusMode = Control.FocusModeEnum.None;
         check.ToggleMode = true;
+        check.ButtonPressed = Value;
         check.Toggled += Set;
         hbox.AddChild(check);
         return hbox;
