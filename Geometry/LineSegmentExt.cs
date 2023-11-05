@@ -189,7 +189,64 @@ public static class LineSegmentExt
 
         return res;
     }
+    public static List<List<LineSegment>> GetChains(this List<LineSegment> segments)
+    {
+        if (segments.Count == 0) return new List<List<LineSegment>>();
+        var dic = new Dictionary<Vector2, List<LineSegment>>();
+        for (var i = 0; i < segments.Count; i++)
+        {
+            var seg = segments[i];
+            dic.GetOrAdd(seg.From, v => new List<LineSegment>())
+                .Add(seg);
+            dic.GetOrAdd(seg.To, v => new List<LineSegment>())
+                .Add(seg);
+        }
 
+        var joins = dic.Where(kvp => kvp.Value.Count > 2)
+            .Select(kvp => kvp.Key)
+            .ToHashSet();
+        var res = new List<List<LineSegment>>();
+        var handled = new HashSet<LineSegment>();
+        var curr = segments[0];
+        while (curr != null)
+        {
+            var list = new List<LineSegment> { curr };
+            handled.Add(curr);
+            go(curr, curr.To, list);
+            go(curr, curr.From, list);
+            res.Add(list);
+            curr = segments.FirstOrDefault(ls => handled.Contains(ls) == false);
+        }
+
+        void go(LineSegment curr, Vector2 prev, List<LineSegment> list)
+        {
+            Vector2 point;
+            if (curr.From == prev)
+            {
+                point = curr.To;
+            }
+            else if (curr.To == prev)
+            {
+                point = curr.From;
+            }
+            else throw new Exception();
+            
+            if (joins.Contains(point) 
+                || dic[point].All(ls => handled.Contains(ls))
+                || dic[point].Count != 2)
+            {
+                return;
+            }
+
+            var next = dic[point].First(ls => ls != curr);
+            handled.Add(next);
+            list.Add(next);
+            go(next, point, list);
+        }
+        return res
+            .Select(c => FlipChainify(c))
+            .ToList();
+    }
 
     public static void CompleteCircuit(this List<LineSegment> segs)
     {

@@ -102,4 +102,18 @@ public class OrderHolder
         var regimes = data.GetAll<Regime>();
         return regimes.All(r => Orders.ContainsKey(r) && Orders[r] != null);
     }
+    
+    public Vector2 GetNumAisReady(Data data)
+    {
+        var ais = Orders.Where(kvp => kvp.Key.IsPlayerRegime(data) == false);
+        var readyAis = ais.Where(kvp => kvp.Value != null);
+        return new Vector2(readyAis.Count(), ais.Count());
+    }
+    
+    public Vector2 GetNumPlayersReady(Data data)
+    {
+        var players = Orders.Where(kvp => kvp.Key.IsPlayerRegime(data));
+        var readyPlayers = players.Where(kvp => kvp.Value != null);
+        return new Vector2(readyPlayers.Count(), players.Count());
+    }
 }

@@ -37,6 +37,6 @@ public class Unit : Entity
 
     public void SetPosition(Vector2 pos, ProcedureWriteKey key)
     {
-        Position = pos;
+        Position = key.Data.Planet.ClampPosition(pos);
     }
 }

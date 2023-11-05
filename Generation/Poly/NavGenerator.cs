@@ -133,7 +133,7 @@ public class NavGenerator : Generator
                 }
             }
 
-            nav.Waypoints.Add(wp.Id, wp);
+            nav.AddWaypoint(wp, key);
         }
     }
 
@@ -307,7 +307,7 @@ public class NavGenerator : Generator
             }
             byEdge.Add(edge, wp);
 
-            nav.Waypoints.Add(wp.Id, wp);
+            nav.AddWaypoint(wp, key);
             var hiWp = byPoly[hi];
             var loWp = byPoly[lo];
             Connect(wp, hiWp);
@@ -340,7 +340,7 @@ public class NavGenerator : Generator
             {
                 wp = new InlandWaypoint(key, id.TakeId(), poly.Center, poly);
             }
-            nav.Waypoints.Add(wp.Id, wp);
+            nav.AddWaypoint(wp, key);
             nav.MakeCenterPoint(poly, wp, key);
             byPoly.Add(poly, wp);
         }

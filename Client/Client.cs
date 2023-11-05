@@ -6,20 +6,25 @@ using Godot;
 
 public partial class Client : Node, IClient
 {
-    public Data Data { get; private set; }
+    public Data Data => _session.Data;
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiRequests UiRequests { get; private set; }
     public ConcurrentQueue<Action> QueuedUpdates { get; }
     public Control UiLayer { get; private set; }
     public Node2D GraphicsLayer { get; private set; }
-    public IServer Server { get; private set; }
+    public IServer Server => _session.Server;
+    public ILogic Logic => _session.Logic;
+    public RefAction UiTick { get; private set; }
+    private TimerAction _uiTickTimer;
+    private ISession _session;
     public Dictionary<Type, IClientComponent> Components { get; private set; }
-    public Client(Data data, IServer server)
+    public Client(ISession session)
     {
-        Data = data;
-        Server = server;
+        _session = session;
         QueuedUpdates = new ConcurrentQueue<Action>();
+        UiTick = new RefAction();
+        _uiTickTimer = new TimerAction(.1f, 0f, UiTick.Invoke);
         Setup();
     }
     private void Setup()
@@ -49,16 +54,11 @@ public partial class Client : Node, IClient
         
         AddComponent(new PromptManager(this));
         AddComponent(new ClientTopBar(this));
-        
         AddComponent(new TooltipManager(Data, this));
-    }
-
-    public void SetServer(IServer server)
-    {
-        Server = server;
     }
     public override void _Process(double delta)
     {
+        _uiTickTimer.Process(delta);
         var values = Components.Values.ToList();
         foreach (var component in values)
         {

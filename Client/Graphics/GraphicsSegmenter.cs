@@ -39,6 +39,11 @@ public partial class GraphicsSegmenter : Node2D, IGraphicsSegmenter
     public int AddElement<T>(T e, Vector2 gamePos) where T : Node2D
     {
         var segmentIndex = Mathf.FloorToInt(gamePos.X / _segWidth) % _segments.Count;
+        while (segmentIndex < 0) segmentIndex += _segments.Count;
+        if (segmentIndex == -1)
+        {
+            throw new Exception($"bad segment index for pos {gamePos}");
+        }
         e.Position = gamePos - new Vector2(segmentIndex * _segWidth, 0f);
         _segments[segmentIndex].Add(e);
         e.GetParent()?.RemoveChild(e);

@@ -5,19 +5,21 @@ using System.Collections.Generic;
 
 public class FrontGraphicLayer : WholeMapGraphicLayer<Front, FrontGraphic>
 {
-    public FrontGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) : base("Fronts", segmenter, new List<ISettingsOption>())
+    
+    private FrontGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) 
+        : base("Fronts", segmenter, 
+            (front, graphic, seg, queue) => graphic.Update(front, d, seg, queue))
     {
-        this.RegisterForEntityLifetime(client, d);
     }
-
-    public override void Update(Data d, ConcurrentQueue<Action> queue)
+    public static FrontGraphicLayer GetLayer(Client client, GraphicsSegmenter segmenter, Data d)
     {
-        foreach (var kvp in Graphics)
-        {
-            var unit = kvp.Key;
-            var graphic = kvp.Value;
-            graphic.Update(unit, d, _segmenter, queue);
-        }
+        var l = new FrontGraphicLayer(client, segmenter, d);
+        l.RegisterForEntityLifetime(client, d);
+        l.AddSetting(new BoolSettingsOption("Show Area", true),
+            (f, v) => f.Front.Visible = v);
+        l.AddSetting(new BoolSettingsOption("Show Line", true),
+            (f, v) => f.Line.Visible = v);
+        return l;
     }
 
     protected override FrontGraphic GetGraphic(Front key, Data d)

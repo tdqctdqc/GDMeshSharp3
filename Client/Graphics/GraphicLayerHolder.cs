@@ -17,9 +17,9 @@ public class GraphicLayerHolder
         Layers.Add(Roads(segmenter, data));
         Layers.Add(IconsChunkModule.GetLayer(data, segmenter));
         Layers.Add(ResourceChunkModule.GetLayer(data, segmenter));
-        Layers.Add(WaypointGraphicChunk.GetLayer(data, client, segmenter));
         Layers.Add(new UnitGraphicLayer(client, segmenter, data));
-        Layers.Add(new FrontGraphicLayer(client, segmenter, data));
+        Layers.Add(FrontGraphicLayer.GetLayer(client, segmenter, data));
+        Layers.Add(WaypointGraphicChunk.GetLayer(data, client, segmenter));
     }
 
     public void Update(Data d, ConcurrentQueue<Action> queue)

@@ -45,6 +45,10 @@ public class UnitGroup : Entity
         return wp;
     }
 
+    public Vector2 GetPosition(Data d)
+    {
+        return d.Planet.GetAveragePosition(Units.Items(d).Select(u => u.Position));
+    }
     public void SetOrder(UnitOrder order, ProcedureWriteKey key)
     {
         Order = order;

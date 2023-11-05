@@ -17,8 +17,7 @@ public class FrontAssignment : ForceAssignment
     {
         var frontWps = Front.GetWaypoints(key.Data).ToHashSet();
 
-        List<Waypoint> frontline = null;
-        frontline = Front.GetFrontline(key.Data);
+        var frontlines = Front.GetFrontlines(key.Data);
         Func<Unit, bool> distant = (u) =>
         {
             var wp = key.Data.Context.UnitWaypoints[u];
@@ -35,17 +34,22 @@ public class FrontAssignment : ForceAssignment
             else if (units.All(distant))
             {
                 var wp = unitGroup.GetWaypoint(key.Data);
-                if (wp == null) throw new Exception("missing unit waypoint");
-                var close = frontWps
-                    .OrderBy(fWp => key.Data.Planet.GetOffsetTo(fWp.Pos, wp.Pos).Length())
-                    .First();
-                order = new GoToWaypointOrder(close.Id);
-                GD.Print("assigining go to waypoint");
+                if (wp == null)
+                {
+                    throw new Exception("missing unit group waypoint, avg position " 
+                                        + unitGroup.GetPosition(key.Data));
+                }
+
+                var byDist = frontWps
+                    .OrderBy(fWp => key.Data.Planet.GetOffsetTo(fWp.Pos, wp.Pos).Length());
+
+                var close = byDist.First();
+                order = new GoToWaypointOrder(frontWps.GetRandomElement().Id);
             }
             else
             {
-                var frontlineIds = frontline.Select(wp => wp.Id).ToList();
-                order = new DeployOnLineOrder(frontlineIds);
+                // var frontlineIds = frontline.Select(wp => wp.Id).ToList();
+                order = new DeployOnLineOrder(new List<int>());
             }
             key.SendMessage(new SetUnitOrderProcedure(unitGroup.MakeRef(), order));
         }

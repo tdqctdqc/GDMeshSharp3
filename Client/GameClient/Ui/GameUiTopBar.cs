@@ -47,6 +47,25 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
             );
         }, this);
         AddChild(new ItemBar(client, data));
+        if (host)
+        {
+            var ordersReadyLabel = NodeExt.MakeStatDisplay(
+                client, client.Data, () =>
+                {
+                    if (client.Logic is HostLogic log)
+                    {
+                        var ais = log.OrderHolder.GetNumAisReady(data);
+                        var players = log.OrderHolder.GetNumPlayersReady(data);
+                        return $"Ais ready: {ais.X} / {ais.Y}  " +
+                               $"Players ready: {players.X} / {players.Y}";
+                    }
+
+                    return "";
+                },
+                10f, client.UiTick);
+            AddChild(ordersReadyLabel);
+        }
+        
     }
 
     private GameUiTopBar()

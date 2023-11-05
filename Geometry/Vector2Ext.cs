@@ -6,6 +6,7 @@ using GeometRi;
 
 public static class Vector2Ext
 {
+    
     public static Vector2 RoundTo2Digits(this Vector2 v)
     {
         return new Vector2(v.X.RoundTo2Digits(), v.Y.RoundTo2Digits());

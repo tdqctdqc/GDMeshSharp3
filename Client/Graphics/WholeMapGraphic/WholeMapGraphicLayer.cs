@@ -11,22 +11,44 @@ public abstract class WholeMapGraphicLayer<TKey, TGraphic> : IGraphicLayer
     private Node2D _hook;
     public string Name { get; private set; }
     public List<ISettingsOption> Settings { get; }
+    private Dictionary<ISettingsOption, Action<TGraphic>> _settingsUpdaters;
+    private Action<TKey, TGraphic, GraphicsSegmenter, ConcurrentQueue<Action>> _updateGraphic;
     private bool _visible = true;
     protected GraphicsSegmenter _segmenter;
 
-    protected WholeMapGraphicLayer(string name, GraphicsSegmenter segmenter, 
-        List<ISettingsOption> settings)
+    protected WholeMapGraphicLayer(string name, GraphicsSegmenter segmenter,
+        Action<TKey, TGraphic, GraphicsSegmenter, ConcurrentQueue<Action>> updateGraphic)
     {
+        _updateGraphic = updateGraphic;
         _segmenter = segmenter;
         Graphics = new Dictionary<TKey, TGraphic>();
         Name = name;
-        Settings = settings;
+        Settings = new List<ISettingsOption>();
+        _settingsUpdaters = new Dictionary<ISettingsOption, Action<TGraphic>>();
+        
     }
 
     public void Add(TKey key, Data d)
     {
         var graphic = GetGraphic(key, d);
+        foreach (var kvp in _settingsUpdaters)
+        {
+            kvp.Value.Invoke(graphic);
+        }
         Graphics.Add(key, graphic);
+    }
+    public void AddSetting<T>(SettingsOption<T> option, 
+        Action<TGraphic, T> update)
+    {
+        option.SettingChanged.SubscribeForNode(() =>
+        {
+            foreach (var graphic in Graphics.Values)
+            {
+                update(graphic, option.Value);
+            }
+        }, _segmenter);
+        Settings.Add(option);
+        _settingsUpdaters.Add(option, g => update(g, option.Value));
     }
     public void Remove(TKey key)
     {
@@ -59,7 +81,22 @@ public abstract class WholeMapGraphicLayer<TKey, TGraphic> : IGraphicLayer
         };
         return button;
     }
-    public abstract void Update(Data d, ConcurrentQueue<Action> queue);
+    public void Update(Data d, ConcurrentQueue<Action> queue)
+    {
+        foreach (var kvp in Graphics)
+        {
+            var key = kvp.Key;
+            var graphic = kvp.Value;
+            _updateGraphic(key, graphic, _segmenter, queue);
+            queue.Enqueue(() =>
+            {
+                foreach (var kvp2 in _settingsUpdaters)
+                {
+                    kvp2.Value.Invoke(graphic);
+                }
+            });
+        }
+    }
     protected abstract TGraphic GetGraphic(TKey key, Data d);
 }
 

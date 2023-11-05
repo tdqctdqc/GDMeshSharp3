@@ -7,13 +7,14 @@ public class AllianceMilitaryAi
 {
     private Alliance _alliance;
     public List<List<Waypoint>> FrontlineWaypoints { get; private set; }
-    public HashSet<Waypoint> FrontlineHash { get; private set; }
-
+    public HashSet<Waypoint> FrontHash { get; private set; }
+    public HashSet<Waypoint> ContactLineHash { get; private set; }
     public AllianceMilitaryAi(Alliance alliance)
     {
         _alliance = alliance;
         FrontlineWaypoints = new List<List<Waypoint>>();
-        FrontlineHash = new HashSet<Waypoint>();
+        FrontHash = new HashSet<Waypoint>();
+        ContactLineHash = new HashSet<Waypoint>();
     }
     public void Calculate(LogicWriteKey key, Alliance alliance, 
         AllianceMajorTurnOrders orders)
@@ -27,30 +28,31 @@ public class AllianceMilitaryAi
         var controlled = 
             key.Data.Context.ControlledAreas[alliance];
         
-        CalculateFrontlineWaypoints(controlled, orders, key.Data);
-        var uncovered = FindUncoveredFrontlineWaypoints(FrontlineHash, orders, key.Data);
+        CalculateFrontWaypoints(controlled, orders, key.Data);
+        var uncovered = FindUncoveredFrontlineWaypoints(FrontHash, orders, key.Data);
         CoverUncoveredFrontlines(uncovered, orders, key);
     }
 
-    private void CalculateFrontlineWaypoints(IEnumerable<Waypoint> controlled, 
+    private void CalculateFrontWaypoints(IEnumerable<Waypoint> controlled, 
         AllianceMajorTurnOrders orders, Data d)
     {
         var forceBalances = d.Context.WaypointForceBalances;
-        var frontlineWps = controlled.Where(frontline);
-        FrontlineWaypoints = UnionFind.Find(frontlineWps,
+        var frontWps = controlled.Where(front);
+        FrontlineWaypoints = UnionFind.Find(frontWps,
             (wp1, wp2) => true,
             wp => wp.GetNeighboringWaypoints(d));
-        FrontlineHash = FrontlineWaypoints.SelectMany(v => v).ToHashSet();
-        
-        bool frontline(Waypoint wp)
+        FrontHash = FrontlineWaypoints.SelectMany(v => v).ToHashSet();
+        bool front(Waypoint wp)
         {
-            return wp.GetNeighboringWaypoints(d)
-                .Any(n => hostileWaypoint(n));
+            return hostileWaypoint(wp) 
+                   || wp.GetNeighboringWaypoints(d)
+                       .Any(n => hostileWaypoint(n));
         }
         bool hostileWaypoint(Waypoint wp)
         {
             if (forceBalances.ContainsKey(wp) == false) return false;
-            return forceBalances[wp].GetControllingAlliances()
+            return forceBalances[wp]
+                .GetControllingAlliances()
                 .Any(a => hostileAlliance(a));
         }
         bool hostileAlliance(Alliance a)

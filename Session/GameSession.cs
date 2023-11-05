@@ -7,7 +7,7 @@ public partial class GameSession : Node, ISession
 {
     public Data Data { get; private set; }
     public Client Client { get; private set; }
-    private ILogic _logic;
+    public ILogic Logic { get; private set; }
     public IServer Server { get; private set; }
     
     public static GameSession StartAsGenerator()
@@ -34,19 +34,21 @@ public partial class GameSession : Node, ISession
     public override void _Process(double deltaD)
     {
         var delta = (float) deltaD;
-        _logic?.Process(delta);
+        Logic?.Process(delta);
         Client?.Process(delta);
     }
 
     public WorldGenLogic SetAsGenerator()
     {
+        var worldGen = new WorldGenLogic(this);
+        Logic = worldGen;
+        
         var server = new HostServer();
         StartServer(server);
         Data = new GenData();
         StartClient();
         
-        var worldGen = new WorldGenLogic(this);
-        _logic = worldGen;
+        
         worldGen.FinishedGenSuccessfully = () => Client.SetupForGameData();
         worldGen.FinalizeGen += GeneratorToGameTransition;
         Client.SetupForGenerator(worldGen);
@@ -54,6 +56,7 @@ public partial class GameSession : Node, ISession
     }
     public void ResetAsGenerator(WorldGenLogic worldGen)
     {
+        //todo reset logic as well
         ((Node)Server)?.QueueFree();
         Server = null;
         Data = new GenData();
@@ -64,7 +67,7 @@ public partial class GameSession : Node, ISession
     public void StartClient()
     {
         Client?.QueueFree();
-        Client = new Client(Data, Server);
+        Client = new Client(this);
         AddChild(Client);
     }
     private void LoadAsHost(Data data)
@@ -72,7 +75,7 @@ public partial class GameSession : Node, ISession
         Data = data;
         var hServer = new HostServer();
         var logic = new HostLogic(Data);
-        _logic = logic;
+        Logic = logic;
         hServer.Setup(logic, Data, this);
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
@@ -84,11 +87,10 @@ public partial class GameSession : Node, ISession
         Data.Notices.ExitedGen.Invoke();
         var hServer = new HostServer();
         var logic = new HostLogic(Data);
-        _logic = logic;
+        Logic = logic;
         hServer.Setup(logic, Data, this);
         logic.SetDependencies(hServer, this, Data);
         StartServer(hServer);
-        Client.SetServer(hServer);
         
         logic.Start();
         Client.SetupForGameplay(true);
@@ -98,7 +100,7 @@ public partial class GameSession : Node, ISession
     {
         Data = new Data();
         var logic = new RemoteLogic(Data, this);
-        _logic = logic;
+        Logic = logic;
         var server = new RemoteServer();
         server.Setup(this, logic, Data);
         StartServer(server);

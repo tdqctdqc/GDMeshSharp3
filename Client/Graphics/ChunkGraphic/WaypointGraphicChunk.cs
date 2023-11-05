@@ -109,7 +109,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         var transparent = (Colors.Transparent, Colors.Transparent);
         if (player.Regime.Empty()) return transparent;
         var alliance = player.Regime.Entity(data).GetAlliance(data);
-        var frontlineHash = data.HostLogicData.AllianceAis[alliance].MilitaryAi.FrontlineHash;
+        var frontlineHash = data.HostLogicData.AllianceAis[alliance].MilitaryAi.FrontHash;
         if (frontlineHash.Contains(wp) == false) return transparent;
         
         if (forceBalances.TryGetValue(wp, out var forceBalance) == false

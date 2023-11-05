@@ -8,25 +8,33 @@ public class Nav : Entity
 {
     public Waypoint Get(int id) => Waypoints[id];
     public Dictionary<int, Waypoint> Waypoints { get; private set; }
+    public Dictionary<Vector2, Waypoint> WaypointsByPos { get; private set; }
     public Dictionary<int, int> PolyCenterIds { get; private set; }
     public Dictionary<Vector2, List<int>> PolyNavPaths { get; private set; }
     public static Nav Create(GenWriteKey key)
     {
         var n = new Nav(key.Data.IdDispenser.TakeId(), new Dictionary<int, Waypoint>(), new Dictionary<int, int>(),
-            new Dictionary<Vector2, List<int>>());
+            new Dictionary<Vector2, List<int>>(), new Dictionary<Vector2, Waypoint>());
         key.Create(n);
         return n;
     }
     [SerializationConstructor] private Nav(int id, 
         Dictionary<int, Waypoint> waypoints,
         Dictionary<int, int> polyCenterIds, 
-        Dictionary<Vector2, List<int>> polyNavPaths) : base(id)
+        Dictionary<Vector2, List<int>> polyNavPaths,
+        Dictionary<Vector2, Waypoint> waypointsByPos) : base(id)
     {
         Waypoints = waypoints;
         PolyCenterIds = polyCenterIds;
         PolyNavPaths = polyNavPaths;
+        WaypointsByPos = waypointsByPos;
     }
 
+    public void AddWaypoint(Waypoint wp, GenWriteKey key)
+    {
+        Waypoints.Add(wp.Id, wp); 
+        WaypointsByPos.Add(wp.Pos, wp);
+    }
     public void MakeCenterPoint(MapPolygon poly, Waypoint wp, GenWriteKey key)
     {
         PolyCenterIds.Add(poly.Id, wp.Id);

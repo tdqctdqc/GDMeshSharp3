@@ -44,7 +44,10 @@ public class PlanetDomain
 
     public Vector2 ClampPosition(Vector2 pos)
     {
-        return GetOffsetTo(Vector2.Zero, pos);
+        if (pos.Y < 0 || pos.Y > Height) throw new Exception();
+        while (pos.X < 0) pos += Vector2.Right * Width;
+        while (pos.X > Width) pos += Vector2.Left * Width;
+        return pos;
     }
 
     public Vector2 GetAveragePosition(IEnumerable<Vector2> ps)

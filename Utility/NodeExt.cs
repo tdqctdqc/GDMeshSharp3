@@ -65,6 +65,25 @@ public static class NodeExt
 
         return hBox;
     }
+    public static HBoxContainer MakeStatDisplay(
+        Client client,
+        Data data, 
+        Func<string> getStat, float height,
+        params RefAction[] triggers)
+    {
+        var hBox = new HBoxContainer();
+        var amount = new Label();
+        hBox.AddChild(amount);
+        var stat = StatLabel.Construct<string>(
+            client,
+            "", 
+            amount,
+            getStat
+        );
+        hBox.SubscribeUpdate(stat.TriggerUpdate, triggers);
+
+        return hBox;
+    }
     public static List<Node> GetChildList(this Node n)
     {
         var l = new List<Node>();

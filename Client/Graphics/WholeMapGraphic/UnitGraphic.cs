@@ -12,20 +12,23 @@ public partial class UnitGraphic : MeshInstance2D
         var m = new QuadMesh();
         m.Size = Vector2.One * 20f;
         Mesh = m;
-
+        var r = unit.Regime.Entity(d);
         var subMesh = new QuadMesh();
         subMesh.Size = m.Size * .8f;
         var sub = new MeshInstance2D();
         sub.Mesh = subMesh;
         AddChild(sub);
-        Modulate = unit.Regime.Entity(d).SecondaryColor;
-        sub.Modulate = unit.Regime.Entity(d).PrimaryColor;
+        Modulate = r.SecondaryColor;
+        sub.Modulate = r.PrimaryColor;
         segmenter.AddElement(this, unit.Position);
     }
     public void Update(Unit unit, Data data, GraphicsSegmenter segmenter,
         ConcurrentQueue<Action> queue)
     {
-        queue.Enqueue(() => _currSegment = segmenter.SwitchSegments(this, unit.Position, _currSegment));
+        queue.Enqueue(() =>
+        {
+            _currSegment = segmenter.SwitchSegments(this, unit.Position, _currSegment);
+        });
     }
     
     public override void _Process(double delta)

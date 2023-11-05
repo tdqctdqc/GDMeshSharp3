@@ -10,21 +10,34 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     public string Name { get; private set; }
     public Dictionary<Vector2, TGraphic> ByChunkCoords { get; private set; }
     public List<ISettingsOption> Settings { get; private set; }
+    private Dictionary<ISettingsOption, Action<TGraphic>> _settingsUpdaters;
+    private Func<MapChunk, TGraphic> _getGraphic;
     private bool _visible = true;
     private GraphicsSegmenter _segmenter;
     public ChunkGraphicLayer(string name, GraphicsSegmenter segmenter,
         Func<MapChunk, TGraphic> getGraphic, Data data)
     {
+        _getGraphic = getGraphic;
         Name = name;
         Settings = new List<ISettingsOption>();
+        _settingsUpdaters = new Dictionary<ISettingsOption, Action<TGraphic>>();
         _segmenter = segmenter;
         ByChunkCoords = new Dictionary<Vector2, TGraphic>();
         foreach (var chunk in data.Planet.PolygonAux.Chunks)
         {
-            var graphic = getGraphic(chunk);
-            graphic.Init(data);
-            ByChunkCoords.Add(chunk.Coords, graphic);
-            segmenter.AddElement(graphic, chunk.RelTo.Center);
+            Add(chunk, data);
+        }
+    }
+
+    private void Add(MapChunk chunk, Data data)
+    {
+        var graphic = _getGraphic(chunk);
+        graphic.Init(data);
+        ByChunkCoords.Add(chunk.Coords, graphic);
+        _segmenter.AddElement(graphic, chunk.RelTo.Center);
+        foreach (var kvp in _settingsUpdaters)
+        {
+            kvp.Value.Invoke(graphic);
         }
     }
     public bool Visible
@@ -79,12 +92,13 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     {
         option.SettingChanged.SubscribeForNode(() =>
         {
-            foreach (var module in ByChunkCoords.Values)
+            foreach (var g in ByChunkCoords.Values)
             {
-                update(module, option.Value);
+                update(g, option.Value);
             }
         }, _segmenter);
         Settings.Add(option);
+        _settingsUpdaters.Add(option, g => update(g, option.Value));
     }
     public void AddTransparencySetting(Func<TGraphic, Node2D> getNode)
     {

@@ -26,7 +26,8 @@ public class Front : Entity
 
     public Vector2 RelTo(Data d)
     {
-        return d.Planet.Nav.Waypoints[WaypointIds.First()].Pos;
+        var p = d.Planet.Nav.Waypoints[WaypointIds.First()].Pos;
+        return d.Planet.ClampPosition(p);
     }
 
     public IEnumerable<Waypoint> GetWaypoints(Data data)
@@ -34,26 +35,55 @@ public class Front : Entity
         return WaypointIds.Select(i => data.Planet.Nav.Waypoints[i]);
     }
 
-    public List<Waypoint> GetFrontline(Data data)
+    public List<List<Waypoint>> GetFrontlines(Data data)
     {
         var context = data.Context;
         var alliance = Regime.Entity(data).GetAlliance(data);
         
-        bool frontline(Waypoint wp)
+        bool isThreatened(Waypoint wp)
         {
-            var ns = wp
-                .GetNeighboringWaypoints(data);
-            return ns
-                .Any(nWp => 
-                    context.WaypointForceBalances[nWp]
-                    .GetControllingAlliances()
-                    .Any(a => alliance.Rivals.Contains(a))
-                );
+            var controlling = context
+                .WaypointForceBalances[wp]
+                .GetControllingAlliances();
+            return controlling
+                .Any(a => alliance.Rivals.Contains(a));
         }
         
-        var frontlineWps = GetWaypoints(data)
-            .Where(frontline);
-        //todo have to order these properly!
-        return frontlineWps.ToList();
+        var frontWps = GetWaypoints(data);
+
+        var directlyThreatened = frontWps
+            .Where(isThreatened).ToHashSet();
+        var indirectlyThreatened = frontWps
+            .Except(directlyThreatened)
+            .Where(wp =>
+            {
+                return wp.GetNeighboringWaypoints(data)
+                    .Any(nWp => isThreatened(nWp) && directlyThreatened.Contains(nWp) == false);
+            });
+        var frontlineWps =
+            directlyThreatened
+                // .Union(indirectlyThreatened)
+                .Distinct()
+                .ToList();
+        
+        if (frontlineWps.Count == 1)
+            return new List<List<Waypoint>> { new List<Waypoint> { frontlineWps.First() } };
+        var frontSegs = new List<LineSegment>();
+        foreach (var wp in frontlineWps)
+        {
+            foreach (var nWp in wp.GetNeighboringWaypoints(data))
+            {
+                if (frontlineWps.Contains(nWp) == false) continue;
+                if (nWp.Id < wp.Id) continue;
+                frontSegs.Add(new LineSegment(wp.Pos, nWp.Pos));
+            }
+        }
+
+        var chains = LineSegmentExt.GetChains(frontSegs);
+
+        return chains
+            .Select(c => c.GetPoints())
+            .Select(ps => ps.Select(p => data.Planet.Nav.WaypointsByPos[p]).ToList())
+            .ToList();
     }
 }
