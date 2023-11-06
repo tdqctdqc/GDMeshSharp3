@@ -35,14 +35,30 @@ public partial class GeneralTab : ScrollContainer
         
         if (regime.IsPlayerRegime(client.Data) == false)
         {
-            var button = ButtonExt.GetButton(() =>
+            var chooseRegime = ButtonExt.GetButton(() =>
             {
                 var com = new ChooseRegimeCommand(regime.MakeRef(),
                     client.Data.ClientPlayerData.LocalPlayerGuid);
                 client.HandleCommand(com);
             });
-            button.Text = "Choose Regime";
-            _container.AddChild(button);
+            chooseRegime.Text = "Choose Regime";
+            _container.AddChild(chooseRegime);
+
+            if (client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(client.Data)
+                is Regime playerRegime)
+            {
+                var target = regime.GetAlliance(client.Data);
+                var proposeRival = ButtonExt.GetButton(() =>
+                {
+                    var prop = DeclareRivalProposal.Construct(playerRegime, target, client.Data);
+                    var com = new MakeProposalCommand(default, prop);
+                    client.Server.QueueCommandLocal(com);
+                });
+                proposeRival.Text = "Propose Rival";
+                _container.AddChild(proposeRival);
+            }
+            
+
         }
 
         _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(client.Data).Id);

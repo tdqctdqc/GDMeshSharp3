@@ -33,7 +33,7 @@ public class RegimeAi
         }
         
         Budget.Calculate(key, orders);
-        Diplomacy.Calculate(key, orders);
+        Diplomacy.CalculateMajor(key, orders);
         Military.CalculateMajor(key, orders);
         
         return orders; 
@@ -41,7 +41,9 @@ public class RegimeAi
     private MinorTurnOrders GetMinorTurnOrders(LogicWriteKey key)
     {
         var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
+        Diplomacy.CalculateMinor(key, orders);
         Military.CalculateMinor(key, orders);
+        
         return orders; 
     }
 }

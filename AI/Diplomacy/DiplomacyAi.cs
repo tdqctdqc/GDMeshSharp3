@@ -12,8 +12,13 @@ public class DiplomacyAi
     {
         _regime = regime;
     }
-    
-    public void Calculate(LogicWriteKey key, MajorTurnOrders orders)
+
+    public void CalculateMinor(LogicWriteKey key, MinorTurnOrders orders)
+    {
+        DecideOnProposals(key, orders);
+    }
+
+    public void CalculateMajor(LogicWriteKey key, MajorTurnOrders orders)
     {
         var alliance = _regime.GetAlliance(key.Data);
         var alliancePower = alliance.GetPowerScore(key.Data);
@@ -21,28 +26,27 @@ public class DiplomacyAi
             .Sum(a => a.GetPowerScore(key.Data));
         if (alliancePower > rivalPower * DesiredFriendToRivalPowerRatio)
         {
-            FindEnemies(key.Data, orders, alliancePower, rivalPower);
+            ProposeRivals(key.Data, orders, alliancePower, rivalPower);
         }
         if (rivalPower / DesiredFriendToRivalPowerRatio > alliancePower)
         {
-            FindFriends(key.Data, orders, alliancePower, rivalPower);
+            ProposeInvitations(key.Data, orders, alliancePower, rivalPower);
         }
         ProposeWars(key.Data, orders, alliancePower, rivalPower);
-        DecideOnProposals(key.Data, orders);
     }
 
-    private void DecideOnProposals(Data data, MajorTurnOrders orders)
+    private void DecideOnProposals(LogicWriteKey key, MinorTurnOrders orders)
     {
-        var proposals = _regime.GetAlliance(data).Proposals(data);
+        var proposals = _regime.GetAlliance(key.Data).Proposals(key.Data);
         foreach (var proposal in proposals)
         {
             if (proposal.Against.Contains(_regime.Id)
                 || proposal.InFavor.Contains(_regime.Id)) continue;
-            var decision = proposal.GetDecisionForAi(_regime, data);
+            var decision = proposal.GetDecisionForAi(_regime, key.Data);
             orders.Diplomacy.ProposalDecisions[proposal.Id] = decision;
         }
     }
-    private void FindEnemies(Data data, MajorTurnOrders orders, float friendPower,
+    private void ProposeRivals(Data data, MajorTurnOrders orders, float friendPower,
         float rivalPower)
     {
         var rivalPowerToFill = (friendPower - rivalPower) / DesiredFriendToRivalPowerRatio;
@@ -79,7 +83,7 @@ public class DiplomacyAi
         if (pCount == 0) return 0f;
         return targetNeighborPolys / pCount;
     }
-    private void FindFriends(Data data, MajorTurnOrders orders, float friendPower,
+    private void ProposeInvitations(Data data, MajorTurnOrders orders, float friendPower,
         float rivalPower)
     {
         var friendPowerToFill = rivalPower * DesiredFriendToRivalPowerRatio - friendPower;

@@ -5,29 +5,29 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalCommand.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/ReceiveProposalDecisionsModule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/ReceiveProposalsModule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/ResolveProposalsModule.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/DiplomacyMinTurnOrders.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/RegimeBordersNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/RegimeBordersNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/AllianceChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/AllianceChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/DiplomacyChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/DiplomacyChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/RegimeChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/RegimeChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/ResourceChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/ResourceChunkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/WaypointGraphicChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/WaypointGraphicChunk.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/FrontGraphicLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/WholeMapGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/BoolSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/BoolSettingsOption.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/EnumSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/EnumSettingsOption.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/TypedSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/TypedSettingsOption.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntityCreationUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/Utility/EntityCreationUpdate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/IdDispenser.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/IdDispenser.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Context/ForceBalance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/ForceBalance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Command/Command.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Command/Command.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/AllianceProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/AllianceProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/DiplomacyProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/DiplomacyProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/ProposalsModule.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/MajorTurnOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/MajorTurnOrders.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/MinorTurnOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/MinorTurnOrders.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/DiplomacyOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/DiplomacyMajTurnOrders.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,8 +78,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/AllianceMilitaryAi.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Border/AllianceBordersNode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/Nav.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
@@ -336,7 +335,8 @@
       <workItem from="1699123353285" duration="1312000" />
       <workItem from="1699124704180" duration="1627000" />
       <workItem from="1699140150680" duration="8697000" />
-      <workItem from="1699203160039" duration="3404000" />
+      <workItem from="1699203160039" duration="4278000" />
+      <workItem from="1699221589502" duration="5729000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -548,14 +548,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00053" summary="added thread-safe id taking">
-      <option name="closed" value="true" />
-      <created>1697303458850</created>
-      <option name="number" value="00053" />
-      <option name="presentableId" value="LOCAL-00053" />
-      <option name="project" value="LOCAL" />
-      <updated>1697303458850</updated>
-    </task>
     <task id="LOCAL-00054" summary="ditto">
       <option name="closed" value="true" />
       <created>1697303659547</created>
@@ -700,7 +692,15 @@
       <option name="project" value="LOCAL" />
       <updated>1699147030850</updated>
     </task>
-    <option name="localTasksCounter" value="72" />
+    <task id="LOCAL-00072" summary="fixed border graphics, maybe fixed dual id bug">
+      <option name="closed" value="true" />
+      <created>1699208490116</created>
+      <option name="number" value="00072" />
+      <option name="presentableId" value="LOCAL-00072" />
+      <option name="project" value="LOCAL" />
+      <updated>1699208490117</updated>
+    </task>
+    <option name="localTasksCounter" value="73" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -722,7 +722,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="reworked price setting" />
     <MESSAGE value="fixed coast waypoint links to each other / river mouths going over sea" />
     <MESSAGE value="added saved settings" />
     <MESSAGE value="fiddling with messagepack, polymorph serialization not working right" />
@@ -747,6 +746,7 @@
     <MESSAGE value="working on unit orders + movement" />
     <MESSAGE value="tweaking fronts, made graphics settings persistent over turns" />
     <MESSAGE value="making ChunkGraphicLayer.cs a subclass of WholeMapGraphicLayer" />
-    <option name="LAST_COMMIT_MESSAGE" value="making ChunkGraphicLayer.cs a subclass of WholeMapGraphicLayer" />
+    <MESSAGE value="fixed border graphics, maybe fixed dual id bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed border graphics, maybe fixed dual id bug" />
   </component>
 </project>

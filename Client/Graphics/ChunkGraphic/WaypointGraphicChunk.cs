@@ -103,30 +103,22 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         var forceBalances = data.Context.WaypointForceBalances;
         var player = data.BaseDomain.PlayerAux
             .LocalPlayer;
-        var transparent = (Colors.Transparent, Colors.Transparent);
-        if (player.Regime.Empty()) return transparent;
+        if (player.Regime.Empty()) return (Colors.Transparent, Colors.Transparent);
         var alliance = player.Regime.Entity(data).GetAlliance(data);
-        var frontlineHash = data.HostLogicData.AllianceAis[alliance].MilitaryAi.FrontHash;
-        if (frontlineHash.Contains(wp) == false) return transparent;
-        
-        if (forceBalances.TryGetValue(wp, out var forceBalance) == false
-            || forceBalance.ContainsKey(alliance) == false)
+        var forceBalance = data.Context.WaypointForceBalances[wp];
+        var controlling = forceBalance.GetControllingAlliances();
+        var hasAlliance = controlling.Contains(alliance);
+        var hasHostile = controlling.Any(a => alliance.Rivals.Contains(a));
+        if (hasAlliance)
         {
-            return transparent;
+            if (hasHostile) return (Colors.Orange, Colors.Orange);
+            return (Colors.Green, Colors.Green);
         }
-        else if (forceBalance.GetAllianceWithForceSupremacy(data) == alliance)
+        else
         {
-            return (Colors.Green, Colors.Black);
+            if (hasHostile) return (Colors.Red, Colors.Red);
+            return (Colors.White, Colors.White);
         }
-        else if (forceBalance.GetAllianceWithForceSuperiority(data) == alliance)
-        {
-            return (Colors.Yellow, Colors.Black);
-        }
-        else if (forceBalance.GetControllingAlliances().Contains(alliance))
-        {
-            return (Colors.Orange, Colors.Black);
-        }
-        else return (Colors.Red, Colors.Black);
     }
     
     

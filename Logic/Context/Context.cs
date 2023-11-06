@@ -68,11 +68,6 @@ public class Context
             UnitWaypoints[u] = wp;
             var forceBalance = WaypointForceBalances[wp];
             forceBalance.Add(u, data);
-            // foreach (var nWp in wp.GetNeighboringWaypoints(data))
-            // {
-            //     var nForceBalance = WaypointForceBalances[nWp];
-            //     nForceBalance.DiffuseInto(u, data);
-            // }
         }
         
         foreach (var wp in data.Planet.Nav.Waypoints.Values)

@@ -45,12 +45,6 @@ public sealed partial class EntityCreationUpdate<T> : Update
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        if (key.Data.EntitiesById.ContainsKey(Entity.Id))
-        {
-            var other = key.Data.Get<Entity>(Entity.Id);
-            GD.Print("same entity: " + (other == Entity));
-            throw new Exception();
-        }
         key.Data.AddEntity(Entity, key);
     }
 }

@@ -11,9 +11,9 @@ public class TurnEndState : TurnState
             new ProduceConstructModule(),
             new ConstructBuildingsModule(),
             new FoodAndPopGrowthModule(),
+            new ReceiveProposalsModule(),
             new FinanceModule(),
             new TradeModule(),
-            new ProposalsModule(),
             new AllianceOrdersModule(),
             new DefaultLogicModule(() => new TickProcedure()),
             new ClearOrdersModule(orders)
@@ -21,6 +21,7 @@ public class TurnEndState : TurnState
         _minorModules = new LogicModule[]
         {
             new HandleUnitOrdersModule(),
+            new ReceiveProposalDecisionsModule(),
             new DefaultLogicModule(() => new TickProcedure()),
             new ClearOrdersModule(orders)
         };

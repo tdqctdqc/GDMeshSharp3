@@ -10,6 +10,7 @@ public class TurnStartState : TurnState
         {
             new DefaultLogicModule(() => new PrepareNewHistoriesProcedure()),
             new DefaultLogicModule(() => new SetContextProcedure()),
+            new ResolveProposalsModule(),
             new TrimFrontsModule(),
             new DefaultLogicModule(() => new FinishedTurnStartCalcProc())
         };

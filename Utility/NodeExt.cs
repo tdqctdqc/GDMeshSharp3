@@ -146,4 +146,14 @@ public static class NodeExt
         var s = new VSeparator();
         parent.AddChild(s);
     }
+
+    public static int GetTotalNumberOfNodesInSubTree(this Node head)
+    {
+        var res = 1;
+        foreach (var c in head.GetChildren())
+        {
+            res += c.GetTotalNumberOfNodesInSubTree();
+        }
+        return res;
+    }
 }

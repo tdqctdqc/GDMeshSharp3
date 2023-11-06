@@ -18,6 +18,8 @@ public abstract class AllianceProposal : Proposal
     public override void Propose(ProcedureWriteKey key)
     {
         var alliance = key.Data.Get<Alliance>(AllianceId);
+        var proposer = this.Proposer.RefId;
+        InFavor.Add(proposer);
         alliance.ProposalIds.Add(Id);
     }
 

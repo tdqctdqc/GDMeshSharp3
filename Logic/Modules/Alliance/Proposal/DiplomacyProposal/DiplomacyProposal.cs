@@ -27,6 +27,9 @@ public abstract class DiplomacyProposal : Proposal
         
             var alliance1 = key.Data.Get<Alliance>(Alliance1);
             alliance1.ProposalIds.Add(Id);
+            
+            var proposer = this.Proposer.RefId;
+            InFavor.Add(proposer);
         }
     }
     
