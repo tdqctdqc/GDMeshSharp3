@@ -59,9 +59,18 @@ public class ConstructionPriority : SolverPriority<BuildingModel>
                 poly = availPolys
                     .FirstOrDefault(p => p.PolyBuildingSlots[building.BuildingType] > 0);
                 if (poly == null) continue;
-                orders.StartConstructions.ConstructionsToStart
-                    .Add(StartConstructionRequest.Construct(building, poly));
+                var slots = poly.PolyBuildingSlots.AvailableSlots[building.BuildingType];
+                if (slots.Count() == 0) continue;
                 
+                var pos = slots.First();
+                var proc = StartConstructionProcedure.Construct(
+                    building.MakeRef<BuildingModel>(),
+                    pos,
+                    poly.GetCenterWaypoint(key.Data).Id,
+                    r.MakeRef(),
+                    key.Data
+                );
+                key.SendMessage(proc);
                 var buildCosts = building.Makeable.ItemCosts.GetEnumerableModel(key.Data);
                 foreach (var cost in buildCosts)
                 {

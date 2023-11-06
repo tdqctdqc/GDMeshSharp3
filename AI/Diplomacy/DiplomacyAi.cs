@@ -43,7 +43,8 @@ public class DiplomacyAi
             if (proposal.Against.Contains(_regime.Id)
                 || proposal.InFavor.Contains(_regime.Id)) continue;
             var decision = proposal.GetDecisionForAi(_regime, key.Data);
-            orders.Diplomacy.ProposalDecisions[proposal.Id] = decision;
+            var decisionProc = new DecideOnProposalProcedure(_regime.Id, decision, proposal.Id);
+            key.SendMessage(decisionProc);
         }
     }
     private void ProposeRivals(Data data, MajorTurnOrders orders, float friendPower,

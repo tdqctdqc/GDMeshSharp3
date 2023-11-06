@@ -29,7 +29,7 @@ public class RegimeAi
         if (allianceLeader == Regime)
         {
             var ai = key.Data.HostLogicData.AllianceAis[alliance];
-            ai.Calculate(orders.Alliance, key);
+            ai.Calculate(key);
         }
         
         Budget.Calculate(key, orders);

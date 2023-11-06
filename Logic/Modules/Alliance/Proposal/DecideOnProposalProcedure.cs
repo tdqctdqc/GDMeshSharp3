@@ -13,13 +13,11 @@ public class DecideOnProposalProcedure : Procedure
         Decision = decision;
         ProposalId = proposalId;
     }
-
     public override void Enact(ProcedureWriteKey key)
     {
         var p = key.Data.Society.Proposals.Proposals[ProposalId];
         p.Decide(RegimeId, Decision, key);
     }
-
     public override bool Valid(Data data)
     {
         return data.Society.Proposals.Proposals.ContainsKey(ProposalId);

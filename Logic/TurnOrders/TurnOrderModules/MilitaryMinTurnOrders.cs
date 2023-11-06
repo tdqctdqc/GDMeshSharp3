@@ -4,20 +4,13 @@ using MessagePack;
 
 public class MilitaryMinTurnOrders
 {
-    public Dictionary<int, UnitOrder> NewOrdersByGroupId { get; private set; }
-    public Dictionary<int, int> NewGroupAssignmentsByUnitId { get; private set; }
     public static MilitaryMinTurnOrders Construct()
     {
-        return new MilitaryMinTurnOrders(new Dictionary<int, UnitOrder>(),
-            new Dictionary<int, int>());
+        return new MilitaryMinTurnOrders();
     }
 
     [SerializationConstructor]
-    private MilitaryMinTurnOrders(
-        Dictionary<int, UnitOrder> newOrdersByGroupId,
-        Dictionary<int, int> newGroupAssignmentsByUnitId)
+    private MilitaryMinTurnOrders()
     {
-        NewOrdersByGroupId = newOrdersByGroupId;
-        NewGroupAssignmentsByUnitId = newGroupAssignmentsByUnitId;
     }
 }

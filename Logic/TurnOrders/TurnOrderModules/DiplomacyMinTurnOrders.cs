@@ -4,14 +4,12 @@ using MessagePack;
 
 public class DiplomacyMinTurnOrders : TurnOrderModule
 {
-    public Dictionary<int, bool> ProposalDecisions { get; private set; }
 
     public static DiplomacyMinTurnOrders Construct()
     {
-        return new DiplomacyMinTurnOrders(new Dictionary<int, bool>());
+        return new DiplomacyMinTurnOrders();
     }
-    [SerializationConstructor] protected DiplomacyMinTurnOrders(Dictionary<int, bool> proposalDecisions)
+    [SerializationConstructor] protected DiplomacyMinTurnOrders()
     {
-        ProposalDecisions = proposalDecisions;
     }
 }

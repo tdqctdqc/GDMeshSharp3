@@ -9,8 +9,8 @@ public class AllianceAi
         MilitaryAi = new AllianceMilitaryAi(alliance);
     }
 
-    public void Calculate(AllianceMajorTurnOrders orders, LogicWriteKey key)
+    public void Calculate(LogicWriteKey key)
     {
-        MilitaryAi.Calculate(key, Alliance, orders);
+        MilitaryAi.Calculate(key, Alliance);
     }
 }

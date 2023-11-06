@@ -37,7 +37,8 @@ public class ReserveTroopBuildPriority : SolverPriority<Troop>
             for (var i = 0; i < num; i++)
             {
                 var proj = new TroopManufactureProject(-1, 0f, num, troop.MakeRef());
-                orders.Manufacturing.ToStart.Add(proj);
+                var proc = new StartManufacturingProjectProc(r.MakeRef(), proj);
+                key.SendMessage(proc);
             }
         }
     }

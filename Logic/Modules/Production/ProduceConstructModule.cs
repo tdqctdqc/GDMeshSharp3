@@ -29,7 +29,6 @@ public class ProduceConstructModule : LogicModule
         
         Parallel.ForEach(key.Data.GetAll<Regime>(), 
             regime => CalculateForRegime(regime, key.Data, proc));
-        DoManufacturing(orders, proc);
         key.SendMessage(proc);
     }
 
@@ -54,7 +53,7 @@ public class ProduceConstructModule : LogicModule
             WorkInBuildingsForPoly(poly, proc, scratch, data);
         }
         
-        ConstructForRegime(regime, data, proc);
+        ProgressConstructionsForRegime(regime, data, proc);
         
         foreach (var poly in regimePolys)
         {
@@ -72,7 +71,7 @@ public class ProduceConstructModule : LogicModule
         
     }
 
-    private void ConstructForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
+    private void ProgressConstructionsForRegime(Regime regime, Data data, ProduceConstructProcedure proc)
     {
         var regimePolys = regime.GetPolys(data);
         var construction = data.Infrastructure.CurrentConstruction.ByPoly;
@@ -85,7 +84,7 @@ public class ProduceConstructModule : LogicModule
         var constructRatio = Mathf.Clamp((float)constrFlowIn / (float)constrFlowOut, 0f, 1f);
         foreach (var poly in regimePolys)
         {
-            ConstructForPoly(regime, poly, constructRatio, proc, data);
+            ProgressConstructionsForPoly(regime, poly, constructRatio, proc, data);
         }
     }
 
@@ -116,7 +115,7 @@ public class ProduceConstructModule : LogicModule
         }
     }
 
-    private void ConstructForPoly(Regime r, MapPolygon poly,
+    private void ProgressConstructionsForPoly(Regime r, MapPolygon poly,
         float ratio, ProduceConstructProcedure proc, Data data)
     {
         IEnumerable<Construction> constructions = data.Infrastructure.CurrentConstruction.GetPolyConstructions(poly);
@@ -128,29 +127,7 @@ public class ProduceConstructModule : LogicModule
         }
     }
 
-    private void DoManufacturing(List<RegimeTurnOrders> orders, ProduceConstructProcedure proc)
-    {
-        foreach (var turnOrders in orders)
-        {
-            if (turnOrders is MajorTurnOrders m == false)
-            {
-                GD.Print("orders are " + turnOrders.GetType().Name + " not major");
-                throw new Exception();
-            }
-            var regime = turnOrders.Regime.RefId;
-            foreach (var project in m.Manufacturing.ToStart)
-            {
-                proc.ManufacturingProjectsToAddByRegime
-                    .Add(new(regime, project));
-            }
-            
-            foreach (var toCancel in m.Manufacturing.ToCancel)
-            {
-                proc.ManufacturingProjectsToCancelByRegime
-                    .Add(new KeyValuePair<int, int>(regime, toCancel));
-            }
-        }
-    }
+    
     private void DoNonBuildingFlows(Regime r, Data data, ProduceConstructProcedure proc)
     {
         foreach (var kvp in data.Models.GetModels<Flow>())

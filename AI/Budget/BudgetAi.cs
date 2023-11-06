@@ -100,12 +100,12 @@ public class BudgetAi
                 allWishlists.AddOrSum(kvp.Key, kvp.Value);
             }
         }
-        Manufacture(key.Data, allWishlists, pool, orders);
+        Manufacture(key.Data, allWishlists, pool, key);
         DoTradeOrders(key.Data, orders, pool, allWishlists);
     }
     
     private void Manufacture(Data data, Dictionary<Item, int> wishlist, BudgetPool pool,
-         MajorTurnOrders turnOrders)
+         LogicWriteKey key)
      {
          var ip = data.Models.Flows.IndustrialPower;
          var backlogRatio = 3f;
@@ -154,7 +154,8 @@ public class BudgetAi
              }
 
              var order = new ItemManufactureProject(-1, 0f, possibleQ, item.MakeRef());
-             turnOrders.Manufacturing.ToStart.Add(order);
+             var proc = new StartManufacturingProjectProc(_regime.MakeRef(), order);
+             key.SendMessage(proc);
          }
      }
     private void DoTradeOrders(Data data, MajorTurnOrders orders, BudgetPool pool, 
@@ -203,8 +204,8 @@ public class BudgetAi
                  if (wishlist[item] >= q) continue;
                  q -= wishlist[item];
              }
-             orders.TradeOrders.SellOrders.Add(new SellOrder(kvp.Key, _regime.Id,
-                 q));
+             orders.TradeOrders.SellOrders
+                 .Add(new SellOrder(kvp.Key, _regime.Id, q));
          }
      }
 }

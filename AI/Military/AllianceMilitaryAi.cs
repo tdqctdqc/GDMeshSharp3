@@ -16,8 +16,7 @@ public class AllianceMilitaryAi
         FrontHash = new HashSet<Waypoint>();
         ContactLineHash = new HashSet<Waypoint>();
     }
-    public void Calculate(LogicWriteKey key, Alliance alliance, 
-        AllianceMajorTurnOrders orders)
+    public void Calculate(LogicWriteKey key, Alliance alliance)
     {
         if (key.Data.Context.ControlledAreas.ContainsKey(alliance) == false)
         {
@@ -28,13 +27,13 @@ public class AllianceMilitaryAi
         var controlled = 
             key.Data.Context.ControlledAreas[alliance];
         
-        CalculateFrontWaypoints(controlled, orders, key.Data);
-        var uncovered = FindUncoveredFrontlineWaypoints(FrontHash, orders, key.Data);
-        CoverUncoveredFrontlines(uncovered, orders, key);
+        CalculateFrontWaypoints(controlled, key.Data);
+        var uncovered = FindUncoveredFrontlineWaypoints(FrontHash, key.Data);
+        CoverUncoveredFrontlines(uncovered, key);
     }
 
     private void CalculateFrontWaypoints(IEnumerable<Waypoint> controlled, 
-        AllianceMajorTurnOrders orders, Data d)
+        Data d)
     {
         var forceBalances = d.Context.WaypointForceBalances;
         var frontWps = controlled.Where(front);
@@ -63,7 +62,6 @@ public class AllianceMilitaryAi
     }
 
     private List<List<Waypoint>> FindUncoveredFrontlineWaypoints(HashSet<Waypoint> frontlineHash, 
-        AllianceMajorTurnOrders orders,
         Data data)
     {
         var uncovered = frontlineHash.ToHashSet();
@@ -86,7 +84,7 @@ public class AllianceMilitaryAi
     }
 
     private void CoverUncoveredFrontlines(List<List<Waypoint>> uncoveredUnions,
-        AllianceMajorTurnOrders orders, LogicWriteKey key)
+        LogicWriteKey key)
     {
         var forceBalances = key.Data.Context.WaypointForceBalances;
 

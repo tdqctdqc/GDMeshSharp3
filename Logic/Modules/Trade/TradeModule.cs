@@ -25,7 +25,7 @@ public class TradeModule : LogicModule
         UpdatePricesNew(infos, proc, key.Data);
         
     }
-private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 
+    private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, List<SellOrder> sellOrders, 
         List<BuyOrder> buyOrders, Data data, TradeProcedure proc)
     {
         
@@ -33,7 +33,6 @@ private void SetupInfosAvoidOverlap(Dictionary<Item, ItemTradeReport> infos, Lis
             .SortInto(o => new Vector2I(o.RegimeId, o.ItemId));
         var buyByRegime = buyOrders
             .SortInto(o => new Vector2I(o.RegimeId, o.ItemId));
-        
         
         foreach (var kvp in sellByRegime)
         {
