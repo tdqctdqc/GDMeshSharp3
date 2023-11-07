@@ -30,7 +30,7 @@ public partial class AllianceChunkModule : MapChunkGraphicModule
         l.AddTransparencySetting(m => m._fill, "Fill Transparency");
         l.AddTransparencySetting(m => m._borders, "Border Transparency");
         
-        l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedRegime,
+        l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedOwnerRegime,
             r =>
             {
                 return r.Entity.GetChunkAndNeighboringChunks(d);
@@ -42,7 +42,7 @@ public partial class AllianceChunkModule : MapChunkGraphicModule
     private void HandleRegimeAllianceChange(Regime regime, Alliance newA, Data d)
     {
         var relevant = Chunk.Polys.Union(Chunk.Bordering)
-            .Where(p => p.Regime.RefId == regime.Id);
+            .Where(p => p.OwnerRegime.RefId == regime.Id);
         if (relevant.Count() == 0) return;
         foreach (var p in relevant)
         {

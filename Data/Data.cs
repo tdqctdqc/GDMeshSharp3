@@ -9,7 +9,6 @@ using System.Reflection;
 public class Data
 {
     public IdDispenser IdDispenser => BaseDomain.IdDispenser;
-    public LogicRequests Requests { get; private set; }
     public ClientPlayerData ClientPlayerData { get; private set; }
     public HostLogicData HostLogicData { get; private set; }
     public DataNotices Notices { get; private set; }
@@ -22,15 +21,12 @@ public class Data
     public MilitaryDomain Military { get; private set; }
     public InfrastructureDomain Infrastructure { get; private set; }
     public Context Context { get; private set; }
-
     private EntityTypeTree _entityTypeTree;
     public int Tick => BaseDomain.GameClock.Tick;
     public Serializer Serializer { get; private set; }
-
     public Data()
     {
         Serializer = new Serializer();
-        Requests = new LogicRequests();
         _entityTypeTree = new EntityTypeTree(this);
         Init();
     }
@@ -50,7 +46,6 @@ public class Data
         Society.Setup(this);
         Infrastructure.Setup(this);
         Military.Setup(this);
-        
         ClientPlayerData = new ClientPlayerData(this);
         HostLogicData = new HostLogicData(this);
     }

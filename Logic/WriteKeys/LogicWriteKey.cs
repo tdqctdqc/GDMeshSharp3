@@ -4,7 +4,7 @@ using System;
 public class LogicWriteKey : StrongWriteKey, ICreateWriteKey
 {
     private Action<Message> _sendMessage;
-    public LogicWriteKey(Action<Message> sendMessage, Data data) : base(data)
+    public LogicWriteKey(Action<Message> sendMessage, ISession session) : base(session)
     {
         _sendMessage = sendMessage;
     }

@@ -8,7 +8,7 @@ public class SaveFile
 {
     public List<byte[]> Entities { get; private set; }
 
-    public static SaveFile Save(Data data, WriteKey key)
+    public static SaveFile Save(Data data)
     {
         var entities = data.EntitiesById.Values.ToList();
         var saveFile = new SaveFile(data.EntitiesById.Values

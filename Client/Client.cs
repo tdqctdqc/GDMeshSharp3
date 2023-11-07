@@ -6,22 +6,24 @@ using Godot;
 
 public partial class Client : Node, IClient
 {
-    public Data Data => _session.Data;
+    public Data Data => Session.Data;
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiRequests UiRequests { get; private set; }
     public ConcurrentQueue<Action> QueuedUpdates { get; }
     public Control UiLayer { get; private set; }
     public Node2D GraphicsLayer { get; private set; }
-    public IServer Server => _session.Server;
-    public ILogic Logic => _session.Logic;
+    public IServer Server => Session.Server;
+    public ILogic Logic => Session.Logic;
     public RefAction UiTick { get; private set; }
     private TimerAction _uiTickTimer;
-    private ISession _session;
+    public ISession Session { get; private set; }
+    public WindowManager WindowManager => GetComponent<WindowManager>();
     public Dictionary<Type, IClientComponent> Components { get; private set; }
     public Client(ISession session)
     {
-        _session = session;
+        Session = session;
+        Key = new ClientWriteKey(Session);
         QueuedUpdates = new ConcurrentQueue<Action>();
         UiTick = new RefAction();
         _uiTickTimer = new TimerAction(.1f, 0f, UiTick.Invoke);
@@ -29,7 +31,6 @@ public partial class Client : Node, IClient
     }
     private void Setup()
     {
-        Key = new ClientWriteKey(Data);
         GraphicsLayer = new Node2D();
         AddChild(GraphicsLayer);
         var ui = new CanvasLayer();
@@ -144,6 +145,7 @@ public partial class Client : Node, IClient
         AddComponent(mapGraphicsOptions);
         
         GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
+        GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(Data));
     }
 }

@@ -6,9 +6,9 @@ using MessagePack;
 
 public class Saver
 {
-    public static void Save(Data data, WriteKey key)
+    public static void Save(Data data)
     {
-        var file = SaveFile.Save(data, key);
+        var file = SaveFile.Save(data);
         
         
         var loaded = file.Entities

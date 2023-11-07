@@ -8,7 +8,7 @@ public class GenData : Data
     public GenAuxiliaryData GenAuxData { get; private set; }
     public MapGenInfo GenInfo { get; set; }
     public GenerationMultiSettings GenMultiSettings { get; private set; }
-    public GenData()
+    public GenData() : base()
     {
         GenMultiSettings = GenerationMultiSettings.Load(this);
     }

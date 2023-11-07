@@ -27,7 +27,12 @@ public class WorldGenLogic : ILogic
             FinishedGenSuccessfully?.Invoke();
         }
     }
-    
+
+    public void SubmitPlayerOrders(Player player, RegimeTurnOrders orders)
+    {
+        throw new NotImplementedException();
+    }
+
     public void TryGenerate()
     {
         _tries = 0;

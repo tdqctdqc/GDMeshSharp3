@@ -73,8 +73,8 @@ public class Context
         foreach (var wp in data.Planet.Nav.Waypoints.Values)
         {
             var alliances = wp.AssocPolys(data)
-                .SelectWhere(p => p.Regime.Fulfilled())
-                .Select(p => p.Regime.Entity(data))
+                .SelectWhere(p => p.OwnerRegime.Fulfilled())
+                .Select(p => p.OwnerRegime.Entity(data))
                 .Select(r => r.GetAlliance(data))
                 .Distinct();
             if (alliances.Count() == 0) continue;

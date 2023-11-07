@@ -5,89 +5,63 @@ using Godot;
 public class DeploymentAi
 {
     public HashSet<ForceAssignment> ForceAssignments { get; private set; }
-    private static int PreferredGroupSize = 7;
     public DeploymentAi()
     {
         ForceAssignments = new HashSet<ForceAssignment>();
     }
-
-    public void CalculateMajor(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
+    public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
-        AssignFreeUnitsToGroups(regime, key, orders);
-    }
-    public void CalculateMinor(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
-    {
-        FillExposedFronts(regime, key.Data, orders);
+        CreateFronts(regime, key);
+        FillFronts(regime, key.Data);
         foreach (var forceAssignment in ForceAssignments)
         {
             forceAssignment.CalculateOrders(orders, key);
         }
     }
-
-    private void AssignFreeUnitsToGroups(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
+    public IEnumerable<FrontAssignment> GetFrontAssignments()
     {
-        var freeUnits = key.Data.Military.UnitAux.UnitByRegime[regime]
-            ?.Where(u => u != null)
-            .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null);
-        if (freeUnits == null || freeUnits.Count() == 0) return;
-        var numGroups = Mathf.CeilToInt((float)freeUnits.Count() / PreferredGroupSize);
-        var newGroups = Enumerable.Range(0, numGroups)
-            .Select(i => new List<int>())
-            .ToList();
+        return ForceAssignments.SelectWhereOfType<FrontAssignment>();
+    }
+    
+    private void CreateFronts(Regime regime, LogicWriteKey key)
+    {
+        var alliance = regime.GetAlliance(key.Data);
+        var allianceAi = key.Data.HostLogicData.AllianceAis[alliance];
+        var responsibility = allianceAi.MilitaryAi.AreasOfResponsibility[regime];
+
+        ForceAssignments.RemoveWhere(fa => fa is FrontAssignment);
         
-        var iter = 0;
-        foreach (var freeUnit in freeUnits)
+        var unions = UnionFind.Find(responsibility, (wp1, wp2) =>
         {
-            var group = iter % numGroups;
-            Game.I.Logger.Log($"adding unit to group pre", LogType.Temp);
-
-            newGroups.ElementAt(group).Add(freeUnit.Id);
-            iter++;
-        }
-        foreach (var newGroup in newGroups)
+            return responsibility.Contains(wp1) == responsibility.Contains(wp2);
+        }, wp => wp.GetNeighboringWaypoints(key.Data));
+        
+        foreach (var union in unions)
         {
-            Game.I.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-
-            UnitGroup.Create(orders.Regime.Entity(key.Data),
-                newGroup, key);
+            var contactLines = RegimeMilitaryAi.GetContactLines(regime, union, key.Data);
+            foreach (var contactLine in contactLines)
+            {
+                var front = Front.Construct(regime, contactLine.Select(wp => wp.Id),
+                    key);
+                var assgn = new FrontAssignment(front);
+                ForceAssignments.Add(assgn);
+            }
         }
     }
-
-    private void FillExposedFronts(Regime regime, Data data, MinorTurnOrders orders)
+    private void FillFronts(Regime regime, Data data)
     {
-        var fronts = data.Military.FrontAux.Fronts[regime];
-        if (fronts == null) return;
-        var exposed = fronts
-            ?.Where(f => ForceAssignments.Any(a => a is FrontAssignment fa && fa.Front == f) == false)
-            .ToList();
-        if (exposed.Count == 0) return;
-        var occupiedGroups = ForceAssignments.SelectMany(f => f.Groups).ToHashSet();
-        
-        
+        var frontAssgns = GetFrontAssignments();
+        var occupiedGroups = ForceAssignments.SelectMany(fa => fa.Groups);
         var freeGroups = data.Military.UnitAux.UnitGroupByRegime[regime]
             ?.Except(occupiedGroups)
             ?.ToList();
         if (freeGroups == null || freeGroups.Count == 0) return;
-        var frontGroups = exposed
-            .ToDictionary(f => f, f => new List<UnitGroup>());
-        var iter = 0;
-        for (var i = 0; i < freeGroups.Count; i++)
-        {
-            var group = freeGroups[i];
-            var front = exposed.Modulo(iter);
-            iter++;
-            frontGroups[front].Add(group);
-        }
-        
-        foreach (var kvp in frontGroups)
-        {
-            var assignment = new FrontAssignment(kvp.Key);
-            foreach (var unitGroup in kvp.Value)
-            {
-                assignment.Groups.Add(unitGroup);
-            }
 
-            ForceAssignments.Add(assignment);
-        }
+        Assigner<FrontAssignment, UnitGroup>.Assign(
+            frontAssgns, 
+            fa => -fa.GetPowerPointRatio(data),
+            freeGroups.ToHashSet(),
+            (fa, g) => fa.Groups.Add(g),
+            (fa, g) => g.GetPowerPoints(data));
     }
 }

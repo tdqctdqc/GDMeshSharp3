@@ -80,7 +80,7 @@ public class RegimeGenerator : Generator
             var template = templates.GetRandomElement();
             // templates.Remove(template);
             var regime = Regime.Create(seeds[i], template, false, _key);
-            seeds[i].SetRegime(regime, _key);
+            seeds[i].SetOwnerRegime(regime, _key);
 
             int numToPick = 0;
             if (num6s > 0)
@@ -95,7 +95,7 @@ public class RegimeGenerator : Generator
             }
             else numToPick = 1;
             var wand = new RegimeWanderer(regime, seeds[i], picker, numToPick, _data);
-            seeds[i].SetRegime(regime, _key);
+            seeds[i].SetOwnerRegime(regime, _key);
         }
         
         return picker;
@@ -109,7 +109,7 @@ public class RegimeGenerator : Generator
             var r = ((RegimeWanderer) w).Regime;
             foreach (var p in w.Picked)
             {
-                p.SetRegime(r, _key);
+                p.SetOwnerRegime(r, _key);
             }
             r.SetIsMajor(w.Picked.Count >= _numPolysToBeMajor, _key);
         }
@@ -137,11 +137,11 @@ public class RegimeGenerator : Generator
             // templates.Remove(template);
             var isMajor = union.Count >= _polysForRegimeAvg * .75;
             var regime = Regime.Create(union[0], template, isMajor, _key);
-            union[0].SetRegime(regime, _key);
+            union[0].SetOwnerRegime(regime, _key);
             for (var i = 1; i < union.Count; i++)
             {
                 var p = union[i];
-                p.SetRegime(regime, _key);
+                p.SetOwnerRegime(regime, _key);
             }
         }
     }

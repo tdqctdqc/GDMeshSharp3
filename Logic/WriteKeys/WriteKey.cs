@@ -3,10 +3,10 @@ using System;
 
 public class WriteKey
 {
-    public Data Data { get; private set; }
-    
-    public WriteKey(Data data)
+    public Data Data => Session.Data;
+    public ISession Session { get; private set; }
+    public WriteKey(ISession session)
     {
-        Data = data;
+        Session = session;
     }
 }

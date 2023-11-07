@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using MessagePack;
 
 [MessagePack.Union(0, typeof(AllianceMergeProposal))]
@@ -13,7 +14,6 @@ public abstract class Proposal : IPolymorph
     public HashSet<int> AllianceIds { get; private set; }
     public HashSet<int> InFavor { get; protected set; }
     public HashSet<int> Against { get; protected set; }
-
     [SerializationConstructor] protected Proposal(int id, EntityRef<Regime> proposer, 
         HashSet<int> allianceIds, HashSet<int> inFavor, HashSet<int> against)
     {
@@ -25,7 +25,7 @@ public abstract class Proposal : IPolymorph
     }
     public abstract bool GetDecisionForAi(Regime r, Data d);
     public abstract void Propose(ProcedureWriteKey key);
-
+    public abstract Control GetDisplay(Data d);
     public void Resolve(bool accepted, ProcedureWriteKey key)
     {
         if (Valid(key.Data))

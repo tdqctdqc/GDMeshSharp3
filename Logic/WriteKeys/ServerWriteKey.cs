@@ -3,7 +3,7 @@ using System;
 
 public class ServerWriteKey : StrongWriteKey
 {
-    public ServerWriteKey(Data data) : base(data)
+    public ServerWriteKey(ISession session) : base(session)
     {
     }
 }

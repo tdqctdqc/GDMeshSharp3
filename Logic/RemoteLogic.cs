@@ -10,12 +10,18 @@ public class RemoteLogic : ILogic
     private bool _inited;
     public RemoteLogic(Data data, GameSession session)
     {
-        PKey = new ProcedureWriteKey(data);
+        PKey = new ProcedureWriteKey(session);
         _inited = false;
     }
-
+    
     public void Process(float delta)
     {
         
+    }
+
+    public void SubmitPlayerOrders(Player player, RegimeTurnOrders orders)
+    {
+        var com = SubmitTurnCommand.Construct(orders, player.PlayerGuid);
+        PKey.Session.Server.QueueCommandLocal(com);
     }
 }

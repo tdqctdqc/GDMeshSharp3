@@ -18,22 +18,7 @@ public class TrimFrontsProcedure : Procedure
     }
     public override void Enact(ProcedureWriteKey key)
     {
-        foreach (var i in FrontsToRemove)
-        {
-            var front = key.Data.Get<Front>(i);
-            var regime = front.Regime.Entity(key.Data);
-            key.Data.RemoveEntity(front.Id, key);
-        }
-
-        foreach (var kvp in WaypointsToTrimByFrontId)
-        {
-            var front = key.Data.Get<Front>(kvp.Key);
-            var toTrim = kvp.Value;
-            foreach (var i in toTrim)
-            {
-                front.WaypointIds.Remove(i);
-            }
-        }
+        
     }
 
     public override bool Valid(Data data)

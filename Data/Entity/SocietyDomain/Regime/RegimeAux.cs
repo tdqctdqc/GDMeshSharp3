@@ -8,10 +8,10 @@ public class RegimeAux
     public EntityMultiIndexer<Regime, MapPolygon> Territories { get; private set; }
     public RegimeAux(Data data)
     {
-        var changedRegime = data.Planet.PolygonAux.ChangedRegime;
+        var changedRegime = data.Planet.PolygonAux.ChangedOwnerRegime;
         Territories = new EntityMultiIndexer<Regime, MapPolygon>(
             data, 
-            p => p.Regime.Entity(data),
+            p => p.OwnerRegime.Entity(data),
             new RefAction[]{data.Notices.FinishedStateSync, data.Notices.GeneratedRegimes},
             changedRegime
         );

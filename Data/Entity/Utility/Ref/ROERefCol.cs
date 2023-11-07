@@ -29,12 +29,14 @@ public class ROERefCol<TRef>
     }
     public bool Contains(TRef entity)
     {
+        if (entity == null) return false;
+        if (RefIds == null) return false;
         return RefIds.Contains(entity.Id);
     }
    
     public void ClearRef()
     {
-        RefIds.Clear();
+        RefIds?.Clear();
     }
     public void UpdateOwnerId(int newId, StrongWriteKey key)
     {

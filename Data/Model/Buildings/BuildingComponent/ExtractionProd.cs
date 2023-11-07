@@ -18,7 +18,7 @@ public class ExtractionProd : ItemProd
         var depSize = deposit.Size;
         var prod = Mathf.FloorToInt(staffingRatio * ProdCap);
         prod = Mathf.Min(Mathf.FloorToInt(depSize), prod);
-        var rId = poly.Regime.RefId;
+        var rId = poly.OwnerRegime.RefId;
         
         proc.RegimeResourceProds[rId].Add(ProdItem, prod);
     }

@@ -53,4 +53,9 @@ public class UnitGroup : Entity
     {
         Order = order;
     }
+
+    public float GetPowerPoints(Data data)
+    {
+        return Units.Items(data).Sum(u => u.GetPowerPoints(data));
+    }
 }

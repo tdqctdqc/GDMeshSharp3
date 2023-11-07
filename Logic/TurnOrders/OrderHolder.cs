@@ -21,8 +21,6 @@ public class OrderHolder
         _aiOrderCalcs = new ConcurrentDictionary<Regime, Task<RegimeTurnOrders>>();
         key.Data.BaseDomain.PlayerAux.PlayerChangedRegime
             .Subscribe(HandlePlayerChangedRegime);
-        key.Data.Requests.SubmitPlayerOrders
-            .Subscribe(x => SubmitPlayerTurnOrders(x.Item1, x.Item2, _key.Data));
     }
 
     public void HandlePlayerChangedRegime(ValChangeNotice<Player, Regime> notice)

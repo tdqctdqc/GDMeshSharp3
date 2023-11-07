@@ -74,10 +74,10 @@ public partial class GameSession : Node, ISession
     {
         Data = data;
         var hServer = new HostServer();
-        var logic = new HostLogic(Data);
+        var logic = new HostLogic(this);
         Logic = logic;
         hServer.Setup(logic, Data, this);
-        logic.SetDependencies(hServer, this, Data);
+        logic.SetDependencies(hServer);
         StartServer(hServer);
         StartClient();
         Client.SetupForGameData();
@@ -86,10 +86,10 @@ public partial class GameSession : Node, ISession
     {
         Data.Notices.ExitedGen.Invoke();
         var hServer = new HostServer();
-        var logic = new HostLogic(Data);
+        var logic = new HostLogic(this);
         Logic = logic;
         hServer.Setup(logic, Data, this);
-        logic.SetDependencies(hServer, this, Data);
+        logic.SetDependencies(hServer);
         StartServer(hServer);
         
         logic.Start();

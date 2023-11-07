@@ -50,7 +50,7 @@ public static class PathFinder
     public static float BuildRoadEdgeCost(MapPolygon p1, MapPolygon p2, Data data, bool international = true)
     {
         if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;
-        if (international == false && p1.Regime.RefId != p2.Regime.RefId) return Mathf.Inf;
+        if (international == false && p1.OwnerRegime.RefId != p2.OwnerRegime.RefId) return Mathf.Inf;
 
         var path = data.Planet.Nav.GetPolyPath(p1, p2);
         var cost = 0f;

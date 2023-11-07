@@ -9,11 +9,10 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
 
     public ClientTopBar(Client client)
     {
-        var key = new WriteKey(client.Data);
         this.AddWindowButton<LoggerWindow>("Logger");
         this.AddWindowButton<EntityOverviewWindow>("Entities");
         this.AddWindowButton<ClientSettingsWindow>("Settings");
-        this.AddButton("Save", () => Saver.Save(client.Data, key));
+        this.AddButton("Save", () => Saver.Save(client.Data));
         this.AddButton("Load", () => Saver.Load());
         this.AddButton("Test", () => Serializer.TestCustom(client.Data));
         this.AddIntButton("Jump to Poly", i =>

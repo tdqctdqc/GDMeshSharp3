@@ -33,6 +33,16 @@ public partial class GeneralTab : ScrollContainer
         regimeFlagRect.CustomMinimumSize = new Vector2(150f, 100f);
         _container.AddChild(regimeFlagRect);
         
+        var seeAlliance = ButtonExt.GetButton(() =>
+        {
+            var alliance = regime.GetAlliance(client.Data);
+            var w = client.WindowManager.OpenWindow<AllianceOverviewWindow>();
+            w.Setup(alliance, client);
+        });
+        seeAlliance.Text = "See Alliance";
+        _container.AddChild(seeAlliance);
+        
+        
         if (regime.IsPlayerRegime(client.Data) == false)
         {
             var chooseRegime = ButtonExt.GetButton(() =>
@@ -57,8 +67,6 @@ public partial class GeneralTab : ScrollContainer
                 proposeRival.Text = "Propose Rival";
                 _container.AddChild(proposeRival);
             }
-            
-
         }
 
         _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(client.Data).Id);

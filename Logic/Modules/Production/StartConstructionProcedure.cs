@@ -34,7 +34,7 @@ public class StartConstructionProcedure : Procedure
         {
             return false;
         }
-        var polyHasRegime = poly.Regime.Fulfilled();
+        var polyHasRegime = poly.OwnerRegime.Fulfilled();
         if (polyHasRegime == false)
         {
             return false;
@@ -53,7 +53,7 @@ public class StartConstructionProcedure : Procedure
     {
         Construction.Pos.Poly(key.Data).PolyBuildingSlots
             .RemoveSlot(Construction.Model.Model(key.Data).BuildingType, Construction.Pos);
-        var regime = Construction.Pos.Poly(key.Data).Regime.Entity(key.Data);
+        var regime = Construction.Pos.Poly(key.Data).OwnerRegime.Entity(key.Data);
 
         var itemCosts = Construction.Model.Model(key.Data)
             .Makeable.ItemCosts.GetEnumerableModel(key.Data);

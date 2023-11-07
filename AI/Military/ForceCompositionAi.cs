@@ -2,11 +2,14 @@
 using System;
 using System.Linq;
 using System.Collections.Generic;
+using Godot;
 
 public class ForceCompositionAi
 {
     public float BuildTroopWeight { get; private set; }
     public IBudgetPriority[] Priorities { get; private set; }
+    private static int PreferredGroupSize = 7;
+
     public ForceCompositionAi(Regime regime)
     {
         BuildTroopWeight = 1f;
@@ -26,8 +29,36 @@ public class ForceCompositionAi
         SetBuildTroopWeight(regime, key.Data);
         ReinforceUnits(reserve);
         BuildUnits(reserve, key, regime, orders);
+        AssignFreeUnitsToGroups(regime, key, orders);
     }
+    private void AssignFreeUnitsToGroups(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
+    {
+        var freeUnits = key.Data.Military.UnitAux.UnitByRegime[regime]
+            ?.Where(u => u != null)
+            .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null);
+        if (freeUnits == null || freeUnits.Count() == 0) return;
+        var numGroups = Mathf.CeilToInt((float)freeUnits.Count() / PreferredGroupSize);
+        var newGroups = Enumerable.Range(0, numGroups)
+            .Select(i => new List<int>())
+            .ToList();
+        
+        var iter = 0;
+        foreach (var freeUnit in freeUnits)
+        {
+            var group = iter % numGroups;
+            Game.I.Logger.Log($"adding unit to group pre", LogType.Temp);
 
+            newGroups.ElementAt(group).Add(freeUnit.Id);
+            iter++;
+        }
+        foreach (var newGroup in newGroups)
+        {
+            Game.I.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
+
+            UnitGroup.Create(orders.Regime.Entity(key.Data),
+                newGroup, key);
+        }
+    }
     private void SetBuildTroopWeight(Regime regime, Data data)
     {
         BuildTroopWeight = 1f;

@@ -36,7 +36,7 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
             c => new DiplomacyChunkModule(c, d), 
             d);
         l.AddTransparencySetting(m => m._diplomacyFill, "Transparency");
-        l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedRegime,
+        l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedOwnerRegime,
             r => r.Entity.GetChunkAndNeighboringChunks(d),
             (n, m) => { m.HandlePolygonRegimeChange(n, d); });
         return l;
@@ -45,8 +45,8 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
     private void HandleRegimeAllianceChange(Regime regime, Alliance newA, Data d)
     {
         var relevant = Chunk.Polys.Union(Chunk.Bordering)
-            .Where(p => p.Regime.RefId == regime.Id
-            || (p.Regime.Fulfilled() && p.Regime.Entity(d).GetAlliance(d) == newA));
+            .Where(p => p.OwnerRegime.RefId == regime.Id
+            || (p.OwnerRegime.Fulfilled() && p.OwnerRegime.Entity(d).GetAlliance(d) == newA));
         if (relevant.Count() == 0) return;
         foreach (var p in relevant)
         {
@@ -61,8 +61,8 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
         if (player.Regime.Fulfilled() == false) return;
         var playerAlliance = player.Regime.Entity(d).GetAlliance(d);
         if (a1 != playerAlliance && a2 != playerAlliance) return;
-        var polys = Chunk.Polys.Where(p => a1.Members.RefIds.Contains(p.Regime.RefId)
-                                           || a2.Members.RefIds.Contains(p.Regime.RefId));
+        var polys = Chunk.Polys.Where(p => a1.Members.RefIds.Contains(p.OwnerRegime.RefId)
+                                           || a2.Members.RefIds.Contains(p.OwnerRegime.RefId));
         if (polys.Count() == 0) return;
         _diplomacyFill.Updates.AddRange(polys);
     }
@@ -102,8 +102,8 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
 
         bool isRelevant(MapPolygon p, Alliance alliance)
         {
-            if (p.Regime.Fulfilled() == false) return false;
-            var r = p.Regime.Entity(d);
+            if (p.OwnerRegime.Fulfilled() == false) return false;
+            var r = p.OwnerRegime.Entity(d);
             var a = r.GetAlliance(d);
             return alliance == a
                    || alliance.Rivals.Contains(a)

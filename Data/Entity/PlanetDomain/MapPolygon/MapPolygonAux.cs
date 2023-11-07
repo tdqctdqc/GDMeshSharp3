@@ -12,7 +12,8 @@ public class MapPolygonAux
     public HashSet<MapChunk> Chunks { get; private set; }
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public LandSeaManager LandSea { get; private set; }
-    public ValChangeAction<MapPolygon, Regime> ChangedRegime { get; private set; }
+    public ValChangeAction<MapPolygon, Regime> ChangedOwnerRegime { get; private set; }
+    public ValChangeAction<MapPolygon, Regime> ChangedOccupierRegime { get; private set; }
     public EntityMultiIndexer<Regime, MapPolygon> PolysByRegime { get; private set; }
     public MapPolygonAux(Data data)
     {
@@ -27,11 +28,12 @@ public class MapPolygonAux
             p => new PolyAuxData(p, data)
         );
         
-        ChangedRegime = new ValChangeAction<MapPolygon, Regime>();
+        ChangedOwnerRegime = new ValChangeAction<MapPolygon, Regime>();
+        ChangedOccupierRegime = new ValChangeAction<MapPolygon, Regime>();
 
         PolysByRegime = new EntityMultiIndexer<Regime, MapPolygon>(data,
-            p => p.Regime.Entity(data), 
-            new RefAction[] { }, ChangedRegime);
+            p => p.OwnerRegime.Entity(data), 
+            new RefAction[] { }, ChangedOwnerRegime);
         
         data.Notices.SetLandAndSea.Subscribe(() =>
         {

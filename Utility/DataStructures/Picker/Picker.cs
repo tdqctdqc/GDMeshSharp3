@@ -64,27 +64,6 @@ public class Picker
 
         return Pick(notTakenSource, openPickersSource, getAdjacent, choose, take);
     }
-
-    public static HashSet<TPicked> PickInTurnToLimit<TPicker, TPicked>(IEnumerable<TPicked> notTakenSource, 
-        IEnumerable<TPicker> openPickersSource,
-        Func<TPicker, HashSet<TPicked>> getAdjacent, Action<TPicker, TPicked> take,
-        int numPickedToLeave)
-    {
-        Func<TPicker, HashSet<TPicked>, TPicked> choose = (picker, avail) =>
-        {
-            if (avail.Count == numPickedToLeave) return default;
-            var adj = getAdjacent(picker);
-            foreach (var el in adj)
-            {
-                if (avail.Contains(el))
-                {
-                    return el;
-                }
-            }
-            return default;
-        };
-        return Pick(notTakenSource, openPickersSource, getAdjacent, choose, take);
-    }
     public static HashSet<TPicked> PickInTurnToLimitHeuristic<TPicker, TPicked>(IEnumerable<TPicked> notTakenSource, 
         IEnumerable<TPicker> openPickersSource,
         Func<TPicker, HashSet<TPicked>> getAdjacent, Action<TPicker, TPicked> take,

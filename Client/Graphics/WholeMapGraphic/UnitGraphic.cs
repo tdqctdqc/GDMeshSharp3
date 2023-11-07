@@ -6,7 +6,6 @@ using Godot;
 public partial class UnitGraphic : MeshInstance2D
 {
     private UnitGraphic() { }
-    private int _currSegment = -1;
     public UnitGraphic(Unit unit, GraphicsSegmenter segmenter, Data d)
     {
         var m = new QuadMesh();
@@ -27,7 +26,7 @@ public partial class UnitGraphic : MeshInstance2D
     {
         queue.Enqueue(() =>
         {
-            _currSegment = segmenter.SwitchSegments(this, unit.Position, _currSegment);
+            segmenter.SwitchSegments(this, unit.Position);
         });
     }
     

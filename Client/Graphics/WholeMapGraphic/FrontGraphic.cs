@@ -7,7 +7,6 @@ using Godot;
 
 public partial class FrontGraphic : Node2D
 {
-    private int _currSegment = -1;
     private FrontGraphic() {}
     public Front Front { get; private set; }
     public Node2D FrontNode { get; private set; } 
@@ -17,8 +16,7 @@ public partial class FrontGraphic : Node2D
     {
         Front = front;
         Draw(front, segmenter, data);
-        _currSegment = segmenter.AddElement
-            (this, front.RelTo(data));
+        segmenter.AddElement(this, front.RelTo(data));
     }
 
     private void Draw(Front front, GraphicsSegmenter segmenter, Data data)
@@ -43,22 +41,22 @@ public partial class FrontGraphic : Node2D
         var offsets = front.GetWaypoints(data).Select(wp => data.Planet.GetOffsetTo(relTo, wp.Pos)).ToList();
 
         var fillColor = new Color(regime.PrimaryColor, .75f);
-        if (front.WaypointIds.Count() == 1)
+        if (front.ContactLineWaypointIds.Count() == 1)
         {
-            var wp = data.Planet.Nav.Waypoints[front.WaypointIds.First()];
+            var wp = data.Planet.Nav.Waypoints[front.ContactLineWaypointIds.First()];
             mb.AddCircle(data.Planet.GetOffsetTo(relTo, wp.Pos), 
                 25f, 12, fillColor);
         }
-        else if (front.WaypointIds.Count() == 2)
+        else if (front.ContactLineWaypointIds.Count() == 2)
         {
-            var wp1 = data.Planet.Nav.Waypoints[front.WaypointIds.ElementAt(0)];
-            var wp2 = data.Planet.Nav.Waypoints[front.WaypointIds.ElementAt(1)];
+            var wp1 = data.Planet.Nav.Waypoints[front.ContactLineWaypointIds.ElementAt(0)];
+            var wp2 = data.Planet.Nav.Waypoints[front.ContactLineWaypointIds.ElementAt(1)];
 
             mb.AddLine(data.Planet.GetOffsetTo(relTo, wp1.Pos),
                 data.Planet.GetOffsetTo(relTo, wp2.Pos),
                 fillColor, 25f);
         }
-        else if (front.WaypointIds.Count() > 2)
+        else if (front.ContactLineWaypointIds.Count() > 2)
         {
             var tris = Triangulator
                 .TriangulatePoints(offsets);
@@ -90,7 +88,7 @@ public partial class FrontGraphic : Node2D
             foreach (var nWp in wp.GetNeighboringWaypoints(data))
             {
                 if (wp.Id < nWp.Id) continue;
-                if (front.WaypointIds.Contains(nWp.Id) == false) continue;
+                if (front.ContactLineWaypointIds.Contains(nWp.Id) == false) continue;
                 var nP = data.Planet.GetOffsetTo(relTo, nWp.Pos);
                 mb.AddLine(p, nP, regime.PrimaryColor, 5f);
             }
@@ -110,24 +108,26 @@ public partial class FrontGraphic : Node2D
             LineNode.Free();
             LineNode = null;
         }
-        var frontlines = front.GetFrontlines(data);
+        var frontline = front
+            .ContactLineWaypointIds;
         var lineColor = regime.PrimaryColor.Darkened(.3f);
         var mb = new MeshBuilder();
-        foreach (var frontline in frontlines)
+        if (frontline.Count == 1)
         {
-            if (frontline.Count == 1)
+            var firstWp = data.Planet.Nav.Waypoints[frontline[0]];
+
+            var pos = data.Planet.GetOffsetTo(relTo, firstWp.Pos);
+            mb.AddCircle(pos, 30f, 12, regime.PrimaryColor);
+        }
+        else
+        {
+            for (var i = 0; i < frontline.Count - 1; i++)
             {
-                var pos = data.Planet.GetOffsetTo(relTo, frontline.First().Pos);
-                mb.AddCircle(pos, 30f, 12, regime.PrimaryColor);
-            }
-            else
-            {
-                for (var i = 0; i < frontline.Count - 1; i++)
-                {
-                    var from = data.Planet.GetOffsetTo(relTo, frontline[i].Pos);
-                    var to = data.Planet.GetOffsetTo(relTo, frontline[i + 1].Pos);;
-                    mb.AddLine(from, to, lineColor, 25f);
-                }
+                var fromWp = data.Planet.Nav.Waypoints[frontline[i]];
+                var toWp = data.Planet.Nav.Waypoints[frontline[i + 1]];
+                var from = data.Planet.GetOffsetTo(relTo, fromWp.Pos);
+                var to = data.Planet.GetOffsetTo(relTo, toWp.Pos);;
+                mb.AddLine(from, to, lineColor, 25f);
             }
         }
         if (mb.Tris.Count > 0)
@@ -143,11 +143,5 @@ public partial class FrontGraphic : Node2D
     public void Update(Front front, Data data, GraphicsSegmenter segmenter,
         ConcurrentQueue<Action> queue)
     {
-        queue.Enqueue(() =>
-        {
-            if(GetParent() is Node n) n.RemoveChild(this);
-            Draw(front, segmenter, data);
-            _currSegment = segmenter.SwitchSegments(this, front.RelTo(data), _currSegment);
-        });
     }
 }

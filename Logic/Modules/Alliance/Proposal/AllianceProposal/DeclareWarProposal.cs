@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Godot;
 using MessagePack;
 
 public class DeclareWarProposal : AllianceProposal
@@ -31,7 +33,24 @@ public class DeclareWarProposal : AllianceProposal
         alliance.AtWar.Add(target, key);
         target.AtWar.Add(alliance, key);
     }
-
+    public override Control GetDisplay(Data d)
+    {
+        var c = new VBoxContainer();
+        var sb = new StringBuilder();
+        sb.Append($"Declaring war on {TargetAllianceId}");
+        sb.Append($"\nIn Favor: ");
+        foreach (var regime in InFavor.Select(id => d.Get<Regime>(id)))
+        {
+            sb.Append("\n\t" + regime.Name);
+        }
+        sb.Append($"\nAgainst: ");
+        foreach (var regime in Against.Select(id => d.Get<Regime>(id)))
+        {
+            sb.Append("\n\t" + regime.Name);
+        }
+        NodeExt.CreateLabelAsChild(c, sb.ToString());
+        return c;
+    }
     public override bool Valid(Data data)
     {
         return base.Valid(data)

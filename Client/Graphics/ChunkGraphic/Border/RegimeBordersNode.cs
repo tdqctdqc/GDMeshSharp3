@@ -12,7 +12,7 @@ public partial class RegimeBordersNode : BorderChunkNode
     }
     protected override bool InUnion(MapPolygon p1, MapPolygon p2, Data data)
     {
-        return p1.Regime.RefId == p2.Regime.RefId;
+        return p1.OwnerRegime.RefId == p2.OwnerRegime.RefId;
     }
 
     protected override float GetThickness(MapPolygon p1, MapPolygon p2, Data data)
@@ -22,6 +22,6 @@ public partial class RegimeBordersNode : BorderChunkNode
 
     protected override Color GetColor(MapPolygon p, Data data)
     {
-        return p.Regime.Fulfilled() ? p.Regime.Entity(data).PrimaryColor : Colors.Transparent;
+        return p.OwnerRegime.Fulfilled() ? p.OwnerRegime.Entity(data).PrimaryColor : Colors.Transparent;
     }
 }

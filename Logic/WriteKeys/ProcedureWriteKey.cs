@@ -3,7 +3,7 @@ using System;
 
 public class ProcedureWriteKey : StrongWriteKey
 {
-    public ProcedureWriteKey(Data data) : base(data)
+    public ProcedureWriteKey(ISession session) : base(session)
     {
     }
 }

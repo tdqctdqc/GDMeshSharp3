@@ -11,21 +11,25 @@ using System.Threading.Tasks;
 public class HostLogic : ILogic
 {
     public ConcurrentQueue<Command> CommandQueue { get; }
+    private ISession _session;
     private StateMachine _stateMachine;
     private TurnState _start, _middle, _end;
     public OrderHolder OrderHolder { get; private set; }
     private HostServer _server; 
     private HostWriteKey _hKey;
     public ProcedureWriteKey PKey { get; private set; }
-    private Data _data;
+    private Data _data => _session.Data;
     private readonly object _lock = new object();
-    public HostLogic(Data data)
+    public HostLogic(ISession session)
     {
+        _session = session;
         CommandQueue = new ConcurrentQueue<Command>();
-        data.Requests.QueueCommand.Subscribe(CommandQueue.Enqueue);
-        var syncKey = new LogicWriteKey(HandleMessage, data);
+        var syncKey = new LogicWriteKey(HandleMessage, session);
+        _hKey = new HostWriteKey(this, session);
+        PKey = new ProcedureWriteKey(_session);
         
         OrderHolder = new OrderHolder(syncKey);
+        
         _start = new TurnStartState(syncKey, OrderHolder);
         _middle = new TurnMiddleState(syncKey, OrderHolder);
         _end = new TurnEndState(syncKey, OrderHolder);
@@ -33,18 +37,21 @@ public class HostLogic : ILogic
         _middle.SetNextState(_end);
         _end.SetNextState(_start);
     }
-    public void SetDependencies(HostServer server, GameSession session, Data data)
+    public void SetDependencies(HostServer server)
     {
-        _data = data;
         _server = server;
-        _hKey = new HostWriteKey(this, data);
-        PKey = new ProcedureWriteKey(data);
     }
     public void Process(float delta)
     {
         DoCommands();
         _stateMachine?.Process();
     }
+
+    public void SubmitPlayerOrders(Player player, RegimeTurnOrders orders)
+    {
+        OrderHolder.SubmitPlayerTurnOrders(player, orders, _data);
+    }
+
     public void Start()
     {
         var regimes = _data.GetAll<Regime>().ToList();

@@ -21,7 +21,7 @@ public class SubmitTurnCommand : Command
     public override void Enact(ProcedureWriteKey key)
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
-        key.Data.Requests.SubmitPlayerOrders.Invoke((player, Orders));
+        key.Session.Logic.SubmitPlayerOrders(player, Orders);
     }
 
     public override bool Valid(Data data)

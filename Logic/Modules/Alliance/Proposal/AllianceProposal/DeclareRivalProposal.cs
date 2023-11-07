@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Godot;
 using MessagePack;
 
@@ -23,6 +24,25 @@ public class DeclareRivalProposal : AllianceProposal
     public override bool GetDecisionForAi(Regime r, Data d)
     {
         return true;
+    }
+
+    public override Control GetDisplay(Data d)
+    {
+        var c = new VBoxContainer();
+        var sb = new StringBuilder();
+        sb.Append($"\nDeclaring rival {TargetAllianceId}");
+        sb.Append($"\n In Favor: ");
+        foreach (var regime in InFavor.Select(id => d.Get<Regime>(id)))
+        {
+            sb.Append("\n\t" + regime.Name);
+        }
+        sb.Append($"\n Against: ");
+        foreach (var regime in Against.Select(id => d.Get<Regime>(id)))
+        {
+            sb.Append("\n\t" + regime.Name);
+        }
+        NodeExt.CreateLabelAsChild(c, sb.ToString());
+        return c;
     }
 
     protected override void ResolveInner(bool accepted, ProcedureWriteKey key)

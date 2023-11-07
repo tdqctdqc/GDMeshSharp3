@@ -4,7 +4,7 @@ using System;
 public class HostWriteKey : StrongWriteKey, ICreateWriteKey
 {
     public HostLogic Logic { get; private set; }
-    public HostWriteKey(HostLogic logic, Data data) : base(data)
+    public HostWriteKey(HostLogic logic, ISession session) : base(session)
     {
         Logic = logic;
     }

@@ -14,14 +14,17 @@ public class MapPolygon : Entity
     public float Altitude { get; protected set; }
     public float Roughness { get; protected set; }
     public float Moisture { get; protected set; }
-    public EntityRef<Regime> Regime { get; protected set; }
+    public EntityRef<Regime> OwnerRegime { get; protected set; }
+    public EntityRef<Regime> OccupierRegime { get; private set; }
     public PolyTris Tris { get; protected set; }
     public bool IsLand { get; protected set; }
     public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
     [SerializationConstructor] private MapPolygon(int id, Vector2 center, EntRefCol<MapPolygon> neighbors, 
         Dictionary<int, PolyBorderChain> neighborBorders, Color color, float altitude, float roughness, 
-        float moisture, EntityRef<Regime> regime, PolyTris tris, bool isLand,
+        float moisture, EntityRef<Regime> ownerRegime, 
+        EntityRef<Regime> occupierRegime,
+        PolyTris tris, bool isLand,
         PolyBuildingSlots polyBuildingSlots, PolyFoodProd polyFoodProd) 
             : base(id)
     {
@@ -32,7 +35,8 @@ public class MapPolygon : Entity
         Altitude = altitude;
         Roughness = roughness;
         Moisture = moisture;
-        Regime = regime;
+        OwnerRegime = ownerRegime;
+        OccupierRegime = occupierRegime;
         Tris = tris;
         IsLand = isLand;
         PolyBuildingSlots = polyBuildingSlots;
@@ -55,6 +59,7 @@ public class MapPolygon : Entity
             0f,
             0f,
             0f,
+            new EntityRef<Regime>(-1),
             new EntityRef<Regime>(-1),
             null,
             true,
@@ -81,11 +86,17 @@ public class MapPolygon : Entity
         //only use in merging left-right wrap
         Neighbors.Remove(poly, key);
     }
-    public void SetRegime(Regime r, StrongWriteKey key)
+    public void SetOwnerRegime(Regime r, StrongWriteKey key)
     {
-        var old = Regime.Entity(key.Data);
-        Regime = r.MakeRef();
-        key.Data.Planet.PolygonAux.ChangedRegime.Invoke(this, r, old);
+        var old = OwnerRegime.Entity(key.Data);
+        OwnerRegime = r.MakeRef();
+        key.Data.Planet.PolygonAux.ChangedOwnerRegime.Invoke(this, r, old);
+    }
+    public void SetOccupierRegime(Regime r, StrongWriteKey key)
+    {
+        var old = OccupierRegime.Entity(key.Data);
+        OccupierRegime = r.MakeRef();
+        key.Data.Planet.PolygonAux.ChangedOccupierRegime.Invoke(this, r, old);
     }
     public void SetTerrainTris(PolyTris tris, GenWriteKey key)
     {

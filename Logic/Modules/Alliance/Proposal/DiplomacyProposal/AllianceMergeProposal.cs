@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Godot;
 using MessagePack;
 
@@ -21,6 +22,27 @@ public class AllianceMergeProposal : DiplomacyProposal
     public override bool GetDecisionForAi(Regime r, Data d)
     {
         return true;
+    }
+
+    public override Control GetDisplay(Data d)
+    {
+        var c = new VBoxContainer();
+        var a0 = d.Get<Alliance>(Alliance0);
+        var a1 = d.Get<Alliance>(Alliance1);
+        var sb = new StringBuilder();
+        sb.Append($"Merge Alliances {a0.Id} and {a1.Id}");
+        sb.Append($"In Favor: ");
+        foreach (var regime in InFavor.Select(id => d.Get<Regime>(id)))
+        {
+            sb.Append(regime.Name);
+        }
+        sb.Append($"Against: ");
+        foreach (var regime in Against.Select(id => d.Get<Regime>(id)))
+        {
+            sb.Append(regime.Name);
+        }
+        NodeExt.CreateLabelAsChild(c, sb.ToString());
+        return c;
     }
 
     protected override void ResolveInner(bool accepted, ProcedureWriteKey key)

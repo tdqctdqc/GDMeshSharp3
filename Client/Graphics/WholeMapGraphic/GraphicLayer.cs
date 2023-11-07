@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
@@ -49,7 +50,7 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
         Settings.Add(option);
         _settingsUpdaters.Add(option, g => update(g, option.Value));
     }
-    public void Remove(TKey key)
+    public void Remove(TKey key, Data d)
     {
         var graphic = Graphics[key];
         graphic.QueueFree();
@@ -89,6 +90,7 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
             _updateGraphic(key, graphic, _segmenter, queue);
             queue.Enqueue(() =>
             {
+                if (Graphics.ContainsKey(key) == false) return;
                 foreach (var kvp2 in _settingsUpdaters)
                 {
                     kvp2.Value.Invoke(graphic);
@@ -117,7 +119,7 @@ public static class WholeMapGraphicLayerExt
         d.SubscribeForDestruction<TEntity>(
             n =>
             {
-                client.QueuedUpdates.Enqueue(() => layer.Remove((TEntity)n.Entity));
+                client.QueuedUpdates.Enqueue(() => layer.Remove((TEntity)n.Entity, d));
             }
         );
     }

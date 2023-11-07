@@ -78,8 +78,8 @@ public class DiplomacyAi
         var targetPolys = target.Members.Items(data).SelectMany(r => r.GetPolys(data));
         var targetNeighborPolys = targetPolys
             .Where(p => p.Neighbors.Items(data)
-                .Any(np => np.Regime.Fulfilled()
-                           && np.Regime.Entity(data).GetAlliance(data) == alliance)).Count();
+                .Any(np => np.OwnerRegime.Fulfilled()
+                           && np.OwnerRegime.Entity(data).GetAlliance(data) == alliance)).Count();
         var pCount = targetPolys.Count();
         if (pCount == 0) return 0f;
         return targetNeighborPolys / pCount;

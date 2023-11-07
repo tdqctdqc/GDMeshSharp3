@@ -93,7 +93,7 @@ public class ProduceConstructModule : LogicModule
         var peep = poly.GetPeep(data);
         if (peep == null) return;
         var foodProd = scratch.HandleFoodProdJobs(poly.PolyFoodProd, data);
-        proc.RegimeResourceProds[poly.Regime.RefId].Add(data.Models.Items.Food, foodProd);
+        proc.RegimeResourceProds[poly.OwnerRegime.RefId].Add(data.Models.Items.Food, foodProd);
     }
     private void WorkInBuildingsForPoly(MapPolygon poly, ProduceConstructProcedure proc, PolyEmploymentScratch scratch, Data data)
     {

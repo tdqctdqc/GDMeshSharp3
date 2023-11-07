@@ -7,7 +7,7 @@ public partial class RegimePolyFill : PolyFillChunkGraphic
 {
     public RegimePolyFill(MapChunk chunk, Data data) 
         : base(nameof(RegimePolyFill), chunk, 
-            (p, d) => p.Regime.Fulfilled() ? p.Regime.Entity(d).PrimaryColor : Colors.Transparent, 
+            (p, d) => p.OwnerRegime.Fulfilled() ? p.OwnerRegime.Entity(d).PrimaryColor : Colors.Transparent, 
             data)
     {
     }

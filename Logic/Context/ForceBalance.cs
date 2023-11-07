@@ -19,4 +19,10 @@ public class ForceBalance : Dictionary<Alliance, float>
     {
         return this.Keys.Where(a => this[a] > 0f);
     }
+
+    public float GetHostilePowerPoints(Alliance a, Data d)
+    {
+        return this.Where(kvp => a.Rivals.Contains(a))
+            .Sum(kvp => kvp.Value);
+    }
 }

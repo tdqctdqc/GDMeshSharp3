@@ -12,7 +12,7 @@ public partial class AlliancePolyFill : PolyFillChunkGraphic
 
     private static Color GetColor(MapPolygon poly, Data d)
     {
-        if(poly.Regime.Fulfilled() == false) return Colors.Transparent;
-        return poly.Regime.Entity(d).GetAlliance(d).Leader.Entity(d).PrimaryColor;
+        if(poly.OwnerRegime.Fulfilled() == false) return Colors.Transparent;
+        return poly.OwnerRegime.Entity(d).GetAlliance(d).Leader.Entity(d).PrimaryColor;
     }
 }

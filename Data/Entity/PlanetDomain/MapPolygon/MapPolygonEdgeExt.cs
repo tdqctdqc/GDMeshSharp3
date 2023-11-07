@@ -66,7 +66,7 @@ public static class MapPolygonEdgeExt
     }
     public static bool IsRegimeBorder(this MapPolygonEdge b, Data data)
     {
-        return b.HighPoly.Entity(data).Regime.RefId != b.LowPoly.Entity(data).Regime.RefId;
+        return b.HighPoly.Entity(data).OwnerRegime.RefId != b.LowPoly.Entity(data).OwnerRegime.RefId;
     }
 
     public static float GetAvgMoisture(this MapPolygonEdge e, Data data)

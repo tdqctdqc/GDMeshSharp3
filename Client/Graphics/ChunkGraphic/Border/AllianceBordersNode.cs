@@ -12,16 +12,16 @@ public partial class AllianceBordersNode : BorderChunkNode
 
     protected override Color GetColor(MapPolygon p, Data data)
     {
-        if(p.Regime.Fulfilled() == false) return Colors.Transparent;
-        var allianceLeader = p.Regime.Entity(data).GetAlliance(data).Leader.Entity(data);
+        if(p.OwnerRegime.Fulfilled() == false) return Colors.Transparent;
+        var allianceLeader = p.OwnerRegime.Entity(data).GetAlliance(data).Leader.Entity(data);
         return allianceLeader.PrimaryColor;
     }
 
     protected override float GetThickness(MapPolygon m, MapPolygon n, Data data)
     {
-        if (m.Regime.RefId == -1 || n.Regime.RefId == -1) return 30f;
-        if (m.Regime.Entity(data).GetAlliance(data) 
-            == n.Regime.Entity(data).GetAlliance(data))
+        if (m.OwnerRegime.RefId == -1 || n.OwnerRegime.RefId == -1) return 30f;
+        if (m.OwnerRegime.Entity(data).GetAlliance(data) 
+            == n.OwnerRegime.Entity(data).GetAlliance(data))
         {
             return 5f;
         }
@@ -30,6 +30,6 @@ public partial class AllianceBordersNode : BorderChunkNode
 
     protected override bool InUnion(MapPolygon p1, MapPolygon p2, Data data)
     {
-        return p1.Regime.RefId == p2.Regime.RefId;
+        return p1.OwnerRegime.RefId == p2.OwnerRegime.RefId;
     }
 }

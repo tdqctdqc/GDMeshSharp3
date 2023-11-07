@@ -24,7 +24,7 @@ public class StartManufacturingProjectProc : Procedure
         }
         catch (Exception e)
         {
-            GD.Print("problem enacting manuf project " + Project.GetType().Name);
+            Game.I.Logger.Log("problem enacting manuf project " + Project.GetType().Name, LogType.Logic);
         }
     }
 

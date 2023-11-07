@@ -81,7 +81,7 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
 
     private static Control GetRegime(PolyTriPosition t, Data d)
     {
-        var polyR = t.Poly(d).Regime;
+        var polyR = t.Poly(d).OwnerRegime;
         var txt = "Regime: " + (polyR.Empty()
             ? "None"
             : polyR.Entity(d).Name);

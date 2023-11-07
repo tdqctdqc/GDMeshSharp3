@@ -58,7 +58,7 @@ public class InfrastructureGenerator : Generator
         IDictionary<Vector2, RoadModel> segs)
     {
         var regimeFragments = UnionFind.Find(lm.Polys,
-            (p, q) => p.Regime.RefId == q.Regime.RefId,
+            (p, q) => p.OwnerRegime.RefId == q.OwnerRegime.RefId,
             p => p.Neighbors.Items(_key.Data));
         var city = _data.Models.Settlements.City;
         var town = _data.Models.Settlements.Town;
@@ -132,7 +132,7 @@ public class InfrastructureGenerator : Generator
     private void GeneratePorts(Landmass lm)
     {
         var uf = new UnionFind<MapPolygon>(
-            (p, n) => p.Regime.RefId == n.Regime.RefId);
+            (p, n) => p.OwnerRegime.RefId == n.OwnerRegime.RefId);
         foreach (var poly in lm.Polys)
         {
             uf.AddElement(poly, poly.Neighbors.Items(_key.Data));

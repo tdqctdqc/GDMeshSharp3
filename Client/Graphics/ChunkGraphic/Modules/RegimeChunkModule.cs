@@ -24,7 +24,7 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
             d);
         l.AddTransparencySetting(m => m._fill, "Fill Transparency");
         l.AddTransparencySetting(m => m._borders, "Border Transparency");
-        l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedRegime,
+        l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedOwnerRegime,
             r => r.Entity.GetChunkAndNeighboringChunks(d),
             (n, m) => { m.HandlePolygonRegimeChange(n, d); });
         return l;

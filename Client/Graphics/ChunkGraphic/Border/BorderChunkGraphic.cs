@@ -42,8 +42,8 @@ public abstract partial class BorderChunkNode
             .Where(p =>
             {
                 var ns = p.Neighbors.Items(data);
-                var r = p.Regime;
-                var rFulfilled = p.Regime.Fulfilled();
+                var r = p.OwnerRegime;
+                var rFulfilled = p.OwnerRegime.Fulfilled();
                 var nNotInUnion = ns.Any(n => InUnion(n, p, data) == false);
                 return rFulfilled
                        && nNotInUnion;
@@ -52,8 +52,8 @@ public abstract partial class BorderChunkNode
 
     protected override bool Ignore(MapPolygon element, Data data)
     {
-        return element.Regime.Fulfilled() == false
-               || element.Neighbors.Items(data).Any(n => n.Regime.RefId != element.Regime.RefId) == false;
+        return element.OwnerRegime.Fulfilled() == false
+               || element.Neighbors.Items(data).Any(n => n.OwnerRegime.RefId != element.OwnerRegime.RefId) == false;
     }
 
     public void QueueChangeAround(MapPolygon poly, Data data)

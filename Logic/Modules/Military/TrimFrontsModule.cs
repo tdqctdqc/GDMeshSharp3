@@ -22,36 +22,22 @@ public class TrimFrontsModule : LogicModule
     public void TrimFronts(Alliance alliance, TrimFrontsProcedure proc,
         Data data, LogicWriteKey key)
     {
-        var controlled = data.Context
-            .ControlledAreas[alliance].Select(wp => wp.Id)
-            .ToHashSet();
-        var regimes = alliance.Members.Items(data);
-        
-        foreach (var regime in regimes)
-        {
-            var fronts = data.Military.FrontAux.Fronts[regime];
-            if (fronts == null) continue;
-            foreach (var front in fronts)
-            {
-                CheckFront(front, proc, controlled, data, key);
-            }
-        }
     }
 
     private void CheckFront(Front front, TrimFrontsProcedure proc,
         HashSet<int> controlled, Data data, LogicWriteKey key)
     {
         var regime = front.Regime.Entity(data);
-        var toRemove = front.WaypointIds
+        var toRemove = front.ContactLineWaypointIds
             .Where(i => controlled.Contains(i) == false);
         if(toRemove.Count() == 0) return;
-        if (toRemove.Count() == front.WaypointIds.Count())
+        if (toRemove.Count() == front.ContactLineWaypointIds.Count())
         {
             proc.FrontsToRemove.Add(front.Id);
             return;
         }
 
-        var toStay = front.WaypointIds.Except(toRemove);
+        var toStay = front.ContactLineWaypointIds.Except(toRemove);
         var floodFill = FloodFill<int>.GetFloodFill(
             toStay.First(), toStay.Contains,
             i => data.Planet.Nav.Waypoints[i].Neighbors);
@@ -68,7 +54,7 @@ public class TrimFrontsModule : LogicModule
 
         foreach (var union in unions)
         {
-            var newFront = Front.Create(regime, union, key);
+            var newFront = Front.Construct(regime, union, key);
         }
     }
 }

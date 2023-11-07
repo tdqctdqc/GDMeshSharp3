@@ -13,14 +13,14 @@ public partial class DiplomacyPolyFill : PolyFillChunkGraphic
 
     private static Color GetColor(MapPolygon p, Data d)
     {
-        if (p.Regime.Fulfilled() == false) return Colors.Transparent;
+        if (p.OwnerRegime.Fulfilled() == false) return Colors.Transparent;
         if (d.BaseDomain.PlayerAux.LocalPlayer == null) return Colors.Gray;
         if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.Empty()) return Colors.Gray;
         var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(d);
-        if (p.Regime.RefId == playerRegime.Id) return Colors.Green;
+        if (p.OwnerRegime.RefId == playerRegime.Id) return Colors.Green;
         var playerAlliance = playerRegime.GetAlliance(d);
-        var polyAlliance = p.Regime.Entity(d).GetAlliance(d);
-        if (playerAlliance.Members.RefIds.Contains(p.Regime.RefId)) 
+        var polyAlliance = p.OwnerRegime.Entity(d).GetAlliance(d);
+        if (playerAlliance.Members.RefIds.Contains(p.OwnerRegime.RefId)) 
             return Colors.SkyBlue;
         if (playerAlliance.AtWar.Contains(polyAlliance)) 
             return Colors.Red;

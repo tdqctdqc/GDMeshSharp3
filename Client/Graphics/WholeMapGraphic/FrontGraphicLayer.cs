@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 
 public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
 {
@@ -11,15 +12,35 @@ public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
             (front, graphic, seg, queue) => graphic.Update(front, d, seg, queue))
     {
     }
+
+    private void Draw(Data data)
+    {
+        foreach (var front in Graphics.Keys.ToList())
+        {
+            Remove(front, data);
+        }
+        var fronts = data.HostLogicData.RegimeAis.Dic.Values
+            .SelectMany(rAi => rAi.Military.Deployment.GetFrontAssignments())
+            .Select(fa => fa.Front);
+        foreach (var front in fronts)
+        {
+            Add(front, data);
+        }
+    }
     public static FrontGraphicLayer GetLayer(Client client, GraphicsSegmenter segmenter, Data d)
     {
         var l = new FrontGraphicLayer(client, segmenter, d);
-        l.RegisterForEntityLifetime(client, d);
+        
+        client.Data.Notices.Ticked.Blank.Subscribe(() =>
+            {
+                client.QueuedUpdates.Enqueue(() => l.Draw(d));
+            }
+        );
+        
         l.AddSetting(new BoolSettingsOption("Show Area", true),
             (f, v) => f.FrontNode.Visible = v);
         l.AddSetting(new BoolSettingsOption("Show Line", true),
             (f, v) => f.LineNode.Visible = v);
-        
         l.AddSetting(new BoolSettingsOption("Only show for current regime",
             false), (f, onlyShowCurr) =>
             {

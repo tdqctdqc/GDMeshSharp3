@@ -58,7 +58,7 @@ public class IdCount<T> : Count<int>
         }
         catch (Exception e)
         {
-            GD.Print("problem removing " + model.GetType().Name);
+            Game.I.Logger.Log("problem removing " + model.GetType().Name, LogType.Logic);
             throw;
         }
     }

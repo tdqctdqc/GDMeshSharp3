@@ -5,13 +5,13 @@ using System.Linq;
 
 public static class Apportioner
 {
-    public static List<float> ApportionLinear<T>(float toApportion, IEnumerable<T> cands, Func<T, float> getScore)
+    public static List<float> ApportionLinear<T>(float toApportion, IEnumerable<T> cands, Func<T, float> getPriority)
     {
-        var res = cands.Select(getScore).ToList();
-        var totalScore = res.Sum();
+        var res = cands.Select(getPriority).ToList();
+        var totalPriority = res.Sum();
         for (var i = 0; i < res.Count; i++)
         {
-            res[i] = toApportion * res[i] / totalScore;
+            res[i] = toApportion * res[i] / totalPriority;
         }
 
         return res;

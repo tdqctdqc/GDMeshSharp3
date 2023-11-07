@@ -16,8 +16,9 @@ public class FrontAssignment : ForceAssignment
     public override void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key)
     {
         var frontWps = Front.GetWaypoints(key.Data).ToHashSet();
-
-        var frontlines = Front.GetFrontlines(key.Data);
+        
+        var frontlines = RegimeMilitaryAi
+            .GetContactLines(Front.Regime.Entity(key.Data), frontWps, key.Data);
         Func<Unit, bool> distant = (u) =>
         {
             var wp = key.Data.Context.UnitWaypoints[u];
@@ -54,4 +55,14 @@ public class FrontAssignment : ForceAssignment
             key.SendMessage(new SetUnitOrderProcedure(unitGroup.MakeRef(), order));
         }
     }
+
+    public float GetPowerPointRatio(Data data)
+    {
+        var powerPoints = GetPowerPointsAssigned(data);
+        if (powerPoints == 0f) return 0f;
+        var opposing = Front.GetOpposingPowerPoints(data);
+        if (opposing == 0f) return Mathf.Inf;
+        return powerPoints / opposing;
+    }
+
 }

@@ -32,14 +32,14 @@ public partial class MapInputCatcher : Node
         Game.I.Client.Cam().Process(e);
     }
 
-
+    
     private void TryOpenRegimeOverview()
     {
         var poly = _mouseOverHandler.MouseOverPoly;
         if (poly == null) return;
-        if (poly.Regime.Fulfilled())
+        if (poly.OwnerRegime.Fulfilled())
         {
-            var r = poly.Regime.Entity(_client.Data);
+            var r = poly.OwnerRegime.Entity(_client.Data);
             var w = Game.I.Client.GetComponent<WindowManager>().OpenWindow<RegimeOverviewWindow>();
             w.Setup(r, _client);
         }

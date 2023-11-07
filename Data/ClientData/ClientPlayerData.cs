@@ -6,10 +6,8 @@ using Godot;
 public class ClientPlayerData
 {
     public Guid LocalPlayerGuid { get; private set; }
-    // public TurnOrders Orders { get; private set; }
     public MajorTurnOrders MajorOrders { get; private set; }
     public MinorTurnOrders MinorOrders { get; private set; }
-    public AllianceMajorTurnOrders AllianceMajorOrders { get; private set; }
     public ClientPlayerData(Data data)
     {
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>
@@ -62,7 +60,7 @@ public class ClientPlayerData
         MinorOrders = MinorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Entity(data));
     }
 
-    public void SubmitOrders(Data data)
+    public RegimeTurnOrders GetOrdersForThisTurn(Data data)
     {
         RegimeTurnOrders orders;
         if (data.BaseDomain.GameClock.MajorTurn(data))
@@ -73,8 +71,7 @@ public class ClientPlayerData
         {
             orders = MinorOrders;
         }
-        
-        var c = SubmitTurnCommand.Construct(orders, LocalPlayerGuid);
-        data.Requests.QueueCommand.Invoke(c);
+
+        return orders;
     }
 }

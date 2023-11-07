@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 
 [MessagePack.Union(0, typeof(FrontAssignment))]
 public abstract class ForceAssignment : IPolymorph
@@ -10,5 +11,10 @@ public abstract class ForceAssignment : IPolymorph
     public ForceAssignment()
     {
         Groups = new HashSet<UnitGroup>();
+    }
+
+    public float GetPowerPointsAssigned(Data data)
+    {
+        return Groups.Sum(g => g.GetPowerPoints(data));
     }
 }
