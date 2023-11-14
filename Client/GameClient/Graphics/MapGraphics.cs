@@ -21,6 +21,8 @@ public partial class MapGraphics : Node2D, IClientComponent
 
     public MapGraphics(Client client)
     {
+        
+        
         var sw = new Stopwatch();
         sw.Start();
 
@@ -31,7 +33,7 @@ public partial class MapGraphics : Node2D, IClientComponent
         _hook = new Node2D();
         AddChild(_hook);
         GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, _hook, client.Data);
-
+        
         Highlighter = new PolyHighlighter(client.Data);
         AddChild(Highlighter);
         
@@ -53,6 +55,12 @@ public partial class MapGraphics : Node2D, IClientComponent
     {
         GraphicLayerHolder.Update(d, UpdateQueue);
     }
+
+    public override void _Input(InputEvent @event)
+    {
+        InputCatcher.HandleInput(@event);
+    }
+
     public void Process(float delta)
     {
         while (UpdateQueue.TryDequeue(out var u))

@@ -10,7 +10,7 @@ public partial class UnitGroupGraphic : Node2D
     private UnitGroupGraphic() { }
     public UnitGroupGraphic(UnitGroup unitGroup, GraphicsSegmenter segmenter, Data d)
     {
-        
+        Group = unitGroup;
     }
 
     public void Draw(Data data, GraphicsSegmenter segmenter)

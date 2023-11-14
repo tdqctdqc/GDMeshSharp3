@@ -5,9 +5,9 @@ using Godot;
 
 public class UnitOrdersGraphicLayer : GraphicLayer<UnitGroup, UnitOrderGraphic>
 {
-    public UnitOrdersGraphicLayer(string name, Client client,
+    public UnitOrdersGraphicLayer(int z, string name, Client client,
         GraphicsSegmenter segmenter) 
-        : base(name, segmenter,
+        : base(z, name, segmenter,
             (group, graphic, seg, update) =>
             {
                 graphic.Update(client.Data, seg, client.QueuedUpdates);
@@ -20,10 +20,10 @@ public class UnitOrdersGraphicLayer : GraphicLayer<UnitGroup, UnitOrderGraphic>
         return new UnitOrderGraphic(key, _segmenter, d);
     }
 
-    public static UnitOrdersGraphicLayer GetLayer(GraphicsSegmenter segmenter,
+    public static UnitOrdersGraphicLayer GetLayer(int z, GraphicsSegmenter segmenter,
         Client client)
     {
-        var l = new UnitOrdersGraphicLayer("Unit Orders", client,
+        var l = new UnitOrdersGraphicLayer(z, "Unit Orders", client,
             segmenter);
         l.RegisterForEntityLifetime(client, client.Data);
         client.Data.Notices.Ticked.Blank.Subscribe(

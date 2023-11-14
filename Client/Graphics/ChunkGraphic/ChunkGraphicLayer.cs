@@ -9,14 +9,16 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
 {
     public string Name { get; private set; }
     public Dictionary<Vector2, TGraphic> ByChunkCoords { get; private set; }
+    public int Z { get; }
     public List<ISettingsOption> Settings { get; private set; }
     private Dictionary<ISettingsOption, Action<TGraphic>> _settingsUpdaters;
     private Func<MapChunk, TGraphic> _getGraphic;
     private bool _visible = true;
     private GraphicsSegmenter _segmenter;
-    public ChunkGraphicLayer(string name, GraphicsSegmenter segmenter,
+    public ChunkGraphicLayer(int z, string name, GraphicsSegmenter segmenter,
         Func<MapChunk, TGraphic> getGraphic, Data data)
     {
+        Z = z;
         _getGraphic = getGraphic;
         Name = name;
         Settings = new List<ISettingsOption>();
@@ -32,6 +34,8 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     private void Add(MapChunk chunk, Data data)
     {
         var graphic = _getGraphic(chunk);
+        graphic.ZIndex = Z;
+        graphic.ZAsRelative = false;
         ByChunkCoords.Add(chunk.Coords, graphic);
         _segmenter.AddElement(graphic, chunk.RelTo.Center);
         foreach (var kvp in _settingsUpdaters)

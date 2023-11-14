@@ -12,9 +12,11 @@ public class ChunkGraphicSwitchLayer : IGraphicLayer
     public string Name { get; private set; }
     
     private bool _visible = true;
+    public int Z { get; }
     public List<ISettingsOption> Settings { get; private set; }
-    public ChunkGraphicSwitchLayer(string name, params IGraphicLayer[] layers)
+    public ChunkGraphicSwitchLayer(int z, string name, params IGraphicLayer[] layers)
     {
+        Z = z;
         Name = name;
         Layers = layers.ToList();
         Settings = new List<ISettingsOption>();

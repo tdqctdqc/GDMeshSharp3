@@ -7,8 +7,8 @@ using System.Linq;
 public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
 {
     
-    private FrontGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) 
-        : base("Fronts", segmenter,
+    private FrontGraphicLayer(int z, Client client, GraphicsSegmenter segmenter, Data d) 
+        : base(z, "Fronts", segmenter,
             (front, graphic, seg, queue) =>
             {
                 graphic.Update(front, d, seg, queue);
@@ -30,9 +30,9 @@ public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
             Add(front, data);
         }
     }
-    public static FrontGraphicLayer GetLayer(Client client, GraphicsSegmenter segmenter, Data d)
+    public static FrontGraphicLayer GetLayer(int z, Client client, GraphicsSegmenter segmenter, Data d)
     {
-        var l = new FrontGraphicLayer(client, segmenter, d);
+        var l = new FrontGraphicLayer(z, client, segmenter, d);
         
         client.Data.Notices.Ticked.Blank.Subscribe(() =>
             {

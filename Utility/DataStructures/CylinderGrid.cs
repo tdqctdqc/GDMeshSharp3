@@ -1,13 +1,16 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public class CylinderGrid<T> 
 {
     public Dictionary<Vector2I, HashSet<T>> Cells { get; private set; }
+    public (Vector2I, float)[] SearchSpiralKeyOffsets { get; private set; }
     public float CellWidth { get; }
     public float CellHeight { get; }
+    public float MaxCellDim => Mathf.Max(CellWidth, CellHeight);
     public int NumXPartitions { get; }
     public int NumYPartitions { get; }
     public Vector2 Dimension { get; }
@@ -30,27 +33,40 @@ public class CylinderGrid<T>
                 Cells.Add(key, new HashSet<T>());
             }
         }
+
+        SearchSpiralKeyOffsets = GetSearchSpiral();
     }
     
     public bool TryGetClosest(Vector2 p, out T close)
     {
+        close = default;
         var startKey = GetKey(p);
-        T closeInner = default;
         bool found = false;
-        var dist = Mathf.Inf;
-        void pick(T t)
+        float dist = Mathf.Inf;
+        for (var i = 0; i < SearchSpiralKeyOffsets.Length; i++)
         {
-            var pos = _getPos(t);
-            var tDist = GetDist(pos, p);
-            if (tDist < dist)
+            var v = SearchSpiralKeyOffsets[i];
+            var keyOffset = v.Item1;
+            var keyDist = v.Item2;
+            if (found && keyDist > dist + MaxCellDim)
             {
-                dist = tDist;
-                closeInner = t;
-                found = true;
+                break;
+            }
+            var key = startKey + keyOffset;
+            key = ClampKey(key);
+            var set = Cells[key];
+            if (set.Count > 0)
+            {
+                var closeInCell = set.MinBy(t => GetDist(_getPos(t), p));
+                var closeInCellDist = GetDist(_getPos(closeInCell), p);
+                if (closeInCellDist < dist)
+                {
+                    found = true;
+                    dist = closeInCellDist;
+                    close = closeInCell;
+                }
             }
         }
-        SearchRingAroundForAll(startKey, pick);
-        close = closeInner;
         return found;
     }
 
@@ -68,77 +84,6 @@ public class CylinderGrid<T>
         return x;
     }
 
-    private void SearchRingAroundForAll(Vector2I centerKey, Action<T> action)
-    {
-        var xToSearch = Mathf.CeilToInt(NumXPartitions / 2f);
-        var yToSearch = Mathf.CeilToInt(NumYPartitions / 2f);
-        var toSearch = Mathf.Max(xToSearch, yToSearch);
-        for (var i = 0; i < toSearch; i++)
-        {
-            SearchRing(centerKey, i, action);
-        }
-    }
-    private void SearchRingAroundForFirst(Vector2I centerKey, Action<T> action)
-    {
-        var xToSearch = Mathf.CeilToInt(NumXPartitions / 2f);
-        var yToSearch = Mathf.CeilToInt(NumYPartitions / 2f);
-        var toSearch = Mathf.Max(xToSearch, yToSearch);
-        bool found = false;
-        Action<T> action2 = t =>
-        {
-            action(t);
-            found = true;
-        };
-        for (var i = 0; i < toSearch; i++)
-        {
-            SearchRing(centerKey, i, action);
-            if (found) break;
-        }
-    }
-    private void SearchRing(Vector2I centerKey, int dist,
-        Action<T> action)
-    {
-        var minX = centerKey.X - dist;
-        var maxX = centerKey.X + dist;
-        var minY = centerKey.Y - dist;
-        var maxY = centerKey.Y + dist;
-        for (int i = minX; i <= maxX; i++)
-        {
-            var xIter = GetXModulo(i);
-            if (minY >= 0)
-            {
-                foreach (var t in Cells[new Vector2I(xIter, minY)])
-                {
-                    action(t);
-                }
-            }
-
-            if (maxY < NumYPartitions)
-            {
-                foreach (var t in Cells[new Vector2I(xIter, maxY)])
-                {
-                    action(t);
-                }
-            }
-        }
-        
-        var minXModulo = GetXModulo(minX);
-        var maxXModulo = GetXModulo(maxX);
-        for (int i = minY; i <= maxY; i++)
-        {
-            if (i >= 0 && i < NumYPartitions)
-            {
-                foreach (var t in Cells[new Vector2I(minXModulo, i)])
-                {
-                    action(t);
-                }
-                foreach (var t in Cells[new Vector2I(maxXModulo, i)])
-                {
-                    action(t);
-                }
-            }
-        }
-    }
     public void Add(T t)
     {
         var key = GetKey(_getPos(t));
@@ -148,6 +93,15 @@ public class CylinderGrid<T>
         }
         Cells[key].Add(t);
     }
+
+    private Vector2I ClampKey(Vector2I key)
+    {
+        while (key.X >= NumXPartitions) key.X -= NumXPartitions;
+        while (key.X < 0) key.X += NumXPartitions;
+        while (key.Y >= NumYPartitions) key.Y -= NumYPartitions;
+        while (key.Y < 0) key.Y += NumYPartitions;
+        return key;
+    }
     private Vector2I GetKey(Vector2 point)
     {
         int x = Mathf.FloorToInt(point.X / CellWidth);
@@ -155,5 +109,25 @@ public class CylinderGrid<T>
         int y = Mathf.FloorToInt(point.Y / CellHeight);
         if (y == NumYPartitions) y--;
         return new Vector2I(x,y);
+    }
+
+
+    private (Vector2I, float)[] GetSearchSpiral()
+    {
+        var xRange = Mathf.CeilToInt(NumXPartitions / 2) + 1;
+        var yRange = Mathf.CeilToInt(NumYPartitions / 2) + 1;
+        var offsets = new List<(Vector2I, float)>();
+        
+        for (var i = -xRange; i <= xRange; i++)
+        {
+            for (var j = -yRange; j <= yRange; j++)
+            {
+                var pos = new Vector2(i * CellWidth, j * CellHeight);
+                var key = new Vector2I(i, j);
+                offsets.Add((key, pos.Length()));
+            }
+        }
+
+        return offsets.OrderBy(v => v.Item2).ToArray();
     }
 }

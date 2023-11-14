@@ -10,15 +10,17 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
 {
     public Dictionary<TKey, TGraphic> Graphics { get; private set; }
     public string Name { get; private set; }
+    public int Z { get; }
     public List<ISettingsOption> Settings { get; }
     private Dictionary<ISettingsOption, Action<TGraphic>> _settingsUpdaters;
     private Action<TKey, TGraphic, GraphicsSegmenter, ConcurrentQueue<Action>> _updateGraphic;
     private bool _visible = true;
     protected GraphicsSegmenter _segmenter;
 
-    protected GraphicLayer(string name, GraphicsSegmenter segmenter,
+    protected GraphicLayer(int z, string name, GraphicsSegmenter segmenter,
         Action<TKey, TGraphic, GraphicsSegmenter, ConcurrentQueue<Action>> updateGraphic)
     {
+        Z = z;
         _updateGraphic = updateGraphic;
         _segmenter = segmenter;
         Graphics = new Dictionary<TKey, TGraphic>();
@@ -30,6 +32,8 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
     public void Add(TKey key, Data d)
     {
         var graphic = GetGraphic(key, d);
+        graphic.ZIndex = Z;
+        graphic.ZAsRelative = false;
         foreach (var kvp in _settingsUpdaters)
         {
             kvp.Value.Invoke(graphic);

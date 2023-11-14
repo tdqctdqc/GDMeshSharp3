@@ -14,7 +14,7 @@ public partial class ClosableWindow : Window
     {
         if (e is InputEventMouse m && m.Position.InBox(Vector2.Zero, Size) == false)
         {
-            Game.I.Client.GetComponent<MapGraphics>()?.InputCatcher._UnhandledInput(m);
+            Game.I.Client.GetComponent<MapGraphics>()?.InputCatcher.HandleInput(m);
         }
     }
 

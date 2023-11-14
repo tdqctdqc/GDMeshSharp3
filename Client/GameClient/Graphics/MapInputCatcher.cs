@@ -16,7 +16,7 @@ public partial class MapInputCatcher : Node
     private MapInputCatcher()
     {
     }
-    public override void _UnhandledInput(InputEvent e)
+    public void HandleInput(InputEvent e)
     {
         if (e is InputEventMouseMotion mm)
         {

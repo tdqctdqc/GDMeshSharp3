@@ -38,9 +38,10 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
             .Where(k => chunk.Polys.Contains(d[(int)k.X]));
         
     }
-    public static ChunkGraphicLayer<RoadChunkGraphicNode> GetLayer(Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<RoadChunkGraphicNode> GetLayer(int z, Data d, GraphicsSegmenter segmenter)
     {
-        var l = new ChunkGraphicLayer<RoadChunkGraphicNode>("Roads", segmenter, 
+        var l = new ChunkGraphicLayer<RoadChunkGraphicNode>(z,
+            "Roads", segmenter, 
             c => new RoadChunkGraphicNode(c, d), d);
         return l;
     }
