@@ -33,6 +33,8 @@ public class PlanetDomain
     
     public Vector2 GetOffsetTo(Vector2 p1, Vector2 p2)
     {
+        p1 = ClampPosition(p1);
+        p2 = ClampPosition(p2);
         var w = _data.Planet.Width;
         var off1 = p2 - p1;
         var off2 = (off1 + Vector2.Right * w);
@@ -44,7 +46,8 @@ public class PlanetDomain
 
     public Vector2 ClampPosition(Vector2 pos)
     {
-        if (pos.Y < 0 || pos.Y > Height) throw new Exception();
+        if (pos.Y < 0 ) pos.Y = 0;
+        if (pos.Y > Height) pos.Y = Height;
         while (pos.X < 0) pos += Vector2.Right * Width;
         while (pos.X > Width) pos += Vector2.Left * Width;
         return pos;

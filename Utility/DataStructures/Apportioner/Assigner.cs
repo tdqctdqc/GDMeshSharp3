@@ -3,10 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Priority_Queue;
+using Godot;
 
-public class Assigner<TPicker, TPicked>
+public class Assigner
 {
-    public static void Assign(IEnumerable<TPicker> pickers,
+    public static void Assign<TPicker, TPicked>(IEnumerable<TPicker> pickers,
         Func<TPicker, float> getPriority,
         HashSet<TPicked> toPick,
         Action<TPicker, TPicked> assign,
@@ -26,5 +27,204 @@ public class Assigner<TPicker, TPicked>
             toPick.Remove(preferred);
             priorityQueue.UpdatePriority(picker, -getPriority(picker));
         }
+    }
+
+    public static void AssignAlongLine<TPoint, TPicked>(
+        List<TPoint> points,
+        List<TPicked> toPick,
+        Func<TPicked, float> getStrength,
+        Func<TPoint, TPoint, float> getSegCost,
+        Func<TPoint, Vector2> getPos,
+        Func<Vector2, Vector2, Vector2> getOffset,
+        Action<TPicked, List<Vector2>> assign 
+        )
+    {
+        var totalCost = 0f;
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            totalCost += getSegCost(points[i], points[i + 1]);
+        }
+
+        if (totalCost == 0f) throw new Exception();
+        var totalStrength = toPick.Sum(getStrength);
+        var unitProportions = new List<float>();
+        var runningStrength = 0f;
+        for (var i = 0; i < toPick.Count; i++)
+        {
+            var picked = toPick[i];
+            runningStrength += getStrength(picked);
+            unitProportions.Add(runningStrength / totalStrength);
+        }
+
+        var pointProportions = new List<float>();
+        var runningCost = 0f;
+        var runningPoint = points.First();
+        for (var i = 0; i < points.Count; i++)
+        {
+            runningCost += getSegCost(runningPoint, points[i]);
+            pointProportions.Add(runningCost / totalCost);
+            runningPoint = points[i];
+        }
+
+        var currPos = getPos(points.First());
+        var pointIndex = 0;
+        for (var i = 0; i < toPick.Count; i++)
+        {
+            var picked = toPick[i];
+            var targetProportion = unitProportions[i];
+            var line = new List<Vector2>{currPos};
+            for (var j = pointIndex + 1; j < points.Count; j++)
+            {
+                Vector2 point;
+                if (pointProportions[j] <= targetProportion || j == points.Count - 1)
+                {
+                    point = getPos(points[j]);
+                    if (point.HasNaN())
+                    {
+                        throw new Exception();
+                    }
+                    currPos = point;
+                    pointIndex++;
+                    line.Add(point);
+                }
+                else
+                {
+                    var prevPoint = points[pointIndex];
+                    var prevPos = getPos(prevPoint);
+                    var nextPoint = points[pointIndex + 1];
+                    var nextPos = getPos(nextPoint);
+                    var prevPointProportion = pointProportions[pointIndex];
+                    var nextPointProportion = pointProportions[pointIndex + 1];
+                    var segProportion = nextPointProportion - prevPointProportion;
+                    if (segProportion == 0f)
+                    {
+                        throw new Exception();
+                    }
+                    var ratio = (targetProportion - prevPointProportion) / segProportion;
+                    point = prevPos + getOffset(prevPos, nextPos) * ratio;
+                    line.Add(point);
+                    currPos = point;
+                    if (point.HasNaN())
+                    {
+                        throw new Exception($"prevPos: {prevPos}" +
+                                            $"\nnextPos: {nextPos}" +
+                                            $"\nprevPointProportion: {prevPointProportion}" +
+                                            $"\nnextPointProportion: {nextPointProportion}" +
+                                            $"\nsegProportion: {segProportion}" +
+                                            $"");
+                    }
+                    line.Add(point);
+                    break;
+                }
+            }
+
+            assign(picked, line);
+            currPos = line.Last();
+        }
+    }
+
+
+
+
+    public static void AssignAlongLine2<TPoint, TUnit>(
+        List<TPoint> points,
+        List<TUnit> units,
+        Func<TUnit, float> getStrength,
+        Func<TPoint, TPoint, float> getSegCost,
+        Func<TPoint, Vector2> getPos,
+        Func<Vector2, Vector2, Vector2> getOffset,
+        Action<TUnit, List<Vector2>> assign
+    )
+    {
+        if (points.Count < 2) return;
+        var totalCost = 0f;
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            totalCost += getSegCost(points[i], points[i + 1]);
+        }
+
+        if (totalCost == 0f) throw new Exception();
+        if (float.IsNaN(totalCost)) throw new Exception();
+
+
+        if (totalCost == 0f) throw new Exception();
+        var totalStrength = units.Sum(getStrength);
+        if (totalStrength == 0f) throw new Exception();
+        var unitProportions = new Queue<(TUnit unit, float startProp, float endProp)>();
+
+        var runningStrength = 0f;
+        for (var i = 0; i < units.Count; i++)
+        {
+            var unit = units[i];
+            var startProp = runningStrength / totalStrength;
+            runningStrength += getStrength(unit);
+            if (float.IsNaN(runningStrength)) throw new Exception();
+            var endProp = runningStrength / totalStrength;
+            unitProportions.Enqueue((unit, startProp, endProp));
+        }
+
+        var pointProportions = new List<float>{0};
+        var runningCost = 0f;
+        for (var i = 1; i < points.Count; i++)
+        {
+            runningCost += getSegCost(points[i - 1], points[i]);
+            if (float.IsNaN(runningCost)) throw new Exception();
+            pointProportions.Add(runningCost / totalCost);
+        }
+
+        var startEndPoints = new Dictionary<TUnit, (float cumulProp, Vector2 start, Vector2 end)>();
+
+        while (unitProportions.TryDequeue(out var info))
+        {
+            var (unit, startProp, endProp) = info;
+            var line = new List<Vector2>();
+            var start = getPointAtProportion(startProp);
+            line.Add(start);
+            var firstIndexBetween = pointProportions
+                .FindIndex(p => p > startProp && p < endProp);
+            var lastIndexBetween = pointProportions
+                .FindLastIndex(p => p > startProp && p < endProp);
+            if (firstIndexBetween != -1 && lastIndexBetween != -1)
+            {
+                for (int i = firstIndexBetween; i <= lastIndexBetween; i++)
+                {
+                    line.Add(getPos(points[i]));
+                }
+            }
+            
+
+            var end = getPointAtProportion(endProp);
+            line.Add(end);
+            assign(unit, line);
+        }
+
+        Vector2 getPointAtProportion(float prop)
+        {
+            if (prop == 0f) return getPos(points[0]);
+            if (prop == 1f) return getPos(points[points.Count - 1]);
+            var lowerBoundIndex = pointProportions
+                .FindLastIndex(f => prop >= f);
+            if (lowerBoundIndex == -1)
+            {
+                throw new Exception();
+            }
+            if (lowerBoundIndex == points.Count - 1)
+            {
+                return getPos(points[points.Count - 1]);
+            }
+
+            var lowerPoint = points[lowerBoundIndex];
+            var upperPoint = points[lowerBoundIndex + 1];
+            var lowerPointProportion = pointProportions[lowerBoundIndex];
+            var upperPointProportion = pointProportions[lowerBoundIndex + 1];
+
+            var ratioAlongSeg = (prop - lowerPointProportion) / (upperPointProportion - lowerPointProportion);
+
+            var offset = getOffset(getPos(lowerPoint), getPos(upperPoint));
+            return getPos(lowerPoint) + offset * ratioAlongSeg;
+        }
+
+
+    
     }
 }

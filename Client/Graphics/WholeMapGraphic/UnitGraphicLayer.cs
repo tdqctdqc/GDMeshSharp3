@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Godot;
 
-public class UnitGraphicLayer : GraphicLayer<Unit, UnitGraphic>
+public class UnitGraphicLayer : GraphicLayer<UnitGroup, UnitGroupGraphic>
 {
     public UnitGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) 
         : base("Units", segmenter,
@@ -13,8 +13,8 @@ public class UnitGraphicLayer : GraphicLayer<Unit, UnitGraphic>
         this.RegisterForEntityLifetime(client, d);
     }
 
-    protected override UnitGraphic GetGraphic(Unit key, Data d)
+    protected override UnitGroupGraphic GetGraphic(UnitGroup key, Data d)
     {
-        return new UnitGraphic(key, _segmenter, d);
+        return new UnitGroupGraphic(key, _segmenter, d);
     }
 }

@@ -3,7 +3,7 @@ using Godot;
 
 public class NavAux
 {
-    public Grid<Waypoint> WaypointGrid { get; private set; }
+    public CylinderGrid<Waypoint> WaypointGrid { get; private set; }
     public NavAux(Data data)
     {
         data.Notices.FinishedStateSync.Subscribe(() => MakeWaypointGrid(data));
@@ -14,11 +14,12 @@ public class NavAux
     {
         var gridCellSize = 100f;
         var numPartitions = Mathf.CeilToInt(data.Planet.Info.Dimensions.X / gridCellSize);
-        WaypointGrid = new Grid<Waypoint>(numPartitions, data.Planet.Info.Dimensions, wp => wp.Pos,
-            data);
+        WaypointGrid = new CylinderGrid<Waypoint>(
+            data.Planet.Info.Dimensions,
+            100f, wp => wp.Pos);
         foreach (var wp in data.Planet.Nav.Waypoints.Values)
         {
-            WaypointGrid.AddElement(wp);
+            WaypointGrid.Add(wp);
         }
     }
 }

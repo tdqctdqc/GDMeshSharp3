@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -41,7 +42,19 @@ public class DeploymentAi
             var contactLines = RegimeMilitaryAi.GetContactLines(regime, union, key.Data);
             foreach (var contactLine in contactLines)
             {
-                var front = Front.Construct(regime, contactLine.Select(wp => wp.Id),
+                for (var i = 0; i < contactLine.Count - 1; i++)
+                {
+                    if (contactLine[i].GetNeighboringWaypoints(key.Data).Contains(contactLine[i + 1]) == false)
+                    {
+                        throw new Exception();
+                    }
+
+                    if (contactLine[i] == contactLine[i + 1])
+                    {
+                        throw new Exception();
+                    }
+                }
+                var front = Front.Construct(regime, contactLine.Select(wp => wp.Id).ToList(),
                     key);
                 var assgn = new FrontAssignment(front);
                 ForceAssignments.Add(assgn);
@@ -57,7 +70,7 @@ public class DeploymentAi
             ?.ToList();
         if (freeGroups == null || freeGroups.Count == 0) return;
 
-        Assigner<FrontAssignment, UnitGroup>.Assign(
+        Assigner.Assign<FrontAssignment, UnitGroup>(
             frontAssgns, 
             fa => -fa.GetPowerPointRatio(data),
             freeGroups.ToHashSet(),

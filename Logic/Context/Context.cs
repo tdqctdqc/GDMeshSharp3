@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -64,7 +65,12 @@ public class Context
         
         foreach (var u in units)
         {
-            var wp = wpGrid.GetElementAtPoint(u.Position);
+            if (u.Position.HasNaN()) throw new Exception();
+            var found = wpGrid.TryGetClosest(u.Position, out var wp);
+            if (found = false)
+            {
+                throw new Exception("couldnt find waypoint near " + u.Position);
+            }
             UnitWaypoints[u] = wp;
             var forceBalance = WaypointForceBalances[wp];
             forceBalance.Add(u, data);

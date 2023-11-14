@@ -32,6 +32,11 @@ public class GoToWaypointOrder : UnitOrder
         // GD.Print("havent implemented go to yet");
     }
 
+    public override void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data data)
+    {
+        return;
+    }
+
     private void MoveToWaypointCenter(Unit u, Waypoint wp, ref Vector2 pos)
     {
         

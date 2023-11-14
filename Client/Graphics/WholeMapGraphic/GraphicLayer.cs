@@ -25,7 +25,6 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
         Name = name;
         Settings = new List<ISettingsOption>();
         _settingsUpdaters = new Dictionary<ISettingsOption, Action<TGraphic>>();
-        
     }
 
     public void Add(TKey key, Data d)
@@ -36,6 +35,7 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
             kvp.Value.Invoke(graphic);
         }
         Graphics.Add(key, graphic);
+        graphic.Visible = _visible;
     }
     public void AddSetting<T>(SettingsOption<T> option, 
         Action<TGraphic, T> update)
@@ -99,6 +99,16 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
         }
     }
     protected abstract TGraphic GetGraphic(TKey key, Data d);
+    public void EnforceSettings()
+    {
+        foreach (var graphic in Graphics.Values)
+        {
+            foreach (var kvp in _settingsUpdaters)
+            {
+                kvp.Value.Invoke(graphic);
+            }
+        }
+    }
 }
 
 public static class WholeMapGraphicLayerExt
@@ -123,4 +133,5 @@ public static class WholeMapGraphicLayerExt
             }
         );
     }
+    
 }

@@ -27,4 +27,9 @@ public static class AllianceExt
             .SelectMany(p => p.Neighbors.Items(data).Where(e => e.OwnerRegime.Fulfilled()))
             .Select(p => p.OwnerRegime.Entity(data).GetAlliance(data)).Distinct();
     }
+
+    public static bool IsHostileTo(this Alliance a, Alliance b)
+    {
+        return a.Rivals.Contains(b);
+    }
 }

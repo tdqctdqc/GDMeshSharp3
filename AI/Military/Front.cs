@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -9,7 +10,7 @@ public class Front
     public int Id { get; private set; }
     public EntityRef<Regime> Regime { get; private set; }
     public List<int> ContactLineWaypointIds { get; private set; }
-    public static Front Construct(Regime r, IEnumerable<int> waypointIds, ICreateWriteKey key)
+    public static Front Construct(Regime r, List<int> waypointIds, ICreateWriteKey key)
     {
         var f = new Front(r.MakeRef(), waypointIds.ToList(), key.Data.IdDispenser.TakeId());
         return f;
@@ -29,16 +30,16 @@ public class Front
         return d.Planet.ClampPosition(p);
     }
 
-    public IEnumerable<Waypoint> GetWaypoints(Data data)
+    public List<Waypoint> GetContactLineWaypoints(Data data)
     {
-        return ContactLineWaypointIds.Select(i => data.Planet.Nav.Waypoints[i]);
+        return ContactLineWaypointIds.Select(i => data.Planet.Nav.Waypoints[i]).ToList();
     }
 
     public float GetOpposingPowerPoints(Data data)
     {
         var forceBalances = data.Context.WaypointForceBalances;
         var alliance = Regime.Entity(data).GetAlliance(data);
-        return GetWaypoints(data)
+        return GetContactLineWaypoints(data)
             .Sum(wp => forceBalances[wp].GetHostilePowerPoints(alliance, data));
     }
 }

@@ -6,7 +6,10 @@ using GeometRi;
 
 public static class Vector2Ext
 {
-    
+    public static bool HasNaN(this Vector2 v)
+    {
+        return float.IsNaN(v.X) || float.IsNaN(v.Y);
+    }
     public static Vector2 RoundTo2Digits(this Vector2 v)
     {
         return new Vector2(v.X.RoundTo2Digits(), v.Y.RoundTo2Digits());
@@ -277,5 +280,33 @@ public static class Vector2Ext
         }
         return reqAns;
     }
-    
+    public static Vector2 GetPointAlong(this List<Vector2> points,
+        Func<Vector2, Vector2, Vector2> getOffset,
+        float ratio)
+    {
+        if (ratio < 0f || ratio > 1f) throw new Exception();
+        var totalLength = 0f;
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            totalLength += getOffset(points[i], points[i + 1]).Length();
+        }
+        var targetLength = ratio * totalLength;
+        var soFar = 0f;
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            var from = points[i];
+            var to = points[i + 1];
+            var offset = getOffset(from, to);
+            var toGo = targetLength - soFar;
+            if (toGo > offset.Length())
+            {
+                soFar += offset.Length();
+                continue;
+            }
+
+            return from + offset.Normalized() * toGo;
+        }
+
+        return points.Last();
+    }
 }

@@ -66,4 +66,6 @@ public abstract class Waypoint
         if (AssociatedPolyIds.W == -1) return 3;
         return 4;
     }
+
+    public abstract float GetDefendCost(Data data);
 }

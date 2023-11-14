@@ -36,4 +36,10 @@ public class CoastWaypoint : Waypoint, ICoastWaypoint, ILandWaypoint
     {
         Roughness = roughness;
     }
+
+
+    public override float GetDefendCost(Data data)
+    {
+        return Mathf.Max(.1f, Roughness);
+    }
 }

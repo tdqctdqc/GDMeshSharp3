@@ -29,4 +29,9 @@ public class RiverMouthWaypoint : Waypoint, IRiverWaypoint,
     {
         Port = port;
     }
+    
+    public override float GetDefendCost(Data data)
+    {
+        return 1f;
+    }
 }

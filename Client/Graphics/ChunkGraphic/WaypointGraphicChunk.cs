@@ -107,7 +107,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         var alliance = player.Regime.Entity(data).GetAlliance(data);
         var forceBalance = data.Context.WaypointForceBalances[wp];
         var controlling = forceBalance.GetControllingAlliances();
-        var hasAlliance = controlling.Contains(alliance);
+        var hasAlliance = forceBalance.IsAllianceControlling(alliance);
         var hasHostile = controlling.Any(a => alliance.Rivals.Contains(a));
         if (hasAlliance)
         {

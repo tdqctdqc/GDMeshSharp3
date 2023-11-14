@@ -17,9 +17,10 @@ public class GraphicLayerHolder
         AddLayer(Roads(segmenter, data), true);
         AddLayer(IconsChunkModule.GetLayer(data, segmenter), true);
         AddLayer(ResourceChunkModule.GetLayer(data, segmenter), false);
-        AddLayer(new UnitGraphicLayer(client, segmenter, data), true);
         AddLayer(FrontGraphicLayer.GetLayer(client, segmenter, data), true);
         AddLayer(WaypointGraphicChunk.GetLayer(data, client, segmenter), false);
+        AddLayer(UnitOrdersGraphicLayer.GetLayer(segmenter, client), true);
+        AddLayer(new UnitGraphicLayer(client, segmenter, data), true);
     }
 
     private void AddLayer(IGraphicLayer layer, bool startVisible)

@@ -17,4 +17,8 @@ public class SeaWaypoint : Waypoint, IWaterWaypoint
             : base(id, neighbors, associatedPolyIds, pos, controller)
     {
     }
+    public override float GetDefendCost(Data data)
+    {
+        return 1f;
+    }
 }

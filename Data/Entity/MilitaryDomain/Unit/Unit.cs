@@ -1,4 +1,5 @@
 
+using System;
 using Godot;
 using MessagePack;
 
@@ -37,6 +38,10 @@ public class Unit : Entity
 
     public void SetPosition(Vector2 pos, ProcedureWriteKey key)
     {
+        if (float.IsNaN(pos.X) || float.IsNaN(pos.Y))
+        {
+            throw new Exception("bad unit pos");
+        }
         Position = key.Data.Planet.ClampPosition(pos);
     }
 }

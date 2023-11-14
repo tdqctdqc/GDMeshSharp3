@@ -8,8 +8,11 @@ public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
 {
     
     private FrontGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) 
-        : base("Fronts", segmenter, 
-            (front, graphic, seg, queue) => graphic.Update(front, d, seg, queue))
+        : base("Fronts", segmenter,
+            (front, graphic, seg, queue) =>
+            {
+                graphic.Update(front, d, seg, queue);
+            })
     {
     }
 
@@ -23,7 +26,7 @@ public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
             .SelectMany(rAi => rAi.Military.Deployment.GetFrontAssignments())
             .Select(fa => fa.Front);
         foreach (var front in fronts)
-        {
+        {   
             Add(front, data);
         }
     }
@@ -33,7 +36,11 @@ public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
         
         client.Data.Notices.Ticked.Blank.Subscribe(() =>
             {
-                client.QueuedUpdates.Enqueue(() => l.Draw(d));
+                client.QueuedUpdates.Enqueue(() =>
+                {
+                    l.Draw(d);
+                    l.EnforceSettings();
+                });
             }
         );
         
@@ -47,13 +54,15 @@ public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
                 var currRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime;
                 if (onlyShowCurr)
                 {
-                    f.Visible = f.Front.Regime.RefId == currRegime.RefId;
+                    f.Visible = f.Front.Regime.RefId == currRegime.RefId 
+                        && l.Visible;
                 }
                 else
                 {
-                    f.Visible = true;
+                    f.Visible = true && l.Visible;
                 }
             });
+        l.EnforceSettings();
         return l;
     }
 

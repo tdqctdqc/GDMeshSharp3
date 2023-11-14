@@ -13,47 +13,70 @@ public class FrontAssignment : ForceAssignment
         Front = front;
     }
 
-    public override void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key)
+    public override void CalculateOrders(MinorTurnOrders orders, 
+        LogicWriteKey key)
     {
-        var frontWps = Front.GetWaypoints(key.Data).ToHashSet();
+        if (Groups.Count == 0) return;
+        var alliance = orders.Regime.Entity(key.Data).GetAlliance(key.Data);
+        var areaRadius = 500f;
+        var frontWps = 
+            Front.GetContactLineWaypoints(key.Data);
+        var avgPos = key.Data.Planet.GetAveragePosition(frontWps.Select(wp => wp.Pos));
         
-        var frontlines = RegimeMilitaryAi
-            .GetContactLines(Front.Regime.Entity(key.Data), frontWps, key.Data);
-        Func<Unit, bool> distant = (u) =>
-        {
-            var wp = key.Data.Context.UnitWaypoints[u];
-            return frontWps.Contains(wp);
-        };
-        foreach (var unitGroup in Groups)
-        {
-            UnitOrder order;
-            var units = unitGroup.Units.Items(key.Data);
-            if (units.Count() == 0)
+        
+        //todo handle this
+        if (frontWps.Count < 2) return;
+        var shiftLength = 50f;
+
+        
+        var relTo = Front.RelTo(key.Data);
+        
+        Assigner.AssignAlongLine2(
+            frontWps,
+            Groups.ToList(),
+            g => g.GetPowerPoints(key.Data),
+            (wp1, wp2) =>
             {
-                order = new DoNothingUnitOrder();
-            }
-            else if (units.All(distant))
-            {
-                var wp = unitGroup.GetWaypoint(key.Data);
-                if (wp == null)
+                var offset = key.Data.Planet.GetOffsetTo(wp1.Pos, wp2.Pos);
+                if (offset.Length() == 0f)
                 {
-                    throw new Exception("missing unit group waypoint, avg position " 
-                                        + unitGroup.GetPosition(key.Data));
+                    
+                    throw new Exception($"0 offset {wp1.Id} {wp1.Pos} to {wp2.Id} {wp2.Pos}");
                 }
-
-                var byDist = frontWps
-                    .OrderBy(fWp => key.Data.Planet.GetOffsetTo(fWp.Pos, wp.Pos).Length());
-
-                var close = byDist.First();
-                order = new GoToWaypointOrder(frontWps.GetRandomElement().Id);
-            }
-            else
+                var dCost1 = wp1.GetDefendCost(key.Data);
+                if (dCost1 == 0f) throw new Exception();
+                var dCost2 = wp2.GetDefendCost(key.Data);
+                if (dCost2 == 0f) throw new Exception();
+                return Mathf.Max(.1f, offset.Length()) * (dCost1 + dCost2);
+            },
+            wp =>
             {
-                // var frontlineIds = frontline.Select(wp => wp.Id).ToList();
-                order = new DeployOnLineOrder(new List<int>());
+                var shift = Vector2.Zero;
+
+                var enemyNs = wp.GetNeighboringWaypoints(key.Data)
+                    .Where(n => key.Data.Context
+                        .WaypointForceBalances[n]
+                        .Any(kvp => alliance.Rivals.Contains(kvp.Key)));
+                foreach (var enemyN in enemyNs)
+                {
+                    var offset = key.Data.Planet.GetOffsetTo(enemyN.Pos, wp.Pos);
+
+                    shift += offset.Normalized()
+                             * enemyN.GetForceBalance(key.Data)
+                                 .Where(kvp => alliance.IsHostileTo(kvp.Key))
+                                 .Sum(kvp => kvp.Value);
+                    
+                }
+                return wp.Pos + shift.Normalized() * shiftLength;
+            },
+            (v1, v2) => key.Data.Planet.GetOffsetTo(v1, v2),
+            (g, l) =>
+            {
+                var order = new DeployOnLineOrder(l);
+                var proc = new SetUnitOrderProcedure(g.MakeRef(), order);
+                key.SendMessage(proc);
             }
-            key.SendMessage(new SetUnitOrderProcedure(unitGroup.MakeRef(), order));
-        }
+        );
     }
 
     public float GetPowerPointRatio(Data data)
@@ -64,5 +87,4 @@ public class FrontAssignment : ForceAssignment
         if (opposing == 0f) return Mathf.Inf;
         return powerPoints / opposing;
     }
-
 }

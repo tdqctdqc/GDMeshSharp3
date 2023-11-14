@@ -20,4 +20,8 @@ public class RiverWaypoint : Waypoint, IWaterWaypoint, IRiverWaypoint
     {
         HasBridge = hasBridge;
     }
+    public override float GetDefendCost(Data data)
+    {
+        return 1f;
+    }
 }

@@ -39,6 +39,8 @@ public class Grid<T>
         int y = (int)(point.Y / _partitionSize.Y);
         return new Vector2(x,y);
     }
+
+    
     public T GetElementAtPoint(Vector2 point)
     {
         int x = (int)(point.X / _partitionSize.X);

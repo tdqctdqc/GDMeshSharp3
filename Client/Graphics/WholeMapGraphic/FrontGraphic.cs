@@ -38,7 +38,7 @@ public partial class FrontGraphic : Node2D
             FrontNode = null;
         }
         var mb = new MeshBuilder();
-        var offsets = front.GetWaypoints(data).Select(wp => data.Planet.GetOffsetTo(relTo, wp.Pos)).ToList();
+        var offsets = front.GetContactLineWaypoints(data).Select(wp => data.Planet.GetOffsetTo(relTo, wp.Pos)).ToList();
 
         var fillColor = new Color(regime.PrimaryColor, .75f);
         if (front.ContactLineWaypointIds.Count() == 1)
@@ -82,7 +82,7 @@ public partial class FrontGraphic : Node2D
             FrontNode = null;
         }
         var mb = new MeshBuilder();
-        foreach (var wp in front.GetWaypoints(data))
+        foreach (var wp in front.GetContactLineWaypoints(data))
         {
             var p = data.Planet.GetOffsetTo(relTo, wp.Pos);
             foreach (var nWp in wp.GetNeighboringWaypoints(data))
@@ -110,7 +110,9 @@ public partial class FrontGraphic : Node2D
         }
         var frontline = front
             .ContactLineWaypointIds;
-        var lineColor = regime.PrimaryColor.Darkened(.3f);
+        var lineColor = 
+            // ColorsExt.GetRandomColor();
+            regime.PrimaryColor.Darkened(.3f);
         var mb = new MeshBuilder();
         if (frontline.Count == 1)
         {
@@ -121,13 +123,17 @@ public partial class FrontGraphic : Node2D
         }
         else
         {
+            var iter = 0;
             for (var i = 0; i < frontline.Count - 1; i++)
             {
                 var fromWp = data.Planet.Nav.Waypoints[frontline[i]];
                 var toWp = data.Planet.Nav.Waypoints[frontline[i + 1]];
                 var from = data.Planet.GetOffsetTo(relTo, fromWp.Pos);
                 var to = data.Planet.GetOffsetTo(relTo, toWp.Pos);;
-                mb.AddLine(from, to, lineColor, 25f);
+                mb.AddLine(from, to, 
+                    ColorsExt.GetRainbowColor(iter), 
+                    15f);
+                iter++;
             }
         }
         if (mb.Tris.Count > 0)

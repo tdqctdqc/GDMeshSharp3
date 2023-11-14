@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -41,7 +42,8 @@ public class UnitGroup : Entity
     public Waypoint GetWaypoint(Data d)
     {
         var p = d.Planet.GetAveragePosition(Units.Items(d).Select(u => u.Position));
-        var wp = d.Planet.NavAux.WaypointGrid.GetElementAtPoint(p);
+        var found = d.Planet.NavAux.WaypointGrid.TryGetClosest(p, out var wp);
+        if (found == false) throw new Exception();
         return wp;
     }
 
