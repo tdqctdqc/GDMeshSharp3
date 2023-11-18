@@ -53,7 +53,7 @@ public partial class PolyHighlighter : Node2D
 
     private void DrawAssocWaypoints(MapPolygon poly, MeshBuilder mb, Data data)
     {
-        var wps = data.Planet.Nav.GetPolyAssocWaypoints(poly, data);
+        var wps = data.Planet.NavWaypoints.GetPolyAssocWaypoints(poly, data);
         foreach (var waypoint in wps)
         {
             var offset = poly.GetOffsetTo(waypoint.Pos, data);
@@ -62,7 +62,7 @@ public partial class PolyHighlighter : Node2D
     }
     private void DrawNavPathsToNeighbors(MapPolygon poly, MeshBuilder mb, Data data)
     {
-        var nav = data.Planet.Nav;
+        var nav = data.Planet.NavWaypoints;
         var polyWp = nav.GetPolyCenterWaypoint(poly);
         foreach (var nPoly in poly.Neighbors.Items(data))
         {

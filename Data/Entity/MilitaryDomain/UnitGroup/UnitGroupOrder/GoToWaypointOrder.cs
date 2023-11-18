@@ -13,7 +13,7 @@ public class GoToWaypointOrder : UnitOrder
     public override void Handle(UnitGroup g, Data d, HandleUnitOrdersProcedure proc)
     {
         var context = d.Context;
-        var destWp = d.Planet.Nav.Waypoints[DestinationWaypointId];
+        var destWp = d.Planet.NavWaypoints.Waypoints[DestinationWaypointId];
         foreach (var unit in g.Units.Items(d))
         {
             var currWp = context.UnitWaypoints[unit];

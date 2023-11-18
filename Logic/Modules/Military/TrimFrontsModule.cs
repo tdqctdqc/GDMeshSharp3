@@ -40,7 +40,7 @@ public class TrimFrontsModule : LogicModule
         var toStay = front.ContactLineWaypointIds.Except(toRemove);
         var floodFill = FloodFill<int>.GetFloodFill(
             toStay.First(), toStay.Contains,
-            i => data.Planet.Nav.Waypoints[i].Neighbors);
+            i => data.Planet.NavWaypoints.Waypoints[i].Neighbors);
         if (floodFill.Count == toStay.Count())
         {
             proc.WaypointsToTrimByFrontId.Add(front.Id, toRemove.ToHashSet());
@@ -50,7 +50,7 @@ public class TrimFrontsModule : LogicModule
         proc.FrontsToRemove.Add(front.Id);
         var unions = UnionFind.Find(
             toStay, (i, j) => true,
-            i => data.Planet.Nav.Waypoints[i].Neighbors);
+            i => data.Planet.NavWaypoints.Waypoints[i].Neighbors);
 
         foreach (var union in unions)
         {

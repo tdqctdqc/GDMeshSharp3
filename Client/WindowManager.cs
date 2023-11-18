@@ -18,7 +18,7 @@ public partial class WindowManager : Node, IClientComponent
     {
         _windows = new Dictionary<Type, Window>();
        AddWindow(SceneManager.Instance<PromptWindow>());
-       AddWindow(LoggerWindow.Get());
+       AddWindow(LoggerWindow.Get(client.Data));
        AddWindow(new EntityOverviewWindow());
        client.UiLayer.AddChild(this);
     }

@@ -43,14 +43,14 @@ public partial class FrontGraphic : Node2D
         var fillColor = new Color(regime.PrimaryColor, .75f);
         if (front.ContactLineWaypointIds.Count() == 1)
         {
-            var wp = data.Planet.Nav.Waypoints[front.ContactLineWaypointIds.First()];
+            var wp = data.Military.TacticalWaypoints.Waypoints[front.ContactLineWaypointIds.First()];
             mb.AddCircle(data.Planet.GetOffsetTo(relTo, wp.Pos), 
                 25f, 12, fillColor);
         }
         else if (front.ContactLineWaypointIds.Count() == 2)
         {
-            var wp1 = data.Planet.Nav.Waypoints[front.ContactLineWaypointIds.ElementAt(0)];
-            var wp2 = data.Planet.Nav.Waypoints[front.ContactLineWaypointIds.ElementAt(1)];
+            var wp1 = data.Military.TacticalWaypoints.Waypoints[front.ContactLineWaypointIds.ElementAt(0)];
+            var wp2 = data.Military.TacticalWaypoints.Waypoints[front.ContactLineWaypointIds.ElementAt(1)];
 
             mb.AddLine(data.Planet.GetOffsetTo(relTo, wp1.Pos),
                 data.Planet.GetOffsetTo(relTo, wp2.Pos),
@@ -85,7 +85,7 @@ public partial class FrontGraphic : Node2D
         foreach (var wp in front.GetContactLineWaypoints(data))
         {
             var p = data.Planet.GetOffsetTo(relTo, wp.Pos);
-            foreach (var nWp in wp.GetNeighboringWaypoints(data))
+            foreach (var nWp in wp.GetNeighboringTacWaypoints(data))
             {
                 if (wp.Id < nWp.Id) continue;
                 if (front.ContactLineWaypointIds.Contains(nWp.Id) == false) continue;
@@ -116,7 +116,7 @@ public partial class FrontGraphic : Node2D
         var mb = new MeshBuilder();
         if (frontline.Count == 1)
         {
-            var firstWp = data.Planet.Nav.Waypoints[frontline[0]];
+            var firstWp = data.Military.TacticalWaypoints.Waypoints[frontline[0]];
 
             var pos = data.Planet.GetOffsetTo(relTo, firstWp.Pos);
             mb.AddCircle(pos, 30f, 12, regime.PrimaryColor);
@@ -126,8 +126,8 @@ public partial class FrontGraphic : Node2D
             var iter = 0;
             for (var i = 0; i < frontline.Count - 1; i++)
             {
-                var fromWp = data.Planet.Nav.Waypoints[frontline[i]];
-                var toWp = data.Planet.Nav.Waypoints[frontline[i + 1]];
+                var fromWp = data.Military.TacticalWaypoints.Waypoints[frontline[i]];
+                var toWp = data.Military.TacticalWaypoints.Waypoints[frontline[i + 1]];
                 var from = data.Planet.GetOffsetTo(relTo, fromWp.Pos);
                 var to = data.Planet.GetOffsetTo(relTo, toWp.Pos);;
                 mb.AddLine(from, to, 

@@ -31,7 +31,7 @@ public class FrontAssignment : ForceAssignment
         
         var relTo = Front.RelTo(key.Data);
         
-        Assigner.AssignAlongLine2(
+        Assigner.AssignAlongLine(
             frontWps,
             Groups.ToList(),
             g => g.GetPowerPoints(key.Data),
@@ -53,7 +53,7 @@ public class FrontAssignment : ForceAssignment
             {
                 var shift = Vector2.Zero;
 
-                var enemyNs = wp.GetNeighboringWaypoints(key.Data)
+                var enemyNs = wp.GetNeighboringTacWaypoints(key.Data)
                     .Where(n => key.Data.Context
                         .WaypointForceBalances[n]
                         .Any(kvp => alliance.Rivals.Contains(kvp.Key)));

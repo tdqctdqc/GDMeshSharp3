@@ -22,8 +22,20 @@ public class Data
     public InfrastructureDomain Infrastructure { get; private set; }
     public Context Context { get; private set; }
     private EntityTypeTree _entityTypeTree;
-    public int Tick => BaseDomain.GameClock.Tick;
+
+    public int Tick => GetTick();
+
+    private int GetTick()
+    {
+        if (BaseDomain.GameClock != null)
+        {
+            return BaseDomain.GameClock.Tick;
+        }
+
+        return -1;
+    }
     public Serializer Serializer { get; private set; }
+    public Logger Logger { get; private set; }
     public Data()
     {
         Serializer = new Serializer();
@@ -48,6 +60,7 @@ public class Data
         Military.Setup(this);
         ClientPlayerData = new ClientPlayerData(this);
         HostLogicData = new HostLogicData(this);
+        Logger = new Logger(this);
     }
 
     

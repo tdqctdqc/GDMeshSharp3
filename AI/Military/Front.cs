@@ -26,13 +26,13 @@ public class Front
 
     public Vector2 RelTo(Data d)
     {
-        var p = d.Planet.Nav.Waypoints[ContactLineWaypointIds.First()].Pos;
+        var p = d.Military.TacticalWaypoints.Waypoints[ContactLineWaypointIds.First()].Pos;
         return d.Planet.ClampPosition(p);
     }
 
     public List<Waypoint> GetContactLineWaypoints(Data data)
     {
-        return ContactLineWaypointIds.Select(i => data.Planet.Nav.Waypoints[i]).ToList();
+        return ContactLineWaypointIds.Select(i => data.Military.TacticalWaypoints.Waypoints[i]).ToList();
     }
 
     public float GetOpposingPowerPoints(Data data)

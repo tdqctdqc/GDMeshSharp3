@@ -18,7 +18,7 @@ public static class PathFinder
     }
     public static List<Waypoint> FindNavPathBetweenPolygons(MapPolygon s1, MapPolygon s2, Data data)
     {
-        var nav = data.Planet.Nav;
+        var nav = data.Planet.NavWaypoints;
         var w1 = nav.GetPolyCenterWaypoint(s1);
         var w2 = nav.GetPolyCenterWaypoint(s2);
 
@@ -43,7 +43,7 @@ public static class PathFinder
     {
         return PathFinder<Waypoint>.FindPath(start, dest, 
             p => p.Neighbors
-                .Select(nId => data.Planet.Nav.Get(nId)),
+                .Select(nId => data.Planet.NavWaypoints.Get(nId)),
             (w,p) => data.Planet.GetOffsetTo(w.Pos, p.Pos).Length(), 
             (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
     }
@@ -52,7 +52,7 @@ public static class PathFinder
         if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;
         if (international == false && p1.OwnerRegime.RefId != p2.OwnerRegime.RefId) return Mathf.Inf;
 
-        var path = data.Planet.Nav.GetPolyPath(p1, p2);
+        var path = data.Planet.NavWaypoints.GetPolyPath(p1, p2);
         var cost = 0f;
         for (int i = 0; i < path.Count() - 1; i++)
         {

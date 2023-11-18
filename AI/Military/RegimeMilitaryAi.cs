@@ -55,7 +55,7 @@ public class RegimeMilitaryAi
         var frontSegs = new List<LineSegment>();
         foreach (var wp in threatenedWps)
         {
-            foreach (var nWp in wp.GetNeighboringWaypoints(data))
+            foreach (var nWp in wp.GetNeighboringTacWaypoints(data))
             {
                 if (threatenedWps.Contains(nWp) == false) continue;
                 if (nWp.Id < wp.Id) continue;
@@ -67,7 +67,9 @@ public class RegimeMilitaryAi
 
         return chains
             .Select(c => c.GetPoints())
-            .Select(ps => ps.Select(p => data.Planet.Nav.WaypointsByPos[p]).ToList())
+            .Select(ps => ps.Select(p => data.Military.TacticalWaypoints.ByPos[p])
+                .Select(i => data.Military.TacticalWaypoints.Waypoints[i])
+                .ToList())
             .ToList();
     }
 }

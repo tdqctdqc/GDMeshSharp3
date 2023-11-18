@@ -45,7 +45,7 @@ public partial class MapGraphics : Node2D, IClientComponent
         client.Data.Notices.Ticked.Blank.SubscribeForNode(() => Task.Run(() => Update(client.Data)), this);
 
         sw.Stop();
-        Game.I.Logger.Log("map graphics setup time " + sw.Elapsed.TotalMilliseconds, LogType.Graphics);
+        client.Data.Logger.Log("map graphics setup time " + sw.Elapsed.TotalMilliseconds, LogType.Graphics);
     }
     private MapGraphics()
     {

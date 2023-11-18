@@ -23,19 +23,17 @@ public class DeployOnLineOrder : UnitOrder
 
     public override void Handle(UnitGroup g, Data d, HandleUnitOrdersProcedure proc)
     {
-        // GD.Print("havent implemented " + GetType().Name);
         var units = g.Units.Items(d);
         var count = units.Count();
         var iter = 0;
         foreach (var unit in units)
         {
             iter++;
-            proc.NewUnitPosesById.Add(unit.Id, Points.Modulo(iter));
-            // var pos = Points.GetPointAlong(
-            //     (v, w) => d.Planet.GetOffsetTo(v, w),
-            //     iter / count);
-            // iter++;
-            // proc.NewUnitPosesById.Add(unit.Id, pos);
+            var pos = Points.GetPointAlongLine(
+                (v, w) => d.Planet.GetOffsetTo(v, w),
+                (iter + 1) / (count + 1));
+            iter++;
+            proc.NewUnitPosesById.Add(unit.Id, pos);
         }
     }
 

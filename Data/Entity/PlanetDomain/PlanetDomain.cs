@@ -11,8 +11,8 @@ public class PlanetDomain
     public PlanetInfo Info => _planetInfoAux != null ? _planetInfoAux.Value : null;
     private SingletonAux<PlanetInfo> _planetInfoAux;
     public NavAux NavAux { get; private set; }
-    public Nav Nav => _polyNav.Value;
-    private SingletonAux<Nav> _polyNav;
+    public NavWaypoints NavWaypoints => _polyNav.Value;
+    private SingletonAux<NavWaypoints> _polyNav;
     public ResourceDepositAux ResourceDepositAux { get; private set; }
     public float Width => _planetInfoAux.Value.Dimensions.X;
     public float Height => _planetInfoAux.Value.Dimensions.Y;
@@ -24,7 +24,7 @@ public class PlanetDomain
     public void Setup()
     {
         _planetInfoAux = new SingletonAux<PlanetInfo>(_data);
-        _polyNav = new SingletonAux<Nav>(_data);
+        _polyNav = new SingletonAux<NavWaypoints>(_data);
         PolygonAux = new MapPolygonAux(_data);
         PolyEdgeAux = new PolyEdgeAux(_data);
         NavAux = new NavAux(_data);

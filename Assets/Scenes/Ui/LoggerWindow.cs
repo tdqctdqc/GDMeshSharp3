@@ -10,10 +10,12 @@ public partial class LoggerWindow : ClosableWindow
     private float _updatePeriod = .5f;
     private Dictionary<LogType, int> _num;
     private Dictionary<LogType, Node> _innerContainers;
-    
-    public static LoggerWindow Get()
+    private Data _data;
+    public static LoggerWindow Get(Data data)
     {
-        return SceneManager.Instance<LoggerWindow>();
+        var l = SceneManager.Instance<LoggerWindow>();
+        l._data = data;
+        return l;
     }
 
     private LoggerWindow()
@@ -29,48 +31,19 @@ public partial class LoggerWindow : ClosableWindow
         _container = (Container) FindChild("Container");
         _container.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
     }
-
-    public override void _Process(double delta)
-    {
-        if (Visible)
-        {
-            _timer += (float)delta;
-            if (_timer > _updatePeriod)
-            {
-                _timer = 0f;
-                foreach (var kvp in _num)
-                {
-                    var logType = kvp.Key;
-                    var oldNum = kvp.Value;
-                    if (_innerContainers.ContainsKey(logType) == false) continue;
-                    var innerContainer = _innerContainers[logType];
-                    var msgs = Game.I.Logger.Logs[logType];
-                    var newMsgs = msgs.GetRange(oldNum, msgs.Count - oldNum);
-                    for (var i = 0; i < newMsgs.Count; i++)
-                    {
-                        innerContainer.AddChild(NodeExt.CreateLabel(newMsgs[i]));
-                    }
-                }
-                foreach (var kvp in Game.I.Logger.Logs)
-                {
-                    _num[kvp.Key] = kvp.Value.Count;
-                }
-            }
-        }
-    }
     private void Draw()
     {
         _timer = 0f;
         _container.ClearChildren();
         _num.Clear();
         _innerContainers.Clear();
-        foreach (var kvp in Game.I.Logger.Logs)
+        foreach (var kvp in _data.Logger.Entries)
         {
             AddTab(kvp.Key, kvp.Value);
         }
     }
 
-    private void AddTab(LogType lt, List<string> msgs)
+    private void AddTab(LogType lt, Dictionary<int, LogEntry> entries)
     {
         var name = Enum.GetName(typeof(LogType), lt);
         var scroll = new ScrollContainer();
@@ -79,11 +52,37 @@ public partial class LoggerWindow : ClosableWindow
 
         var vbox = new VBoxContainer();
         _innerContainers.Add(lt, vbox);
-        _num.Add(lt, msgs.Count);
+        _num.Add(lt, entries.Count);
         scroll.AddChild(vbox);
-        for (var i = 0; i < msgs.Count; i++)
+
+        var entriesInOrder = entries.Values
+            .OrderBy(v => v.Tick).ToList();
+        for (var i = 0; i < entriesInOrder.Count; i++)
         {
-            vbox.AddChild(NodeExt.CreateLabel(msgs[i]));
+            AddLogEntry(vbox, entriesInOrder[i]);
         }
+    }
+
+    private void AddLogEntry(Node parent, LogEntry entry)
+    {
+        var vbox = new VBoxContainer();
+        var inner = new VBoxContainer();
+        inner.Visible = false;
+        var button = vbox.AddButton("Show tick " + entry.Tick,
+            () =>
+            {
+                inner.Visible = inner.Visible == false;
+                inner.ClearChildren();
+                if (inner.Visible)
+                {
+                    for (var i = 0; i < entry.Logs.Count; i++)
+                    {
+                        inner.CreateLabelAsChild("\t" + entry.Logs[i]);
+                    }
+                }
+            }
+        );
+        vbox.AddChild(inner);
+        parent.AddChild(vbox);
     }
 }

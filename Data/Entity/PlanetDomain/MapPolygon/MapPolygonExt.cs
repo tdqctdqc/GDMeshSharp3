@@ -17,11 +17,16 @@ public static class MapPolygonExt
     }
     public static Waypoint GetCenterWaypoint(this MapPolygon poly, Data data)
     {
-        return data.Planet.Nav.GetPolyCenterWaypoint(poly);
+        return data.Planet.NavWaypoints.GetPolyCenterWaypoint(poly);
     }
-    public static IEnumerable<Waypoint> GetAssocWaypoints(this MapPolygon poly, Data data)
+    public static IEnumerable<Waypoint> GetAssocNavWaypoints(this MapPolygon poly, Data data)
     {
-        return data.Planet.Nav.GetPolyAssocWaypoints(poly, data);
+        return data.Planet.NavWaypoints.GetPolyAssocWaypoints(poly, data);
+    }
+    public static IEnumerable<Waypoint> GetAssocTacWaypoints(this MapPolygon poly, Data data)
+    {
+        return data.Military.TacticalWaypoints.PolyAssocWaypoints[poly.Id]
+            .Select(i => data.Military.TacticalWaypoints.Waypoints[i]);
     }
     public static bool PointInPolyAbs(this MapPolygon poly, Vector2 posAbs, Data data)
     {

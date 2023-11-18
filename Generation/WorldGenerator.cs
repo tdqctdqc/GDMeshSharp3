@@ -41,64 +41,75 @@ public class WorldGenerator
         var edgePointMargin = new Vector2(polySize, polySize);
         var dim = Data.GenMultiSettings.Dimensions;
         
-        Game.I.Logger.RunAndLogTime(() =>
-        {
-            Data.CreateFirstTime(_key);
-        }, "Init", LogType.Generation);
+        _key.Data.Logger.RunAndLogTime("Init", 
+            LogType.Generation,
+            () =>
+             {
+                 Data.CreateFirstTime(_key);
+             }
+        );
         
         List<Vector2> points = null;
-        Game.I.Logger.RunAndLogTime(() =>
-        {
-            points = PointsGenerator
-                .GenerateConstrainedSemiRegularPoints
-                    (Data.GenMultiSettings.Dimensions - edgePointMargin, polySize, polySize * .75f, false, true)
-                .Select(v => v + edgePointMargin / 2f).ToList();
-        
-            foreach (var p in points)
+        _key.Data.Logger.RunAndLogTime("Generating points", LogType.Generation, 
+            () =>
             {
-                if (p != p.Intify()) throw new Exception("not int point");
-                if (p.X < 0 || p.X > dim.X || p.Y < 0 || p.Y > dim.Y) throw new Exception("point out of bounds");
+                points = PointsGenerator
+                    .GenerateConstrainedSemiRegularPoints
+                        (Data.GenMultiSettings.Dimensions - edgePointMargin, polySize, polySize * .75f, false, true)
+                    .Select(v => v + edgePointMargin / 2f).ToList();
+            
+                foreach (var p in points)
+                {
+                    if (p != p.Intify()) throw new Exception("not int point");
+                    if (p.X < 0 || p.X > dim.X || p.Y < 0 || p.Y > dim.Y) throw new Exception("point out of bounds");
+                }
             }
-        }, "Generating points", LogType.Generation);
+        );
         
         RunGenerator(new PolygonGenerator(points, Data.GenMultiSettings.Dimensions, 
             true, polySize));
         RunGenerator(new GeologyGenerator());
         RunGenerator(new ResourceGenerator());
 
-        Game.I.Logger.RunAndLogTime(() =>
-        {
-            var polys = Data.GetAll<MapPolygon>();
-            EdgeDisturber.SplitEdges(polys, _key,
-                Data.GenMultiSettings.PlanetSettings.PreferredMinPolyEdgeLength.Value);
-            EdgeDisturber.DisturbEdges(polys, _key);
-        }, "Edge disturb", LogType.Generation);
+        _key.Data.Logger.RunAndLogTime("Edge disturb", LogType.Generation,
+            () =>
+            {
+                var polys = Data.GetAll<MapPolygon>();
+                EdgeDisturber.SplitEdges(polys, _key,
+                    Data.GenMultiSettings.PlanetSettings.PreferredMinPolyEdgeLength.Value);
+                EdgeDisturber.DisturbEdges(polys, _key);
+            }
+        );
         
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyTriGenerator());
+        RunGenerator(new TacticalWaypointGenerator());
+        GD.Print("new nav wp count " + Data.GetAll<TacticalWaypoints>().First().Waypoints.Count);
         RunGenerator(new NavGenerator());
         RunGenerator(new RegimeGenerator());
         RunGenerator(new SocietyGenerator());
         RunGenerator(new InfrastructureGenerator());
 
         _totalTime.Stop();
-        Game.I.Logger.Log("Total entities genned: " 
+        _key.Data.Logger.Log("Total entities genned: " 
                           + Data.EntitiesById.Count,
             LogType.Generation);
-        Game.I.Logger.Log("Total id count: " 
+        _key.Data.Logger.Log("Total id count: " 
                           + Data.IdDispenser.Index,
             LogType.Generation);
-        Game.I.Logger.Log("Total gen time: " + _totalTime.Elapsed.TotalMilliseconds,
+        _key.Data.Logger.Log("Total gen time: " + _totalTime.Elapsed.TotalMilliseconds,
             LogType.Generation);
     }
 
     private void RunGenerator(Generator gen)
     {
-        Game.I.Logger.RunAndLogTime(() =>
-        {
-            var r = gen.Generate(_key);
-            Game.I.Logger.Log(r.GetTimes(), LogType.Generation);
-        }, gen.GetType().Name, LogType.Generation);
+        _key.Data.Logger.RunAndLogTime(gen.GetType().Name, LogType.Generation, 
+            () =>
+            {
+                var r = gen.Generate(_key);
+                _key.Data.Logger.Log(r.GetTimes(), LogType.Generation);
+            }
+        );
     }
     
 }

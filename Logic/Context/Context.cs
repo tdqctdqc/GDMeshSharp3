@@ -24,7 +24,7 @@ public class Context
     private void AddForceBalances(Data d)
     {
         WaypointForceBalances.Clear();
-        foreach (var wp in d.Planet.Nav.Waypoints.Values)
+        foreach (var wp in d.Military.TacticalWaypoints.Waypoints.Values)
         {
             WaypointForceBalances.Add(wp, new ForceBalance());
         }
@@ -61,7 +61,7 @@ public class Context
             kvp.Value.Clear();
         }
         var units = data.GetAll<Unit>();
-        var wpGrid = data.Planet.NavAux.WaypointGrid;
+        var wpGrid = data.Military.WaypointGrid;
         
         foreach (var u in units)
         {
@@ -76,7 +76,7 @@ public class Context
             forceBalance.Add(u, data);
         }
         
-        foreach (var wp in data.Planet.Nav.Waypoints.Values)
+        foreach (var wp in data.Military.TacticalWaypoints.Waypoints.Values)
         {
             var alliances = wp.AssocPolys(data)
                 .SelectWhere(p => p.OwnerRegime.Fulfilled())
@@ -103,7 +103,7 @@ public class Context
             }
         }
         sw.Stop();
-        Game.I.Logger.Log("units " + units.Count() 
+        data.Logger.Log("units " + units.Count() 
                                    + " waypoint force balance calc time " 
                                    + sw.Elapsed.TotalMilliseconds, LogType.Logic);
     }

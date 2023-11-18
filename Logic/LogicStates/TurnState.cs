@@ -26,7 +26,7 @@ public abstract class TurnState : State
     }
     public override void Enter()
     {
-        Game.I.Logger.Log("Entering state "  + GetType().Name, LogType.Logic);
+        _key.Data.Logger.Log("Entering state "  + GetType().Name, LogType.Logic);
         if (_calculation != null) throw new Exception();
         _calculation = Task.Run(Calculate);
     }
@@ -50,7 +50,7 @@ public abstract class TurnState : State
             sw.Start();
             module.Calculate(_orders.GetOrdersList(_key.Data), _key);
             sw.Stop();
-            Game.I.Logger.Log($" {module.GetType().Name} time {sw.Elapsed.TotalMilliseconds}",
+            _key.Data.Logger.Log($" {module.GetType().Name} time {sw.Elapsed.TotalMilliseconds}",
                 LogType.Logic);   
         }
     }
@@ -63,7 +63,7 @@ public abstract class TurnState : State
             sw.Start();
             module.Calculate(_orders.GetOrdersList(_key.Data), _key);
             sw.Stop();
-            Game.I.Logger.Log($" {module.GetType().Name} time {sw.Elapsed.TotalMilliseconds}",
+            _key.Data.Logger.Log($" {module.GetType().Name} time {sw.Elapsed.TotalMilliseconds}",
                 LogType.Logic);
         }
     }

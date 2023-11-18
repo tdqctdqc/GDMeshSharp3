@@ -14,7 +14,7 @@ public class NavGenerator : Generator
     {
         _key = key;
         var report = new GenReport(nameof(NavGenerator));
-        var nav = Nav.Create(key);
+        var nav = NavWaypoints.Create(key);
         var byPoly = new Dictionary<MapPolygon, Waypoint>();
         var byEdge = new Dictionary<MapPolygonEdge, Waypoint>();
         var id = key.Data.IdDispenser;
@@ -79,9 +79,9 @@ public class NavGenerator : Generator
                 }
                 
                 var relevantWps = 
-                    edge.HighPoly.Entity(_key.Data).GetAssocWaypoints(_key.Data)
-                    .Union(edge.LowPoly.Entity(_key.Data).GetAssocWaypoints(_key.Data))
-                    .Union(lateral.GetAssocWaypoints(_key.Data))
+                    edge.HighPoly.Entity(_key.Data).GetAssocNavWaypoints(_key.Data)
+                    .Union(edge.LowPoly.Entity(_key.Data).GetAssocNavWaypoints(_key.Data))
+                    .Union(lateral.GetAssocNavWaypoints(_key.Data))
                     .Distinct();
                 if (CloseByDist(wp, lateralWp, 10f, relevantWps, _key))
                 {
@@ -92,7 +92,7 @@ public class NavGenerator : Generator
         }
     }
 
-    private static void AddRiverMouthWps(GenWriteKey key, IdDispenser id, Dictionary<MapPolygon, Waypoint> byPoly, Dictionary<MapPolygonEdge, Waypoint> byEdge, Nav nav)
+    private static void AddRiverMouthWps(GenWriteKey key, IdDispenser id, Dictionary<MapPolygon, Waypoint> byPoly, Dictionary<MapPolygonEdge, Waypoint> byEdge, NavWaypoints navWaypoints)
     {
         foreach (var nexus in key.Data.GetAll<MapPolyNexus>())
         {
@@ -133,16 +133,16 @@ public class NavGenerator : Generator
                 }
             }
 
-            nav.AddWaypoint(wp, key);
+            navWaypoints.AddWaypoint(wp, key);
         }
     }
 
-    private static void ConnectInterior(GenWriteKey key, Nav nav)
+    private static void ConnectInterior(GenWriteKey key, NavWaypoints navWaypoints)
     {
         foreach (var poly in key.Data.GetAll<MapPolygon>())
         {
             if (poly.IsWater()) continue;
-            var assoc = nav.GetPolyAssocWaypoints(poly, key.Data).ToList();
+            var assoc = navWaypoints.GetPolyAssocWaypoints(poly, key.Data).ToList();
 
             foreach (var wp1 in assoc)
             {
@@ -272,7 +272,7 @@ public class NavGenerator : Generator
 
     }
 
-    private static void AddPolyEdgeWps(GenWriteKey key, Dictionary<MapPolygon, Waypoint> byPoly, IdDispenser id, Dictionary<MapPolygonEdge, Waypoint> byEdge, Nav nav)
+    private static void AddPolyEdgeWps(GenWriteKey key, Dictionary<MapPolygon, Waypoint> byPoly, IdDispenser id, Dictionary<MapPolygonEdge, Waypoint> byEdge, NavWaypoints navWaypoints)
     {
         foreach (var edge in key.Data.GetAll<MapPolygonEdge>())
         {
@@ -307,13 +307,13 @@ public class NavGenerator : Generator
             }
             byEdge.Add(edge, wp);
 
-            nav.AddWaypoint(wp, key);
+            navWaypoints.AddWaypoint(wp, key);
             var hiWp = byPoly[hi];
             var loWp = byPoly[lo];
             Connect(wp, hiWp);
             Connect(wp, loWp);
 
-            nav.PolyNavPaths.Add(hi.GetIdEdgeKey(lo), new List<int> { hiWp.Id, wp.Id, loWp.Id });
+            navWaypoints.PolyNavPaths.Add(hi.GetIdEdgeKey(lo), new List<int> { hiWp.Id, wp.Id, loWp.Id });
         }
     }
 
@@ -327,7 +327,7 @@ public class NavGenerator : Generator
         wp1.Neighbors.Remove(wp2.Id);
         wp2.Neighbors.Remove(wp1.Id);
     }
-    private static void AddPolyCenterWps(GenWriteKey key, IdDispenser id, Nav nav, Dictionary<MapPolygon, Waypoint> byPoly)
+    private static void AddPolyCenterWps(GenWriteKey key, IdDispenser id, NavWaypoints navWaypoints, Dictionary<MapPolygon, Waypoint> byPoly)
     {
         foreach (var poly in key.Data.GetAll<MapPolygon>())
         {
@@ -340,15 +340,15 @@ public class NavGenerator : Generator
             {
                 wp = new InlandWaypoint(key, id.TakeId(), poly.Center, poly);
             }
-            nav.AddWaypoint(wp, key);
-            nav.MakeCenterPoint(poly, wp, key);
+            navWaypoints.AddWaypoint(wp, key);
+            navWaypoints.MakeCenterPoint(poly, wp, key);
             byPoly.Add(poly, wp);
         }
     }
 
     private void RemoveBadConnections()
     {
-        var nav = _key.Data.Planet.Nav;
+        var nav = _key.Data.Planet.NavWaypoints;
         foreach (var wp in nav.Waypoints.Values)
         {
             if (wp is CoastWaypoint == false) continue;
@@ -372,7 +372,7 @@ public class NavGenerator : Generator
     }
     private void SetLandWaypointProperties()
     {
-        var nav = _key.Data.Planet.Nav;
+        var nav = _key.Data.Planet.NavWaypoints;
         var waypoints = nav.Waypoints.Values;
         foreach (var waypoint in waypoints)
         {

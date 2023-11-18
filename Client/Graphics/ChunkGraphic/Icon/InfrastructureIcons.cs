@@ -28,7 +28,7 @@ public partial class InfrastructureIcons : MapChunkGraphicNode<Waypoint>
 
     protected override IEnumerable<Waypoint> GetKeys(Data data)
     {
-        return Chunk.Polys.SelectMany(p => p.GetAssocWaypoints(data))
+        return Chunk.Polys.SelectMany(p => p.GetAssocNavWaypoints(data))
             .Distinct()
             .Where(wp => wp is CoastWaypoint c && c.Port);
     }

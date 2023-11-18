@@ -7,11 +7,13 @@ using System.Threading.Tasks;
 
 public class Logger
 {
-    public Dictionary<LogType, List<string>> Logs { get; private set; }
+    private Data _data;
+    public Dictionary<LogType, Dictionary<int, LogEntry>> Entries { get; private set; }
     private ConcurrentQueue<(LogType, string)> _queue;
-    public Logger()
+    public Logger(Data data)
     {
-        Logs = new Dictionary<LogType, List<string>>();
+        _data = data;
+        Entries = new Dictionary<LogType, Dictionary<int, LogEntry>>();
         _queue = new ConcurrentQueue<(LogType, string)>();
         RunLoop();
     }
@@ -22,26 +24,29 @@ public class Logger
     }
     private void Loop()
     {
+        var tick = _data.Tick;
         while (true)
         {
             while (_queue.TryDequeue(out var res))
             {
-                Logs.AddOrUpdate(res.Item1, res.Item2);
+                var entries = Entries.GetOrAdd(res.Item1, i => new Dictionary<int, LogEntry>());
+                var entry = entries.GetOrAdd(tick, t => new LogEntry(t));
+                entry.Logs.Add(res.Item2);
             }
         }
     }
     public void Log(string msg, LogType logType)
     {
-        // Logs.AddOrUpdate(logType, msg);
         _queue.Enqueue((logType, msg));
     }
 
-    public void RunAndLogTime(Action a, string name, LogType type)
+    public void RunAndLogTime(string name, LogType type, Action a)
     {
         var sw = new Stopwatch();
         sw.Start();
         a.Invoke();
         sw.Stop();
-        Logs.AddOrUpdate(type, $"{name} time {sw.Elapsed.TotalMilliseconds}");
+        var ms = sw.Elapsed.TotalMilliseconds;
+        Log($"{name}: {ms} ms", type);
     }
 }

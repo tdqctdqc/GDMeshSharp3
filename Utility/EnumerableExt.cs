@@ -19,7 +19,7 @@ public static class EnumerableExt
     {
         return enumerable.Where(pred).Select(e => e);
     }
-    public static List<T> GetBetween<T>(this IReadOnlyList<T> list, T from, T to)
+    public static List<T> GetBetween<T>(this IList<T> list, T from, T to)
     {
         var start = list.IndexOf(from);
         if (start == -1) throw new Exception();
@@ -175,7 +175,7 @@ public static class EnumerableExt
         return list[(list.Count * 2 - 1 - i) % list.Count];
     }
 
-    public static T Modulo<T>(this IReadOnlyList<T> list, int i)
+    public static T Modulo<T>(this IList<T> list, int i)
     {
         while (i < 0) i += list.Count;
         try

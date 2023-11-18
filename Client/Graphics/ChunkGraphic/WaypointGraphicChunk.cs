@@ -15,24 +15,26 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
     private MeshInstance2D _links;
     private ColorFunc _getColor; 
     protected bool _stale;
-    public WaypointGraphicChunk(Func<Waypoint, Data, (Color inner, Color border)> getColor,
+    public WaypointGraphicChunk(
+        Func<MapPolygon, IEnumerable<Waypoint>> getWps,
+        Func<Waypoint, IEnumerable<Waypoint>> getNeighbors, 
+        Func<Waypoint, Data, (Color inner, Color border)> getColor,
         MapChunk chunk, Data d)
     {
         _chunk = chunk;
         _stale = false;
         _getColor = getColor;
         
-        var nav = d.Planet.Nav;
-        var chunkWps = nav.Waypoints
-            .Values
-            .Where(wp => _chunk.Polys.Contains(d.Get<MapPolygon>(wp.AssociatedPolyIds.X)))
+        var chunkWps = chunk.Polys
+            .SelectMany(getWps)
+            .Distinct()
             .ToList();
 
         var mb = new MeshBuilder();
         foreach (var chunkWp in chunkWps)
         {
             var offset = _chunk.RelTo.GetOffsetTo(chunkWp.Pos, d);
-            foreach (var nWp in chunkWp.GetNeighboringWaypoints(d))
+            foreach (var nWp in getNeighbors(chunkWp))
             {
                 var nOffset = _chunk.RelTo.GetOffsetTo(nWp.Pos, d);
                 if (chunkWp.Id <= nWp.Id) continue;
@@ -101,6 +103,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
     private static (Color inner, Color border) GetFrontlineColor(Waypoint wp, Data data)
     {
         var forceBalances = data.Context.WaypointForceBalances;
+        if (forceBalances.ContainsKey(wp) == false) return (Colors.White, Colors.White);
         var player = data.BaseDomain.PlayerAux
             .LocalPlayer;
         if (player.Regime.Empty()) return (Colors.Transparent, Colors.Transparent);
@@ -155,10 +158,17 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
     }
 
     public static ChunkGraphicLayer<WaypointGraphicChunk> GetLayer(
-        int z, Data d, Client client, GraphicsSegmenter segmenter)
+        int z, string name, Data d, Client client, 
+        Func<MapPolygon, IEnumerable<Waypoint>> getWps,
+        Func<Waypoint, IEnumerable<Waypoint>> getNeighbors,
+        GraphicsSegmenter segmenter)
     {
-        var l = new ChunkGraphicLayer<WaypointGraphicChunk>(z, "Waypoints", segmenter,
-            c => new WaypointGraphicChunk(GetWaypointTypeColor, c, d), d);
+        var l = new ChunkGraphicLayer<WaypointGraphicChunk>(z, 
+            name, 
+            segmenter,
+            c => 
+                new WaypointGraphicChunk(getWps, getNeighbors, GetWaypointTypeColor, c, d), 
+            d);
         Action markAllStale = () =>
         {
             foreach (var wpChunk in l.ByChunkCoords.Values)

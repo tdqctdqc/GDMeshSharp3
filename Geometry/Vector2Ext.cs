@@ -280,7 +280,7 @@ public static class Vector2Ext
         }
         return reqAns;
     }
-    public static Vector2 GetPointAlong(this List<Vector2> points,
+    public static Vector2 GetPointAlongLine(this IList<Vector2> points,
         Func<Vector2, Vector2, Vector2> getOffset,
         float ratio)
     {
@@ -290,6 +290,7 @@ public static class Vector2Ext
         {
             totalLength += getOffset(points[i], points[i + 1]).Length();
         }
+
         var targetLength = ratio * totalLength;
         var soFar = 0f;
         for (var i = 0; i < points.Count - 1; i++)
@@ -308,5 +309,74 @@ public static class Vector2Ext
         }
 
         return points.Last();
+    }
+    
+    public static Vector2 GetPointAlongCircle(this IList<Vector2> points,
+        Func<Vector2, Vector2, Vector2> getOffset,
+        float ratio)
+    {
+        if (ratio < 0f || ratio > 1f) throw new Exception();
+        var totalLength = 0f;
+        for (var i = 0; i < points.Count; i++)
+        {
+            totalLength += getOffset(points[i], points.Modulo(i + 1)).Length();
+        }
+
+        var targetLength = ratio * totalLength;
+        var soFar = 0f;
+        for (var i = 0; i <= points.Count; i++)
+        {
+            var from = points.Modulo(i);
+            var to = points.Modulo(i + 1);
+            var offset = getOffset(from, to);
+            var toGo = targetLength - soFar;
+            if (toGo > offset.Length())
+            {
+                soFar += offset.Length();
+                continue;
+            }
+
+            return from + offset.Normalized() * toGo;
+        }
+
+        throw new Exception();
+    }
+
+    public static void LinkRings<T>(this IList<T> outerRing, 
+        IList<T> innerRing, Vector2 center, Func<T, Vector2> getPos,
+        Action<T, T> link)
+    {
+        foreach (var inner in innerRing)
+        {
+            foreach (var outer in outerRing)
+            {
+                link(inner, outer);
+            }
+        }
+
+        return;
+
+        for (var i = 0; i < innerRing.Count; i++)
+        {
+            var inner = innerRing[i];
+            var axis = getPos(inner) - center;
+            var left = innerRing.Where(t => t.Equals(inner) == false)
+                .MinBy(t => axis.GetCCWAngleTo(getPos(t) - center));
+            var leftAngle = axis.GetCCWAngleTo(getPos(left) - center);
+            var right = innerRing.Where(t => t.Equals(inner) == false)
+                .MinBy(t => axis.GetClockwiseAngleTo(getPos(t) - center));
+            var rightAngle = axis.GetClockwiseAngleTo(getPos(right) - center);
+            var toLink = outerRing
+                .Where(t =>
+                {
+                    return axis.GetCCWAngleTo(getPos(t) - center) <= leftAngle
+                        ||
+                        axis.GetClockwiseAngleTo(getPos(t) - center) <= rightAngle;
+                });
+            foreach (var t in toLink)
+            {
+                link(inner, t);
+            }
+        }
     }
 }

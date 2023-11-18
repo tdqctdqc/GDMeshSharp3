@@ -88,20 +88,6 @@ public static class PointsGenerator
         return points;
     }
 
-    private static void SquareMesh(List<Vector2> points, Vector2 dim)
-    {
-        var tl = Vector2.Zero;
-        if(points.Contains(tl) == false) points.Add(tl);
-
-        var tr = Vector2.Right * dim.X;
-        if(points.Contains(tr) == false) points.Add(tr);
-
-        var bl = Vector2.Down * dim.Y;
-        if(points.Contains(bl) == false) points.Add(bl);
-
-        var br = dim;
-        if(points.Contains(br) == false) points.Add(br);
-    }
     private static void AddMeshBorder(List<Vector2> points, 
                                         Vector2 dim, 
                                         float cellSize,
@@ -130,8 +116,40 @@ public static class PointsGenerator
         if(points.Contains(tr) == false) points.Add(tr);
     }
 
+    public static void GenerateInteriorPoints(this Vector2[] border, float cellSize,
+        float cellMarginRatio, Action<Vector2> add)
+    {
+        var minX = border.Min(v => v.X);
+        var maxX = border.Max(v => v.X);
+        var minY = border.Min(v => v.Y);
+        var maxY = border.Max(v => v.Y);
 
-    public static void GenerateInteriorPoints(this Vector2[] border, float cellSize, float margin, Action<Vector2> add)
+        var width = Mathf.Abs(maxX - minX);
+        var numXPartitions = Mathf.FloorToInt(width / cellSize);
+        var cellWidth = width / numXPartitions;
+        var cellWidthMargin = cellWidth * cellMarginRatio;
+
+        var height = Mathf.Abs(maxY - minY);
+        var numYPartitions = Mathf.FloorToInt(height / cellSize);
+        var cellHeight = height / numYPartitions;
+        var cellHeightMargin = cellHeight * cellMarginRatio;
+
+        for (var i = 0; i < numXPartitions; i++)
+        {
+            for (var j = 0; j < numYPartitions; j++)
+            {
+                var cellMinX = minX + cellWidth * i + cellWidthMargin;
+                var cellMaxX = minX + cellWidth * (i + 1) - cellWidthMargin;
+                var cellMinY = minY + cellHeight * j + cellHeightMargin;
+                var cellMaxY = minY + cellHeight * (j + 1) - cellHeightMargin;
+                if (cellMinX >= cellMaxX || cellMinY >= cellMaxY) throw new Exception();
+                var randP = new Vector2(Game.I.Random.RandfRange(cellMinX, cellMaxX),
+                    Game.I.Random.RandfRange(cellMinY, cellMaxY));
+                if (Geometry2D.IsPointInPolygon(randP, border)) add(randP);
+            }
+        }
+    }
+    public static void GenerateInteriorPointsMargin(this Vector2[] border, float cellSize, float margin, Action<Vector2> add)
     {
         var minX = border.Min(b => b.X);
         var maxX = border.Max(b => b.X);
@@ -144,7 +162,7 @@ public static class PointsGenerator
         var mod = Vector2.Right * cellSize * .1f;
         var shift = Vector2.One * cellSize * .5f;
 
-        var innerBorder = Geometry2D.OffsetPolygon(border, -margin);
+        var innerBorder = Geometry2D.OffsetPolygon(border, -margin).Cast<Vector2[]>();
 
         for (int i = 0; i < xCells; i++)
         {
@@ -152,71 +170,11 @@ public static class PointsGenerator
             {
                 mod = mod.Rotated(Game.I.Random.RandfRange(0f, Mathf.Pi * 2f));
                 var p = new Vector2(minX + cellSize * i, minY + cellSize * j) + mod + shift;
-                if(innerBorder.Cast<Vector2[]>().Any(b => Geometry2D.IsPointInPolygon(p, b)))
+                if(innerBorder.Any(b => Geometry2D.IsPointInPolygon(p, b)))
                 {
                     add(p);
                 }
             }
         }
     }
-    
-    public static List<Vector2> GeneratePoissonPoints(float radius, Vector2 sampleRegionSize, int numSamplesBeforeRejection = 30) {
-		float cellSize = radius/Mathf.Sqrt(2);
-
-		int[,] grid = new int[Mathf.CeilToInt(sampleRegionSize.X/cellSize), Mathf.CeilToInt(sampleRegionSize.Y/cellSize)];
-		List<Vector2> points = new List<Vector2>();
-		List<Vector2> spawnPoints = new List<Vector2>();
-
-		spawnPoints.Add(sampleRegionSize/2);
-		while (spawnPoints.Count > 0) {
-			int spawnIndex = Game.I.Random.RandiRange(0,spawnPoints.Count - 1);
-			Vector2 spawnCentre = spawnPoints[spawnIndex];
-			bool candidateAccepted = false;
-
-			for (int i = 0; i < numSamplesBeforeRejection; i++)
-			{
-				float angle = Game.I.Random.Randf() * Mathf.Pi * 2;
-				Vector2 dir = new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
-				Vector2 candidate = spawnCentre + dir * Game.I.Random.RandfRange(radius, 2*radius);
-				if (IsValid(candidate, sampleRegionSize, cellSize, radius, points, grid)) {
-					points.Add(candidate);
-					spawnPoints.Add(candidate);
-					grid[(int)(candidate.X/cellSize),(int)(candidate.Y/cellSize)] = points.Count;
-					candidateAccepted = true;
-					break;
-				}
-			}
-			if (!candidateAccepted) {
-				spawnPoints.RemoveAt(spawnIndex);
-			}
-
-		}
-
-		return points;
-	}
-
-	private static bool IsValid(Vector2 candidate, Vector2 sampleRegionSize, float cellSize, float radius, List<Vector2> points, int[,] grid) {
-		if (candidate.X >=0 && candidate.X < sampleRegionSize.X && candidate.Y >= 0 && candidate.Y < sampleRegionSize.Y) {
-			int cellX = (int)(candidate.X/cellSize);
-			int cellY = (int)(candidate.Y/cellSize);
-			int searchStartX = Mathf.Max(0,cellX -2);
-			int searchEndX = Mathf.Min(cellX+2,grid.GetLength(0)-1);
-			int searchStartY = Mathf.Max(0,cellY -2);
-			int searchEndY = Mathf.Min(cellY+2,grid.GetLength(1)-1);
-
-			for (int x = searchStartX; x <= searchEndX; x++) {
-				for (int y = searchStartY; y <= searchEndY; y++) {
-					int pointIndex = grid[x,y]-1;
-					if (pointIndex != -1) {
-						float sqrDst = (candidate - points[pointIndex]).LengthSquared();
-						if (sqrDst < radius*radius) {
-							return false;
-						}
-					}
-				}
-			}
-			return true;
-		}
-		return false;
-	}
 }

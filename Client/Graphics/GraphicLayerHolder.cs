@@ -18,9 +18,12 @@ public class GraphicLayerHolder
         AddLayer(IconsChunkModule.GetLayer(3, data, segmenter), true);
         AddLayer(ResourceChunkModule.GetLayer(4, data, segmenter), false);
         AddLayer(FrontGraphicLayer.GetLayer(5, client, segmenter, data), true);
-        AddLayer(WaypointGraphicChunk.GetLayer(6, data, client, segmenter), false);
-        AddLayer(UnitOrdersGraphicLayer.GetLayer(7, segmenter, client), true);
-        AddLayer(new UnitGraphicLayer(8, client, segmenter, data), true);
+        AddLayer(WaypointGraphicChunk.GetLayer(6, "Nav Waypoints", data, client, 
+            p => p.GetAssocNavWaypoints(data), wp => wp.GetNeighboringNavWaypoints(data), segmenter), false);
+        AddLayer(WaypointGraphicChunk.GetLayer(7, "Tac Waypoints", data, client, 
+            p => p.GetAssocTacWaypoints(data), wp => wp.GetNeighboringTacWaypoints(data), segmenter), false);
+        AddLayer(UnitOrdersGraphicLayer.GetLayer(8, segmenter, client), true);
+        AddLayer(new UnitGraphicLayer(9, client, segmenter, data), true);
     }
 
     private void AddLayer(IGraphicLayer layer, bool startVisible)
@@ -37,7 +40,7 @@ public class GraphicLayerHolder
             kvp.Update(d, queue);
         }
         sw.Stop();
-        Game.I.Logger.Log($"graphics update time {sw.Elapsed.TotalMilliseconds}",
+        d.Logger.Log($"graphics update time {sw.Elapsed.TotalMilliseconds}",
             LogType.Graphics);
     }
 

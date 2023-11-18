@@ -22,7 +22,7 @@ public static class Triangulator
         var polygon = new Poly2Tri.Polygon(boundaryPoints.Select(p => new PolygonPoint(p.X, p.Y)));
 
         
-        boundaryPoints.GenerateInteriorPoints(30f, 10f, 
+        boundaryPoints.GenerateInteriorPointsMargin(30f, 10f, 
             v => polygon.AddSteinerPoint(new TriangulationPoint(v.X, v.Y)));
         
         

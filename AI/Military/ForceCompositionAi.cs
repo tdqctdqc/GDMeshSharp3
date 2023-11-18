@@ -46,14 +46,14 @@ public class ForceCompositionAi
         foreach (var freeUnit in freeUnits)
         {
             var group = iter % numGroups;
-            Game.I.Logger.Log($"adding unit to group pre", LogType.Temp);
+            key.Data.Logger.Log($"adding unit to group pre", LogType.Temp);
 
             newGroups.ElementAt(group).Add(freeUnit.Id);
             iter++;
         }
         foreach (var newGroup in newGroups)
         {
-            Game.I.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
+            key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
 
             UnitGroup.Create(orders.Regime.Entity(key.Data),
                 newGroup, key);

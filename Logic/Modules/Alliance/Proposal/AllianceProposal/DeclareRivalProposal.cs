@@ -54,7 +54,7 @@ public class DeclareRivalProposal : AllianceProposal
             alliance.Rivals.Add(target, key);
             target.Rivals.Add(alliance, key);
         }
-        Game.I.Logger.Log($"{alliance.Leader.Entity(key.Data).Name} and {alliance.Leader.Entity(key.Data).Capital.RefId} " +
+        key.Data.Logger.Log($"{alliance.Leader.Entity(key.Data).Name} and {alliance.Leader.Entity(key.Data).Capital.RefId} " +
                  $"{target.Leader.Entity(key.Data).Name} {target.Leader.Entity(key.Data).Capital.RefId} " +
                  $"are now rivals", LogType.Diplomacy);
 

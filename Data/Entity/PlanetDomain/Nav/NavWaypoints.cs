@@ -4,21 +4,21 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class Nav : Entity
+public class NavWaypoints : Entity
 {
     public Waypoint Get(int id) => Waypoints[id];
     public Dictionary<int, Waypoint> Waypoints { get; private set; }
     public Dictionary<Vector2, Waypoint> WaypointsByPos { get; private set; }
     public Dictionary<int, int> PolyCenterIds { get; private set; }
     public Dictionary<Vector2, List<int>> PolyNavPaths { get; private set; }
-    public static Nav Create(GenWriteKey key)
+    public static NavWaypoints Create(GenWriteKey key)
     {
-        var n = new Nav(key.Data.IdDispenser.TakeId(), new Dictionary<int, Waypoint>(), new Dictionary<int, int>(),
+        var n = new NavWaypoints(key.Data.IdDispenser.TakeId(), new Dictionary<int, Waypoint>(), new Dictionary<int, int>(),
             new Dictionary<Vector2, List<int>>(), new Dictionary<Vector2, Waypoint>());
         key.Create(n);
         return n;
     }
-    [SerializationConstructor] private Nav(int id, 
+    [SerializationConstructor] private NavWaypoints(int id, 
         Dictionary<int, Waypoint> waypoints,
         Dictionary<int, int> polyCenterIds, 
         Dictionary<Vector2, List<int>> polyNavPaths,
@@ -70,7 +70,7 @@ public class Nav : Entity
             {
                 foreach (var n in current.Neighbors)
                 {
-                    var nWp = data.Planet.Nav.Waypoints[n];
+                    var nWp = data.Planet.NavWaypoints.Waypoints[n];
                     if (assoc.Contains(nWp) == false && nWp.AssociatedWithPoly(poly))
                     {
                         frontier.Enqueue(nWp);

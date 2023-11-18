@@ -35,7 +35,7 @@ public class DeploymentAi
         var unions = UnionFind.Find(responsibility, (wp1, wp2) =>
         {
             return responsibility.Contains(wp1) == responsibility.Contains(wp2);
-        }, wp => wp.GetNeighboringWaypoints(key.Data));
+        }, wp => wp.GetNeighboringTacWaypoints(key.Data));
         
         foreach (var union in unions)
         {
@@ -44,7 +44,7 @@ public class DeploymentAi
             {
                 for (var i = 0; i < contactLine.Count - 1; i++)
                 {
-                    if (contactLine[i].GetNeighboringWaypoints(key.Data).Contains(contactLine[i + 1]) == false)
+                    if (contactLine[i].GetNeighboringTacWaypoints(key.Data).Contains(contactLine[i + 1]) == false)
                     {
                         throw new Exception();
                     }

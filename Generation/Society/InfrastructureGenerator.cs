@@ -19,7 +19,7 @@ public class InfrastructureGenerator : Generator
         
         genReport.StartSection();
         var roads = RoadNetwork.Create(key);
-        var nav = key.Data.Planet.Nav;
+        var nav = key.Data.Planet.NavWaypoints;
         
         var segs = new ConcurrentDictionary<Vector2, RoadModel>();
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
@@ -31,8 +31,8 @@ public class InfrastructureGenerator : Generator
         {
             var edge = kvp.Key;
             var road = kvp.Value;
-            var wp1 = _data.Planet.Nav.Get((int)edge.X);
-            var wp2 = _data.Planet.Nav.Get((int)edge.Y);
+            var wp1 = _data.Planet.NavWaypoints.Get((int)edge.X);
+            var wp2 = _data.Planet.NavWaypoints.Get((int)edge.Y);
             roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
         }
         genReport.StopSection(nameof(GenerateForLandmass));
@@ -98,7 +98,7 @@ public class InfrastructureGenerator : Generator
     private List<Vector2> BuildRoadLevel(List<Settlement> settlements)
     {
         var first = settlements.First();
-        var nav = _data.Planet.Nav;
+        var nav = _data.Planet.NavWaypoints;
         var graph = GraphGenerator.GenerateDelaunayGraph(
             settlements,
             s => first.Poly.Entity(_data).GetOffsetTo(s.Poly.Entity(_data), _data),
@@ -153,7 +153,7 @@ public class InfrastructureGenerator : Generator
         
         foreach (var poly in coastCityPolys)
         {
-            var wps = poly.GetAssocWaypoints(_key.Data)
+            var wps = poly.GetAssocNavWaypoints(_key.Data)
                 .SelectWhereOfType<ICoastWaypoint>();
             var polySeaIds = new HashSet<int>();
             foreach (var coastWaypoint in wps)
@@ -169,7 +169,7 @@ public class InfrastructureGenerator : Generator
     {
         var stoneRoad = _key.Data.Models.RoadList.StoneRoad;
         var dirtRoad = _key.Data.Models.RoadList.DirtRoad;
-        var nav = _key.Data.Planet.Nav;
+        var nav = _key.Data.Planet.NavWaypoints;
         var city = _data.Models.Settlements.City;
         var town = _data.Models.Settlements.Town;
         var village = _data.Models.Settlements.Village;
@@ -181,7 +181,7 @@ public class InfrastructureGenerator : Generator
         if (settlementPolys.Count() < 3) return;
 
         var portWps = lm.Polys
-            .SelectMany(p => _key.Data.Planet.Nav.GetPolyAssocWaypoints(p, _key.Data))
+            .SelectMany(p => _key.Data.Planet.NavWaypoints.GetPolyAssocWaypoints(p, _key.Data))
             .Distinct().Where(wp => wp is CoastWaypoint c && c.Port);
 
         var settlementWps = settlementPolys
