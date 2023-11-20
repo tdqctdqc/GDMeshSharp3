@@ -9,7 +9,7 @@ public class CultureManager : IModelManager<Culture>
     
     public CultureManager()
     {
-        Models = FileLoader<Culture>.Setup("res://Assets/Cultures/Cultures/",
+        Models = FileLoader<Culture>.Setup("Assets/Cultures/Cultures/",
                 ".json", json => new Culture(json))
             .ToDictionary(c => c.Name, c => c);
     }

@@ -10,7 +10,7 @@ public static class SceneManager
     public static void Setup()
     {
         Scenes = new Dictionary<string, PackedScene>();
-        var scenePaths = GodotFileExt.GetAllFilePathsOfType("res://Assets/Scenes/", ".tscn");
+        var scenePaths = GodotFileExt.GetAllFilePathsOfType("Assets/Scenes/", ".tscn");
         scenePaths.ForEach(s =>
         {
             var packed = GD.Load<PackedScene>(s);

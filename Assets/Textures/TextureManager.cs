@@ -8,7 +8,7 @@ public class TextureManager
     public static void Setup()
     {
         Textures = new Dictionary<string, Texture2D>();
-        var scenePaths = GodotFileExt.GetAllFilePathsOfTypes("res://Assets/Textures/", 
+        var scenePaths = GodotFileExt.GetAllFilePathsOfTypes("Assets/Textures/", 
             new List<string>{ ".png", ".svg" });
         scenePaths.ForEach(path =>
         {

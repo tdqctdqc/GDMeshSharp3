@@ -36,9 +36,18 @@ public class GenerationMultiSettings : MultiSettings
 
     public static GenerationMultiSettings Load(Data data)
     {
-        var f = GodotFileExt.LoadFileAs<GenerationMultiSettings>("res://", "genSettings",
-            ".stng", data);
-        return f;
+        //todo fix this
+        try
+        {
+            var f = GodotFileExt.LoadFileAs<GenerationMultiSettings>("", "genSettings",
+                ".stng", data);
+            return f;
+        }
+        catch (Exception e)
+        {
+            return Construct();
+        }
+        
     }
 
     public void Save(Data data)
