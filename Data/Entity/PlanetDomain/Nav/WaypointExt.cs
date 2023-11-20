@@ -16,4 +16,20 @@ public static class WaypointExt
     {
         return wp.Neighbors.Select(i => d.Military.TacticalWaypoints.Waypoints[i]);
     }
+    public static bool IsDirectlyThreatened(this Waypoint wp,
+        Alliance alliance, Data data)
+    {
+        var controlling = data.Context
+            .WaypointForceBalances[wp]
+            .GetControllingAlliances();
+        return controlling
+            .Any(a => alliance.Rivals.Contains(a));
+    }
+    
+    public static bool IsIndirectlyThreatened(this Waypoint wp, 
+        Alliance alliance, Data data)
+    {
+        return wp.GetNeighboringTacWaypoints(data)
+            .Any(n => n.IsDirectlyThreatened(alliance, data));
+    }
 }

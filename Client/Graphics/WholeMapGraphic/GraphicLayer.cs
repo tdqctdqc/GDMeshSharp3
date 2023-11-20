@@ -136,6 +136,12 @@ public static class WholeMapGraphicLayerExt
                 client.QueuedUpdates.Enqueue(() => layer.Remove((TEntity)n.Entity, d));
             }
         );
+
+        var entities = d.GetAll<TEntity>();
+        foreach (var entity in entities)
+        {
+            layer.Add(entity, d);
+        }
     }
     
 }

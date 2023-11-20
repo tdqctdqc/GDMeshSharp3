@@ -31,8 +31,7 @@ public class DeployOnLineOrder : UnitOrder
             iter++;
             var pos = Points.GetPointAlongLine(
                 (v, w) => d.Planet.GetOffsetTo(v, w),
-                (iter + 1) / (count + 1));
-            iter++;
+                (float)iter / count);
             proc.NewUnitPosesById.Add(unit.Id, pos);
         }
     }
@@ -53,7 +52,6 @@ public class DeployOnLineOrder : UnitOrder
             }
             mb.AddPointMarker(pRel, 12f, outerColor);
             mb.AddPointMarker(pRel, 10f, innerColor);
-
         }
     }
 }

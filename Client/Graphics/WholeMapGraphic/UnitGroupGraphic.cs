@@ -7,6 +7,8 @@ public partial class UnitGroupGraphic : Node2D
 {
     public UnitGroup Group { get; private set; }
     public MeshInstance2D Child { get; private set; }
+    private static float _groupIconSize = 10f;
+    private static float _unitIconSize = 5f;
     private UnitGroupGraphic() { }
     public UnitGroupGraphic(UnitGroup unitGroup, GraphicsSegmenter segmenter, Data d)
     {
@@ -23,19 +25,17 @@ public partial class UnitGroupGraphic : Node2D
         var regime = Group.Regime.Entity(data);
         var m = new QuadMesh();
         var mb = new MeshBuilder();
-        var groupIconSize = 50f;
-        var unitIconSize = 25f;
 
         var groupPos = Group.GetPosition(data);
         var darkened = regime.PrimaryColor.Darkened(.5f);
-        mb.AddPointMarker(Vector2.Zero, groupIconSize, darkened);
-        mb.AddPointMarker(Vector2.Zero, groupIconSize * .8f, regime.PrimaryColor);
+        // mb.AddPointMarker(Vector2.Zero, _groupIconSize, darkened);
+        // mb.AddPointMarker(Vector2.Zero, _groupIconSize * .8f, regime.PrimaryColor);
         
         foreach (var unit in Group.Units.Items(data))
         {
             var relPos = data.Planet.GetOffsetTo(groupPos, unit.Position);
-            mb.AddPointMarker(relPos, unitIconSize, darkened);
-            mb.AddPointMarker(relPos, unitIconSize * .8f, regime.PrimaryColor);
+            mb.AddPointMarker(relPos, _unitIconSize, darkened);
+            mb.AddPointMarker(relPos, _unitIconSize * .8f, regime.PrimaryColor);
         }
 
         Child = mb.GetMeshInstance();

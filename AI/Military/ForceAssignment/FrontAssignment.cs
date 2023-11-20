@@ -35,40 +35,8 @@ public class FrontAssignment : ForceAssignment
             frontWps,
             Groups.ToList(),
             g => g.GetPowerPoints(key.Data),
-            (wp1, wp2) =>
-            {
-                var offset = key.Data.Planet.GetOffsetTo(wp1.Pos, wp2.Pos);
-                if (offset.Length() == 0f)
-                {
-                    
-                    throw new Exception($"0 offset {wp1.Id} {wp1.Pos} to {wp2.Id} {wp2.Pos}");
-                }
-                var dCost1 = wp1.GetDefendCost(key.Data);
-                if (dCost1 == 0f) throw new Exception();
-                var dCost2 = wp2.GetDefendCost(key.Data);
-                if (dCost2 == 0f) throw new Exception();
-                return Mathf.Max(.1f, offset.Length()) * (dCost1 + dCost2);
-            },
-            wp =>
-            {
-                var shift = Vector2.Zero;
-
-                var enemyNs = wp.GetNeighboringTacWaypoints(key.Data)
-                    .Where(n => key.Data.Context
-                        .WaypointForceBalances[n]
-                        .Any(kvp => alliance.Rivals.Contains(kvp.Key)));
-                foreach (var enemyN in enemyNs)
-                {
-                    var offset = key.Data.Planet.GetOffsetTo(enemyN.Pos, wp.Pos);
-
-                    shift += offset.Normalized()
-                             * enemyN.GetForceBalance(key.Data)
-                                 .Where(kvp => alliance.IsHostileTo(kvp.Key))
-                                 .Sum(kvp => kvp.Value);
-                    
-                }
-                return wp.Pos + shift.Normalized() * shiftLength;
-            },
+            (v,w) => GetDefendCost(v, w, key.Data),
+            v => GetPos(v, alliance, key.Data),
             (v1, v2) => key.Data.Planet.GetOffsetTo(v1, v2),
             (g, l) =>
             {
@@ -79,6 +47,41 @@ public class FrontAssignment : ForceAssignment
         );
     }
 
+    public float GetDefendCost(Waypoint wp1, Waypoint wp2, Data data)
+    {
+        var offset = data.Planet.GetOffsetTo(wp1.Pos, wp2.Pos);
+        if (offset.Length() == 0f)
+        {
+            throw new Exception($"0 offset {wp1.Id} {wp1.Pos} to {wp2.Id} {wp2.Pos}");
+        }
+
+        return offset.Length();
+        var dCost1 = wp1.GetDefendCost(data);
+        var dCost2 = wp2.GetDefendCost(data);
+        return offset.Length() * (dCost1 + dCost2);
+    }
+
+    private Vector2 GetPos(Waypoint wp, Alliance alliance, Data data)
+    {
+        var shift = Vector2.Zero;
+        var shiftLength = 15f;
+        var enemyNs = wp.GetNeighboringTacWaypoints(data)
+            .Where(n => data.Context
+                .WaypointForceBalances[n]
+                .Any(kvp => alliance.Rivals.Contains(kvp.Key)));
+        if (wp.IsDirectlyThreatened(alliance, data))
+        {
+            var enemyUnits = data.Military.UnitAux.UnitGrid
+                .GetWithin(wp.Pos, 200f);
+            foreach (var enemyN in enemyUnits)
+            {
+                var offset = data.Planet.GetOffsetTo(enemyN.Position, wp.Pos);
+                shift += offset.Normalized() * enemyN.GetPowerPoints(data);
+            }
+        }
+        
+        return wp.Pos + shift.Normalized() * shiftLength;
+    }
     public float GetPowerPointRatio(Data data)
     {
         var powerPoints = GetPowerPointsAssigned(data);

@@ -36,8 +36,31 @@ public class CylinderGrid<T>
 
         SearchSpiralKeyOffsets = GetSearchSpiral();
     }
-    
-    public bool TryGetClosest(Vector2 p, out T close)
+
+    public List<T> GetWithin(Vector2 p, float radius)
+    {
+        var res = new List<T>();
+        var startKey = GetKey(p);
+        for (var i = 0; i < SearchSpiralKeyOffsets.Length; i++)
+        {
+            var v = SearchSpiralKeyOffsets[i];
+            var keyOffset = v.Item1;
+            var keyDist = v.Item2;
+            if (keyDist > radius + MaxCellDim)
+            {
+                break;
+            }
+            var key = startKey + keyOffset;
+            key = ClampKey(key);
+            var set = Cells[key];
+            foreach (var t in set.Where(t => GetDist(_getPos(t), p) <= radius))
+            {
+                res.Add(t);
+            }
+        }
+        return res;
+    }
+    public bool TryGetClosest(Vector2 p, out T close, Func<T, bool> valid)
     {
         close = default;
         var startKey = GetKey(p);
@@ -54,8 +77,8 @@ public class CylinderGrid<T>
             }
             var key = startKey + keyOffset;
             key = ClampKey(key);
-            var set = Cells[key];
-            if (set.Count > 0)
+            var set = Cells[key].Where(valid);
+            if (set.Count() > 0)
             {
                 var closeInCell = set.MinBy(t => GetDist(_getPos(t), p));
                 var closeInCellDist = GetDist(_getPos(closeInCell), p);
@@ -74,7 +97,9 @@ public class CylinderGrid<T>
     {
         var yDist = Mathf.Abs(p1.Y - p2.Y);
         var xDist = Mathf.Abs(p1.X - p2.X);
-        if (xDist > Dimension.X / 2f) xDist = Dimension.X - xDist;
+        while (xDist > Dimension.X / 2f) xDist -= Dimension.X;
+        while (xDist < -Dimension.X / 2f) xDist += Dimension.X;
+        if (yDist > Dimension.Y) throw new Exception();
         return Mathf.Sqrt(yDist * yDist + xDist * xDist);
     }
     private int GetXModulo(int x)

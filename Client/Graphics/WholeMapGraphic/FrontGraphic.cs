@@ -56,8 +56,10 @@ public partial class FrontGraphic : Node2D
                 data.Planet.GetOffsetTo(relTo, wp2.Pos),
                 fillColor, 25f);
         }
-        else if (front.ContactLineWaypointIds.Count() > 2)
+        else if (front.ContactLineWaypointIds.Count() > 2
+                 & offsets.Count > 2)
         {
+            
             var tris = Triangulator
                 .TriangulatePoints(offsets);
             foreach (var triangle in tris)
@@ -110,9 +112,8 @@ public partial class FrontGraphic : Node2D
         }
         var frontline = front
             .ContactLineWaypointIds;
-        var lineColor = 
-            // ColorsExt.GetRandomColor();
-            regime.PrimaryColor.Darkened(.3f);
+        var darkened = regime.PrimaryColor.Darkened(.3f);
+        var frontColor = ColorsExt.GetRandomColor();
         var mb = new MeshBuilder();
         if (frontline.Count == 1)
         {
@@ -131,8 +132,11 @@ public partial class FrontGraphic : Node2D
                 var from = data.Planet.GetOffsetTo(relTo, fromWp.Pos);
                 var to = data.Planet.GetOffsetTo(relTo, toWp.Pos);;
                 mb.AddLine(from, to, 
-                    ColorsExt.GetRainbowColor(iter), 
+                    darkened, 
                     15f);
+                mb.AddLine(from, to, 
+                    frontColor, 
+                    10f);
                 iter++;
             }
         }

@@ -284,7 +284,10 @@ public static class Vector2Ext
         Func<Vector2, Vector2, Vector2> getOffset,
         float ratio)
     {
-        if (ratio < 0f || ratio > 1f) throw new Exception();
+        if (ratio < 0f || ratio > 1f)
+        {
+            throw new Exception("ratio is " + ratio);
+        }
         var totalLength = 0f;
         for (var i = 0; i < points.Count - 1; i++)
         {

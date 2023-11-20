@@ -30,4 +30,17 @@ public class ForceBalance : Dictionary<Alliance, float>
         return this.Where(kvp => a.Rivals.Contains(a))
             .Sum(kvp => kvp.Value);
     }
+    public float GetHostilePowerPointsOfNeighbors(Waypoint wp,
+        Alliance a, Data d)
+    {
+        var res = 0f;
+        foreach (var n in wp.GetNeighboringTacWaypoints(d))
+        {
+            if (n.IsDirectlyThreatened(a, d))
+            {
+                res += d.Context.WaypointForceBalances[n].GetHostilePowerPoints(a, d);
+            }
+        }
+        return res;
+    }
 }

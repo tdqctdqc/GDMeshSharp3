@@ -9,23 +9,31 @@ public class Assigner
 {
     public static void Assign<TPicker, TPicked>(IEnumerable<TPicker> pickers,
         Func<TPicker, float> getPriority,
+        Func<TPicked, float> getPrice, 
         HashSet<TPicked> toPick,
         Action<TPicker, TPicked> assign,
         Func<TPicker, TPicked, float> ranker)
     {
         if (pickers.Count() == 0) return;
-        var priorityQueue = new SimplePriorityQueue<TPicker, float>();
-        foreach (var picker in pickers)
-        {
-            priorityQueue.Enqueue(picker, -getPriority(picker));
-        }
+        
+        var totalPriority = pickers.Sum(getPriority);
+        var priorities = pickers.ToDictionary(
+            p => p,
+            p => new Vector2(0f, getPriority(p) / totalPriority)
+        );
         while (toPick.Count > 0)
         {
-            var picker = priorityQueue.First;
+            var picker = priorities
+                .MinBy(kvp =>
+                {
+                    var v2 = kvp.Value;
+                    return v2.X / v2.Y;
+                }).Key;
             var preferred = toPick.MaxBy(pick => ranker(picker, pick));
             assign(picker, preferred);
+            var value = priorities[picker];
+            priorities[picker] = new Vector2(value.X + getPrice(preferred), value.Y);
             toPick.Remove(preferred);
-            priorityQueue.UpdatePriority(picker, -getPriority(picker));
         }
     }
 

@@ -31,21 +31,45 @@ public class ForceCompositionAi
         BuildUnits(reserve, key, regime, orders);
         AssignFreeUnitsToGroups(regime, key, orders);
     }
-    private void AssignFreeUnitsToGroups(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
+    private void AssignFreeUnitsToGroups(Regime regime, 
+        LogicWriteKey key, MajorTurnOrders orders)
     {
         var freeUnits = key.Data.Military.UnitAux.UnitByRegime[regime]
             ?.Where(u => u != null)
-            .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null);
+            .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null)
+            .ToHashSet();
         if (freeUnits == null || freeUnits.Count() == 0) return;
-        var numGroups = Mathf.CeilToInt((float)freeUnits.Count() / PreferredGroupSize);
-        var newGroups = Enumerable.Range(0, numGroups)
+
+        var groups = key.Data.Military.UnitAux.UnitGroupByRegime[regime];
+        if (groups != null)
+        {
+            var understrengthGroups = groups.Where(g => g.Units.Count() < PreferredGroupSize);
+            foreach (var understrengthGroup in understrengthGroups)
+            {
+                var deficit = PreferredGroupSize - understrengthGroup.Units.Count();
+                var toTake = Mathf.Min(deficit, freeUnits.Count());
+                var took = freeUnits.Take(toTake);
+                foreach (var unit in took)
+                {
+                    var proc = new SetUnitGroupProcedure(unit.MakeRef(), understrengthGroup.MakeRef());
+                    freeUnits.Remove(unit);
+                    key.SendMessage(proc);
+                }
+            }
+        }
+        
+        
+        
+        var numNewGroups = Mathf.CeilToInt((float)freeUnits.Count() / PreferredGroupSize);
+        if (numNewGroups == 0) return;
+        var newGroups = Enumerable.Range(0, numNewGroups)
             .Select(i => new List<int>())
             .ToList();
         
         var iter = 0;
         foreach (var freeUnit in freeUnits)
         {
-            var group = iter % numGroups;
+            var group = iter % numNewGroups;
             key.Data.Logger.Log($"adding unit to group pre", LogType.Temp);
 
             newGroups.ElementAt(group).Add(freeUnit.Id);
@@ -53,8 +77,8 @@ public class ForceCompositionAi
         }
         foreach (var newGroup in newGroups)
         {
+            if (newGroup.Count() == 0) continue;
             key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-
             UnitGroup.Create(orders.Regime.Entity(key.Data),
                 newGroup, key);
         }

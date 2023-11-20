@@ -111,15 +111,29 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         var forceBalance = data.Context.WaypointForceBalances[wp];
         var controlling = forceBalance.GetControllingAlliances();
         var hasAlliance = forceBalance.IsAllianceControlling(alliance);
-        var hasHostile = controlling.Any(a => alliance.Rivals.Contains(a));
         if (hasAlliance)
         {
-            if (hasHostile) return (Colors.Orange, Colors.Orange);
-            return (Colors.Green, Colors.Green);
+            if (wp.IsDirectlyThreatened(alliance, data))
+            {
+                var lerp = forceBalance[alliance]
+                           / (2f * forceBalance.GetHostilePowerPoints(alliance, data));
+                lerp = Mathf.Clamp(lerp, 0f, 1f);
+                var col = Colors.Red.Lerp(Colors.Green, lerp);
+                return (col, Colors.Red);
+            }
+            else if (wp.IsIndirectlyThreatened(alliance, data))
+            {
+                var lerp = forceBalance[alliance]
+                           / (forceBalance.GetHostilePowerPointsOfNeighbors(wp, alliance, data));
+                lerp = Mathf.Clamp(lerp, 0f, 1f);
+                var col = Colors.Red.Lerp(Colors.Green, lerp);
+                return (col, Colors.Orange);
+            }
+            return (Colors.White, Colors.Green);
         }
         else
         {
-            if (hasHostile) return (Colors.Red, Colors.Red);
+            if (wp.IsDirectlyThreatened(alliance, data)) return (Colors.Black, Colors.Black);
             return (Colors.White, Colors.White);
         }
     }

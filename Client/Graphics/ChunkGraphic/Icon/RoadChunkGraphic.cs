@@ -6,6 +6,7 @@ using Godot;
 
 public partial class RoadChunkGraphicNode : MapChunkGraphicModule
 {
+    private static float _drawWidth = 5f;
     
     public RoadChunkGraphicNode(MapChunk chunk, Data d) 
         : base(chunk, nameof(RoadChunkGraphicNode))
@@ -30,7 +31,7 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
                 if (d.Infrastructure.RoadNetwork.Get(wp, nWp, d) is RoadModel r)
                 {
                     r.Draw(mb, chunk.RelTo.GetOffsetTo(wp.Pos, d), 
-                        chunk.RelTo.GetOffsetTo(nWp.Pos, d), 10f);
+                        chunk.RelTo.GetOffsetTo(nWp.Pos, d), _drawWidth);
                 }
             }
         }

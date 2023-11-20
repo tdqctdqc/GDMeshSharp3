@@ -7,7 +7,7 @@ public class Jungle : Vegetation
     public float MaxDistRatioFromEquator { get; private set; } = .15f;
     public Jungle(LandformList lfs) 
         : base(new HashSet<Landform>{lfs.Hill, lfs.Plain}, 
-            .5f, .4f, Colors.Chartreuse.Darkened(.25f), nameof(Jungle))
+            .5f, .4f, new Color("#4bcf0e").Darkened(.25f), nameof(Jungle))
     {
     }
     public override bool Allowed(MapPolygon p, float moisture, Landform lf, Data data)

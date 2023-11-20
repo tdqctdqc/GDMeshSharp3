@@ -42,6 +42,7 @@ public class UnitTemplate : Entity, IMakeable
         TroopDomain domain) 
         : base(id)
     {
+        Name = name;
         Makeable = makeable;
         TroopCounts = troopCounts;
         Regime = regime;

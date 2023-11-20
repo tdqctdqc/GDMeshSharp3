@@ -25,6 +25,19 @@ public class RegimeGenerator : Generator
         report.StartSection();
         GenerateRegimes();
         _data.Notices.GeneratedRegimes.Invoke();
+        
+        foreach (var regime in key.Data.GetAll<Regime>())
+        {
+            var template = regime.GetUnitTemplates(key.Data)
+                .First();
+
+            var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetPolys(key.Data).Count()));
+            var numUnits = score * 20;
+            for (var i = 0; i < numUnits; i++)
+            {
+                Unit.Create(template, regime, regime.Capital.Entity(key.Data).Center, key);
+            }
+        }
         report.StopSection("all");
         return report;
     }

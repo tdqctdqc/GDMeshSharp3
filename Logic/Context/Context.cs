@@ -66,18 +66,20 @@ public class Context
         foreach (var u in units)
         {
             if (u.Position.HasNaN()) throw new Exception();
-            var found = wpGrid.TryGetClosest(u.Position, out var wp);
+            var found = wpGrid.TryGetClosest(u.Position, out var closeWp, 
+                wp => wp is ILandWaypoint);
             if (found = false)
             {
                 throw new Exception("couldnt find waypoint near " + u.Position);
             }
-            UnitWaypoints[u] = wp;
-            var forceBalance = WaypointForceBalances[wp];
+            UnitWaypoints[u] = closeWp;
+            var forceBalance = WaypointForceBalances[closeWp];
             forceBalance.Add(u, data);
         }
         
         foreach (var wp in data.Military.TacticalWaypoints.Waypoints.Values)
         {
+            if (wp is IRiverWaypoint) continue;
             var alliances = wp.AssocPolys(data)
                 .SelectWhere(p => p.OwnerRegime.Fulfilled())
                 .Select(p => p.OwnerRegime.Entity(data))
@@ -105,7 +107,8 @@ public class Context
         sw.Stop();
         data.Logger.Log("units " + units.Count() 
                                    + " waypoint force balance calc time " 
-                                   + sw.Elapsed.TotalMilliseconds, LogType.Logic);
+                                   + sw.Elapsed.TotalMilliseconds, 
+            LogType.Logic);
     }
 
 }

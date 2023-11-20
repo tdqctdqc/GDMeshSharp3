@@ -52,11 +52,23 @@ public partial class MilitaryTab : ScrollContainer
             hbox.CreateLabelAsChild($"Amount: {amt} ");
             _container.AddChild(hbox);
         }
-        _container.CreateLabelAsChild("UNITS");
+
+        var groups = client.Data.Military.UnitAux.UnitGroupByRegime[regime];
         _container.CreateLabelAsChild($"{units.Count()} Units");
-        foreach (var unit in units)
+
+        if (groups != null)
         {
-            _container.CreateLabelAsChild(unit.Template.Entity(client.Data).Name);
+            _container.CreateLabelAsChild($"{groups.Count()} Groups");
+            _container.CreateLabelAsChild("GROUPS");
+            foreach (var group in groups)
+            {
+                _container.CreateLabelAsChild("Group " + group.Id);
+                var gUnits = group.Units.Items(client.Data);
+                foreach (var unit in gUnits)
+                {
+                    _container.CreateLabelAsChild("\t" + unit.Template.Entity(client.Data).Name);
+                }
+            }
         }
     }
 }

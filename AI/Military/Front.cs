@@ -42,4 +42,17 @@ public class Front
         return GetContactLineWaypoints(data)
             .Sum(wp => forceBalances[wp].GetHostilePowerPoints(alliance, data));
     }
+
+    public float GetLength(Data data)
+    {
+        var res = 0f;
+        for (var i = 0; i < ContactLineWaypointIds.Count - 1; i++)
+        {
+            var wp1 = data.Military.TacticalWaypoints.Waypoints[ContactLineWaypointIds[i]];
+            var wp2 = data.Military.TacticalWaypoints.Waypoints[ContactLineWaypointIds[i + 1]];
+            res += data.Planet.GetOffsetTo(wp1.Pos, wp2.Pos).Length();
+        }
+
+        return res;
+    }
 }

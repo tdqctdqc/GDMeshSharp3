@@ -65,7 +65,7 @@ public partial class WorldCameraController : Camera2D, ICameraController
     private float _zoomIncr = .01f;
     private float _zoomLevel = .9f;
     private float _maxZoom = 50f;
-    private float _minZoom = .5f;
+    private float _minZoom = .1f;
     private float _minZoomLevel = .05f;
     private float _maxZoomLevel = .9f;
     private Data _data;
