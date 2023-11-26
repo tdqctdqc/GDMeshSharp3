@@ -21,7 +21,7 @@ public class GraphicLayerHolder
         AddLayer(WaypointGraphicChunk.GetLayer(6, "Nav Waypoints", data, client, 
             p => p.GetAssocNavWaypoints(data), wp => wp.GetNeighboringNavWaypoints(data), segmenter), false);
         AddLayer(WaypointGraphicChunk.GetLayer(7, "Tac Waypoints", data, client, 
-            p => p.GetAssocTacWaypoints(data), wp => wp.GetNeighboringTacWaypoints(data), segmenter), false);
+            p => p.GetAssocTacWaypoints(data), wp => wp.TacNeighbors(data), segmenter), false);
         AddLayer(UnitOrdersGraphicLayer.GetLayer(8, segmenter, client), true);
         AddLayer(new UnitGraphicLayer(9, client, segmenter, data), true);
     }

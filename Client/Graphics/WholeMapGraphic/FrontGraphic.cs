@@ -87,7 +87,7 @@ public partial class FrontGraphic : Node2D
         foreach (var wp in front.GetContactLineWaypoints(data))
         {
             var p = data.Planet.GetOffsetTo(relTo, wp.Pos);
-            foreach (var nWp in wp.GetNeighboringTacWaypoints(data))
+            foreach (var nWp in wp.TacNeighbors(data))
             {
                 if (wp.Id < nWp.Id) continue;
                 if (front.ContactLineWaypointIds.Contains(nWp.Id) == false) continue;

@@ -12,7 +12,7 @@ public static class WaypointExt
     {
         return wp.Neighbors.Select(i => d.Planet.NavWaypoints.Waypoints[i]);
     }
-    public static IEnumerable<Waypoint> GetNeighboringTacWaypoints(this Waypoint wp, Data d)
+    public static IEnumerable<Waypoint> TacNeighbors(this Waypoint wp, Data d)
     {
         return wp.Neighbors.Select(i => d.Military.TacticalWaypoints.Waypoints[i]);
     }
@@ -29,7 +29,7 @@ public static class WaypointExt
     public static bool IsIndirectlyThreatened(this Waypoint wp, 
         Alliance alliance, Data data)
     {
-        return wp.GetNeighboringTacWaypoints(data)
+        return wp.TacNeighbors(data)
             .Any(n => n.IsDirectlyThreatened(alliance, data));
     }
 }

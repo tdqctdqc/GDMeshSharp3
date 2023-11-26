@@ -36,7 +36,7 @@ public class DeploymentAi
         var unions = UnionFind.Find(responsibility, (wp1, wp2) =>
         {
             return responsibility.Contains(wp1) == responsibility.Contains(wp2);
-        }, wp => wp.GetNeighboringTacWaypoints(key.Data));
+        }, wp => wp.TacNeighbors(key.Data));
         
         foreach (var union in unions)
         {
@@ -95,90 +95,68 @@ public class DeploymentAi
         Data data)
     {
         var context = data.Context;
+        var fbs = context.WaypointForceBalances;
         var alliance = regime.GetAlliance(data);
         var relTo = wps.First().Pos;
 
-        bool isIndirectlyThreatened(Waypoint wp, HashSet<Waypoint> covered)
+        //key is hostile, value is wps incident
+        var byThreat = new Dictionary<Waypoint, HashSet<Waypoint>>();
+        var threatenedWps = new HashSet<Waypoint>();
+        foreach (var wp in wps)
         {
-            var ns = wp.GetNeighboringTacWaypoints(data);
-            var threatenedNeighbor = ns.Any(
-                n => n.IsDirectlyThreatened(alliance, data) 
-                && covered.Contains(n) == false
-            );
-            if (threatenedNeighbor) return true;
-            
-            var threatenedOverRiver = ns.Any(
-                n => n is IRiverWaypoint
-                    && n.IsIndirectlyThreatened(alliance, data)
-            );
-            return threatenedOverRiver;
+            var ns = wp.TacNeighbors(data)
+                .Where(isHostile);
+            if (ns.Count() == 0) continue;
+            threatenedWps.Add(wp);
+            foreach (var n in ns)
+            {
+                byThreat
+                    .GetOrAdd(n, x => new HashSet<Waypoint>())
+                    .Add(wp);
+            }
         }
 
-        var directlyThreatened = wps
-            .Where(wp => wp.IsDirectlyThreatened(alliance, data))
-            .ToHashSet();
-        
-        var indirectlyThreatened = wps
-            .Where(wp => isIndirectlyThreatened(wp, wps))
-            .ToHashSet();
-        
-        var threatenedWps =
-            directlyThreatened
-                .Union(indirectlyThreatened)
-                .Distinct()
-                .ToHashSet();
-        
         if (threatenedWps.Count == 1)
             return new List<List<Waypoint>> { new List<Waypoint> { threatenedWps.First() } };
         
-        
-        var threatenedEdges = GetEdgesWithin(threatenedWps, relTo, data);
-        var threatenedEdgeLineSegs = threatenedEdges
-            .Select(wps =>
+        var frontEdges = new HashSet<Vector2I>();
+        foreach (var kvp in byThreat)
+        {
+            var hostile = kvp.Key;
+            var threatenedEdges = GetEdgesWithin(kvp.Value, relTo, data);
+            foreach (var e1 in threatenedEdges)
             {
-                return new LineSegment(data.Planet.GetOffsetTo(relTo, wps.wp1.Pos),
-                    data.Planet.GetOffsetTo(relTo, wps.wp2.Pos));
-            }).ToList();
+                var include = true;
+                foreach (var e2 in threatenedEdges)
+                {
+                    if (e1 == e2) continue;
+                    if (
+                        arcsOverlap(e1, e2, hostile)
+                        && 
+                        blockedBy(e1, e2, hostile)
+                        )
+                    {
+                        include = false;
+                        break;
+                    }
+                }
 
-        bool isHostile(Waypoint n)
-        {
-            return n.IsDirectlyThreatened(alliance, data)
-                   || (n is IRiverWaypoint && n.IsIndirectlyThreatened(alliance, data));
+                if (include)
+                {
+                    var max = Mathf.Max(e1.wp1.Id, e1.wp2.Id);
+                    var min = Mathf.Min(e1.wp1.Id, e1.wp2.Id);
+                    frontEdges.Add(new Vector2I(min, max));
+                }
+            }
         }
-
-        bool intersectsThreatenedEdge(Waypoint from, Waypoint to)
-        {
-            var o1 = data.Planet.GetOffsetTo(relTo, from.Pos);
-            var o2 = data.Planet.GetOffsetTo(relTo, to.Pos);
-            return threatenedEdgeLineSegs.Any(ls => 
-                ls.IntersectsExclusive(o1, o2));
-        }
-
-        bool intersectsThreatenedEdgeV2(Vector2 from, Vector2 to)
-        {
-            return threatenedEdgeLineSegs.Any(ls => 
-                ls.IntersectsExclusive(from, to));
-        }
-
-        var hostileWps = threatenedWps
-            .SelectMany(wp => wp.GetNeighboringTacWaypoints(data)
-                .Where(isHostile))
-            .ToHashSet();
-
-
-
-        var closeToHostile = hostileWps
-            .Select(h => threatenedWps
-                .MinBy(wp => data.Planet.GetOffsetTo(h.Pos, wp.Pos).Length()))
-            .ToHashSet();
         
-
-        var goodEdges = 
-            GetEdgesWithin(closeToHostile, relTo, data)
-            .Select(wps => new LineSegment(wps.wp1.Pos,
-                wps.wp2.Pos)); 
-
-        var chains = LineSegmentExt.GetChains(goodEdges.ToList());
+        var chains = LineSegmentExt.GetChains(
+            frontEdges.Select(v => 
+                    new LineSegment(
+                        data.Military.TacticalWaypoints.Waypoints[v.X].Pos,
+                        data.Military.TacticalWaypoints.Waypoints[v.Y].Pos
+                    ))
+                .ToList());
         
         return chains
             .Select(c => c.GetPoints())
@@ -186,6 +164,54 @@ public class DeploymentAi
                 .Select(i => data.Military.TacticalWaypoints.Waypoints[i])
                 .ToList())
             .ToList();
+
+        bool arcsOverlap((Waypoint, Waypoint) edge, 
+            (Waypoint, Waypoint) blocker, 
+            Waypoint objective)
+        {
+            var o = relPos(objective);
+            var e1 = relPos(edge.Item1) - o;
+            var e2 = Mathf.Abs(e1.AngleTo(relPos(edge.Item2) - o));
+            var b1 = Mathf.Abs(e1.AngleTo(relPos(blocker.Item1) - o));
+            var b2 = Mathf.Abs(e1.AngleTo(relPos(blocker.Item2) - o));
+            return b1 < e2 || b2 < e2;
+        }
+        bool blockedBy((Waypoint, Waypoint) edge, 
+            (Waypoint, Waypoint) blocker, 
+            Waypoint objective)
+        {
+            var o = relPos(objective);
+            var e1 = relPos(edge.Item1);
+            var e2 = relPos(edge.Item2);
+            var ls1 = new LineSegment(e1, Vector2.Zero);
+            var ls2 = new LineSegment(e2, Vector2.Zero);
+            var b1 = relPos(blocker.Item1);
+            var b2 = relPos(blocker.Item2);
+
+            return ls1.IntersectsExclusive(b1, b2) || ls2.IntersectsExclusive(b1, b2);
+        }
+        
+        Vector2 relPos(Waypoint wp)
+        {
+            return data.Planet.GetOffsetTo(relTo, wp.Pos);
+        }
+        bool isThreatened(Waypoint wp)
+        {
+            return wp.IsDirectlyThreatened(alliance, data)
+                || (wp is IRiverWaypoint && wp.IsIndirectlyThreatened(alliance, data))
+                || wp.TacNeighbors(data)
+                        .Any(n => n is IRiverWaypoint && n.IsIndirectlyThreatened(alliance, data));
+        }
+        
+        bool isHostile(Waypoint wp)
+        {
+            if (wps.Contains(wp) == false) return false;
+            return wp.IsDirectlyThreatened(alliance, data)
+                   || (wp is IRiverWaypoint && wp.IsIndirectlyThreatened(alliance, data));
+        }
+        
+        
+        
     }
 
     private static HashSet<(Waypoint wp1, Waypoint wp2)> GetEdgesWithin(HashSet<Waypoint> wps, Vector2 relTo, Data data)
@@ -193,7 +219,7 @@ public class DeploymentAi
         var res = new HashSet<(Waypoint wp1, Waypoint wp2)>();
         foreach (var wp in wps)
         {
-            var ns = wp.GetNeighboringTacWaypoints(data);
+            var ns = wp.TacNeighbors(data);
             foreach (var nWp in ns)
             {
                 if (nWp.Id > wp.Id) continue;

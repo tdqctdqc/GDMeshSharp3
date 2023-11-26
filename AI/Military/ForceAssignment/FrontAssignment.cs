@@ -65,7 +65,7 @@ public class FrontAssignment : ForceAssignment
     {
         var shift = Vector2.Zero;
         var shiftLength = 15f;
-        var enemyNs = wp.GetNeighboringTacWaypoints(data)
+        var enemyNs = wp.TacNeighbors(data)
             .Where(n => data.Context
                 .WaypointForceBalances[n]
                 .Any(kvp => alliance.Rivals.Contains(kvp.Key)));

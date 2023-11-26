@@ -34,7 +34,7 @@ public class ForceBalance : Dictionary<Alliance, float>
         Alliance a, Data d)
     {
         var res = 0f;
-        foreach (var n in wp.GetNeighboringTacWaypoints(d))
+        foreach (var n in wp.TacNeighbors(d))
         {
             if (n.IsDirectlyThreatened(a, d))
             {
