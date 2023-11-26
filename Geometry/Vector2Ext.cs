@@ -91,35 +91,6 @@ public static class Vector2Ext
                 && point.Y <= Mathf.Max(from.Y, to.Y);
     }
 
-    public static bool LineSegmentsIntersectInclusive(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
-    {
-        if (GetLineIntersection(p1, p2, q1, q2, out var intersect))
-        {
-            var maxPX = Mathf.Max(p1.X, p2.X);
-            var minPX = Mathf.Min(p1.X, p2.X);
-            var maxQX = Mathf.Max(q1.X, q2.X);
-            var minQX = Mathf.Min(q1.X, q2.X);
-            return intersect.X <= maxPX && intersect.X >= minPX
-                                        && intersect.X <= maxQX && intersect.X >= minQX;
-        }
-
-        return false;
-    }
-    
-    public static bool LineSegmentsIntersectExclusive(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
-    {
-        if (GetLineIntersection(p1, p2, q1, q2, out var intersect))
-        {
-            var maxPX = Mathf.Max(p1.X, p2.X);
-            var minPX = Mathf.Min(p1.X, p2.X);
-            var maxQX = Mathf.Max(q1.X, q2.X);
-            var minQX = Mathf.Min(q1.X, q2.X);
-            return intersect.X < maxPX && intersect.X > minPX
-                                        && intersect.X < maxQX && intersect.X > minQX;
-        }
-
-        return false;
-    }
     
     
     private static bool OnSegment(Vector2 p, Vector2 q, Vector2 r) 
@@ -131,11 +102,6 @@ public static class Vector2Ext
         return false; 
     } 
   
-// To find orientation of ordered triplet (p, q, r). 
-// The function returns following values 
-// 0 --> p, q and r are collinear 
-// 1 --> Clockwise 
-// 2 --> Counterclockwise 
     private static int Orientation(Vector2 p, Vector2 q, Vector2 r) 
     { 
         // See https://www.geeksforgeeks.org/orientation-3-ordered-points/ 
@@ -147,12 +113,11 @@ public static class Vector2Ext
   
         return (val > 0)? 1: 2; // clock or counterclock wise 
     } 
-  
-// The main function that returns true if line segment 'p1q1' 
-// and 'p2q2' intersect. 
     public static bool LineSegIntersect(Vector2 p0, Vector2 p1, 
-        Vector2 q0, Vector2 q1, bool inclusive)
+        Vector2 q0, Vector2 q1, bool inclusive, out Vector2 intersectPoint)
     {
+        intersectPoint = Vector2.Zero;
+        
         if (inclusive == false)
         {
             if (p0 == q0 || p0 == q1 || p1 == q0 || p1 == q1)
@@ -160,7 +125,13 @@ public static class Vector2Ext
                 return false;
             }
         }
-        return intersect(p0, p1, q0, q1);
+
+        if (intersect(p0, p1, q0, q1))
+        {
+            intersectPoint = (Vector2)Geometry2D.LineIntersectsLine(p0, p1 - p0, q0, q1 - q0).Obj;
+            return true;
+        }
+        return false;
     }
     private static bool intersect(Vector2 p1, Vector2 q1, 
         Vector2 p2, Vector2 q2) 
@@ -192,89 +163,9 @@ public static class Vector2Ext
         return false; // Doesn't fall in any of the above cases 
     }
     
-    public static bool GetLineIntersection(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2, out Vector2 intersect)
-    {
-        if (p1.X == p2.X)
-        {
-            if (q1.X == q2.X)
-            {
-                //either same line or no intersection
-                intersect = Vector2.Inf;
-                return false;
-            }
-
-            return GetIntersectionForVertical(p1.X, q1, q2, out intersect);
-        }
-        if (q1.X == q2.X)
-        {
-            return GetIntersectionForVertical(q1.X, p1, p2, out intersect);
-        }
     
-        var slopeIntercept1 = GetLineSlopeAndIntercept(p1, p2);
-        var slopeIntercept2 = GetLineSlopeAndIntercept(q1, q2);
-        var determ = (slopeIntercept1.X * -1f) - (slopeIntercept2.X * -1f);
-
-        if (determ == 0f)
-        {
-            intersect = new Vector2(Single.NaN, Single.NaN);
-            return false;
-        }
-        var x = (slopeIntercept1.Y - slopeIntercept2.Y) / determ;
-        var y = (slopeIntercept1.X * -slopeIntercept2.Y -  slopeIntercept2.X * -slopeIntercept1.Y) / determ;
-        intersect = new Vector2(x, y);
-
-        return true;
-    }
-
-    private static bool GetIntersectionForVertical(float x, Vector2 p1, Vector2 p2, out Vector2 intersect)
-    {
-        var left = Mathf.Min(p1.X, p2.X);
-        var right = Mathf.Max(p1.X, p2.X);
-        var bottom = Mathf.Min(p1.Y, p2.Y);
-        var top = Mathf.Max(p1.Y, p2.Y);
-
-        var dist = Mathf.Abs(right - left);
-        var ratio = (x - left) / dist;
-        intersect = new Vector2(x, bottom + Mathf.Abs(top - bottom) * ratio);
-        return true;
-    }
-    public static Vector2? GetLineSegmentsIntersection(Vector2 p1, Vector2 p2, Vector2 q1, Vector2 q2)
-    {
-        var slopeIntercept1 = GetLineSlopeAndIntercept(p1, p2);
-        var slopeIntercept2 = GetLineSlopeAndIntercept(q1, q2);
-        var determ = (slopeIntercept1.X * -1f) - (slopeIntercept2.X * -1f);
-
-        if (determ == 0f) return null;
-        var x = (slopeIntercept1.Y - slopeIntercept2.Y) / determ;
-        var y = (slopeIntercept1.X * -slopeIntercept2.Y -  slopeIntercept2.X * -slopeIntercept1.Y) / determ;
-        var point = new Vector2(x, y);
-        if (PointIsInLineSegment(point, p1, p2)
-            && PointIsInLineSegment(point, q1, q2))
-        {
-            return point;
-        }
-        
-        return null;
-    }
     
-    public static Vector2 GetLineSlopeAndIntercept(Vector2 p1, Vector2 p2)
-    {
-        var left = p1.X < p2.X
-            ? p1
-            : p2;
-        var right = p1.X < p2.X
-            ? p2
-            : p1;
-        var slope = (right.Y - left.Y) / (right.X - left.X);
-
-        var intercept = p1.Y - slope * p1.X;
-        return new Vector2(slope, intercept);
-    }
-    public static float GetProjectionLength(this Vector2 v, Vector2 onto)
-    {
-        var angle = v.AngleTo(onto);
-        return v.Dot(onto) / onto.Length();
-    }
+    
 
     public static Vector2 ClampToBox(this Vector2 p, Vector2 bound1, Vector2 bound2)
     {
@@ -415,43 +306,5 @@ public static class Vector2Ext
         }
 
         throw new Exception();
-    }
-
-    public static void LinkRings<T>(this IList<T> outerRing, 
-        IList<T> innerRing, Vector2 center, Func<T, Vector2> getPos,
-        Action<T, T> link)
-    {
-        foreach (var inner in innerRing)
-        {
-            foreach (var outer in outerRing)
-            {
-                link(inner, outer);
-            }
-        }
-
-        return;
-
-        for (var i = 0; i < innerRing.Count; i++)
-        {
-            var inner = innerRing[i];
-            var axis = getPos(inner) - center;
-            var left = innerRing.Where(t => t.Equals(inner) == false)
-                .MinBy(t => axis.GetCCWAngleTo(getPos(t) - center));
-            var leftAngle = axis.GetCCWAngleTo(getPos(left) - center);
-            var right = innerRing.Where(t => t.Equals(inner) == false)
-                .MinBy(t => axis.GetClockwiseAngleTo(getPos(t) - center));
-            var rightAngle = axis.GetClockwiseAngleTo(getPos(right) - center);
-            var toLink = outerRing
-                .Where(t =>
-                {
-                    return axis.GetCCWAngleTo(getPos(t) - center) <= leftAngle
-                        ||
-                        axis.GetClockwiseAngleTo(getPos(t) - center) <= rightAngle;
-                });
-            foreach (var t in toLink)
-            {
-                link(inner, t);
-            }
-        }
     }
 }

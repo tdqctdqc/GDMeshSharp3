@@ -161,6 +161,6 @@ public static class MapPolygonExt
     public static bool LineEntersPoly(this MapPolygon poly, Vector2 aRel, Vector2 bRel, Data data)
     {
         return poly.GetOrderedBoundaryPoints(data)
-            .Any(p => Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, p, aRel, bRel));
+            .Any(p => Vector2Ext.LineSegIntersect(Vector2.Zero, p, aRel, bRel, true, out _));
     }
 }

@@ -105,7 +105,9 @@ public class DeploymentAi
         foreach (var wp in wps)
         {
             var ns = wp.TacNeighbors(data)
-                .Where(isHostile);
+                .Where(n => n.IsDirectlyThreatened(alliance, data))
+                .Where(n => n.IsControlled(alliance, data) == false);
+                
             if (ns.Count() == 0) continue;
             threatenedWps.Add(wp);
             foreach (var n in ns)
@@ -126,15 +128,16 @@ public class DeploymentAi
             var threatenedEdges = GetEdgesWithin(kvp.Value, relTo, data);
             foreach (var e1 in threatenedEdges)
             {
+                var max = Mathf.Max(e1.wp1.Id, e1.wp2.Id);
+                var min = Mathf.Min(e1.wp1.Id, e1.wp2.Id);
+                var id = new Vector2I(min, max);
+                if (frontEdges.Contains(id)) continue;
+
                 var include = true;
                 foreach (var e2 in threatenedEdges)
                 {
                     if (e1 == e2) continue;
-                    if (
-                        arcsOverlap(e1, e2, hostile)
-                        && 
-                        blockedBy(e1, e2, hostile)
-                        )
+                    if (blockedBy(e1, e2, hostile))
                     {
                         include = false;
                         break;
@@ -143,9 +146,7 @@ public class DeploymentAi
 
                 if (include)
                 {
-                    var max = Mathf.Max(e1.wp1.Id, e1.wp2.Id);
-                    var min = Mathf.Min(e1.wp1.Id, e1.wp2.Id);
-                    frontEdges.Add(new Vector2I(min, max));
+                    frontEdges.Add(id);
                 }
             }
         }
@@ -157,25 +158,15 @@ public class DeploymentAi
                         data.Military.TacticalWaypoints.Waypoints[v.Y].Pos
                     ))
                 .ToList());
-        
-        return chains
-            .Select(c => c.GetPoints())
-            .Select(ps => ps.Select(p => data.Military.TacticalWaypoints.ByPos[p])
-                .Select(i => data.Military.TacticalWaypoints.Waypoints[i])
-                .ToList())
-            .ToList();
 
-        bool arcsOverlap((Waypoint, Waypoint) edge, 
-            (Waypoint, Waypoint) blocker, 
-            Waypoint objective)
-        {
-            var o = relPos(objective);
-            var e1 = relPos(edge.Item1) - o;
-            var e2 = Mathf.Abs(e1.AngleTo(relPos(edge.Item2) - o));
-            var b1 = Mathf.Abs(e1.AngleTo(relPos(blocker.Item1) - o));
-            var b2 = Mathf.Abs(e1.AngleTo(relPos(blocker.Item2) - o));
-            return b1 < e2 || b2 < e2;
-        }
+        var pointLists = chains
+            .Select(c => c.GetPoints());
+
+        var wpLists = pointLists.Select(ps => ps.Select(p => data.Military.TacticalWaypoints.ByPos[p])
+            .Select(i => data.Military.TacticalWaypoints.Waypoints[i])
+            .ToList()).ToList();
+        return wpLists;
+
         bool blockedBy((Waypoint, Waypoint) edge, 
             (Waypoint, Waypoint) blocker, 
             Waypoint objective)
@@ -183,34 +174,20 @@ public class DeploymentAi
             var o = relPos(objective);
             var e1 = relPos(edge.Item1);
             var e2 = relPos(edge.Item2);
-            var ls1 = new LineSegment(e1, Vector2.Zero);
-            var ls2 = new LineSegment(e2, Vector2.Zero);
             var b1 = relPos(blocker.Item1);
             var b2 = relPos(blocker.Item2);
 
-            return ls1.IntersectsExclusive(b1, b2) || ls2.IntersectsExclusive(b1, b2);
+            return Vector2Ext.LineSegIntersect(e1, o, b1, b2, false, out _)
+                   || Vector2Ext.LineSegIntersect(e2, o, b1, b2, false, out _)
+                   || Vector2Ext.LineSegIntersect((e1 + e2) / 2f, o, b1, b2, false, out _)
+                   || Vector2Ext.LineSegIntersect(e1, e2, b1, b2, false, out _)
+                   ;
         }
         
         Vector2 relPos(Waypoint wp)
         {
             return data.Planet.GetOffsetTo(relTo, wp.Pos);
         }
-        bool isThreatened(Waypoint wp)
-        {
-            return wp.IsDirectlyThreatened(alliance, data)
-                || (wp is IRiverWaypoint && wp.IsIndirectlyThreatened(alliance, data))
-                || wp.TacNeighbors(data)
-                        .Any(n => n is IRiverWaypoint && n.IsIndirectlyThreatened(alliance, data));
-        }
-        
-        bool isHostile(Waypoint wp)
-        {
-            if (wps.Contains(wp) == false) return false;
-            return wp.IsDirectlyThreatened(alliance, data)
-                   || (wp is IRiverWaypoint && wp.IsIndirectlyThreatened(alliance, data));
-        }
-        
-        
         
     }
 

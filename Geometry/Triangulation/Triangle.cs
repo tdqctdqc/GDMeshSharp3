@@ -86,15 +86,15 @@ public class Triangle
     }
     public bool IntersectsLineSegExclusive(Vector2 p1, Vector2 p2)
     {
-        return Vector2Ext.LineSegmentsIntersectExclusive(p1, p2, A, B)
-               || Vector2Ext.LineSegmentsIntersectInclusive(p1, p2, B, C)
-               || Vector2Ext.LineSegmentsIntersectInclusive(p1, p2, C, A);
+        return Vector2Ext.LineSegIntersect(p1, p2, A, B, false, out _)
+               || Vector2Ext.LineSegIntersect(p1, p2, B, C, false, out _)
+               || Vector2Ext.LineSegIntersect(p1, p2, C, A, false, out _);
     }
     public bool IntersectsRay(Vector2 ray)
     {
-        return Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, ray, A, B)
-               || Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, ray, B, C)
-               || Vector2Ext.LineSegmentsIntersectInclusive(Vector2.Zero, ray, C, A);
+        return Vector2Ext.LineSegIntersect(Vector2.Zero, ray, A, B, true, out _)
+               || Vector2Ext.LineSegIntersect(Vector2.Zero, ray, B, C, true, out _)
+               || Vector2Ext.LineSegIntersect(Vector2.Zero, ray, C, A, true, out _);
     }
     public override string ToString()
     {

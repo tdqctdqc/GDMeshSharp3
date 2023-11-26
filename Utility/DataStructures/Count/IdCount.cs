@@ -58,7 +58,8 @@ public class IdCount<T> : Count<int>
         }
         catch (Exception e)
         {
-            GD.Print("problem removing " + model.GetType().Name, LogType.Logic);
+            GD.Print("problem removing " + model.GetType().Name);
+            GD.Print("trying to remove " + amount + " only " + Get(model));
             throw;
         }
     }

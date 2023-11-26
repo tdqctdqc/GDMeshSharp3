@@ -79,7 +79,6 @@ public class Context
         
         foreach (var wp in data.Military.TacticalWaypoints.Waypoints.Values)
         {
-            if (wp is IRiverWaypoint) continue;
             var alliances = wp.AssocPolys(data)
                 .SelectWhere(p => p.OwnerRegime.Fulfilled())
                 .Select(p => p.OwnerRegime.Entity(data))

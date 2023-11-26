@@ -40,9 +40,12 @@ public class TroopBuildForTemplatePriority : SolverPriority<UnitTemplate>
                 allTroops.Add(kvp2.Key, kvp2.Value * num);
             }
         }
-        
         foreach (var kvp in allTroops.GetEnumerableModel(key.Data))
         {
+            foreach (var kvp2 in kvp.Key.Makeable.ItemCosts.GetEnumerableModel(key.Data))
+            {
+                Account.UseItem(kvp2.Key, kvp.Value * kvp2.Value);
+            }
             var proj = new TroopManufactureProject(key.Data.IdDispenser.TakeId(), 0f, kvp.Value, kvp.Key.MakeRef());
             var proc = new StartManufacturingProjectProc(r.MakeRef(), proj);
             key.SendMessage(proc);

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class MapGraphicsOptions : ScrollContainer, IClientComponent
+public partial class MapGraphicsOptions : Panel, IClientComponent
 {
     public Action Disconnect { get; set; }
+    private ScrollContainer _scroll;
     public void Process(float delta)
     {
         
@@ -13,11 +14,17 @@ public partial class MapGraphicsOptions : ScrollContainer, IClientComponent
 
     public MapGraphicsOptions(Client client)
     {
+        SelfModulate = Colors.Black;
         CustomMinimumSize = new Vector2(300f, 600f);
         AnchorsPreset = (int)LayoutPreset.FullRect;
+        _scroll = new ScrollContainer();
+        _scroll.AnchorsPreset =  (int)LayoutPreset.FullRect;
+        MouseFilter = MouseFilterEnum.Stop;
+        _scroll.CustomMinimumSize = new Vector2(300f, 600f);
+        AddChild(_scroll);
         var vbox = new VBoxContainer();
         vbox.AnchorsPreset = (int)LayoutPreset.FullRect;
-        AddChild(vbox);
+        _scroll.AddChild(vbox);
         client.GetComponent<UiFrame>().LeftSidebar.AddChild(this);
         foreach (var graphicLayer in client.GetComponent<MapGraphics>().GraphicLayerHolder.Layers)
         {
@@ -27,6 +34,12 @@ public partial class MapGraphicsOptions : ScrollContainer, IClientComponent
                 vbox.AddChild(setting.GetControlInterface());
             }
         }
+    }
+
+    public override void _GuiInput(InputEvent @event)
+    {
+        _scroll._GuiInput(@event);
+        GetViewport().SetInputAsHandled();
     }
 
     Node IClientComponent.Node => this;

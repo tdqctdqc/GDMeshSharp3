@@ -69,16 +69,12 @@ public class FrontAssignment : ForceAssignment
             .Where(n => data.Context
                 .WaypointForceBalances[n]
                 .Any(kvp => alliance.Rivals.Contains(kvp.Key)));
-        if (wp.IsDirectlyThreatened(alliance, data))
+        
+        foreach (var enemyN in enemyNs)
         {
-            var enemyUnits = data.Military.UnitAux.UnitGrid
-                .GetWithin(wp.Pos, 200f);
-            foreach (var enemyN in enemyUnits)
-            {
-                var offset = data.Planet.GetOffsetTo(enemyN.Position, wp.Pos);
-                shift += offset.Normalized() * enemyN.GetPowerPoints(data);
-            }
+            shift += data.Planet.GetOffsetTo(enemyN.Pos, wp.Pos);
         }
+        
         
         return wp.Pos + shift.Normalized() * shiftLength;
     }

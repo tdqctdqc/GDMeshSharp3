@@ -26,11 +26,11 @@ public static class LineSegmentExt
 
     public static bool IntersectsExclusive(this LineSegment ls, Vector2 a, Vector2 b)
     {
-        return Vector2Ext.LineSegmentsIntersectExclusive(ls.From, ls.To, a, b);
+        return Vector2Ext.LineSegIntersect(ls.From, ls.To, a, b, false, out _);
     }
     public static bool IntersectsInclusive(this LineSegment ls, Vector2 a, Vector2 b)
     {
-        return Vector2Ext.LineSegmentsIntersectInclusive(ls.From, ls.To, a, b);
+        return Vector2Ext.LineSegIntersect(ls.From, ls.To, a, b, true, out _);
     }
     public static bool Intersects(this LineSegment ls, Vector2 point, Vector2 dir)
     {

@@ -38,7 +38,7 @@ public class DeployOnLineOrder : UnitOrder
 
     public override void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data data)
     {
-        var innerColor = ColorsExt.GetRandomColor();
+        var innerColor = group.Regime.Entity(data).PrimaryColor;
         var outerColor = group.Regime.Entity(data).PrimaryColor;
         for (var i = 0; i < Points.Count; i++)
         {
