@@ -27,7 +27,6 @@ public class AllianceAux
             .GetEntityMeta<Alliance>()
             .GetRefColMeta<Alliance>(nameof(Alliance.AtWar));
         AllianceRelationChanged = new RefAction<(Alliance, Alliance)>();
-        
         RivalryDeclared = new RefAction<(Alliance, Alliance)>();
         RivalryEnded = new RefAction<(Alliance, Alliance)>();
         rivalsMeta.Added.Subscribe(RivalryDeclared);

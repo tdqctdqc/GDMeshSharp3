@@ -24,6 +24,7 @@ public class GraphicLayerHolder
             p => p.GetAssocTacWaypoints(data), wp => wp.TacNeighbors(data), segmenter), false);
         AddLayer(UnitOrdersGraphicLayer.GetLayer(8, segmenter, client), true);
         AddLayer(new UnitGraphicLayer(9, client, segmenter, data), true);
+        AddLayer(TheaterGraphicLayer.GetLayer(10, segmenter, client), true);
     }
 
     private void AddLayer(IGraphicLayer layer, bool startVisible)

@@ -1,20 +1,31 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 [MessagePack.Union(0, typeof(FrontAssignment))]
+[MessagePack.Union(1, typeof(TheaterAssignment))]
 public abstract class ForceAssignment : IPolymorph
 {
-    public HashSet<UnitGroup> Groups { get; private set; }
-    public abstract void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key);
+    public EntityRef<Regime> Regime { get; private set; }
+    public HashSet<int> GroupIds { get; private set; }
 
-    public ForceAssignment()
+    public IEnumerable<UnitGroup> Groups(Data d)
     {
-        Groups = new HashSet<UnitGroup>();
+        return GroupIds.Select(g => d.Get<UnitGroup>(g));
+    }
+    public abstract void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key);
+    [SerializationConstructor] protected 
+        ForceAssignment(HashSet<int> groupIds,
+            EntityRef<Regime> regime)
+    {
+        GroupIds = groupIds;
+        Regime = regime;
     }
 
     public float GetPowerPointsAssigned(Data data)
     {
-        return Groups.Sum(g => g.GetPowerPoints(data));
+        return Groups(data).Sum(g => g.GetPowerPoints(data));
     }
 }

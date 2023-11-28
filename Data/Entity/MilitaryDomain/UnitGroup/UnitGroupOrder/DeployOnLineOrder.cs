@@ -50,8 +50,8 @@ public class DeployOnLineOrder : UnitOrder
                 var pNextRel = data.Planet.GetOffsetTo(relTo, pNext);
                 mb.AddLine(pRel, pNextRel, innerColor, 4f);
             }
-            mb.AddPointMarker(pRel, 12f, outerColor);
-            mb.AddPointMarker(pRel, 10f, innerColor);
+            mb.AddSquare(pRel, 12f, outerColor);
+            mb.AddSquare(pRel, 10f, innerColor);
         }
     }
 }

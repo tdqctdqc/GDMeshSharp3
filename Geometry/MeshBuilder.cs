@@ -276,20 +276,20 @@ public class MeshBuilder
     {
         foreach (var p in points)
         {
-            AddPointMarker(p, markerSize, color);
+            AddSquare(p, markerSize, color);
         }
     }
 
-    public void AddPointMarker(Vector2 p, float markerSize, Color color)
+    public void AddSquare(Vector2 p, float size, Color color)
     {
-        var topLeft = p + Vector2.Up * markerSize / 2f
-                        + Vector2.Left * markerSize / 2f;
-        var topRight = p + Vector2.Up * markerSize / 2f
-                         + Vector2.Right * markerSize / 2f;
-        var bottomLeft = p + Vector2.Down * markerSize / 2f
-                           + Vector2.Left * markerSize / 2f;
-        var bottomRight = p + Vector2.Down * markerSize / 2f
-                            + Vector2.Right * markerSize / 2f;
+        var topLeft = p + Vector2.Up * size / 2f
+                        + Vector2.Left * size / 2f;
+        var topRight = p + Vector2.Up * size / 2f
+                         + Vector2.Right * size / 2f;
+        var bottomLeft = p + Vector2.Down * size / 2f
+                           + Vector2.Left * size / 2f;
+        var bottomRight = p + Vector2.Down * size / 2f
+                            + Vector2.Right * size / 2f;
         AddTri(topLeft, topRight, bottomLeft, color);
         AddTri(topRight, bottomRight, bottomLeft, color);
     }

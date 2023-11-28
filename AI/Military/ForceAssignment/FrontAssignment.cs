@@ -8,7 +8,8 @@ public class FrontAssignment : ForceAssignment
 {
     public Front Front { get; private set; }
 
-    public FrontAssignment(Front front) : base()
+    public FrontAssignment(Front front, HashSet<int> groupIds) 
+        : base(groupIds, front.Regime)
     {
         Front = front;
     }
@@ -16,7 +17,7 @@ public class FrontAssignment : ForceAssignment
     public override void CalculateOrders(MinorTurnOrders orders, 
         LogicWriteKey key)
     {
-        if (Groups.Count == 0) return;
+        if (GroupIds.Count() == 0) return;
         var alliance = orders.Regime.Entity(key.Data).GetAlliance(key.Data);
         var areaRadius = 500f;
         var frontWps = 
@@ -30,22 +31,25 @@ public class FrontAssignment : ForceAssignment
 
         
         var relTo = Front.RelTo(key.Data);
+        var poses = CalcPoses(frontWps, alliance, key.Data);
+        
         
         Assigner.AssignAlongLine(
             frontWps,
-            Groups.ToList(),
-            g => g.GetPowerPoints(key.Data),
+            GroupIds.ToList(),
+            g => key.Data.Get<UnitGroup>(g).GetPowerPoints(key.Data),
             (v,w) => GetDefendCost(v, w, key.Data),
-            v => GetPos(v, alliance, key.Data),
+            wp => poses[wp],
             (v1, v2) => key.Data.Planet.GetOffsetTo(v1, v2),
             (g, l) =>
             {
                 var order = new DeployOnLineOrder(l);
-                var proc = new SetUnitOrderProcedure(g.MakeRef(), order);
+                var proc = new SetUnitOrderProcedure(new EntityRef<UnitGroup>(g), order);
                 key.SendMessage(proc);
             }
         );
     }
+
 
     public float GetDefendCost(Waypoint wp1, Waypoint wp2, Data data)
     {
@@ -61,6 +65,40 @@ public class FrontAssignment : ForceAssignment
         return offset.Length() * (dCost1 + dCost2);
     }
 
+    public Dictionary<Waypoint, Vector2> CalcPoses(List<Waypoint> wps,
+        Alliance alliance, Data d)
+    {
+        var res = new Dictionary<Waypoint, Vector2>();
+        for (var i = 0; i < wps.Count; i++)
+        {
+            var wp = wps[i];
+            if (wp.IsDirectlyThreatened(alliance, d))
+            {
+                res.Add(wp, wp.Pos);
+            }
+            else
+            {
+                var wpThreats = wp.TacNeighbors(d).Where(wp => wp.IsDirectlyThreatened(alliance, d)
+                                                               && wp.IsControlled(alliance, d) == false);
+                if (wpThreats.Count() == 0)
+                {
+                    
+                    res.Add(wp, wp.Pos);
+                    continue;
+                }
+                var offset = Vector2.Zero;
+                foreach (var wpThreat in wpThreats)
+                {
+                    offset += d.Planet.GetOffsetTo(wp.Pos, wpThreat.Pos);
+                }
+
+                offset /= wpThreats.Count();
+                res.Add(wp, wp.Pos + offset / 2f);
+            }
+        }
+        
+        return res;
+    }
     private Vector2 GetPos(Waypoint wp, Alliance alliance, Data data)
     {
         var shift = Vector2.Zero;

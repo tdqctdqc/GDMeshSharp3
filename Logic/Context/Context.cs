@@ -12,6 +12,7 @@ public class Context
     public Dictionary<Waypoint, ForceBalance> WaypointForceBalances { get; private set; }
     public Dictionary<Alliance, HashSet<Waypoint>> ControlledAreas { get; private set; }
     public Dictionary<Vector2, List<Waypoint>> WaypointPaths { get; private set; }
+    
     public Context(Data data)
     {
         UnitWaypoints = new Dictionary<Unit, Waypoint>();
@@ -33,6 +34,7 @@ public class Context
     {
         WaypointPaths.Clear();
         CalculateWaypointsAndForceBalances(data);
+        CalculateControlAreas(data);
     }
 
     public List<Waypoint> GetWaypointPath(Waypoint start, Waypoint end, Data data)
@@ -54,8 +56,6 @@ public class Context
     }
     private void CalculateWaypointsAndForceBalances(Data data)
     {
-        var sw = new Stopwatch();
-        sw.Start();
         foreach (var kvp in WaypointForceBalances)
         {
             kvp.Value.Clear();
@@ -77,37 +77,33 @@ public class Context
             forceBalance.Add(u, data);
         }
         
+    }
+
+    private void CalculateControlAreas(Data data)
+    {
         foreach (var wp in data.Military.TacticalWaypoints.Waypoints.Values)
         {
-            var alliances = wp.AssocPolys(data)
+            var ownerAlliances = wp.AssocPolys(data)
                 .SelectWhere(p => p.OwnerRegime.Fulfilled())
                 .Select(p => p.OwnerRegime.Entity(data))
                 .Select(r => r.GetAlliance(data))
                 .Distinct();
-            if (alliances.Count() == 0) continue;
+            if (ownerAlliances.Count() == 0) continue;
             var forceBalance = WaypointForceBalances[wp];
 
-            foreach (var alliance in alliances)
+            foreach (var alliance in ownerAlliances)
             {
                 forceBalance.Add(alliance, ForceBalance.PowerPointsForPolyOwnership);
             }
 
             var controlling = forceBalance.GetControllingAlliances();
-            foreach (var alliance in alliances)
+            foreach (var alliance in controlling)
             {
-                if (controlling.Contains(alliance))
-                {
-                    ControlledAreas
-                        .GetOrAdd(alliance, a => new HashSet<Waypoint>())
-                        .Add(wp);
-                }
+                ControlledAreas
+                    .GetOrAdd(alliance, a => new HashSet<Waypoint>())
+                    .Add(wp);
             }
         }
-        sw.Stop();
-        data.Logger.Log("units " + units.Count() 
-                                   + " waypoint force balance calc time " 
-                                   + sw.Elapsed.TotalMilliseconds, 
-            LogType.Logic);
     }
 
 }

@@ -34,8 +34,8 @@ public partial class UnitGroupGraphic : Node2D
         foreach (var unit in Group.Units.Items(data))
         {
             var relPos = data.Planet.GetOffsetTo(groupPos, unit.Position);
-            mb.AddPointMarker(relPos, _unitIconSize, darkened);
-            mb.AddPointMarker(relPos, _unitIconSize * .8f, regime.PrimaryColor);
+            mb.AddSquare(relPos, _unitIconSize, darkened);
+            mb.AddSquare(relPos, _unitIconSize * .8f, regime.PrimaryColor);
         }
 
         Child = mb.GetMeshInstance();

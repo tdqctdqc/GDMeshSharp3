@@ -170,6 +170,56 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
 
         return (color, color);
     }
+    
+    private static (Color, Color) GetControlColor(Waypoint wp, Data data)
+    {
+        Color color = Colors.Transparent;
+        
+        
+        if(data.Context.ControlledAreas
+           .Any(kvp => kvp.Value.Contains(wp)))
+        {
+            var controller = data.Context.ControlledAreas
+                .FirstOrDefault(kvp => kvp.Value.Contains(wp))
+                .Key.Leader.Entity(data);
+            color = controller.PrimaryColor;
+
+        }
+
+        return (color, color);
+    }
+    
+    private static (Color, Color) GetResponsibilityColor(Waypoint wp, Data data)
+    {
+        Color color = Colors.Transparent;
+
+        
+        if (data.Context.ControlledAreas
+            .Any(kvp => kvp.Value.Contains(wp)))
+        {
+            var controller = data.Context.ControlledAreas
+                .FirstOrDefault(kvp => kvp.Value.Contains(wp));
+
+            if (data.HostLogicData.AllianceAis.Dic
+                .TryGetValue(controller.Key, out var ai))
+            {
+                if (ai
+                    .MilitaryAi.AreasOfResponsibility.Any(kvp => kvp.Value.Contains(wp)))
+                {
+                    var responsible = ai
+                        .MilitaryAi.AreasOfResponsibility
+                        .FirstOrDefault(kvp => kvp.Value.Contains(wp));
+                    color = responsible.Key.PrimaryColor;
+                }
+                else
+                {
+                    GD.Print("no responsible at " + wp.AssocPolys(data).First().Id);
+                }
+            }
+        }
+
+        return (color, color);
+    }
 
     public static ChunkGraphicLayer<WaypointGraphicChunk> GetLayer(
         int z, string name, Data d, Client client, 
@@ -197,8 +247,8 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         l.AddSetting(
             new TypedSettingsOption<ColorFunc>(
                 "Fill",
-                new List<ColorFunc> { GetWaypointTypeColor, GetFrontlineColor },
-                new List<string> { nameof(GetWaypointTypeColor), nameof(GetFrontlineColor) }
+                new List<ColorFunc> { GetWaypointTypeColor, GetFrontlineColor, GetControlColor, GetResponsibilityColor },
+                new List<string> { nameof(GetWaypointTypeColor), nameof(GetFrontlineColor) , nameof(GetControlColor), nameof(GetResponsibilityColor)}
             ),
             (chunk, func) =>
             {

@@ -12,8 +12,21 @@ public class DeploymentAi
     }
     public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
-        CreateFronts(regime, key);
-        FillFronts(regime, key.Data);
+        // CreateFronts(regime, key);
+        // FillFronts(regime, key.Data);
+        
+        TheaterAssignment.CheckSplitRemove(regime,
+            ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+            fa => ForceAssignments.Remove(fa),
+            key);
+        TheaterAssignment.CheckExpandMergeNew(regime,
+            ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+            fa => ForceAssignments.Remove(fa),
+                fa => ForceAssignments.Add(fa),
+            key);
+        TheaterAssignment.CheckTheaterFronts(regime, ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+            key);
+        
         foreach (var forceAssignment in ForceAssignments)
         {
             forceAssignment.CalculateOrders(orders, key);
@@ -23,7 +36,7 @@ public class DeploymentAi
     {
         return ForceAssignments.SelectWhereOfType<FrontAssignment>();
     }
-    
+
     private void CreateFronts(Regime regime, LogicWriteKey key)
     {
         var alliance = regime.GetAlliance(key.Data);
@@ -45,7 +58,7 @@ public class DeploymentAi
             {
                 var front = Front.Construct(regime, contactLine.Select(wp => wp.Id).ToList(),
                     key);
-                var assgn = new FrontAssignment(front);
+                var assgn = new FrontAssignment(front, new HashSet<int>());
                 ForceAssignments.Add(assgn);
             }
         }
@@ -57,7 +70,9 @@ public class DeploymentAi
         var totalOpposing = frontAssgns.Sum(fa => fa.Front.GetOpposingPowerPoints(data));
         var coverLengthWeight = 1f;
         var coverOpposingWeight = 1f;
-        var occupiedGroups = ForceAssignments.SelectMany(fa => fa.Groups);
+        var occupiedGroups = ForceAssignments
+            .SelectMany(fa => fa.GroupIds)
+            .Select(g => data.Get<UnitGroup>(g));
         var freeGroups = data.Military.UnitAux.UnitGroupByRegime[regime]
             ?.Except(occupiedGroups)
             ?.ToList();
@@ -68,7 +83,7 @@ public class DeploymentAi
             fa => GetFrontDefenseNeed(fa, data, totalLength, coverLengthWeight, totalOpposing, coverOpposingWeight),
             g => g.GetPowerPoints(data),
             freeGroups.ToHashSet(),
-            (fa, g) => fa.Groups.Add(g),
+            (fa, g) => fa.GroupIds.Add(g.Id),
             (fa, g) => g.GetPowerPoints(data));
     }
     
@@ -91,7 +106,8 @@ public class DeploymentAi
         }
         return res;
     }
-    public static List<List<Waypoint>> GetContactLines(Regime regime, HashSet<Waypoint> wps, 
+    public static List<List<Waypoint>> GetContactLines(Regime regime, 
+        HashSet<Waypoint> wps, 
         Data data)
     {
         var context = data.Context;
@@ -117,7 +133,6 @@ public class DeploymentAi
                     .Add(wp);
             }
         }
-
         if (threatenedWps.Count == 1)
             return new List<List<Waypoint>> { new List<Waypoint> { threatenedWps.First() } };
         

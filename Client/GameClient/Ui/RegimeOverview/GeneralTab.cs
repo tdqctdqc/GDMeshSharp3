@@ -73,10 +73,17 @@ public partial class GeneralTab : ScrollContainer
         _container.CreateLabelAsChild("ALLIANCE LEADER: " 
                                       + regime.GetAlliance(client.Data).Leader.Entity(client.Data).Name
                                       + " " + regime.GetAlliance(client.Data).Leader.Entity(client.Data).Id);
+        _container.CreateLabelAsChild("ALLIANCE MEMBERS");
+        foreach (var ally in regime.GetAlliance(client.Data).Members.Items(client.Data))
+        {
+            if (ally == regime) continue;
+            _container.CreateLabelAsChild(ally.Name);
+        }
         _container.CreateLabelAsChild("RIVALS");
         foreach (var rival in regime.GetAlliance(client.Data).Rivals.Items(client.Data))
         {
             _container.CreateLabelAsChild(rival.Leader.Entity(client.Data).Name);
         }
+
     }
 }

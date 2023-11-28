@@ -1,16 +1,14 @@
 
 public class AllianceAi
 {
-    public Alliance Alliance { get; private set; }
     public AllianceMilitaryAi MilitaryAi { get; private set; }
     public AllianceAi(Alliance alliance, Data data)
     {
-        Alliance = alliance;
-        MilitaryAi = new AllianceMilitaryAi(alliance);
+        MilitaryAi = new AllianceMilitaryAi();
     }
 
-    public void Calculate(LogicWriteKey key)
+    public void Calculate(Alliance alliance, LogicWriteKey key)
     {
-        MilitaryAi.Calculate(key, Alliance);
+        MilitaryAi.Calculate(key, alliance);
     }
 }

@@ -48,7 +48,6 @@ public class TacticalWaypointGenerator : Generator
         genReport.StopSection("set wp properties", "");
 
         
-        
         var newNav = TacticalWaypoints.Create(key, wps);
         
         return genReport;
