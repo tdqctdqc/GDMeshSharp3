@@ -128,6 +128,8 @@ public static class Vector2Ext
 
         if (intersect(p0, p1, q0, q1))
         {
+            var res = Geometry2D.LineIntersectsLine(p0, p1 - p0, q0, q1 - q0);
+            if (res.Obj == null) return false;
             intersectPoint = (Vector2)Geometry2D.LineIntersectsLine(p0, p1 - p0, q0, q1 - q0).Obj;
             return true;
         }

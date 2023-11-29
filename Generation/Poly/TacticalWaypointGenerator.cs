@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -8,15 +9,21 @@ using Godot;
 public class TacticalWaypointGenerator : Generator
 {
     private IdDispenser _id;
-    private float _waypointDist = 100f;
+    private float _edgeWaypointDist = 25f, 
+        _innerWaypointDist = 25f;
     private Dictionary<MapPolyNexus, Waypoint> _nexusWps;
     private Dictionary<MapPolygonEdge, List<Waypoint>> _edgeWps;
-    private Dictionary<MapPolygon, List<List<Waypoint>>> _interiorWps;
-    
-    
+    private HashSet<Vector2> _takenPoses;
+    private Dictionary<int, Waypoint> _byId;
+    private Dictionary<Vector2, Tuple<MapPolygon, Waypoint>> _landWps;
+    private Dictionary<MapPolygon, Waypoint> _seaWps;
+    private Dictionary<Vector2, MapPolygon> _suppressed;
+    private HashSet<Vector2I> _shortEdgeConnects;
+    private ConcurrentDictionary<MapPolygon, HashSet<Vector2>> _landHash;
     public override GenReport Generate(GenWriteKey key)
     {
         _id = key.Data.IdDispenser;
+        _takenPoses = new HashSet<Vector2>();
         var genReport = new GenReport("Nav");
         
         genReport.StartSection();
@@ -26,29 +33,38 @@ public class TacticalWaypointGenerator : Generator
         genReport.StartSection();
         GenerateNexusWps(key);
         genReport.StopSection("nexus wps", "");
-
+        _takenPoses.AddRange(_edgeWps.SelectMany(kvp => kvp.Value.Select(wp => wp.Pos)));
+        _takenPoses.AddRange(_nexusWps.Values.Select(wp => wp.Pos));
         
         genReport.StartSection();
-        GenerateInnerBoundaryAndInteriorWps(key);
-        genReport.StopSection("inner wps", "");
-
-        genReport.StartSection();
-        Connect(key);
-        genReport.StopSection("connect wps", "");
-
+        GenerateInnerWaypoints(key);
+        genReport.StopSection("generate inner wps");
         
-        var wps = _nexusWps.Values
+        
+        _byId = _nexusWps.Values
             .Union(_edgeWps.SelectMany(kvp => kvp.Value))
-            .Union(_interiorWps.SelectMany(kvp => kvp.Value.SelectMany(v => v)))
+            // .Union(_interiorWps.SelectMany(kvp => kvp.Value.SelectMany(v => v)))
+            .Union(_landWps.Select(kvp => kvp.Value.Item2))
+            .Union(_seaWps.Values)
             .ToDictionary(wp => wp.Id, wp => wp);
         
         
         genReport.StartSection();
-        SetLandWaypointProperties(key, wps.Values);
+        Connect(key);
+        genReport.StopSection("connect wps", "");
+        
+        genReport.StartSection();
+        DoShortEdgeWps(key);
+        genReport.StopSection("short edge wps", "");
+
+        
+        
+        genReport.StartSection();
+        SetLandWaypointProperties(key, _byId.Values);
         genReport.StopSection("set wp properties", "");
 
         
-        var newNav = TacticalWaypoints.Create(key, wps);
+        var newNav = TacticalWaypoints.Create(key, _byId);
         
         return genReport;
     }
@@ -126,7 +142,7 @@ public class TacticalWaypointGenerator : Generator
             }
 
             var edgeLength = edge.GetLength(key.Data);
-            var numEdgeWps = Mathf.FloorToInt(edgeLength / _waypointDist);
+            var numEdgeWps = Mathf.FloorToInt(edgeLength / _edgeWaypointDist);
             for (var i = 1; i <= numEdgeWps; i++)
             {
                 var ratio = (float)i / (numEdgeWps + 1);
@@ -148,165 +164,185 @@ public class TacticalWaypointGenerator : Generator
                     res.Add(wp);
                 }
             }
-
             return res;
         }
     }
-
-    private void GenerateInnerBoundaryAndInteriorWps(GenWriteKey key)
+    private void GenerateInnerWaypoints(GenWriteKey key)
     {
-        _interiorWps = new Dictionary<MapPolygon, List<List<Waypoint>>>();
-        var lists = key.Data.GetAll<MapPolygon>()
-            .AsParallel()
-            .Select(p => new KeyValuePair<MapPolygon,List<List<Waypoint>>>(p, handle(p)));
-        _interiorWps.AddRange(lists);
+        _landWps = new Dictionary<Vector2, Tuple<MapPolygon, Waypoint>>();
+        _seaWps = new Dictionary<MapPolygon, Waypoint>();
+        _suppressed = new Dictionary<Vector2, MapPolygon>();
 
-        List<List<Waypoint>> handle(MapPolygon poly)
+        _landHash = new ConcurrentDictionary<MapPolygon, HashSet<Vector2>>();
+        var polys = key.Data.GetAll<MapPolygon>();
+        var landPolys = polys
+            .Where(p => p.IsLand);
+        foreach (var waterPoly in polys.Where(p => p.IsWater()))
         {
-            var res = new List<List<Waypoint>>();
-            if (poly.IsWater())
-            {
-                var wp = new SeaWaypoint(key, _id.TakeId(), poly.Center, poly);
-                res.Add(new List<Waypoint>{wp});
-                return res;
-            }
+            var wp = new SeaWaypoint(key, _id.TakeId(),
+                waterPoly.Center, waterPoly);
+            _seaWps.Add(waterPoly, wp);
+            _takenPoses.Add(waterPoly.Center);
+        }
 
-            var currRing = new List<Waypoint>();
-            var border = poly.GetOrderedBoundaryPoints(key.Data)
-                .Select(v => v + poly.Center)
-                .Distinct()
+        Parallel.ForEach(landPolys, poly =>
+        {
+            var hash = new HashSet<Vector2>();
+
+            var suppressingWps = poly.GetEdges(key.Data)
+                .Where(e => _edgeWps.ContainsKey(e))
+                .SelectMany(e => _edgeWps[e])
+                .Union(poly.GetNexi(key.Data)
+                    .Where(_nexusWps.ContainsKey).Select(n => _nexusWps[n]))
                 .ToArray();
+            
+            var boundaryPs = poly.GetOrderedBoundaryPoints(key.Data);
+            var minX = boundaryPs.Min(v => v.X) + poly.Center.X;
+            var minXIndex = Mathf.FloorToInt(minX / _innerWaypointDist);
 
-            var inner = addRing(poly, border, 
-                wp =>
+            var maxX = boundaryPs.Max(v => v.X) + poly.Center.X;
+            var maxXIndex = Mathf.CeilToInt(maxX / _innerWaypointDist);
+
+            var minY = boundaryPs.Min(v => v.Y) + poly.Center.Y;
+            var minYIndex = Mathf.FloorToInt(minY / _innerWaypointDist);
+            
+            var maxY = boundaryPs.Max(v => v.Y) + poly.Center.Y;
+            var maxYIndex = Mathf.CeilToInt(maxY / _innerWaypointDist);
+
+            for (int i = minXIndex; i <= maxXIndex; i++)
+            {
+                for (int j = minYIndex; j <= maxYIndex; j++)
                 {
-                    currRing.Add(wp);
-                }, 
-                -_waypointDist / 4f);
-            while (inner != null)
-            {
-                res.Add(currRing);
-                currRing = new List<Waypoint>();
-                var innerInner = addRing(poly, inner,
-                    wp =>
+                    var pos = new Vector2(i, j) * _innerWaypointDist;
+                    pos = key.Data.Planet.ClampPosition(pos);
+                    var offset = key.Data.Planet.GetOffsetTo(poly.Center, pos);
+                    if (suppressingWps.Any(s => 
+                            key.Data.Planet.GetOffsetTo(s.Pos, pos).Length() 
+                                < _edgeWaypointDist * .75f))
                     {
-                        currRing.Add(wp);
-                    }, -_waypointDist / 2f);
-                inner = innerInner;
+                        continue;
+                    }
+                    if (Geometry2D.IsPointInPolygon(offset, boundaryPs) == false) continue;
+                    hash.Add(pos);
+                }
             }
-
-            return res;
-        }
-
-        Vector2[] addRing(MapPolygon poly, Vector2[] border, Action<Waypoint> add, float shrink)
+            _landHash.TryAdd(poly, hash);
+        });
+        foreach (var kvp in _landHash)
         {
-            var polyInnerBorders = Geometry2D.OffsetPolygon(border, shrink);
-            if (polyInnerBorders.Count == 0) return null;
-            var polyInnerBorder = polyInnerBorders
-                .MaxBy(b => b.Count());
-            var innerLength = 0f;
-            for (var i = 0; i < polyInnerBorder.Length; i++)
+            var poly = kvp.Key;
+            foreach (var pos in kvp.Value)
             {
-                innerLength += polyInnerBorder[i].DistanceTo(polyInnerBorder.Modulo(i + 1));
+                if (_takenPoses.Contains(pos)) continue;
+                _takenPoses.Add(pos);
+                var wp = new InlandWaypoint(key, _id.TakeId(), pos, poly);
+                _landWps.Add(pos, new(poly, wp));
             }
-
-            var numInnerBoundaryPoints = Mathf.CeilToInt(innerLength / _waypointDist);
-            var newWpPoses = new List<Vector2>();
-            for (var i = 0; i < numInnerBoundaryPoints; i++)
-            {
-                var ratio = (float)i / (numInnerBoundaryPoints);
-                var pos = polyInnerBorder.GetPointAlongCircle((v, w) => w - v, ratio);
-                var wp = new InlandWaypoint(key, _id.TakeId(), 
-                    pos,
-                    poly);
-                newWpPoses.Add(wp.Pos);
-                add(wp);
-            }
-
-            return newWpPoses.ToArray();
         }
     }
-    
 
 
-    private void Connect(GenWriteKey key)
+    private void DoShortEdgeWps(GenWriteKey key)
     {
-        var dic = new Dictionary<MapPolygon, HashSet<Waypoint>>();
-        foreach (var poly in key.Data.GetAll<MapPolygon>())
+        foreach (var kvp in _landHash)
         {
-            var nexusWps = poly
-                .GetNexi(key.Data)
-                .Where(n => _nexusWps.ContainsKey(n))
-                .Select(n => _nexusWps[n]);
-            var edgeWps = poly
-                .GetEdges(key.Data)
-                .Where(n => _edgeWps.ContainsKey(n))
-                .SelectMany(n => _edgeWps[n]);
-            
-            var interiorWps = _interiorWps[poly]
-                .SelectMany(l => l);
-            var all = nexusWps.Union(edgeWps).Union(interiorWps);
-            dic.Add(poly, all.ToHashSet());
-        }
-
-        foreach (var poly in key.Data.GetAll<MapPolygon>())
-        {
-            if (poly.IsLand)
+            var poly = kvp.Key;
+            if (poly.IsWater()) continue;
+            var wps = kvp.Value;
+            foreach (var nPoly in poly.Neighbors.Items(key.Data))
             {
-                doLandLink(poly, poly);
-                var lastRing = _interiorWps[poly].Last();
-
-                bool isClose(Vector2 p, Vector2 a, Vector2 b)
+                if (nPoly.Id > poly.Id) continue;
+                if (nPoly.IsWater()) continue;
+                var edge = poly.GetEdge(nPoly, key.Data);
+                if (edge.IsRiver()) continue;
+                var nWps = _landHash[nPoly];
+                if (noLink())
                 {
-                    if (p == b || p == a) return false;
-                    var offsetA = key.Data.Planet.GetOffsetTo(p, a);
-                    var offsetB = key.Data.Planet.GetOffsetTo(p, b);
-                    return offsetA.AngleTo(offsetB) >= Mathf.Pi * .8f;
+                    GD.Print($"no link {poly.Id} {nPoly.Id}");
+                    var midPoint = edge.GetSegsRel(poly, key.Data)
+                        .Segments.GetPointAlong(.5f) + poly.Center;
+                    midPoint = key.Data.Planet.ClampPosition(midPoint);
+                    var midWp = new InlandWaypoint(key, _id.TakeId(), midPoint,
+                        poly, nPoly);
+                    join(midWp, wps);
+                    join(midWp, nWps);
+                    _byId.Add(midWp.Id, midWp);
                 }
-                
-                for (var i = 0; i < lastRing.Count; i++)
+
+                bool noLink()
                 {
-                    for (var j = i + 1; j < lastRing.Count; j++)
+                    return wps.Any(wp =>
+                        _landWps[wp].Item2.Neighbors.Any(n => 
+                            nWps.Contains(_byId[n].Pos))) == false;
+                }
+
+                void join(Waypoint midWp, IEnumerable<Vector2> candWps)
+                {
+                    var close = candWps.Select(v => _landWps[v].Item2)
+                        .Where(wp => key.Data.Planet.GetOffsetTo(midWp.Pos, wp.Pos).Length() < _innerWaypointDist * 2f);
+                    if (close.Count() == 0)
                     {
-                        var a = lastRing[i];
-                        var b = lastRing[j];
-                        if (lastRing.Any(p => isClose(p.Pos, a.Pos, b.Pos) == false))
-                        {
-                            link(a, b);
-                        }
+                        var closest = candWps
+                            .Select(v => _landWps[v].Item2)
+                            .MinBy(wp => key.Data.Planet.GetOffsetTo(midWp.Pos, wp.Pos).Length());
+                        midWp.Neighbors.Add(closest.Id);
+                        closest.Neighbors.Add(midWp.Id);
+                    }
+                    foreach (var closeWp in close)
+                    {
+                        midWp.Neighbors.Add(closeWp.Id);
+                        closeWp.Neighbors.Add(midWp.Id);
                     }
                 }
             }
+        }
+    }
+
+    private void Connect(GenWriteKey key)
+    {
+        var links = new ConcurrentBag<Vector2I>();
+        var polys = key.Data.GetAll<MapPolygon>();
+        Parallel.ForEach(polys, poly =>
+        {
             foreach (var nPoly in poly.Neighbors.Items(key.Data))
             {
+                
+                
                 if (nPoly.Id < poly.Id) continue;
+                var edge = nPoly.GetEdge(poly, key.Data);
+                
                 if (poly.IsWater() && nPoly.IsWater())
                     doSeaLink(poly, nPoly);
                 else if(poly.IsWater() && nPoly.IsLand)
                     doCoastLink(poly, nPoly);
                 else if(nPoly.IsWater() && poly.IsLand)
                     doCoastLink(nPoly, poly);
-                else 
-                    doLandLink(poly, nPoly);
+                else if (edge.IsRiver())
+                {
+                    doEdgeLinks(edge);
+                }
             }
-        }
-        void link(Waypoint w, Waypoint v)
+        });
+
+        Parallel.ForEach(_landWps, doLandWp);
+        foreach (var ids in links)
         {
+            var w = _byId[ids.X];
+            var v = _byId[ids.Y];
             w.Neighbors.Add(v.Id);
             v.Neighbors.Add(w.Id);
         }
+        void link(Waypoint w, Waypoint v)
+        {
+            links.Add(new Vector2I(w.Id, v.Id));
+        }
 
+    
         void doCoastLink(MapPolygon seaPoly, MapPolygon coastPoly)
         {
             var edge = seaPoly.GetEdge(coastPoly, key.Data);
-            var edgeWps = _edgeWps[edge];
-                
-            var seaWp = _interiorWps[seaPoly].First().First();
-            foreach (var edgeWp in edgeWps)
-            {
-                link(edgeWp, seaWp);
-            }
-
+            var seaWp = _seaWps[seaPoly];
+            
             var hiN = edge.HiNexus.Entity(key.Data);
             if (_nexusWps.ContainsKey(hiN))
             {
@@ -318,30 +354,81 @@ public class TacticalWaypointGenerator : Generator
             {
                 link(_nexusWps[loN], seaWp);
             }
+            doEdgeLinks(edge);
         }
             
         void doSeaLink(MapPolygon p1, MapPolygon p2)
         {
-            link(_interiorWps[p1].First().First(), _interiorWps[p2].First().First());
+            link(_seaWps[p1], _seaWps[p2]);
         }
 
-        void doLandLink(MapPolygon p1, MapPolygon p2)
+        void doEdgeLinks(MapPolygonEdge edge)
         {
-            if (p1 != p2 && p1.GetEdge(p2, key.Data).IsRiver())
+            var dist = _innerWaypointDist * 2f;
+            var n1 = _nexusWps[edge.HiNexus.Entity(key.Data)];
+            var n2 = _nexusWps[edge.LoNexus.Entity(key.Data)];
+            var es = _edgeWps[edge];
+            checkClose(n1);
+            checkClose(n2);
+            foreach (var e in es)
             {
-                return;
+                checkClose(e);
             }
-            var all1 = dic[p1];
-            var all2 = dic[p2];
-            foreach (var wp1 in all1)
+            void checkClose(Waypoint wp)
             {
-                foreach (var wp2 in all2)
+                var minX = Mathf.FloorToInt((wp.Pos.X - dist) / _innerWaypointDist);
+                var maxX = Mathf.CeilToInt((wp.Pos.X + dist) / _innerWaypointDist);
+                var minY = Mathf.FloorToInt((wp.Pos.Y - dist) / _innerWaypointDist);
+                var maxY = Mathf.CeilToInt((wp.Pos.Y + dist) / _innerWaypointDist);
+                for (int i = minX; i <= maxX; i++)
                 {
-                    if (wp1 == wp2) continue;
-                    var offset = key.Data.Planet.GetOffsetTo(wp1.Pos, wp2.Pos);
-                    if (offset.Length() < _waypointDist)
+                    for (int j = minY; j <= maxY; j++)
                     {
-                        link(wp1, wp2);
+                        var pos = new Vector2(i, j) * _innerWaypointDist;
+                        pos = key.Data.Planet.ClampPosition(pos);
+                        if (_landWps.TryGetValue(pos, out var lwp)
+                            && edge.EdgeToPoly(lwp.Item1)
+                            && key.Data.Planet.GetOffsetTo(wp.Pos, lwp.Item2.Pos).Length() < dist)
+                        {
+                            link(wp, lwp.Item2);
+                        }
+                    }
+                }
+            }
+        }
+
+        void doLandWp(KeyValuePair<Vector2, Tuple<MapPolygon, Waypoint>> kvp)
+        {
+            var pos = kvp.Key;
+            var wp = kvp.Value.Item2;
+            var poly = kvp.Value.Item1;
+            
+            doLandLink(1, 0);
+            doLandLink(2, 1);
+            doLandLink(1, 1);
+            doLandLink(1, 2);
+            
+            doLandLink(0, 1);
+            doLandLink(-1, 2);
+            doLandLink(-1, 1);
+            doLandLink(-2, 1);
+            
+            
+            void doLandLink(int xOffset, int yOffset)
+            {
+                var nPos = pos + new Vector2(xOffset, yOffset) * _innerWaypointDist;
+                nPos = key.Data.Planet.ClampPosition(nPos);
+                
+                if (_landWps.ContainsKey(nPos))
+                {
+                    var nPoly = _landWps[nPos].Item1;
+                    if (nPoly.Neighbors.Contains(poly)
+                        && nPoly.GetEdge(poly, key.Data).IsRiver())
+                    {
+                    }
+                    else
+                    {
+                        link(wp, _landWps[nPos].Item2);
                     }
                 }
             }
@@ -356,20 +443,20 @@ public class TacticalWaypointGenerator : Generator
         {
             if (waypoint is ILandWaypoint n == false) return;
             var pos = key.Data.Planet.ClampPosition(waypoint.Pos);
-
             var rTotal = 0f;
             var assoc = waypoint
                 .AssocPolys(key.Data)
                 .Where(p => p.IsLand);
-            var numAssoc = assoc.Count();
+            int numAssoc = 0;
             foreach (var poly in assoc)
             {
+                numAssoc++;
                 var offset = poly.GetOffsetTo(waypoint.Pos, key.Data);
                 var roughSample= poly.Tris.Tris
                     .Where(t => t.Landform(key.Data).IsLand)
                     .OrderBy(t => t.GetCentroid().DistanceTo(offset))
-                    .Take(4);
-                if (roughSample.Count() == 0) continue;
+                    .Take(4).ToArray();
+                if (roughSample.Length == 0) continue;
                 var totalArea = roughSample.Sum(s => s.GetArea());
                 var totalRoughness = roughSample.Sum(s => s.Landform(key.Data).MinRoughness * s.GetArea());
 

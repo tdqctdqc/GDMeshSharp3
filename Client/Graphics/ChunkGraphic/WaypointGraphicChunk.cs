@@ -38,7 +38,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
             {
                 var nOffset = _chunk.RelTo.GetOffsetTo(nWp.Pos, d);
                 if (chunkWp.Id <= nWp.Id) continue;
-                mb.AddLine(offset, nOffset, Colors.Red, 5f);
+                mb.AddLine(offset, nOffset, Colors.Red, 1f);
             }
         }
 

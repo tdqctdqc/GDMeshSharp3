@@ -270,7 +270,7 @@ public class SocietyGenerator : Generator
             
             var laborBuildings = buildings
                 .Select(b => b.Model.Model(_data))
-                .SelectWhere(b => b.GetComponent<Workplace>() != null);
+                .Where(b => b.GetComponent<Workplace>() != null);
             if (laborBuildings.Count() > 0)
             {
                 laborDesire += laborBuildings.Sum(b => b.GetComponent<Workplace>().TotalLaborReq());
@@ -284,7 +284,7 @@ public class SocietyGenerator : Generator
             if (buildings == null) continue;
             var workBuildings = buildings
                 .Select(b => b.Model.Model(_data))
-                .SelectWhere(b => b.HasComponent<Workplace>());
+                .Where(b => b.HasComponent<Workplace>());
             var peep = p.GetPeep(_data);
             foreach (var wb in workBuildings)
             {

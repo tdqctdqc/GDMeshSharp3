@@ -84,7 +84,7 @@ public class Context
         foreach (var wp in data.Military.TacticalWaypoints.Waypoints.Values)
         {
             var ownerAlliances = wp.AssocPolys(data)
-                .SelectWhere(p => p.OwnerRegime.Fulfilled())
+                .Where(p => p.OwnerRegime.Fulfilled())
                 .Select(p => p.OwnerRegime.Entity(data))
                 .Select(r => r.GetAlliance(data))
                 .Distinct();

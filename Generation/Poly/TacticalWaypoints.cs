@@ -1,5 +1,7 @@
 
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using MessagePack;
 
@@ -18,14 +20,20 @@ public class TacticalWaypoints : Entity
             byPos.Add(wp.Pos, wp.Id);
             foreach (var poly in wp.AssocPolys(key.Data))
             {
-                var set = polyAssocWaypoints.GetOrAdd(poly.Id, p => new HashSet<int>());
-                set.Add(wp.Id);
+                polyAssocWaypoints
+                    .GetOrAdd(poly.Id, p => new HashSet<int>())
+                    .Add(wp.Id);
             }
         }
+
+        if (key.Data.GetAll<MapPolygon>().Any(p => polyAssocWaypoints.ContainsKey(p.Id) == false))
+        {
+            throw new Exception();
+        }
         var n = new TacticalWaypoints(key.Data.IdDispenser.TakeId(), 
-            wps,
-            polyAssocWaypoints,
-            byPos);
+        wps,
+        polyAssocWaypoints,
+        byPos);
         key.Create(n);
         return n;
     }

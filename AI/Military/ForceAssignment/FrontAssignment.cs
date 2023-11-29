@@ -72,6 +72,9 @@ public class FrontAssignment : ForceAssignment
         for (var i = 0; i < wps.Count; i++)
         {
             var wp = wps[i];
+            res.Add(wp, wp.Pos);
+            continue;
+            
             if (wp.IsDirectlyThreatened(alliance, d))
             {
                 res.Add(wp, wp.Pos);

@@ -110,7 +110,7 @@ public static class MapPolygonExt
         
         return data.Infrastructure.BuildingAux.ByPoly[poly]
             .Select(b => b.Model.Model(data))
-            .SelectWhere(b => b.HasComponent<Workplace>())
+            .Where(b => b.HasComponent<Workplace>())
             .Sum(wb => poly.GetPeep(data).Size - wb.GetComponent<Workplace>().TotalLaborReq());
     }
     public static Vector2 GetGraphicalCenterOffset(this MapPolygon poly, Data data)

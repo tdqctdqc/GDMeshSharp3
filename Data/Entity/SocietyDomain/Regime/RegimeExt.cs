@@ -31,7 +31,7 @@ public static class RegimeExt
     }
     public static IEnumerable<Peep> GetPeeps(this Regime r, Data data)
     {
-        return r.GetPolys(data).SelectWhere(p => p.HasPeep(data))
+        return r.GetPolys(data).Where(p => p.HasPeep(data))
             .Select(p => p.GetPeep(data));
     }
 

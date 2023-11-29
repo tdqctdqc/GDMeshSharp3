@@ -15,10 +15,6 @@ public static class EnumerableExt
         if (item == null) yield break;
         yield return item;
     }
-    public static IEnumerable<T> SelectWhere<T>(this IEnumerable<T> enumerable, Func<T,bool> pred)
-    {
-        return enumerable.Where(pred).Select(e => e);
-    }
     public static List<T> GetBetween<T>(this IList<T> list, T from, T to)
     {
         var start = list.IndexOf(from);

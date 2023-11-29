@@ -102,7 +102,10 @@ public static class MapPolygonEdgeExt
         var width = River.GetWidthFromFlow(edge.MoistureFlow);
         return width >= River.WidthFloor;
     }
-
+    public static bool IsCoast(this MapPolygonEdge edge, Data d)
+    {
+        return edge.HighPoly.Entity(d).IsLand != edge.LowPoly.Entity(d).IsLand;
+    }
     public static bool EdgeToPoly(this MapPolygonEdge edge, MapPolygon poly)
     {
         return edge.HighPoly.RefId == poly.Id || edge.LowPoly.RefId == poly.Id;
@@ -115,5 +118,14 @@ public static class MapPolygonEdgeExt
         var relA = hi.GetOffsetTo(absA, data);
         var relB = hi.GetOffsetTo(absB, data);
         return hiSegs.Segments.Any(s => s.IntersectsInclusive(relA, relB));
+    }
+
+    public static bool PointWithinDist(this MapPolygonEdge edge,
+        Vector2 pAbs, float dist, Data d)
+    {
+        var relPoly = edge.HighPoly.Entity(d);
+        var pRel = d.Planet.GetOffsetTo(relPoly.Center, pAbs);
+        return edge.GetSegsRel(relPoly, d)
+            .Segments.Any(s => s.DistanceTo(pRel) < dist);
     }
 }
