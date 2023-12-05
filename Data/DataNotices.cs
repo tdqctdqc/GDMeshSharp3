@@ -16,6 +16,7 @@ public class DataNotices
     public RefAction MadeWaypoints { get; private set; }
     public RefAction SetLandAndSea { get; private set; }
     public RefAction ExitedGen { get; private set; }
+    public RefAction FinishedAiCalc { get; set; }
     public DataNotices()
     {
         PopulatedWorld = new RefAction();
@@ -28,6 +29,8 @@ public class DataNotices
         SetLandAndSea = new RefAction();
         ExitedGen = new RefAction();
         MadeWaypoints = new RefAction();
+        FinishedAiCalc = new RefAction();
+        FinishedAiCalc.Subscribe(() => GD.Print("finished ai calc "));
     }
 }
 

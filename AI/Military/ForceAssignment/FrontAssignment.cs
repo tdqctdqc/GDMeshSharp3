@@ -3,53 +3,147 @@ using System.Collections.Generic;
 using System.Linq;
 using GDMeshSharp3.Exception;
 using Godot;
+using MathNet.Numerics.Statistics;
 
 public class FrontAssignment : ForceAssignment
 {
     public Front Front { get; private set; }
+    public List<FrontSegmentAssignment> Segments { get; private set; }
 
-    public FrontAssignment(Front front, HashSet<int> groupIds) 
+    public FrontAssignment(Front front, HashSet<int> groupIds,
+        List<FrontSegmentAssignment> segments) 
         : base(groupIds, front.Regime)
     {
+        Segments = segments;
         Front = front;
     }
-
+    
     public override void CalculateOrders(MinorTurnOrders orders, 
         LogicWriteKey key)
     {
-        if (GroupIds.Count() == 0) return;
         var alliance = orders.Regime.Entity(key.Data).GetAlliance(key.Data);
         var areaRadius = 500f;
-        var frontWps = 
-            Front.GetContactLineWaypoints(key.Data);
-        var avgPos = key.Data.Planet.GetAveragePosition(frontWps.Select(wp => wp.Pos));
-        
-        
-        //todo handle this
-        if (frontWps.Count < 2) return;
-        var shiftLength = 50f;
-
-        
         var relTo = Front.RelTo(key.Data);
-        var poses = CalcPoses(frontWps, alliance, key.Data);
+
+        var frontWps = 
+            Front.GetHeldWaypoints(key.Data);
+        if (frontWps.Count() < 2) return;
+        CalcSegments(key.Data);
         
+        FrontSegmentAssignment.CalcPositions(this, key.Data);
+        if (Segments.Any(fa => fa.Left == fa.Right))
+        {
+            GD.Print("bad");
+        }
         
-        Assigner.AssignAlongLine(
-            frontWps,
-            GroupIds.ToList(),
-            g => key.Data.Get<UnitGroup>(g).GetPowerPoints(key.Data),
-            (v,w) => GetDefendCost(v, w, key.Data),
-            wp => poses[wp],
-            (v1, v2) => key.Data.Planet.GetOffsetTo(v1, v2),
-            (g, l) =>
-            {
-                var order = new DeployOnLineOrder(l);
-                var proc = new SetUnitOrderProcedure(new EntityRef<UnitGroup>(g), order);
-                key.SendMessage(proc);
-            }
-        );
+        foreach (var fsa in Segments)
+        {
+            fsa.CalculateOrders(orders, key);
+        }
+        
+        // var defendCostByFrom = lines.ToDictionary(kvp => kvp.Key.From,
+        //     kvp => kvp.Value);
+        //
+        // Assigner.AssignAlongLine<Vector2, int>(
+        //     lines.Keys.Select(ls => ls.From).ToList(),
+        //     GroupIds.ToList(),
+        //     g => key.Data.Get<UnitGroup>(g).GetPowerPoints(key.Data),
+        //     (v,w) => defendCostByFrom[v],
+        //     wp => wp,
+        //     (v1, v2) => key.Data.Planet.GetOffsetTo(v1, v2),
+        //     (g, l) =>
+        //     {
+        //         var order = new DeployOnLineOrder(l);
+        //         var proc = new SetUnitOrderProcedure(new EntityRef<UnitGroup>(g), order);
+        //         key.SendMessage(proc);
+        //     }
+        // );
     }
 
+    public void CalcSegments(Data d)
+    {
+        Segments.Clear();
+        var maxSegLength = 100f;
+        var frontSegmentWpCount = 10;
+        var alliance = Front.Regime.Entity(d).GetAlliance(d);
+        var relTo = Front.RelTo(d);
+        var toPick = new HashSet<Waypoint>(Front.GetHeldWaypoints(d));
+        var frontier = new HashSet<Waypoint>();
+        var segmentWps = new HashSet<Waypoint>();
+        
+        while (toPick.Count > 0)
+        {
+            frontier.Clear();
+            segmentWps.Clear();
+            
+            var seed = toPick.First();
+            var curr = seed;
+            while (curr != null && segmentWps.Count < frontSegmentWpCount)
+            {
+                toPick.Remove(curr);
+                segmentWps.Add(curr);
+                frontier.Remove(curr);
+                frontier.AddRange(curr.TacNeighbors(d).Where(toPick.Contains));
+
+                if (frontier.Count > 0)
+                {
+                    curr = frontier
+                        .OrderBy(f => d.Planet.GetOffsetTo(seed.Pos, f.Pos).Length())
+                        .First();
+                }
+                else
+                {
+                    curr = null;
+                }
+            }
+
+            var seg = FrontSegmentAssignment.Construct(Regime, segmentWps, d);
+            Segments.Add(seg);
+        }
+        
+        //handle leftovers
+
+        var undersized = Segments
+            .Where(s => s.HeldWaypointIds.Count < frontSegmentWpCount)
+            .ToList();
+        
+        
+        foreach (var u in undersized)
+        {
+            if (u.HeldWaypointIds.Count > frontSegmentWpCount) continue;
+            var wps = u.GetHeldWaypoints(d);
+            var neighbors = getNeighboring();
+
+            if (neighbors.Count() > 0)
+            {
+                var first = neighbors
+                    .MinBy(n => n.HeldWaypointIds.Count);
+                first.HeldWaypointIds.AddRange(u.HeldWaypointIds);
+                u.HeldWaypointIds.Clear();
+                Segments.Remove(u);
+            }
+            
+            
+            IEnumerable<FrontSegmentAssignment> getNeighboring()
+            {
+                return Segments.Where(s => 
+                    s != u && s.HeldWaypointIds.Count > 0
+                    && isNeighbor(s));
+            }
+
+            bool isNeighbor(FrontSegmentAssignment s)
+            {
+                return wps.Any(wp => s.GetHeldWaypoints(d).Any(swp => swp.Neighbors.Contains(wp.Id)));
+            }
+        }
+        
+        float getCost(Waypoint wp)
+        {
+            var fb = d.Context.WaypointForceBalances[wp];
+            return fb.GetHostilePowerPoints(alliance, d)
+                   + fb.GetHostilePowerPointsOfNeighbors(wp, alliance, d);
+        }
+    }
 
     public float GetDefendCost(Waypoint wp1, Waypoint wp2, Data data)
     {
@@ -65,66 +159,24 @@ public class FrontAssignment : ForceAssignment
         return offset.Length() * (dCost1 + dCost2);
     }
 
-    public Dictionary<Waypoint, Vector2> CalcPoses(List<Waypoint> wps,
-        Alliance alliance, Data d)
-    {
-        var res = new Dictionary<Waypoint, Vector2>();
-        for (var i = 0; i < wps.Count; i++)
-        {
-            var wp = wps[i];
-            res.Add(wp, wp.Pos);
-            continue;
-            
-            if (wp.IsDirectlyThreatened(alliance, d))
-            {
-                res.Add(wp, wp.Pos);
-            }
-            else
-            {
-                var wpThreats = wp.TacNeighbors(d).Where(wp => wp.IsDirectlyThreatened(alliance, d)
-                                                               && wp.IsControlled(alliance, d) == false);
-                if (wpThreats.Count() == 0)
-                {
-                    
-                    res.Add(wp, wp.Pos);
-                    continue;
-                }
-                var offset = Vector2.Zero;
-                foreach (var wpThreat in wpThreats)
-                {
-                    offset += d.Planet.GetOffsetTo(wp.Pos, wpThreat.Pos);
-                }
-
-                offset /= wpThreats.Count();
-                res.Add(wp, wp.Pos + offset / 2f);
-            }
-        }
-        
-        return res;
-    }
-    private Vector2 GetPos(Waypoint wp, Alliance alliance, Data data)
-    {
-        var shift = Vector2.Zero;
-        var shiftLength = 15f;
-        var enemyNs = wp.TacNeighbors(data)
-            .Where(n => data.Context
-                .WaypointForceBalances[n]
-                .Any(kvp => alliance.Rivals.Contains(kvp.Key)));
-        
-        foreach (var enemyN in enemyNs)
-        {
-            shift += data.Planet.GetOffsetTo(enemyN.Pos, wp.Pos);
-        }
-        
-        
-        return wp.Pos + shift.Normalized() * shiftLength;
-    }
-    public float GetPowerPointRatio(Data data)
-    {
-        var powerPoints = GetPowerPointsAssigned(data);
-        if (powerPoints == 0f) return 0f;
-        var opposing = Front.GetOpposingPowerPoints(data);
-        if (opposing == 0f) return Mathf.Inf;
-        return powerPoints / opposing;
-    }
+    
+    // private float GetFrontDefenseNeed(Data data, 
+    //     float totalLength, float coverLengthWeight,
+    //     float totalOpposing, float coverOpposingWeight)
+    // {
+    //     var opposing = Front.GetOpposingPowerPoints(data);
+    //     var length = Front.GetLength(data);
+    //
+    //     var res = 0f;
+    //     if (totalOpposing != 0f)
+    //     {
+    //         res += coverOpposingWeight * opposing / totalOpposing;
+    //     }
+    //
+    //     if (totalLength != 0f)
+    //     {
+    //         res += coverLengthWeight * length / totalLength;
+    //     }
+    //     return res;
+    // }
 }

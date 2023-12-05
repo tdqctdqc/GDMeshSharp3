@@ -162,6 +162,7 @@ public class Data
 
     public T Get<T>(int id) where T : Entity
     {
+        if (EntitiesById.ContainsKey(id) == false) return null;
         return (T) EntitiesById[id];
     }
 

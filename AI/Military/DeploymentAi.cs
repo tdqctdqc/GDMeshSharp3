@@ -17,12 +17,13 @@ public class DeploymentAi
         
         TheaterAssignment.CheckSplitRemove(regime,
             ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+            fa => ForceAssignments.Add(fa),
             fa => ForceAssignments.Remove(fa),
             key);
         TheaterAssignment.CheckExpandMergeNew(regime,
             ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+            fa => ForceAssignments.Add(fa),
             fa => ForceAssignments.Remove(fa),
-                fa => ForceAssignments.Add(fa),
             key);
         TheaterAssignment.CheckTheaterFronts(regime, ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
             key);
@@ -37,75 +38,10 @@ public class DeploymentAi
         return ForceAssignments.SelectWhereOfType<FrontAssignment>();
     }
 
-    private void CreateFronts(Regime regime, LogicWriteKey key)
-    {
-        var alliance = regime.GetAlliance(key.Data);
-        var allianceAi = key.Data.HostLogicData.AllianceAis[alliance];
-        var responsibility = allianceAi.MilitaryAi.AreasOfResponsibility[regime];
-
-        ForceAssignments.Clear();
-            
-        
-        var unions = UnionFind.Find(responsibility, (wp1, wp2) =>
-        {
-            return responsibility.Contains(wp1) == responsibility.Contains(wp2);
-        }, wp => wp.TacNeighbors(key.Data));
-        
-        foreach (var union in unions)
-        {
-            var contactLines = GetContactLines(regime, union.ToHashSet(), key.Data);
-            foreach (var contactLine in contactLines)
-            {
-                var front = Front.Construct(regime, contactLine.Select(wp => wp.Id).ToList(),
-                    key);
-                var assgn = new FrontAssignment(front, new HashSet<int>());
-                ForceAssignments.Add(assgn);
-            }
-        }
-    }
-    private void FillFronts(Regime regime, Data data)
-    {
-        var frontAssgns = GetFrontAssignments().ToList();
-        var totalLength = frontAssgns.Sum(fa => fa.Front.GetLength(data));
-        var totalOpposing = frontAssgns.Sum(fa => fa.Front.GetOpposingPowerPoints(data));
-        var coverLengthWeight = 1f;
-        var coverOpposingWeight = 1f;
-        var occupiedGroups = ForceAssignments
-            .SelectMany(fa => fa.GroupIds)
-            .Select(g => data.Get<UnitGroup>(g));
-        var freeGroups = data.Military.UnitAux.UnitGroupByRegime[regime]
-            ?.Except(occupiedGroups)
-            ?.ToList();
-        if (freeGroups == null || freeGroups.Count == 0) return;
-        
-        Assigner.Assign<FrontAssignment, UnitGroup>(
-            frontAssgns,
-            fa => GetFrontDefenseNeed(fa, data, totalLength, coverLengthWeight, totalOpposing, coverOpposingWeight),
-            g => g.GetPowerPoints(data),
-            freeGroups.ToHashSet(),
-            (fa, g) => fa.GroupIds.Add(g.Id),
-            (fa, g) => g.GetPowerPoints(data));
-    }
     
-    private float GetFrontDefenseNeed(FrontAssignment fa, Data data, 
-        float totalLength, float coverLengthWeight,
-        float totalOpposing, float coverOpposingWeight)
-    {
-        var opposing = fa.Front.GetOpposingPowerPoints(data);
-        var length = fa.Front.GetLength(data);
-
-        var res = 0f;
-        if (totalOpposing != 0f)
-        {
-            res += coverOpposingWeight * opposing / totalOpposing;
-        }
-
-        if (totalLength != 0f)
-        {
-            res += coverLengthWeight * length / totalLength;
-        }
-        return res;
-    }
+    
+    
+    
     public static List<List<Waypoint>> GetContactLines(Regime regime, 
         HashSet<Waypoint> wps, 
         Data data)

@@ -63,6 +63,7 @@ public class CylinderGrid<T>
     public bool TryGetClosest(Vector2 p, out T close, Func<T, bool> valid)
     {
         close = default;
+        if (p.Y > Dimension.Y || p.Y < 0) return false;
         var startKey = GetKey(p);
         bool found = false;
         float dist = Mathf.Inf;

@@ -54,6 +54,26 @@ public class HostLogic : ILogic
 
     public void Start()
     {
+        SetPlayerRegimes();
+        SetInitialRivals();
+
+        _stateMachine = new StateMachine(_start);
+    }
+
+    private void SetInitialRivals()
+    {
+        var regimes = _data.GetAll<Regime>().ToList();
+        foreach (var regime in regimes)
+        {
+            if (Random.Shared.NextSingle() < .75f) continue;
+            var neighbors = regime.GetNeighborAlliances(_data);
+            if (neighbors.Count() == 0) continue;
+            HandleMessage(new DeclareRivalProcedure(regime.GetAlliance(_data).Id, neighbors.First().Id));
+        }
+    }
+
+    private void SetPlayerRegimes()
+    {
         var regimes = _data.GetAll<Regime>().ToList();
         var players = _data.GetAll<Player>().ToList();
         if (players.Count == 0) throw new Exception();
@@ -64,8 +84,6 @@ public class HostLogic : ILogic
                 players[i].PlayerGuid);
             HandleMessage(m);
         }
-
-        _stateMachine = new StateMachine(_start);
     }
 
     private void HandleMessage(Message m)

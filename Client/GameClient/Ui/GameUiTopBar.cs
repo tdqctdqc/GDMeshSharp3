@@ -32,8 +32,10 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
                 && data.ClientPlayerData.MinorOrders != null)
             {
                 var orders = data.ClientPlayerData.GetOrdersForThisTurn(data);
+
                 var c = SubmitTurnCommand.Construct(orders, data.ClientPlayerData.LocalPlayerGuid);
                 client.Server.QueueCommandLocal(c);
+
                 _submitTurn.Text = "Turn Submitted";
                 _submitTurn.Disabled = true;
             }

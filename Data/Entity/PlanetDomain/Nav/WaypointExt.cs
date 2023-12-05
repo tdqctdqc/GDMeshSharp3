@@ -4,6 +4,13 @@ using System.Linq;
 
 public static class WaypointExt
 {
+    public static Regime GetOccupyingRegime(this Waypoint wp, Data d)
+    {
+        if (d.Military.TacticalWaypoints.OccupierRegimes.ContainsKey(wp.Id) == false) return null;
+        var id = d.Military.TacticalWaypoints.OccupierRegimes[wp.Id];
+        if (id == -1) return null;
+        return d.Get<Regime>(id);
+    }
     public static ForceBalance GetForceBalance(this Waypoint wp, Data d)
     {
         return d.Context.WaypointForceBalances[wp];

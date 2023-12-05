@@ -81,6 +81,12 @@ public class OrderHolder
         {
             throw;
         }
+
+        var ready = GetNumAisReady(key.Data);
+        if (ready.X == ready.Y)
+        {
+            key.Data.Notices.FinishedAiCalc.Invoke();
+        }
     }
 
     private void CancelCalcAiRegimeOrders(Regime r, LogicWriteKey key)

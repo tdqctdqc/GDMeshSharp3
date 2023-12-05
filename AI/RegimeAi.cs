@@ -41,6 +41,15 @@ public class RegimeAi
     private MinorTurnOrders GetMinorTurnOrders(LogicWriteKey key)
     {
         var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
+        
+        var alliance = Regime.GetAlliance(key.Data);
+        var allianceLeader = alliance.Leader.Entity(key.Data);
+        if (allianceLeader == Regime)
+        {
+            var ai = key.Data.HostLogicData.AllianceAis[alliance];
+            ai.Calculate(alliance, key);
+        }
+        
         Diplomacy.CalculateMinor(key, orders);
         Military.CalculateMinor(key, orders);
         

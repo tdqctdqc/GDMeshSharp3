@@ -28,7 +28,7 @@ public class AllianceMilitaryAi
                   + alliance.Leader.Entity(key.Data).GetPolys(key.Data).First().Id);
         }
     }
-
+    
     public void CalculateAreasOfResponsibility(Alliance alliance, IEnumerable<Waypoint> controlled, 
         Data d)
     {
@@ -39,28 +39,41 @@ public class AllianceMilitaryAi
         var uncovered = controlled.ToHashSet();
         foreach (var waypoint in controlled)
         {
-            var wpMemberOwnerRegimes = waypoint.AssocPolys(d)
-                .Select(p => p.OwnerRegime.Entity(d))
-                .Where(r => alliance.Members.Contains(r));
-            var wpMemberOccupierRegimes = waypoint.AssocPolys(d)
-                .Select(p => p.OccupierRegime.Entity(d))
-                .Where(r => alliance.Members.Contains(r));
-            var relRegimes = wpMemberOccupierRegimes
-                .Union(wpMemberOwnerRegimes).Distinct();
-            if (relRegimes.Count() == 0)
+            Regime r = null;
+            if (waypoint.GetOccupyingRegime(d) is Regime regime
+                && regime.GetAlliance(d) == alliance)
+            {
+                r = regime;
+            }
+            else
+            {
+                
+                var fb = waypoint.GetForceBalance(d);
+                var haveUnits = fb.ByRegime
+                    .Where(kvp => alliance.Members.Contains(kvp.Key));
+                if (haveUnits.Count() > 0)
+                {
+                    r = haveUnits.MaxBy(kvp => kvp.Value).Key;
+                }
+                else
+                {
+                    GD.Print("couldnt find responsible");
+                }
+            }
+            uncovered.Remove(waypoint);
+
+            if (r == null)
             {
                 GD.Print("no member has control");
                 disputed.Add(waypoint);
             }
-            foreach (var r in relRegimes)
+            else
             {
-                if (r == null) throw new Exception();
                 AreasOfResponsibility[r].Add(waypoint);
-                uncovered.Remove(waypoint);
             }
         }
 
-        if (disputed.Count() > 0) throw new Exception();
-        if(uncovered.Count() != 0 ) throw new Exception();
+        // if (disputed.Count() > 0) throw new Exception();
+        if (uncovered.Count() != 0 ) throw new Exception();
     }
 }

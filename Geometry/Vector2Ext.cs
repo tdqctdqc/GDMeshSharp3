@@ -90,9 +90,6 @@ public static class Vector2Ext
                 && point.Y >= Mathf.Min(from.Y, to.Y)
                 && point.Y <= Mathf.Max(from.Y, to.Y);
     }
-
-    
-    
     private static bool OnSegment(Vector2 p, Vector2 q, Vector2 r) 
     { 
         if (q.X <= Mathf.Max(p.X, r.X) && q.X >= Mathf.Min(p.X, r.X) && 
@@ -164,11 +161,6 @@ public static class Vector2Ext
   
         return false; // Doesn't fall in any of the above cases 
     }
-    
-    
-    
-    
-
     public static Vector2 ClampToBox(this Vector2 p, Vector2 bound1, Vector2 bound2)
     {
         var minXBound = Mathf.Min(bound1.X, bound2.X);
@@ -183,9 +175,6 @@ public static class Vector2Ext
     {
         var theta = Mathf.Abs((point - start).AngleTo(end - start));
         return Mathf.Sin(theta) * point.DistanceTo(start);
-        
-        
-        
         
         // vector AB
         var AB = new Vector2();
@@ -308,5 +297,33 @@ public static class Vector2Ext
         }
 
         throw new Exception();
+    }
+
+    public static Vector2 GetClosestPointOnLine(this Vector2 point, Vector2 origin, Vector2 direction)
+    {
+        direction = direction.Normalized();
+        Vector2 lhs = point - origin;
+        float dotP = lhs.Dot(direction);
+        return origin + direction * dotP;
+    }
+    public static Vector2 GetClosestPointOnLineSegment
+        (this Vector2 point, 
+            Vector2 from, Vector2 to)
+    {
+        var origin = from;
+        var direction = to - from;
+        Vector2 lhs = point - origin;
+        float dotP = lhs.Dot(direction);
+        var closeOnLine = point.GetClosestPointOnLine(origin, direction);
+        
+        var test = closeOnLine - from;
+        if (test.LengthSquared() > direction.LengthSquared()
+                || Mathf.Abs(direction.AngleTo(test)) > 0.1f)
+        {
+            return closeOnLine.DistanceTo(from) <= closeOnLine.DistanceTo(to)
+                ? from
+                : to;
+        }
+        return closeOnLine;
     }
 }

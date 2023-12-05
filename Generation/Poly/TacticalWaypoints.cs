@@ -10,11 +10,13 @@ public class TacticalWaypoints : Entity
     public Dictionary<int, Waypoint> Waypoints { get; private set; }
     public Dictionary<int, HashSet<int>> PolyAssocWaypoints { get; private set; }
     public Dictionary<Vector2, int> ByPos { get; private set; }
+    public Dictionary<int, int> OccupierRegimes { get; private set; }
     public static TacticalWaypoints Create(GenWriteKey key,
         Dictionary<int, Waypoint> wps)
     {
         var polyAssocWaypoints = new Dictionary<int, HashSet<int>>();
         var byPos = new Dictionary<Vector2, int>();
+        var occupierRegimes = new Dictionary<int, int>();
         foreach (var wp in wps.Values)
         {
             byPos.Add(wp.Pos, wp.Id);
@@ -31,19 +33,45 @@ public class TacticalWaypoints : Entity
             throw new Exception();
         }
         var n = new TacticalWaypoints(key.Data.IdDispenser.TakeId(), 
-        wps,
-        polyAssocWaypoints,
-        byPos);
+            wps,
+            polyAssocWaypoints,
+            byPos,
+            occupierRegimes);
         key.Create(n);
         return n;
     }
     [SerializationConstructor] private TacticalWaypoints(int id,
         Dictionary<int, Waypoint> waypoints,
         Dictionary<int, HashSet<int>> polyAssocWaypoints,
-        Dictionary<Vector2, int> byPos) : base(id)
+        Dictionary<Vector2, int> byPos,
+        Dictionary<int, int> occupierRegimes) : base(id)
     {
         Waypoints = waypoints;
         PolyAssocWaypoints = polyAssocWaypoints;
         ByPos = byPos;
+        OccupierRegimes = occupierRegimes;
+    }
+
+    public void SetInitialOccupiers(GenWriteKey key)
+    {
+        foreach (var wp in Waypoints.Values)
+        {
+            if (wp is IWaterWaypoint) continue;
+            foreach (var poly in wp.AssocPolys(key.Data))
+            {
+                if (poly.IsWater()) continue;
+                if (poly.OccupierRegime.Fulfilled())
+                {
+                    var r = poly.OwnerRegime
+                        .Entity(key.Data);
+                    OccupierRegimes[wp.Id] = r.Id;
+                }
+            }
+
+            if (OccupierRegimes.ContainsKey(wp.Id) == false)
+            {
+                OccupierRegimes[wp.Id] = -1;
+            }
+        }
     }
 }

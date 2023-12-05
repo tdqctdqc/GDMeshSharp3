@@ -47,17 +47,15 @@ public class DeclareRivalProposal : AllianceProposal
 
     protected override void ResolveInner(bool accepted, ProcedureWriteKey key)
     {
-        var alliance = key.Data.Get<Alliance>(AllianceId);
-        var target = key.Data.Get<Alliance>(TargetAllianceId);
         if (accepted)
         {
-            alliance.Rivals.Add(target, key);
-            target.Rivals.Add(alliance, key);
+            var alliance = key.Data.Get<Alliance>(AllianceId);
+            var target = key.Data.Get<Alliance>(TargetAllianceId);
+            new DeclareRivalProcedure(AllianceId, TargetAllianceId).Enact(key);
+            key.Data.Logger.Log($"{alliance.Leader.Entity(key.Data).Name} and {alliance.Leader.Entity(key.Data).Capital.RefId} " +
+                                $"{target.Leader.Entity(key.Data).Name} {target.Leader.Entity(key.Data).Capital.RefId} " +
+                                $"are now rivals", LogType.Diplomacy);
         }
-        key.Data.Logger.Log($"{alliance.Leader.Entity(key.Data).Name} and {alliance.Leader.Entity(key.Data).Capital.RefId} " +
-                 $"{target.Leader.Entity(key.Data).Name} {target.Leader.Entity(key.Data).Capital.RefId} " +
-                 $"are now rivals", LogType.Diplomacy);
-
     }
 
     public override bool Valid(Data data)

@@ -8,18 +8,15 @@ public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphi
 {
     [SerializationConstructor] private TheaterGraphicLayer(int z, Data data, GraphicsSegmenter segmenter) 
         : base(z, "Theater", segmenter,
-            (ta, graphic, seg, q) =>
-            {
-                q.Enqueue(() => graphic.Draw(ta, data));
-            })
+            (ta, graphic, seg, q) => { })
     {
     }
 
     private void Draw(Data data)
     {
-        foreach (var front in Graphics.Keys.ToList())
+        foreach (var theater in Graphics.Keys.ToList())
         {
-            Remove(front, data);
+            Remove(theater, data);
         }
         var theaters = data.HostLogicData.RegimeAis.Dic.Values
             .SelectMany(rAi => rAi.Military.Deployment.ForceAssignments.SelectWhereOfType<TheaterAssignment>());
@@ -41,7 +38,7 @@ public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphi
         var l = new TheaterGraphicLayer(z, client.Data, seg);
         
         
-        client.Data.Notices.Ticked.Blank.Subscribe(() =>
+        client.Data.Notices.FinishedAiCalc.Subscribe(() =>
             {
                 client.QueuedUpdates.Enqueue(() =>
                 {

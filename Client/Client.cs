@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Godot;
 
@@ -65,7 +66,6 @@ public partial class Client : Node, IClient
         {
             component.Process((float)delta);
         }
-
         while (QueuedUpdates.TryDequeue(out var u))
         {
             u.Invoke();

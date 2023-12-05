@@ -119,6 +119,17 @@ public static class NodeExt
         parent.AddChild(label);
         return label;
     }
+
+    public static VBoxContainer MakeLabelList(this IEnumerable<string> strings, string header)
+    {
+        var vBox = new VBoxContainer();
+        if (header != "") vBox.CreateLabelAsChild(header);
+        foreach (var s in strings)
+        {
+            vBox.CreateLabelAsChild(s);
+        }
+        return vBox;
+    }
     public static void AddToChildWithName(this Node self, Node toAdd, string childName)
     {
         self.FindChild(childName).AddChild(toAdd);

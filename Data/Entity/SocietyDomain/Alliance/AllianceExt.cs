@@ -25,7 +25,9 @@ public static class AllianceExt
     {
         return regime.GetPolys(data)
             .SelectMany(p => p.Neighbors.Items(data).Where(e => e.OwnerRegime.Fulfilled()))
-            .Select(p => p.OwnerRegime.Entity(data).GetAlliance(data)).Distinct();
+            .Select(p => p.OwnerRegime.Entity(data).GetAlliance(data))
+            .Distinct()
+            .Where(a => a != regime.GetAlliance(data));
     }
 
     public static bool IsHostileTo(this Alliance a, Alliance b)

@@ -6,6 +6,7 @@ using MessagePack;
 
 [MessagePack.Union(0, typeof(FrontAssignment))]
 [MessagePack.Union(1, typeof(TheaterAssignment))]
+[MessagePack.Union(2, typeof(FrontSegmentAssignment))]
 public abstract class ForceAssignment : IPolymorph
 {
     public EntityRef<Regime> Regime { get; private set; }

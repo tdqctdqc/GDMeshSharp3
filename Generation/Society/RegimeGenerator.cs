@@ -24,6 +24,7 @@ public class RegimeGenerator : Generator
         var report = new GenReport(GetType().Name);
         report.StartSection();
         GenerateRegimes();
+        _data.Military.TacticalWaypoints.SetInitialOccupiers(key);
         _data.Notices.GeneratedRegimes.Invoke();
         
         foreach (var regime in key.Data.GetAll<Regime>())
@@ -93,7 +94,7 @@ public class RegimeGenerator : Generator
             var template = templates.GetRandomElement();
             // templates.Remove(template);
             var regime = Regime.Create(seeds[i], template, false, _key);
-            seeds[i].SetOwnerRegime(regime, _key);
+            seeds[i].SetInitialRegime(regime, _key);
 
             int numToPick = 0;
             if (num6s > 0)
@@ -108,7 +109,7 @@ public class RegimeGenerator : Generator
             }
             else numToPick = 1;
             var wand = new RegimeWanderer(regime, seeds[i], picker, numToPick, _data);
-            seeds[i].SetOwnerRegime(regime, _key);
+            seeds[i].SetInitialRegime(regime, _key);
         }
         
         return picker;
@@ -122,7 +123,7 @@ public class RegimeGenerator : Generator
             var r = ((RegimeWanderer) w).Regime;
             foreach (var p in w.Picked)
             {
-                p.SetOwnerRegime(r, _key);
+                p.SetInitialRegime(r, _key);
             }
             r.SetIsMajor(w.Picked.Count >= _numPolysToBeMajor, _key);
         }
@@ -150,11 +151,10 @@ public class RegimeGenerator : Generator
             // templates.Remove(template);
             var isMajor = union.Count >= _polysForRegimeAvg * .75;
             var regime = Regime.Create(union[0], template, isMajor, _key);
-            union[0].SetOwnerRegime(regime, _key);
-            for (var i = 1; i < union.Count; i++)
+            for (var i = 0; i < union.Count; i++)
             {
                 var p = union[i];
-                p.SetOwnerRegime(regime, _key);
+                p.SetInitialRegime(regime, _key);
             }
         }
     }

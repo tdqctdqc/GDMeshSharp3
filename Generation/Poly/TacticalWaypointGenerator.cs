@@ -258,7 +258,6 @@ public class TacticalWaypointGenerator : Generator
                 var nWps = _landHash[nPoly];
                 if (noLink())
                 {
-                    GD.Print($"no link {poly.Id} {nPoly.Id}");
                     var midPoint = edge.GetSegsRel(poly, key.Data)
                         .Segments.GetPointAlong(.5f) + poly.Center;
                     midPoint = key.Data.Planet.ClampPosition(midPoint);
@@ -306,8 +305,6 @@ public class TacticalWaypointGenerator : Generator
         {
             foreach (var nPoly in poly.Neighbors.Items(key.Data))
             {
-                
-                
                 if (nPoly.Id < poly.Id) continue;
                 var edge = nPoly.GetEdge(poly, key.Data);
                 

@@ -33,10 +33,97 @@ public class Context
     public void Calculate(Data data)
     {
         WaypointPaths.Clear();
-        CalculateWaypointsAndForceBalances(data);
+        foreach (var kvp in WaypointForceBalances)
+        {
+            kvp.Value.ClearBalance();
+        }
+        CalculateUnitWaypointsAndForceBalances(data);
+        CalculateOccupierRegimes(data);
+        CalculateRiverControl(data);
         CalculateControlAreas(data);
     }
 
+    
+    private void CalculateUnitWaypointsAndForceBalances(Data data)
+    {
+        var units = data.GetAll<Unit>();
+        var wpGrid = data.Military.WaypointGrid;
+        
+        foreach (var u in units)
+        {
+            if (u.Position.HasNaN()) throw new Exception();
+            var found = wpGrid.TryGetClosest(u.Position, out var closeWp, 
+                wp => wp is ILandWaypoint);
+            if (found = false)
+            {
+                throw new Exception("couldnt find waypoint near " + u.Position);
+            }
+            UnitWaypoints[u] = closeWp;
+            var forceBalance = WaypointForceBalances[closeWp];
+            forceBalance.Add(u, data);
+        }
+    }
+
+    private void CalculateRiverControl(Data data)
+    {
+        var tacWps = data.Military
+            .TacticalWaypoints.Waypoints.Values;
+        foreach (var wp in tacWps)
+        {
+            var forceBalance = wp.GetForceBalance(data);
+            if (wp is IRiverWaypoint r == false) continue;
+            var nRegimes = wp.TacNeighbors(data)
+                .SelectMany(n => n.GetForceBalance(data).GetControllingRegimes())
+                .Distinct();
+            foreach (var nRegime in nRegimes)
+            {
+                forceBalance.Add(nRegime, 1f, data);
+            }
+        }
+    }
+    private void CalculateOccupierRegimes(Data data)
+    {
+        var tacWps = data.Military
+            .TacticalWaypoints;
+        foreach (var wp in tacWps.Waypoints.Values)
+        {
+            var forceBalance = WaypointForceBalances[wp];
+            var origOccupier = wp.GetOccupyingRegime(data);
+            
+            var alliance = forceBalance.GetMostPowerfulAlliance();
+            if (alliance != null 
+                && alliance.Members.Contains(origOccupier) == false)
+            {
+                var r = forceBalance.ByRegime
+                    .Where(kvp => alliance.Members.Contains(kvp.Key))
+                    .OrderBy(kvp => kvp.Value).First().Key;
+                
+                tacWps.OccupierRegimes[wp.Id] = r.Id;
+            }
+            var occupier = wp.GetOccupyingRegime(data);
+            if (occupier != null)
+            {
+                forceBalance.Add(occupier, 1f, data);
+            }
+        }
+    }
+    private void CalculateControlAreas(Data data)
+    {
+        ControlledAreas.Clear();
+        foreach (var wp in data.Military.TacticalWaypoints.Waypoints.Values)
+        {
+            var forceBalance = WaypointForceBalances[wp];
+            
+            var controlling = forceBalance
+                .GetControllingAlliances();
+            foreach (var alliance in controlling)
+            {
+                ControlledAreas
+                    .GetOrAdd(alliance, a => new HashSet<Waypoint>())
+                    .Add(wp);
+            }
+        }
+    }
     public List<Waypoint> GetWaypointPath(Waypoint start, Waypoint end, Data data)
     {
         var key = new Vector2(start.Id, end.Id);
@@ -54,56 +141,4 @@ public class Context
         WaypointPaths[key] = path;
         return path;
     }
-    private void CalculateWaypointsAndForceBalances(Data data)
-    {
-        foreach (var kvp in WaypointForceBalances)
-        {
-            kvp.Value.Clear();
-        }
-        var units = data.GetAll<Unit>();
-        var wpGrid = data.Military.WaypointGrid;
-        
-        foreach (var u in units)
-        {
-            if (u.Position.HasNaN()) throw new Exception();
-            var found = wpGrid.TryGetClosest(u.Position, out var closeWp, 
-                wp => wp is ILandWaypoint);
-            if (found = false)
-            {
-                throw new Exception("couldnt find waypoint near " + u.Position);
-            }
-            UnitWaypoints[u] = closeWp;
-            var forceBalance = WaypointForceBalances[closeWp];
-            forceBalance.Add(u, data);
-        }
-        
-    }
-
-    private void CalculateControlAreas(Data data)
-    {
-        foreach (var wp in data.Military.TacticalWaypoints.Waypoints.Values)
-        {
-            var ownerAlliances = wp.AssocPolys(data)
-                .Where(p => p.OwnerRegime.Fulfilled())
-                .Select(p => p.OwnerRegime.Entity(data))
-                .Select(r => r.GetAlliance(data))
-                .Distinct();
-            if (ownerAlliances.Count() == 0) continue;
-            var forceBalance = WaypointForceBalances[wp];
-
-            foreach (var alliance in ownerAlliances)
-            {
-                forceBalance.Add(alliance, ForceBalance.PowerPointsForPolyOwnership);
-            }
-
-            var controlling = forceBalance.GetControllingAlliances();
-            foreach (var alliance in controlling)
-            {
-                ControlledAreas
-                    .GetOrAdd(alliance, a => new HashSet<Waypoint>())
-                    .Add(wp);
-            }
-        }
-    }
-
 }

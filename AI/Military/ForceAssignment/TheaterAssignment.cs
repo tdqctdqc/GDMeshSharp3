@@ -8,14 +8,14 @@ public class TheaterAssignment : ForceAssignment
 {
     
     public List<FrontAssignment> Fronts { get; private set; }
-    public HashSet<int> TacWaypoints { get; private set; }
+    public HashSet<int> TacWaypointIds { get; private set; }
     public TheaterAssignment(EntityRef<Regime> regime, 
         List<FrontAssignment> fronts,
-        HashSet<int> tacWaypoints, HashSet<int> groupIds) 
+        HashSet<int> tacWaypointIds, HashSet<int> groupIds) 
         : base(groupIds, regime)
     {
         Fronts = fronts;
-        TacWaypoints = tacWaypoints;
+        TacWaypointIds = tacWaypointIds;
     }
     public override void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key)
     {
@@ -25,45 +25,46 @@ public class TheaterAssignment : ForceAssignment
         }
     }
 
+    public IEnumerable<Waypoint> GetTacWaypoints(Data d)
+    {
+        return TacWaypointIds.Select(id => d.Military.TacticalWaypoints.Waypoints[id]);
+    }
     public static void CheckSplitRemove(Regime r, List<TheaterAssignment> theaters, 
-        Action<ForceAssignment> remove,  LogicWriteKey key)
+        Action<ForceAssignment> add, Action<ForceAssignment> remove, LogicWriteKey key)
     {
         var alliance = r.GetAlliance(key.Data);
-        var allianceAi = key.Data.HostLogicData.AllianceAis[alliance];
-        
 
-        var control = key.Data.Context.ControlledAreas[alliance];
+        var controlledWps = key.Data.Context.ControlledAreas[alliance];
         for (var i = 0; i < theaters.Count; i++)
         {
             var ta = theaters[i];
-            ta.TacWaypoints.RemoveWhere(i => control.Contains(key.Data.Military.TacticalWaypoints.Waypoints[i]) == false);
-            if (ta.TacWaypoints.Count == 0)
+            ta.TacWaypointIds.RemoveWhere(i => controlledWps.Contains(key.Data.Military.TacticalWaypoints.Waypoints[i]) == false);
+            
+            if (ta.TacWaypointIds.Count == 0)
             {
                 remove(ta);
                 return;
             }
-            var unions = UnionFind.Find(ta.TacWaypoints,
-                (i, j) => true,
-                i => key.Data.Military.TacticalWaypoints.Waypoints[i].Neighbors);
-            if (unions.Count() == 0) throw new Exception();
-            if (unions.Count > 1)
+
+            var flood = FloodFill<Waypoint>.GetFloodFill(ta.GetTacWaypoints(key.Data).First(),
+                wp => ta.TacWaypointIds.Contains(wp.Id),
+                wp => wp.TacNeighbors(key.Data));
+
+            if (flood.Count() != ta.TacWaypointIds.Count)
             {
-                GD.Print("no split yet");
                 remove(ta);
-                for (var j = 0; j < unions.Count; j++)
+                var newTheaters = Divide(ta, key);
+                foreach (var newTa in newTheaters)
                 {
-                    var poly = key.Data.Military.TacticalWaypoints
-                        .Waypoints[unions[j].First()].AssocPolys(key.Data).First();
-                    GD.Print($"split {j} at {poly.Id}");
+                    add(newTa);
                 }
             }
         }
-        
     }
     
     public static void CheckExpandMergeNew(Regime r, List<TheaterAssignment> theaters, 
-        Action<ForceAssignment> remove,
         Action<ForceAssignment> add,
+        Action<ForceAssignment> remove,
         LogicWriteKey key)
     {
         var alliance = r.GetAlliance(key.Data);
@@ -75,7 +76,7 @@ public class TheaterAssignment : ForceAssignment
         var toMerge = new Dictionary<HashSet<int>, List<TheaterAssignment>>();
         foreach (var ta in theaters)
         {
-            var first = ta.TacWaypoints.First();
+            var first = ta.TacWaypointIds.First();
             var dissolve = false;
             if (covered.Contains(first))
             {
@@ -89,7 +90,7 @@ public class TheaterAssignment : ForceAssignment
                     t => key.Data.Military.TacticalWaypoints.Waypoints[t].Neighbors);
                 covered.AddRange(flood);
                 toMerge.Add(flood, new List<TheaterAssignment>{ta});
-                ta.TacWaypoints.AddRange(flood);
+                ta.TacWaypointIds.AddRange(flood);
             }
         }
         
@@ -124,26 +125,90 @@ public class TheaterAssignment : ForceAssignment
         List<TheaterAssignment> theaters, 
         LogicWriteKey key)
     {
+        var alliance = r.GetAlliance(key.Data);
         foreach (var ta in theaters)
         {
             ta.Fronts.Clear();
-            var contactLines = DeploymentAi.GetContactLines(r,
-                ta.TacWaypoints.Select(id => key.Data.Military.TacticalWaypoints.Waypoints[id]).ToHashSet(),
-                key.Data);
-            foreach (var contactLine in contactLines)
+            var threatened = ta.TacWaypointIds
+                .Select(i => key.Data.Military.TacticalWaypoints.Waypoints[i])
+                .Where(wp => wp.IsDirectlyThreatened(alliance, key.Data)
+                             || wp.IsIndirectlyThreatened(alliance, key.Data));
+
+            var frontWpClouds = UnionFind.Find(threatened, (w, v) => true,
+                w => w.TacNeighbors(key.Data));
+            
+            foreach (var contactLine in frontWpClouds)
             {
                 var front = Front.Construct(r,
-                    contactLine.Select(wp => wp.Id).ToList(),
+                    contactLine.Select(wp => wp.Id),
                     key);
-                var fa = new FrontAssignment(front, new HashSet<int>());
+                var fa = new FrontAssignment(front, new HashSet<int>(),
+                    new List<FrontSegmentAssignment>());
                 ta.Fronts.Add(fa);
             }
         }
-        // throw new NotImplementedException();
     }
     public void MergeInto(TheaterAssignment dissolve)
     {
         GroupIds.AddRange(dissolve.GroupIds);
         Fronts.AddRange(dissolve.Fronts);
     }
+
+    public static IEnumerable<TheaterAssignment> Divide(TheaterAssignment ta, LogicWriteKey key)
+    {
+        var r = ta.Regime.Entity(key.Data);
+        var unions = UnionFind.Find(ta.TacWaypointIds,
+            (i, j) => true,
+            i => key.Data.Military.TacticalWaypoints.Waypoints[i].Neighbors);
+
+        var newTheaters =
+            unions.Select(
+                u => new TheaterAssignment(r.MakeRef(), new List<FrontAssignment>(),
+                    u.ToHashSet(), new HashSet<int>()));
+        foreach (var group in ta.Groups(key.Data))
+        {
+            var unitWpIds = group.Units.Items(key.Data)
+                .Select(u => key.Data.Context.UnitWaypoints[u].Id).ToList();
+            var mostWpsShared = newTheaters
+                .MaxBy(t => unitWpIds.Where(t.TacWaypointIds.Contains).Count());
+            if (unitWpIds.Where(mostWpsShared.TacWaypointIds.Contains).Count() == 0)
+            {
+                var pos = group.GetPosition(key.Data);
+                var closest = newTheaters
+                    .MinBy(t => key.Data.Planet.GetOffsetTo(group.GetPosition(key.Data),
+                        key.Data.Planet.GetAveragePosition(t.TacWaypointIds.Select(i =>
+                            key.Data.Military.TacticalWaypoints.Waypoints[i].Pos)))
+                    );
+                closest.GroupIds.Add(group.Id);
+            }
+            else
+            {
+                mostWpsShared.GroupIds.Add(group.Id);
+            }
+        }
+
+        return newTheaters;
+    }
+    // private void FillFronts(Regime regime, Data data)
+    // {
+    //     var totalLength = Fronts.Sum(fa => fa.Front.GetLength(data));
+    //     var totalOpposing = Fronts.Sum(fa => fa.Front.GetOpposingPowerPoints(data));
+    //     var coverLengthWeight = 1f;
+    //     var coverOpposingWeight = 1f;
+    //     var occupiedGroups = Fronts
+    //         .SelectMany(fa => fa.GroupIds)
+    //         .Select(g => data.Get<UnitGroup>(g));
+    //     var freeGroups = data.Military.UnitAux.UnitGroupByRegime[regime]
+    //         ?.Except(occupiedGroups)
+    //         ?.ToList();
+    //     if (freeGroups == null || freeGroups.Count == 0) return;
+    //     
+    //     Assigner.Assign<FrontAssignment, UnitGroup>(
+    //         Fronts,
+    //         fa => GetFrontDefenseNeed(fa, data, totalLength, coverLengthWeight, totalOpposing, coverOpposingWeight),
+    //         g => g.GetPowerPoints(data),
+    //         freeGroups.ToHashSet(),
+    //         (fa, g) => fa.GroupIds.Add(g.Id),
+    //         (fa, g) => g.GetPowerPoints(data));
+    // }
 }

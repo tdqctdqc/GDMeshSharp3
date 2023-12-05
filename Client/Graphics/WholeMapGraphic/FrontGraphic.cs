@@ -38,25 +38,25 @@ public partial class FrontGraphic : Node2D
             FrontNode = null;
         }
         var mb = new MeshBuilder();
-        var offsets = front.GetContactLineWaypoints(data).Select(wp => data.Planet.GetOffsetTo(relTo, wp.Pos)).ToList();
+        var offsets = front.GetHeldWaypoints(data).Select(wp => data.Planet.GetOffsetTo(relTo, wp.Pos)).ToList();
 
         var fillColor = new Color(regime.PrimaryColor, .75f);
-        if (front.ContactLineWaypointIds.Count() == 1)
+        if (front.HeldWaypointIds.Count() == 1)
         {
-            var wp = data.Military.TacticalWaypoints.Waypoints[front.ContactLineWaypointIds.First()];
+            var wp = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.First()];
             mb.AddCircle(data.Planet.GetOffsetTo(relTo, wp.Pos), 
                 25f, 12, fillColor);
         }
-        else if (front.ContactLineWaypointIds.Count() == 2)
+        else if (front.HeldWaypointIds.Count() == 2)
         {
-            var wp1 = data.Military.TacticalWaypoints.Waypoints[front.ContactLineWaypointIds.ElementAt(0)];
-            var wp2 = data.Military.TacticalWaypoints.Waypoints[front.ContactLineWaypointIds.ElementAt(1)];
+            var wp1 = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.ElementAt(0)];
+            var wp2 = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.ElementAt(1)];
 
             mb.AddLine(data.Planet.GetOffsetTo(relTo, wp1.Pos),
                 data.Planet.GetOffsetTo(relTo, wp2.Pos),
                 fillColor, 25f);
         }
-        else if (front.ContactLineWaypointIds.Count() > 2
+        else if (front.HeldWaypointIds.Count() > 2
                  & offsets.Count > 2)
         {
             
@@ -84,13 +84,13 @@ public partial class FrontGraphic : Node2D
             FrontNode = null;
         }
         var mb = new MeshBuilder();
-        foreach (var wp in front.GetContactLineWaypoints(data))
+        foreach (var wp in front.GetHeldWaypoints(data))
         {
             var p = data.Planet.GetOffsetTo(relTo, wp.Pos);
             foreach (var nWp in wp.TacNeighbors(data))
             {
                 if (wp.Id < nWp.Id) continue;
-                if (front.ContactLineWaypointIds.Contains(nWp.Id) == false) continue;
+                if (front.HeldWaypointIds.Contains(nWp.Id) == false) continue;
                 var nP = data.Planet.GetOffsetTo(relTo, nWp.Pos);
                 mb.AddLine(p, nP, regime.PrimaryColor, 5f);
             }
@@ -111,34 +111,34 @@ public partial class FrontGraphic : Node2D
             LineNode = null;
         }
         var frontline = front
-            .ContactLineWaypointIds;
+            .HeldWaypointIds;
         var darkened = regime.PrimaryColor.Darkened(.3f);
         var frontColor = ColorsExt.GetRandomColor();
         var mb = new MeshBuilder();
         if (frontline.Count == 1)
         {
-            var firstWp = data.Military.TacticalWaypoints.Waypoints[frontline[0]];
-
-            var pos = data.Planet.GetOffsetTo(relTo, firstWp.Pos);
-            mb.AddCircle(pos, 30f, 12, regime.PrimaryColor);
+            // var firstWp = data.Military.TacticalWaypoints.Waypoints[frontline[0]];
+            //
+            // var pos = data.Planet.GetOffsetTo(relTo, firstWp.Pos);
+            // mb.AddCircle(pos, 30f, 12, regime.PrimaryColor);
         }
         else
         {
-            var iter = 0;
-            for (var i = 0; i < frontline.Count - 1; i++)
-            {
-                var fromWp = data.Military.TacticalWaypoints.Waypoints[frontline[i]];
-                var toWp = data.Military.TacticalWaypoints.Waypoints[frontline[i + 1]];
-                var from = data.Planet.GetOffsetTo(relTo, fromWp.Pos);
-                var to = data.Planet.GetOffsetTo(relTo, toWp.Pos);;
-                mb.AddLine(from, to, 
-                    darkened, 
-                    15f);
-                mb.AddLine(from, to, 
-                    frontColor, 
-                    10f);
-                iter++;
-            }
+            // var iter = 0;
+            // for (var i = 0; i < frontline.Count - 1; i++)
+            // {
+            //     var fromWp = data.Military.TacticalWaypoints.Waypoints[frontline[i]];
+            //     var toWp = data.Military.TacticalWaypoints.Waypoints[frontline[i + 1]];
+            //     var from = data.Planet.GetOffsetTo(relTo, fromWp.Pos);
+            //     var to = data.Planet.GetOffsetTo(relTo, toWp.Pos);;
+            //     mb.AddLine(from, to, 
+            //         darkened, 
+            //         15f);
+            //     mb.AddLine(from, to, 
+            //         frontColor, 
+            //         10f);
+            //     iter++;
+            // }
         }
         if (mb.Tris.Count > 0)
         {

@@ -43,7 +43,8 @@ public class MapPolygon : Entity
         PolyFoodProd = polyFoodProd;
     }
 
-    public static MapPolygon Create(Vector2 center, float mapWidth, GenWriteKey key)
+    public static MapPolygon Create(Vector2 center, 
+        float mapWidth, GenWriteKey key)
     {
         var mapCenter = center;
         if (mapCenter.X > mapWidth) mapCenter = new Vector2(mapCenter.X - mapWidth, center.Y);
@@ -70,7 +71,8 @@ public class MapPolygon : Entity
         return p;
     }
     
-    public void AddNeighbor(MapPolygon n, PolyBorderChain border, StrongWriteKey key)
+    public void AddNeighbor(MapPolygon n, PolyBorderChain border, 
+        GenWriteKey key)
     {
         if (Neighbors.Contains(n)) return;
         Neighbors.Add(n, key);
@@ -81,10 +83,16 @@ public class MapPolygon : Entity
         if (Neighbors.Contains(n) == false) throw new Exception();
         NeighborBorders[n.Id] = border;
     }
-    public void RemoveNeighbor(MapPolygon poly, StrongWriteKey key)
+    public void RemoveNeighbor(MapPolygon poly, GenWriteKey key)
     {
         //only use in merging left-right wrap
         Neighbors.Remove(poly, key);
+    }
+
+    public void SetInitialRegime(Regime r, GenWriteKey key)
+    {
+        SetOwnerRegime(r, key);
+        SetOccupierRegime(r, key);
     }
     public void SetOwnerRegime(Regime r, StrongWriteKey key)
     {

@@ -115,7 +115,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         {
             if (wp.IsDirectlyThreatened(alliance, data))
             {
-                var lerp = forceBalance[alliance]
+                var lerp = forceBalance.ByAlliance[alliance]
                            / (2f * forceBalance.GetHostilePowerPoints(alliance, data));
                 lerp = Mathf.Clamp(lerp, 0f, 1f);
                 var col = Colors.Red.Lerp(Colors.Green, lerp);
@@ -123,7 +123,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
             }
             else if (wp.IsIndirectlyThreatened(alliance, data))
             {
-                var lerp = forceBalance[alliance]
+                var lerp = forceBalance.ByAlliance[alliance]
                            / (forceBalance.GetHostilePowerPointsOfNeighbors(wp, alliance, data));
                 lerp = Mathf.Clamp(lerp, 0f, 1f);
                 var col = Colors.Red.Lerp(Colors.Green, lerp);
@@ -171,19 +171,15 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         return (color, color);
     }
     
-    private static (Color, Color) GetControlColor(Waypoint wp, Data data)
+    private static (Color, Color) GetOccupierColor(Waypoint wp, Data data)
     {
         Color color = Colors.Transparent;
-        
-        
-        if(data.Context.ControlledAreas
-           .Any(kvp => kvp.Value.Contains(wp)))
+        if (data.Military.TacticalWaypoints.OccupierRegimes.TryGetValue(wp.Id, out var rId))
         {
-            var controller = data.Context.ControlledAreas
-                .FirstOrDefault(kvp => kvp.Value.Contains(wp))
-                .Key.Leader.Entity(data);
-            color = controller.PrimaryColor;
-
+            if (data.Get<Regime>(rId) is Regime r)
+            {
+                color = r.PrimaryColor;
+            }
         }
 
         return (color, color);
@@ -247,8 +243,8 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         l.AddSetting(
             new TypedSettingsOption<ColorFunc>(
                 "Fill",
-                new List<ColorFunc> { GetWaypointTypeColor, GetFrontlineColor, GetControlColor, GetResponsibilityColor },
-                new List<string> { nameof(GetWaypointTypeColor), nameof(GetFrontlineColor) , nameof(GetControlColor), nameof(GetResponsibilityColor)}
+                new List<ColorFunc> { GetWaypointTypeColor, GetFrontlineColor, GetOccupierColor, GetResponsibilityColor },
+                new List<string> { nameof(GetWaypointTypeColor), nameof(GetFrontlineColor) , nameof(GetOccupierColor), nameof(GetResponsibilityColor)}
             ),
             (chunk, func) =>
             {
