@@ -36,7 +36,7 @@ public partial class TheaterGraphic : Node2D
     {
         var relToId = theater.TacWaypointIds.First();
         var relTo = d.Military.TacticalWaypoints.Waypoints[relToId].Pos;
-        Func<Vector2, Vector2> relPos = p => d.Planet.GetOffsetTo(relTo, p);
+        Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
         foreach (var fa in theater.Fronts)
         {
@@ -83,7 +83,7 @@ public partial class TheaterGraphic : Node2D
         foreach (var tId in theater.TacWaypointIds)
         {
             var wp = d.Military.TacticalWaypoints.Waypoints[tId];
-            var relPos = d.Planet.GetOffsetTo(relTo, wp.Pos);
+            var relPos = relTo.GetOffsetTo(wp.Pos, d);
             mb.AddSquare(relPos, 10f, regimeColor);
             mb.AddSquare(relPos, 6f, theaterColor);
         }
@@ -98,13 +98,13 @@ public partial class TheaterGraphic : Node2D
         foreach (var tId in theater.TacWaypointIds)
         {
             var wp = d.Military.TacticalWaypoints.Waypoints[tId];
-            var relPos = d.Planet.GetOffsetTo(relTo, wp.Pos);
+            var relPos = relTo.GetOffsetTo(wp.Pos, d);
             
             foreach (var nWp in wp.TacNeighbors(d))
             {
                 if (theater.TacWaypointIds.Contains(nWp.Id) == false) continue;
                 if (nWp.Id > tId) continue;
-                var nRelPos = d.Planet.GetOffsetTo(relTo, nWp.Pos);
+                var nRelPos = relTo.GetOffsetTo(nWp.Pos, d);
         
                 mb.AddLine(relPos, nRelPos, regimeColor, 2f);
             }

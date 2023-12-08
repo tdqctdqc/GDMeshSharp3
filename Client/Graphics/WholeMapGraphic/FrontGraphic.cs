@@ -38,13 +38,14 @@ public partial class FrontGraphic : Node2D
             FrontNode = null;
         }
         var mb = new MeshBuilder();
-        var offsets = front.GetHeldWaypoints(data).Select(wp => data.Planet.GetOffsetTo(relTo, wp.Pos)).ToList();
+        var offsets = front.GetHeldWaypoints(data)
+            .Select(wp => relTo.GetOffsetTo(wp.Pos, data)).ToList();
 
         var fillColor = new Color(regime.PrimaryColor, .75f);
         if (front.HeldWaypointIds.Count() == 1)
         {
             var wp = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.First()];
-            mb.AddCircle(data.Planet.GetOffsetTo(relTo, wp.Pos), 
+            mb.AddCircle(relTo.GetOffsetTo(wp.Pos, data), 
                 25f, 12, fillColor);
         }
         else if (front.HeldWaypointIds.Count() == 2)
@@ -52,8 +53,8 @@ public partial class FrontGraphic : Node2D
             var wp1 = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.ElementAt(0)];
             var wp2 = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.ElementAt(1)];
 
-            mb.AddLine(data.Planet.GetOffsetTo(relTo, wp1.Pos),
-                data.Planet.GetOffsetTo(relTo, wp2.Pos),
+            mb.AddLine(relTo.GetOffsetTo(wp1.Pos, data),
+                relTo.GetOffsetTo(wp2.Pos, data),
                 fillColor, 25f);
         }
         else if (front.HeldWaypointIds.Count() > 2
@@ -86,12 +87,12 @@ public partial class FrontGraphic : Node2D
         var mb = new MeshBuilder();
         foreach (var wp in front.GetHeldWaypoints(data))
         {
-            var p = data.Planet.GetOffsetTo(relTo, wp.Pos);
+            var p = relTo.GetOffsetTo(wp.Pos, data);
             foreach (var nWp in wp.TacNeighbors(data))
             {
                 if (wp.Id < nWp.Id) continue;
                 if (front.HeldWaypointIds.Contains(nWp.Id) == false) continue;
-                var nP = data.Planet.GetOffsetTo(relTo, nWp.Pos);
+                var nP = relTo.GetOffsetTo(nWp.Pos, data);
                 mb.AddLine(p, nP, regime.PrimaryColor, 5f);
             }
         }

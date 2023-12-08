@@ -51,14 +51,14 @@ public class FrontSegmentAssignment : ForceAssignment
         var alliance = Regime.Entity(d).GetAlliance(d);
         var segmentWps = GetHeldWaypoints(d);
         Center = d.Planet.GetAveragePosition(segmentWps.Select(wp => wp.Pos));
-        var relCenter = d.Planet.GetOffsetTo(relTo, Center);
+        var relCenter = relTo.GetOffsetTo(Center, d);
         var threatDir = segmentWps
             .Select(wp =>
             {
                 return wp
                     .TacNeighbors(d)
                     .Where(n => n.IsDirectlyThreatened(alliance, d))
-                    .Select(n => d.Planet.GetOffsetTo(wp.Pos, n.Pos))
+                    .Select(n => wp.Pos.GetOffsetTo(n.Pos, d))
                     .Sum();
             })
             .Sum().Normalized();
@@ -68,7 +68,7 @@ public class FrontSegmentAssignment : ForceAssignment
         var leftDist = 0f;
         foreach (var segmentWp in segmentWps)
         {
-            var wpRelPos = d.Planet.GetOffsetTo(relTo, segmentWp.Pos);
+            var wpRelPos = relTo.GetOffsetTo(segmentWp.Pos, d);
             var offset = wpRelPos - relCenter;
             var dist = offset.Length();
             if (threatDir.GetClockwiseAngleTo(offset) < Mathf.Pi
@@ -82,9 +82,9 @@ public class FrontSegmentAssignment : ForceAssignment
             }
         }
 
-        Right = d.Planet.ClampPosition(Center + axis * rightDist);
+        Right = (Center + axis * rightDist).ClampPosition(d);
         RightJoin = Right;
-        Left = d.Planet.ClampPosition(Center - axis * leftDist);
+        Left = (Center - axis * leftDist).ClampPosition(d);
         LeftJoin = Left;
     }
     public override void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key)
@@ -98,7 +98,7 @@ public class FrontSegmentAssignment : ForceAssignment
             g => key.Data.Get<UnitGroup>(g).GetPowerPoints(key.Data),
             (v,w) => 1f,
             wp => wp,
-            (v1, v2) => key.Data.Planet.GetOffsetTo(v1, v2),
+            (v1, v2) => v1.GetOffsetTo(v2, key.Data),
             (g, l) =>
             {
                 var order = new DeployOnLineOrder(l);
@@ -158,7 +158,7 @@ public class FrontSegmentAssignment : ForceAssignment
                 Vector2 pCand, 
                 ref float dist, ref Vector2 v)
             {
-                var testDist = d.Planet.GetOffsetTo(pCand, p).Length();
+                var testDist = pCand.GetOffsetTo(p, d).Length();
                 if (testDist >= dist) return;
                 dist = testDist;
                 v = pCand;
@@ -171,8 +171,8 @@ public class FrontSegmentAssignment : ForceAssignment
         foreach (var seg in segments)
         {
             var (nearestLeftFsa, nearestLeft) = nearestLeftDic[seg];
-            var lAxis = d.Planet.GetOffsetTo(seg.Center, seg.Left);
-            var nearLAxis = d.Planet.GetOffsetTo(seg.Left, nearestLeft);
+            var lAxis = seg.Center.GetOffsetTo(seg.Left, d);
+            var nearLAxis = seg.Left.GetOffsetTo(nearestLeft, d);
             if (nearestLeftDic[nearestLeftFsa].Item1 == seg)
             {
                 seg.LeftJoin = seg.Left + nearLAxis / 2f;
@@ -182,12 +182,12 @@ public class FrontSegmentAssignment : ForceAssignment
             }
             
             var (nearestRightFsa, nearestRight) = nearestRightDic[seg];
-            var rAxis = d.Planet.GetOffsetTo(seg.Center, seg.Right);
-            var nearRAxis = d.Planet.GetOffsetTo(seg.Right, nearestRight);
+            var rAxis = seg.Center.GetOffsetTo(seg.Right, d);
+            var nearRAxis = seg.Right.GetOffsetTo(nearestRight, d);
 
             if (nearestRightDic[nearestRightFsa].Item1 == seg)
             {
-                seg.RightJoin = seg.Right + d.Planet.GetOffsetTo(seg.Right, nearestRight) / 2f;
+                seg.RightJoin = seg.Right + seg.Right.GetOffsetTo(nearestRight, d) / 2f;
                 var closestOnAxis = seg.RightJoin
                     .GetClosestPointOnLineSegment(seg.Right - rAxis, seg.Right);
                 seg.Right = closestOnAxis;

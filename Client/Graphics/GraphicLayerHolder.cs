@@ -32,18 +32,6 @@ public class GraphicLayerHolder
         layer.Visible = startVisible;
         Layers.Add(layer);
     }
-    public void Update(Data d, ConcurrentQueue<Action> queue)
-    {
-        var sw = new Stopwatch();
-        sw.Start();
-        foreach (var kvp in Layers)
-        {
-            kvp.Update(d, queue);
-        }
-        sw.Stop();
-        d.Logger.Log($"graphics update time {sw.Elapsed.TotalMilliseconds}",
-            LogType.Graphics);
-    }
 
     private ChunkGraphicSwitchLayer PolyFill(int z, GraphicsSegmenter segmenter, Data data)
     {

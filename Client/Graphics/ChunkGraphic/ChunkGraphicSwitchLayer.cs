@@ -83,11 +83,4 @@ public class ChunkGraphicSwitchLayer : IGraphicLayer
             layer.Visible = layerShouldBeVisible;
         });
     }
-    public void Update(Data d, ConcurrentQueue<Action> queue)
-    {
-        foreach (var l in Layers)
-        {
-            l.Update(d, queue);
-        }
-    }
 }

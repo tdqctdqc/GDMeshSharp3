@@ -30,7 +30,7 @@ public class DeployOnLineOrder : UnitOrder
         {
             iter++;
             var pos = Points.GetPointAlongLine(
-                (v, w) => d.Planet.GetOffsetTo(v, w),
+                (v, w) => v.GetOffsetTo(w, d),
                 (float)iter / count);
             proc.NewUnitPosesById.Add(unit.Id, pos);
         }
@@ -43,11 +43,11 @@ public class DeployOnLineOrder : UnitOrder
         for (var i = 0; i < Points.Count; i++)
         {
             var p = Points[i];
-            var pRel = data.Planet.GetOffsetTo(relTo, p);
+            var pRel = relTo.GetOffsetTo(p, data);
             if (i < Points.Count - 1)
             {
                 var pNext = Points[i + 1];
-                var pNextRel = data.Planet.GetOffsetTo(relTo, pNext);
+                var pNextRel = relTo.GetOffsetTo(pNext, data);
                 mb.AddLine(pRel, pNextRel, innerColor, 4f);
             }
             mb.AddSquare(pRel, 12f, outerColor);

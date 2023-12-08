@@ -42,6 +42,6 @@ public class Unit : Entity
         {
             throw new Exception("bad unit pos");
         }
-        Position = key.Data.Planet.ClampPosition(pos);
+        Position = pos.ClampPosition(key.Data);
     }
 }

@@ -137,7 +137,7 @@ public class DeploymentAi
         
         Vector2 relPos(Waypoint wp)
         {
-            return data.Planet.GetOffsetTo(relTo, wp.Pos);
+            return relTo.GetOffsetTo(wp.Pos, data);
         }
         
     }

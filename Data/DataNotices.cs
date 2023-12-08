@@ -30,7 +30,6 @@ public class DataNotices
         ExitedGen = new RefAction();
         MadeWaypoints = new RefAction();
         FinishedAiCalc = new RefAction();
-        FinishedAiCalc.Subscribe(() => GD.Print("finished ai calc "));
     }
 }
 

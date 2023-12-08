@@ -79,22 +79,6 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
         };
         return button;
     }
-    public void Update(Data d, ConcurrentQueue<Action> queue)
-    {
-        foreach (var graphic in ByChunkCoords.Values)
-        {
-            graphic.Update(d, queue);
-            queue.Enqueue(() =>
-            {
-                foreach (var kvp2 in _settingsUpdaters)
-                {
-                    kvp2.Value.Invoke(graphic);
-                }
-            });
-        }
-    }
-
-
     public void RegisterForChunkNotice<TNotice>(RefAction<TNotice> refAction,
         Func<TNotice, IEnumerable<MapChunk>> getChunks, Action<TNotice, TGraphic> queueUpdate)
     {

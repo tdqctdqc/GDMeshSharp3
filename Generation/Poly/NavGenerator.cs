@@ -161,8 +161,8 @@ public class NavGenerator : Generator
         foreach (var wp3 in wps)
         {
             if (wp1 == wp3 || wp2 == wp3) continue;
-            var pos1 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp1.Pos);
-            var pos2 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp2.Pos);
+            var pos1 = wp3.Pos.GetOffsetTo(wp1.Pos, key.Data);
+            var pos2 = wp3.Pos.GetOffsetTo(wp2.Pos, key.Data);
             if (Vector2.Zero.DistToLine(pos1, pos2) < dist) return true;
         }
 
@@ -174,8 +174,8 @@ public class NavGenerator : Generator
         foreach (var wp3 in wps)
         {
             if (wp1 == wp3 || wp2 == wp3) continue;
-            var pos1 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp1.Pos);
-            var pos2 = key.Data.Planet.GetOffsetTo(wp3.Pos, wp2.Pos);
+            var pos1 = wp3.Pos.GetOffsetTo(wp1.Pos, key.Data);
+            var pos2 = wp3.Pos.GetOffsetTo(wp2.Pos, key.Data);
 
             var angle1 = -pos1.AngleTo(pos2 - pos1);
             var angle2 = -pos2.AngleTo(pos1 - pos2);
@@ -377,7 +377,7 @@ public class NavGenerator : Generator
         foreach (var waypoint in waypoints)
         {
             if (waypoint is ILandWaypoint n == false) continue;
-            var pos = _key.Data.Planet.ClampPosition(waypoint.Pos);
+            var pos = waypoint.Pos.ClampPosition(_key.Data);
 
             var rTotal = 0f;
             var assoc = waypoint.AssocPolys(_key.Data);

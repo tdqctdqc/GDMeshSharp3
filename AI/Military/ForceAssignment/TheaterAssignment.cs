@@ -175,9 +175,11 @@ public class TheaterAssignment : ForceAssignment
             {
                 var pos = group.GetPosition(key.Data);
                 var closest = newTheaters
-                    .MinBy(t => key.Data.Planet.GetOffsetTo(group.GetPosition(key.Data),
+                    .MinBy(t => 
+                        group.GetPosition(key.Data).GetOffsetTo(
                         key.Data.Planet.GetAveragePosition(t.TacWaypointIds.Select(i =>
-                            key.Data.Military.TacticalWaypoints.Waypoints[i].Pos)))
+                            key.Data.Military.TacticalWaypoints.Waypoints[i].Pos)),
+                        key.Data)
                     );
                 closest.GroupIds.Add(group.Id);
             }

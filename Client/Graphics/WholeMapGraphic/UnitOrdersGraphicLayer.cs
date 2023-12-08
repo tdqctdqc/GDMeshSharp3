@@ -7,11 +7,7 @@ public class UnitOrdersGraphicLayer : GraphicLayer<UnitGroup, UnitOrderGraphic>
 {
     public UnitOrdersGraphicLayer(int z, string name, Client client,
         GraphicsSegmenter segmenter) 
-        : base(z, name, segmenter,
-            (group, graphic, seg, update) =>
-            {
-                graphic.Update(client.Data, seg, client.QueuedUpdates);
-            })
+        : base(z, name, segmenter)
     {
     }
     
@@ -29,8 +25,10 @@ public class UnitOrdersGraphicLayer : GraphicLayer<UnitGroup, UnitOrderGraphic>
         client.Data.Notices.Ticked.Blank.Subscribe(
             () =>
             {
-                client.QueuedUpdates.Enqueue(() => 
-                    l.Update(client.Data, client.QueuedUpdates));
+                foreach (var kvp in l.Graphics)
+                {
+                    kvp.Value.Update(client.Data, segmenter, client.QueuedUpdates);
+                }
             }
         );
         l.AddSetting(new BoolSettingsOption("Only show for current regime",

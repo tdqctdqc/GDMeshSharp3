@@ -33,7 +33,7 @@ public partial class UnitGroupGraphic : Node2D
         
         foreach (var unit in Group.Units.Items(data))
         {
-            var relPos = data.Planet.GetOffsetTo(groupPos, unit.Position);
+            var relPos = groupPos.GetOffsetTo(unit.Position, data);
             mb.AddSquare(relPos, _unitIconSize, darkened);
             mb.AddSquare(relPos, _unitIconSize * .8f, regime.PrimaryColor);
         }

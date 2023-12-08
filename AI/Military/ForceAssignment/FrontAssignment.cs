@@ -88,7 +88,7 @@ public class FrontAssignment : ForceAssignment
                 if (frontier.Count > 0)
                 {
                     curr = frontier
-                        .OrderBy(f => d.Planet.GetOffsetTo(seed.Pos, f.Pos).Length())
+                        .OrderBy(f => seed.Pos.GetOffsetTo(f.Pos, d).Length())
                         .First();
                 }
                 else
@@ -147,7 +147,7 @@ public class FrontAssignment : ForceAssignment
 
     public float GetDefendCost(Waypoint wp1, Waypoint wp2, Data data)
     {
-        var offset = data.Planet.GetOffsetTo(wp1.Pos, wp2.Pos);
+        var offset = wp1.Pos.GetOffsetTo(wp2.Pos, data);
         if (offset.Length() == 0f)
         {
             throw new Exception($"0 offset {wp1.Id} {wp1.Pos} to {wp2.Id} {wp2.Pos}");

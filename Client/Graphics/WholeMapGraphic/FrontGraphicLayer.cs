@@ -8,11 +8,7 @@ public class FrontGraphicLayer : GraphicLayer<Front, FrontGraphic>
 {
     
     private FrontGraphicLayer(int z, Client client, GraphicsSegmenter segmenter, Data d) 
-        : base(z, "Fronts", segmenter,
-            (front, graphic, seg, queue) =>
-            {
-                graphic.Update(front, d, seg, queue);
-            })
+        : base(z, "Fronts", segmenter)
     {
     }
 

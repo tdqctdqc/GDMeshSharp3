@@ -9,7 +9,7 @@ public static class MapPolygonEdgeExt
     {
         var p1 = edge.HighPoly.Entity(d);
         var p2 = edge.LowPoly.Entity(d);
-        return d.Planet.ClampPosition(p1.Center + p1.GetOffsetTo(p2, d));
+        return (p1.Center + p1.GetOffsetTo(p2, d)).ClampPosition(d);
     }
     public static List<LineSegment> GetSegsAbs(this MapPolygonEdge b, Data data)
     {
@@ -124,7 +124,7 @@ public static class MapPolygonEdgeExt
         Vector2 pAbs, float dist, Data d)
     {
         var relPoly = edge.HighPoly.Entity(d);
-        var pRel = d.Planet.GetOffsetTo(relPoly.Center, pAbs);
+        var pRel = relPoly.Center.GetOffsetTo(pAbs, d);
         return edge.GetSegsRel(relPoly, d)
             .Segments.Any(s => s.DistanceTo(pRel) < dist);
     }

@@ -42,18 +42,12 @@ public partial class MapGraphics : Node2D, IClientComponent
         
         client.GraphicsLayer.AddChild(this);
         
-        client.Data.Notices.Ticked.Blank.SubscribeForNode(() => Task.Run(() => Update(client.Data)), this);
-
         sw.Stop();
         client.Data.Logger.Log("map graphics setup time " + sw.Elapsed.TotalMilliseconds, LogType.Graphics);
     }
     private MapGraphics()
     {
         
-    }
-    private void Update(Data d)
-    {
-        GraphicLayerHolder.Update(d, UpdateQueue);
     }
 
     public override void _UnhandledInput(InputEvent @event)

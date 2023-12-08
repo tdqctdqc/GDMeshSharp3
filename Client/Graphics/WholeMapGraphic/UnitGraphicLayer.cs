@@ -7,10 +7,16 @@ using Godot;
 public class UnitGraphicLayer : GraphicLayer<UnitGroup, UnitGroupGraphic>
 {
     public UnitGraphicLayer(int z, Client client, GraphicsSegmenter segmenter, Data d) 
-        : base(z, "Units", segmenter,
-            (unit, graphic, seg, queue) => graphic.Update(unit, d, seg, queue))
+        : base(z, "Units", segmenter)
     {
         this.RegisterForEntityLifetime(client, d);
+        client.Data.Notices.Ticked.Blank.Subscribe(() =>
+        {
+            foreach (var g in Graphics)
+            {
+                g.Value.Update(g.Key, d, segmenter, client.QueuedUpdates);
+            }
+        });
     }
 
     protected override UnitGroupGraphic GetGraphic(UnitGroup key, Data d)

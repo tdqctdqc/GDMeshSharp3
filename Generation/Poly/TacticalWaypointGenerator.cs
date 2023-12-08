@@ -214,10 +214,10 @@ public class TacticalWaypointGenerator : Generator
                 for (int j = minYIndex; j <= maxYIndex; j++)
                 {
                     var pos = new Vector2(i, j) * _innerWaypointDist;
-                    pos = key.Data.Planet.ClampPosition(pos);
-                    var offset = key.Data.Planet.GetOffsetTo(poly.Center, pos);
+                    pos = pos.ClampPosition(key.Data);
+                    var offset = poly.Center.GetOffsetTo(pos, key.Data);
                     if (suppressingWps.Any(s => 
-                            key.Data.Planet.GetOffsetTo(s.Pos, pos).Length() 
+                            s.Pos.GetOffsetTo(pos, key.Data).Length() 
                                 < _edgeWaypointDist * .75f))
                     {
                         continue;
@@ -260,7 +260,7 @@ public class TacticalWaypointGenerator : Generator
                 {
                     var midPoint = edge.GetSegsRel(poly, key.Data)
                         .Segments.GetPointAlong(.5f) + poly.Center;
-                    midPoint = key.Data.Planet.ClampPosition(midPoint);
+                    midPoint = midPoint.ClampPosition(key.Data);
                     var midWp = new InlandWaypoint(key, _id.TakeId(), midPoint,
                         poly, nPoly);
                     join(midWp, wps);
@@ -278,12 +278,12 @@ public class TacticalWaypointGenerator : Generator
                 void join(Waypoint midWp, IEnumerable<Vector2> candWps)
                 {
                     var close = candWps.Select(v => _landWps[v].Item2)
-                        .Where(wp => key.Data.Planet.GetOffsetTo(midWp.Pos, wp.Pos).Length() < _innerWaypointDist * 2f);
+                        .Where(wp => midWp.Pos.GetOffsetTo(wp.Pos, key.Data).Length() < _innerWaypointDist * 2f);
                     if (close.Count() == 0)
                     {
                         var closest = candWps
                             .Select(v => _landWps[v].Item2)
-                            .MinBy(wp => key.Data.Planet.GetOffsetTo(midWp.Pos, wp.Pos).Length());
+                            .MinBy(wp => midWp.Pos.GetOffsetTo(wp.Pos, key.Data).Length());
                         midWp.Neighbors.Add(closest.Id);
                         closest.Neighbors.Add(midWp.Id);
                     }
@@ -317,9 +317,12 @@ public class TacticalWaypointGenerator : Generator
                 else if (edge.IsRiver())
                 {
                     doEdgeLinks(edge);
+                    doInnerToEdgeLinks(edge);
                 }
             }
         });
+        
+        
 
         Parallel.ForEach(_landWps, doLandWp);
         foreach (var ids in links)
@@ -352,6 +355,7 @@ public class TacticalWaypointGenerator : Generator
                 link(_nexusWps[loN], seaWp);
             }
             doEdgeLinks(edge);
+            doInnerToEdgeLinks(edge);
         }
             
         void doSeaLink(MapPolygon p1, MapPolygon p2)
@@ -360,6 +364,35 @@ public class TacticalWaypointGenerator : Generator
         }
 
         void doEdgeLinks(MapPolygonEdge edge)
+        {
+            var wps = _edgeWps[edge];
+            var n1 = _nexusWps[edge.HiNexus.Entity(key.Data)];
+            var n2 = _nexusWps[edge.LoNexus.Entity(key.Data)];
+
+            if (wps.Count == 0)
+            {
+                link(n1, n2);
+                return;
+            }
+            if (wps[0].Pos.GetOffsetTo(n1.Pos, key.Data)
+                < wps[0].Pos.GetOffsetTo(n2.Pos, key.Data))
+            {
+                link(wps[0], n1);
+                link(wps[wps.Count - 1], n2);
+            }
+            else
+            {
+                link(wps[0], n2);
+                link(wps[wps.Count - 1], n1);
+            }
+            
+            for (var i = 0; i < wps.Count - 1; i++)
+            {
+                link(wps[i], wps[i + 1]);
+            }
+        }
+
+        void doInnerToEdgeLinks(MapPolygonEdge edge)
         {
             var dist = _innerWaypointDist * 2f;
             var n1 = _nexusWps[edge.HiNexus.Entity(key.Data)];
@@ -382,10 +415,10 @@ public class TacticalWaypointGenerator : Generator
                     for (int j = minY; j <= maxY; j++)
                     {
                         var pos = new Vector2(i, j) * _innerWaypointDist;
-                        pos = key.Data.Planet.ClampPosition(pos);
+                        pos = pos.ClampPosition(key.Data);
                         if (_landWps.TryGetValue(pos, out var lwp)
                             && edge.EdgeToPoly(lwp.Item1)
-                            && key.Data.Planet.GetOffsetTo(wp.Pos, lwp.Item2.Pos).Length() < dist)
+                            && wp.Pos.GetOffsetTo(lwp.Item2.Pos, key.Data).Length() < dist)
                         {
                             link(wp, lwp.Item2);
                         }
@@ -414,7 +447,7 @@ public class TacticalWaypointGenerator : Generator
             void doLandLink(int xOffset, int yOffset)
             {
                 var nPos = pos + new Vector2(xOffset, yOffset) * _innerWaypointDist;
-                nPos = key.Data.Planet.ClampPosition(nPos);
+                nPos = nPos.ClampPosition(key.Data);
                 
                 if (_landWps.ContainsKey(nPos))
                 {
@@ -439,7 +472,7 @@ public class TacticalWaypointGenerator : Generator
         void handle(Waypoint waypoint)
         {
             if (waypoint is ILandWaypoint n == false) return;
-            var pos = key.Data.Planet.ClampPosition(waypoint.Pos);
+            var pos = waypoint.Pos.ClampPosition(key.Data);
             var rTotal = 0f;
             var assoc = waypoint
                 .AssocPolys(key.Data)

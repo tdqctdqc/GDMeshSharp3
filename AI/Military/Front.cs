@@ -27,7 +27,7 @@ public class Front
     public Vector2 RelTo(Data d)
     {
         var p = d.Military.TacticalWaypoints.Waypoints[HeldWaypointIds.First()].Pos;
-        return d.Planet.ClampPosition(p);
+        return p.ClampPosition(d);
     }
 
     public IEnumerable<Waypoint> GetHeldWaypoints(Data data)

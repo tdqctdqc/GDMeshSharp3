@@ -29,14 +29,14 @@ public static class PathFinder
                     .Select(nId => nav.Get(nId))
                     .Where(n => n is SeaWaypoint == false),
                 (w,p) => EdgeRoughnessCost(w, p, data), 
-                (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
+                (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, data).Length());
             return path;
         }
         return PathFinder<Waypoint>.FindPath(w1, w2, 
             p => p.Neighbors
                 .Select(nId => nav.Get(nId)),
             (w,p) => EdgeRoughnessCost(w, p, data), 
-            (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
+            (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, data).Length());
     }
 
     public static List<Waypoint> FindWaypointPath(Waypoint start, Waypoint dest, Data data)
@@ -44,8 +44,8 @@ public static class PathFinder
         return PathFinder<Waypoint>.FindPath(start, dest, 
             p => p.Neighbors
                 .Select(nId => data.Planet.NavWaypoints.Get(nId)),
-            (w,p) => data.Planet.GetOffsetTo(w.Pos, p.Pos).Length(), 
-            (p1, p2) => data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length());
+            (w,p) => w.Pos.GetOffsetTo(p.Pos, data).Length(), 
+            (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, data).Length());
     }
     public static float BuildRoadEdgeCost(MapPolygon p1, MapPolygon p2, Data data, bool international = true)
     {
@@ -70,7 +70,7 @@ public static class PathFinder
         if (p1 is SeaWaypoint) return Mathf.Inf;
         if (p2 is SeaWaypoint) return Mathf.Inf;
         
-        var cost = data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length();
+        var cost = p1.Pos.GetOffsetTo(p2.Pos, data).Length();
         if (p1 is ILandWaypoint n1)
         {
             cost *= 1f + n1.Roughness;
@@ -84,7 +84,7 @@ public static class PathFinder
     }
     public static float EdgeRoughnessCost(Waypoint p1, Waypoint p2, Data data)
     {
-        var cost = data.Planet.GetOffsetTo(p1.Pos, p2.Pos).Length();
+        var cost = p1.Pos.GetOffsetTo(p2.Pos, data).Length();
         var roughCost = 0f;
         if (p1 is ILandWaypoint n1)
         {

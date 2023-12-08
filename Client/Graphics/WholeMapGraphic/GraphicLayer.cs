@@ -13,15 +13,12 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
     public int Z { get; }
     public List<ISettingsOption> Settings { get; }
     private Dictionary<ISettingsOption, Action<TGraphic>> _settingsUpdaters;
-    private Action<TKey, TGraphic, GraphicsSegmenter, ConcurrentQueue<Action>> _updateGraphic;
     private bool _visible = true;
     protected GraphicsSegmenter _segmenter;
 
-    protected GraphicLayer(int z, string name, GraphicsSegmenter segmenter,
-        Action<TKey, TGraphic, GraphicsSegmenter, ConcurrentQueue<Action>> updateGraphic)
+    protected GraphicLayer(int z, string name, GraphicsSegmenter segmenter)
     {
         Z = z;
-        _updateGraphic = updateGraphic;
         _segmenter = segmenter;
         Graphics = new Dictionary<TKey, TGraphic>();
         Name = name;
@@ -85,23 +82,7 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
         };
         return button;
     }
-    public void Update(Data d, ConcurrentQueue<Action> queue)
-    {
-        foreach (var kvp in Graphics)
-        {
-            var key = kvp.Key;
-            var graphic = kvp.Value;
-            _updateGraphic(key, graphic, _segmenter, queue);
-            queue.Enqueue(() =>
-            {
-                if (Graphics.ContainsKey(key) == false) return;
-                foreach (var kvp2 in _settingsUpdaters)
-                {
-                    kvp2.Value.Invoke(graphic);
-                }
-            });
-        }
-    }
+    
     protected abstract TGraphic GetGraphic(TKey key, Data d);
     public void EnforceSettings()
     {

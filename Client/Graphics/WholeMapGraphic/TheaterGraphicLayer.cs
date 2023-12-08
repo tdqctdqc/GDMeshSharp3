@@ -7,8 +7,7 @@ using MessagePack;
 public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphic>
 {
     [SerializationConstructor] private TheaterGraphicLayer(int z, Data data, GraphicsSegmenter segmenter) 
-        : base(z, "Theater", segmenter,
-            (ta, graphic, seg, q) => { })
+        : base(z, "Theater", segmenter)
     {
     }
 
