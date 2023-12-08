@@ -27,7 +27,7 @@ public class TheaterAssignment : ForceAssignment
 
     public IEnumerable<Waypoint> GetTacWaypoints(Data d)
     {
-        return TacWaypointIds.Select(id => d.Military.TacticalWaypoints.Waypoints[id]);
+        return TacWaypointIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d));
     }
     public static void CheckSplitRemove(Regime r, List<TheaterAssignment> theaters, 
         Action<ForceAssignment> add, Action<ForceAssignment> remove, LogicWriteKey key)
@@ -38,7 +38,7 @@ public class TheaterAssignment : ForceAssignment
         for (var i = 0; i < theaters.Count; i++)
         {
             var ta = theaters[i];
-            ta.TacWaypointIds.RemoveWhere(i => controlledWps.Contains(key.Data.Military.TacticalWaypoints.Waypoints[i]) == false);
+            ta.TacWaypointIds.RemoveWhere(i => controlledWps.Contains(MilitaryDomain.GetTacWaypoint(i, key.Data)) == false);
             
             if (ta.TacWaypointIds.Count == 0)
             {
@@ -87,7 +87,7 @@ public class TheaterAssignment : ForceAssignment
             {
                 var flood = FloodFill<int>.GetFloodFill(
                     first, responsibilityIds.Contains,
-                    t => key.Data.Military.TacticalWaypoints.Waypoints[t].Neighbors);
+                    t => MilitaryDomain.GetTacWaypoint(t, key.Data).Neighbors);
                 covered.AddRange(flood);
                 toMerge.Add(flood, new List<TheaterAssignment>{ta});
                 ta.TacWaypointIds.AddRange(flood);
@@ -110,7 +110,7 @@ public class TheaterAssignment : ForceAssignment
             }
         }
 
-        var uncovered = responsibility.Except(covered.Select(c => key.Data.Military.TacticalWaypoints.Waypoints[c]));
+        var uncovered = responsibility.Except(covered.Select(c => MilitaryDomain.GetTacWaypoint(c, key.Data)));
         var uncoveredUnions = UnionFind.Find(uncovered, (w, v) => true,
             w => w.TacNeighbors(key.Data));
         foreach (var union in uncoveredUnions)
@@ -130,7 +130,7 @@ public class TheaterAssignment : ForceAssignment
         {
             ta.Fronts.Clear();
             var threatened = ta.TacWaypointIds
-                .Select(i => key.Data.Military.TacticalWaypoints.Waypoints[i])
+                .Select(i => MilitaryDomain.GetTacWaypoint(i, key.Data))
                 .Where(wp => wp.IsDirectlyThreatened(alliance, key.Data)
                              || wp.IsIndirectlyThreatened(alliance, key.Data));
 
@@ -159,7 +159,7 @@ public class TheaterAssignment : ForceAssignment
         var r = ta.Regime.Entity(key.Data);
         var unions = UnionFind.Find(ta.TacWaypointIds,
             (i, j) => true,
-            i => key.Data.Military.TacticalWaypoints.Waypoints[i].Neighbors);
+            i => MilitaryDomain.GetTacWaypoint(i, key.Data).Neighbors);
 
         var newTheaters =
             unions.Select(
@@ -178,7 +178,7 @@ public class TheaterAssignment : ForceAssignment
                     .MinBy(t => 
                         group.GetPosition(key.Data).GetOffsetTo(
                         key.Data.Planet.GetAveragePosition(t.TacWaypointIds.Select(i =>
-                            key.Data.Military.TacticalWaypoints.Waypoints[i].Pos)),
+                            MilitaryDomain.GetTacWaypoint(i, key.Data).Pos)),
                         key.Data)
                     );
                 closest.GroupIds.Add(group.Id);

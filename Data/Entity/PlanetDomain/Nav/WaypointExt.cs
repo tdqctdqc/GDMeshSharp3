@@ -1,4 +1,3 @@
-
 using System.Collections.Generic;
 using System.Linq;
 
@@ -21,7 +20,7 @@ public static class WaypointExt
     }
     public static IEnumerable<Waypoint> TacNeighbors(this Waypoint wp, Data d)
     {
-        return wp.Neighbors.Select(i => d.Military.TacticalWaypoints.Waypoints[i]);
+        return wp.Neighbors.Select(i => MilitaryDomain.GetTacWaypoint(i, d));
     }
 
     public static bool IsControlled(this Waypoint wp,

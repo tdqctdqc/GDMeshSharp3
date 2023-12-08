@@ -44,14 +44,14 @@ public partial class FrontGraphic : Node2D
         var fillColor = new Color(regime.PrimaryColor, .75f);
         if (front.HeldWaypointIds.Count() == 1)
         {
-            var wp = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.First()];
+            var wp = MilitaryDomain.GetTacWaypoint(front.HeldWaypointIds.First(), data);
             mb.AddCircle(relTo.GetOffsetTo(wp.Pos, data), 
                 25f, 12, fillColor);
         }
         else if (front.HeldWaypointIds.Count() == 2)
         {
-            var wp1 = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.ElementAt(0)];
-            var wp2 = data.Military.TacticalWaypoints.Waypoints[front.HeldWaypointIds.ElementAt(1)];
+            var wp1 = MilitaryDomain.GetTacWaypoint(front.HeldWaypointIds.ElementAt(0), data);
+            var wp2 = MilitaryDomain.GetTacWaypoint(front.HeldWaypointIds.ElementAt(1), data);
 
             mb.AddLine(relTo.GetOffsetTo(wp1.Pos, data),
                 relTo.GetOffsetTo(wp2.Pos, data),

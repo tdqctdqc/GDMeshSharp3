@@ -26,7 +26,8 @@ public static class MapPolygonExt
     public static IEnumerable<Waypoint> GetAssocTacWaypoints(this MapPolygon poly, Data data)
     {
         return data.Military.TacticalWaypoints.PolyAssocWaypoints[poly.Id]
-            .Select(i => data.Military.TacticalWaypoints.Waypoints[i]);
+            .Select(i => 
+                MilitaryDomain.GetTacWaypoint(i, data));
     }
     public static bool PointInPolyAbs(this MapPolygon poly, Vector2 posAbs, Data data)
     {

@@ -110,7 +110,7 @@ public class FrontSegmentAssignment : ForceAssignment
 
     public IEnumerable<Waypoint> GetHeldWaypoints(Data d)
     {
-        return HeldWaypointIds.Select(id => d.Military.TacticalWaypoints.Waypoints[id]);
+        return HeldWaypointIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d));
     }
 
     public static void CalcPositions(FrontAssignment fa, Data d)

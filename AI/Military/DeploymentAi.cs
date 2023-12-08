@@ -105,8 +105,8 @@ public class DeploymentAi
         var chains = LineSegmentExt.GetChains(
             frontEdges.Select(v => 
                     new LineSegment(
-                        data.Military.TacticalWaypoints.Waypoints[v.X].Pos,
-                        data.Military.TacticalWaypoints.Waypoints[v.Y].Pos
+                        MilitaryDomain.GetTacWaypoint(v.X, data).Pos,
+                        MilitaryDomain.GetTacWaypoint(v.Y, data).Pos
                     ))
                 .ToList());
 
@@ -114,7 +114,7 @@ public class DeploymentAi
             .Select(c => c.GetPoints());
 
         var wpLists = pointLists.Select(ps => ps.Select(p => data.Military.TacticalWaypoints.ByPos[p])
-            .Select(i => data.Military.TacticalWaypoints.Waypoints[i])
+            .Select(i => MilitaryDomain.GetTacWaypoint(i, data))
             .ToList()).ToList();
         return wpLists;
 

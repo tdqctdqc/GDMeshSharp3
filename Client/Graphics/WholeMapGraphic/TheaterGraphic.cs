@@ -10,7 +10,7 @@ public partial class TheaterGraphic : Node2D
     {
         Draw(theater, d);
         var relToId = theater.TacWaypointIds.First();
-        var relTo = d.Military.TacticalWaypoints.Waypoints[relToId].Pos;
+        var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         segmenter.AddElement(this, relTo);
     }
 
@@ -23,7 +23,7 @@ public partial class TheaterGraphic : Node2D
         var inner = ColorsExt.GetRandomColor();
         
         var relToId = theater.TacWaypointIds.First();
-        var relTo = d.Military.TacticalWaypoints.Waypoints[relToId].Pos;
+        var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         var mb = new MeshBuilder();
         var color = ColorsExt.GetRandomColor();
         DrawTheaterWps(theater, mb, color, d);
@@ -35,7 +35,7 @@ public partial class TheaterGraphic : Node2D
         Data d, MeshBuilder mb, Color theaterColor)
     {
         var relToId = theater.TacWaypointIds.First();
-        var relTo = d.Military.TacticalWaypoints.Waypoints[relToId].Pos;
+        var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
         foreach (var fa in theater.Fronts)
@@ -76,13 +76,13 @@ public partial class TheaterGraphic : Node2D
         MeshBuilder mb, Color theaterColor, Data d)
     {
         var relToId = theater.TacWaypointIds.First();
-        var relTo = d.Military.TacticalWaypoints.Waypoints[relToId].Pos;
+        var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
         
         
         foreach (var tId in theater.TacWaypointIds)
         {
-            var wp = d.Military.TacticalWaypoints.Waypoints[tId];
+            var wp = MilitaryDomain.GetTacWaypoint(tId, d);
             var relPos = relTo.GetOffsetTo(wp.Pos, d);
             mb.AddSquare(relPos, 10f, regimeColor);
             mb.AddSquare(relPos, 6f, theaterColor);
@@ -92,12 +92,12 @@ public partial class TheaterGraphic : Node2D
     private void DrawLinks(TheaterAssignment theater, MeshBuilder mb, Data d)
     {
         var relToId = theater.TacWaypointIds.First();
-        var relTo = d.Military.TacticalWaypoints.Waypoints[relToId].Pos;
+        var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
 
         foreach (var tId in theater.TacWaypointIds)
         {
-            var wp = d.Military.TacticalWaypoints.Waypoints[tId];
+            var wp = MilitaryDomain.GetTacWaypoint(tId, d);
             var relPos = relTo.GetOffsetTo(wp.Pos, d);
             
             foreach (var nWp in wp.TacNeighbors(d))

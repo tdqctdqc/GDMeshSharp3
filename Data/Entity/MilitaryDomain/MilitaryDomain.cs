@@ -34,4 +34,9 @@ public class MilitaryDomain
             WaypointGrid.Add(wp);
         }
     }
+
+    public static Waypoint GetTacWaypoint(int id, Data d)
+    {
+        return MilitaryDomain.GetTacWaypoint(id, d);
+    }
 }
