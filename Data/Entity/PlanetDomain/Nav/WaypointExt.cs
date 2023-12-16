@@ -29,6 +29,13 @@ public static class WaypointExt
         return data.Context
             .WaypointForceBalances[wp].IsAllianceControlling(alliance);
     }
+
+    public static bool IsThreatened(this Waypoint wp,
+        Alliance alliance, Data data)
+    {
+        return wp.IsDirectlyThreatened(alliance, data)
+               || wp.IsIndirectlyThreatened(alliance, data);
+    }
     public static bool IsDirectlyThreatened(this Waypoint wp,
         Alliance alliance, Data data)
     {
@@ -43,6 +50,13 @@ public static class WaypointExt
         Alliance alliance, Data data)
     {
         return wp.TacNeighbors(data)
-            .Any(n => n.IsDirectlyThreatened(alliance, data));
+            .Any(n =>
+                n.IsDirectlyThreatened(alliance, data) && n.IsControlled(alliance, data) == false
+            );
+    }
+
+    public static bool Neighbors(this Waypoint w, Waypoint v)
+    {
+        return w.Neighbors.Contains(v.Id);
     }
 }

@@ -20,10 +20,10 @@ public partial class AllianceChunkModule : MapChunkGraphicModule
             .SubscribeForNode(n => HandleRegimeAllianceChange(n.Item2, n.Item1, data), this);
     }
     
-    public static ChunkGraphicLayer<AllianceChunkModule> GetLayer(int z, Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<AllianceChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
     {
         var l = new ChunkGraphicLayer<AllianceChunkModule>(
-            z,
+            LayerOrder.PolyFill,
             "Alliances",
             segmenter, 
             c => new AllianceChunkModule(c, d), 

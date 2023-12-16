@@ -28,10 +28,10 @@ public partial class DiplomacyChunkModule : MapChunkGraphicModule
         //     .SubscribeForNode(n => HandleRegimeAllianceChange(n.Item2, n.Item1, data), this);
     }
     
-    public static ChunkGraphicLayer<DiplomacyChunkModule> GetLayer(int z, Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<DiplomacyChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
     {
         var l = new ChunkGraphicLayer<DiplomacyChunkModule>(
-            z,
+            LayerOrder.PolyFill,
             "Diplomacy",
             segmenter, 
             c => new DiplomacyChunkModule(c, d), 

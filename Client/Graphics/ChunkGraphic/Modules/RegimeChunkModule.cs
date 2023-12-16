@@ -15,10 +15,10 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
         AddNode(_borders);
     }
 
-    public static ChunkGraphicLayer<RegimeChunkModule> GetLayer(int z, Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<RegimeChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
     {
         var l = new ChunkGraphicLayer<RegimeChunkModule>(
-            z,
+            LayerOrder.PolyFill,
             "Regimes",
             segmenter, 
             c => new RegimeChunkModule(c, d), 

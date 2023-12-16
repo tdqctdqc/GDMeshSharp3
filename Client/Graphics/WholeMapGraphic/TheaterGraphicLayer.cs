@@ -6,8 +6,8 @@ using MessagePack;
 
 public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphic>
 {
-    [SerializationConstructor] private TheaterGraphicLayer(int z, Data data, GraphicsSegmenter segmenter) 
-        : base(z, "Theater", segmenter)
+    [SerializationConstructor] private TheaterGraphicLayer(Data data, GraphicsSegmenter segmenter) 
+        : base(LayerOrder.Theaters, "Theater", segmenter)
     {
     }
 
@@ -30,11 +30,11 @@ public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphi
         return new TheaterGraphic(key, _segmenter, d);
     }
 
-    public static TheaterGraphicLayer GetLayer(int z, 
+    public static TheaterGraphicLayer GetLayer(
         GraphicsSegmenter seg,
         Client client)
     {
-        var l = new TheaterGraphicLayer(z, client.Data, seg);
+        var l = new TheaterGraphicLayer(client.Data, seg);
         
         
         client.Data.Notices.FinishedAiCalc.Subscribe(() =>

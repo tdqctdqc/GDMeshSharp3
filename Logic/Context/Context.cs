@@ -59,8 +59,13 @@ public class Context
                 throw new Exception("couldnt find waypoint near " + u.Position);
             }
             UnitWaypoints[u] = closeWp;
-            var forceBalance = WaypointForceBalances[closeWp];
-            forceBalance.Add(u, data);
+            var occupierAlliance = closeWp.GetOccupyingRegime(data).GetAlliance(data);
+            var unitAlliance = u.Regime.Entity(data).GetAlliance(data);
+            if (occupierAlliance == unitAlliance || unitAlliance.AtWar.Contains(occupierAlliance))
+            {
+                var forceBalance = WaypointForceBalances[closeWp];
+                forceBalance.Add(u, data);
+            }
         }
     }
 
@@ -72,7 +77,9 @@ public class Context
         {
             var forceBalance = wp.GetForceBalance(data);
             if (wp is IRiverWaypoint r == false) continue;
-            var nRegimes = wp.TacNeighbors(data)
+            var nRegimes = wp
+                .TacNeighbors(data)
+                .Where(n => n is IRiverWaypoint == false)
                 .SelectMany(n => n.GetForceBalance(data).GetControllingRegimes())
                 .Distinct();
             foreach (var nRegime in nRegimes)

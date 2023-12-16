@@ -6,8 +6,8 @@ using Godot;
 
 public class UnitGraphicLayer : GraphicLayer<UnitGroup, UnitGroupGraphic>
 {
-    public UnitGraphicLayer(int z, Client client, GraphicsSegmenter segmenter, Data d) 
-        : base(z, "Units", segmenter)
+    public UnitGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) 
+        : base(LayerOrder.Units, "Units", segmenter)
     {
         this.RegisterForEntityLifetime(client, d);
         client.Data.Notices.Ticked.Blank.Subscribe(() =>

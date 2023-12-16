@@ -15,11 +15,11 @@ public partial class ResourceChunkModule : MapChunkGraphicModule
         AddNode(_icons);
     }
     
-    public static ChunkGraphicLayer<ResourceChunkModule> GetLayer(int z,
+    public static ChunkGraphicLayer<ResourceChunkModule> GetLayer(
         Data d, GraphicsSegmenter segmenter)
     {
         var l = new ChunkGraphicLayer<ResourceChunkModule>(
-            z,
+            LayerOrder.Resources,
             "Resources",
             segmenter, 
             c => new ResourceChunkModule(c, d), 

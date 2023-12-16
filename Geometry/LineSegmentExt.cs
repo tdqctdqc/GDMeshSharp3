@@ -6,7 +6,16 @@ using Godot;
 
 public static class LineSegmentExt
 {
-
+    public static List<LineSegment> ReverseSegments(this List<LineSegment> segs)
+    {
+        var res = new List<LineSegment>();
+        for (var i = segs.Count - 1; i >= 0; i--)
+        {
+            var seg = segs[i];
+            res.Add(new LineSegment(seg.To, seg.From));
+        }
+        return res;
+    }
     public static List<LineSegment> FindTri(this List<LineSegment> segs)
     {
         for (var i = 0; i < segs.Count; i++)

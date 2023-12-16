@@ -16,9 +16,9 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
     private bool _visible = true;
     protected GraphicsSegmenter _segmenter;
 
-    protected GraphicLayer(int z, string name, GraphicsSegmenter segmenter)
+    protected GraphicLayer(LayerOrder z, string name, GraphicsSegmenter segmenter)
     {
-        Z = z;
+        Z = (int)z;
         _segmenter = segmenter;
         Graphics = new Dictionary<TKey, TGraphic>();
         Name = name;

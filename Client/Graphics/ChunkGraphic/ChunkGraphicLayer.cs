@@ -15,10 +15,10 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     private Func<MapChunk, TGraphic> _getGraphic;
     private bool _visible = true;
     private GraphicsSegmenter _segmenter;
-    public ChunkGraphicLayer(int z, string name, GraphicsSegmenter segmenter,
+    public ChunkGraphicLayer(LayerOrder z, string name, GraphicsSegmenter segmenter,
         Func<MapChunk, TGraphic> getGraphic, Data data)
     {
-        Z = z;
+        Z = (int)z;
         _getGraphic = getGraphic;
         Name = name;
         Settings = new List<ISettingsOption>();

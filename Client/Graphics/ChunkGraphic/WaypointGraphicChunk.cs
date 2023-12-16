@@ -218,7 +218,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
     }
 
     public static ChunkGraphicLayer<WaypointGraphicChunk> GetLayer(
-        int z, string name, Data d, Client client, 
+        LayerOrder z, string name, Data d, Client client, 
         Func<MapPolygon, IEnumerable<Waypoint>> getWps,
         Func<Waypoint, IEnumerable<Waypoint>> getNeighbors,
         GraphicsSegmenter segmenter)

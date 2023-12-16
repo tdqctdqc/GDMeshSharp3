@@ -40,29 +40,31 @@ public partial class TheaterGraphic : Node2D
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
         foreach (var fa in theater.Fronts)
         {
+            var iter = 0;
+            var frontColor = ColorsExt.GetRandomColor();
+            
             foreach (var seg in fa.Segments)
             {
-                // var segColor = ColorsExt.GetRandomColor();
-                
-                foreach (var wp in seg.GetHeldWaypoints(d))
+                var segColor = ColorsExt.GetRandomColor();
+                foreach (var wp in seg.GetTacWaypoints(d))
                 {
                     mb.AddSquare(relPos(wp.Pos), 20f, regimeColor);
                     mb.AddSquare(relPos(wp.Pos), 15f, theaterColor);
+                    mb.AddSquare(relPos(wp.Pos), 7.5f, segColor);
                 }
-                
-                mb.AddLine(relPos(seg.LeftJoin), relPos(seg.Left), regimeColor, 10f);
-                mb.AddLine(relPos(seg.LeftJoin), relPos(seg.Left), theaterColor, 5f);
-                
-                mb.AddLine(relPos(seg.Left), relPos(seg.Center), regimeColor, 10f);
-                mb.AddLine(relPos(seg.Left), relPos(seg.Center), theaterColor, 5f);
-                
-                mb.AddLine(relPos(seg.Center), relPos(seg.Right), regimeColor, 10f);
-                mb.AddLine(relPos(seg.Center), relPos(seg.Right), theaterColor, 5f);
-
-                mb.AddLine(relPos(seg.Right), relPos(seg.RightJoin), regimeColor, 10f);
-                mb.AddLine(relPos(seg.Right), relPos(seg.RightJoin), theaterColor, 5f);
-                
-                
+            }
+            foreach (var line in fa.GetLines(d))
+            {
+                var rainbow = ColorsExt.GetRainbowColor(iter);
+                iter++;
+                for (var i = 0; i < line.Count - 1; i++)
+                {
+                    mb.AddLine(relPos(line[i]), relPos(line[i + 1]), regimeColor, 5f);
+                    mb.AddLine(relPos(line[i]), relPos(line[i + 1]), frontColor, 2.5f);
+                    mb.AddLine(relPos(line[i]), relPos(line[i + 1]), rainbow, 1f);
+                    // mb.AddSquare(relPos(line[i]), 5f, regimeColor);
+                    // mb.AddSquare(relPos(line[i]), 2.5f, Colors.Pink);
+                }
             }
         }
 

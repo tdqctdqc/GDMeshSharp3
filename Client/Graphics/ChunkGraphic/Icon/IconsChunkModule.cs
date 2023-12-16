@@ -24,9 +24,9 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         AddNode(InfrastructureIcons);
     }
     
-    public static ChunkGraphicLayer<IconsChunkModule> GetLayer(int z, Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<IconsChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
     {
-        var l = new ChunkGraphicLayer<IconsChunkModule>(z, "Icons", segmenter,
+        var l = new ChunkGraphicLayer<IconsChunkModule>(LayerOrder.Icons, "Icons", segmenter,
             c => new IconsChunkModule(c, d),
             d);
         l.RegisterForEntityLifetime(n => n.Position.Poly(d).GetChunk(d), 

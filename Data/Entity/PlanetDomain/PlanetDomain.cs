@@ -53,6 +53,10 @@ public class PlanetDomain
         return pos;
     }
 
+    public Vector2 GetAveragePositionParam(params Vector2[] ps)
+    {
+        return GetAveragePosition(ps);
+    }
     public Vector2 GetAveragePosition(IEnumerable<Vector2> ps)
     {
         if (ps.Count() == 0) throw new Exception();

@@ -9,6 +9,7 @@ public class Assigner
 {
     public static void Assign<TPicker, TPicked>(IEnumerable<TPicker> pickers,
         Func<TPicker, float> getPriority,
+        Func<TPicker, IEnumerable<TPicked>> getExisting,
         Func<TPicked, float> getPrice, 
         HashSet<TPicked> toPick,
         Action<TPicker, TPicked> assign,
@@ -19,7 +20,8 @@ public class Assigner
         var totalPriority = pickers.Sum(getPriority);
         var priorities = pickers.ToDictionary(
             p => p,
-            p => new Vector2(0f, getPriority(p) / totalPriority)
+            p => new Vector2(getExisting(p).Sum(getPrice), 
+                getPriority(p) / totalPriority)
         );
         while (toPick.Count > 0)
         {

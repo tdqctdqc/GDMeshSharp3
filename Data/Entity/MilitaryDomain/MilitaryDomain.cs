@@ -37,6 +37,6 @@ public class MilitaryDomain
 
     public static Waypoint GetTacWaypoint(int id, Data d)
     {
-        return MilitaryDomain.GetTacWaypoint(id, d);
+        return d.Military.TacticalWaypoints.Waypoints[id];
     }
 }

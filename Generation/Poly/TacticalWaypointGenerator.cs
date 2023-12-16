@@ -374,17 +374,12 @@ public class TacticalWaypointGenerator : Generator
                 link(n1, n2);
                 return;
             }
-            if (wps[0].Pos.GetOffsetTo(n1.Pos, key.Data)
-                < wps[0].Pos.GetOffsetTo(n2.Pos, key.Data))
-            {
-                link(wps[0], n1);
-                link(wps[wps.Count - 1], n2);
-            }
-            else
-            {
-                link(wps[0], n2);
-                link(wps[wps.Count - 1], n1);
-            }
+
+            var closeTo1 = wps.MinBy(wp => n1.Pos.GetOffsetTo(wp.Pos, key.Data).Length());
+            link(n1, closeTo1);
+            var closeTo2 = wps.MinBy(wp => n2.Pos.GetOffsetTo(wp.Pos, key.Data).Length());
+            link(n2, closeTo2);
+
             
             for (var i = 0; i < wps.Count - 1; i++)
             {
@@ -434,14 +429,14 @@ public class TacticalWaypointGenerator : Generator
             var poly = kvp.Value.Item1;
             
             doLandLink(1, 0);
-            doLandLink(2, 1);
+            // doLandLink(2, 1);
             doLandLink(1, 1);
-            doLandLink(1, 2);
+            // doLandLink(1, 2);
             
             doLandLink(0, 1);
-            doLandLink(-1, 2);
+            // doLandLink(-1, 2);
             doLandLink(-1, 1);
-            doLandLink(-2, 1);
+            // doLandLink(-2, 1);
             
             
             void doLandLink(int xOffset, int yOffset)

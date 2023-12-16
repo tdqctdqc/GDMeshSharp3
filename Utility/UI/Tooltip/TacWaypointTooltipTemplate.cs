@@ -9,11 +9,40 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
     protected override List<Func<Waypoint, Data, Control>> _fastGetters { get; }
         = new ()
         {
-            GetControllingAlliances,
-            GetResponsibleRegimes,
-            GetOccupier
+            GetOccupier,
+            GetTheaters,
+            // GetControllingAlliances,
+            // GetResponsibleRegimes,
         };
 
+    private static Control GetTheaters(Waypoint wp, Data d)
+    {
+        var regimes = d.HostLogicData.AllianceAis.Dic.Values
+            .SelectMany(v => v.MilitaryAi.AreasOfResponsibility
+                .Where(kvp =>
+                    kvp.Value.Contains(wp)))
+            .Select(kvp => kvp.Key);
+        var res = "";
+        foreach (var regime in regimes)
+        {
+            if (d.HostLogicData.RegimeAis.Dic.ContainsKey(regime) == false) continue;
+            var ai = d.HostLogicData.RegimeAis[regime];
+            var theater = ai.Military.Deployment.ForceAssignments.SelectWhereOfType<TheaterAssignment>()
+                .FirstOrDefault(t => t.TacWaypointIds.Contains(wp.Id));
+            if (theater == null) continue;
+            res += $"\n{regime.Name} Theater: " + theater.Id;
+            var front = theater.Fronts.FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
+            if (front == null) continue;
+            res += "\n  Front: " + front.Id;
+            var seg = front.Segments.FirstOrDefault(s => s.TacWaypointIds.Contains(wp.Id));
+            if (seg == null) continue;
+            res += "\n    Segment: " + seg.Id;
+            res += "\n    Groups: " + seg.Groups(d).Count();
+        }
+
+        if (res == "") return new Control();
+        return NodeExt.CreateLabel(res);
+    }
     private static Control GetOccupier(Waypoint wp, Data d)
     {
         var occupier = wp.GetOccupyingRegime(d);
