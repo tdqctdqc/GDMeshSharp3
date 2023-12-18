@@ -11,23 +11,23 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
     public RoadChunkGraphicNode(MapChunk chunk, Data d) 
         : base(chunk, nameof(RoadChunkGraphicNode))
     {
-        var nav = d.Planet.NavWaypoints;
         var mb = new MeshBuilder();
-        DrawRoads(chunk, d, nav, mb);
+        DrawRoads(chunk, d, mb);
         if (mb.Tris.Count == 0) return;
         AddChild(mb.GetMeshInstance());
     }
 
-    private static void DrawRoads(MapChunk chunk, Data d, NavWaypoints navWaypoints, MeshBuilder mb)
+    private static void DrawRoads(MapChunk chunk, Data d, MeshBuilder mb)
     {
-        var wps = chunk.Polys.SelectMany(p => d.Planet.NavWaypoints.GetPolyAssocWaypoints(p, d))
+        var wps = chunk.Polys.SelectMany(p => d.Military.TacticalWaypoints.PolyAssocWaypoints[p.Id])
             .Distinct();
-        foreach (var wp in wps)
+        foreach (var id in wps)
         {
+            var wp = MilitaryDomain.GetTacWaypoint(id, d);
             foreach (var n in wp.Neighbors)
             {
                 if (n > wp.Id) continue;
-                var nWp = navWaypoints.Get(n);
+                var nWp = MilitaryDomain.GetTacWaypoint(n, d);
                 if (d.Infrastructure.RoadNetwork.Get(wp, nWp, d) is RoadModel r)
                 {
                     r.Draw(mb, chunk.RelTo.GetOffsetTo(wp.Pos, d), 

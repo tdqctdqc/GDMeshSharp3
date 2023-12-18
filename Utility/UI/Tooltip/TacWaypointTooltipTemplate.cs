@@ -22,7 +22,9 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
                 .Where(kvp =>
                     kvp.Value.Contains(wp)))
             .Select(kvp => kvp.Key);
-        var res = "";
+        var res = wp.Id.ToString();
+        var highlighter = Game.I.Client.GetComponent<MapGraphics>().Highlighter;
+
         foreach (var regime in regimes)
         {
             if (d.HostLogicData.RegimeAis.Dic.ContainsKey(regime) == false) continue;
@@ -34,14 +36,18 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
             var front = theater.Fronts.FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
             if (front == null) continue;
             res += "\n  Front: " + front.Id;
-            var seg = front.Segments.FirstOrDefault(s => s.TacWaypointIds.Contains(wp.Id));
+            
+            var seg = front.Segments.FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
             if (seg == null) continue;
+            highlighter.DrawFrontSegment(seg, d);
             res += "\n    Segment: " + seg.Id;
-            res += "\n    Groups: " + seg.Groups(d).Count();
+            res += "\n    Groups: " + seg.GroupIds.Count();
+            var alliance = regime.GetAlliance(d);
+            res += "\n          Ready: " + seg.LineGroups.Count();
+            res += "\n          Unready: " + (seg.GroupIds.Count - seg.LineGroups.Count());
         }
-
-        if (res == "") return new Control();
-        return NodeExt.CreateLabel(res);
+        var l = NodeExt.CreateLabel(res);
+        return l;
     }
     private static Control GetOccupier(Waypoint wp, Data d)
     {

@@ -8,13 +8,13 @@ public class ClientSettings : Settings
     public static ClientSettings Load()
     {
         return new ClientSettings("Client",
-            new EnumSettingsOption<PolyHighlighter.Modes>("Poly Highlight Mode", PolyHighlighter.Modes.Simple));
+            new EnumSettingsOption<MapHighlighter.Modes>("Poly Highlight Mode", MapHighlighter.Modes.Simple));
     }
 
-    public EnumSettingsOption<PolyHighlighter.Modes> PolyHighlightMode { get; private set; }
+    public EnumSettingsOption<MapHighlighter.Modes> PolyHighlightMode { get; private set; }
 
     private ClientSettings(string name,
-        EnumSettingsOption<PolyHighlighter.Modes> polyHighlightMode)
+        EnumSettingsOption<MapHighlighter.Modes> polyHighlightMode)
         : base(name)
     {
         PolyHighlightMode = polyHighlightMode;

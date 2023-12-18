@@ -19,7 +19,6 @@ public class InfrastructureGenerator : Generator
         
         genReport.StartSection();
         var roads = RoadNetwork.Create(key);
-        var nav = key.Data.Planet.NavWaypoints;
         
         var segs = new ConcurrentDictionary<Vector2, RoadModel>();
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
@@ -31,8 +30,9 @@ public class InfrastructureGenerator : Generator
         {
             var edge = kvp.Key;
             var road = kvp.Value;
-            var wp1 = _data.Planet.NavWaypoints.Get((int)edge.X);
-            var wp2 = _data.Planet.NavWaypoints.Get((int)edge.Y);
+            
+            var wp1 = MilitaryDomain.GetTacWaypoint((int)edge.X, _data);
+            var wp2 = MilitaryDomain.GetTacWaypoint((int)edge.Y, _data);
             roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
         }
         genReport.StopSection(nameof(GenerateForLandmass));
@@ -42,7 +42,7 @@ public class InfrastructureGenerator : Generator
     private void AddSeg(RoadModel r, Vector2 edgeKey, IDictionary<Vector2, RoadModel> segs)
     {
         if (segs.ContainsKey(edgeKey) == false
-            || r.Speed > segs[edgeKey].Speed)
+            || r.SpeedMult > segs[edgeKey].SpeedMult)
         {
             segs[edgeKey] = r;
         }
@@ -98,25 +98,25 @@ public class InfrastructureGenerator : Generator
     private List<Vector2> BuildRoadLevel(List<Settlement> settlements)
     {
         var first = settlements.First();
-        var nav = _data.Planet.NavWaypoints;
         var graph = GraphGenerator.GenerateDelaunayGraph(
             settlements,
             s => first.Poly.Entity(_data).GetOffsetTo(s.Poly.Entity(_data), _data),
             (p1, p2) => p1.GetIdEdgeKey(p2));
         var res = new List<Vector2>();
+        var tWps = _data.Military.TacticalWaypoints;
+
         foreach (var e in graph.Edges)
         {
             var s1 = (Settlement)_data[(int)e.X];
             var s2 = (Settlement)_data[(int)e.Y];
-            
-            var buildPath = PathFinder.FindRoadBuildPath(s1.Poly.Entity(_data), 
+            var buildPath = PathFinder.FindRoadBuildPolyPath(s1.Poly.Entity(_data), 
                 s2.Poly.Entity(_data), 
                 _data, true);
 
             if (buildPath.Any(p => p.IsWater())) throw new Exception();
             for (var i = 0; i < buildPath.Count - 1; i++)
             {
-                var waypoints = nav.GetPolyPath(buildPath[i], buildPath[i + 1]).ToList();
+                var waypoints = tWps.GetPolyPath(buildPath[i], buildPath[i + 1]).ToList();
                 for (var k = 0; k < waypoints.Count - 1; k++)
                 {
                     var edgeId = waypoints[k].GetIdEdgeKey(waypoints[k + 1]);
@@ -153,7 +153,7 @@ public class InfrastructureGenerator : Generator
         
         foreach (var poly in coastCityPolys)
         {
-            var wps = poly.GetAssocNavWaypoints(_key.Data)
+            var wps = poly.GetAssocTacWaypoints(_key.Data)
                 .SelectWhereOfType<ICoastWaypoint>();
             var polySeaIds = new HashSet<int>();
             foreach (var coastWaypoint in wps)
@@ -169,7 +169,6 @@ public class InfrastructureGenerator : Generator
     {
         var stoneRoad = _key.Data.Models.RoadList.StoneRoad;
         var dirtRoad = _key.Data.Models.RoadList.DirtRoad;
-        var nav = _key.Data.Planet.NavWaypoints;
         var city = _data.Models.Settlements.City;
         var town = _data.Models.Settlements.Town;
         var village = _data.Models.Settlements.Village;
@@ -181,19 +180,20 @@ public class InfrastructureGenerator : Generator
         if (settlementPolys.Count() < 3) return;
 
         var portWps = lm.Polys
-            .SelectMany(p => _key.Data.Planet.NavWaypoints.GetPolyAssocWaypoints(p, _key.Data))
+            .SelectMany(p => p.GetAssocTacWaypoints(_data))
             .Distinct().Where(wp => wp is CoastWaypoint c && c.Port);
 
         var settlementWps = settlementPolys
-            .Select(p => nav.GetPolyCenterWaypoint(p)).ToHashSet();
+            .Select(p => p.GetCenterWaypoint(_data)).ToHashSet();
         var largeSettlementWps = largeSettlementPolys
-            .Select(p => nav.GetPolyCenterWaypoint(p)).ToHashSet();
+            .Select(p => p.GetCenterWaypoint(_data)).ToHashSet();
         foreach (var portWp in portWps)
         {
             var path = PathFinder<Waypoint>.FindPathMultipleEnds(portWp,
                 wp => settlementWps.Contains(wp),
-                wp => wp.Neighbors.Select(n => nav.Get(n))
-                    .Where(n => n is SeaWaypoint == false),
+                wp => wp.TacNeighbors(_data)
+                    .Where(n => n is SeaWaypoint == false
+                    && (n is IRiverWaypoint r ? r.Bridgeable : true)),
                 (w, v) => PathFinder.LandEdgeCost(w, v, _data));
             if (path == null) continue;
             var settlement = path.Last().AssocPolys(_key.Data).First().GetSettlement(_key.Data);
@@ -203,12 +203,13 @@ public class InfrastructureGenerator : Generator
             {
                 var pathToLargeSettlement = PathFinder<Waypoint>.FindPathMultipleEnds(portWp,
                     wp => largeSettlementWps.Contains(wp),
-                    wp => wp.Neighbors.Select(n => nav.Get(n))
-                        .Where(n => n is SeaWaypoint == false),
+                    wp => wp.TacNeighbors(_data)
+                        .Where(n => n is SeaWaypoint == false
+                        && (n is IRiverWaypoint r ? r.Bridgeable : true)),
                     (w, v) => PathFinder.LandEdgeCost(w, v, _data));
                 if (pathToLargeSettlement != null)
                 {
-                    for (var i = 1; i < pathToLargeSettlement.Count; i++)
+                    for (var i = 0; i < pathToLargeSettlement.Count; i++)
                     {
                         path.Add(pathToLargeSettlement[i]);
                     }

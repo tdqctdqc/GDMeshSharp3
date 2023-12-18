@@ -24,6 +24,10 @@ public class DeploymentAi
             key);
         TheaterAssignment.CheckFronts(regime, ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
             key);
+        foreach (var ta in ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList())
+        {
+            ta.AssignGroups(key);
+        }
         
         foreach (var forceAssignment in ForceAssignments)
         {

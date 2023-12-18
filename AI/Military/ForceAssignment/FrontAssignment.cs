@@ -9,6 +9,10 @@ using MathNet.Numerics.Statistics;
 
 public class FrontAssignment : ForceAssignment
 {
+    
+    public static float CoverLengthWeight = 1f;
+    public static float CoverOpposingWeight = 3f;
+    public static float PowerPointsPerLengthToCover = .1f;
     public HashSet<int> TacWaypointIds { get; private set; }
 
     public List<FrontSegmentAssignment> Segments { get; private set; }
@@ -45,99 +49,37 @@ public class FrontAssignment : ForceAssignment
     public override void CalculateOrders(MinorTurnOrders orders, 
         LogicWriteKey key)
     {
-        var alliance = orders.Regime.Entity(key.Data).GetAlliance(key.Data);
-        var areaRadius = 500f;
-        var relTo = RelTo(key.Data);
-        var frontWps = GetTacWaypoints(key.Data);
-        if (frontWps.Count() < 2) return;
-        CalcSegments(key);
-        AssignGroups(key);
         foreach (var fsa in Segments)
         {
             fsa.CalculateOrders(orders, key);
         }
     }
 
-    private void CalcSegments(LogicWriteKey key)
+
+    public void AssignGroups(LogicWriteKey key)
     {
-        Segments.Clear();
-        var maxSegLength = 100f;
-        var frontSegmentWpCount = 5;
-        var regime = Regime.Entity(key.Data);
-        var alliance = regime.GetAlliance(key.Data);
-        var relTo = RelTo(key.Data);
-        var toPick = new HashSet<Waypoint>(GetTacWaypoints(key.Data));
-        var frontier = new HashSet<Waypoint>();
-        var segmentWps = new HashSet<Waypoint>();
-        
-        while (toPick.Count > 0)
-        {
-            frontier.Clear();
-            segmentWps.Clear();
-            
-            var seed = toPick.First();
-            var curr = seed;
-            while (curr != null && segmentWps.Count < frontSegmentWpCount)
-            {
-                toPick.Remove(curr);
-                segmentWps.Add(curr);
-                frontier.Remove(curr);
-                frontier.AddRange(curr.TacNeighbors(key.Data).Where(toPick.Contains));
-
-                if (frontier.Count > 0)
-                {
-                    curr = frontier
-                        .OrderBy(f => seed.Pos.GetOffsetTo(f.Pos, key.Data).Length())
-                        .First();
-                }
-                else
-                {
-                    curr = null;
-                }
-            }
-
-            var seg = FrontSegmentAssignment.Construct(Regime, segmentWps, key);
-            Segments.Add(seg);
-        }
-        
-        //handle leftovers
-
-        var undersized = Segments
-            .Where(s => s.TacWaypointIds.Count < frontSegmentWpCount)
-            .ToList();
-        
-        
-        foreach (var u in undersized)
-        {
-            if (u.TacWaypointIds.Count > frontSegmentWpCount) continue;
-            var wps = u.GetTacWaypoints(key.Data);
-            var neighbors = getNeighboring();
-
-            if (neighbors.Count() > 0)
-            {
-                var first = neighbors
-                    .MinBy(n => n.TacWaypointIds.Count);
-                first.TacWaypointIds.AddRange(u.TacWaypointIds);
-                u.TacWaypointIds.Clear();
-                Segments.Remove(u);
-            }
-            
-            
-            IEnumerable<FrontSegmentAssignment> getNeighboring()
-            {
-                return Segments.Where(s => 
-                    s != u && s.TacWaypointIds.Count > 0
-                    && isNeighbor(s));
-            }
-
-            bool isNeighbor(FrontSegmentAssignment s)
-            {
-                return wps.Any(wp => s.GetTacWaypoints(key.Data).Any(swp => swp.Neighbors.Contains(wp.Id)));
-            }
-        }
+        ShiftGroups(key);
+        AssignFreeGroups(key);
     }
 
-    private void AssignGroups(LogicWriteKey key)
+    private void ShiftGroups(LogicWriteKey key)
+    {
+        if (Segments.Count < 2) return;
+        var data = key.Data;
+        var totalLength = Segments.Sum(fa => fa.LineWaypointIds.Count);
+        var totalOpposing = Segments.Sum(fa => fa.GetOpposingPowerPoints(data));
+        var avgFulfilled = Segments.Select(s => s.GetSatisfiedRatio(data)).Average();
+        
+        // foreach (var seg in Segments)
+        // {
+        //     while (seg.GetSatisfiedRatio(data) > avgFulfilled * 1.5f)
+        //     {
+        //         GD.Print($"{Regime.Entity(data)} deassigning from {seg.Id}");
+        //         seg.DeassignGroup(key);
+        //     }
+        // }
+    }
+    private void AssignFreeGroups(LogicWriteKey key)
     {
         var alliance = Regime.Entity(key.Data).GetAlliance(key.Data);
         var totalLength = TacWaypointIds.Count;
@@ -154,36 +96,22 @@ public class FrontAssignment : ForceAssignment
         
         Assigner.Assign<FrontSegmentAssignment, UnitGroup>(
             Segments,
-            fa => fa.GetDefenseNeed(key.Data, totalLength, coverLengthWeight, totalOpposing, coverOpposingWeight),
+            fa => fa.GetPowerPointNeed(key.Data),
             fsa => fsa.Groups(key.Data),
             g => g.GetPowerPoints(key.Data),
             freeGroups.ToHashSet(),
             (fa, g) => fa.GroupIds.Add(g.Id),
             (fa, g) => g.GetPowerPoints(key.Data));
-    }
 
+    }
     
-    public float GetDefenseNeed(Data data, 
-        float totalLength, float coverLengthWeight,
-        float totalOpposing, float coverOpposingWeight)
+    
+    public override float GetPowerPointNeed(Data data)
     {
         var opposing = GetOpposingPowerPoints(data);
-        var length = TacWaypointIds.Count;
-    
-        var res = 0f;
-        if (totalOpposing != 0f)
-        {
-            res += coverOpposingWeight * opposing / totalOpposing;
-        }
-    
-        if (totalLength != 0f)
-        {
-            res += coverLengthWeight * length / totalLength;
-        }
-        return res;
+        var length = Segments.Sum(s => s.GetLength(data));
+        return opposing * CoverOpposingWeight + length * CoverLengthWeight * PowerPointsPerLengthToCover;
     }
-
-
     public static void CheckSplitRemove(Regime r, 
         TheaterAssignment theater,
         List<FrontAssignment> fronts, 
@@ -347,6 +275,32 @@ public class FrontAssignment : ForceAssignment
                 {
                     chain.Add(new LineSegment(last.Pos, t2.Pos));
                 }
+
+                if (chain.Count > FrontSegmentAssignment.IdealSegmentLength * 1.5f)
+                {
+                    var numChains = Mathf.FloorToInt((float)chain.Count / FrontSegmentAssignment.IdealSegmentLength);
+                    var numLinksPerChain = Mathf.CeilToInt((float)chain.Count / numChains);
+                    var iter = 0;
+                    var curr = new List<LineSegment>();
+                    for (var i = 0; i < chain.Count; i++)
+                    {
+                        curr.Add(chain[i]);
+                        iter++;
+                        if (iter == numLinksPerChain || i == chain.Count - 1)
+                        {
+                            res.Add(curr.GetPoints());
+                            iter = 0;
+                            curr = new List<LineSegment>();
+                        }
+                    }
+                }
+                else
+                {
+                    res.Add(chain.GetPoints());
+                }
+                
+
+                
                 Waypoint linkEnd(Waypoint end, Waypoint before)
                 {
                     var axis = end.Pos.GetOffsetTo(before.Pos, d);
@@ -362,10 +316,7 @@ public class FrontAssignment : ForceAssignment
 
                     return null;
                 }
-                res.Add(chain.GetPoints());
             }
-            if(res.Count() > 1) GD.Print("chains " + res.Count());
-            
             
             return res.Select(r => r.Select(getWp).ToList()).ToList();
             
@@ -477,16 +428,82 @@ public class FrontAssignment : ForceAssignment
             foreach (var fa in kvp.Value)
             {
                 if (fa == biggest) continue;
-                biggest.MergeInto(fa, key.Data);
+                biggest.MergeInto(fa, key);
                 remove(fa);
             }
         }
 
     }
 
-    public void MergeInto(FrontAssignment merging, Data d)
+    public void MergeInto(FrontAssignment merging, LogicWriteKey key)
     {
         GroupIds.AddRange(merging.GroupIds);
         Segments.AddRange(merging.Segments);
+    }
+
+
+    public void CheckSegments(LogicWriteKey key)
+    {
+        var d = key.Data;
+        var lines = GetLines(d)
+            .ToDictionary(l => l, 
+                l => new List<FrontSegmentAssignment>());
+        var segments = Segments.ToList();
+        foreach (var fsa in segments)
+        {
+            var relatedLines = lines.Keys
+                .Where(l => l.Any(wp => fsa.LineWaypointIds.Contains(wp.Id)));
+            if (relatedLines.Count() == 0)
+            {
+                Segments.Remove(fsa);
+                continue; 
+            }
+
+            var mostRelated = relatedLines
+                .MaxBy(l => l.Where(wp => fsa.LineWaypointIds.Contains(wp.Id)).Count());
+            lines[mostRelated].Add(fsa);
+        }
+        
+        foreach (var kvp in lines)
+        {
+            var line = kvp.Key;
+            var segs = kvp.Value;
+            if (segs.Count() == 0)
+            {
+                var seg = FrontSegmentAssignment
+                    .Construct(Regime, line, key);
+                Segments.Add(seg);
+                continue;
+            }
+
+            var biggest = segs.MaxBy(s => s.GroupIds.Count());
+            
+            biggest.LineWaypointIds.Clear();
+            biggest.LineWaypointIds.AddRange(line.Select(wp => wp.Id));
+            foreach (var fsa in segs)
+            {
+                if (fsa == biggest) continue;
+                biggest.MergeInto(fsa, key);
+                Segments.Remove(fsa);
+            }
+        }
+    }
+
+    public UnitGroup DeassignGroup(LogicWriteKey key)
+    {
+        if (GroupIds.Count == 0) return null;
+        UnitGroup deassign;
+        if (Segments.Count > 0)
+        {
+            deassign = Segments
+                .MaxBy(s => s.GetSatisfiedRatio(key.Data))
+                .DeassignGroup(key);
+        }
+        else
+        {
+            deassign = key.Data.Get<UnitGroup>(GroupIds.First());
+        }
+        GroupIds.Remove(deassign.Id);
+        return deassign;
     }
 }

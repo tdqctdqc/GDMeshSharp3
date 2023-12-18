@@ -26,11 +26,12 @@ public class MouseOverPolyHandler
 
     private void FindWaypoint(Data data, Vector2 mousePosMapSpace)
     {
+        if (data.Military == null) throw new Exception();
+        if (data.Military.WaypointGrid == null) throw new Exception();
         if (data.Military.WaypointGrid.TryGetClosest(mousePosMapSpace, out var wp, wp => true))
         {
             Game.I.Client.GetComponent<TooltipManager>()
                 .PromptTooltip(_waypointTemplate, wp, GetHashCode());
-
             
         }
     }

@@ -11,6 +11,8 @@ public class TacticalWaypoints : Entity
     public Dictionary<int, HashSet<int>> PolyAssocWaypoints { get; private set; }
     public Dictionary<Vector2, int> ByPos { get; private set; }
     public Dictionary<int, int> OccupierRegimes { get; private set; }
+    public Dictionary<Vector2I, List<int>> PolyCenterPaths { get; private set; }
+    public Dictionary<int, int> PolyCenterWpIds { get; private set; }
     public static TacticalWaypoints Create(GenWriteKey key,
         Dictionary<int, Waypoint> wps)
     {
@@ -28,6 +30,9 @@ public class TacticalWaypoints : Entity
             }
         }
 
+        var polyCenterPaths = new Dictionary<Vector2I, List<int>>();
+        
+        
         if (key.Data.GetAll<MapPolygon>().Any(p => polyAssocWaypoints.ContainsKey(p.Id) == false))
         {
             throw new Exception();
@@ -36,7 +41,9 @@ public class TacticalWaypoints : Entity
             wps,
             polyAssocWaypoints,
             byPos,
-            occupierRegimes);
+            occupierRegimes, 
+            polyCenterPaths,
+            new Dictionary<int, int>());
         key.Create(n);
         return n;
     }
@@ -44,12 +51,16 @@ public class TacticalWaypoints : Entity
         Dictionary<int, Waypoint> waypoints,
         Dictionary<int, HashSet<int>> polyAssocWaypoints,
         Dictionary<Vector2, int> byPos,
-        Dictionary<int, int> occupierRegimes) : base(id)
+        Dictionary<int, int> occupierRegimes,
+        Dictionary<Vector2I, List<int>> polyCenterPaths,
+        Dictionary<int, int> polyCenterWpIds) : base(id)
     {
         Waypoints = waypoints;
         PolyAssocWaypoints = polyAssocWaypoints;
         ByPos = byPos;
         OccupierRegimes = occupierRegimes;
+        PolyCenterPaths = polyCenterPaths;
+        PolyCenterWpIds = polyCenterWpIds;
     }
 
     public void SetInitialOccupiers(GenWriteKey key)
@@ -73,5 +84,10 @@ public class TacticalWaypoints : Entity
                 OccupierRegimes[wp.Id] = -1;
             }
         }
+    }
+
+    public IEnumerable<Waypoint> GetPolyPath(MapPolygon p1, MapPolygon p2)
+    {
+        return PolyCenterPaths[new Vector2I(p1.Id, p2.Id)].Select(id => Waypoints[id]);
     }
 }

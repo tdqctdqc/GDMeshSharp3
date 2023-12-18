@@ -8,7 +8,7 @@ using Priority_Queue;
 
 public static class PathFinder
 {
-    public static List<MapPolygon> FindRoadBuildPath(MapPolygon s1, MapPolygon s2, Data data,
+    public static List<MapPolygon> FindRoadBuildPolyPath(MapPolygon s1, MapPolygon s2, Data data,
         bool international)
     {
         return PathFinder<MapPolygon>.FindPath(s1, s2, 
@@ -16,43 +16,70 @@ public static class PathFinder
             (p, q) => BuildRoadEdgeCost(p, q, data, international), 
             (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
-    public static List<Waypoint> FindNavPathBetweenPolygons(MapPolygon s1, MapPolygon s2, Data data)
+    public static List<Waypoint> FindNavPathBetweenPolygons(
+        MapPolygon s1, MapPolygon s2, Data data)
     {
-        var nav = data.Planet.NavWaypoints;
-        var w1 = nav.GetPolyCenterWaypoint(s1);
-        var w2 = nav.GetPolyCenterWaypoint(s2);
+        var w1 = s1.GetCenterWaypoint(data);
+        var w2 = s2.GetCenterWaypoint(data);
 
         if (s1.IsLand && s2.IsLand)
         {
             var path = PathFinder<Waypoint>.FindPath(w1, w2, 
-                p => p.Neighbors
-                    .Select(nId => nav.Get(nId))
-                    .Where(n => n is SeaWaypoint == false),
+                p => p.TacNeighbors(data)
+                    .Where(n => n is SeaWaypoint == false
+                    && (n is IRiverWaypoint r ? r.Bridgeable : true)),
                 (w,p) => EdgeRoughnessCost(w, p, data), 
                 (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, data).Length());
             return path;
         }
         return PathFinder<Waypoint>.FindPath(w1, w2, 
-            p => p.Neighbors
-                .Select(nId => nav.Get(nId)),
+            p => p.TacNeighbors(data),
             (w,p) => EdgeRoughnessCost(w, p, data), 
             (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, data).Length());
     }
 
-    public static List<Waypoint> FindWaypointPath(Waypoint start, Waypoint dest, Data data)
+    public static List<Waypoint> FindLandWaypointPath(Waypoint start, Waypoint dest, 
+        Alliance a, Data data)
     {
         return PathFinder<Waypoint>.FindPath(start, dest, 
-            p => p.Neighbors
-                .Select(nId => data.Planet.NavWaypoints.Get(nId)),
-            (w,p) => w.Pos.GetOffsetTo(p.Pos, data).Length(), 
+            p => p.TacNeighbors(data)
+                .Where(wp => IsLandPassable(wp, a, data)),
+            (w,p) => LandWpMoveCost(w, p, data), 
             (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, data).Length());
+    }
+
+    private static float LandWpMoveCost(Waypoint w, Waypoint v, Data d)
+    {
+        
+        var cost = w.Pos.GetOffsetTo(v.Pos, d).Length();
+        var road = w.GetRoadWith(v, d);
+        if (road != null)
+        {
+            cost /= road.SpeedMult;
+        }
+        else if(w is ILandWaypoint lw && v is ILandWaypoint lv)
+        {
+            var rough = (lw.Roughness + lv.Roughness) / 2f;
+            cost *= (1f + rough);
+        }
+        
+        return cost;
+    }
+
+    public static bool IsLandPassable(Waypoint wp, Alliance a, Data d)
+    {
+        if (wp is IRiverWaypoint r) return r.Bridgeable;
+        if (wp is ILandWaypoint == false) return false;
+        if (wp.GetOccupyingRegime(d).GetAlliance(d) == a) return true;
+        if (wp.IsControlled(a, d)) return true;
+        return false;
     }
     public static float BuildRoadEdgeCost(MapPolygon p1, MapPolygon p2, Data data, bool international = true)
     {
         if (p1.IsWater() || p2.IsWater()) return Mathf.Inf;
         if (international == false && p1.OwnerRegime.RefId != p2.OwnerRegime.RefId) return Mathf.Inf;
 
-        var path = data.Planet.NavWaypoints.GetPolyPath(p1, p2);
+        var path = data.Military.TacticalWaypoints.GetPolyPath(p1, p2);
         var cost = 0f;
         for (int i = 0; i < path.Count() - 1; i++)
         {

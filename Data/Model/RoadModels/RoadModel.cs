@@ -7,15 +7,15 @@ public class RoadModel : IModel
 {
     public string Name { get; private set; }
     public Color Color { get; private set; }
-    public int Speed { get; private set; }
+    public float SpeedMult { get; private set; }
     public int Id { get; private set; }
 
 
-    public RoadModel(string name, int speed, Color color)
+    public RoadModel(string name, float speedMult, Color color)
     {
         Color = color;
         Name = name;
-        Speed = speed;
+        SpeedMult = speedMult;
     }
 
     public virtual void Draw(MeshBuilder mb, Vector2 from, Vector2 to, float width)

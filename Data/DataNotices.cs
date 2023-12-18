@@ -15,6 +15,7 @@ public class DataNotices
     public RefAction SetPolyShapes { get; private set; }
     public RefAction MadeWaypoints { get; private set; }
     public RefAction SetLandAndSea { get; private set; }
+    public RefAction FinishedGen { get; private set; }
     public RefAction ExitedGen { get; private set; }
     public RefAction FinishedAiCalc { get; set; }
     public DataNotices()
@@ -30,6 +31,7 @@ public class DataNotices
         ExitedGen = new RefAction();
         MadeWaypoints = new RefAction();
         FinishedAiCalc = new RefAction();
+        FinishedGen = new RefAction();
     }
 }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using MessagePack;
 
 [MessagePack.Union(0, typeof(FrontAssignment))]
@@ -29,5 +30,15 @@ public abstract class ForceAssignment : IPolymorph
     public float GetPowerPointsAssigned(Data data)
     {
         return Groups(data).Sum(g => g.GetPowerPoints(data));
+    }
+
+    public abstract float GetPowerPointNeed(Data d);
+
+    public float GetSatisfiedRatio(Data d)
+    {
+        var assigned = GetPowerPointsAssigned(d);
+        var need = GetPowerPointNeed(d);
+        if (need == 0f) return Mathf.Inf;
+        return assigned / need;
     }
 }

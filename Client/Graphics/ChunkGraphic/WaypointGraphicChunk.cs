@@ -142,13 +142,15 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
     private static (Color, Color) GetWaypointTypeColor(Waypoint wp, Data data)
     {
         Color color;
-        if (wp is RiverMouthWaypoint)
+        if (wp is RiverMouthWaypoint rm)
         {
             color = Colors.DodgerBlue.Darkened(.4f);
+            if (rm.Bridgeable) color = Colors.ForestGreen;
         }
-        else if (wp is RiverWaypoint)
+        else if (wp is RiverWaypoint r)
         {
             color = Colors.DodgerBlue;
+            if (r.Bridgeable) color = Colors.ForestGreen;
         }
         else if (wp is SeaWaypoint)
         {

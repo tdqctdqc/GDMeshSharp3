@@ -3,6 +3,10 @@ using System.Linq;
 
 public static class WaypointExt
 {
+    public static RoadModel GetRoadWith(this Waypoint w, Waypoint v, Data d)
+    {
+        return d.Infrastructure.RoadNetwork.Roads[w, v]?.Model(d);
+    }
     public static Regime GetOccupyingRegime(this Waypoint wp, Data d)
     {
         if (d.Military.TacticalWaypoints.OccupierRegimes.ContainsKey(wp.Id) == false) return null;
@@ -13,10 +17,6 @@ public static class WaypointExt
     public static ForceBalance GetForceBalance(this Waypoint wp, Data d)
     {
         return d.Context.WaypointForceBalances[wp];
-    }
-    public static IEnumerable<Waypoint> GetNeighboringNavWaypoints(this Waypoint wp, Data d)
-    {
-        return wp.Neighbors.Select(i => d.Planet.NavWaypoints.Waypoints[i]);
     }
     public static IEnumerable<Waypoint> TacNeighbors(this Waypoint wp, Data d)
     {

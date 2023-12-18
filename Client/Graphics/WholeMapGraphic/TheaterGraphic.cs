@@ -46,24 +46,15 @@ public partial class TheaterGraphic : Node2D
             foreach (var seg in fa.Segments)
             {
                 var segColor = ColorsExt.GetRandomColor();
-                foreach (var wp in seg.GetTacWaypoints(d))
+                for (var i = 0; i < seg.LineWaypointIds.Count - 1; i++)
                 {
-                    mb.AddSquare(relPos(wp.Pos), 20f, regimeColor);
-                    mb.AddSquare(relPos(wp.Pos), 15f, theaterColor);
-                    mb.AddSquare(relPos(wp.Pos), 7.5f, segColor);
-                }
-            }
-            foreach (var line in fa.GetLines(d))
-            {
-                var rainbow = ColorsExt.GetRainbowColor(iter);
-                iter++;
-                for (var i = 0; i < line.Count - 1; i++)
-                {
-                    mb.AddLine(relPos(line[i]), relPos(line[i + 1]), regimeColor, 5f);
-                    mb.AddLine(relPos(line[i]), relPos(line[i + 1]), frontColor, 2.5f);
-                    mb.AddLine(relPos(line[i]), relPos(line[i + 1]), rainbow, 1f);
-                    // mb.AddSquare(relPos(line[i]), 5f, regimeColor);
-                    // mb.AddSquare(relPos(line[i]), 2.5f, Colors.Pink);
+                    var fromWp = MilitaryDomain.GetTacWaypoint(seg.LineWaypointIds[i], d);
+                    var toWp = MilitaryDomain.GetTacWaypoint(seg.LineWaypointIds[i + 1], d);
+                    var from = relPos(fromWp.Pos);
+                    var to = relPos(toWp.Pos);
+                    mb.AddLine(from, to, regimeColor, 5f);
+                    mb.AddLine(from, to, frontColor, 2.5f);
+                    mb.AddLine(from, to, segColor, 1f);
                 }
             }
         }
@@ -80,14 +71,14 @@ public partial class TheaterGraphic : Node2D
         var relToId = theater.TacWaypointIds.First();
         var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
-        
+        var size = 5f;
         
         foreach (var tId in theater.TacWaypointIds)
         {
             var wp = MilitaryDomain.GetTacWaypoint(tId, d);
             var relPos = relTo.GetOffsetTo(wp.Pos, d);
-            mb.AddSquare(relPos, 10f, regimeColor);
-            mb.AddSquare(relPos, 6f, theaterColor);
+            mb.AddSquare(relPos, size, regimeColor);
+            mb.AddSquare(relPos, size * .6f, theaterColor);
         }
     }
 

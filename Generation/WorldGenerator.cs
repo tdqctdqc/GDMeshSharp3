@@ -84,8 +84,6 @@ public class WorldGenerator
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyTriGenerator());
         RunGenerator(new TacticalWaypointGenerator());
-        GD.Print("new nav wp count " + Data.GetAll<TacticalWaypoints>().First().Waypoints.Count);
-        RunGenerator(new NavGenerator());
         RunGenerator(new RegimeGenerator());
         RunGenerator(new SocietyGenerator());
         RunGenerator(new InfrastructureGenerator());
@@ -99,6 +97,7 @@ public class WorldGenerator
             LogType.Generation);
         _key.Data.Logger.Log("Total gen time: " + _totalTime.Elapsed.TotalMilliseconds,
             LogType.Generation);
+        Data.Notices.FinishedGen.Invoke();
     }
 
     private void RunGenerator(Generator gen)

@@ -17,11 +17,8 @@ public static class MapPolygonExt
     }
     public static Waypoint GetCenterWaypoint(this MapPolygon poly, Data data)
     {
-        return data.Planet.NavWaypoints.GetPolyCenterWaypoint(poly);
-    }
-    public static IEnumerable<Waypoint> GetAssocNavWaypoints(this MapPolygon poly, Data data)
-    {
-        return data.Planet.NavWaypoints.GetPolyAssocWaypoints(poly, data);
+        var id = data.Military.TacticalWaypoints.PolyCenterWpIds[poly.Id];
+        return MilitaryDomain.GetTacWaypoint(id, data);
     }
     public static IEnumerable<Waypoint> GetAssocTacWaypoints(this MapPolygon poly, Data data)
     {

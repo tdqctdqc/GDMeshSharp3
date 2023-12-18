@@ -11,7 +11,7 @@ public class Context
     public Dictionary<Unit, Waypoint> UnitWaypoints { get; private set; }
     public Dictionary<Waypoint, ForceBalance> WaypointForceBalances { get; private set; }
     public Dictionary<Alliance, HashSet<Waypoint>> ControlledAreas { get; private set; }
-    public Dictionary<Vector2, List<Waypoint>> WaypointPaths { get; private set; }
+    public Dictionary<Alliance, Dictionary<Vector2, List<Waypoint>>> WaypointPaths { get; private set; }
     
     public Context(Data data)
     {
@@ -19,7 +19,7 @@ public class Context
         data.Notices.MadeWaypoints.Subscribe(() => AddForceBalances(data));
         WaypointForceBalances = new Dictionary<Waypoint, ForceBalance>();
         ControlledAreas = new Dictionary<Alliance, HashSet<Waypoint>>();
-        WaypointPaths = new Dictionary<Vector2, List<Waypoint>>();
+        WaypointPaths = new Dictionary<Alliance, Dictionary<Vector2, List<Waypoint>>>();
     }
 
     private void AddForceBalances(Data d)
@@ -131,21 +131,26 @@ public class Context
             }
         }
     }
-    public List<Waypoint> GetWaypointPath(Waypoint start, Waypoint end, Data data)
+    public IReadOnlyList<Waypoint> GetLandWaypointPath(Waypoint start, Waypoint end, 
+        Alliance a, Data data)
     {
         var key = new Vector2(start.Id, end.Id);
-        if (WaypointPaths.ContainsKey(key)) return WaypointPaths[key];
+        
+        //todo not threadsafe!
+        var paths = WaypointPaths.GetOrAdd(a, a => new Dictionary<Vector2, List<Waypoint>>());
+        
+        if (paths.ContainsKey(key)) return paths[key];
         
         var reverse = new Vector2(end.Id, start.Id);
-        if (WaypointPaths.ContainsKey(reverse))
+        if (paths.ContainsKey(reverse))
         {
-            var reverseList = WaypointPaths[reverse].Select(w => w).Reverse().ToList();
-            WaypointPaths[key] = reverseList;
+            var reverseList = paths[reverse].Select(w => w).Reverse().ToList();
+            paths[key] = reverseList;
             return reverseList;
         }
-
-        var path = PathFinder.FindWaypointPath(start, end, data);
-        WaypointPaths[key] = path;
+        
+        var path = PathFinder.FindLandWaypointPath(start, end, a, data);
+        paths[key] = path;
         return path;
     }
 }

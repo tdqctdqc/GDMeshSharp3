@@ -71,8 +71,9 @@ public static class DictionaryExt
     public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, Func<TKey, TValue> generate)
     {
         if (dic.TryGetValue(key, out var val)) return val;
-        dic.Add(key, generate(key));
-        return dic[key];
+        var genned = generate(key);
+        dic.Add(key, genned);
+        return genned;
     }
     
     public static Dictionary<TKey, TValue> BindDictionary<TKey, TValue>(this List<TKey> keys,

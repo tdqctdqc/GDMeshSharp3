@@ -25,6 +25,11 @@ public class TheaterAssignment : ForceAssignment
         }
     }
 
+    public override float GetPowerPointNeed(Data d)
+    {
+        return Fronts.Sum(fa => fa.GetPowerPointNeed(d));
+    }
+
     public IEnumerable<Waypoint> GetTacWaypoints(Data d)
     {
         return TacWaypointIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d));
@@ -69,9 +74,10 @@ public class TheaterAssignment : ForceAssignment
     {
         var alliance = r.GetAlliance(key.Data);
         var allianceAi = key.Data.HostLogicData.AllianceAis[alliance];
-        var responsibility = allianceAi.MilitaryAi.AreasOfResponsibility[r];
+        var responsibility = allianceAi
+            .MilitaryAi.AreasOfResponsibility[r].ToHashSet();
         var responsibilityIds = responsibility.Select(r => r.Id).ToHashSet();
-
+        
         var covered = new HashSet<int>();
         var toMerge = new Dictionary<HashSet<int>, List<TheaterAssignment>>();
         foreach (var ta in theaters)
@@ -180,15 +186,29 @@ public class TheaterAssignment : ForceAssignment
             FrontAssignment.CheckExpandMergeNew(r, ta, ta.Fronts.ToList(),
                 ta.Fronts.Add, f => ta.Fronts.Remove(f),
                 key);
-            ta.AssignGroups(r, key.Data);
+            foreach (var fa in ta.Fronts)
+            {
+                fa.CheckSegments(key);
+            }
         }
     }
-    private void AssignGroups(Regime regime, Data data)
+    public void AssignGroups(LogicWriteKey key)
     {
+        ShiftGroups(key);
+        AssignFreeGroups(key);
+        foreach (var fa in Fronts)
+        {
+            fa.AssignGroups(key);
+        }
+    }
+
+    private void AssignFreeGroups(LogicWriteKey key)
+    {
+        var data = key.Data;
+        var regime = Regime.Entity(data);
         var totalLength = Fronts.Sum(fa => fa.TacWaypointIds.Count);
         var totalOpposing = Fronts.Sum(fa => fa.GetOpposingPowerPoints(data));
-        var coverLengthWeight = 1f;
-        var coverOpposingWeight = 1f;
+        
         var occupiedGroups = Fronts
             .SelectMany(fa => fa.GroupIds)
             .Select(g => data.Get<UnitGroup>(g));
@@ -201,11 +221,29 @@ public class TheaterAssignment : ForceAssignment
         
         Assigner.Assign<FrontAssignment, UnitGroup>(
             Fronts,
-            fa => fa.GetDefenseNeed(data, totalLength, coverLengthWeight, totalOpposing, coverOpposingWeight),
+            fa => fa.GetPowerPointNeed(data),
             fa => fa.Groups(data),
             g => g.GetPowerPoints(data),
             freeGroups.ToHashSet(),
             (fa, g) => fa.GroupIds.Add(g.Id),
             (fa, g) => g.GetPowerPoints(data));
+    }
+
+    private void ShiftGroups(LogicWriteKey key)
+    {
+        if (Fronts.Count < 2) return;
+        var data = key.Data;
+        var totalLength = Fronts.Sum(fa => fa.TacWaypointIds.Count);
+        var totalOpposing = Fronts.Sum(fa => fa.GetOpposingPowerPoints(data));
+        var avgFulfilled = Fronts.Select(fa => fa.GetSatisfiedRatio(key.Data)).Average();
+        
+        // foreach (var fa in Fronts)
+        // {
+        //     while (fulfilledRatio(fa) > avgFulfilled * 1.5f)
+        //     {
+        //         fa.DeassignGroup(key);
+        //     }
+        // }
+        
     }
 }

@@ -21,6 +21,13 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
             if (poly == null) return;
             client.Cam().JumpTo(poly.Center);
         });
+        
+        this.AddIntButton("Jump to Waypoint", i =>
+        {
+            var wp = MilitaryDomain.GetTacWaypoint(i, client.Data);
+            if (wp == null) return;
+            client.Cam().JumpTo(wp.Pos);
+        });
         var uiFrame = client.GetComponent<UiFrame>();
         uiFrame.AddTopBar(this);
     }

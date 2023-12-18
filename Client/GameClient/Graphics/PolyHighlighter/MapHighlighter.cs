@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PolyHighlighter : Node2D
+public partial class MapHighlighter : Node2D
 {
     private List<MeshInstance2D> _mis;
 
-    public PolyHighlighter(Data data)
+    public MapHighlighter(Data data)
     {
         Game.I.Client.UiRequests.MouseOver
-            .SubscribeForNode(pos => Draw(data, pos), this);
+            .SubscribeForNode(pos => DrawPoly(data, pos), this);
         _mis = new List<MeshInstance2D>();
     }
-    private PolyHighlighter()
+    private MapHighlighter()
     {
     }
     public enum Modes
@@ -21,63 +21,54 @@ public partial class PolyHighlighter : Node2D
         Simple,
         Complex
     }
-    public void Draw(Data data, PolyTriPosition pos)
+
+
+    public void DrawFrontSegment(FrontSegmentAssignment seg, Data d)
+    {
+        // var relTo = seg.GetTacWaypoints(d).First().Pos;
+        // Position = Game.I.Client.Cam().GetMapPosInGlobalSpace(relTo);
+        Position = Vector2.Zero;
+        var mb = new MeshBuilder();
+        var groups = seg.Groups(d);
+        foreach (var group in groups)
+        {
+            var pos = group.GetPosition(d);
+            mb.AddSquare(Game.I.Client.Cam().GetMapPosInGlobalSpace(pos), 10f, Colors.Red);
+        }
+        TakeFromMeshBuilder(mb);
+    }
+    public void DrawPoly(Data data, PolyTriPosition pos)
     {
         Visible = true;
         Clear();
         var poly = pos.Poly(data);
         var pt = pos.Tri(data);
-        Move(poly);
+        Position = Game.I.Client.Cam().GetMapPosInGlobalSpace(poly.Center);
+
         var mb = new MeshBuilder();
         
         var mode = Game.I.Client.Settings.PolyHighlightMode.Value;
         if (mode == Modes.Simple)
         {
-            DrawSimple(data, poly, pt, mb);
+            DrawPolySimple(data, poly, pt, mb);
         }
         else if (mode == Modes.Complex)
         {
-            DrawComplex(data, pos, poly, pt, mb);
+            DrawPolyComplex(data, pos, poly, pt, mb);
         }
         else throw new Exception();
         
         TakeFromMeshBuilder(mb);
     }
 
-    private void DrawSimple(Data data, MapPolygon poly, PolyTri pt, MeshBuilder mb)
+    private void DrawPolySimple(Data data, MapPolygon poly, PolyTri pt, MeshBuilder mb)
     {
         DrawBordersSimple(poly, mb, data);
         // DrawAssocWaypoints(poly, mb, data);
         // DrawnNeighborBordersSimple(poly, mb, data);
     }
 
-    private void DrawAssocWaypoints(MapPolygon poly, MeshBuilder mb, Data data)
-    {
-        var wps = data.Planet.NavWaypoints.GetPolyAssocWaypoints(poly, data);
-        foreach (var waypoint in wps)
-        {
-            var offset = poly.GetOffsetTo(waypoint.Pos, data);
-            mb.AddCircle(offset, 20f, 6, Colors.Purple);
-        }
-    }
-    private void DrawNavPathsToNeighbors(MapPolygon poly, MeshBuilder mb, Data data)
-    {
-        var nav = data.Planet.NavWaypoints;
-        var polyWp = nav.GetPolyCenterWaypoint(poly);
-        foreach (var nPoly in poly.Neighbors.Items(data))
-        {
-            var nPolyWp = nav.GetPolyCenterWaypoint(nPoly);
-            var path = PathFinder.FindNavPathBetweenPolygons(poly, nPoly, data);
-            for (var i = 0; i < path.Count - 1; i++)
-            {
-                var from = path[i];
-                var to = path[i + 1];
-                mb.AddLine(poly.GetOffsetTo(from.Pos, data), poly.GetOffsetTo(to.Pos, data), 
-                    Colors.Red, 10f);
-            }
-        }
-    }
-    private static void DrawComplex(Data data, PolyTriPosition pos, MapPolygon poly, PolyTri pt, MeshBuilder mb)
+    private static void DrawPolyComplex(Data data, PolyTriPosition pos, MapPolygon poly, PolyTri pt, MeshBuilder mb)
     {
         DrawBoundarySegments(poly, mb, data);
         DrawPolyTriBorders(poly, mb, data);
@@ -159,10 +150,6 @@ public partial class PolyHighlighter : Node2D
         mb.Clear();
         AddChild(mi);
         _mis.Add(mi);
-    }
-    private void Move(MapPolygon poly)
-    {
-        Position = Game.I.Client.Cam().GetMapPosInGlobalSpace(poly.Center);
     }
     public void Clear()
     {

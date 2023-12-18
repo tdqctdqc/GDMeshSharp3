@@ -65,6 +65,7 @@ public partial class TooltipPanel : Panel
     {
         if (_template == null) return;
         var entries = _template.GetSlowEntries(_element, data);
+        if (entries.Count == 0) return;
         entries.ForEach(e => _container.AddChild(e));
         Resize();
     }

@@ -6,7 +6,7 @@ using Godot;
 public class PavedRoad : RoadModel
 {
     public PavedRoad() 
-        : base(nameof(PavedRoad), 5, Colors.Black.Lightened(.2f))
+        : base(nameof(PavedRoad), 6, Colors.Black.Lightened(.2f))
     {
     }
 

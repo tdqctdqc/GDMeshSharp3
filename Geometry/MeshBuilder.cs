@@ -250,13 +250,15 @@ public class MeshBuilder
         
         // var lineTo = from + (to - from).Normalized() * (length - thickness * 2f);
         var mid = (from + to) / 2f;
-        var arrowTo = from + (to - from) / 1.75f;
-        var lineTo = to;
         
-        var perpendicular = (to - from).Normalized().Rotated(Mathf.Pi / 2f);
-        JoinLinePoints(from, lineTo, thickness, color);
-        AddTri(arrowTo, mid + perpendicular * thickness * 2f,
-            mid - perpendicular * thickness * 2f, color);
+        var axis = (to - from).Normalized();
+        var perpendicular = axis.Rotated(Mathf.Pi / 2f);
+        var arrowFrom = mid - axis * length * .2f;
+        var arrowTo = mid + axis * length * .2f;
+        var arrowThickness = arrowFrom.DistanceTo(arrowTo);
+        JoinLinePoints(from, to, thickness, color);
+        AddTri(arrowTo, arrowFrom + perpendicular * arrowThickness / 2f,
+            arrowFrom - perpendicular * arrowThickness / 2f, color);
     }
 
     public void AddNumMarkers(List<Vector2> points, float markerSize, Color color, Color textColor, Vector2 offset,

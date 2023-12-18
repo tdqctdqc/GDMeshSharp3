@@ -11,7 +11,7 @@ public partial class MapGraphics : Node2D, IClientComponent
     
     protected GraphicsSegmenter _segmenter;
     protected Node2D _hook;
-    public PolyHighlighter Highlighter { get; private set; }
+    public MapHighlighter Highlighter { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
     public MapInputCatcher InputCatcher { get; private set; }
     public ConcurrentQueue<Action> UpdateQueue { get; private set; }
@@ -34,7 +34,7 @@ public partial class MapGraphics : Node2D, IClientComponent
         AddChild(_hook);
         GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, _hook, client.Data);
         
-        Highlighter = new PolyHighlighter(client.Data);
+        Highlighter = new MapHighlighter(client.Data);
         AddChild(Highlighter);
         
         InputCatcher = new MapInputCatcher(client);

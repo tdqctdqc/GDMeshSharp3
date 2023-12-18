@@ -40,6 +40,8 @@ public class DeployOnLineOrder : UnitOrder
     {
         var innerColor = group.Regime.Entity(data).PrimaryColor;
         var outerColor = group.Regime.Entity(data).PrimaryColor;
+        var squareSize = 5f;
+        var lineSize = 1f;
         for (var i = 0; i < Points.Count; i++)
         {
             var p = Points[i];
@@ -48,10 +50,10 @@ public class DeployOnLineOrder : UnitOrder
             {
                 var pNext = Points[i + 1];
                 var pNextRel = relTo.GetOffsetTo(pNext, data);
-                mb.AddLine(pRel, pNextRel, innerColor, 4f);
+                mb.AddLine(pRel, pNextRel, innerColor, lineSize);
             }
-            mb.AddSquare(pRel, 12f, outerColor);
-            mb.AddSquare(pRel, 10f, innerColor);
+            // mb.AddSquare(pRel, squareSize, outerColor);
+            // mb.AddSquare(pRel, squareSize * .75f, innerColor);
         }
     }
 }
