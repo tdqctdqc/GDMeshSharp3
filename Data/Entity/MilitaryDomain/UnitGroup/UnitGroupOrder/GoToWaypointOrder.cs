@@ -12,14 +12,12 @@ public class GoToWaypointOrder : UnitOrder
         Regime r, UnitGroup g, Data d)
     {
         var alliance = g.Regime.Entity(d).GetAlliance(d);
-        var context = d.Context;
         var currWp = g.GetWaypoint(d);
+        if (currWp == null) throw new Exception();
         var path = PathFinder.FindLandWaypointPath(currWp, destWp, alliance, d);
-            // context.GetLandWaypointPath(currWp, destWp, alliance, d);
         if (path == null)
         {
-            GD.Print($"couldnt find path from {currWp.Id} to {destWp.Id}");
-            path = new List<Waypoint>();
+            throw new Exception();
         }
         return new GoToWaypointOrder(path.Select(wp => wp.Id).ToList());
     }

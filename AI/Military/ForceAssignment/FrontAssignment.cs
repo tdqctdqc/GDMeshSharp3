@@ -66,18 +66,34 @@ public class FrontAssignment : ForceAssignment
     {
         if (Segments.Count < 2) return;
         var data = key.Data;
-        var totalLength = Segments.Sum(fa => fa.LineWaypointIds.Count);
-        var totalOpposing = Segments.Sum(fa => fa.GetOpposingPowerPoints(data));
-        var avgFulfilled = Segments.Select(s => s.GetSatisfiedRatio(data)).Average();
-        
-        // foreach (var seg in Segments)
-        // {
-        //     while (seg.GetSatisfiedRatio(data) > avgFulfilled * 1.5f)
-        //     {
-        //         GD.Print($"{Regime.Entity(data)} deassigning from {seg.Id}");
-        //         seg.DeassignGroup(key);
-        //     }
-        // }
+
+        var max = maxSatisfied();
+        var min = minSatisfied();
+        var iter = 0;
+        while (iter < Segments.Count * 2 
+               && max.ratio > min.ratio * 1.5f)
+        {
+            var g = max.fa.DeassignGroup(key);
+            if (g != null)
+            {
+                min.fa.GroupIds.Add(g.Id);
+            }
+            max = maxSatisfied();
+            min = minSatisfied();
+            iter++;
+        }
+
+        (float ratio, FrontSegmentAssignment fa) maxSatisfied()
+        {
+            var max = Segments.MaxBy(fa => fa.GetSatisfiedRatio(data));
+            return (max.GetSatisfiedRatio(data), max);
+        }
+
+        (float ratio, FrontSegmentAssignment fa) minSatisfied()
+        {
+            var min = Segments.MinBy(fa => fa.GetSatisfiedRatio(data));
+            return (min.GetSatisfiedRatio(data), min);
+        }
     }
     private void AssignFreeGroups(LogicWriteKey key)
     {
@@ -492,18 +508,20 @@ public class FrontAssignment : ForceAssignment
     public UnitGroup DeassignGroup(LogicWriteKey key)
     {
         if (GroupIds.Count == 0) return null;
-        UnitGroup deassign;
+        UnitGroup deassign = null;
         if (Segments.Count > 0)
         {
             deassign = Segments
                 .MaxBy(s => s.GetSatisfiedRatio(key.Data))
                 .DeassignGroup(key);
         }
-        else
+        
+        if(deassign == null)
         {
             deassign = key.Data.Get<UnitGroup>(GroupIds.First());
         }
-        GroupIds.Remove(deassign.Id);
+        
+        if(deassign != null) GroupIds.Remove(deassign.Id);
         return deassign;
     }
 }

@@ -68,7 +68,12 @@ public static class PathFinder
 
     public static bool IsLandPassable(Waypoint wp, Alliance a, Data d)
     {
-        if (wp is IRiverWaypoint r) return r.Bridgeable;
+        if (wp is IRiverWaypoint r)
+        {
+            return r.Bridgeable
+                && wp.TacNeighbors(d)
+                    .Any(n => n is ILandWaypoint && IsLandPassable(n, a, d));
+        }
         if (wp is ILandWaypoint == false) return false;
         if (wp.GetOccupyingRegime(d).GetAlliance(d) == a) return true;
         if (wp.IsControlled(a, d)) return true;

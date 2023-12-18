@@ -233,17 +233,34 @@ public class TheaterAssignment : ForceAssignment
     {
         if (Fronts.Count < 2) return;
         var data = key.Data;
-        var totalLength = Fronts.Sum(fa => fa.TacWaypointIds.Count);
-        var totalOpposing = Fronts.Sum(fa => fa.GetOpposingPowerPoints(data));
-        var avgFulfilled = Fronts.Select(fa => fa.GetSatisfiedRatio(key.Data)).Average();
+
+        var max = maxSatisfied();
+        var min = minSatisfied();
+        var iter = 0;
         
-        // foreach (var fa in Fronts)
-        // {
-        //     while (fulfilledRatio(fa) > avgFulfilled * 1.5f)
-        //     {
-        //         fa.DeassignGroup(key);
-        //     }
-        // }
-        
+        while (iter < Fronts.Count * 2 
+               && max.ratio > min.ratio * 1.5f)
+        {
+            var g = max.fa.DeassignGroup(key);
+            if (g != null)
+            {
+                min.fa.GroupIds.Add(g.Id);
+            }
+            max = maxSatisfied();
+            min = minSatisfied();
+            iter++;
+        }
+
+        (float ratio, FrontAssignment fa) maxSatisfied()
+        {
+            var max = Fronts.MaxBy(fa => fa.GetSatisfiedRatio(data));
+            return (max.GetSatisfiedRatio(data), max);
+        }
+
+        (float ratio, FrontAssignment fa) minSatisfied()
+        {
+            var min = Fronts.MinBy(fa => fa.GetSatisfiedRatio(data));
+            return (min.GetSatisfiedRatio(data), min);
+        }
     }
 }

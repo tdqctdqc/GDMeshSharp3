@@ -76,8 +76,11 @@ public class FrontSegmentAssignment : ForceAssignment
             var order = GoToWaypointOrder.Construct(close, 
                 unreadyGroup.Regime.Entity(key.Data),
                 unreadyGroup, key.Data);
-            var proc = new SetUnitOrderProcedure(unreadyGroup.MakeRef(), order);
-            key.SendMessage(proc);
+            if (order != null)
+            {
+                var proc = new SetUnitOrderProcedure(unreadyGroup.MakeRef(), order);
+                key.SendMessage(proc);
+            }
         }
     }
 

@@ -49,7 +49,7 @@ public class UnitGroup : Entity
 
     public Vector2 GetPosition(Data d)
     {
-        return d.Planet.GetAveragePosition(Units.Items(d).Select(u => u.Position));
+        return Units.Items(d).First().Position;
     }
     public void SetOrder(UnitOrder order, ProcedureWriteKey key)
     {

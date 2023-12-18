@@ -14,7 +14,7 @@ public partial class TheaterGraphic : Node2D
         segmenter.AddElement(this, relTo);
     }
 
-    public void  Draw(TheaterAssignment theater, Data d)
+    public void Draw(TheaterAssignment theater, Data d)
     {
         this.ClearChildren();
         if (theater.TacWaypointIds.Count() == 0) return;
