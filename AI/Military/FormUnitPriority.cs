@@ -37,21 +37,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
         var regime = orders.Regime.Entity(key.Data);
         var capitalPos = regime.Capital.Entity(key.Data).Center;
         var useTroops = RegimeUseTroopsProcedure.Construct(regime);
-
-        bool verifyTroopsInStock(UnitTemplate t, int num)
-        {
-            var troopCosts = t
-                .TroopCounts.GetEnumerableModel(key.Data);
-            foreach (var (troop, cost) in troopCosts)
-            {
-                if (regime.Military.TroopReserve.Get(troop) < cost * num)
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+        
         foreach (var (template, num) in toBuild)
         {
             useTroops.AddTroopCosts(template, num, key.Data);

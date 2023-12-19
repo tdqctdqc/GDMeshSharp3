@@ -41,4 +41,8 @@ public abstract class ForceAssignment : IPolymorph
         if (need == 0f) return Mathf.Inf;
         return assigned / need;
     }
+
+    public abstract UnitGroup RequestGroup(LogicWriteKey key);
+    public abstract void TakeAwayGroup(UnitGroup g, LogicWriteKey key);
+    public abstract void AssignGroups(LogicWriteKey key);
 }

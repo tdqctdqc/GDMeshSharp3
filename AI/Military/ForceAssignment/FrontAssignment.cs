@@ -7,7 +7,7 @@ using GDMeshSharp3.Exception;
 using Godot;
 using MathNet.Numerics.Statistics;
 
-public class FrontAssignment : ForceAssignment
+public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 {
     
     public static float CoverLengthWeight = 1f;
@@ -15,18 +15,17 @@ public class FrontAssignment : ForceAssignment
     public static float PowerPointsPerLengthToCover = .1f;
     public HashSet<int> TacWaypointIds { get; private set; }
 
-    public List<FrontSegmentAssignment> Segments { get; private set; }
-
+    public HashSet<ForceAssignment> Assignments { get; private set; }
     public FrontAssignment(
         int id,
         EntityRef<Regime> regime, 
         HashSet<int> tacWaypointIds,
         HashSet<int> groupIds,
-        List<FrontSegmentAssignment> segments) 
+        HashSet<ForceAssignment> assignments) 
         : base(groupIds, regime, id)
     {
         TacWaypointIds = tacWaypointIds;
-        Segments = segments;
+        Assignments = assignments;
     }
     public Vector2 RelTo(Data d)
     {
@@ -49,83 +48,34 @@ public class FrontAssignment : ForceAssignment
     public override void CalculateOrders(MinorTurnOrders orders, 
         LogicWriteKey key)
     {
-        foreach (var fsa in Segments)
+        foreach (var assgn in Assignments)
         {
-            fsa.CalculateOrders(orders, key);
+            assgn.CalculateOrders(orders, key);
         }
     }
 
 
-    public void AssignGroups(LogicWriteKey key)
+    public override void TakeAwayGroup(UnitGroup g, LogicWriteKey key)
     {
-        ShiftGroups(key);
-        AssignFreeGroups(key);
+        this.TakeAwayGroupCompound(g, key);
     }
 
-    private void ShiftGroups(LogicWriteKey key)
+    public override void AssignGroups(LogicWriteKey key)
     {
-        if (Segments.Count < 2) return;
-        var data = key.Data;
-
-        var max = maxSatisfied();
-        var min = minSatisfied();
-        var iter = 0;
-        while (iter < Segments.Count * 2 
-               && max.ratio > min.ratio * 1.5f)
-        {
-            var g = max.fa.DeassignGroup(key);
-            if (g != null)
-            {
-                min.fa.GroupIds.Add(g.Id);
-            }
-            max = maxSatisfied();
-            min = minSatisfied();
-            iter++;
-        }
-
-        (float ratio, FrontSegmentAssignment fa) maxSatisfied()
-        {
-            var max = Segments.MaxBy(fa => fa.GetSatisfiedRatio(data));
-            return (max.GetSatisfiedRatio(data), max);
-        }
-
-        (float ratio, FrontSegmentAssignment fa) minSatisfied()
-        {
-            var min = Segments.MinBy(fa => fa.GetSatisfiedRatio(data));
-            return (min.GetSatisfiedRatio(data), min);
-        }
-    }
-    private void AssignFreeGroups(LogicWriteKey key)
-    {
-        var alliance = Regime.Entity(key.Data).GetAlliance(key.Data);
-        var totalLength = TacWaypointIds.Count;
-        var totalOpposing = GetOpposingPowerPoints(key.Data);
-        var coverLengthWeight = 1f;
-        var coverOpposingWeight = 1f;
-        var occupiedGroups = Segments
-            .SelectMany(fa => fa.GroupIds)
-            .Select(g => key.Data.Get<UnitGroup>(g));
-        var freeGroups = Groups(key.Data)
-            ?.Except(occupiedGroups)
-            ?.ToList();
-        if (freeGroups == null || freeGroups.Count == 0) return;
         
-        Assigner.Assign<FrontSegmentAssignment, UnitGroup>(
-            Segments,
-            fa => fa.GetPowerPointNeed(key.Data),
-            fsa => fsa.Groups(key.Data),
-            g => g.GetPowerPoints(key.Data),
-            freeGroups.ToHashSet(),
-            (fa, g) => fa.GroupIds.Add(g.Id),
-            (fa, g) => g.GetPowerPoints(key.Data));
-
+        this.ShiftGroups(key);
+        this.AssignFreeGroups(key);
+        foreach (var assgn in Assignments)
+        {
+            assgn.AssignGroups(key);
+        }
     }
     
     
     public override float GetPowerPointNeed(Data data)
     {
         var opposing = GetOpposingPowerPoints(data);
-        var length = Segments.Sum(s => s.GetLength(data));
+        var length = Assignments.WhereOfType<FrontSegmentAssignment>().Sum(s => s.GetLength(data));
         return opposing * CoverOpposingWeight + length * CoverLengthWeight * PowerPointsPerLengthToCover;
     }
     public static void CheckSplitRemove(Regime r, 
@@ -171,7 +121,7 @@ public class FrontAssignment : ForceAssignment
         var newFronts =
             unions.Select(
                 u => new FrontAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), u.ToHashSet(),
-                    new HashSet<int>(), new List<FrontSegmentAssignment>()));
+                    new HashSet<int>(), new HashSet<ForceAssignment>()));
         foreach (var group in fa.Groups(key.Data))
         {
             var unitWpIds = group.Units.Items(key.Data)
@@ -401,6 +351,163 @@ public class FrontAssignment : ForceAssignment
         }
         return new List<List<Waypoint>>();
     }
+
+    public List<List<Waypoint>> GetLinesNew(Data d)
+    {
+        var alliance = Regime.Entity(d).GetAlliance(d);
+        var wps = GetTacWaypoints(d);
+        var potentialEdges = wps.SelectMany(wp =>
+        {
+            return wp.Neighbors.Where(nId => nId < wp.Id)
+                .Where(nId => TacWaypointIds.Contains(nId))
+                .Select(nId => new Vector2I(wp.Id, nId));
+        }).ToHashSet();
+        var edges = new HashSet<Vector2I>();
+        
+        foreach (var pEdge in potentialEdges)
+        {
+            var edgeFrom = MilitaryDomain.GetTacWaypoint(pEdge.X, d);
+            var edgeTo = MilitaryDomain.GetTacWaypoint(pEdge.Y, d);
+            var fromHostiles = edgeFrom.TacNeighbors(d)
+                .Where(n => TacWaypointIds.Contains(n.Id) == false
+                            && n.IsThreatened(alliance, d)).ToList();
+            if (fromHostiles.Count == 0) continue;
+            var toHostiles = edgeTo.TacNeighbors(d)
+                .Where(n => TacWaypointIds.Contains(n.Id) == false
+                            && n.IsThreatened(alliance, d)).ToList();
+            if (toHostiles.Count == 0) continue;
+            var hostiles = fromHostiles.Union(toHostiles);
+            var axis = edgeFrom.Pos.GetOffsetTo(edgeTo.Pos, d);
+            var reverseAxis = -(edgeFrom.Pos.GetOffsetTo(edgeTo.Pos, d));
+            var hasInHem1 = hostiles.Any(h =>
+            {
+                var angle = axis.GetCCWAngleTo(edgeFrom.Pos.GetOffsetTo(h.Pos, d));
+                return angle <= Mathf.Pi && angle >= 0;
+            });
+            var hasInHem2 = hostiles.Any(h =>
+            {
+                var angle = axis.GetCCWAngleTo(edgeFrom.Pos.GetOffsetTo(h.Pos, d));
+                return angle > Mathf.Pi && angle < Mathf.Pi * 2f;
+            });
+            var fromShared = 
+                getAllEdgesSharingPoint(edgeFrom.Id).ToList();
+            if (fromShared.Count() == 0)
+            {
+                edges.Add(pEdge);
+                continue;
+            }
+            var toShared = 
+                getAllEdgesSharingPoint(edgeTo.Id).ToList();
+            if (toShared.Count() == 0)
+            {
+                edges.Add(pEdge);
+                continue;
+            }
+            if (hasInHem1)
+            {
+                var fromRay = getNextCcw(edgeFrom, edgeTo, fromShared);
+                var toRay = getNextCw(edgeTo, edgeFrom, toShared);
+                if (doesntMakeTriOrCross(edgeFrom, edgeTo,
+                        fromRay, toRay))
+                {
+                    edges.Add(pEdge);
+                    continue;
+                }
+            }
+            if (hasInHem2)
+            {
+                var fromRay = getNextCw(edgeFrom, edgeTo, fromShared);
+                var toRay = getNextCcw(edgeTo, edgeFrom, toShared);
+                if (doesntMakeTriOrCross(edgeTo, edgeFrom,
+                        toRay, fromRay))
+                {
+                    edges.Add(pEdge);
+                }
+            }
+
+            Vector2I getNextCw(Waypoint from, Waypoint to, IEnumerable<Vector2I> fromSharedPointEdges)
+            {
+                return fromSharedPointEdges.MinBy(e =>
+                    {
+                        int other;
+                        if (e.X == from.Id) other = e.Y;
+                        else other = e.X;
+                        var otherPos = MilitaryDomain.GetTacWaypoint(other, d).Pos;
+                        return from.Pos.GetOffsetTo(to.Pos, d)
+                            .GetCWAngleTo(from.Pos.GetOffsetTo(otherPos, d));
+                    });
+            }
+            Vector2I getNextCcw(Waypoint from, Waypoint to, IEnumerable<Vector2I> fromSharedPointEdges)
+            {
+                return fromSharedPointEdges
+                    .MinBy(e =>
+                    {
+                        int other;
+                        if (e.X == from.Id) other = e.Y;
+                        else other = e.X;
+                        var otherPos = MilitaryDomain.GetTacWaypoint(other, d).Pos;
+                        return from.Pos.GetOffsetTo(to.Pos, d)
+                            .GetCCWAngleTo(from.Pos.GetOffsetTo(otherPos, d));
+                    });
+            }
+
+            bool doesntMakeTriOrCross(Waypoint from, Waypoint to,
+                Vector2I fromRay, Vector2I toRay)
+            {
+                var fromRayId = fromRay.X == from.Id ? fromRay.Y : fromRay.X;
+                var fromRayWp = MilitaryDomain.GetTacWaypoint(fromRayId, d);
+                
+                // var fromAngle = from.Pos.GetOffsetTo(to.Pos, d)
+                //     .GetCCWAngleTo(from.Pos.GetOffsetTo(fromRayWp.Pos, d));
+                // if (fromAngle > Mathf.Pi && fromAngle < Mathf.Pi * 2f)
+                // {
+                //     return true;
+                // }
+                
+                var toRayId = toRay.X == to.Id ? toRay.Y : toRay.X;
+                var toRayWp = MilitaryDomain.GetTacWaypoint(toRayId, d);
+                
+                // var toAngle = to.Pos.GetOffsetTo(from.Pos, d)
+                //     .GetCCWAngleTo(to.Pos.GetOffsetTo(toRayWp.Pos, d));
+                // if (toAngle > Mathf.Pi && toAngle < Mathf.Pi * 2f)
+                // {
+                //     return true;
+                // }
+
+                if (fromRayId == toRayId) return false;
+                if(Vector2Ext.LineSegIntersect(Vector2.Zero,
+                       from.Pos.GetOffsetTo(fromRayWp.Pos, d),
+                       from.Pos.GetOffsetTo(to.Pos, d),
+                       from.Pos.GetOffsetTo(toRayWp.Pos, d),
+                       true, out _))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            IEnumerable<Vector2I> getAllEdgesSharingPoint(int id)
+            {
+                return potentialEdges
+                    .Where(p => p != pEdge 
+                        && (p.X == id || p.Y == id));
+            }
+        }
+
+
+        return edges.Select(getLineSeg).ToList()
+            .GetChains()
+            .Select(c => c.GetPoints().Select(p => d.Military.TacticalWaypoints.ByPos[p])
+                .Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList())
+            .ToList();
+
+        LineSegment getLineSeg(Vector2I edge)
+        {
+            return new LineSegment(MilitaryDomain.GetTacWaypoint(edge.X, d).Pos,
+                MilitaryDomain.GetTacWaypoint(edge.Y, d).Pos);
+        }
+    }
+
     public static void CheckExpandMergeNew(Regime r, 
         TheaterAssignment ta,
         List<FrontAssignment> fronts, 
@@ -434,7 +541,7 @@ public class FrontAssignment : ForceAssignment
             if (kvp.Value.Count() == 0)
             {
                 var fa = new FrontAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), kvp.Key.Select(wp => wp.Id).ToHashSet(),
-                    new HashSet<int>(), new List<FrontSegmentAssignment>());
+                    new HashSet<int>(), new HashSet<ForceAssignment>());
                 add(fa);
                 continue;
             }
@@ -454,24 +561,24 @@ public class FrontAssignment : ForceAssignment
     public void MergeInto(FrontAssignment merging, LogicWriteKey key)
     {
         GroupIds.AddRange(merging.GroupIds);
-        Segments.AddRange(merging.Segments);
+        Assignments.AddRange(merging.Assignments);
     }
 
 
     public void CheckSegments(LogicWriteKey key)
     {
         var d = key.Data;
-        var lines = GetLines(d)
+        var lines = GetLinesNew(d)
             .ToDictionary(l => l, 
                 l => new List<FrontSegmentAssignment>());
-        var segments = Segments.ToList();
+        var segments = Assignments.WhereOfType<FrontSegmentAssignment>().ToList();
         foreach (var fsa in segments)
         {
             var relatedLines = lines.Keys
                 .Where(l => l.Any(wp => fsa.LineWaypointIds.Contains(wp.Id)));
             if (relatedLines.Count() == 0)
             {
-                Segments.Remove(fsa);
+                Assignments.Remove(fsa);
                 continue; 
             }
 
@@ -488,7 +595,7 @@ public class FrontAssignment : ForceAssignment
             {
                 var seg = FrontSegmentAssignment
                     .Construct(Regime, line, key);
-                Segments.Add(seg);
+                Assignments.Add(seg);
                 continue;
             }
 
@@ -500,20 +607,20 @@ public class FrontAssignment : ForceAssignment
             {
                 if (fsa == biggest) continue;
                 biggest.MergeInto(fsa, key);
-                Segments.Remove(fsa);
+                Assignments.Remove(fsa);
             }
         }
     }
 
-    public UnitGroup DeassignGroup(LogicWriteKey key)
+    public override UnitGroup RequestGroup(LogicWriteKey key)
     {
-        if (GroupIds.Count == 0) return null;
+        if (GroupIds.Count < 2) return null;
         UnitGroup deassign = null;
-        if (Segments.Count > 0)
+        if (Assignments.Count > 0)
         {
-            deassign = Segments
+            deassign = Assignments
                 .MaxBy(s => s.GetSatisfiedRatio(key.Data))
-                .DeassignGroup(key);
+                .RequestGroup(key);
         }
         
         if(deassign == null)

@@ -10,7 +10,6 @@ public class FrontSegmentAssignment : ForceAssignment
     public static int IdealSegmentLength = 7;
     public Vector2 Center { get; private set; }
     public List<int> LineWaypointIds { get; private set; }
-    public HashSet<int> LineGroups { get; private set; }
     public static FrontSegmentAssignment Construct(
         EntityRef<Regime> r,
         List<Waypoint> heldWaypoints,
@@ -22,7 +21,6 @@ public class FrontSegmentAssignment : ForceAssignment
             heldWaypoints.Select(wp => wp.Id).ToList(),
             center,
             new HashSet<int>(),
-            new HashSet<int>(),
             r);
     }
     [SerializationConstructor] private FrontSegmentAssignment(
@@ -30,13 +28,11 @@ public class FrontSegmentAssignment : ForceAssignment
         List<int> lineWaypointIds,
         Vector2 center,
         HashSet<int> groupIds, 
-        HashSet<int> lineGroups,
         EntityRef<Regime> regime) 
         : base(groupIds, regime, id)
     {
         LineWaypointIds = lineWaypointIds;
         Center = center;
-        LineGroups = lineGroups;
     }
 
     
@@ -46,10 +42,9 @@ public class FrontSegmentAssignment : ForceAssignment
         var alliance = orders.Regime.Entity(key.Data).GetAlliance(key.Data);
         var areaRadius = 500f;
         var wps = GetTacWaypoints(key.Data).ToList();
-        SetLineGroups(alliance, key.Data);
+        
         var groups = Groups(key.Data).ToList();
-        var lineGroups = groups
-            .Where(g => LineGroups.Contains(g.Id));
+        var lineGroups = GetLineGroups(key.Data);
         var unreadyGroups = groups.Except(lineGroups);
         if (lineGroups.Count() > 0)
         {
@@ -97,8 +92,9 @@ public class FrontSegmentAssignment : ForceAssignment
 
         return wp.Pos;
     }
-    public void SetLineGroups(Alliance a, Data d)
+    public HashSet<UnitGroup> GetLineGroups(Data d)
     {
+        var a = Regime.Entity(d).GetAlliance(d);
         var closeDist = 100f;
         var closeWps = GetTacWaypoints(d)
             .SelectMany(wp => wp.TacNeighbors(d))
@@ -113,7 +109,7 @@ public class FrontSegmentAssignment : ForceAssignment
                 return dist < closeDist;
             });
         
-        LineGroups = readyGroups.Select(g => g.Id).ToHashSet();
+        return readyGroups.ToHashSet();
     }
     public IEnumerable<Waypoint> GetTacWaypoints(Data d)
     {
@@ -140,23 +136,22 @@ public class FrontSegmentAssignment : ForceAssignment
         GroupIds.AddRange(merging.GroupIds);
     }
 
-    public UnitGroup DeassignGroup(LogicWriteKey key)
+    public override UnitGroup RequestGroup(LogicWriteKey key)
     {
-        if (GroupIds.Count == 0) return null;
-        var notInLine = GroupIds.Except(LineGroups);
-        int de;
-        if (notInLine.Count() > 0)
-        {
-            de = notInLine.First();
-        }
-        else
-        {
-            de = GroupIds.First();
-            LineGroups.Remove(de);
-        }
-
+        if (GroupIds.Count < 2) return null;
+        int de = GroupIds.First();
         GroupIds.Remove(de);
         return key.Data.Get<UnitGroup>(de);
+    }
+
+    public override void TakeAwayGroup(UnitGroup g, LogicWriteKey key)
+    {
+        GroupIds.Remove(g.Id);
+    }
+
+    public override void AssignGroups(LogicWriteKey key)
+    {
+        GetLineGroups(key.Data);
     }
 
     public float GetLength(Data d)

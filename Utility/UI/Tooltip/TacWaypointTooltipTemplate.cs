@@ -29,22 +29,21 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
         {
             if (d.HostLogicData.RegimeAis.Dic.ContainsKey(regime) == false) continue;
             var ai = d.HostLogicData.RegimeAis[regime];
-            var theater = ai.Military.Deployment.ForceAssignments.SelectWhereOfType<TheaterAssignment>()
+            var theater = ai.Military.Deployment.ForceAssignments.WhereOfType<TheaterAssignment>()
                 .FirstOrDefault(t => t.TacWaypointIds.Contains(wp.Id));
             if (theater == null) continue;
             res += $"\n{regime.Name} Theater: " + theater.Id;
-            var front = theater.Fronts.FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
+            var front = theater.Assignments
+                .WhereOfType<FrontAssignment>()
+                .FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
             if (front == null) continue;
             res += "\n  Front: " + front.Id;
             
-            var seg = front.Segments.FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
+            var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>().FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
             if (seg == null) continue;
             highlighter.DrawFrontSegment(seg, d);
             res += "\n    Segment: " + seg.Id;
             res += "\n    Groups: " + seg.GroupIds.Count();
-            var alliance = regime.GetAlliance(d);
-            res += "\n          Ready: " + seg.LineGroups.Count();
-            res += "\n          Unready: " + (seg.GroupIds.Count - seg.LineGroups.Count());
         }
         var l = NodeExt.CreateLabel(res);
         return l;

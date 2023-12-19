@@ -154,7 +154,7 @@ public class InfrastructureGenerator : Generator
         foreach (var poly in coastCityPolys)
         {
             var wps = poly.GetAssocTacWaypoints(_key.Data)
-                .SelectWhereOfType<ICoastWaypoint>();
+                .WhereOfType<ICoastWaypoint>();
             var polySeaIds = new HashSet<int>();
             foreach (var coastWaypoint in wps)
             {

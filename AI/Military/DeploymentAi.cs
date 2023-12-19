@@ -13,18 +13,21 @@ public class DeploymentAi
     public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
         TheaterAssignment.CheckSplitRemove(regime,
-            ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+            ForceAssignments.WhereOfType<TheaterAssignment>().ToList(),
             fa => ForceAssignments.Add(fa),
             fa => ForceAssignments.Remove(fa),
             key);
         TheaterAssignment.CheckExpandMergeNew(regime,
-            ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+            ForceAssignments.WhereOfType<TheaterAssignment>().ToList(),
             fa => ForceAssignments.Add(fa),
             fa => ForceAssignments.Remove(fa),
             key);
-        TheaterAssignment.CheckFronts(regime, ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList(),
+        TheaterAssignment.PutGroupsInRightTheater(regime, ForceAssignments,
             key);
-        foreach (var ta in ForceAssignments.SelectWhereOfType<TheaterAssignment>().ToList())
+        TheaterAssignment.CheckFronts(regime, ForceAssignments.WhereOfType<TheaterAssignment>().ToList(),
+            key);
+        
+        foreach (var ta in ForceAssignments.WhereOfType<TheaterAssignment>().ToList())
         {
             ta.AssignGroups(key);
         }
@@ -36,7 +39,7 @@ public class DeploymentAi
     }
     public IEnumerable<FrontAssignment> GetFrontAssignments()
     {
-        return ForceAssignments.SelectWhereOfType<FrontAssignment>();
+        return ForceAssignments.WhereOfType<FrontAssignment>();
     }
 
 

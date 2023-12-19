@@ -12,7 +12,7 @@ public class Market : Entity
     public static Market Create(ICreateWriteKey key)
     {
         var prices = key.Data.Models.GetModels<Item>().Values
-            .SelectWhereOfType<TradeableItem>()
+            .WhereOfType<TradeableItem>()
             .ToDictionary(item => item.Id, item => item.DefaultPrice);
         var m = new Market(key.Data.IdDispenser.TakeId(), prices,
             TradeHistory.Construct());

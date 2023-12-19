@@ -22,8 +22,8 @@ public static class Clockwise
     {
         var first = elPos(elements.First()) - center;
         Comparison<T> comp =  (i,j) => 
-            dir * (elPos(j) - center).GetClockwiseAngleTo(first)
-            .CompareTo( (elPos(i) - center).GetClockwiseAngleTo(first) );
+            dir * (elPos(j) - center).GetCWAngleTo(first)
+            .CompareTo( (elPos(i) - center).GetCWAngleTo(first) );
         elements.Sort(comp);
     }
     
@@ -62,7 +62,7 @@ public static class Clockwise
     {
         return 2f * Mathf.Pi - GetCCWAngle(v);
     }
-    public static float GetClockwiseAngleTo(this Vector2 v, Vector2 to)
+    public static float GetCWAngleTo(this Vector2 v, Vector2 to)
     {
         return 2f * Mathf.Pi - GetCCWAngleTo(v, to);
     }

@@ -18,7 +18,7 @@ public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphi
             Remove(theater, data);
         }
         var theaters = data.HostLogicData.RegimeAis.Dic.Values
-            .SelectMany(rAi => rAi.Military.Deployment.ForceAssignments.SelectWhereOfType<TheaterAssignment>());
+            .SelectMany(rAi => rAi.Military.Deployment.ForceAssignments.WhereOfType<TheaterAssignment>());
         
         foreach (var theater in theaters)
         {   

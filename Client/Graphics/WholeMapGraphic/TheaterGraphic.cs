@@ -38,12 +38,12 @@ public partial class TheaterGraphic : Node2D
         var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
-        foreach (var fa in theater.Fronts)
+        foreach (var fa in theater.Assignments.WhereOfType<FrontAssignment>())
         {
             var iter = 0;
             var frontColor = ColorsExt.GetRandomColor();
             
-            foreach (var seg in fa.Segments)
+            foreach (var seg in fa.Assignments.WhereOfType<FrontSegmentAssignment>())
             {
                 var segColor = ColorsExt.GetRandomColor();
                 for (var i = 0; i < seg.LineWaypointIds.Count - 1; i++)

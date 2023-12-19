@@ -17,24 +17,22 @@ public class AllianceMilitaryAi
         {
             throw new Exception();
         }
-        if (key.Data.Context.ControlledAreas
-                .TryGetValue(alliance, out var controlled))
-        {
-            CalculateAreasOfResponsibility(alliance, controlled, key.Data);
-        }
-        else
-        {
-            GD.Print("no control areas for alliance at poly " 
-                  + alliance.Leader.Entity(key.Data).GetPolys(key.Data).First().Id);
-        }
+        CalculateAreasOfResponsibility(alliance, key.Data);
     }
     
-    public void CalculateAreasOfResponsibility(Alliance alliance, IEnumerable<Waypoint> controlled, 
-        Data d)
+    public void CalculateAreasOfResponsibility(Alliance alliance, Data d)
     {
+        if (d.Context.ControlledAreas
+                .TryGetValue(alliance, out var controlled)
+                    == false)
+        {
+            GD.Print("no control areas for alliance at poly " 
+                     + alliance.Leader.Entity(d).GetPolys(d).First().Id);
+            return;
+        }
+        
         AreasOfResponsibility = alliance.Members.Items(d)
-            .ToDictionary(r => r, 
-                r => new HashSet<Waypoint>());
+            .ToDictionary(r => r, r => new HashSet<Waypoint>());
         var disputed = new HashSet<Waypoint>();
         var uncovered = controlled.ToHashSet();
         foreach (var waypoint in controlled)
@@ -47,7 +45,6 @@ public class AllianceMilitaryAi
             }
             else
             {
-                
                 var fb = waypoint.GetForceBalance(d);
                 var haveUnits = fb.ByRegime
                     .Where(kvp => alliance.Members.Contains(kvp.Key));
