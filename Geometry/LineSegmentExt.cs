@@ -41,14 +41,6 @@ public static class LineSegmentExt
     {
         return Vector2Ext.LineSegIntersect(ls.From, ls.To, a, b, true, out _);
     }
-    public static bool Intersects(this LineSegment ls, Vector2 point, Vector2 dir)
-    {
-        var intersect = Geometry2D.LineIntersectsLine(ls.From, ls.GetNormalizedAxis(), point, dir);
-        if (intersect.Obj is Vector2 v == false) return false;
-        var inX = (ls.From.X <= v.X && v.X <= ls.To.X) || (ls.From.X >= v.X && v.X >= ls.To.X);
-        var inY = (ls.From.Y <= v.Y && v.Y <= ls.To.Y) || (ls.From.Y >= v.Y && v.Y >= ls.To.Y);
-        return inX && inY;
-    }
     public static float GetAngleAroundSum(this List<LineSegment> segs, Vector2 center)
     {
         float res = 0f;

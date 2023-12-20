@@ -26,6 +26,23 @@ public partial class MapHighlighter : Node2D
     {
         return Game.I.Client.Cam().GetMapPosInGlobalSpace(pos);
     }
+
+    public void DrawHostileRays(FrontAssignment f, Waypoint wp, Data d)
+    {
+        var mb = new MeshBuilder();
+        var occupier = wp.GetOccupyingRegime(d);
+        if (occupier == null) return;
+        var alliance = occupier.GetAlliance(d);
+        var hostile = wp.TacNeighbors(d)
+            .Where(n =>
+                f.TacWaypointIds.Contains(n.Id) == false
+                && n.IsDirectlyThreatened(alliance, d));
+        foreach (var hWp in hostile)
+        {
+            mb.AddLine(RelPos(wp.Pos), RelPos(hWp.Pos), Colors.Yellow, 10f);
+        }
+        TakeFromMeshBuilder(mb);
+    }
     public void DrawFrontSegment(FrontSegmentAssignment seg, Data d)
     {
         var mb = new MeshBuilder();

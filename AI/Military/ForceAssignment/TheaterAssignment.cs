@@ -215,7 +215,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
                         group.GetPosition(key.Data).GetOffsetTo(
                         key.Data.Planet.GetAveragePosition(t.TacWaypointIds.Select(i =>
                             MilitaryDomain.GetTacWaypoint(i, key.Data).Pos)),
-                        key.Data)
+                        key.Data).Length()
                     );
                 closest.GroupIds.Add(group.Id);
             }

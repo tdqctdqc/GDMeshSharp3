@@ -9,12 +9,17 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
     protected override List<Func<Waypoint, Data, Control>> _fastGetters { get; }
         = new ()
         {
+            GetId,
             GetOccupier,
+            GetControllingAlliances,
             GetTheaters,
-            // GetControllingAlliances,
             // GetResponsibleRegimes,
         };
 
+    private static Control GetId(Waypoint wp, Data d)
+    {
+        return NodeExt.CreateLabel("Waypoint ID: " + wp.Id.ToString());
+    }
     private static Control GetTheaters(Waypoint wp, Data d)
     {
         var regimes = d.HostLogicData.AllianceAis.Dic.Values
@@ -22,7 +27,7 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
                 .Where(kvp =>
                     kvp.Value.Contains(wp)))
             .Select(kvp => kvp.Key);
-        var res = wp.Id.ToString();
+        var res = "";
         var highlighter = Game.I.Client.GetComponent<MapGraphics>().Highlighter;
 
         foreach (var regime in regimes)
@@ -38,7 +43,7 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
                 .FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
             if (front == null) continue;
             res += "\n  Front: " + front.Id;
-            
+            highlighter.DrawHostileRays(front, wp, d);
             var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>().FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
             if (seg == null) continue;
             highlighter.DrawFrontSegment(seg, d);

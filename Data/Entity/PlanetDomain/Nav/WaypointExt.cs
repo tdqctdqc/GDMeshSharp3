@@ -39,10 +39,10 @@ public static class WaypointExt
     public static bool IsDirectlyThreatened(this Waypoint wp,
         Alliance alliance, Data data)
     {
-        var controlling = data.Context
+        return data.Context
+                
             .WaypointForceBalances[wp]
-            .GetControllingAlliances();
-        return controlling
+            .GetControllingAlliances()
             .Any(a => alliance.Rivals.Contains(a));
     }
     

@@ -352,7 +352,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         return new List<List<Waypoint>>();
     }
 
-    public List<List<Waypoint>> GetLinesNew(Data d)
+    public List<List<Waypoint>> GetLinesByFindingClockwise(Data d)
     {
         var alliance = Regime.Entity(d).GetAlliance(d);
         var wps = GetTacWaypoints(d);
@@ -370,12 +370,14 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             var edgeTo = MilitaryDomain.GetTacWaypoint(pEdge.Y, d);
             var fromHostiles = edgeFrom.TacNeighbors(d)
                 .Where(n => TacWaypointIds.Contains(n.Id) == false
-                            && n.IsThreatened(alliance, d)).ToList();
-            if (fromHostiles.Count == 0) continue;
+                            && n.IsDirectlyThreatened(alliance, d)
+                            && intersectsWithPotential(edgeFrom, n) == false).ToList();
+            if (fromHostiles.Count == 0 && edgeFrom.IsDirectlyThreatened(alliance, d) == false) continue;
             var toHostiles = edgeTo.TacNeighbors(d)
                 .Where(n => TacWaypointIds.Contains(n.Id) == false
-                            && n.IsThreatened(alliance, d)).ToList();
-            if (toHostiles.Count == 0) continue;
+                            && n.IsDirectlyThreatened(alliance, d)
+                            && intersectsWithPotential(edgeTo, n) == false).ToList();
+            if (toHostiles.Count == 0 && edgeTo.IsDirectlyThreatened(alliance, d) == false) continue;
             var hostiles = fromHostiles.Union(toHostiles);
             var axis = edgeFrom.Pos.GetOffsetTo(edgeTo.Pos, d);
             var reverseAxis = -(edgeFrom.Pos.GetOffsetTo(edgeTo.Pos, d));
@@ -451,6 +453,17 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
                     });
             }
 
+            bool intersectsWithPotential(Waypoint wp1, Waypoint wp2)
+            {
+                return potentialEdges.Any(edge =>
+                {
+                    var e1 = MilitaryDomain.GetTacWaypoint(edge.X, d).Pos;
+                    var e2 = e1.GetOffsetTo(MilitaryDomain.GetTacWaypoint(edge.Y, d).Pos, d);
+                    var p1 = e1.GetOffsetTo(wp1.Pos, d);
+                    var p2 = e1.GetOffsetTo(wp2.Pos, d);
+                    return Vector2Ext.LineSegIntersect(Vector2.Zero, e2, p1, p2, false, out _);
+                });
+            }
             bool doesntMakeTriOrCross(Waypoint from, Waypoint to,
                 Vector2I fromRay, Vector2I toRay)
             {
@@ -494,7 +507,6 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             }
         }
 
-
         return edges.Select(getLineSeg).ToList()
             .GetChains()
             .Select(c => c.GetPoints().Select(p => d.Military.TacticalWaypoints.ByPos[p])
@@ -508,6 +520,137 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         }
     }
 
+    public List<List<Waypoint>> GetLinesByTris(Data d)
+    {
+        var alliance = Regime.Entity(d).GetAlliance(d);
+        var wps = GetTacWaypoints(d);
+        var potentialEdges = wps
+            .SelectMany(wp =>
+            {
+                return wp.Neighbors.Where(nId => nId < wp.Id)
+                    .Where(nId => TacWaypointIds.Contains(nId))
+                    .Select(nId => new Vector2I(wp.Id, nId));
+            })
+            .ToHashSet();
+        
+        var edges = potentialEdges.ToHashSet();
+        
+        foreach (var tri in getTris())
+        {
+            checkEdge(tri.X, tri.Y, tri.Z);
+            checkEdge(tri.X, tri.Z,  tri.Y);
+            checkEdge(tri.Y, tri.Z, tri.X);
+        }
+
+        edges = edges.Where(hasNonIntersectingHostileRay).ToHashSet();
+        return edges.Select(getLineSeg).ToList()
+            .GetChains()
+            .Select(c => c.GetPoints().Select(p => d.Military.TacticalWaypoints.ByPos[p])
+                .Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList())
+            .ToList();
+
+        
+        HashSet<Vector3I> getTris()
+        {
+            var res = new HashSet<Vector3I>();
+            foreach (var wp in wps)
+            {
+                var neighborsInside = getNeighborsInside(wp);
+                foreach (var n1 in neighborsInside)
+                {
+                    if (n1.Id > wp.Id) continue;
+                    var mutualNeighbors = neighborsInside
+                        .Intersect(getNeighborsInside(n1));
+                    foreach (var n2 in mutualNeighbors)
+                    {
+                        if (n2.Id > n1.Id) continue;
+                        res.Add(new Vector3I(wp.Id, n1.Id, n2.Id));
+                    }
+                }
+            }
+
+            return res;
+        }
+
+        void checkEdge(int a, int b, int c)
+        {
+            var wpA = MilitaryDomain.GetTacWaypoint(a, d);
+            var wpB = MilitaryDomain.GetTacWaypoint(b, d);
+            var wpC = MilitaryDomain.GetTacWaypoint(c, d);
+
+            
+            //todo restrict hostiles to certain cone
+            
+            var axis = wpA.Pos.GetOffsetTo(wpB.Pos, d);
+            var rAxis = -axis;
+            var ray = wpA.Pos.GetOffsetTo(wpC.Pos, d);
+            bool cw = getCw(axis, ray);
+            var validHostiles = getHostiles(wpA)
+                .Union(getHostiles(wpB))
+                .Where(h =>
+                {
+                    var hostileRayA = wpA.Pos.GetOffsetTo(h.Pos, d);
+                    var hostileRayB = wpB.Pos.GetOffsetTo(h.Pos, d);
+                    return getCw(axis, hostileRayA) != cw
+                           && axis.AngleTo(hostileRayA) < Mathf.Pi / 2f
+                           && rAxis.AngleTo(hostileRayB) < Mathf.Pi / 2f;
+                });
+
+            if (validHostiles.Count() == 0)
+            {
+                edges.Remove(new Vector2I(a, b));
+            }
+        }
+
+        IEnumerable<Waypoint> getNeighborsInside(Waypoint wp)
+        {
+            return wp.TacNeighbors(d)
+                .Where(n => TacWaypointIds.Contains(n.Id));
+        }
+        
+        IEnumerable<Waypoint> getHostiles(Waypoint wp)
+        {
+            return wp.TacNeighbors(d)
+                .Where(n => TacWaypointIds.Contains(n.Id) == false
+                            && n.IsDirectlyThreatened(alliance, d));
+        }
+
+
+        bool getCw(Vector2 a, Vector2 c)
+        {
+            return a.GetCWAngleTo(c) < Mathf.Pi;
+        }
+        
+        
+        LineSegment getLineSeg(Vector2I edge)
+        {
+            return new LineSegment(MilitaryDomain.GetTacWaypoint(edge.X, d).Pos,
+                MilitaryDomain.GetTacWaypoint(edge.Y, d).Pos);
+        }
+
+        bool hasNonIntersectingHostileRay(Vector2I edge)
+        {
+            var wp1 = MilitaryDomain.GetTacWaypoint(edge.X, d);
+            var wp2 = MilitaryDomain.GetTacWaypoint(edge.Y, d);
+            var wp1Hostiles = getHostiles(wp1);
+            var wp2Hostiles = getHostiles(wp2);
+            return wp1Hostiles.Any(h => intersectsWithPotential(new Vector2I(edge.X, h.Id)) == false)
+                   && wp2Hostiles.Any(h => intersectsWithPotential(new Vector2I(edge.Y, h.Id)) == false);
+        }
+        bool intersectsWithPotential(Vector2I edge)
+        {
+            var wp1 = MilitaryDomain.GetTacWaypoint(edge.X, d);
+            var wp2 = MilitaryDomain.GetTacWaypoint(edge.Y, d);
+            return potentialEdges.Any(pEdge =>
+            {
+                var e1 = MilitaryDomain.GetTacWaypoint(pEdge.X, d).Pos;
+                var e2 = e1.GetOffsetTo(MilitaryDomain.GetTacWaypoint(pEdge.Y, d).Pos, d);
+                var p1 = e1.GetOffsetTo(wp1.Pos, d);
+                var p2 = e1.GetOffsetTo(wp2.Pos, d);
+                return Vector2Ext.LineSegIntersect(Vector2.Zero, e2, p1, p2, false, out _);
+            });
+        }
+    }
     public static void CheckExpandMergeNew(Regime r, 
         TheaterAssignment ta,
         List<FrontAssignment> fronts, 
@@ -568,7 +711,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     public void CheckSegments(LogicWriteKey key)
     {
         var d = key.Data;
-        var lines = GetLinesNew(d)
+        var lines = GetLinesByTris(d)
             .ToDictionary(l => l, 
                 l => new List<FrontSegmentAssignment>());
         var segments = Assignments.WhereOfType<FrontSegmentAssignment>().ToList();
