@@ -39,7 +39,7 @@ public class UnitAux
         sw.Start();
         var dim = new Vector2(_data.Planet.Width, _data.Planet.Height);
 
-        UnitGrid = new CylinderGrid<Unit>(dim, 200f, u => u.Position);
+        UnitGrid = new CylinderGrid<Unit>(dim, 200f, u => u.Position.Pos);
         foreach (var unit in _data.GetAll<Unit>())
         {
             UnitGrid.Add(unit);

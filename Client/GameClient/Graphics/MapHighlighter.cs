@@ -41,7 +41,7 @@ public partial class MapHighlighter : Node2D
         {
             foreach (var unit in group.Units.Items(d))
             {
-                var pos = unit.Position;
+                var pos = unit.Position.Pos;
                 mb.AddSquare(RelPos(pos), 10f, Colors.Red);
             }
         }

@@ -5,14 +5,14 @@ using MessagePack;
 
 public class HandleUnitOrdersProcedure : Procedure
 {
-    public Dictionary<int, Vector2> NewUnitPosesById { get; private set; }
+    public Dictionary<int, UnitPos> NewUnitPosesById { get; private set; }
 
     public static HandleUnitOrdersProcedure Construct()
     {
-        return new HandleUnitOrdersProcedure(new Dictionary<int, Vector2>());
+        return new HandleUnitOrdersProcedure(new Dictionary<int, UnitPos>());
     }
 
-    [SerializationConstructor] private HandleUnitOrdersProcedure(Dictionary<int, Vector2> newUnitPosesById)
+    [SerializationConstructor] private HandleUnitOrdersProcedure(Dictionary<int, UnitPos> newUnitPosesById)
     {
         NewUnitPosesById = newUnitPosesById;
     }

@@ -36,7 +36,7 @@ public class DeployOnLineOrder : UnitOrder
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
             
-            unit.MoveToPoint(target, ref pos, ref movePoints, d);
+            unit.MoveToPoint(target, pos, ref movePoints, d);
 
             proc.NewUnitPosesById.Add(unit.Id, pos);
         }
@@ -72,7 +72,7 @@ public class DeployOnLineOrder : UnitOrder
             var target = Points.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
-            mb.AddLine(relTo.GetOffsetTo(pos, d),
+            mb.AddLine(relTo.GetOffsetTo(pos.Pos, d),
                 relTo.GetOffsetTo(target, d),
                 Colors.Blue, 1f);
         }

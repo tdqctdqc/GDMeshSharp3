@@ -225,7 +225,7 @@ public class TacticalWaypointGenerator : Generator
                 
                 if (lo.PointInPolyAbs(loWpPos, key.Data))
                 {
-                    loWps.Add(new InlandWaypoint(key, _id.TakeId(), loWpPos, hi));
+                    loWps.Add(new InlandWaypoint(key, _id.TakeId(), loWpPos, lo));
                 }
                 else
                 {

@@ -39,7 +39,8 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     {
         var alliance = r.GetAlliance(key.Data);
         
-        var controlledWps = key.Data.Context.ControlledAreas[alliance];
+        var controlledWps = key.Data.Context
+            .ControlledAreas[alliance];
         for (var i = 0; i < theaters.Count; i++)
         {
             var ta = theaters[i];

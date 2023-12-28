@@ -37,7 +37,7 @@ public class GoToWaypointOrder : UnitOrder
         {
             var pos = unit.Position;
             var movePoints = Unit.MovePoints;
-            unit.MoveFromPointToPath(ref pos, ref movePoints, path, d);
+            unit.MoveFromPointToPath(pos, ref movePoints, path, d);
             proc.NewUnitPosesById.Add(unit.Id, pos);
         }
     }

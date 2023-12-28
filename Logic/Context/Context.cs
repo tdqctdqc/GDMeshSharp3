@@ -39,7 +39,7 @@ public class Context
         }
         CalculateUnitWaypointsAndForceBalances(data);
         CalculateOccupierRegimes(data);
-        CalculateRiverControl(data);
+        // CalculateRiverControl(data);
         CalculateControlAreas(data);
     }
 
@@ -51,8 +51,9 @@ public class Context
         
         foreach (var u in units)
         {
-            if (u.Position.HasNaN()) throw new Exception();
-            var found = wpGrid.TryGetClosest(u.Position, out var closeWp, 
+            if (u.Position.Pos.HasNaN()) throw new Exception();
+            var found = wpGrid.TryGetClosest(u.Position.Pos, 
+                out var closeWp, 
                 wp => wp is ILandWaypoint);
             if (found = false)
             {

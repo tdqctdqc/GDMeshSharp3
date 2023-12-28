@@ -8,23 +8,28 @@ public static class UnitMover
 {
     public static void MoveToPoint(this Unit unit,
         Vector2 target,
-        ref Vector2 pos, ref float movePoints, Data d)
+        UnitPos pos, ref float movePoints, Data d)
     {
         var alliance = unit.Regime.Entity(d).GetAlliance(d);
         var unitWp = d.Context.UnitWaypoints[unit];
+        
+        
+        
+        
+        
         var found = d.Military.WaypointGrid
             .TryGetClosest(target, out var destWp,
                 wp => PathFinder.IsLandPassable(wp, alliance, d));
         if (found == false)
         {
             GD.Print("coudlnt find passable closest dest wp, teleporting");
-            pos = target;
+            pos = new UnitPos(target, -Vector2I.One);
             return;
         }
         if (destWp == unitWp 
             || destWp.Neighbors.Contains(unitWp.Id))
         {
-            MoveDirectlyTowardsPoint(ref pos, ref movePoints,
+            MoveDirectlyTowardsPoint(pos, ref movePoints,
                 target, d);
         }
         else
@@ -35,18 +40,18 @@ public static class UnitMover
             if (path == null)
             {
                 GD.Print("couldn't find waypoint path, teleporting");
-                pos = target;
+                pos = new UnitPos(target, -Vector2I.One);
                 return;
             }
             else
             {
-                MoveFromPointToPath(unit, ref pos, ref movePoints, path, d);
+                MoveFromPointToPath(unit, pos, ref movePoints, path, d);
             }
         }
     }
 
     private static void MoveAlongPath(this Unit unit,
-        ref Vector2 pos,
+        UnitPos pos,
         ref float movePoints,
         Waypoint currWp,
         List<Waypoint> path,
@@ -60,7 +65,7 @@ public static class UnitMover
                 currWp = path[index];
                 var next = path[index + 1];
                 var reached = MoveFromWaypointToWaypoint(
-                    unit, ref pos, 
+                    unit, pos, 
                     ref movePoints,
                     currWp, next, d);
                 if (reached) index++;
@@ -68,7 +73,7 @@ public static class UnitMover
         }
     }
     public static void MoveFromPointToPath(this Unit unit, 
-        ref Vector2 pos, 
+        UnitPos pos, 
         ref float movePoints, 
         List<Waypoint> path,
         Data d)
@@ -95,7 +100,7 @@ public static class UnitMover
                                + closestWp.Pos.GetOffsetTo(pos, d)
                                    .GetClosestPointOnLineSegment(Vector2.Zero, toNext);
                 }
-                var reached = MoveDirectlyTowardsPoint(ref pos, ref movePoints, closestP, d);
+                var reached = MoveDirectlyTowardsPoint(pos, ref movePoints, closestP, d);
                 if (reached) currWp = closestWp;
                 else return;
             }
@@ -107,8 +112,10 @@ public static class UnitMover
                     d);
                 if (pathToPath == null)
                 {
-                    GD.Print($"{unit.Regime.Entity(d).Name} couldn't find path from {currWp.Id} to {closestWp.Id}");
-                    throw new Exception();
+                    GD.Print($"{unit.Regime.Entity(d).Name} couldn't find path from {currWp.Id} " +
+                             $"to {closestWp.Id}, teleporting");
+                    pos = path.Last().Pos;
+                    return;
                 }
                 var reached = MoveFromPointToWaypoint(unit, ref pos, ref movePoints,
                     pathToPath[0], d);
@@ -143,6 +150,8 @@ public static class UnitMover
                 break;
             }
         }
+
+        var terrCost = 1f; 
         
         var cost = toTarget.Length() / roadMult;
         if (cost > movePoints)
@@ -160,7 +169,7 @@ public static class UnitMover
         }
     }
     private static bool MoveFromWaypointToWaypoint(Unit unit, 
-        ref Vector2 pos, ref float movePoints,
+        UnitPos pos, ref float movePoints,
         Waypoint from, 
         Waypoint target, Data d)
     {
@@ -185,7 +194,9 @@ public static class UnitMover
             return true;
         }
     }
-    private static bool MoveDirectlyTowardsPoint(ref Vector2 pos, ref float movePoints,
+    private static bool MoveDirectlyTowardsPoint(
+        UnitPos pos, 
+        ref float movePoints,
         Vector2 target, Data d)
     {
         var offset = pos.GetOffsetTo(target, d);

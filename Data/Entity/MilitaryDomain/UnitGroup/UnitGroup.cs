@@ -41,7 +41,7 @@ public class UnitGroup : Entity
 
     public Waypoint GetWaypoint(Data d)
     {
-        var p = d.Planet.GetAveragePosition(Units.Items(d).Select(u => u.Position));
+        var p = d.Planet.GetAveragePosition(Units.Items(d).Select(u => u.Position.Pos));
         var found = d.Military.WaypointGrid.TryGetClosest(p, out var wp, w => true);
         if (found == false) throw new Exception();
         return wp;
@@ -49,7 +49,7 @@ public class UnitGroup : Entity
 
     public Vector2 GetPosition(Data d)
     {
-        return Units.Items(d).First().Position;
+        return Units.Items(d).First().Position.Pos;
     }
     public void SetOrder(UnitOrder order, ProcedureWriteKey key)
     {
