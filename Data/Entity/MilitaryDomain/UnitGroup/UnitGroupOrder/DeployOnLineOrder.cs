@@ -7,10 +7,12 @@ using Godot;
 public class DeployOnLineOrder : UnitOrder
 {
     public List<Vector2> Points { get; private set; }
-
-    public DeployOnLineOrder(List<Vector2> points)
+    public List<int> UnitIdsInLine { get; private set; }
+    public DeployOnLineOrder(List<Vector2> points,
+        List<int> unitIdsInLine)
     {
         Points = points;
+        UnitIdsInLine = unitIdsInLine;
         for (var i = 0; i < points.Count; i++)
         {
             var p = points[i];
@@ -23,37 +25,57 @@ public class DeployOnLineOrder : UnitOrder
 
     public override void Handle(UnitGroup g, Data d, HandleUnitOrdersProcedure proc)
     {
-        var units = g.Units.Items(d);
-        var count = units.Count();
-        var iter = 0;
-        foreach (var unit in units)
+        var count = UnitIdsInLine.Count;
+        var alliance = g.Regime.Entity(d).GetAlliance(d);
+        for (var i = 0; i < UnitIdsInLine.Count; i++)
         {
-            iter++;
-            var pos = Points.GetPointAlongLine(
+            var unit = d.Get<Unit>(UnitIdsInLine[i]);
+            var pos = unit.Position;
+            var movePoints = Unit.MovePoints;
+            var target = Points.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),
-                (float)iter / count);
+                (float)i / count);
+            
+            unit.MoveToPoint(target, ref pos, ref movePoints, d);
+
             proc.NewUnitPosesById.Add(unit.Id, pos);
         }
     }
 
-    public override void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data data)
+    public override void Draw(UnitGroup group, Vector2 relTo, 
+        MeshBuilder mb, Data d)
     {
-        var innerColor = group.Regime.Entity(data).PrimaryColor;
-        var outerColor = group.Regime.Entity(data).PrimaryColor;
+        var innerColor = group.Regime.Entity(d).PrimaryColor;
+        var outerColor = group.Regime.Entity(d).PrimaryColor;
         var squareSize = 5f;
         var lineSize = 1f;
         for (var i = 0; i < Points.Count; i++)
         {
             var p = Points[i];
-            var pRel = relTo.GetOffsetTo(p, data);
+            var pRel = relTo.GetOffsetTo(p, d);
             if (i < Points.Count - 1)
             {
                 var pNext = Points[i + 1];
-                var pNextRel = relTo.GetOffsetTo(pNext, data);
+                var pNextRel = relTo.GetOffsetTo(pNext, d);
                 mb.AddLine(pRel, pNextRel, innerColor, lineSize);
             }
-            // mb.AddSquare(pRel, squareSize, outerColor);
-            // mb.AddSquare(pRel, squareSize * .75f, innerColor);
         }
+        
+        var count = UnitIdsInLine.Count();
+        for (var i = 0; i < UnitIdsInLine.Count; i++)
+        {
+            var unit = d.Get<Unit>(UnitIdsInLine[i]);
+            var pos = unit.Position;
+            
+            
+            
+            var target = Points.GetPointAlongLine(
+                (v, w) => v.GetOffsetTo(w, d),
+                (float)i / count);
+            mb.AddLine(relTo.GetOffsetTo(pos, d),
+                relTo.GetOffsetTo(target, d),
+                Colors.Blue, 1f);
+        }
+        
     }
 }

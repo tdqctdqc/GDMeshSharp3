@@ -43,7 +43,6 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
                 .FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
             if (front == null) continue;
             res += "\n  Front: " + front.Id;
-            highlighter.DrawHostileRays(front, wp, d);
             var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>().FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
             if (seg == null) continue;
             highlighter.DrawFrontSegment(seg, d);

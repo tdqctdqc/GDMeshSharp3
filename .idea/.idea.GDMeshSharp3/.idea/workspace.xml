@@ -5,12 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitMover.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/WaypointExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/WaypointExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DoNothingUnitOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DoNothingUnitOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToWaypointOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToWaypointOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitOrder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/TacWaypointTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/TacWaypointTooltipTemplate.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -66,8 +70,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/AllianceMilitaryAi.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/AllianceMilitaryAi.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/ForceAssignment/FrontAssignment.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
@@ -387,7 +390,10 @@
       <workItem from="1702951723308" duration="4034000" />
       <workItem from="1702955853803" duration="144000" />
       <workItem from="1703013157632" duration="7614000" />
-      <workItem from="1703091133598" duration="6254000" />
+      <workItem from="1703091133598" duration="7049000" />
+      <workItem from="1703109065878" duration="7151000" />
+      <workItem from="1703124615570" duration="1586000" />
+      <workItem from="1703780968579" duration="2919000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -599,14 +605,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00073" summary="reworked dip module order, proposals, added MakeProposalCommand.cs">
-      <option name="closed" value="true" />
-      <created>1699229077604</created>
-      <option name="number" value="00073" />
-      <option name="presentableId" value="LOCAL-00073" />
-      <option name="project" value="LOCAL" />
-      <updated>1699229077605</updated>
-    </task>
     <task id="LOCAL-00074" summary="making ai's send procs directly rather than use orders where it makes sense">
       <option name="closed" value="true" />
       <created>1699238397772</created>
@@ -751,7 +749,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703019546166</updated>
     </task>
-    <option name="localTasksCounter" value="92" />
+    <task id="LOCAL-00092" summary="one more front construction algorithm">
+      <option name="closed" value="true" />
+      <created>1703098757291</created>
+      <option name="number" value="00092" />
+      <option name="presentableId" value="LOCAL-00092" />
+      <option name="project" value="LOCAL" />
+      <updated>1703098757291</updated>
+    </task>
+    <option name="localTasksCounter" value="93" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -773,7 +779,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="refactored OrderHolder.cs" />
     <MESSAGE value="made graphic updates synchronous by queue" />
     <MESSAGE value="made proper error catching for ai threads" />
     <MESSAGE value="working on unit orders + movement" />
@@ -798,6 +803,7 @@
     <MESSAGE value="working on shifting unitgroups between existing force assigns as needed" />
     <MESSAGE value="made UnitGroup pos just pos of first unit to fix pathfinding bug" />
     <MESSAGE value="made logic to put units in right theater, made better (?) front line algorithm" />
-    <option name="LAST_COMMIT_MESSAGE" value="made logic to put units in right theater, made better (?) front line algorithm" />
+    <MESSAGE value="one more front construction algorithm" />
+    <option name="LAST_COMMIT_MESSAGE" value="one more front construction algorithm" />
   </component>
 </project>

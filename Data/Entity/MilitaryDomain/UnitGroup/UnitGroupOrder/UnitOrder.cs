@@ -7,5 +7,5 @@ using Godot;
 public abstract class UnitOrder : IPolymorph
 {
     public abstract void Handle(UnitGroup g, Data d, HandleUnitOrdersProcedure proc);
-    public abstract void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data data);
+    public abstract void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data d);
 }

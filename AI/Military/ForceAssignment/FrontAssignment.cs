@@ -242,28 +242,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
                     chain.Add(new LineSegment(last.Pos, t2.Pos));
                 }
 
-                if (chain.Count > FrontSegmentAssignment.IdealSegmentLength * 1.5f)
-                {
-                    var numChains = Mathf.FloorToInt((float)chain.Count / FrontSegmentAssignment.IdealSegmentLength);
-                    var numLinksPerChain = Mathf.CeilToInt((float)chain.Count / numChains);
-                    var iter = 0;
-                    var curr = new List<LineSegment>();
-                    for (var i = 0; i < chain.Count; i++)
-                    {
-                        curr.Add(chain[i]);
-                        iter++;
-                        if (iter == numLinksPerChain || i == chain.Count - 1)
-                        {
-                            res.Add(curr.GetPoints());
-                            iter = 0;
-                            curr = new List<LineSegment>();
-                        }
-                    }
-                }
-                else
-                {
-                    res.Add(chain.GetPoints());
-                }
+                
                 
 
                 
@@ -543,12 +522,42 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         }
 
         edges = edges.Where(hasNonIntersectingHostileRay).ToHashSet();
-        return edges.Select(getLineSeg).ToList()
-            .GetChains()
-            .Select(c => c.GetPoints().Select(p => d.Military.TacticalWaypoints.ByPos[p])
-                .Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList())
-            .ToList();
+        
+        
+        var chains = edges
+            .Select(getLineSeg).ToList()
+            .GetChains();
+        var res = new List<List<Vector2>>();
+        for (var i = 0; i < chains.Count; i++)
+        {
+            var chain = chains[i];
+            if (chain.Count <=
+                FrontSegmentAssignment.IdealSegmentLength * 1.5f)
+            {
+                res.Add(chain.GetPoints());
+                continue;
+            }
+            var numChains = Mathf.FloorToInt((float)chain.Count / FrontSegmentAssignment.IdealSegmentLength);
+            var numLinksPerChain = Mathf.CeilToInt((float)chain.Count / numChains);
+            var iter = 0;
+            var curr = new List<LineSegment>();
+            for (var j = 0; j < chain.Count; j++)
+            {
+                curr.Add(chain[j]);
+                iter++;
+                if (iter == numLinksPerChain || j == chain.Count - 1)
+                {
+                    res.Add(curr.GetPoints());
+                    iter = 0;
+                    curr = new List<LineSegment>();
+                }
+            }
+        }
 
+        return res
+            .Select(c => c.Select(p => d.Military.TacticalWaypoints.ByPos[p])
+                .Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList())
+            .ToList();;
         
         HashSet<Vector3I> getTris()
         {
@@ -577,9 +586,6 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             var wpA = MilitaryDomain.GetTacWaypoint(a, d);
             var wpB = MilitaryDomain.GetTacWaypoint(b, d);
             var wpC = MilitaryDomain.GetTacWaypoint(c, d);
-
-            
-            //todo restrict hostiles to certain cone
             
             var axis = wpA.Pos.GetOffsetTo(wpB.Pos, d);
             var rAxis = -axis;
@@ -714,6 +720,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         var lines = GetLinesByTris(d)
             .ToDictionary(l => l, 
                 l => new List<FrontSegmentAssignment>());
+        
         var segments = Assignments.WhereOfType<FrontSegmentAssignment>().ToList();
         foreach (var fsa in segments)
         {
