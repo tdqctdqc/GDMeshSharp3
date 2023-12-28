@@ -49,7 +49,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         _outer = new MultiMeshInstance2D();
         _outer.Multimesh = new MultiMesh();
         var outerQuad = new QuadMesh();
-        outerQuad.Size = 12f * Vector2.One;
+        outerQuad.Size = 5f * Vector2.One;
         _outer.Multimesh.Mesh = outerQuad;
         _outer.Multimesh.UseColors = true;
         AddChild(_outer);
@@ -58,7 +58,7 @@ public partial class WaypointGraphicChunk : Node2D, IMapChunkGraphicNode
         _inner = new MultiMeshInstance2D();
         _inner.Multimesh = new MultiMesh();
         var innerQuad = new QuadMesh();
-        innerQuad.Size = 10f * Vector2.One;
+        innerQuad.Size = 3f * Vector2.One;
         _inner.Multimesh.Mesh = innerQuad;
         _inner.Multimesh.UseColors = true;
         AddChild(_inner);
