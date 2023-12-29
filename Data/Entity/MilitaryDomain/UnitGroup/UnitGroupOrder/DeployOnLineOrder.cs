@@ -30,7 +30,7 @@ public class DeployOnLineOrder : UnitOrder
         for (var i = 0; i < UnitIdsInLine.Count; i++)
         {
             var unit = d.Get<Unit>(UnitIdsInLine[i]);
-            var pos = unit.Position;
+            var pos = unit.Position.Copy();
             var movePoints = Unit.MovePoints;
             var target = Points.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),

@@ -35,9 +35,9 @@ public class GoToWaypointOrder : UnitOrder
         var path = PathWaypointIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList();
         foreach (var unit in g.Units.Items(d))
         {
-            var pos = unit.Position;
+            var pos = unit.Position.Copy();
             var movePoints = Unit.MovePoints;
-            unit.MoveFromPointToPath(pos, ref movePoints, path, d);
+            unit.MoveOntoAndAlongPath(pos, ref movePoints, path, d);
             proc.NewUnitPosesById.Add(unit.Id, pos);
         }
     }
