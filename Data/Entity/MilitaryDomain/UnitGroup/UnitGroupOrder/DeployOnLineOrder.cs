@@ -23,8 +23,10 @@ public class DeployOnLineOrder : UnitOrder
         }
     }
 
-    public override void Handle(UnitGroup g, Data d, HandleUnitOrdersProcedure proc)
+    public override void Handle(UnitGroup g, LogicWriteKey key,
+        HandleUnitOrdersProcedure proc)
     {
+        var d = key.Data;
         var count = UnitIdsInLine.Count;
         var alliance = g.Regime.Entity(d).GetAlliance(d);
         for (var i = 0; i < UnitIdsInLine.Count; i++)
@@ -36,9 +38,9 @@ public class DeployOnLineOrder : UnitOrder
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
             
-            unit.MoveToPoint(target, pos, ref movePoints, d);
+            unit.MoveToPoint(target, pos, ref movePoints, key);
 
-            proc.NewUnitPosesById.Add(unit.Id, pos);
+            proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }
 

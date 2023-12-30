@@ -6,7 +6,10 @@ using Godot;
 public class DirtRoad : RoadModel
 {
     public DirtRoad() 
-        : base(nameof(DirtRoad), 2, Colors.SaddleBrown)
+        : base(nameof(DirtRoad), 
+            2, 
+            0f,
+            Colors.SaddleBrown)
     {
     }
 

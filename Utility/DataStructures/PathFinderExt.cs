@@ -5,11 +5,28 @@ using Godot;
 
 public static partial class PathFinder
 {
-    public static List<Waypoint> FindPathForUnit(Unit u, Waypoint start,
+    public static List<Waypoint> FindPathForUnit(Unit u, 
+        Waypoint start,
         Waypoint dest, Data d)
     {
         var alliance = u.Regime.Entity(d).GetAlliance(d);
-        return FindLandWaypointPath(start, dest, alliance, d);
+        var moveType = u.Template.Entity(d).MoveType.Model(d);
+        return PathFinder<Waypoint>.FindPath(start, dest, 
+            p => p.TacNeighbors(d)
+                .Where(wp => moveType.Passable(wp, alliance, d)),
+            (w,p) => LandWpMoveCost(w, p, d), 
+            (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, d).Length());
+    }
+    public static List<Waypoint> FindPath(UnitMoveType moveType, 
+        Alliance alliance,
+        Waypoint start,
+        Waypoint dest, Data d)
+    {
+        return PathFinder<Waypoint>.FindPath(start, dest, 
+            p => p.TacNeighbors(d)
+                .Where(wp => moveType.Passable(wp, alliance, d)),
+            (w,p) => LandWpMoveCost(w, p, d), 
+            (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, d).Length());
     }
     public static bool IsPassableByUnit(this Waypoint wp, Unit u)
     {
@@ -75,12 +92,12 @@ public static partial class PathFinder
     
     public static bool IsLandPassable(Waypoint wp, Alliance a, Data d)
     {
-        if (wp is IRiverWaypoint r)
-        {
-            return r.Bridgeable
-                && wp.TacNeighbors(d)
-                    .Any(n => n is ILandWaypoint && IsLandPassable(n, a, d));
-        }
+        // if (wp is IRiverWaypoint r)
+        // {
+        //     return r.Bridgeable
+        //         && wp.TacNeighbors(d)
+        //             .Any(n => n is ILandWaypoint && IsLandPassable(n, a, d));
+        // }
         if (wp is ILandWaypoint == false) return false;
         if (wp.GetOccupyingRegime(d).GetAlliance(d) == a) return true;
         if (wp.IsControlled(a, d)) return true;

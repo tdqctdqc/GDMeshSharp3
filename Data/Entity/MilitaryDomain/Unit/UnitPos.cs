@@ -4,12 +4,14 @@ using Godot;
 
 public class UnitPos
 {
-    public Vector2 Pos { get; private set; }
+    public Vector2I Pos { get; private set; }
     public Vector2I WaypointLoc { get; private set; }
-    public UnitPos(Vector2 pos, Vector2I waypointLoc)
+    public PolyTriPosition Tri { get; private set; }
+    public UnitPos(Vector2I pos, Vector2I waypointLoc, PolyTriPosition tri)
     {
         Pos = pos;
         WaypointLoc = waypointLoc;
+        Tri = tri;
     }
 
     public bool OnWaypointAxis()
@@ -38,6 +40,10 @@ public class UnitPos
         return false;
     }
 
+    public PolyTri GetTri(Data d)
+    {
+        return Tri.Tri(d);
+    }
     public Waypoint GetWaypoint(Data d)
     {
         if (OnWaypoint() == false) throw new Exception();
@@ -55,23 +61,44 @@ public class UnitPos
             MilitaryDomain.GetTacWaypoint(WaypointLoc.Y, d));
     }
 
-    public void Set(Vector2 pos)
+    public void Set(Vector2I pos, LogicWriteKey key)
     {
         Pos = pos;
         WaypointLoc = -Vector2I.One;
+        SetTri(key.Data);
     }
-    public void Set(Waypoint w, Waypoint v, Vector2 pos)
+    public void Set(Waypoint w, Waypoint v, Vector2I pos, LogicWriteKey key)
     {
         Pos = pos;
         WaypointLoc = new Vector2I(w.Id, v.Id);
+        SetTri(key.Data);
     }
-    public void Set(Waypoint w)
+    public void Set(Waypoint w, LogicWriteKey key)
     {
-        Pos = w.Pos;
+        Pos = (Vector2I)w.Pos;
         WaypointLoc = new Vector2I(w.Id, -1);
+        SetTri(key.Data);
+    }
+
+    private void SetTri(Data d)
+    {
+        var poly = Tri.Poly(d);
+        var tri = GetTri(d);
+        var rel = poly.Center.GetOffsetTo(Pos, d);
+        if (tri.ContainsPoint(rel))
+        {
+            return;
+        }
+
+        if (poly.PointInPolyRel(rel, d))
+        {
+            Tri = poly.Tris.GetAtPoint(rel, d).GetPosition();
+            return;
+        }
+        Tri = Pos.GetPolyTri(d).GetPosition();
     }
     public UnitPos Copy()
     {
-        return new UnitPos(Pos, WaypointLoc);
+        return new UnitPos(Pos, WaypointLoc, Tri);
     }
 }

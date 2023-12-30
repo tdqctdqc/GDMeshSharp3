@@ -5,7 +5,10 @@ namespace GDMeshSharp3.Session.Data.Model.RoadModels;
 public class StoneRoad : RoadModel
 {
     public StoneRoad() 
-        : base(nameof(StoneRoad), 4, Colors.Black.Lightened(.5f))
+        : base(nameof(StoneRoad), 
+            4, 
+            0f,
+            Colors.Black.Lightened(.5f))
     {
     }
 

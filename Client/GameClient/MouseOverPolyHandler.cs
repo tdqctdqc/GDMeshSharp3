@@ -61,7 +61,7 @@ public class MouseOverPolyHandler
         }
         else
         {
-            var p = data.Planet.PolygonAux.MapPolyGrid.GetElementAtPoint(mousePosMapSpace);
+            var p = data.Planet.PolygonAux.MapPolyGrid.GetElementAtPoint(mousePosMapSpace, data);
             if (p == null) return;
             MouseOverPoly = p;
         }

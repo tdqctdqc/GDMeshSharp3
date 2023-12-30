@@ -34,17 +34,12 @@ public class PolyGrid
 
         for (int i = minXCoord; i <= maxXCoord; i++)
         {
-            for (int j = minYCoord; j < maxYCoord; j++)
+            for (int j = minYCoord; j <= maxYCoord; j++)
             {
                 var key = new Vector2(i, j);
-                if(Cells.ContainsKey(key) == false)
-                {
-                    Cells.Add(key, new List<MapPolygon>());
-                }
-                Cells[key].Add(element);
+                Cells.AddOrUpdate(key, element);
             }
         }
-        
     }
 
     public void Update()
@@ -55,7 +50,42 @@ public class PolyGrid
             AddElement(element);
         }
     }
-    public MapPolygon GetElementAtPoint(Vector2 point)
+
+    private MapPolygon ForceGetClosestAtPoint(Vector2 point, Data d)
+    {
+        int x = (int)(point.X / _partitionSize.X);
+        int y = (int)(point.Y / _partitionSize.Y);
+        var key = new Vector2(x,y);
+        List<MapPolygon> polys = null;
+        try
+        {
+            polys = Cells[key];
+        }
+        catch (Exception e)
+        {
+            GD.Print($"couldn't find polys at {point} cell {key}");
+            GD.Print($"{_partitionsPerAxis} partitions per axis");
+        }
+        return polys.MinBy(p =>
+        {
+            var rel = p.Center.GetOffsetTo(point, d);
+            var bps = p.GetOrderedBoundaryPoints(d);
+            var minDist = Mathf.Inf;
+            for (var i = 0; i < bps.Length; i++)
+            {
+                var from = bps.Modulo(i);
+                var to = bps.Modulo(i + 1);
+                var closest = rel
+                    .GetClosestPointOnLineSegment(from, to);
+                return rel.DistanceTo(closest);
+            }
+
+            return minDist;
+        });
+        
+
+    }
+    public MapPolygon GetElementAtPoint(Vector2 point, Data d)
     {
         int x = (int)(point.X / _partitionSize.X);
         int y = (int)(point.Y / _partitionSize.Y);
@@ -86,6 +116,11 @@ public class PolyGrid
                 return true;
             }, x, y
         );
+
+        if (found == null)
+        {
+            return ForceGetClosestAtPoint(point, d);
+        }
         return found;
     }
 
@@ -94,7 +129,8 @@ public class PolyGrid
     {
         if (Cells.TryGetValue(key, out var cell))
         {
-            p = cell.FirstOrDefault(mp => mp.PointInPolyAbs(point, _data));
+            p = cell.FirstOrDefault(mp => 
+                mp.PointInPolyAbs(point, _data));
             if (p != null)
             {
                 return true;

@@ -58,7 +58,7 @@ public class FrontSegmentAssignment : ForceAssignment
                 lineGroups.ToList(),
                 g => g.GetPowerPoints(key.Data),
                 (v,w) => v.Pos.GetOffsetTo(w.Pos, key.Data).Length(),
-                v => GetWpDeployPos(v, alliance, key.Data),
+                v => v.Pos,
                 (v,w) => v.GetOffsetTo(w, key.Data),
                 (g, l) =>
                 {
@@ -82,19 +82,6 @@ public class FrontSegmentAssignment : ForceAssignment
         }
     }
 
-    private Vector2 GetWpDeployPos(Waypoint wp, Alliance a, Data d)
-    {
-        if (wp is IRiverWaypoint)
-        {
-            return wp.TacNeighbors(d)
-                .Where(n => n is ILandWaypoint
-                            && n.IsControlled(a, d))
-                .Select(n => wp.Pos.GetOffsetTo(n.Pos, d).Normalized())
-                .Sum().Normalized() * 20f + wp.Pos;
-        }
-
-        return wp.Pos;
-    }
     public HashSet<UnitGroup> GetLineGroups(Data d)
     {
         var a = Regime.Entity(d).GetAlliance(d);

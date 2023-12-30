@@ -150,7 +150,9 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
                 .FirstOrDefault(t => wps.Any(wp => t.TacWaypointIds.Contains(wp.Id)));
             if (theater == null)
             {
-                GD.Print("couldnt find theater for free unit group");
+                GD.Print($"couldnt find theater for free unit group " +
+                         $"of {r.Name} " +
+                         $"at wp {wps.First().Id}");
                 continue;
             }
             theater.GroupIds.Add(freeGroup.Id);

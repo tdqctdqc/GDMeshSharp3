@@ -8,11 +8,13 @@ public class UnitTemplate : Entity, IMakeable
     public IdCount<Troop> TroopCounts { get; private set; }
     public EntityRef<Regime> Regime { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
+    public ModelRef<UnitMoveType> MoveType { get; private set; }
     public TroopDomain Domain { get; private set; }
     public static UnitTemplate Create(ICreateWriteKey key, 
         string name,
         Dictionary<Troop, float> troopCounts,
         TroopDomain domain,
+        UnitMoveType moveType,
         Regime regime)
     {
         var itemCosts = IdCount<Item>.Construct();
@@ -29,7 +31,7 @@ public class UnitTemplate : Entity, IMakeable
             industrialCost += troop.Makeable.IndustrialCost * numTroop;
         }
         var u = new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
-            regime.MakeRef(),
+            moveType.MakeRef(), regime.MakeRef(),
             key.Data.IdDispenser.TakeId(),
             new MakeableAttribute(itemCosts, industrialCost),
             domain);
@@ -37,11 +39,13 @@ public class UnitTemplate : Entity, IMakeable
         return u;
     }
     [SerializationConstructor] protected UnitTemplate(string name,
-        IdCount<Troop> troopCounts, EntityRef<Regime> regime, int id, 
+        IdCount<Troop> troopCounts, ModelRef<UnitMoveType> moveType,
+        EntityRef<Regime> regime, int id, 
         MakeableAttribute makeable,
         TroopDomain domain) 
         : base(id)
     {
+        MoveType = moveType;
         Name = name;
         Makeable = makeable;
         TroopCounts = troopCounts;
@@ -55,8 +59,8 @@ public class UnitTemplate : Entity, IMakeable
         var inf = Create(key, "Infantry Division",
             new Dictionary<Troop, float>
                 {
-                    {key.Data.Models.Troops.Rifle1, 10f}
-                }, TroopDomain.Land,
+                    {key.Data.Models.Troops.Rifle1, 100f}
+                }, TroopDomain.Land, key.Data.Models.UnitMoveTypes.InfantryMove,
             r);
     }
 }

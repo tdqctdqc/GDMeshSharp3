@@ -1,18 +1,19 @@
 
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Godot;
 using MessagePack;
 
 public class HandleUnitOrdersProcedure : Procedure
 {
-    public Dictionary<int, UnitPos> NewUnitPosesById { get; private set; }
+    public ConcurrentDictionary<int, UnitPos> NewUnitPosesById { get; private set; }
 
     public static HandleUnitOrdersProcedure Construct()
     {
-        return new HandleUnitOrdersProcedure(new Dictionary<int, UnitPos>());
+        return new HandleUnitOrdersProcedure(new ConcurrentDictionary<int, UnitPos>());
     }
 
-    [SerializationConstructor] private HandleUnitOrdersProcedure(Dictionary<int, UnitPos> newUnitPosesById)
+    [SerializationConstructor] private HandleUnitOrdersProcedure(ConcurrentDictionary<int, UnitPos> newUnitPosesById)
     {
         NewUnitPosesById = newUnitPosesById;
     }

@@ -15,12 +15,12 @@ public class Unit : Entity
 
     public static Unit Create(UnitTemplate template, 
         Regime regime,
-        Vector2 position,
+        UnitPos pos,
         ICreateWriteKey key)
     {
         var u = new Unit(key.Data.IdDispenser.TakeId(), regime.MakeRef(), template.MakeRef(),
             IdCount<Troop>.Construct(template.TroopCounts),
-            new UnitPos(position, -Vector2I.One) , template.Domain);
+            pos, template.Domain);
         key.Create(u);
         return u;
     }
@@ -44,5 +44,7 @@ public class Unit : Entity
         {
             throw new Exception("bad unit pos");
         }
+
+        Position = pos;
     }
 }

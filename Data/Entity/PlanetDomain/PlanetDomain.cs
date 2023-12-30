@@ -6,13 +6,10 @@ using Godot;
 public class PlanetDomain
 {
     public MapPolygonAux PolygonAux { get; private set; }
-
     public PolyEdgeAux PolyEdgeAux { get; private set; }
     public PlanetInfo Info => _planetInfoAux != null ? _planetInfoAux.Value : null;
     private SingletonAux<PlanetInfo> _planetInfoAux;
     public NavAux NavAux { get; private set; }
-    // public NavWaypoints NavWaypoints => _polyNav.Value;
-    // private SingletonAux<NavWaypoints> _polyNav;
     public ResourceDepositAux ResourceDepositAux { get; private set; }
     public float Width => _planetInfoAux.Value.Dimensions.X;
     public float Height => _planetInfoAux.Value.Dimensions.Y;

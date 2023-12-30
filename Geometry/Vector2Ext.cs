@@ -10,12 +10,28 @@ public static class Vector2Ext
     {
         return data.Planet.GetOffsetTo(v1, v2);
     }
+    public static Vector2 GetOffsetTo(this Vector2I v1, Vector2 v2, Data data)
+    {
+        return data.Planet.GetOffsetTo(v1, v2);
+    }
+    public static PolyTri GetPolyTri(this Vector2I pos, Data d)
+    {
+        return GetPolyTri((Vector2)pos, d);
+    }
+    public static PolyTri GetPolyTri(this Vector2 pos, Data d)
+    {
+        return d.Context.GetPolyTri(pos, d);
+    }
 
     public static Vector2 ClampPosition(this Vector2 v, Data d)
     {
         return d.Planet.ClampPosition(v);
     }
     public static bool HasNaN(this Vector2 v)
+    {
+        return float.IsNaN(v.X) || float.IsNaN(v.Y);
+    }
+    public static bool HasNaN(this Vector2I v)
     {
         return float.IsNaN(v.X) || float.IsNaN(v.Y);
     }

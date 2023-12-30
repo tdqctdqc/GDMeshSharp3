@@ -6,6 +6,6 @@ using Godot;
 [MessagePack.Union(2, typeof(GoToWaypointOrder))]
 public abstract class UnitOrder : IPolymorph
 {
-    public abstract void Handle(UnitGroup g, Data d, HandleUnitOrdersProcedure proc);
+    public abstract void Handle(UnitGroup g, LogicWriteKey key, HandleUnitOrdersProcedure proc);
     public abstract void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data d);
 }

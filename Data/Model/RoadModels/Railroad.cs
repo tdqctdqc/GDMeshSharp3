@@ -6,7 +6,10 @@ using Godot;
 public class Railroad : RoadModel
 {
     public Railroad() 
-        : base(nameof(Railroad), 12, Colors.Black)
+        : base(nameof(Railroad), 
+            0f, 
+            25f,
+            Colors.Black)
     {
     }
 

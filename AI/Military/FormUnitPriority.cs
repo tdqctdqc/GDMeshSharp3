@@ -35,15 +35,20 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
         Dictionary<UnitTemplate, int> toBuild, LogicWriteKey key)
     {
         var regime = orders.Regime.Entity(key.Data);
-        var capitalPos = regime.Capital.Entity(key.Data).Center;
         var useTroops = RegimeUseTroopsProcedure.Construct(regime);
+        var capitalPoly = regime.Capital.Entity(key.Data);
+        var wp = capitalPoly.GetCenterWaypoint(key.Data);
+        var pos = (Vector2I)capitalPoly.Center;
+        var pt = 
+            capitalPoly.Center.GetPolyTri(key.Data).GetPosition();
+        var unitPos = new UnitPos(pos, new Vector2I(wp.Id, -1), pt);
         
         foreach (var (template, num) in toBuild)
         {
             useTroops.AddTroopCosts(template, num, key.Data);
             for (var i = 0; i < num; i++)
             {
-                Unit.Create(template, regime, capitalPos, key);
+                Unit.Create(template, regime, unitPos.Copy(), key);
             }
         }
     }

@@ -12,7 +12,7 @@ public class Context
     public Dictionary<Waypoint, ForceBalance> WaypointForceBalances { get; private set; }
     public Dictionary<Alliance, HashSet<Waypoint>> ControlledAreas { get; private set; }
     public Dictionary<Alliance, Dictionary<Vector2, List<Waypoint>>> WaypointPaths { get; private set; }
-    
+    public Dictionary<Vector2, PolyTri> PolyTris { get; private set; }
     public Context(Data data)
     {
         UnitWaypoints = new Dictionary<Unit, Waypoint>();
@@ -20,6 +20,7 @@ public class Context
         WaypointForceBalances = new Dictionary<Waypoint, ForceBalance>();
         ControlledAreas = new Dictionary<Alliance, HashSet<Waypoint>>();
         WaypointPaths = new Dictionary<Alliance, Dictionary<Vector2, List<Waypoint>>>();
+        PolyTris = new Dictionary<Vector2, PolyTri>();
     }
 
     private void AddForceBalances(Data d)
@@ -153,5 +154,28 @@ public class Context
         var path = PathFinder.FindLandWaypointPath(start, end, a, data);
         paths[key] = path;
         return path;
+    }
+
+    public PolyTri GetPolyTri(Vector2 pos, Data d)
+    {
+        if (pos.Y == 0)
+        {
+            pos += new Vector2(0f, .01f);
+        }
+        if (PolyTris.ContainsKey(pos)) return PolyTris[pos];
+        var polyGrid = d.Planet.PolygonAux.MapPolyGrid;
+        var poly = polyGrid.GetElementAtPoint(pos, d);
+        if (poly == null)
+        {
+            throw new Exception($"couldnt find poly at {pos}");
+        }
+        var rel = poly.Center.GetOffsetTo(pos, d);
+        var pt = poly.Tris.GetAtPoint(rel, d);
+        if (pt == null)
+        {
+            throw new Exception($"couldnt find pt at {pos} rel {rel}");
+        }
+        PolyTris.TryAdd(pos, pt);
+        return pt;
     }
 }

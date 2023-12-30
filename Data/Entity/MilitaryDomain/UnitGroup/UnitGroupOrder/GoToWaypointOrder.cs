@@ -14,6 +14,7 @@ public class GoToWaypointOrder : UnitOrder
         var alliance = r.GetAlliance(d);
         var currWp = g.GetWaypoint(d);
         if (currWp == null) throw new Exception();
+        
         var path = PathFinder.FindLandWaypointPath(currWp, destWp, alliance, d);
         if (path == null)
         {
@@ -27,9 +28,10 @@ public class GoToWaypointOrder : UnitOrder
         PathWaypointIds = pathWaypointIds;
     }
     
-    public override void Handle(UnitGroup g, Data d, 
+    public override void Handle(UnitGroup g, LogicWriteKey key, 
         HandleUnitOrdersProcedure proc)
     {
+        var d = key.Data;
         var alliance = g.Regime.Entity(d).GetAlliance(d);
         var context = d.Context;
         var path = PathWaypointIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList();
@@ -37,8 +39,8 @@ public class GoToWaypointOrder : UnitOrder
         {
             var pos = unit.Position.Copy();
             var movePoints = Unit.MovePoints;
-            unit.MoveOntoAndAlongPath(pos, ref movePoints, path, d);
-            proc.NewUnitPosesById.Add(unit.Id, pos);
+            unit.MoveOntoAndAlongPath(pos, ref movePoints, path, key);
+            proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }
 

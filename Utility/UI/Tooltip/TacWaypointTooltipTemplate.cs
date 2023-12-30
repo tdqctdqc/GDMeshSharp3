@@ -9,12 +9,20 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
     protected override List<Func<Waypoint, Data, Control>> _fastGetters { get; }
         = new ()
         {
+            GetPos,
             GetId,
             GetOccupier,
             GetControllingAlliances,
             GetTheaters,
             // GetResponsibleRegimes,
         };
+
+    private static Control GetPos(Waypoint wp, Data d)
+    { 
+        var cam = Game.I.Client.Cam();
+        var mapPos = cam.GetMousePosInMapSpace();
+        return NodeExt.CreateLabel(mapPos.ToString());
+    }
 
     private static Control GetId(Waypoint wp, Data d)
     {

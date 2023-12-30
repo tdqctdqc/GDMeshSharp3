@@ -7,7 +7,9 @@ public class Swamp : Vegetation
 {
     public Swamp(LandformList lfs) 
         : base(new HashSet<Landform>{lfs.Plain}, .7f, 
-            .25f, Colors.DarkOliveGreen, "Swamp")
+            .25f, 
+            .3f,
+            Colors.DarkOliveGreen, "Swamp")
     {
     }
 

@@ -36,9 +36,19 @@ public class PolyTris
         TriNeighbors = triNeighbors;
     }
 
-    public PolyTri GetAtPoint(Vector2 point, Data data)
+    public PolyTri GetAtPoint(Vector2 pointRel, Data data)
     {
-        return Tris.FirstOrDefault(t => t.ContainsPoint(point));
+        var pt = Tris.FirstOrDefault(t => 
+            t.ContainsPoint(pointRel));
+        if (pt == null)
+        {
+            var close = Tris.MinBy(t => t.GetDistFromEdge(pointRel));
+            var dist = close.GetDistFromEdge(pointRel);
+            GD.Print($"couldnt find pt at rel point {pointRel}," +
+                     $"found tri at dist {dist}");
+            return close;
+        }
+        return pt;
     }
     
     public void SetNeighbors(GenWriteKey key)

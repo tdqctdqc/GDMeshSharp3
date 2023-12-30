@@ -41,7 +41,7 @@ public class UnitGroup : Entity
 
     public Waypoint GetWaypoint(Data d)
     {
-        var p = d.Planet.GetAveragePosition(Units.Items(d).Select(u => u.Position.Pos));
+        var p = Units.Items(d).First().Position.Pos;
         var found = d.Military.WaypointGrid.TryGetClosest(p, out var wp, w => true);
         if (found == false) throw new Exception();
         return wp;

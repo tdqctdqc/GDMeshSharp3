@@ -505,9 +505,8 @@ public class TacticalWaypointGenerator : Generator
             doBankWps(hiPoly);
             var loPoly = edge.LowPoly.Entity(key.Data);
             doBankWps(loPoly);
-
-
-            var iRiverEdges = edge.GetIncidentEdges(key.Data)
+            var iRiverEdges = edge
+                .GetIncidentEdges(key.Data)
                 .Where(e => e.IsRiver());
             foreach (var iRiverEdge in iRiverEdges)
             {
@@ -515,7 +514,9 @@ public class TacticalWaypointGenerator : Generator
                 var poly = iRiverEdge.EdgeToPoly(hiPoly)
                     ? hiPoly
                     : loPoly;
-                var iRiverBankWps = _riverBankWps[new Vector2I(iRiverEdge.Id, poly.Id)];
+                var iKey = new Vector2I(iRiverEdge.Id, poly.Id);
+                if (_riverBankWps.ContainsKey(iKey) == false) continue;
+                var iRiverBankWps = _riverBankWps[iKey];
                 var bankWps = _riverBankWps[new Vector2I(edge.Id, poly.Id)];
                 if (iRiverBankWps.Count == 0 || bankWps.Count == 0) continue;
                 Waypoint from = null;

@@ -33,10 +33,19 @@ public class RegimeGenerator : Generator
                 .First();
 
             var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetPolys(key.Data).Count()));
-            var numUnits = score * 20;
+            var numUnits = score * 50;
+
+            var capitalPoly = regime.Capital.Entity(key.Data);
+            var wp = capitalPoly.GetCenterWaypoint(key.Data);
+            var pos = (Vector2I)capitalPoly.Center;
+            var pt = 
+                capitalPoly.Center.GetPolyTri(key.Data).GetPosition();
+
+            var unitPos = new UnitPos(pos, 
+                new Vector2I(wp.Id, -1), pt);
             for (var i = 0; i < numUnits; i++)
             {
-                Unit.Create(template, regime, regime.Capital.Entity(key.Data).Center, key);
+                Unit.Create(template, regime, unitPos.Copy(), key);
             }
         }
         report.StopSection("all");
