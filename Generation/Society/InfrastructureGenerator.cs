@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using DelaunatorSharp;
 using Godot;
+using RoadWaypointGraph = Graph<(Waypoint node, float size), 
+    (Godot.Vector2I key, float cost, float traffic)>;
 
 public class InfrastructureGenerator : Generator
 {
@@ -19,163 +21,209 @@ public class InfrastructureGenerator : Generator
         
         genReport.StartSection();
         var roads = RoadNetwork.Create(key);
-        
-        var segs = new ConcurrentDictionary<Vector2, RoadModel>();
+        var allSegs = new ConcurrentBag<Dictionary<Vector2I, RoadModel>>();
         Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
         {
-            GenerateForLandmass(lm, segs);
+            var segs = GenerateForLandmass(lm);
+            if(segs != null) allSegs.Add(segs);
         });
-        
-        foreach (var kvp in segs)
+        foreach (var segs in allSegs)
         {
-            var edge = kvp.Key;
-            var road = kvp.Value;
-            
-            var wp1 = MilitaryDomain.GetTacWaypoint((int)edge.X, _data);
-            var wp2 = MilitaryDomain.GetTacWaypoint((int)edge.Y, _data);
-            roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
+            foreach (var kvp in segs)
+            {
+                var edge = kvp.Key;
+                var road = kvp.Value;
+                var wp1 = MilitaryDomain.GetTacWaypoint((int)edge.X, _data);
+                var wp2 = MilitaryDomain.GetTacWaypoint((int)edge.Y, _data);
+                var success = roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
+                if (success == false) throw new Exception();
+            }
         }
         genReport.StopSection(nameof(GenerateForLandmass));
         return genReport;
     }
-
-    private void AddSeg(RoadModel r, Vector2 edgeKey, IDictionary<Vector2, RoadModel> segs)
+    private Dictionary<Vector2I, RoadModel> GenerateForLandmass(Landmass lm)
     {
-        if (segs.ContainsKey(edgeKey) == false
-            || r.SpeedMult > segs[edgeKey].SpeedMult)
+        GeneratePorts(lm.Polys);
+        return BuildLmRoadNetworkNew(lm);
+    }
+    
+    private Dictionary<Vector2I, RoadModel> BuildLmRoadNetworkNew(Landmass lm)
+    {
+        var roadNodes = GetRoadNodes(lm.Polys);
+        if (roadNodes.Count < 5) return null;
+        try
         {
-            segs[edgeKey] = r;
+            var graph = MakeRoadWaypointGraph(roadNodes);
+            var res = MakeRoadSegs(graph);
+            GD.Print("success");
+            return res;
+        }
+        catch (Exception e)
+        {
+            GD.Print("failure");
+            return null;
         }
     }
-    private void GenerateForLandmass(Landmass lm,
-        IDictionary<Vector2, RoadModel> segs)
+    
+    
+    
+    
+    private List<(Waypoint, float size)> GetRoadNodes(HashSet<MapPolygon> polys)
     {
-        GeneratePorts(lm);
-        BuildLmRoadNetwork(lm, segs);
-        BuildPortRoads(lm, segs);
-    }
-    private void BuildLmRoadNetwork(Landmass lm,
-        IDictionary<Vector2, RoadModel> segs)
-    {
-        var city = _data.Models.Settlements.City;
+        var urban = _data.Models.Landforms.Urban;
         var town = _data.Models.Settlements.Town;
-        var dirt = _key.Data.Models.RoadList.DirtRoad;
-        var stone = _key.Data.Models.RoadList.StoneRoad;
 
-        var paths = new Graph<MapPolygon, List<Waypoint>>();
-        var costs = new Graph<MapPolygon, float>();
-        foreach (var p in lm.Polys)
-        {
-            paths.AddNode(p);
-            costs.AddNode(p);
-        }
-        foreach (var poly in lm.Polys)
-        {
-            foreach (var nPoly in poly.Neighbors.Items(_data))
-            {
-                if (nPoly.Id > poly.Id) continue;
-                if (lm.Polys.Contains(nPoly) == false) continue;
-                var wp1 = poly.GetCenterWaypoint(_data);
-                var wp2 = nPoly.GetCenterWaypoint(_data);
-                var path = PathFinder<Waypoint>
-                    .FindPath(wp1, wp2, wp => wp.TacNeighbors(_data),
-                        (w, v) => PathFinder.RoadBuildEdgeCost(w, v, _data),
-                        (w, v) => w.Pos.GetOffsetTo(v.Pos, _data).Length()
-                    );
-                var cost = PathFinder<Waypoint>.GetPathCost(path, (w, v) => PathFinder.RoadBuildEdgeCost(w, v, _data));
-                paths.AddEdge(poly, nPoly, path);
-                costs.AddEdge(poly, nPoly, cost);
-            }
-        }
-        
-        var settlements = lm.Polys
+        var settlements = polys
             .Where(p => p.HasSettlement(_key.Data))
-            .Select(p => p.GetSettlement(_key.Data))
-            .ToList();
-
-        var towns = settlements
-            .Where(s => s.Poly.Entity(_data).GetPeep(_data).Size >= town.MinSize)
-            .ToList();
-        
-        if(towns.Count() > 2)
-        {
-            var dirtRoads = BuildRoadLevel(towns, costs, paths);
-            foreach (var edgeKey in dirtRoads)
+            .Select(p =>
             {
-                AddSeg(dirt, edgeKey, segs);
-            }
-        }
-
-        var big = settlements
-            .Where(s => s.Poly.Entity(_data).GetPeep(_data).Size >= city.MinSize)
+                var urbanTri = p.Tris.Tris.First(t => t.Landform(_data) == urban);
+                var found = _data.Military.WaypointGrid
+                    .TryGetClosest(urbanTri.GetCentroid() + p.Center,
+                        out var urbanWp, 
+                        wp => wp is ILandWaypoint && wp.AssociatedWithPoly(p));
+                if (found == false) throw new Exception();
+                return (urbanWp, (float)p.GetPeep(_data).Size);
+            })
             .ToList();
-        if(big.Count() > 2)
-        {
-            var stoneRoads = BuildRoadLevel(big, costs, paths);
-            foreach (var edgeKey in stoneRoads)
-            {
-                AddSeg(stone, edgeKey, segs);
-            }
-        }
+        var ports = GeneratePorts(polys)
+            .Select(p => ((Waypoint)p, (float)town.MinSize));
+        settlements.AddRange(ports);
+        return settlements;
     }
-
-    private List<Vector2> BuildRoadLevel(List<Settlement> settlements,
-        Graph<MapPolygon, float> costs,
-        Graph<MapPolygon, List<Waypoint>> paths)
-    {
-        var first = settlements.First();
-        var graph = GraphGenerator.GenerateDelaunayGraph(
-            settlements,
-            s => first.Poly.Entity(_data).GetOffsetTo(s.Poly.Entity(_data), _data),
-            (p1, p2) => p1.GetIdEdgeKey(p2));
-        var res = new List<Vector2>();
-        var tWps = _data.Military.TacticalWaypoints;
-
-        foreach (var e in graph.Edges)
+    
+    private RoadWaypointGraph MakeRoadWaypointGraph(List<(Waypoint wp, float size)> roadNodes)
         {
-            var s1 = (Settlement)_data[(int)e.X];
-            var s2 = (Settlement)_data[(int)e.Y];
-            var buildPath = PathFinder
-                .FindPathFromGraph(s1.Poly.Entity(_data), 
-                    s2.Poly.Entity(_data), costs, _data);
-            if (buildPath.Any(p => p.IsWater())) throw new Exception();
-            for (var i = 0; i < buildPath.Count - 1; i++)
+            var relTo = roadNodes.First().wp.Pos;
+            var graph = GraphGenerator
+                .GenerateDelaunayGraph<(Waypoint node, float size), 
+                    (Vector2I key, float cost, float traffic)>(
+                roadNodes,
+                s => relTo.GetOffsetTo(s.node.Pos, _data),
+                getEdge
+            );
+
+            (Vector2I key, float cost, float traffic)
+                getEdge((Waypoint node, float size) node1, (Waypoint node, float size) node2)
             {
-                var waypoints = paths.GetEdge(buildPath[i], buildPath[i + 1]).ToList();
-                for (var k = 0; k < waypoints.Count - 1; k++)
+                var key = node1.node.GetIdEdgeKey(node2.node);
+                var length = node1.node.Pos.GetOffsetTo(node2.node.Pos, _data).Length(); 
+                if (length > 1000f)
                 {
-                    var edgeId = waypoints[k].GetIdEdgeKey(waypoints[k + 1]);
-                    res.Add(edgeId);
+                    return (-Vector2I.One, 0f, 0f);
+                }
+                return (key, length, 1001f);
+            }
+            
+            foreach (var el in graph.Elements)
+            {
+                var ns = graph
+                    .GetNeighbors(el).ToArray();
+                foreach (var n in ns)
+                {
+                    var edge = graph.GetEdge(el, n);
+                    if (edge.key == -Vector2I.One)
+                    {
+                        graph.RemoveEdge(el, n);
+                    }
                 }
             }
+    
+            return graph;
+        }
+        
+    
+    private Dictionary<Vector2I, RoadModel> MakeRoadSegs(
+        RoadWaypointGraph graph)
+    {
+        var frontier = new HashSet<Waypoint>();
+        var edgeTraffic = new Dictionary<Vector2I, float>();
+        foreach (var graphNode in graph.Nodes)
+        {
+            var size = graphNode.Element.size;
+            var credit = size * 100f;
+        }
+
+        var dirt = _data.Models.RoadList.DirtRoad;
+        var stone = _data.Models.RoadList.StoneRoad;
+
+        foreach (var valueTuple in graph.Edges)
+        {
+            var traffic = valueTuple.traffic;
+            var key = valueTuple.key;
+            var from = MilitaryDomain.GetTacWaypoint(key.X, _data);
+            var to = MilitaryDomain.GetTacWaypoint(key.Y, _data);
+            var path = PathFinder<Waypoint>
+                .FindPath(from, to,
+                    wp => wp.TacNeighbors(_data),
+                    getEdgeCost,
+                    (w, v) => w.Pos.GetOffsetTo(v.Pos, _data).Length()
+                );
+            if (path == null) continue;
+            for (var i = 0; i < path.Count - 1; i++)
+            {
+                var pathEdgeKey = path[i].GetIdEdgeKey(path[i + 1]);
+                edgeTraffic.AddOrSum(pathEdgeKey, traffic);
+            }
+        }
+        var segs = new Dictionary<Vector2I, RoadModel>();
+        foreach (var kvp in edgeTraffic)
+        {
+            var road = getRoadFromTraffic(kvp.Value);
+            if(road != null) segs.Add(kvp.Key, road);
+        }
+
+        RoadModel getRoadFromTraffic(float traffic)
+        {
+            if (traffic > 1000f) return stone;
+            else if (traffic > 500f) return dirt;
+            return null;
+        }
+
+        float getEdgeCost(Waypoint w, Waypoint v)
+        {
+            var key = w.GetIdEdgeKey(v);
+            if (edgeTraffic.TryGetValue(key, out var traffic))
+            {
+                var road = getRoadFromTraffic(traffic);
+                if (road != null)
+                {
+                    var length = w.Pos.GetOffsetTo(v.Pos, _data).Length();
+                    return length / road.SpeedMult;
+                }
+            }
+
+            return PathFinder.RoadBuildEdgeCost(w, v, _data);
+        }
+        return segs;
+    }
+    private HashSet<IWaypoint> GeneratePorts(HashSet<MapPolygon> polys)
+    {
+        var uf = new UnionFind<MapPolygon>(
+            (p, n) => p.OwnerRegime.RefId == n.OwnerRegime.RefId);
+         
+        foreach (var poly in polys)
+        {
+            uf.AddElement(poly, poly.Neighbors.Items(_key.Data));
+        }
+        var res = new HashSet<IWaypoint>();
+
+        var fragments = uf.GetUnions();
+        foreach (var fragment in fragments)
+        {
+            res.AddRange(GenerateRegimeLmFragmentPorts(fragment));
         }
 
         return res;
     }
-    
-    
-    private void GeneratePorts(Landmass lm)
-    {
-        var uf = new UnionFind<MapPolygon>(
-            (p, n) => p.OwnerRegime.RefId == n.OwnerRegime.RefId);
-        foreach (var poly in lm.Polys)
-        {
-            uf.AddElement(poly, poly.Neighbors.Items(_key.Data));
-        }
-
-        var fragments = uf.GetUnions();
-        foreach (var polys in fragments)
-        {
-            GenerateRegimeLmFragmentPorts(polys);
-        }
-    }
-    private void GenerateRegimeLmFragmentPorts(List<MapPolygon> polys)
+    private HashSet<IWaypoint> GenerateRegimeLmFragmentPorts(List<MapPolygon> polys)
     {
         var coastCityPolys = polys
             .Where(p => p.HasSettlement(_key.Data))
             .Where(p => p.Neighbors.Items(_key.Data)
                 .Any(n => n.IsWater()));
-        
+        var res = new HashSet<IWaypoint>();
         foreach (var poly in coastCityPolys)
         {
             var wps = poly.GetAssocTacWaypoints(_key.Data)
@@ -186,68 +234,10 @@ public class InfrastructureGenerator : Generator
                 if (polySeaIds.Contains(coastWaypoint.Sea)) continue;
                 polySeaIds.Add(coastWaypoint.Sea);
                 coastWaypoint.SetPort(true, _key);
+                res.Add(coastWaypoint);
             }
         }
-    }
-    private void BuildPortRoads(Landmass lm, 
-        IDictionary<Vector2, RoadModel> segs)
-    {
-        var stoneRoad = _key.Data.Models.RoadList.StoneRoad;
-        var dirtRoad = _key.Data.Models.RoadList.DirtRoad;
-        var city = _data.Models.Settlements.City;
-        var town = _data.Models.Settlements.Town;
-        var village = _data.Models.Settlements.Village;
-        
-        var settlementPolys = lm.Polys
-            .Where(p => p.HasSettlement(_data));
-        var largeSettlementPolys =
-            settlementPolys.Where(p => p.GetSettlement(_data).Tier.Model(_data) != village);
-        if (settlementPolys.Count() < 3) return;
 
-        var portWps = lm.Polys
-            .SelectMany(p => p.GetAssocTacWaypoints(_data))
-            .Distinct().Where(wp => wp is CoastWaypoint c && c.Port);
-
-        var settlementWps = settlementPolys
-            .Select(p => p.GetCenterWaypoint(_data)).ToHashSet();
-        var largeSettlementWps = largeSettlementPolys
-            .Select(p => p.GetCenterWaypoint(_data)).ToHashSet();
-        foreach (var portWp in portWps)
-        {
-            var path = PathFinder<Waypoint>.FindPathMultipleEnds(portWp,
-                wp => settlementWps.Contains(wp),
-                wp => wp.TacNeighbors(_data)
-                    .Where(n => n is SeaWaypoint == false
-                    && (n is IRiverWaypoint r ? r.Bridgeable : true)),
-                (w, v) => PathFinder.RoadBuildEdgeCost(w, v, _data));
-            if (path == null) continue;
-            var settlement = path.Last().AssocPolys(_key.Data).First().GetSettlement(_key.Data);
-            
-
-            if (settlement.Tier.Model(_data) == village)
-            {
-                var pathToLargeSettlement = PathFinder<Waypoint>.FindPathMultipleEnds(portWp,
-                    wp => largeSettlementWps.Contains(wp),
-                    wp => wp.TacNeighbors(_data)
-                        .Where(n => n is SeaWaypoint == false
-                        && (n is IRiverWaypoint r ? r.Bridgeable : true)),
-                    (w, v) => PathFinder.RoadBuildEdgeCost(w, v, _data));
-                if (pathToLargeSettlement != null)
-                {
-                    for (var i = 0; i < pathToLargeSettlement.Count; i++)
-                    {
-                        path.Add(pathToLargeSettlement[i]);
-                    }
-                }
-            }
-            
-            for (var i = 0; i < path.Count - 1; i++)
-            {
-                RoadModel use = settlement.Poly.Entity(_data).GetPeep(_data).Size >= city.MinSize
-                    ? stoneRoad
-                    : dirtRoad;
-                AddSeg(use, path[i].GetIdEdgeKey(path[i + 1]), segs);
-            }
-        }
+        return res;
     }
 }

@@ -22,6 +22,10 @@ public static class WaypointExt
     {
         return wp.Neighbors.Select(i => MilitaryDomain.GetTacWaypoint(i, d));
     }
+    public static IEnumerable<IWaypoint> TacNeighbors(this IWaypoint wp, Data d)
+    {
+        return wp.Neighbors.Select(i => MilitaryDomain.GetTacWaypoint(i, d));
+    }
 
     public static bool IsControlled(this Waypoint wp,
         Alliance alliance, Data data)

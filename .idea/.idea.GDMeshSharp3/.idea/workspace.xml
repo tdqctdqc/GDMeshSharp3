@@ -5,61 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiController.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/BlankMode.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/NormalMode.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UiMode.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/InfantryMoveType.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exception/Issue/CantFindWaypointPathIssue.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exception/Issue/Issue.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exception/Issue/IssueWindow.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/FormUnitPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/FormUnitPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapInputCatcher.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverPolyHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/IClient.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/IClient.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/UiRequests.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/WindowManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/WindowManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/ClientData/ClientPlayerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/ClientData/ClientPlayerData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitMoveTypes/InfantryMoveType.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitMoveTypes/UnitMoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitMoveTypes/UnitMoveTypes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveTypes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitMover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Mover.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitPos.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/MapPos.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroup.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToWaypointOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToWaypointOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/IWaypoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/IWaypoint.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/TempRiver/NewRiverTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/TempRiver/TempRiverData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/TempRiverData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Models.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Models.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/TacticalWaypointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/TacticalWaypointGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/TacticalWaypoints.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/TacticalWaypoints.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/WaypointExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/Nav/WaypointExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/IIdentifiable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/IIdentifiable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/IdGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/IdGraph.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -450,7 +403,9 @@
       <workItem from="1703953303369" duration="273000" />
       <workItem from="1703953627272" duration="5779000" />
       <workItem from="1703967020604" duration="5437000" />
-      <workItem from="1703980011704" duration="4532000" />
+      <workItem from="1703980011704" duration="5179000" />
+      <workItem from="1704039888790" duration="577000" />
+      <workItem from="1704042840191" duration="7457000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -662,14 +617,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00079" summary="working on front building logic">
-      <option name="closed" value="true" />
-      <created>1700522687958</created>
-      <option name="number" value="00079" />
-      <option name="presentableId" value="LOCAL-00079" />
-      <option name="project" value="LOCAL" />
-      <updated>1700522687959</updated>
-    </task>
     <task id="LOCAL-00080" summary="made exe">
       <option name="closed" value="true" />
       <created>1700524432272</created>
@@ -814,7 +761,15 @@
       <option name="project" value="LOCAL" />
       <updated>1703895442800</updated>
     </task>
-    <option name="localTasksCounter" value="98" />
+    <task id="LOCAL-00098" summary="bugfixing pathfinding and movement">
+      <option name="closed" value="true" />
+      <created>1703985062360</created>
+      <option name="number" value="00098" />
+      <option name="presentableId" value="LOCAL-00098" />
+      <option name="project" value="LOCAL" />
+      <updated>1703985062360</updated>
+    </task>
+    <option name="localTasksCounter" value="99" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -836,7 +791,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="tweaking fronts, made graphics settings persistent over turns" />
     <MESSAGE value="making ChunkGraphicLayer.cs a subclass of WholeMapGraphicLayer" />
     <MESSAGE value="fixed border graphics, maybe fixed dual id bug" />
     <MESSAGE value="reworked dip module order, proposals, added MakeProposalCommand.cs" />
@@ -861,6 +815,7 @@
     <MESSAGE value="reforming unit pos" />
     <MESSAGE value="ditto" />
     <MESSAGE value="added unitMoveType" />
-    <option name="LAST_COMMIT_MESSAGE" value="added unitMoveType" />
+    <MESSAGE value="bugfixing pathfinding and movement" />
+    <option name="LAST_COMMIT_MESSAGE" value="bugfixing pathfinding and movement" />
   </component>
 </project>

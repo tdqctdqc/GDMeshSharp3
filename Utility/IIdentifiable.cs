@@ -10,7 +10,7 @@ public interface IIdentifiable
 
 public static class IIdentifiableExt
 {
-    public static Vector2 GetIdEdgeKey(this IIdentifiable i1, IIdentifiable i2)
+    public static Vector2I GetIdEdgeKey(this IIdentifiable i1, IIdentifiable i2)
     {
         var hi = i1.Id > i2.Id
             ? i1.Id
@@ -18,6 +18,6 @@ public static class IIdentifiableExt
         var lo = i1.Id > i2.Id
             ? i2.Id
             : i1.Id;
-        return new Vector2(hi, lo);
+        return new Vector2I(hi, lo);
     }
 }

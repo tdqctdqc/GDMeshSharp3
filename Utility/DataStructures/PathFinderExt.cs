@@ -43,7 +43,7 @@ public static partial class PathFinder
         cost *= 1f + l1.Roughness;
         cost *= 1f + l2.Roughness;
         
-        return cost;
+        return cost * 3f;
     }
     public static float EdgeRoughnessCost(Waypoint p1, Waypoint p2, Data data)
     {

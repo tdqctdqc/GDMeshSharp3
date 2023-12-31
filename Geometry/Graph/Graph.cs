@@ -24,6 +24,15 @@ public class Graph<TNode, TEdge> : IGraph<TNode, TEdge>
         return _nodeDic[t1].HasNeighbor(t2);
     }
 
+    public void RemoveEdge(TNode t1, TNode t2)
+    {
+        var edge = GetEdge(t1, t2);
+        var n1 = _nodeDic[t1];
+        var n2 = _nodeDic[t2];
+        n1.RemoveNeighbor(t2);
+        n2.RemoveNeighbor(t1);
+        Edges.Remove(edge);
+    }
     
 
     IEnumerable<TNode> IReadOnlyGraph<TNode>.GetNeighbors(TNode value)

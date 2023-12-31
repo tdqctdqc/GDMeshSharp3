@@ -17,9 +17,9 @@ public class IdGraph<T, V> where T : IIdentifiable
     {
         Dic = dic;
     }
-    public void TryAdd(T t1, T t2, V v)
+    public bool TryAdd(T t1, T t2, V v)
     {
-        Dic.TryAdd(t1.GetIdEdgeKey(t2), v);
+        return Dic.TryAdd(t1.GetIdEdgeKey(t2), v);
     }
     public void AddOrReplace(T t1, T t2, V v)
     {
