@@ -77,10 +77,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         var allianceAi = key.Data.HostLogicData.AllianceAis[alliance];
         var responsibility = allianceAi
             .MilitaryAi.AreasOfResponsibility[r].ToHashSet();
-        if (responsibility.Any(wp => wp == null))
-        {
-            throw new Exception();
-        }
+        
         var responsibilityIds = responsibility.Select(r => r.Id).ToHashSet();
         
         var covered = new HashSet<int>();

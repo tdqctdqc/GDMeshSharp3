@@ -41,7 +41,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
         var pos = (Vector2I)capitalPoly.Center;
         var pt = 
             capitalPoly.Center.GetPolyTri(key.Data).GetPosition();
-        var unitPos = new UnitPos(pos, new Vector2I(wp.Id, -1), pt);
+        var unitPos = new MapPos(pos, new Vector2I(wp.Id, -1), pt);
         
         foreach (var (template, num) in toBuild)
         {

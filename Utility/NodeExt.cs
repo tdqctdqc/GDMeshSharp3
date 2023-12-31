@@ -34,11 +34,11 @@ public static class NodeExt
         var hash = c.GetHashCode();
         c.MouseEntered += () =>
         {
-            Game.I.Client.GetComponent<TooltipManager>().PromptTooltip(template, getObject(), hash);
+            Game.I.Client.GetComponent<TooltipManager>().PromptTooltip(template, getObject());
         };
         c.MouseExited += () =>
         {
-            Game.I.Client.GetComponent<TooltipManager>().HideTooltip(hash);
+            Game.I.Client.GetComponent<TooltipManager>().HideTooltip(template);
         };
         c.MouseFilter = Control.MouseFilterEnum.Stop;
     }

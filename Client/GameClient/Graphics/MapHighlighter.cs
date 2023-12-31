@@ -9,17 +9,10 @@ public partial class MapHighlighter : Node2D
 
     public MapHighlighter(Data data)
     {
-        Game.I.Client.UiRequests.MouseOver
-            .SubscribeForNode(pos => DrawPoly(data, pos), this);
         _mis = new List<MeshInstance2D>();
     }
     private MapHighlighter()
     {
-    }
-    public enum Modes
-    {
-        Simple,
-        Complex
     }
 
     private static Vector2 RelPos(Vector2 pos)
@@ -59,30 +52,36 @@ public partial class MapHighlighter : Node2D
             20f, Colors.Blue);
         TakeFromMeshBuilder(mb);
     }
-    public void DrawPoly(Data data, PolyTriPosition pos)
+    public void DrawPolyTriPos(Data data, PolyTriPosition pos)
     {
-        Visible = true;
-        Clear();
         var poly = pos.Poly(data);
         var pt = pos.Tri(data);
-
         var mb = new MeshBuilder();
-        
-        var mode = Game.I.Client.Settings.PolyHighlightMode.Value;
-        if (mode == Modes.Simple)
-        {
-            DrawPolySimple(data, poly, pt, mb);
-        }
-        else if (mode == Modes.Complex)
-        {
-            DrawPolyComplex(data, pos, poly, pt, mb);
-        }
-        else throw new Exception();
-        
+        DrawPolySimple(data, poly, mb);
         TakeFromMeshBuilder(mb);
     }
 
-    private void DrawPolySimple(Data data, MapPolygon poly, PolyTri pt, MeshBuilder mb)
+    public void DrawPoly(MapPolygon poly, Data d)
+    {
+        var mb = new MeshBuilder();
+        DrawPolySimple(d, poly, mb);
+        TakeFromMeshBuilder(mb);
+    }
+
+    public void DrawLine(Vector2 a, Vector2 b, float width, Color color)
+    {
+        var mb = new MeshBuilder();
+        mb.AddLine(RelPos(a), RelPos(b), color, width);
+        TakeFromMeshBuilder(mb);
+    }
+
+    public void DrawPoint(Vector2 p, float width, Color color)
+    {
+        var mb = new MeshBuilder();
+        mb.AddSquare(RelPos(p), width, color);
+        TakeFromMeshBuilder(mb);
+    }
+    private void DrawPolySimple(Data data, MapPolygon poly, MeshBuilder mb)
     {
         DrawBordersSimple(poly, mb, data);
         // DrawAssocWaypoints(poly, mb, data);

@@ -54,7 +54,7 @@ public class PolyTriGenerator : Generator
         }
         else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus(key.Data)))
         {
-            tris = NewRiverTriGen.DoPoly(poly, key.Data, rd, key);
+            tris = RiverTriGen.DoPoly(poly, key.Data, rd, key);
         }
         else
         {
@@ -98,6 +98,9 @@ public class PolyTriGenerator : Generator
         var swampNoise = new FastNoiseLite();
         swampNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
         swampNoise.Frequency = .005f;
+        var swampWideNoise = new FastNoiseLite();
+        swampWideNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
+        swampWideNoise.Frequency = 300f;
         
         var grassland = key.Data.Models.Vegetations.Grassland;
         var tundra = key.Data.Models.Vegetations.Tundra;
@@ -155,11 +158,12 @@ public class PolyTriGenerator : Generator
             {
                 var globalPos = tri.GetCentroid() + poly.Center;
                 var noise = swampNoise.GetNoise2D(globalPos.X, globalPos.Y);
-                if (noise < -.3f)
+                var wideNoise = swampWideNoise.GetNoise2D(globalPos.X, globalPos.Y);
+                if (noise < -.3f && wideNoise < 0f)
                 {
                     tri.SetVegetation(_data.Models.Vegetations.Forest, key);
                 }
-                else if (noise < -.2f)
+                else if (noise < -.2f && wideNoise < 0f)
                 {
                     
                     tri.SetVegetation(_data.Models.Vegetations.Grassland, key);

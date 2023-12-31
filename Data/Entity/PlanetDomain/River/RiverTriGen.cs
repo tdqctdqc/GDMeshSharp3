@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
-public class NewRiverTriGen
+public class RiverTriGen
 {
 
     public static List<PolyTri> DoPoly(MapPolygon poly, Data data, TempRiverData rData, GenWriteKey key)

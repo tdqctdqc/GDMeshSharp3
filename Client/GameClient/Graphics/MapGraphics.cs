@@ -13,7 +13,6 @@ public partial class MapGraphics : Node2D, IClientComponent
     protected Node2D _hook;
     public MapHighlighter Highlighter { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
-    public MapInputCatcher InputCatcher { get; private set; }
     public ConcurrentQueue<Action> UpdateQueue { get; private set; }
     private int _msToProcessUpdates = 50;
     Node IClientComponent.Node => this;
@@ -21,8 +20,6 @@ public partial class MapGraphics : Node2D, IClientComponent
 
     public MapGraphics(Client client)
     {
-        
-        
         var sw = new Stopwatch();
         sw.Start();
 
@@ -35,10 +32,8 @@ public partial class MapGraphics : Node2D, IClientComponent
         GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, _hook, client.Data);
         
         Highlighter = new MapHighlighter(client.Data);
+        Highlighter.ZIndex = 99;
         AddChild(Highlighter);
-        
-        InputCatcher = new MapInputCatcher(client);
-        AddChild(InputCatcher);
         
         client.GraphicsLayer.AddChild(this);
         
@@ -50,10 +45,7 @@ public partial class MapGraphics : Node2D, IClientComponent
         
     }
 
-    public override void _UnhandledInput(InputEvent @event)
-    {
-        InputCatcher.HandleInput(@event);
-    }
+    
 
     public void Process(float delta)
     {

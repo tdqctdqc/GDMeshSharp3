@@ -208,7 +208,7 @@ public class GeologyGenerator : Generator
         var roughnessScale = gSettings.RoughnessScale.Value;
         var altScale = gSettings.FaultLineAltitudeScale.Value;
         
-        var faultRangeSetting = gSettings.FaultLineRange.Value * roughnessScale;
+        var faultRangeSetting = gSettings.FaultLineRange.Value;
         var frictionAltEffect = gSettings.FrictionAltEffect.Value * altScale;
         var roughnessErosionMult = gSettings.RoughnessErosionMult.Value * roughnessScale;
         var oscilMetric = new OscillatingDownFunction(50f, 1f, 0f, 100f);

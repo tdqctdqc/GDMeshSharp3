@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -11,16 +12,14 @@ public class Context
     public Dictionary<Unit, Waypoint> UnitWaypoints { get; private set; }
     public Dictionary<Waypoint, ForceBalance> WaypointForceBalances { get; private set; }
     public Dictionary<Alliance, HashSet<Waypoint>> ControlledAreas { get; private set; }
-    public Dictionary<Alliance, Dictionary<Vector2, List<Waypoint>>> WaypointPaths { get; private set; }
-    public Dictionary<Vector2, PolyTri> PolyTris { get; private set; }
+    public ConcurrentDictionary<Vector2, PolyTri> PolyTris { get; private set; }
     public Context(Data data)
     {
         UnitWaypoints = new Dictionary<Unit, Waypoint>();
         data.Notices.MadeWaypoints.Subscribe(() => AddForceBalances(data));
         WaypointForceBalances = new Dictionary<Waypoint, ForceBalance>();
         ControlledAreas = new Dictionary<Alliance, HashSet<Waypoint>>();
-        WaypointPaths = new Dictionary<Alliance, Dictionary<Vector2, List<Waypoint>>>();
-        PolyTris = new Dictionary<Vector2, PolyTri>();
+        PolyTris = new ConcurrentDictionary<Vector2, PolyTri>();
     }
 
     private void AddForceBalances(Data d)
@@ -33,7 +32,6 @@ public class Context
     }
     public void Calculate(Data data)
     {
-        WaypointPaths.Clear();
         foreach (var kvp in WaypointForceBalances)
         {
             kvp.Value.ClearBalance();
@@ -133,28 +131,6 @@ public class Context
             }
         }
     }
-    public IReadOnlyList<Waypoint> GetLandWaypointPath(Waypoint start, Waypoint end, 
-        Alliance a, Data data)
-    {
-        var key = new Vector2(start.Id, end.Id);
-        
-        //todo not threadsafe!
-        var paths = WaypointPaths.GetOrAdd(a, a => new Dictionary<Vector2, List<Waypoint>>());
-        
-        if (paths.ContainsKey(key)) return paths[key];
-        
-        var reverse = new Vector2(end.Id, start.Id);
-        if (paths.ContainsKey(reverse))
-        {
-            var reverseList = paths[reverse].Select(w => w).Reverse().ToList();
-            paths[key] = reverseList;
-            return reverseList;
-        }
-        
-        var path = PathFinder.FindLandWaypointPath(start, end, a, data);
-        paths[key] = path;
-        return path;
-    }
 
     public PolyTri GetPolyTri(Vector2 pos, Data d)
     {
@@ -162,19 +138,15 @@ public class Context
         {
             pos += new Vector2(0f, .01f);
         }
+        if (pos.Y == d.Planet.Height)
+        {
+            pos -= new Vector2(0f, .01f);
+        }
         if (PolyTris.ContainsKey(pos)) return PolyTris[pos];
         var polyGrid = d.Planet.PolygonAux.MapPolyGrid;
         var poly = polyGrid.GetElementAtPoint(pos, d);
-        if (poly == null)
-        {
-            throw new Exception($"couldnt find poly at {pos}");
-        }
         var rel = poly.Center.GetOffsetTo(pos, d);
         var pt = poly.Tris.GetAtPoint(rel, d);
-        if (pt == null)
-        {
-            throw new Exception($"couldnt find pt at {pos} rel {rel}");
-        }
         PolyTris.TryAdd(pos, pt);
         return pt;
     }

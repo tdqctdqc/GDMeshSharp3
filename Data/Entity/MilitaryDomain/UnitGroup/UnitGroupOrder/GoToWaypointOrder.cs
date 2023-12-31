@@ -14,13 +14,32 @@ public class GoToWaypointOrder : UnitOrder
         var alliance = r.GetAlliance(d);
         var currWp = g.GetWaypoint(d);
         if (currWp == null) throw new Exception();
+        var moveType = g.MoveType(d);
         
-        var path = PathFinder.FindLandWaypointPath(currWp, destWp, alliance, d);
-        if (path == null)
+        if (moveType.Passable(destWp, alliance, d) == false)
         {
-            GD.Print($"{r.Name} couldn't find path from {currWp.Id} to {destWp.Id}");
-            return null;
+            throw new Exception($"{moveType.GetType().Name} cant go to {destWp.GetType().Name}" +
+                                $" alliance {alliance.Leader.Entity(d).Id}" +
+                                $" occupier {destWp.GetOccupyingRegime(d)?.GetAlliance(d).Leader.Entity(d).Id} ");
         }
+        
+        
+        var path = PathFinder
+            .FindPath(moveType, alliance, currWp, destWp, d);
+        
+        for (var i = 0; i < path.Count; i++)
+        {
+            if (moveType.Passable(path[i], alliance, d) == false)
+            {
+
+                var issue = new CantFindWaypointPathIssue(path[i].Pos,
+                    alliance, $"impassable at {i + 1} / {path.Count}",
+                    currWp, destWp, moveType);
+                d.ClientPlayerData.Issues.Add(issue);
+                return null;
+            }
+        }
+        
         return new GoToWaypointOrder(path.Select(wp => wp.Id).ToList());
     }
     [SerializationConstructor] private GoToWaypointOrder(List<int> pathWaypointIds)
@@ -38,8 +57,10 @@ public class GoToWaypointOrder : UnitOrder
         foreach (var unit in g.Units.Items(d))
         {
             var pos = unit.Position.Copy();
+            var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var movePoints = Unit.MovePoints;
-            unit.MoveOntoAndAlongPath(pos, ref movePoints, path, key);
+            pos.MoveOntoAndAlongPath(alliance, moveType, 
+                ref movePoints, path, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }

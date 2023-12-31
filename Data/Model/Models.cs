@@ -26,7 +26,7 @@ public class Models
     public InfraList Infras { get; private set; }
     public FlowList Flows { get; private set; }
     public Troops Troops { get; private set; }
-    public UnitMoveTypes UnitMoveTypes { get; private set; }
+    public MoveTypes MoveTypes { get; private set; }
     
     private int _idIter;
     public Models(Data data)
@@ -72,8 +72,8 @@ public class Models
         Infras = new InfraList(PeepJobs, Items);
         AddManager(Infras);
         
-        UnitMoveTypes = new UnitMoveTypes();
-        AddManager(UnitMoveTypes);
+        MoveTypes = new MoveTypes();
+        AddManager(MoveTypes);
         
         Troops = new Troops(Items);
         AddManager(Troops);

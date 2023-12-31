@@ -1,16 +1,17 @@
 
 using Godot;
 
-public abstract class UnitMoveType : IModel
+public abstract class MoveType : IModel
 {
     public abstract float TerrainSpeedMod(PolyTri pt, Data d);
     public abstract bool Passable(Waypoint wp, Alliance a, Data d);
+    public abstract float PathfindCost(Waypoint wp, Alliance a, Data d);
     public bool UseRoads { get; private set; }
     public float BaseSpeed { get; private set; }
     public int Id { get; private set; }
     public string Name { get; private set; }
 
-    protected UnitMoveType(bool useRoads, float baseSpeed, string name)
+    protected MoveType(bool useRoads, float baseSpeed, string name)
     {
         UseRoads = useRoads;
         BaseSpeed = baseSpeed;

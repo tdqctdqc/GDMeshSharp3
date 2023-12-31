@@ -8,7 +8,6 @@ public partial class TooltipManager : Control, IClientComponent
 {
     private TooltipPanel _panel;
     private ITooltipTemplate _currTemplate;
-    private int _callerHash;
     private Vector2 _offsetFromMouse = new Vector2(20f, 20f);
     private Data _data;
     
@@ -27,17 +26,16 @@ public partial class TooltipManager : Control, IClientComponent
     {
         if(_currTemplate != null) _panel.Move(GetLocalMousePosition() + _offsetFromMouse);
     }
-    public void PromptTooltip(ITooltipTemplate template, object element, int callerHash)
+    public void PromptTooltip(ITooltipTemplate template, object element)
     {
-        _callerHash = callerHash;
         _panel.Visible = true;
         _panel.Setup(template, element, _data);
         _currTemplate = template;
     }
 
-    public void HideTooltip(int callerHash)
+    public void HideTooltip(ITooltipTemplate template)
     {
-        if (callerHash == _callerHash)
+        if (template == _currTemplate)
         {
             _panel.Visible = false;
             _currTemplate = null;

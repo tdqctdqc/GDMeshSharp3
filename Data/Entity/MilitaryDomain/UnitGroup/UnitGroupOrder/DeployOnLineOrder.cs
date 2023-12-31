@@ -32,14 +32,15 @@ public class DeployOnLineOrder : UnitOrder
         for (var i = 0; i < UnitIdsInLine.Count; i++)
         {
             var unit = d.Get<Unit>(UnitIdsInLine[i]);
+            var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var pos = unit.Position.Copy();
             var movePoints = Unit.MovePoints;
             var target = Points.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
             
-            unit.MoveToPoint(target, pos, ref movePoints, key);
-
+            pos.MoveToPoint(moveType, alliance, target, ref movePoints, key);
+            
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }

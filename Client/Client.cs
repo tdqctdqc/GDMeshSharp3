@@ -10,7 +10,7 @@ public partial class Client : Node, IClient
     public Data Data => Session.Data;
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
-    public UiRequests UiRequests { get; private set; }
+    public UiController UiController { get; private set; }
     public ConcurrentQueue<Action> QueuedUpdates { get; }
     public Control UiLayer { get; private set; }
     public Node2D GraphicsLayer { get; private set; }
@@ -28,6 +28,7 @@ public partial class Client : Node, IClient
         QueuedUpdates = new ConcurrentQueue<Action>();
         UiTick = new RefAction();
         _uiTickTimer = new TimerAction(.1f, 0f, UiTick.Invoke);
+        
         Setup();
     }
     private void Setup()
@@ -42,7 +43,6 @@ public partial class Client : Node, IClient
         AddChild(ui);
         
         Components = new Dictionary<Type, IClientComponent>();
-        UiRequests = new UiRequests();
         Settings = ClientSettings.Load();
         AddComponent(new UiFrame(this));
         
@@ -57,6 +57,9 @@ public partial class Client : Node, IClient
         AddComponent(new PromptManager(this));
         AddComponent(new ClientTopBar(this));
         AddComponent(new TooltipManager(Data, this));
+
+        UiController = new UiController(this); 
+        AddComponent(UiController);
     }
     public override void _Process(double delta)
     {
@@ -70,8 +73,13 @@ public partial class Client : Node, IClient
         {
             u.Invoke();
         }
+        
+        
     }
-
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        UiController.Mode.HandleInput(@event);
+    }
     public void AddComponent(IClientComponent component)
     {
         Components.Add(component.GetType(), component);
@@ -147,6 +155,7 @@ public partial class Client : Node, IClient
         GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(Data));
+        UiController.SetMode(new NormalMode(this));
     }
 }
 

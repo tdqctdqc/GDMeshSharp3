@@ -6,14 +6,14 @@ using MessagePack;
 
 public class HandleUnitOrdersProcedure : Procedure
 {
-    public ConcurrentDictionary<int, UnitPos> NewUnitPosesById { get; private set; }
+    public ConcurrentDictionary<int, MapPos> NewUnitPosesById { get; private set; }
 
     public static HandleUnitOrdersProcedure Construct()
     {
-        return new HandleUnitOrdersProcedure(new ConcurrentDictionary<int, UnitPos>());
+        return new HandleUnitOrdersProcedure(new ConcurrentDictionary<int, MapPos>());
     }
 
-    [SerializationConstructor] private HandleUnitOrdersProcedure(ConcurrentDictionary<int, UnitPos> newUnitPosesById)
+    [SerializationConstructor] private HandleUnitOrdersProcedure(ConcurrentDictionary<int, MapPos> newUnitPosesById)
     {
         NewUnitPosesById = newUnitPosesById;
     }

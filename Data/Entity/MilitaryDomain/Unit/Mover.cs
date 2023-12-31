@@ -4,53 +4,59 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public static class UnitMover
+public static class Mover
 {
-    public static void MoveToPoint(this Unit unit,
+    public static void MoveToPoint(this MapPos pos, 
+        MoveType moveType,
+        Alliance alliance,
         Vector2 target,
-        UnitPos pos, ref float movePoints, LogicWriteKey key)
+        ref float movePoints, LogicWriteKey key)
     {
         var d = key.Data;
         var goStraightToDist = 100f; //todo base on closest passable wps to destWp
         if (pos.Pos.GetOffsetTo(target, d).Length() <= goStraightToDist)
         {
-            unit.MoveDirectlyTowardsPoint(pos, ref movePoints, target, key);
+            pos.MoveDirectlyTowardsPoint(moveType, ref movePoints, target, key);
             return;
         }
         
-        unit.GetOntoCloseWaypoint(target, pos, ref movePoints, key);
+        pos.GetOntoCloseWaypoint(alliance, moveType, target, ref movePoints, key);
         if (movePoints <= 0f) return;
         
         if (pos.Pos.GetOffsetTo(target, d).Length() <= goStraightToDist)
         {
-            unit.MoveDirectlyTowardsPoint(pos, ref movePoints, target, key);
+            pos.MoveDirectlyTowardsPoint(moveType, ref movePoints, target, key);
             return;
         }
         
         var foundTargetWp = d.Military.WaypointGrid
             .TryGetClosest(target, out var destWp,
-                wp => wp.IsPassableByUnit(unit));
+                wp => moveType.Passable(wp, alliance, d));
         if (foundTargetWp == false) throw new Exception();
         
-        unit.FindPathAndMoveAlong(pos, ref movePoints, destWp, key);
+        pos.FindPathAndMoveAlong(moveType,
+            alliance, ref movePoints, destWp, key);
         if (movePoints <= 0f) return;
 
-        unit.MoveDirectlyTowardsPoint(pos, ref movePoints,
+        pos.MoveDirectlyTowardsPoint(moveType, ref movePoints,
             target, key);
     }
     
-    public static void MoveToWaypoint(this Unit unit,
-        UnitPos pos, ref float movePoints, Waypoint dest, 
+    public static void MoveToWaypoint(this MapPos pos, Alliance alliance,
+        MoveType moveType, ref float movePoints, Waypoint dest, 
         LogicWriteKey key)
     {
-        unit.GetOntoCloseWaypoint(dest.Pos, pos,
-            ref movePoints, key);
-        unit.FindPathAndMoveAlong(pos, ref movePoints, dest, key);
+        pos.GetOntoCloseWaypoint(alliance, moveType, 
+            dest.Pos, ref movePoints, key);
+        pos.FindPathAndMoveAlong(moveType, alliance, ref movePoints, dest, key);
     }
-    public static void MoveOntoAndAlongPath(this Unit unit,
-        UnitPos pos, ref float movePoints, 
+    public static void MoveOntoAndAlongPath(this MapPos pos, 
+        Alliance alliance,
+        MoveType moveType,
+        ref float movePoints, 
         List<Waypoint> path, LogicWriteKey key)
     {
+        if (movePoints <= 0f) return;
         var d = key.Data;
         Waypoint closeOnPath = null;
         if (pos.OnWaypointAxis())
@@ -59,13 +65,13 @@ public static class UnitMover
             if (path.Contains(w1))
             {
                 closeOnPath = w1;
-                unit.MoveDirectlyFromWaypointToWaypoint(pos,
+                pos.MoveDirectlyFromWaypointToWaypoint(moveType,
                     ref movePoints, w2, w1, key);
             }
             else if (path.Contains(w2))
             {
                 closeOnPath = w2;
-                unit.MoveDirectlyFromWaypointToWaypoint(pos,
+                pos.MoveDirectlyFromWaypointToWaypoint(moveType,
                     ref movePoints, w1, w2, key);
             }
         }
@@ -83,7 +89,8 @@ public static class UnitMover
         {
             closeOnPath = path
                 .MinBy(p => p.Pos.GetOffsetTo(pos.Pos, d).Length());
-            unit.MoveToWaypoint(pos, ref movePoints, closeOnPath, key);
+            pos.MoveToWaypoint(alliance, moveType, 
+                ref movePoints, closeOnPath, key);
         }
         
         if (movePoints <= 0f) return;
@@ -91,7 +98,7 @@ public static class UnitMover
         var index = path.IndexOf(closeOnPath);
         for (var i = index; i < path.Count - 1; i++)
         {
-            unit.MoveDirectlyFromWaypointToWaypoint(pos,
+            pos.MoveDirectlyFromWaypointToWaypoint(moveType,
                 ref movePoints,
                 path[i], path[i + 1], key);    
             if (movePoints <= 0f) return;
@@ -99,11 +106,13 @@ public static class UnitMover
     }
     
 
-    private static void GetOntoCloseWaypoint(this Unit unit,
+    private static void GetOntoCloseWaypoint(this MapPos pos, 
+        Alliance a,
+        MoveType moveType,
         Vector2 target,
-        UnitPos pos, ref float movePoints, LogicWriteKey key)
+        ref float movePoints, LogicWriteKey key)
     {
-        if (unit.Position.OnWaypoint()) return;
+        if (pos.OnWaypoint()) return;
         var d = key.Data;
         if (pos.OnWaypointAxis())
         {
@@ -112,64 +121,69 @@ public static class UnitMover
                 ? wp1
                 : wp2;
             var farFromTargetWp = closeToTargetWp == wp1 ? wp2 : wp1;
-            unit.MoveDirectlyFromWaypointToWaypoint(pos, ref movePoints,
+            pos.MoveDirectlyFromWaypointToWaypoint(moveType, ref movePoints,
                 farFromTargetWp,  closeToTargetWp, key);
         }
         else 
         {
             var foundCloseWp = d.Military.WaypointGrid
                 .TryGetClosest(pos.Pos, out var closeWp,
-                    wp => wp.IsPassableByUnit(unit));
+                    wp => moveType.Passable(wp, a, d));
             if (foundCloseWp == false) throw new Exception();
-            unit.MoveDirectlyFromPointToWaypoint(closeWp, pos,
+            pos.MoveDirectlyFromPointToWaypoint(moveType, closeWp,
                 ref movePoints, key);
         }
     }
-    private static void FindPathAndMoveAlong(this Unit unit,
-        UnitPos pos, ref float movePoints, Waypoint dest,
+    private static void FindPathAndMoveAlong(this MapPos pos,
+        MoveType moveType,
+        Alliance alliance, ref float movePoints, Waypoint dest,
         LogicWriteKey key)
     {
         if (movePoints <= 0f) return;
         if (pos.OnWaypoint() == false) throw new Exception();
         var d = key.Data;
-        List<Waypoint> path = PathFinder.FindPathForUnit(unit,
-            pos.GetWaypoint(d), dest, d);
+        var wp = pos.GetWaypoint(d);
+        List<Waypoint> path = PathFinder.FindPath(moveType,
+            alliance,
+            wp, dest, d);
         if (path == null)
         {
-            // GD.Print($"{unit.Regime.Entity(d).Name} " +
-            //          $"couldn't find path from {pos.GetWaypoint(d).Id} " +
-            //          $"to {dest.Id}, teleporting");
+            throw new Exception();
+            var issue = new CantFindWaypointPathIssue(pos.Pos,
+                alliance, "",
+                wp, dest, moveType);
+            d.ClientPlayerData.Issues.Add(issue);
             pos.Set(dest, key);
             return;
         }
         for (var i = 0; i < path.Count - 1; i++)
         {
-            unit.MoveDirectlyFromWaypointToWaypoint(pos,
+            pos.MoveDirectlyFromWaypointToWaypoint(moveType,
                 ref movePoints, path[i], path[i + 1], key);
             if (movePoints <= 0f) return;
         }
     }
-    private static void MoveDirectlyFromPointToWaypoint(this Unit unit,
+    private static void MoveDirectlyFromPointToWaypoint(
+        this MapPos pos,
+        MoveType moveType,
         Waypoint target,
-        UnitPos pos, ref float movePoints, LogicWriteKey key)
+        ref float movePoints, LogicWriteKey key)
     {
-        var arrived = unit.MoveDirectlyTowardsPoint(pos,
+        var arrived = pos.MoveDirectlyTowardsPoint(moveType,
             ref movePoints, target.Pos, key);
         if (arrived)
         {
             pos.Set(target, key);
         }
     }
-    private static bool MoveDirectlyFromWaypointToWaypoint(this Unit unit, 
-        UnitPos pos, ref float movePoints,
+    private static bool MoveDirectlyFromWaypointToWaypoint(
+        this MapPos pos, MoveType moveType, 
+        ref float movePoints,
         Waypoint from, 
         Waypoint target, LogicWriteKey key)
     {
         var d = key.Data;
         var toTarget = pos.Pos.GetOffsetTo(target.Pos, d);
-
-        var moveType = unit.Template.Entity(d)
-            .MoveType.Model(d);
         var roadMult = 1f;
         var roadSpeedOverride = 0f;
         var terrainSpeedMod = 1f;
@@ -209,15 +223,13 @@ public static class UnitMover
         }
     }
     private static bool MoveDirectlyTowardsPoint(
-        this Unit unit,
-        UnitPos pos, 
+        this MapPos pos, MoveType moveType,
         ref float movePoints,
         Vector2 target, LogicWriteKey key)
     {
         var d = key.Data;
         var offset = pos.Pos.GetOffsetTo(target, d);
-        var moveType = unit.Template.Entity(d)
-            .MoveType.Model(d);
+        
         var speed = moveType.BaseSpeed * moveType.TerrainSpeedMod(pos.GetTri(d), d);
         
         var cost = offset.Length() / speed;

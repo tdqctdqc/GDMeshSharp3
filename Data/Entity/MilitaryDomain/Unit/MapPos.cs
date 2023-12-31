@@ -2,12 +2,12 @@
 using System;
 using Godot;
 
-public class UnitPos
+public class MapPos
 {
     public Vector2I Pos { get; private set; }
     public Vector2I WaypointLoc { get; private set; }
     public PolyTriPosition Tri { get; private set; }
-    public UnitPos(Vector2I pos, Vector2I waypointLoc, PolyTriPosition tri)
+    public MapPos(Vector2I pos, Vector2I waypointLoc, PolyTriPosition tri)
     {
         Pos = pos;
         WaypointLoc = waypointLoc;
@@ -97,8 +97,8 @@ public class UnitPos
         }
         Tri = Pos.GetPolyTri(d).GetPosition();
     }
-    public UnitPos Copy()
+    public MapPos Copy()
     {
-        return new UnitPos(Pos, WaypointLoc, Tri);
+        return new MapPos(Pos, WaypointLoc, Tri);
     }
 }

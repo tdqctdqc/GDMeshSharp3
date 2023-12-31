@@ -10,6 +10,8 @@ public class UnitGroup : Entity
     public EntityRef<Regime> Regime { get; private set; }
     public EntRefCol<Unit> Units { get; private set; }
     public UnitOrder Order { get; private set; }
+    public MoveType MoveType(Data d) => Units.Items(d)
+        .FirstOrDefault()?.Template.Entity(d).MoveType.Model(d);
     public static UnitGroup Create(Regime r, IEnumerable<int> unitIds, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
@@ -41,8 +43,23 @@ public class UnitGroup : Entity
 
     public Waypoint GetWaypoint(Data d)
     {
-        var p = Units.Items(d).First().Position.Pos;
-        var found = d.Military.WaypointGrid.TryGetClosest(p, out var wp, w => true);
+        var unit = Units.Items(d).First();
+        var moveType = unit.Template.Entity(d)
+            .MoveType.Model(d);
+        var pos = unit.Position;
+        if (pos.OnWaypoint()) return pos.GetWaypoint(d);
+        if (pos.OnWaypointAxis())
+        {
+            var (w,v) = pos.GetAxisWps(d);
+            return w.Pos.GetOffsetTo(pos.Pos, d) < v.Pos.GetOffsetTo(pos.Pos, d)
+                ? w
+                : v;
+        }
+
+        var alliance = Regime.Entity(d).GetAlliance(d);
+        var found = d.Military.WaypointGrid.TryGetClosest(pos.Pos,
+            out var wp, 
+            w => MoveType(d).Passable(w, alliance, d));
         if (found == false) throw new Exception();
         return wp;
     }

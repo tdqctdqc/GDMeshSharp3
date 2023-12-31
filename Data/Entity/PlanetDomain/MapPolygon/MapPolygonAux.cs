@@ -72,14 +72,10 @@ public class MapPolygonAux
     private void BuildPolyGrid(Data data)
     {
         var sw = new Stopwatch();
-        var gridCellSize = 1000f;
+        var gridCellSize = 500f;
         var numPartitions = Mathf.CeilToInt(data.Planet.Info.Dimensions.X / gridCellSize);
-        MapPolyGrid = new PolyGrid(numPartitions, data.Planet.Info.Dimensions, data);
-        foreach (var p in data.GetAll<MapPolygon>())
-        {
-            if(p.NeighborBorders.Count > 0) MapPolyGrid.AddElement(p);
-        }
-        MapPolyGrid.Update();
+        MapPolyGrid = new PolyGrid(data.Planet.Info.Dimensions, 300f);
+        MapPolyGrid.Set(data);
     }
     private void BuildChunks(Data data)
     {

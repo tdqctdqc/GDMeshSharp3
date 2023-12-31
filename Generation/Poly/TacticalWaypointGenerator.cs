@@ -70,8 +70,6 @@ public class TacticalWaypointGenerator : Generator
         
         var newNav = TacticalWaypoints.Create(key, _byId);
         MakePolyCenters(key);
-        MakePolyCenterPaths(key);
-        
         key.Data.Notices.MadeWaypoints.Invoke();
         
         return genReport;
@@ -689,30 +687,6 @@ public class TacticalWaypointGenerator : Generator
             var center = p.GetAssocTacWaypoints(key.Data)
                 .MinBy(wp => wp.Pos.GetOffsetTo(p.Center, key.Data).Length());
             tacWps.PolyCenterWpIds[p.Id] = center.Id;
-        }
-    }
-    private void MakePolyCenterPaths(GenWriteKey key)
-    {
-        var tacWps = key.Data.Military.TacticalWaypoints;
-        var polys = key.Data.GetAll<MapPolygon>();
-        foreach (var p in polys)
-        {
-            foreach (var np in p.Neighbors.Items(key.Data))
-            {
-                var idKey = new Vector2I(p.Id, np.Id);
-                var inverse = new Vector2I(np.Id, p.Id);
-                if (tacWps.PolyCenterPaths.TryGetValue(inverse, out var oldPath))
-                {
-                    tacWps.PolyCenterPaths.Add(idKey, ((IEnumerable<int>)oldPath).Reverse().ToList());
-                }
-                else
-                {
-                    var path = PathFinder.FindNavPathBetweenPolygons(p, np, key.Data);
-                    
-                    tacWps.PolyCenterPaths.Add(idKey, 
-                        path.Select(wp => wp.Id).ToList());
-                }
-            }
         }
     }
 }

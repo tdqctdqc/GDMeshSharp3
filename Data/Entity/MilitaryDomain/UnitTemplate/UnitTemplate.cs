@@ -8,13 +8,13 @@ public class UnitTemplate : Entity, IMakeable
     public IdCount<Troop> TroopCounts { get; private set; }
     public EntityRef<Regime> Regime { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
-    public ModelRef<UnitMoveType> MoveType { get; private set; }
+    public ModelRef<MoveType> MoveType { get; private set; }
     public TroopDomain Domain { get; private set; }
     public static UnitTemplate Create(ICreateWriteKey key, 
         string name,
         Dictionary<Troop, float> troopCounts,
         TroopDomain domain,
-        UnitMoveType moveType,
+        MoveType moveType,
         Regime regime)
     {
         var itemCosts = IdCount<Item>.Construct();
@@ -39,7 +39,7 @@ public class UnitTemplate : Entity, IMakeable
         return u;
     }
     [SerializationConstructor] protected UnitTemplate(string name,
-        IdCount<Troop> troopCounts, ModelRef<UnitMoveType> moveType,
+        IdCount<Troop> troopCounts, ModelRef<MoveType> moveType,
         EntityRef<Regime> regime, int id, 
         MakeableAttribute makeable,
         TroopDomain domain) 
@@ -60,7 +60,7 @@ public class UnitTemplate : Entity, IMakeable
             new Dictionary<Troop, float>
                 {
                     {key.Data.Models.Troops.Rifle1, 100f}
-                }, TroopDomain.Land, key.Data.Models.UnitMoveTypes.InfantryMove,
+                }, TroopDomain.Land, key.Data.Models.MoveTypes.InfantryMove,
             r);
     }
 }

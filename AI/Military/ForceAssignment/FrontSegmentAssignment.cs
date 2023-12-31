@@ -10,7 +10,8 @@ public class FrontSegmentAssignment : ForceAssignment
     public static int IdealSegmentLength = 5;
     public Vector2 Center { get; private set; }
     public List<int> LineWaypointIds { get; private set; }
-    public Waypoint GetRallyWaypoint(Data d) => MilitaryDomain.GetTacWaypoint(RallyWaypointId, d);
+    public Waypoint GetRallyWaypoint(Data d) 
+        => MilitaryDomain.GetTacWaypoint(RallyWaypointId, d);
     public int RallyWaypointId { get; private set; }
     public static FrontSegmentAssignment Construct(
         EntityRef<Regime> r,
@@ -49,9 +50,18 @@ public class FrontSegmentAssignment : ForceAssignment
         var alliance = orders.Regime.Entity(key.Data).GetAlliance(key.Data);
         var areaRadius = 500f;
         var wps = GetTacWaypoints(key.Data).ToList();
+        RallyWaypointId = 
+            CalcRallyWaypoint(wps, Regime.Entity(key.Data), key.Data).Id;
+        var rally = GetRallyWaypoint(key.Data);
+        var moveType = key.Data.Models.MoveTypes.InfantryMove;
+        if (moveType.Passable(rally, alliance, key.Data) == false)
+        {
+            throw new Exception();
+        }
         var groups = Groups(key.Data).ToList();
         var lineGroups = GetLineGroups(key.Data);
         var unreadyGroups = groups.Except(lineGroups);
+        
         if (lineGroups.Count() > 0)
         {
             Assigner.AssignAlongLine(GetTacWaypoints(key.Data).ToList(),
@@ -71,7 +81,8 @@ public class FrontSegmentAssignment : ForceAssignment
         foreach (var unreadyGroup in unreadyGroups)
         {
             var pos = unreadyGroup.GetPosition(key.Data);
-            var order = GoToWaypointOrder.Construct(GetRallyWaypoint(key.Data), 
+            var order = GoToWaypointOrder.Construct(
+                rally, 
                 unreadyGroup.Regime.Entity(key.Data),
                 unreadyGroup, key.Data);
             if (order != null)
@@ -84,12 +95,13 @@ public class FrontSegmentAssignment : ForceAssignment
 
     public HashSet<UnitGroup> GetLineGroups(Data d)
     {
+        var moveType = d.Models.MoveTypes.InfantryMove;
         var a = Regime.Entity(d).GetAlliance(d);
         var closeDist = 100f;
         var closeWps = GetRear(d, 3)
             .SelectMany(h => h)
             .Union(GetTacWaypoints(d))
-            .Where(wp => PathFinder.IsLandPassable(wp, a, d))
+            .Where(wp => moveType.Passable(wp, a, d))
             .ToHashSet();
         var readyGroups = Groups(d)
             .Where(g =>
@@ -161,17 +173,25 @@ public class FrontSegmentAssignment : ForceAssignment
         Data d)
     {
         var radius = 3;
-
         var rings = GetRear(wps, regime, 3, d);
         var avgPos = d.Planet.GetAveragePosition(wps.Select(wp => wp.Pos));
+        var moveType = d.Models.MoveTypes.InfantryMove;
+        var alliance = regime.GetAlliance(d);
 
         if (rings.Count == 0)
         {
-            return wps.MinBy(wp => wp.Pos.GetOffsetTo(avgPos, d).Length());
+            return wps
+                .Where(wp => moveType.Passable(wp, alliance, d))
+                .MinBy(wp => wp.Pos.GetOffsetTo(avgPos, d).Length());
         }
-        
-        return rings.Last()
+        var rally = rings.Last()
             .MinBy(wp => wp.Pos.GetOffsetTo(avgPos, d).Length());
+        if (moveType.Passable(rally, alliance, d) == false)
+        {
+            throw new Exception();
+        }
+        return rally;
+
     }
 
     public List<HashSet<Waypoint>> GetRear(Data d, int radius)
@@ -185,6 +205,7 @@ public class FrontSegmentAssignment : ForceAssignment
         int radius,
         Data data)
     {
+        var moveType = data.Models.MoveTypes.InfantryMove;
         var alliance = regime.GetAlliance(data);
         var prev = wps.ToHashSet();
         var res = new List<HashSet<Waypoint>>();
@@ -195,8 +216,10 @@ public class FrontSegmentAssignment : ForceAssignment
                 .Where(p => prev.Contains(p) == false)
                 .Where(r =>
                     wps.Contains(r) == false
+                    && moveType.Passable(r, alliance, data)
                     && r.IsThreatened(alliance, data) == false
-                    && r.IsControlled(alliance, data)).ToHashSet();
+                    && r.IsControlled(alliance, data))
+                .ToHashSet();
             if (next.Count == 0) break;
             prev.AddRange(next);
             res.Add(next);

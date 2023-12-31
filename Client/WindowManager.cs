@@ -20,6 +20,7 @@ public partial class WindowManager : Node, IClientComponent
        AddWindow(SceneManager.Instance<PromptWindow>());
        AddWindow(LoggerWindow.Get(client.Data));
        AddWindow(new EntityOverviewWindow());
+       AddWindow(IssueWindow.Get(client));
        client.UiLayer.AddChild(this);
     }
     public void AddWindow(Window window)

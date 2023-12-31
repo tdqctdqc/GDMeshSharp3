@@ -8,8 +8,10 @@ public class ClientPlayerData
     public Guid LocalPlayerGuid { get; private set; }
     public MajorTurnOrders MajorOrders { get; private set; }
     public MinorTurnOrders MinorOrders { get; private set; }
+    public List<Issue> Issues { get; private set; }
     public ClientPlayerData(Data data)
     {
+        Issues = new List<Issue>();
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>
         {
             var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
