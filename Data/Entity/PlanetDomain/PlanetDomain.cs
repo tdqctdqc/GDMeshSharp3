@@ -13,6 +13,7 @@ public class PlanetDomain
     public ResourceDepositAux ResourceDepositAux { get; private set; }
     public float Width => _planetInfoAux.Value.Dimensions.X;
     public float Height => _planetInfoAux.Value.Dimensions.Y;
+    public Vector2 Dim => _planetInfoAux.Value.Dimensions;
     private Data _data;
     public PlanetDomain(Data data)
     {

@@ -23,7 +23,20 @@ public static partial class PathFinder
             }, 
             (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, d).Length());
     }
-    public static List<MapPolygon> FindPathFromGraph(MapPolygon s1,
+    
+    public static List<TNode> FindPathFromGraph<TNode, TEdge>(TNode s1,
+        TNode s2, 
+        Graph<TNode, TEdge> graph, 
+        Func<TEdge, float> getCost,
+        Func<TNode, Vector2> getPos,
+        Data data)
+    {
+        return PathFinder<TNode>.FindPath(s1, s2, 
+            p => graph.GetNeighbors(p),
+            (p, q) => getCost(graph.GetEdge(p, q)), 
+            (p1, p2) => getPos(p1).GetOffsetTo(getPos(p2), data).Length());
+    }
+    public static List<MapPolygon> FindPathFromPolyGraph(MapPolygon s1,
         MapPolygon s2, 
         Graph<MapPolygon, float> costs, 
         Data data)
@@ -33,7 +46,18 @@ public static partial class PathFinder
             (p, q) => costs.GetEdge(p, q), 
             (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
-    
+
+    public static float RoadBuildPolyEdgeCost(MapPolygon p1, MapPolygon p2, Data d)
+    {
+        var riverMult = 1f;
+        if (p1.GetEdge(p2, d).IsRiver()) riverMult = 2f;
+        return RoadBuildPolyCost(p1, d) + RoadBuildPolyCost(p2, d);
+    }
+    public static float RoadBuildPolyCost(MapPolygon p, Data d)
+    {
+        if (p.IsWater()) return Mathf.Inf;
+        return p.Roughness;
+    }
     public static float RoadBuildEdgeCost(Waypoint p1, Waypoint p2, Data data)
     {
         if (p1 is ILandWaypoint l1 == false) return Mathf.Inf;

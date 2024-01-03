@@ -6,8 +6,10 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="Dijkstra.NET" Version="1.2.1" />
     <PackageReference Include="GeometRi" Version="1.4.0.3" />
     <PackageReference Include="Google.OrTools" Version="9.7.2996" />
+    <PackageReference Include="LightObjectPool" Version="1.0.1" />
     <PackageReference Include="MarkovNextGen" Version="1.2.6" />
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <PackageReference Include="MessagePack" Version="2.6.100-alpha" />

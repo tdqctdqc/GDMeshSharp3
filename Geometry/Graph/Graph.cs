@@ -33,7 +33,22 @@ public class Graph<TNode, TEdge> : IGraph<TNode, TEdge>
         n2.RemoveNeighbor(t1);
         Edges.Remove(edge);
     }
-    
+
+    public void RemoveEdges(Func<TEdge, bool> remove)
+    {
+        foreach (var el in Elements)
+        {
+            var ns = GetNeighbors(el).ToArray();
+            foreach (var n in ns)
+            {
+                var edge = GetEdge(el, n);
+                if (remove(edge))
+                {
+                    RemoveEdge(el, n);
+                }
+            }
+        }
+    }
 
     IEnumerable<TNode> IReadOnlyGraph<TNode>.GetNeighbors(TNode value)
     {
