@@ -37,7 +37,8 @@ public class NormalMode : UiMode
         highlighter.Clear();
         if (_mouseOverHandler.MouseOverTri != null)
         {
-            highlighter.DrawPolyTriPos(_client.Data, _mouseOverHandler.MouseOverTri.GetPosition());
+            var poly = _mouseOverHandler.MouseOverPoly;
+            highlighter.Draw(mb => mb.DrawPolyBorders(poly.Center, poly, _client.Data), poly.Center);
         }
     }
 

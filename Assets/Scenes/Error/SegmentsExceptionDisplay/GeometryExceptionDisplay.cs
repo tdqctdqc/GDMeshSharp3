@@ -52,12 +52,12 @@ public partial class GeometryExceptionDisplay : Node2D
                 var seg = segs[j];
                 if (seg.To == segs.Modulo(j + 1).From)
                 {
-                    mb.AddSquare(seg.To, _markerSize, Colors.White);
+                    mb.AddPoint(seg.To, _markerSize, Colors.White);
                 }
                 else
                 {
-                    mb.AddSquare(seg.To, _markerSize, Colors.Black);
-                    mb.AddSquare(segs.Modulo(j + 1).From, _markerSize, Colors.Red);
+                    mb.AddPoint(seg.To, _markerSize, Colors.Black);
+                    mb.AddPoint(segs.Modulo(j + 1).From, _markerSize, Colors.Red);
                 }
             }
             var child = mb.GetMeshInstance();

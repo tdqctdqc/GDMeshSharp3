@@ -5,18 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureNode.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Generation/Society/OldInfrastructureGenerator.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderTest.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/PlanetDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/PlanetDomain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/GDMeshSharp3.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Game.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/NormalMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/NormalMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGroupGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGroupGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/CantFindWaypointPathIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/CantFindWaypointPathIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/NoPolysInCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderNode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/TacWaypointTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/TacWaypointTooltipTemplate.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,6 +62,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/12b544f3d6604d0c98a8a519e62542912200/05/5ddd39d8/IPool`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/51/6d3003d9/CanvasItem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/6b/6f51637d/Control.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/c6/edd21999/Colors.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f9cd2b865094294bc69db1184ad68be40888/ce/da3f4d25/ConcurrentDictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
@@ -412,7 +418,8 @@
       <workItem from="1704042840191" duration="7848000" />
       <workItem from="1704054055164" duration="4559000" />
       <workItem from="1704209276269" duration="15423000" />
-      <workItem from="1704230860563" duration="10688000" />
+      <workItem from="1704230860563" duration="14047000" />
+      <workItem from="1704332381472" duration="2678000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -624,14 +631,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00081" summary="still working on front">
-      <option name="closed" value="true" />
-      <created>1701026403531</created>
-      <option name="number" value="00081" />
-      <option name="presentableId" value="LOCAL-00081" />
-      <option name="project" value="LOCAL" />
-      <updated>1701026403531</updated>
-    </task>
     <task id="LOCAL-00082" summary="ditto">
       <option name="closed" value="true" />
       <created>1701036717585</created>
@@ -776,7 +775,15 @@
       <option name="project" value="LOCAL" />
       <updated>1704050743428</updated>
     </task>
-    <option name="localTasksCounter" value="100" />
+    <task id="LOCAL-00100" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1704241960973</created>
+      <option name="number" value="00100" />
+      <option name="presentableId" value="LOCAL-00100" />
+      <option name="project" value="LOCAL" />
+      <updated>1704241960974</updated>
+    </task>
+    <option name="localTasksCounter" value="101" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -819,10 +826,10 @@
     <MESSAGE value="one more front construction algorithm" />
     <MESSAGE value="working on unit movement" />
     <MESSAGE value="reforming unit pos" />
-    <MESSAGE value="ditto" />
     <MESSAGE value="added unitMoveType" />
     <MESSAGE value="bugfixing pathfinding and movement" />
     <MESSAGE value="changing road generation" />
-    <option name="LAST_COMMIT_MESSAGE" value="changing road generation" />
+    <MESSAGE value="ditto" />
+    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
   </component>
 </project>

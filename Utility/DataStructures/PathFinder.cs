@@ -200,8 +200,8 @@ public static class PathFinder<T>
         return null;
     }
     
-    public static Graph<T, List<T>> ExpandGraph<TCompactEdge>(
-            Graph<T, TCompactEdge> oldGraph,
+    public static Graph<T, List<T>> TransformGraph<TOldEdge>(
+            Graph<T, TOldEdge> oldGraph,
             Func<T, IEnumerable<T>> getNeighbors,
             Func<T,T,float> getEdgeCost,
             Func<T, T, float> heuristicCost)

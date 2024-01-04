@@ -24,6 +24,17 @@ public class Graph<TNode, TEdge> : IGraph<TNode, TEdge>
         return _nodeDic[t1].HasNeighbor(t2);
     }
 
+    public void ForEachEdge(Action<TNode, TNode, TEdge> action)
+    {
+        foreach (var element in Elements)
+        {
+            foreach (var neighbor in GetNeighbors(element))
+            {
+                var edge = GetEdge(element, neighbor);
+                action(element, neighbor, edge);
+            }
+        }
+    }
     public void RemoveEdge(TNode t1, TNode t2)
     {
         var edge = GetEdge(t1, t2);
@@ -33,7 +44,6 @@ public class Graph<TNode, TEdge> : IGraph<TNode, TEdge>
         n2.RemoveNeighbor(t1);
         Edges.Remove(edge);
     }
-
     public void RemoveEdges(Func<TEdge, bool> remove)
     {
         foreach (var el in Elements)

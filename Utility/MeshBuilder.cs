@@ -22,15 +22,6 @@ public class MeshBuilder
         Colors.Clear();
     }
 
-    public void AddPoly(MapPolygon poly, Data data, Vector2 offset, float insetFactor)
-    {
-        var inscribed = poly.GetOrderedBoundarySegs(data).GetInscribed(Vector2.Zero, insetFactor)
-            .Select(ls => ls.Translate(offset))
-            .ToList();
-        var col = ColorsExt.GetRandomColor();
-        AddArrows(inscribed, 3f, col);
-        // mb.AddNumMarkers(inscribed.Select(s => s.Mid()).ToList(), 10f, Colors.Transparent);
-    }
     public void AddTriOutline(Triangle tri, float thickness, Color color)
     {
         var center = tri.GetCentroid();
@@ -71,20 +62,6 @@ public class MeshBuilder
         AddTri(toIn, toOut, fromIn, color);
     }
 
-    public void AddPolysRelative(MapPolygon relTo, IEnumerable<MapPolygon> polys, Func<MapPolygon, Color> getColor, Data data)
-    {
-        foreach (var p in polys)
-        {
-            var color = getColor(p);
-            var polyTris = p.Tris.Tris
-                .Select(v => v.Transpose(relTo.GetOffsetTo(p, data)))
-                .ToList();
-            for (int j = 0; j < polyTris.Count(); j++)
-            {
-                AddTri(polyTris[j], color);
-            }
-        }
-    }
     public void DrawPolyEdge(MapPolygon poly, MapPolygon n, Func<MapPolygon, Color> color,
         float thickness, MapPolygon relTo, Data d)
     {
@@ -123,20 +100,6 @@ public class MeshBuilder
             if (Mathf.Sin(theta) == 0f) throw new Exception();
             return point.Normalized() * Mathf.Abs(point.Length() - thickness) / Mathf.Sin(theta);
         }
-        // var adjHi = edge.HiNexus
-        //     .Entity(d).IncidentEdges
-        //     .Items(d).Where(e => e != edge && e.EdgeToPoly(poly)).FirstOrDefault();
-        // if (adjHi != null)
-        // {
-        //     
-        // }
-        // var adjLo = edge.LoNexus
-        //     .Entity(d).IncidentEdges
-        //     .Items(d).Where(e => e != edge && e.EdgeToPoly(poly)).FirstOrDefault();
-        // if (adjLo != null)
-        // {
-        //     
-        // }
     }
 
     public void AddLine(Vector2 from, Vector2 to, Color color, float thickness)
@@ -248,7 +211,6 @@ public class MeshBuilder
     {
         var length = from.DistanceTo(to);
         
-        // var lineTo = from + (to - from).Normalized() * (length - thickness * 2f);
         var mid = (from + to) / 2f;
         
         var axis = (to - from).Normalized();
@@ -278,11 +240,11 @@ public class MeshBuilder
     {
         foreach (var p in points)
         {
-            AddSquare(p, markerSize, color);
+            AddPoint(p, markerSize, color);
         }
     }
 
-    public void AddSquare(Vector2 p, float size, Color color)
+    public void AddPoint(Vector2 p, float size, Color color)
     {
         var topLeft = p + Vector2.Up * size / 2f
                         + Vector2.Left * size / 2f;

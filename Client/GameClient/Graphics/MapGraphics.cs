@@ -11,7 +11,8 @@ public partial class MapGraphics : Node2D, IClientComponent
     
     protected GraphicsSegmenter _segmenter;
     protected Node2D _hook;
-    public MapHighlighter Highlighter { get; private set; }
+    public MapOverlayDrawer Highlighter { get; private set; }
+    public MapOverlayDrawer DebugOverlay { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
     public ConcurrentQueue<Action> UpdateQueue { get; private set; }
     private int _msToProcessUpdates = 50;
@@ -30,8 +31,12 @@ public partial class MapGraphics : Node2D, IClientComponent
         _hook = new Node2D();
         AddChild(_hook);
         GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, _hook, client.Data);
+
+        DebugOverlay = new MapOverlayDrawer(_segmenter);
+        DebugOverlay.ZIndex = 98;
+        AddChild(DebugOverlay);
         
-        Highlighter = new MapHighlighter(client.Data);
+        Highlighter = new MapOverlayDrawer(_segmenter);
         Highlighter.ZIndex = 99;
         AddChild(Highlighter);
         

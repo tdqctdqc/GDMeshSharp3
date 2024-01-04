@@ -11,7 +11,11 @@ public class InfrastructureGenerator : Generator
 {
     private GenData _data;
     private GenWriteKey _key;
-    private ConcurrentBag<int> _polyLvl = new (),
+    private float _portInfraNodeSize = 0f;
+    private float _minSettlementSizeForInfraNode = 0f;
+    private float _sizeBuildRoadRangeMult = .5f;
+
+    private ConcurrentQueue<int> _polyLvl = new (),
         _hiLvlTraffic = new (),
         _polyLvlTraffic = new (), 
         _segs = new ();
@@ -19,6 +23,7 @@ public class InfrastructureGenerator : Generator
     {
         _key = key;
         _data = _key.GenData;
+        _minSettlementSizeForInfraNode = key.Data.Models.Settlements.Town.MinSize;
         var genReport = new GenReport(nameof(InfrastructureGenerator));
         
         genReport.StartSection();
@@ -66,7 +71,7 @@ public class InfrastructureGenerator : Generator
         sw.Start();
         var polyLvlGraph = GetPolyLevelGraph(lm.Polys);
         sw.Stop();
-        _polyLvl.Add((int)sw.Elapsed.TotalMilliseconds);
+        _polyLvl.Enqueue((int)sw.Elapsed.TotalMilliseconds);
         sw.Reset();
         
         sw.Start();
@@ -76,19 +81,19 @@ public class InfrastructureGenerator : Generator
             return new Dictionary<Vector2I, RoadModel>();
         }
         sw.Stop();
-        _hiLvlTraffic.Add((int)sw.Elapsed.TotalMilliseconds);
+        _hiLvlTraffic.Enqueue((int)sw.Elapsed.TotalMilliseconds);
         sw.Reset();
         
         sw.Start();
         DoPolyLevelTraffic(polyLvlGraph, hiLvlTrafficGraph);
         sw.Stop();
-        _polyLvlTraffic.Add((int)sw.Elapsed.TotalMilliseconds);
+        _polyLvlTraffic.Enqueue((int)sw.Elapsed.TotalMilliseconds);
         sw.Reset();
         
         sw.Start();
         var segs = GetRoadSegs(polyLvlGraph);
         sw.Stop();
-        _segs.Add((int)sw.Elapsed.TotalMilliseconds);
+        _segs.Enqueue((int)sw.Elapsed.TotalMilliseconds);
         sw.Reset();
         
         return segs;
@@ -106,7 +111,9 @@ public class InfrastructureGenerator : Generator
             p =>
             {
                 if (p.HasSettlement(_data)
-                    && p.GetSettlement(_data).Tier.Model(_data).MinSize >= town.MinSize)
+                    && p.GetSettlement(_data).Tier.Model(_data).MinSize 
+                        >= _minSettlementSizeForInfraNode
+                    )
                 {
                     var urbanTri = p.Tris.Tris.First(t => t.Landform(_data) == urban);
                     var found = _data.Military.WaypointGrid
@@ -139,11 +146,10 @@ public class InfrastructureGenerator : Generator
                     return iNode;
                 }
             });
-        var portInfraNodeSize = 0f;//(float)town.MinSize;
         var portNodes = GeneratePorts(polys)
             .Select(p => 
                 new InfrastructureNode((Waypoint)p, 
-                    portInfraNodeSize))
+                    _portInfraNodeSize))
             .ToHashSet();
         
         foreach (var kvp in polyNodes)
@@ -204,7 +210,7 @@ public class InfrastructureGenerator : Generator
         {
             var near = activeNodeGrid
                 .GetWithin(aNode.Waypoint.Pos, 
-                    aNode.Size);
+                    aNode.Size * _sizeBuildRoadRangeMult);
             foreach (var nearNode in near)
             {
                 if (nearNode == aNode) continue;
@@ -276,27 +282,32 @@ public class InfrastructureGenerator : Generator
         var paved = _data.Models.RoadList.PavedRoad;
         var wpPaths = new Dictionary<Vector2I, List<Waypoint>>();
         
-        foreach (var polyNode in polyLevelGraph.Elements)
-        {
-            foreach (var nPolyNode in polyLevelGraph.GetNeighbors(polyNode))
-            {
-                if (nPolyNode.Waypoint.Id > polyNode.Waypoint.Id) continue;
-                var traffic = polyLevelGraph
-                    .GetEdge(polyNode, nPolyNode).Traffic;
-                if (getRoadFromTraffic(traffic) is RoadModel r == false) continue;
-                var key = polyNode.Waypoint.GetIdEdgeKey(nPolyNode.Waypoint);
-                roadPolySegs.Add(key, r);
-            }
-        }
+        // foreach (var polyNode in polyLevelGraph.Elements)
+        // {
+        //     foreach (var nPolyNode in polyLevelGraph.GetNeighbors(polyNode))
+        //     {
+        //         if (nPolyNode.Waypoint.Id > polyNode.Waypoint.Id) continue;
+        //         var traffic = polyLevelGraph
+        //             .GetEdge(polyNode, nPolyNode).Traffic;
+        //         if (getRoadFromTraffic(traffic) is RoadModel r == false) continue;
+        //         var key = polyNode.Waypoint.GetIdEdgeKey(nPolyNode.Waypoint);
+        //         roadPolySegs.Add(key, r);
+        //     }
+        // }
+        
+        polyLevelGraph.RemoveEdges(e => getRoadFromTraffic(e.Traffic) == null);
         //just trim all edges from poly traffic graph that arent road worthy
         //then can use dijkstra/flood search?
-        foreach (var kvp in roadPolySegs)
+        var dic = polyLevelGraph.Elements
+            .ToDictionary(n => n.Waypoint, n => n);
+        
+        
+        polyLevelGraph.ForEachEdge((w, v, e) =>
         {
-            var p1 = MilitaryDomain.GetTacWaypoint(kvp.Key.X, _data);
-            var p2 = MilitaryDomain.GetTacWaypoint(kvp.Key.Y, _data);
-            var road = kvp.Value;
-            var path = getWpPath(p1, p2);
-            if (path == null) continue;
+            if (v.Waypoint.Id > w.Waypoint.Id) return;
+            var road = getRoadFromTraffic(e.Traffic);
+            var path = getWpPath(w.Waypoint, v.Waypoint);
+            if (path == null) return;
             for (var i = 0; i < path.Count - 1; i++)
             {
                 var from = path[i];
@@ -315,25 +326,37 @@ public class InfrastructureGenerator : Generator
                     roadWpSegs.Add(key, road);
                 }
             }
-        }
+        });
+        
 
         return roadWpSegs;
         List<Waypoint> getWpPath(Waypoint i1, Waypoint i2)
         {
             var key = i1.GetIdEdgeKey(i2);
-            if (wpPaths.ContainsKey(key)) return wpPaths[key];
-            
-            var path = PathFinder<Waypoint>
-                .FindPath(i1, i2, 
-                    wp => wp.TacNeighbors(_data).Where(wp => wp is ILandWaypoint),
-                    getEdgeCost,
-                    (w, v) => w.Pos.GetOffsetTo(v.Pos, _data).Length()
-                );
-            wpPaths[key] = path;
-            return path;
+            if (wpPaths.ContainsKey(key) == false)
+            {
+                addPaths(i1);
+            }
+            return wpPaths[key];
         }
-        
-        
+
+        void addPaths(Waypoint w)
+        {
+            var node = dic[w];
+            var ns = polyLevelGraph.GetNeighbors(node)
+                .Where(n => wpPaths.ContainsKey(w.GetIdEdgeKey(n.Waypoint)) == false)
+                .Select(n => n.Waypoint)
+                .ToHashSet();
+
+            var paths = PathFinder<Waypoint>.FindMultiplePaths(
+                w, ns, wp => wp.TacNeighbors(_data).Where(x => x is ILandWaypoint),
+                getEdgeCost, (w, v) => w.Pos.GetOffsetTo(v.Pos, _data).Length());
+            foreach (var kvp in paths)
+            {
+                var key = kvp.Key.GetIdEdgeKey(w);
+                wpPaths.Add(key, kvp.Value);
+            }
+        }
         RoadModel getRoadFromTraffic(float traffic)
         {
             if (traffic > 100_000f) return paved;

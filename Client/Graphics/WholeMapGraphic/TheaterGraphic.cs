@@ -77,8 +77,8 @@ public partial class TheaterGraphic : Node2D
         {
             var wp = MilitaryDomain.GetTacWaypoint(tId, d);
             var relPos = relTo.GetOffsetTo(wp.Pos, d);
-            mb.AddSquare(relPos, size, regimeColor);
-            mb.AddSquare(relPos, size * .6f, theaterColor);
+            mb.AddPoint(relPos, size, regimeColor);
+            mb.AddPoint(relPos, size * .6f, theaterColor);
         }
     }
 

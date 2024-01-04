@@ -12,9 +12,9 @@ public class NoPolysInCellIssue : Issue
     public override void Draw(Client c)
     {
         var grid = c.Data.Planet.PolygonAux.MapPolyGrid;
-        var highlighter = c.GetComponent<MapGraphics>().Highlighter;
-        highlighter.Clear();
-        highlighter.DrawPoint(Point, 10f, Colors.Red);
+        var debugDrawer = c.GetComponent<MapGraphics>().DebugOverlay;
+        debugDrawer.Clear();
+        debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, 10f, Colors.Red), Point);
         var cellW = grid.CellWidth;
         var cellH = grid.CellHeight;
         var dim = new Vector2(cellW, cellH);
@@ -23,9 +23,9 @@ public class NoPolysInCellIssue : Issue
         var bl = (Key + Vector2I.Down) * dim;
         var br = (Key + Vector2I.One) * dim;
         
-        highlighter.DrawLine(tl, tr, 5f, Colors.Blue);
-        highlighter.DrawLine(tl, bl, 5f, Colors.Blue);
-        highlighter.DrawLine(br, tr, 5f, Colors.Blue);
-        highlighter.DrawLine(br, bl, 5f, Colors.Blue);
+        debugDrawer.DrawLine(tl, tr, Colors.Blue, 5f);
+        debugDrawer.DrawLine(tl, bl, Colors.Blue, 5f);
+        debugDrawer.DrawLine(br, tr, Colors.Blue, 5f);
+        debugDrawer.DrawLine(br, bl, Colors.Blue, 5f);
     }
 }

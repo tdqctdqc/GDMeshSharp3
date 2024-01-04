@@ -58,8 +58,9 @@ public class CantFindWaypointPathIssue : Issue
             }
         }
 
-        var highlighter = c.GetComponent<MapGraphics>().Highlighter;
-        highlighter.Clear();
+        var debugDrawer = c.GetComponent<MapGraphics>()
+            .DebugOverlay;
+        debugDrawer.Clear();
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
         foreach (var wp in union)
         {
@@ -80,8 +81,10 @@ public class CantFindWaypointPathIssue : Issue
                 isStartOrDest = Colors.Yellow;
                 size = 5f;
             }
-            highlighter.DrawPoint(wp.Pos, size, canPass);
-            highlighter.DrawPoint(wp.Pos, size / 2f, isStartOrDest);
+            debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size, canPass), 
+                wp.Pos);
+            debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size / 2f, isStartOrDest), 
+                wp.Pos);
         }
     }
 }
