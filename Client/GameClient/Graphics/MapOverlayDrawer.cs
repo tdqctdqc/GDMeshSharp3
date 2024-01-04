@@ -4,19 +4,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class MapOverlayDrawer : Node2D
+public class MapOverlayDrawer
 {
     private GraphicsSegmenter _segmenter;
     private List<Node> _nodes;
+    private int _z;
 
     private MapOverlayDrawer()
     {
     }
 
-    public MapOverlayDrawer(GraphicsSegmenter segmenter)
+    public MapOverlayDrawer(GraphicsSegmenter segmenter, int z)
     {
         _segmenter = segmenter;
         _nodes = new List<Node>();
+        _z = z;
     }
 
     public void Clear()
@@ -30,11 +32,10 @@ public partial class MapOverlayDrawer : Node2D
 
     public void Draw(Action<MeshBuilder> draw, Vector2 pos)
     {
-        GD.Print("drawing");
         var mb = new MeshBuilder();
         draw(mb);
         var mi = mb.GetMeshInstance();
-        mi.ZIndex = ZIndex;
+        mi.ZIndex = _z;
         _nodes.Add(mi);
         _segmenter.AddElement(mi, pos);
     }

@@ -8,9 +8,8 @@ using Godot;
 
 public partial class MapGraphics : Node2D, IClientComponent
 {
-    
     protected GraphicsSegmenter _segmenter;
-    protected Node2D _hook;
+    protected Node2D _graphicLayersParent;
     public MapOverlayDrawer Highlighter { get; private set; }
     public MapOverlayDrawer DebugOverlay { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
@@ -28,17 +27,11 @@ public partial class MapGraphics : Node2D, IClientComponent
         
         _segmenter = new GraphicsSegmenter(10, client.Data);
         AddChild(_segmenter);
-        _hook = new Node2D();
-        AddChild(_hook);
-        GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, _hook, client.Data);
-
-        DebugOverlay = new MapOverlayDrawer(_segmenter);
-        DebugOverlay.ZIndex = 98;
-        AddChild(DebugOverlay);
-        
-        Highlighter = new MapOverlayDrawer(_segmenter);
-        Highlighter.ZIndex = 99;
-        AddChild(Highlighter);
+        _graphicLayersParent = new Node2D();
+        AddChild(_graphicLayersParent);
+        GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, _graphicLayersParent, client.Data);
+        DebugOverlay = new MapOverlayDrawer(_segmenter, 98);
+        Highlighter = new MapOverlayDrawer(_segmenter, 99);
         
         client.GraphicsLayer.AddChild(this);
         
@@ -49,9 +42,6 @@ public partial class MapGraphics : Node2D, IClientComponent
     {
         
     }
-
-    
-
     public void Process(float delta)
     {
         while (UpdateQueue.TryDequeue(out var u))

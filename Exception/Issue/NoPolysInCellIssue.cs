@@ -23,9 +23,9 @@ public class NoPolysInCellIssue : Issue
         var bl = (Key + Vector2I.Down) * dim;
         var br = (Key + Vector2I.One) * dim;
         
-        debugDrawer.DrawLine(tl, tr, Colors.Blue, 5f);
-        debugDrawer.DrawLine(tl, bl, Colors.Blue, 5f);
-        debugDrawer.DrawLine(br, tr, Colors.Blue, 5f);
-        debugDrawer.DrawLine(br, bl, Colors.Blue, 5f);
+        debugDrawer.Draw(mb => mb.AddLine(tl - tl, tr - tl, Colors.Blue, 5f), tl);
+        debugDrawer.Draw(mb => mb.AddLine(tl - tl, bl - tl, Colors.Blue, 5f), tl);
+        debugDrawer.Draw(mb => mb.AddLine(br - tl, tr - tl, Colors.Blue, 5f), tl);
+        debugDrawer.Draw(mb => mb.AddLine(br - tl, tr - bl, Colors.Blue, 5f), tl);
     }
 }
