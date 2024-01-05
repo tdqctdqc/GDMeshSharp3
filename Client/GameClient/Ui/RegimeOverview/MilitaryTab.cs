@@ -21,14 +21,14 @@ public partial class MilitaryTab : ScrollContainer
         _container.ClearChildren();
         _container.CreateLabelAsChild("TROOP RESERVE");
         var tick = client.Data.BaseDomain.GameClock.Tick;
-        
+        var iconSize = client.Settings.MedIconSize.Value;
+
         foreach (var kvp in regime.Military.TroopReserve.GetEnumerableModel(client.Data))
         {
             var amt = kvp.Value;
             var troop = kvp.Key;
-            var hbox = new HBoxContainer();
-            hbox.AddChild(troop.Icon.GetTextureRect(Vector2.One * 50f));
-            hbox.CreateLabelAsChild($"Amount: {amt} ");
+            var hbox = troop.Icon.GetLabeledIcon<HBoxContainer>(
+                amt.ToString(), iconSize);
             _container.AddChild(hbox);
         }
         var units = regime.GetUnits(client.Data);
@@ -47,9 +47,8 @@ public partial class MilitaryTab : ScrollContainer
         {
             var amt = kvp.Value;
             var troop = kvp.Key;
-            var hbox = new HBoxContainer();
-            hbox.AddChild(troop.Icon.GetTextureRect(Vector2.One * 50f));
-            hbox.CreateLabelAsChild($"Amount: {amt} ");
+            var hbox = troop.Icon.GetLabeledIcon<HBoxContainer>(
+                amt.ToString(), iconSize);
             _container.AddChild(hbox);
         }
 

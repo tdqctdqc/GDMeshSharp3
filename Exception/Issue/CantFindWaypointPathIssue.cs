@@ -9,16 +9,18 @@ public class CantFindWaypointPathIssue : Issue
     public Waypoint Dest { get; private set; }
     public MoveType MoveType { get; private set; }
     public Alliance Alliance { get; private set; }
-
+    public bool GoThruHostile { get; private set; }
     public CantFindWaypointPathIssue(Vector2 point, 
         Alliance alliance,
-        string message, Waypoint start, Waypoint dest, MoveType moveType) 
+        string message, Waypoint start, Waypoint dest, 
+        MoveType moveType, bool goThruHostile) 
         : base(point, message)
     {
         Alliance = alliance;
         Start = start;
         Dest = dest;
         MoveType = moveType;
+        GoThruHostile = goThruHostile;
     }
 
     public override void Draw(Client c)
@@ -64,7 +66,7 @@ public class CantFindWaypointPathIssue : Issue
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
         foreach (var wp in union)
         {
-            Color canPass = MoveType.Passable(wp, Alliance, c.Data)
+            Color canPass = MoveType.Passable(wp, Alliance, GoThruHostile, c.Data)
                 ? Colors.White : Colors.Black;
             Color isStartOrDest = Colors.White;
             var size = 10f;

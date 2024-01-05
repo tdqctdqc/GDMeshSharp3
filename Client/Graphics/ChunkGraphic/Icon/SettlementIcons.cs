@@ -19,6 +19,7 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
     {
         var node = new Node2D();
         var icon = element.Tier.Model(data).Icon;
+        var size = Game.I.Client.Settings.MedIconSize.Value;
         var poly = element.Poly.Entity(data);
         var urbanTris = poly.Tris.Tris
             .Where(t => t.Landform(data) == data.Models.Landforms.Urban);
@@ -29,7 +30,7 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
         }
         foreach (var urbanTri in urbanTris)
         {
-            var mesh = icon.GetMeshInstance();
+            var mesh = icon.GetMeshInstance(size);
             SetRelPos(mesh, new PolyTriPosition(poly.Id, urbanTri.Index), data);
             node.AddChild(mesh);
         }

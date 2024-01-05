@@ -44,14 +44,12 @@ public class TacticalWaypointGenerator : Generator
         GenerateInnerWaypoints(key);
         genReport.StopSection("generate inner wps");
         
-        
         _byId = _nexusWps.Values
             .Union(_edgeWps.SelectMany(kvp => kvp.Value))
             .Union(_innerWps.Select(kvp => kvp.Value.Item2))
             .Union(_seaWps.Values)
             .Union(_riverBankWps.SelectMany(kvp => kvp.Value))
             .ToDictionary(wp => wp.Id, wp => wp);
-        
         
         genReport.StartSection();
         Connect(key);
@@ -61,8 +59,6 @@ public class TacticalWaypointGenerator : Generator
         DoShortEdgeWps(key);
         genReport.StopSection("short edge wps", "");
 
-        
-        
         genReport.StartSection();
         SetLandWaypointProperties(key, _byId.Values);
         genReport.StopSection("set wp properties", "");
@@ -103,8 +99,28 @@ public class TacticalWaypointGenerator : Generator
                 }
                 else
                 {
+                    var landIncident = incidentPolys.Where(p => p.IsLand);
+                    Vector2 newPos;
+                    if (landIncident.Count() == 1)
+                    {
+                        var landPoly = landIncident.First();
+                        var offset = landPoly.GetOffsetTo(nexus.Point, key.Data);
+                        newPos = landPoly.Center + offset.Normalized() * (offset.Length() - _edgeWaypointDist / 2f);
+                    }
+                    else if (landIncident.Count() == 2)
+                    {
+                        var edge = landIncident.ElementAt(0).GetEdge(landIncident.ElementAt(1), key.Data);
+                        var otherNexus = edge.GetOtherNexus(nexus, key.Data);
+                        var offset = otherNexus.Point.GetOffsetTo(nexus.Point, key.Data);
+                        var l = Mathf.Min(offset.Length() / 4f, _edgeWaypointDist / 2f);
+                        newPos = otherNexus.Point + offset.Normalized() * (offset.Length() - l);
+                    }
+                    else throw new Exception();
+                    
+                    newPos = newPos.ClampPosition(key.Data);
+                    // if (newPos.GetOffsetTo(nexus.Point, key.Data).Length() < _edgeWaypointDist / 4f) throw new Exception();
                     var wp = new CoastWaypoint(key, sea, false, _id.TakeId(),
-                        nexus.Point, p0, p1, p2, p3);
+                        newPos, p0, p1, p2, p3);
                     res.Add(nexus, wp);
                 }
             }
@@ -178,8 +194,15 @@ public class TacticalWaypointGenerator : Generator
                 }
                 else
                 {
+                    MapPolygon landPoly = null;
+                    if (hi.IsLand) landPoly = hi;
+                    else if (lo.IsLand) landPoly = lo;
+                    else throw new Exception();
+                    var offset = landPoly.GetOffsetTo(pos, key.Data);
+                    var newPos = landPoly.Center + offset.Normalized() * (offset.Length() - _edgeWaypointDist / 2f);
+                    newPos = newPos.ClampPosition(key.Data);
                     var wp = new CoastWaypoint(key, sea, false,
-                        _id.TakeId(), pos, hi, lo);
+                        _id.TakeId(), newPos, hi, lo);
                     res.Add(wp);
                 }
             }

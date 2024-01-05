@@ -16,8 +16,9 @@ public partial class MarketQuantitiesOverview : HBoxContainer
         AddChild(buffer);
         _itemList = ItemSelect.ConstructIcon<Item>(
             data.Models.GetModels<Item>().Values
-                .Where(i => i is TradeableItem).ToList(), i => i.Icon.BaseTexture, 
-            new Vector2I(50, 50),
+                .Where(i => i is TradeableItem).ToList(), 
+            i => i.Icon, 
+            50f,
             i => Draw(data), 
             i => i.Color);
         _itemList.CustomMinimumSize = new Vector2(60f, 10f);

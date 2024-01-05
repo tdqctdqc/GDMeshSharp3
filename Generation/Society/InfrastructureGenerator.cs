@@ -14,11 +14,6 @@ public class InfrastructureGenerator : Generator
     private float _portInfraNodeSize = 0f;
     private float _minSettlementSizeForInfraNode = 0f;
     private float _sizeBuildRoadRangeMult = .5f;
-
-    private ConcurrentQueue<int> _polyLvl = new (),
-        _hiLvlTraffic = new (),
-        _polyLvlTraffic = new (), 
-        _segs = new ();
     public override GenReport Generate(GenWriteKey key)
     {
         _key = key;
@@ -48,12 +43,6 @@ public class InfrastructureGenerator : Generator
             }
         }
         genReport.StopSection(nameof(GenerateForLandmass));
-        
-        
-        GD.Print("poly level graph time " + _polyLvl.Sum());
-        GD.Print("hi level traffic time " + _hiLvlTraffic.Sum());
-        GD.Print("poly level traffic time " + _polyLvlTraffic.Sum());
-        GD.Print("make segs time " + _segs.Sum());
         return genReport;
     }
     private Dictionary<Vector2I, RoadModel> GenerateForLandmass(Landmass lm)
@@ -66,35 +55,18 @@ public class InfrastructureGenerator : Generator
     
     private Dictionary<Vector2I, RoadModel> BuildLmRoadNetwork(Landmass lm)
     {
-        var sw = new Stopwatch();
         
-        sw.Start();
         var polyLvlGraph = GetPolyLevelGraph(lm.Polys);
-        sw.Stop();
-        _polyLvl.Enqueue((int)sw.Elapsed.TotalMilliseconds);
-        sw.Reset();
         
-        sw.Start();
+        
         var hiLvlTrafficGraph = GetHighLevelTrafficGraph(polyLvlGraph);
         if (hiLvlTrafficGraph == null)
         {
             return new Dictionary<Vector2I, RoadModel>();
         }
-        sw.Stop();
-        _hiLvlTraffic.Enqueue((int)sw.Elapsed.TotalMilliseconds);
-        sw.Reset();
-        
-        sw.Start();
         DoPolyLevelTraffic(polyLvlGraph, hiLvlTrafficGraph);
-        sw.Stop();
-        _polyLvlTraffic.Enqueue((int)sw.Elapsed.TotalMilliseconds);
-        sw.Reset();
         
-        sw.Start();
         var segs = GetRoadSegs(polyLvlGraph);
-        sw.Stop();
-        _segs.Enqueue((int)sw.Elapsed.TotalMilliseconds);
-        sw.Reset();
         
         return segs;
     }

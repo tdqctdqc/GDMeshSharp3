@@ -11,6 +11,19 @@ public static class NodeExt
         return SubscribedNodeToken.Construct(node, update, triggers);
     }
 
+    public static TContainer GetLabeledIcon<TContainer>(
+        this Icon icon, string text, float height)
+        where TContainer : Node, new()
+    {
+        var label = new Label();
+        label.Text = text;
+        var container = new TContainer();
+        var tr = icon.GetTextureRect(height);
+        tr.CustomMinimumSize = icon.GetDim(height);
+        container.AddChild(tr);
+        container.AddChild(label);
+        return container;
+    }
     public static HBoxContainer MakeFlowStatDisplay(Client client, Flow flow, Data data, float height,
         params RefAction[] triggers)
     {
@@ -50,7 +63,7 @@ public static class NodeExt
     {
         var hBox = new HBoxContainer();
         var amount = new Label();
-        var iconRect = icon.GetTextureRect(Vector2.One * height);
+        var iconRect = icon.GetTextureRect(height);
         iconRect.CustomMinimumSize = iconRect.Size;
         hBox.AddChild(iconRect);
         hBox.AddChild(amount);

@@ -95,11 +95,11 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
     public void AddSetting<T>(SettingsOption<T> option, 
         Action<TGraphic, T> update)
     {
-        option.SettingChanged.SubscribeForNode(() =>
+        option.SettingChanged.SubscribeForNode(v =>
         {
             foreach (var g in ByChunkCoords.Values)
             {
-                update(g, option.Value);
+                update(g, v.newVal);
             }
         }, _segmenter);
         Settings.Add(option);

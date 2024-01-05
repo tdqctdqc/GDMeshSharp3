@@ -49,15 +49,15 @@ public partial class FoodTab : ScrollContainer
             .SelectMany(p => p.PolyFoodProd.Nums)
             .SortInto(p => client.Data.Models.GetModel<FoodProdTechnique>(p.Key), p => p.Value);
         
-        
+        var iconSize = client.Settings.MedIconSize.Value;
+
         foreach (var kvp in techniqueCounts)
         {
             var technique = kvp.Key;
             var num = kvp.Value;
-            var hbox = new HBoxContainer();
-            hbox.AddChild(technique.Icon.GetTextureRect(Vector2.One * 50f));
-            hbox.CreateLabelAsChild(num.ToString());
-            _container.AddChild(hbox);
+
+            var box = technique.Icon.GetLabeledIcon<HBoxContainer>(num.ToString(), iconSize);
+            _container.AddChild(box);
 
             var needed = technique.BaseLabor * num;
             var have = jobs.ContainsKey(technique.JobType.Id) ? jobs[technique.JobType.Id] : 0;

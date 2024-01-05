@@ -7,7 +7,7 @@ public class Urban : Landform, IDecaledTerrain
 {
     
     public Urban() 
-        : base("Urban", 1000f, 0f, Colors.IndianRed, false)
+        : base("Urban", 0f, 0f, Colors.IndianRed, false)
     {
         
     }

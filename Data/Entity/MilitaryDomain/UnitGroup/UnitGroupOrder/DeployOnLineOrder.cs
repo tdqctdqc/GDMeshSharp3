@@ -8,9 +8,11 @@ public class DeployOnLineOrder : UnitOrder
 {
     public List<Vector2> Points { get; private set; }
     public List<int> UnitIdsInLine { get; private set; }
+    public bool GoThruHostile { get; private set; }
     public DeployOnLineOrder(List<Vector2> points,
-        List<int> unitIdsInLine)
+        List<int> unitIdsInLine, bool goThruHostile)
     {
+        GoThruHostile = goThruHostile;
         Points = points;
         UnitIdsInLine = unitIdsInLine;
         for (var i = 0; i < points.Count; i++)
@@ -38,8 +40,13 @@ public class DeployOnLineOrder : UnitOrder
             var target = Points.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
-            
-            pos.MoveToPoint(moveType, alliance, target, ref movePoints, key);
+            if (pos.Pos == target)
+            {
+                continue;
+            }
+
+            pos.MoveToPoint(moveType, alliance, target, GoThruHostile,
+                ref movePoints, key);
             
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }

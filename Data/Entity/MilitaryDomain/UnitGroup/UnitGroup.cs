@@ -59,7 +59,7 @@ public class UnitGroup : Entity
         var alliance = Regime.Entity(d).GetAlliance(d);
         var found = d.Military.WaypointGrid.TryGetClosest(pos.Pos,
             out var wp, 
-            w => MoveType(d).Passable(w, alliance, d));
+            w => MoveType(d).Passable(w, alliance, true, d));
         if (found == false) throw new Exception();
         return wp;
     }

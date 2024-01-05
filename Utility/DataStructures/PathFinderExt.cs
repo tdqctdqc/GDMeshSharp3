@@ -9,15 +9,17 @@ public static partial class PathFinder
     public static List<Waypoint> FindPath(MoveType moveType, 
         Alliance alliance,
         Waypoint start,
-        Waypoint dest, Data d)
+        Waypoint dest, 
+        bool goThruHostile,
+        Data d)
     {
         return PathFinder<Waypoint>.FindPath(start, dest, 
             p => p.TacNeighbors(d)
-                .Where(wp => moveType.Passable(wp, alliance, d)),
+                .Where(wp => moveType.Passable(wp, alliance, goThruHostile, d)),
             (w, v) =>
             {
-                var costW = moveType.PathfindCost(w, alliance, d);
-                var costV = moveType.PathfindCost(v, alliance, d);
+                var costW = moveType.PathfindCost(w, alliance, goThruHostile, d);
+                var costV = moveType.PathfindCost(v, alliance, goThruHostile, d);
                 var length = w.Pos.GetOffsetTo(v.Pos, d).Length();
                 return length * (costW + costV) / 2f; 
             }, 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public class SettlementTier : IModel
 {
@@ -15,6 +16,6 @@ public class SettlementTier : IModel
         NumTris = numTris;
         Name = name;
         MinSize = minSize;
-        Icon = Icon.Create(Name, Icon.AspectRatio._1x1, 50f);
+        Icon = Icon.Create(Name, Vector2I.One);
     }
 }

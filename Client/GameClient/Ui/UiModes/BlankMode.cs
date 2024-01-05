@@ -12,6 +12,11 @@ public class BlankMode : UiMode
         _client.Cam().Process(e);
     }
 
+    public override void Clear()
+    {
+        
+    }
+
     public BlankMode(Client client) : base(client)
     {
     }

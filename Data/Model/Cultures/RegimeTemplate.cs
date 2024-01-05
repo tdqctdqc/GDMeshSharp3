@@ -13,7 +13,7 @@ public class RegimeTemplate : IModel
     public string SecondaryColor { get; private set; }
     public string FlagPath { get; private set; }
     public Culture Culture { get; private set; }
-    public Texture2D Flag { get; private set; }
+    public Icon Flag { get; private set; }
 
     public RegimeTemplate(Culture culture, string json)
     {
@@ -24,6 +24,6 @@ public class RegimeTemplate : IModel
         PrimaryColor = d[nameof(PrimaryColor)];
         SecondaryColor = d[nameof(SecondaryColor)];
         FlagPath = d[nameof(FlagPath)];
-        Flag = TextureManager.Textures[FlagPath];
+        Flag = Icon.Create(FlagPath, new Vector2I(3, 2));
     }
 }

@@ -18,7 +18,8 @@ public partial class InfrastructureIcons : MapChunkGraphicNode<Waypoint>
     {
         if (element is CoastWaypoint c && c.Port)
         {
-            var icon = data.Models.Infras.Port.Icon.GetMeshInstance();
+            var size = Game.I.Client.Settings.MedIconSize.Value;
+            var icon = data.Models.Infras.Port.Icon.GetMeshInstance(size);
             SetRelPos(icon, element.Pos, data);
             return icon;
         }

@@ -23,15 +23,10 @@ public partial class GeneralTab : ScrollContainer
     {
         Name = regime.Name;
         _container.ClearChildren();
-        var flagControl = new Control();
-        var regimeFlagRect = new TextureRect();
-        regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.FitHeightProportional;
-        regimeFlagRect.StretchMode = TextureRect.StretchModeEnum.Scale;
-        regimeFlagRect.SizeFlagsHorizontal = SizeFlags.ShrinkBegin;
-        regimeFlagRect.SizeFlagsVertical = SizeFlags.ShrinkBegin;
-        regimeFlagRect.Texture = regime.Template.Model(client.Data).Flag;
-        regimeFlagRect.CustomMinimumSize = new Vector2(150f, 100f);
-        _container.AddChild(regimeFlagRect);
+
+        var flag = regime.Template.Model(client.Data).Flag;
+        var flagTexture = flag.GetTextureRect(100f);
+        _container.AddChild(flagTexture);
         
         var seeAlliance = ButtonExt.GetButton(() =>
         {

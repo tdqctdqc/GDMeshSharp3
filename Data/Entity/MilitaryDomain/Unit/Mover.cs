@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,98 +9,149 @@ public static class Mover
         MoveType moveType,
         Alliance alliance,
         Vector2 target,
+        bool goThruHostile,
         ref float movePoints, LogicWriteKey key)
     {
-        var d = key.Data;
-        var goStraightToDist = 100f; //todo base on closest passable wps to destWp
-        if (pos.Pos.GetOffsetTo(target, d).Length() <= goStraightToDist)
+        var startPos = target;
+        inner(ref movePoints);
+        CheckIfHaventMoved(pos, moveType, alliance, goThruHostile, target, startPos, 
+            "moving to point", key);
+        void inner(ref float movePoints)
         {
-            pos.MoveDirectlyTowardsPoint(moveType, ref movePoints, target, key);
-            return;
-        }
+            if (pos.Pos == target)
+            {
+                return;
+            }
+            var startPos = pos.Pos;
+            var d = key.Data;
+            var goStraightToDist = 100f; //todo base on closest passable wps to destWp
+            if (pos.Pos.GetOffsetTo(target, d).Length() <= goStraightToDist)
+            {
+                pos.MoveDirectlyTowardsPoint(moveType, ref movePoints, target, key);
+                return;
+            }
         
-        pos.GetOntoCloseWaypoint(alliance, moveType, target, ref movePoints, key);
-        if (movePoints <= 0f) return;
+            pos.GetOntoCloseWaypoint(alliance, moveType, target, goThruHostile,
+                ref movePoints, key);
+            if (movePoints <= 0f) return;
         
-        if (pos.Pos.GetOffsetTo(target, d).Length() <= goStraightToDist)
-        {
-            pos.MoveDirectlyTowardsPoint(moveType, ref movePoints, target, key);
-            return;
-        }
+            if (pos.Pos.GetOffsetTo(target, d).Length() <= goStraightToDist)
+            {
+                pos.MoveDirectlyTowardsPoint(moveType, ref movePoints, target, key);
+                return;
+            }
         
-        var foundTargetWp = d.Military.WaypointGrid
-            .TryGetClosest(target, out var destWp,
-                wp => moveType.Passable(wp, alliance, d));
-        if (foundTargetWp == false) throw new Exception();
+            var foundTargetWp = d.Military.WaypointGrid
+                .TryGetClosest(target, out var destWp,
+                    wp => moveType.Passable(wp, alliance, goThruHostile, d));
+            if (foundTargetWp == false) throw new Exception();
         
-        pos.FindPathAndMoveAlong(moveType,
-            alliance, ref movePoints, destWp, key);
-        if (movePoints <= 0f) return;
+            pos.FindPathAndMoveAlong(moveType,
+                alliance, goThruHostile, ref movePoints, destWp, key);
+            if (movePoints <= 0f) return;
 
-        pos.MoveDirectlyTowardsPoint(moveType, ref movePoints,
-            target, key);
+            pos.MoveDirectlyTowardsPoint(moveType, ref movePoints,
+                target, key);
+        }
     }
-    
-    public static void MoveToWaypoint(this MapPos pos, Alliance alliance,
-        MoveType moveType, ref float movePoints, Waypoint dest, 
+    private static void CheckIfHaventMoved(MapPos pos, 
+        MoveType moveType, Alliance alliance, bool goThruHostile,
+        Vector2 target, Vector2 startPos, string msg,
         LogicWriteKey key)
     {
-        pos.GetOntoCloseWaypoint(alliance, moveType, 
-            dest.Pos, ref movePoints, key);
-        pos.FindPathAndMoveAlong(moveType, alliance, ref movePoints, dest, key);
+        if (pos.Pos == startPos)
+        {
+            var issue = new UnitNotMovingIssue(target, 
+                startPos, msg, moveType, alliance, goThruHostile);
+            key.Data.ClientPlayerData.Issues.Add(issue);
+            pos.Set((Vector2I)target, key);
+        }
+    }
+    public static void MoveToWaypoint(this MapPos pos, Alliance alliance,
+        MoveType moveType, bool goThruHostile,
+        ref float movePoints, Waypoint dest, 
+        LogicWriteKey key)
+    {
+        var startPos = pos.Pos;
+        inner(ref movePoints);
+        CheckIfHaventMoved(pos, moveType, alliance, goThruHostile, dest.Pos, startPos,
+            "moving to waypoint", key);
+        void inner(ref float movePoints)
+        {
+            pos.GetOntoCloseWaypoint(alliance, moveType, 
+                dest.Pos, goThruHostile, ref movePoints, key);
+            pos.FindPathAndMoveAlong(moveType, alliance, goThruHostile, ref movePoints, dest, key);
+        }
     }
     public static void MoveOntoAndAlongPath(this MapPos pos, 
         Alliance alliance,
-        MoveType moveType,
+        MoveType moveType, bool goThruHostile,
         ref float movePoints, 
         List<Waypoint> path, LogicWriteKey key)
     {
-        if (movePoints <= 0f) return;
-        var d = key.Data;
+        var startPos = pos.Pos;
         Waypoint closeOnPath = null;
-        if (pos.OnWaypointAxis())
-        {
-            var (w1, w2) = pos.GetAxisWps(d);
-            if (path.Contains(w1))
-            {
-                closeOnPath = w1;
-                pos.MoveDirectlyFromWaypointToWaypoint(moveType,
-                    ref movePoints, w2, w1, key);
-            }
-            else if (path.Contains(w2))
-            {
-                closeOnPath = w2;
-                pos.MoveDirectlyFromWaypointToWaypoint(moveType,
-                    ref movePoints, w1, w2, key);
-            }
-        }
-        else if (pos.OnWaypoint())
-        {
-            var wp = pos.GetWaypoint(d);
-            if (path.Contains(wp))
-            {
-                closeOnPath = wp;
-            }
-        }
+        (Waypoint, string) temp = (null, "");
 
-        if (movePoints <= 0f) return;
-        if (closeOnPath == null)
+        inner(ref movePoints);
+        CheckIfHaventMoved(pos, moveType, alliance, goThruHostile, temp.Item1.Pos, startPos,
+            temp.Item2, key);
+        void inner(ref float movePoints)
         {
-            closeOnPath = path
-                .MinBy(p => p.Pos.GetOffsetTo(pos.Pos, d).Length());
-            pos.MoveToWaypoint(alliance, moveType, 
-                ref movePoints, closeOnPath, key);
-        }
-        
-        if (movePoints <= 0f) return;
-
-        var index = path.IndexOf(closeOnPath);
-        for (var i = index; i < path.Count - 1; i++)
-        {
-            pos.MoveDirectlyFromWaypointToWaypoint(moveType,
-                ref movePoints,
-                path[i], path[i + 1], key);    
             if (movePoints <= 0f) return;
+            var d = key.Data;
+            if (pos.OnWaypointAxis())
+            {
+                var (w1, w2) = pos.GetAxisWps(d);
+                if (path.Contains(w1))
+                {
+                    closeOnPath = w1;
+                    temp = (closeOnPath, "going along path on wp axis");
+                    pos.MoveDirectlyFromWaypointToWaypoint(moveType,
+                        ref movePoints, w2, w1, key);
+                }
+                else if (path.Contains(w2))
+                {
+                    closeOnPath = w2;
+                    temp = (closeOnPath, "going along path on wp axis");
+
+                    pos.MoveDirectlyFromWaypointToWaypoint(moveType,
+                        ref movePoints, w1, w2, key);
+                }
+            }
+            else if (pos.OnWaypoint())
+            {
+                var wp = pos.GetWaypoint(d);
+                if (path.Contains(wp))
+                {
+                    closeOnPath = wp;
+                    temp = (closeOnPath, "going along path on wp");
+                }
+            }
+
+            if (movePoints <= 0f) return;
+            if (closeOnPath == null)
+            {
+                closeOnPath = path
+                    .MinBy(p => p.Pos.GetOffsetTo(pos.Pos, d).Length());
+                temp = (closeOnPath, "going towards path");
+
+
+                pos.MoveToWaypoint(alliance, moveType, goThruHostile, 
+                    ref movePoints, closeOnPath, key);
+            }
+        
+            if (movePoints <= 0f) return;
+
+            var index = path.IndexOf(closeOnPath);
+            for (var i = index; i < path.Count - 1; i++)
+            {
+                var speed = pos.MoveDirectlyFromWaypointToWaypoint(moveType,
+                    ref movePoints,
+                    path[i], path[i + 1], key);    
+                temp = (path[i + 1], "going along path wp to wp speed " + speed);
+                if (movePoints <= 0f) return;
+            }
         }
     }
     
@@ -110,6 +160,7 @@ public static class Mover
         Alliance a,
         MoveType moveType,
         Vector2 target,
+        bool goThruHostile,
         ref float movePoints, LogicWriteKey key)
     {
         if (pos.OnWaypoint()) return;
@@ -128,7 +179,7 @@ public static class Mover
         {
             var foundCloseWp = d.Military.WaypointGrid
                 .TryGetClosest(pos.Pos, out var closeWp,
-                    wp => moveType.Passable(wp, a, d));
+                    wp => moveType.Passable(wp, a, goThruHostile, d));
             if (foundCloseWp == false) throw new Exception();
             pos.MoveDirectlyFromPointToWaypoint(moveType, closeWp,
                 ref movePoints, key);
@@ -136,7 +187,9 @@ public static class Mover
     }
     private static void FindPathAndMoveAlong(this MapPos pos,
         MoveType moveType,
-        Alliance alliance, ref float movePoints, Waypoint dest,
+        Alliance alliance, 
+        bool goThruHostile,
+        ref float movePoints, Waypoint dest,
         LogicWriteKey key)
     {
         if (movePoints <= 0f) return;
@@ -145,13 +198,12 @@ public static class Mover
         var wp = pos.GetWaypoint(d);
         List<Waypoint> path = PathFinder.FindPath(moveType,
             alliance,
-            wp, dest, d);
+            wp, dest, goThruHostile, d);
         if (path == null)
         {
-            throw new Exception();
             var issue = new CantFindWaypointPathIssue(pos.Pos,
                 alliance, "",
-                wp, dest, moveType);
+                wp, dest, moveType, goThruHostile);
             d.ClientPlayerData.Issues.Add(issue);
             pos.Set(dest, key);
             return;
@@ -176,7 +228,7 @@ public static class Mover
             pos.Set(target, key);
         }
     }
-    private static bool MoveDirectlyFromWaypointToWaypoint(
+    private static float MoveDirectlyFromWaypointToWaypoint(
         this MapPos pos, MoveType moveType, 
         ref float movePoints,
         Waypoint from, 
@@ -204,7 +256,19 @@ public static class Mover
         var speed = moveType.BaseSpeed
                     * terrainSpeedMod
                     * roadMult;
+        
         speed = Mathf.Max(roadSpeedOverride, speed);
+
+        if (speed == 0f)
+        {
+            var pt = pos.GetTri(d);
+            GD.Print($"base speed {moveType.BaseSpeed} " +
+                     $"\nroad speed mod {roadMult}" +
+                     $"\nroad speed override {roadSpeedOverride}" +
+                     $"\nlandform {pt.Landform(d).Name}" +
+                     $"\nvegetation {pt.Vegetation(d).Name}" +
+                    $"\nterrain speed mod {terrainSpeedMod}");
+        }
         
         var cost = toTarget.Length() / speed;
         if (cost > movePoints)
@@ -213,14 +277,14 @@ public static class Mover
             var newPos = (pos.Pos + toTarget * ratio).ClampPosition(d);
             pos.Set(from, target, (Vector2I)newPos, key);
             movePoints = 0;
-            return false;
         }
         else
         {
             movePoints -= cost;
             pos.Set(target, key);
-            return true;
         }
+
+        return speed;
     }
     private static bool MoveDirectlyTowardsPoint(
         this MapPos pos, MoveType moveType,

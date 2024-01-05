@@ -5,22 +5,218 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiControlPanel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Exception/Issue/UnitNotMovingIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapHighlighter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/NormalMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/NormalMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGroupGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGroupGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/PromptSidebar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/PromptSidebar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/Tooltip/TooltipPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/Tooltip/TooltipPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/PromptSideIcon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/PromptButton.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/hashemite.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/hashemite.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/khedivate.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/khedivate.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/punic.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/punic.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/unitedarabrepublic.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Arab/unitedarabrepublic.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/azania.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/azania.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/greatzimbabwe.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/greatzimbabwe.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/ngunia.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/ngunia.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/rainbow.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Azanian/rainbow.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/amazonia.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/amazonia.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/dignidad.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/dignidad.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/granbolivaria.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/granbolivaria.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/vespuxio.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Bolivarian/vespuxio.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/alba.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/alba.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/breizh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/breizh.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/eire.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/eire.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/fenian.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Celtic/fenian.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/celestial.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/celestial.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/formosan.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/formosan.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/guomin.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/guomin.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/hunan.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Chinese/hunan.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Dixie/columbiadconfederacy.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Dixie/columbiadconfederacy.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/albion.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/albion.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/leveller.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/leveller.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/plymouth.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/plymouth.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/umbrian.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/English/umbrian.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/gallicempire.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/gallicempire.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/kingdomofelysee.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/kingdomofelysee.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/larepublique.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/larepublique.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/thecommune.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/French/thecommune.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/bundesrepublik.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/bundesrepublik.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/heiliges.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/heiliges.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/neworder.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/neworder.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/volksrepublik.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/German/volksrepublik.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/demotika.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/demotika.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/epiros.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/epiros.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/khrysodont.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/khrysodont.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/platonic.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Greek/platonic.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/chandran.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/chandran.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/indiccongress.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/indiccongress.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/karnatak.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/karnatak.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/naxalbari.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Indian/naxalbari.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/kikuchi.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/kikuchi.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/kyoto.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/kyoto.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/nihon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/nihon.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/shogunate.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Japanese/shogunate.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/badondo.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/badondo.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/katanga.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/katanga.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/lwagu.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/lwagu.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/riverine.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Kongo/riverine.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/medic.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/medic.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/panavestan.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/panavestan.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/sassania.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/sassania.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/tudeh.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Persian/tudeh.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/chernosotnya.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/chernosotnya.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/republicofnovgorod.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/republicofnovgorod.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/thegreatsoviet.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/thegreatsoviet.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/tsardomofperm.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Russian/tsardomofperm.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/kemalcuk.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/kemalcuk.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/ogluz.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/ogluz.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/sublimeporte.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/sublimeporte.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/turan.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Turkic/turan.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/Apple.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/Apple.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/baycommonwealth.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/baycommonwealth.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/bigapple.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/bigapple.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/bigsmokeysydnicate.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/bigsmokeysydnicate.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/excelsior.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/excelsior.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/freestateofbuck.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/Yankee/freestateofbuck.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/flagTemplate.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Textures/Flag/flagTemplate.svg.import" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MarketOverview/MarketPricesOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MarketOverview/MarketPricesOverview.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MarketOverview/MarketQuantitiesOverview.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MarketOverview/MarketQuantitiesOverview.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/PromptManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/PromptManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ConstructionTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ConstructionTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FlowsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FlowsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ItemsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ItemsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/MilitaryTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/MilitaryTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/RegimeInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/StatDisplays/RegimeInfoBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/TooltipManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/BlankMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/BlankMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/NormalMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/TacticalMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UiMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UiMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/BuildingIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/BuildingIcons.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ConstructionIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ConstructionIcons.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/InfrastructureIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/InfrastructureIcons.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ResourceIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ResourceIcons.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/BoolSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/BoolSettingsOption.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/EnumSettingsOption.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/FloatSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/FloatSettingsOption.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/SettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/SettingsOption.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/TypedSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/TypedSettingsOption.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Mover.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToWaypointOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToWaypointOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Job/PeepJob.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Job/PeepJob.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/Flow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Flow/Flow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/BuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/BuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Cultures/RegimeTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Cultures/RegimeTemplate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Items/Item.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/Item.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/InfantryMoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/InfantryMoveType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTier.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Exception/Issue/CantFindWaypointPathIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/CantFindWaypointPathIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/Issue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/Issue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/IssueWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/IssueWindow.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Exception/Issue/NoPolysInCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Poly/TacticalWaypointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/TacticalWaypointGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/OldInfrastructureGenerator.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/ItemMultiSelect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/ItemMultiSelect.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/ItemSelect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/ItemSelect.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/TacWaypointTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/TacWaypointTooltipTemplate.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -61,9 +257,11 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/12b544f3d6604d0c98a8a519e62542912200/05/5ddd39d8/IPool`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/25/e6133dbc/ItemList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/51/6d3003d9/CanvasItem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/6b/6f51637d/Control.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/c6/26c6df49/TextureRect.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/c6/edd21999/Colors.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f9cd2b865094294bc69db1184ad68be40888/ce/da3f4d25/ConcurrentDictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b34296d7545f4a54bda041aecea156b4b1d878/1c/94f3ee6b/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
@@ -79,6 +277,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
@@ -419,7 +618,11 @@
       <workItem from="1704054055164" duration="4559000" />
       <workItem from="1704209276269" duration="15423000" />
       <workItem from="1704230860563" duration="14047000" />
-      <workItem from="1704332381472" duration="2678000" />
+      <workItem from="1704332381472" duration="4133000" />
+      <workItem from="1704388003511" duration="9406000" />
+      <workItem from="1704405300595" duration="6674000" />
+      <workItem from="1704425943455" duration="155000" />
+      <workItem from="1704426210120" duration="3734000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -631,22 +834,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00082" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1701036717585</created>
-      <option name="number" value="00082" />
-      <option name="presentableId" value="LOCAL-00082" />
-      <option name="project" value="LOCAL" />
-      <updated>1701036717598</updated>
-    </task>
-    <task id="LOCAL-00083" summary="working on theater">
-      <option name="closed" value="true" />
-      <created>1701184975815</created>
-      <option name="number" value="00083" />
-      <option name="presentableId" value="LOCAL-00083" />
-      <option name="project" value="LOCAL" />
-      <updated>1701184975816</updated>
-    </task>
     <task id="LOCAL-00084" summary="made tactical waypoints a grid">
       <option name="closed" value="true" />
       <created>1701226161321</created>
@@ -783,7 +970,23 @@
       <option name="project" value="LOCAL" />
       <updated>1704241960974</updated>
     </task>
-    <option name="localTasksCounter" value="101" />
+    <task id="LOCAL-00101" summary="made MapOverlayDrawer">
+      <option name="closed" value="true" />
+      <created>1704335209286</created>
+      <option name="number" value="00101" />
+      <option name="presentableId" value="LOCAL-00101" />
+      <option name="project" value="LOCAL" />
+      <updated>1704335209286</updated>
+    </task>
+    <task id="LOCAL-00102" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1704335531842</created>
+      <option name="number" value="00102" />
+      <option name="presentableId" value="LOCAL-00102" />
+      <option name="project" value="LOCAL" />
+      <updated>1704335531842</updated>
+    </task>
+    <option name="localTasksCounter" value="103" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -805,7 +1008,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="fixed border graphics, maybe fixed dual id bug" />
     <MESSAGE value="reworked dip module order, proposals, added MakeProposalCommand.cs" />
     <MESSAGE value="making ai's send procs directly rather than use orders where it makes sense" />
     <MESSAGE value="reworking front again" />
@@ -829,6 +1031,7 @@
     <MESSAGE value="added unitMoveType" />
     <MESSAGE value="bugfixing pathfinding and movement" />
     <MESSAGE value="changing road generation" />
+    <MESSAGE value="made MapOverlayDrawer" />
     <MESSAGE value="ditto" />
     <option name="LAST_COMMIT_MESSAGE" value="ditto" />
   </component>

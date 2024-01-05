@@ -24,7 +24,8 @@ public partial class TooltipPanel : Panel
     {
         _detailAction?.Process(delta);
     }
-    public void Setup(ITooltipTemplate template, object element, Data data)
+    public void Setup<TElement>
+        (TooltipTemplate<TElement> template, TElement element, Data data)
     {
         Clear();
         _template = template;

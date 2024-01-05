@@ -21,7 +21,8 @@ public partial class ItemsTab : ScrollContainer
         _container.ClearChildren();
         var itemIds = client.Data.Models.GetModels<Item>().Values;
         var tick = client.Data.BaseDomain.GameClock.Tick;
-        
+        var iconSize = client.Settings.MedIconSize.Value;
+
         foreach (var item in itemIds)
         {
             var amt = regime.Items.Get(item);
@@ -29,7 +30,7 @@ public partial class ItemsTab : ScrollContainer
             
             var hbox = new HBoxContainer();
             
-            hbox.AddChild(item.Icon.GetTextureRect(Vector2.One * 50f));
+            hbox.AddChild(item.Icon.GetTextureRect(iconSize));
             hbox.CreateLabelAsChild($"Amount: {amt} ");
             hbox.CreateLabelAsChild($"Prod: {itemReport.Produced} ");
             hbox.CreateLabelAsChild($"Consumed: {itemReport.Consumed} ");

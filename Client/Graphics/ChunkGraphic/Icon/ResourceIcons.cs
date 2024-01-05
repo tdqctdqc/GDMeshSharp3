@@ -20,15 +20,16 @@ public partial class ResourceIcons : MapChunkGraphicNode<MapPolygon>
         var hbox = new HBoxContainer();
         hbox.Alignment = BoxContainer.AlignmentMode.Center;
         node.AddChild(hbox);
-        var dim = 40f;
+        var size = Game.I.Client.Settings.MedIconSize.Value;
         foreach (var dep in deps)
         {
             if (dep.Size == 0) continue;
-            var icon = dep.Item.Model(data).Icon.GetTextureRect(Vector2.One * dim);
+            var icon = dep.Item.Model(data).Icon
+                .GetTextureRect(size);
             hbox.AddChild(icon);
         }
 
-        hbox.Position = new Vector2(-dim * deps.Count() / 2f, 0f);
+        hbox.Position = new Vector2(-size * deps.Count() / 2f, 0f);
         SetRelPos(node, element, data);
         return node;
     }

@@ -14,13 +14,10 @@ public partial class ConstructionIcons : MapChunkGraphicNode<Construction>
     }
     protected override Node2D MakeGraphic(Construction element, Data data)
     {
+        var size = Game.I.Client.Settings.MedIconSize.Value;
         var construction = element;
-        var icon = construction.Model.Model(data).Icon.GetMeshInstance();
-        var constrSignMesh = new MeshInstance2D();
-        var mesh = new QuadMesh();
-        mesh.Size = Vector2.One * 25f;
-        constrSignMesh.Mesh = mesh;
-        constrSignMesh.Texture = data.Models.Flows.ConstructionCap.Icon.BaseTexture;
+        var icon = construction.Model.Model(data).Icon.GetMeshInstance(size);
+        var constrSignMesh = data.Models.Flows.ConstructionCap.Icon.GetMeshInstance(size);
         icon.AddChild(constrSignMesh);
         SetRelPos(icon, construction.Pos, data);
         return icon;

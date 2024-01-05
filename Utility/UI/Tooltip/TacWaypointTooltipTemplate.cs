@@ -36,10 +36,7 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
                     kvp.Value.Contains(wp)))
             .Select(kvp => kvp.Key);
         var res = "";
-        var debugDrawer 
-            = Game.I.Client.GetComponent<MapGraphics>()
-                .DebugOverlay;
-        debugDrawer.Clear();
+        
         foreach (var regime in regimes)
         {
             if (d.HostLogicData.RegimeAis.Dic.ContainsKey(regime) == false) continue;
@@ -53,10 +50,9 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
                 .FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
             if (front == null) continue;
             res += "\n  Front: " + front.Id;
-            var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>().FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
+            var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>()
+                .FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
             if (seg == null) continue;
-            var relTo = seg.GetTacWaypoints(d).First().Pos;
-            debugDrawer.Draw(mb => mb.DrawFrontSegment(relTo, seg, d), relTo);
             res += "\n    Segment: " + seg.Id;
             res += "\n    Groups: " + seg.GroupIds.Count();
         }

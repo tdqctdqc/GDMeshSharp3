@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Godot;
 
 public class InfraModel : IModel
 {
@@ -10,6 +11,6 @@ public class InfraModel : IModel
     public InfraModel(string name)
     {
         Name = name;
-        Icon = Icon.Create(Name, Icon.AspectRatio._1x1, 25f);
+        Icon = Icon.Create(Name, Vector2I.One);
     }
 }

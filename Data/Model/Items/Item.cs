@@ -15,6 +15,6 @@ public abstract class Item : IModel
     {
         Name = name;
         Color = color;
-        Icon = Icon.Create(Name, Icon.AspectRatio._1x1, 50f);
+        Icon = Icon.Create(Name, Vector2I.One);
     }
 }

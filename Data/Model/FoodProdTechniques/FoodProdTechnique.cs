@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public abstract class FoodProdTechnique : IModel
 {
@@ -17,7 +18,7 @@ public abstract class FoodProdTechnique : IModel
         Name = name;
         BaseProd = baseProd;
         BaseLabor = baseLabor;
-        Icon = Icon.Create(name, Icon.AspectRatio._1x1, 25f);
+        Icon = Icon.Create(name, Vector2I.One);
         Income = income;
         JobType = jobType;
     }

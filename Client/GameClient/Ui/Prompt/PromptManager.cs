@@ -33,7 +33,7 @@ public partial class PromptManager : Node, IClientComponent
 
     public void AddPrompt(Prompt prompt)
     {
-        var icon = new PromptSideIcon();
+        var icon = new PromptButton();
         icon.Setup(prompt);
         Game.I.Client.GetComponent<UiFrame>().RightSidebar.AddChild(icon);
     }

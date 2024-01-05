@@ -30,14 +30,14 @@ public partial class PeepsTab : ScrollContainer
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);
         _container.CreateLabelAsChild("Peeps: " + peepCount);
         _container.CreateLabelAsChild("Population: " + peepSize);
-        
+        var iconSize = client.Settings.MedIconSize.Value;
+
         foreach (var kvp in jobs.OrderByDescending(k => k.Value))
         {
-            var hbox = new HBoxContainer();
             var job = (PeepJob)client.Data.Models[kvp.Key];
             var count = kvp.Value;
-            hbox.AddChild(job.JobIcon.GetTextureRect(Vector2.One * 50f));
-            hbox.CreateLabelAsChild(count.ToString());
+            var hbox = job.Icon.GetLabeledIcon<HBoxContainer>(
+                count.ToString(), iconSize);
             _container.AddChild(hbox);
         }
     }

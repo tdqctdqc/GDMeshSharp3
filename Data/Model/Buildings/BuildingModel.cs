@@ -21,7 +21,7 @@ public abstract class BuildingModel : IModel, IMakeable
         Name = name;
         NumTicksToBuild = numTicksToBuild;
         ConstructionCapPerTick = constructionCapPerTick;
-        Icon = Icon.Create(Name, Icon.AspectRatio._1x1, 25f);
+        Icon = Icon.Create(Name, Vector2I.One);
         Components = components;
         Makeable = makeable;
     }

@@ -13,7 +13,7 @@ public abstract class Flow : IModel
     protected Flow(string name)
     {
         Name = name;
-        Icon = Icon.Create(GetType().Name, Icon.AspectRatio._1x1, 25f);
+        Icon = Icon.Create(GetType().Name, Vector2I.One);
     }
     public abstract float GetNonBuildingSupply(Regime r, Data d);
     public abstract float GetConsumption(Regime r, Data d);

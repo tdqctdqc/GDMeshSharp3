@@ -38,8 +38,8 @@ public class Assigner
             toPick.Remove(preferred);
         }
     }
-
-    public static void AssignAlongLine<TPoint, TUnit>(
+    
+    public static void AssignAllAlongLine<TPoint, TUnit>(
         List<TPoint> points,
         List<TUnit> units,
         Func<TUnit, float> getStrength,
@@ -136,8 +136,108 @@ public class Assigner
             var offset = getOffset(getPos(lowerPoint), getPos(upperPoint));
             return getPos(lowerPoint) + offset * ratioAlongSeg;
         }
+    }
 
+    public static void PickBestAndAssignAlongLine<TPoint, TUnit>(
+        List<TPoint> points,
+        List<TUnit> units,
+        Func<TUnit, float> getStrength,
+        float minStrengthToTake,
+        Func<TPoint, TPoint, float> getSegCost,
+        Func<TPoint, Vector2> getPointPos,
+        Func<TUnit, Vector2> getUnitPos,
+        Func<Vector2, Vector2, Vector2> getOffset,
+        Action<TUnit, List<Vector2>> assign,
+        Action<HashSet<TUnit>> reject)
+    {
+        if (points.Count < 2) return;
+        var totalCost = 0f;
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            totalCost += getSegCost(points[i], points[i + 1]);
+        }
 
-    
+        if (units.Sum(getStrength) < minStrengthToTake) throw new Exception(); 
+        
+        if (totalCost == 0f) throw new Exception();
+        if (float.IsNaN(totalCost)) throw new Exception();
+        
+        var pointProportions = new List<float>{0};
+        var runningCost = 0f;
+        for (var i = 1; i < points.Count; i++)
+        {
+            runningCost += getSegCost(points[i - 1], points[i]);
+            if (float.IsNaN(runningCost)) throw new Exception();
+            pointProportions.Add(runningCost / totalCost);
+        }
+
+        var runningStrength = 0f;
+        var unitsInOrder = new List<TUnit>();
+        var pickFrom = units.ToHashSet();
+        while (runningStrength / minStrengthToTake < 1f)
+        {
+            var proportion = runningStrength / minStrengthToTake;
+            var pos = getPointAtProportion(proportion);
+            var picked = pickFrom
+                .MinBy(u => getOffset(getUnitPos(u), pos).Length());
+            pickFrom.Remove(picked);
+            unitsInOrder.Add(picked);
+            runningStrength += getStrength(picked);
+        }
+        reject(pickFrom);
+
+        var strengthTaken = unitsInOrder.Sum(getStrength);
+        runningStrength = 0f;
+        var from = getPointPos(points[0]);
+        
+        for (var i = 0; i < unitsInOrder.Count; i++)
+        {
+            var unit = unitsInOrder[i];
+            var proportion = runningStrength / strengthTaken;
+            var nextProportion = proportion + getStrength(unit) / strengthTaken;
+            var to = getPointAtProportion(nextProportion);
+            var list = new List<Vector2>{from};
+            var index = pointProportions.FindIndex(p => p > proportion && p < nextProportion);
+            if (index != -1)
+            {
+                for (var j = index; j < pointProportions.Count; j++)
+                {
+                    if (pointProportions[j] >= nextProportion) break;
+                    list.Add(getPointAtProportion(pointProportions[j]));
+                }
+            }
+            list.Add(to);
+            assign(unit, list);
+            from = to;
+            proportion = nextProportion;
+            runningStrength += getStrength(unit);
+        }
+
+        
+        Vector2 getPointAtProportion(float prop)
+        {
+            if (prop == 0f) return getPointPos(points[0]);
+            if (prop == 1f) return getPointPos(points[points.Count - 1]);
+            var lowerBoundIndex = pointProportions
+                .FindLastIndex(f => prop >= f);
+            if (lowerBoundIndex == -1)
+            {
+                throw new Exception();
+            }
+            if (lowerBoundIndex == points.Count - 1)
+            {
+                return getPointPos(points[points.Count - 1]);
+            }
+
+            var lowerPoint = points[lowerBoundIndex];
+            var upperPoint = points[lowerBoundIndex + 1];
+            var lowerPointProportion = pointProportions[lowerBoundIndex];
+            var upperPointProportion = pointProportions[lowerBoundIndex + 1];
+
+            var ratioAlongSeg = (prop - lowerPointProportion) / (upperPointProportion - lowerPointProportion);
+
+            var offset = getOffset(getPointPos(lowerPoint), getPointPos(upperPoint));
+            return getPointPos(lowerPoint) + offset * ratioAlongSeg;
+        }
     }
 }

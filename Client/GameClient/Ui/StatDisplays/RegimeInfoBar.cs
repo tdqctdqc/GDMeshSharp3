@@ -12,7 +12,7 @@ public partial class RegimeInfoBar : HBoxContainer
         this.AddChildWithVSeparator(hostClientLabel);
         
         var regimeFlagRect = new TextureRect();
-        regimeFlagRect.Size = new Vector2(15f, 10f);
+        regimeFlagRect.Size = new Vector2(3f, 2f);
         regimeFlagRect.ExpandMode = TextureRect.ExpandModeEnum.FitWidthProportional;
 
         regimeFlagRect.SubscribeUpdate(
@@ -21,7 +21,7 @@ public partial class RegimeInfoBar : HBoxContainer
                 var playerRegime = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
                 if (player.Regime.Fulfilled())
                 {
-                    regimeFlagRect.Texture = playerRegime.Entity(data).Template.Model(data).Flag;
+                    regimeFlagRect.Texture = playerRegime.Entity(data).Template.Model(data).Flag.Texture;
                 }
                 else
                 {

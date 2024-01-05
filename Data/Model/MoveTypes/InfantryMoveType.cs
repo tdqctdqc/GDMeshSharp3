@@ -1,10 +1,12 @@
 
 using System;
+using Godot;
 
 public class InfantryMoveType : MoveType
 {
     public InfantryMoveType() 
-        : base(true, 1f, nameof(InfantryMoveType))
+        : base(true, 2f, 
+            nameof(InfantryMoveType))
     {
         
     }
@@ -14,7 +16,7 @@ public class InfantryMoveType : MoveType
         var lf = pt.Landform(d);
         if (lf.IsWater)
         {
-            if (lf is River) return .1f;
+            if (lf is River) return .2f;
             return 0f;
         }
         var lfMod = 1f - lf.MinRoughness / 2f;
@@ -22,17 +24,19 @@ public class InfantryMoveType : MoveType
         return lfMod * vMod;
     }
 
-    public override bool Passable(Waypoint wp, Alliance a, Data d)
+    public override bool Passable(Waypoint wp, Alliance a, 
+        bool goThruHostile, Data d)
     {
         if (wp is ILandWaypoint == false) return false;
-        return CanPassByAlliance(a, wp, d);
+        return AllianceCanPass(a, wp, goThruHostile, d);
     }
 
-    public override float PathfindCost(Waypoint wp, Alliance a, Data d)
+    public override float PathfindCost(Waypoint wp, Alliance a, 
+        bool goThruHostile, Data d)
     {
-        if (wp is ILandWaypoint l == false || CanPassByAlliance(a, wp, d) == false)
+        if (wp is ILandWaypoint l == false || AllianceCanPass(a, wp, goThruHostile, d) == false)
         {
-            throw new Exception();
+            return Mathf.Inf;
         }
         return l.Roughness;
     }

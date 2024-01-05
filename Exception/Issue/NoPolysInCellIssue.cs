@@ -14,7 +14,7 @@ public class NoPolysInCellIssue : Issue
         var grid = c.Data.Planet.PolygonAux.MapPolyGrid;
         var debugDrawer = c.GetComponent<MapGraphics>().DebugOverlay;
         debugDrawer.Clear();
-        debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, 10f, Colors.Red), Point);
+        debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, 10f, Colors.Red), UnitPos);
         var cellW = grid.CellWidth;
         var cellH = grid.CellHeight;
         var dim = new Vector2(cellW, cellH);

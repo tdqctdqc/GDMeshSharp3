@@ -15,8 +15,9 @@ public partial class MarketPricesOverview : HBoxContainer
         AddChild(buffer);
         _itemList = ItemMultiSelect.ConstructIcon<Item>(
             data.Models.GetModels<Item>().Values
-                        .Where(i => i is TradeableItem).ToList(), i => i.Icon.BaseTexture, 
-            new Vector2I(50, 50),
+                        .Where(i => i is TradeableItem).ToList(), 
+                        i => i.Icon, 
+            50f,
             () => Draw(data), 
             i => i.Color);
         _itemList.CustomMinimumSize = new Vector2(60f, 10f);

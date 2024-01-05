@@ -19,6 +19,11 @@ public class TypedSettingsOption<T> : SettingsOption<T>
         }
     }
 
+    public void Choose<TOption>() where TOption : T
+    {
+        var first = _options.First(t => t is TOption);
+        Set(first);
+    } 
     public override Control GetControlInterface()
     {
         var list = new ItemList();
@@ -28,6 +33,7 @@ public class TypedSettingsOption<T> : SettingsOption<T>
             t => _names[t],
             t => () => Set(t)
         );
+        SettingChanged.Subscribe(t => list.Select(_options.IndexOf(t.newVal)));
         list.Select(0);
         return list;
     }

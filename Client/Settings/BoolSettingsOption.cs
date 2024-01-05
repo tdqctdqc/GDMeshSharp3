@@ -20,6 +20,7 @@ public class BoolSettingsOption : SettingsOption<bool>
         check.ToggleMode = true;
         check.ButtonPressed = Value;
         check.Toggled += Set;
+        SettingChanged.Subscribe(b => check.ButtonPressed = b.newVal);
         hbox.AddChild(check);
         return hbox;
     }

@@ -15,7 +15,8 @@ public partial class BuildingIcons : MapChunkGraphicNode<MapBuilding>
 
     protected override Node2D MakeGraphic(MapBuilding element, Data data)
     {
-        var icon = element.Model.Model(data).Icon.GetMeshInstance();
+        var size = Game.I.Client.Settings.MedIconSize.Value;
+        var icon = element.Model.Model(data).Icon.GetMeshInstance(size);
         SetRelPos(icon, element.Position, data);
         return icon;
     }

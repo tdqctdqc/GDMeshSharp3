@@ -24,16 +24,13 @@ public abstract class ManufactureProject : IPolymorph
     protected abstract Icon GetIcon(Data d);
     public Control GetDisplay(Data d)
     {
-        var hbox = new HBoxContainer();
         var icon = GetIcon(d);
-        var texture = icon.GetTextureRect(Vector2.One * 50f);
-        hbox.AddChild(texture);
+        var size = Game.I.Client.Settings.MedIconSize.Value;
         var completedRatio = IpProgress / IndustrialCost(d);
-        
-        hbox.CreateLabelAsChild($"{(completedRatio * Amount).RoundTo2Digits()}/{Amount.RoundTo2Digits()}");
-        
-        
-        return hbox;
+        var box = icon.GetLabeledIcon<HBoxContainer>(
+            $"{(completedRatio * Amount).RoundTo2Digits()}/{Amount.RoundTo2Digits()}",
+            size);
+        return box;
     }
     public abstract void Work(Regime r, ProcedureWriteKey key, float ip);
     public bool IsComplete(Data d)

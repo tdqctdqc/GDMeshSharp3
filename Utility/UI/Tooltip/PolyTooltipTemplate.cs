@@ -27,24 +27,23 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             GetConstructions,
             GetResourceDeposits,
             // GetAltitude,
-            GetSlots
+            // GetSlots
         };
 
     private static Control GetBuildings(PolyTriPosition t, Data d)
     {
         var bs = t.Poly(d).GetBuildings(d);
-        int iter = 0;
-        var label = new Label();
-
+        var control = new VBoxContainer();
+        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
         if (bs != null)
         {
             var counts = bs
                 .Select(b => b.Model.Model(d)).GetCounts();
             foreach (var kvp in counts)
             {
-                if (iter != 0) label.Text += "\n";
-                iter++;
-                label.Text += $"{kvp.Key.Name} x {kvp.Value}";
+                var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+                    kvp.Key.Icon, kvp.Value.ToString(), iconSize);
+                control.AddChild(box);
             }
         }
 
@@ -52,12 +51,11 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
         foreach (var kvp in foods)
         {
             var technique = d.Models.GetModel<FoodProdTechnique>(kvp.Key);
-            if (iter != 0) label.Text += "\n";
-            iter++;
-            label.Text += $"{technique.Name} x {kvp.Value}";
+            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+                technique.Icon, kvp.Value.ToString(), iconSize);
+            control.AddChild(box);
         }
-        if(iter != 0) return label;
-        return null;
+        return control;
     }
 
     private static Control GetAltitude(PolyTriPosition t, Data d)
@@ -82,10 +80,18 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
     private static Control GetRegime(PolyTriPosition t, Data d)
     {
         var polyR = t.Poly(d).OwnerRegime;
-        var txt = "Regime: " + (polyR.Empty()
-            ? "None"
-            : polyR.Entity(d).Name);
-        return NodeExt.CreateLabel(txt);
+        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
+
+        if (polyR.Empty())
+        {
+            return NodeExt.CreateLabel("None");
+        }
+
+        var r = polyR.Entity(d);
+        var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+            polyR.Entity(d).Template.Model(d).Flag,
+            r.Name, iconSize);
+        return box;
     }
     private static Control GetPeeps(PolyTriPosition t, Data d)
     {
@@ -96,6 +102,8 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             l.Text = "No Peeps";
             return l;
         }
+        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
+
         var jobs = new VBoxContainer();
         var size = new Label();
         size.Text = "Num Peeps: " + peeps.Size;
@@ -106,12 +114,10 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             .ToList();
         foreach (var peepJobCount in peepJobCounts)
         {
-            var innerContainer = new HBoxContainer();
-            var tr = peepJobCount.Key.JobIcon.GetTextureRect(Vector2.One);
-            tr.CustomMinimumSize = Vector2.One * 50f;
-            innerContainer.AddChild(tr);
-            innerContainer.AddChild(NodeExt.CreateLabel(peepJobCount.Value.ToString()));
-            jobs.AddChild(innerContainer);
+            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+                peepJobCount.Key.Icon, peepJobCount.Value.ToString(), 
+                iconSize);
+            jobs.AddChild(box);
         }
         return jobs;
     }
@@ -123,25 +129,21 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
         var constructions = d.Infrastructure.CurrentConstruction.ByPoly[t.PolyId];
         if(constructions.Count == 0) 
             return entries;
+        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
 
         var kvps = constructions.Select(
             c => new KeyValuePair<BuildingModel, Vector2>
-            (
-                c.Model.Model(d),
-                new Vector2((c.Model.Model(d).NumTicksToBuild - c.TicksLeft), c.Model.Model(d).NumTicksToBuild)
-            )
+            (c.Model.Model(d), 
+                new Vector2(c.Model.Model(d).NumTicksToBuild - c.TicksLeft, c.Model.Model(d).NumTicksToBuild))
         );
         
         foreach (var kvp in kvps)
         {
-            var innerContainer = new HBoxContainer();
-            var building = kvp.Key;
             var progress = kvp.Value;
-            var bIcon = building.Icon.GetTextureRect(Vector2.One);
-            bIcon.CustomMinimumSize = Vector2.One * 50f;
-            innerContainer.AddChild(bIcon);
-            innerContainer.AddChild(NodeExt.CreateLabel($"{(int)progress.X} / {(int)progress.Y}"));
-            entries.AddChild(innerContainer);
+            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+                kvp.Key.Icon, $"{(int)progress.X} / {(int)progress.Y}",
+                iconSize);
+            entries.AddChild(box);
         }
 
         return entries;
@@ -152,7 +154,8 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
     }
     private static Control GetResourceDeposits(PolyTriPosition t, Data d)
     {
-    
+        var iconSize = Vector2.One * Game.I.Client.Settings.MedIconSize.Value;
+
         var rs = t.Poly(d).GetResourceDeposits(d);
         if (rs != null)
         {

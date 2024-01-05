@@ -22,17 +22,24 @@ public partial class TooltipManager : Control, IClientComponent
         _panel.Visible = false;
         client.UiLayer.AddChild(this);
     }
+
+    public void Clear()
+    {
+        _currTemplate = null;
+        _panel.Visible = false;
+    }
     public void Process(float delta)
     {
         if(_currTemplate != null) _panel.Move(GetLocalMousePosition() + _offsetFromMouse);
     }
-    public void PromptTooltip(ITooltipTemplate template, object element)
+    public void PromptTooltip<TElement>
+        (TooltipTemplate<TElement> template, TElement element)
     {
         _panel.Visible = true;
         _panel.Setup(template, element, _data);
         _currTemplate = template;
     }
-
+    
     public void HideTooltip(ITooltipTemplate template)
     {
         if (template == _currTemplate)

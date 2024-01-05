@@ -12,15 +12,18 @@ public partial class ItemMultiSelect : ItemList
         return Construct(elements, (t, l) => l.AddItem(getName(t)),
             selectedAction, getColor);
     }
-    public static ItemMultiSelect ConstructIcon<T>(List<T> elements, Func<T, Texture2D> getIcon, Vector2I iconSize,
+    public static ItemMultiSelect ConstructIcon<T>(List<T> elements, 
+        Func<T, Icon> getIcon, 
+        float height,
         Action selectedAction, Func<T, Color> getColor = null)
     {
+        var size = getIcon(elements.First()).GetDim(height);
         var l = Construct(elements, (t, l) =>
             {
-                l.AddIconItem(getIcon(t));
+                l.AddIconItem(getIcon(t).Texture);
             },
             selectedAction, getColor);
-        l.FixedIconSize = iconSize;
+        l.FixedIconSize = (Vector2I)size;
         return l;
     }
 

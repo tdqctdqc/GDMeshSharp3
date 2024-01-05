@@ -149,13 +149,16 @@ public partial class Client : Node, IClient
         var mapGraphics = new MapGraphics(this);
         AddComponent(mapGraphics);
         
-        var mapGraphicsOptions = new MapGraphicsOptions(this);
+        var mapGraphicsOptions = new MapGraphicsOptionsPanel(this);
         AddComponent(mapGraphicsOptions);
+
+        var uiControlPanel = new UiControlPanel(this);
+        AddComponent(uiControlPanel);
         
         GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(Data));
-        UiController.SetMode(new NormalMode(this));
+        UiController.ModeOption.Choose<PolyMode>();
     }
 }
 

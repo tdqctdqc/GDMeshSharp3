@@ -37,12 +37,12 @@ public partial class IssueWindow : ClosableWindow
         });
         foreach (var issue in issues)
         {
-            _container.AddButton(issue.GetType().Name,
+            _container.AddButton(issue.GetType().Name + " " + issue.Message,
                 () =>
                 {
-                    _client.UiController.SetMode(new BlankMode(_client));
+                    _client.UiController.ModeOption.Choose<BlankMode>();
                     issue.Draw(_client);
-                    _client.Cam().JumpTo(issue.Point);
+                    _client.Cam().JumpTo(issue.UnitPos);
                 }
             );
         }

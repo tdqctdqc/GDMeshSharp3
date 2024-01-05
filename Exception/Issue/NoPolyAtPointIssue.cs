@@ -12,12 +12,12 @@ public class NoPolyAtPointIssue : Issue
         debugDrawer.Clear();
         debugDrawer.Draw(mb => mb.DrawPolyBorders(FoundPoly.Center, FoundPoly, c.Data),
             FoundPoly.Center);
-        debugDrawer.Draw(mb => mb.AddLine(Vector2.Zero, FoundPoly.Center.GetOffsetTo(Point, c.Data), Colors.Blue, 5f),
+        debugDrawer.Draw(mb => mb.AddLine(Vector2.Zero, FoundPoly.Center.GetOffsetTo(UnitPos, c.Data), Colors.Blue, 5f),
             FoundPoly.Center);
     }
 
-    public NoPolyAtPointIssue(Vector2 point, MapPolygon foundPoly,
-        string message) : base(point, message)
+    public NoPolyAtPointIssue(Vector2 unitPos, MapPolygon foundPoly,
+        string message) : base(unitPos, message)
     {
         FoundPoly = foundPoly;
     }

@@ -8,6 +8,7 @@ using MessagePack;
 public class FrontSegmentAssignment : ForceAssignment
 {
     public static int IdealSegmentLength = 5;
+    public static float FrontagePerUnit = 10f;
     public Vector2 Center { get; private set; }
     public List<int> LineWaypointIds { get; private set; }
     public Waypoint GetRallyWaypoint(Data d) 
@@ -54,33 +55,41 @@ public class FrontSegmentAssignment : ForceAssignment
             CalcRallyWaypoint(wps, Regime.Entity(key.Data), key.Data).Id;
         var rally = GetRallyWaypoint(key.Data);
         var moveType = key.Data.Models.MoveTypes.InfantryMove;
-        if (moveType.Passable(rally, alliance, key.Data) == false)
+        if (moveType.Passable(rally, alliance, false, key.Data) == false)
         {
             throw new Exception();
         }
         var groups = Groups(key.Data).ToList();
-        var lineGroups = GetLineGroups(key.Data);
-        var unreadyGroups = groups.Except(lineGroups);
+        var readyGroups = GetReadyGroups(key.Data);
         
-        if (lineGroups.Count() > 0)
+        var unreadyGroups = groups
+            .Except(readyGroups).ToHashSet();
+        var frontLength = GetLength(key.Data);
+        var numUnitsForFrontline = Mathf.CeilToInt(frontLength / FrontagePerUnit);
+        numUnitsForFrontline = Mathf.Min(numUnitsForFrontline, readyGroups.Sum(g => g.Units.Count()));
+        if (readyGroups.Count() > 0)
         {
-            Assigner.AssignAlongLine(GetTacWaypoints(key.Data).ToList(),
-                lineGroups.ToList(),
-                g => g.GetPowerPoints(key.Data),
+            Assigner.PickBestAndAssignAlongLine(
+                GetTacWaypoints(key.Data).ToList(),
+                readyGroups.ToList(),
+                g => g.Units.Count(),
+                numUnitsForFrontline,
                 (v,w) => v.Pos.GetOffsetTo(w.Pos, key.Data).Length(),
                 v => v.Pos,
+                g => g.GetPosition(key.Data),
                 (v,w) => v.GetOffsetTo(w, key.Data),
                 (g, l) =>
                 {
-                    var order = new DeployOnLineOrder(l, g.Units.RefIds.ToList());
+                    var order = new DeployOnLineOrder(l, g.Units.RefIds.ToList(), true);
                     var proc = new SetUnitOrderProcedure(g.MakeRef(), order);
                     key.SendMessage(proc);
-                });
+                },
+                r => unreadyGroups.AddRange(r)
+            );
         }
         
         foreach (var unreadyGroup in unreadyGroups)
         {
-            var pos = unreadyGroup.GetPosition(key.Data);
             var order = GoToWaypointOrder.Construct(
                 rally, 
                 unreadyGroup.Regime.Entity(key.Data),
@@ -93,7 +102,7 @@ public class FrontSegmentAssignment : ForceAssignment
         }
     }
 
-    public HashSet<UnitGroup> GetLineGroups(Data d)
+    public HashSet<UnitGroup> GetReadyGroups(Data d)
     {
         var moveType = d.Models.MoveTypes.InfantryMove;
         var a = Regime.Entity(d).GetAlliance(d);
@@ -101,7 +110,7 @@ public class FrontSegmentAssignment : ForceAssignment
         var closeWps = GetRear(d, 3)
             .SelectMany(h => h)
             .Union(GetTacWaypoints(d))
-            .Where(wp => moveType.Passable(wp, a, d))
+            .Where(wp => moveType.Passable(wp, a, false, d))
             .ToHashSet();
         var readyGroups = Groups(d)
             .Where(g =>
@@ -152,7 +161,6 @@ public class FrontSegmentAssignment : ForceAssignment
 
     public override void AssignGroups(LogicWriteKey key)
     {
-        GetLineGroups(key.Data);
     }
 
     public float GetLength(Data d)
@@ -181,12 +189,12 @@ public class FrontSegmentAssignment : ForceAssignment
         if (rings.Count == 0)
         {
             return wps
-                .Where(wp => moveType.Passable(wp, alliance, d))
+                .Where(wp => moveType.Passable(wp, alliance, false, d))
                 .MinBy(wp => wp.Pos.GetOffsetTo(avgPos, d).Length());
         }
         var rally = rings.Last()
             .MinBy(wp => wp.Pos.GetOffsetTo(avgPos, d).Length());
-        if (moveType.Passable(rally, alliance, d) == false)
+        if (moveType.Passable(rally, alliance, false, d) == false)
         {
             throw new Exception();
         }
@@ -216,7 +224,7 @@ public class FrontSegmentAssignment : ForceAssignment
                 .Where(p => prev.Contains(p) == false)
                 .Where(r =>
                     wps.Contains(r) == false
-                    && moveType.Passable(r, alliance, data)
+                    && moveType.Passable(r, alliance, false, data)
                     && r.IsThreatened(alliance, data) == false
                     && r.IsControlled(alliance, data))
                 .ToHashSet();

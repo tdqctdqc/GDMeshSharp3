@@ -41,11 +41,11 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
     public void AddSetting<T>(SettingsOption<T> option, 
         Action<TGraphic, T> update)
     {
-        option.SettingChanged.SubscribeForNode(() =>
+        option.SettingChanged.SubscribeForNode(v =>
         {
             foreach (var graphic in Graphics.Values)
             {
-                update(graphic, option.Value);
+                update(graphic, v.newVal);
             }
         }, _segmenter);
         Settings.Add(option);

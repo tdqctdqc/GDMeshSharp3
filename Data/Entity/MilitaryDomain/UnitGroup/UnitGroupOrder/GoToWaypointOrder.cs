@@ -13,10 +13,9 @@ public class GoToWaypointOrder : UnitOrder
     {
         var alliance = r.GetAlliance(d);
         var currWp = g.GetWaypoint(d);
-        if (currWp == null) throw new Exception();
         var moveType = g.MoveType(d);
         
-        if (moveType.Passable(destWp, alliance, d) == false)
+        if (moveType.Passable(destWp, alliance, false, d) == false)
         {
             throw new Exception($"{moveType.GetType().Name} cant go to {destWp.GetType().Name}" +
                                 $" alliance {alliance.Leader.Entity(d).Id}" +
@@ -25,16 +24,22 @@ public class GoToWaypointOrder : UnitOrder
         
         
         var path = PathFinder
-            .FindPath(moveType, alliance, currWp, destWp, d);
-        
+            .FindPath(moveType, alliance, currWp, destWp, false, d);
+        if (path == null)
+        {
+            var issue = new CantFindWaypointPathIssue(currWp.Pos,
+                alliance, $"failed to find path",
+                currWp, destWp, moveType, false);
+            d.ClientPlayerData.Issues.Add(issue);
+            return null;
+        }
         for (var i = 0; i < path.Count; i++)
         {
-            if (moveType.Passable(path[i], alliance, d) == false)
+            if (moveType.Passable(path[i], alliance, false, d) == false)
             {
-
                 var issue = new CantFindWaypointPathIssue(path[i].Pos,
                     alliance, $"impassable at {i + 1} / {path.Count}",
-                    currWp, destWp, moveType);
+                    currWp, destWp, moveType, false);
                 d.ClientPlayerData.Issues.Add(issue);
                 return null;
             }
@@ -59,7 +64,7 @@ public class GoToWaypointOrder : UnitOrder
             var pos = unit.Position.Copy();
             var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var movePoints = Unit.MovePoints;
-            pos.MoveOntoAndAlongPath(alliance, moveType, 
+            pos.MoveOntoAndAlongPath(alliance, moveType, false, 
                 ref movePoints, path, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }

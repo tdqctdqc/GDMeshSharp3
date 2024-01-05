@@ -31,6 +31,6 @@ public class Troop : IModel, IMakeable
         Echelon = echelon;
         Domain = domain;
         Makeable = makeable;
-        Icon = Icon.Create(Name.ToLower(), Icon.AspectRatio._1x1, 50f);
+        Icon = Icon.Create(Name.ToLower(), Vector2I.One);
     }
 }

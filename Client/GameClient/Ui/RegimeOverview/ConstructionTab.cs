@@ -19,6 +19,7 @@ public partial class ConstructionTab : ScrollContainer
     public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
+        var iconSize = client.Settings.MedIconSize.Value;
         var constructions = client.Data.Infrastructure.CurrentConstruction
             .ByPoly.Where(kvp => regime.GetPolys(client.Data).Contains(client.Data.Get<MapPolygon>(kvp.Key)))
             .SelectMany(kvp => kvp.Value).ToList();
@@ -29,12 +30,13 @@ public partial class ConstructionTab : ScrollContainer
         
         foreach (var construction in constructions)
         {
-            var hbox = new HBoxContainer();
             var building = construction.Model.Model(client.Data);
-            hbox.AddChild(building.Icon.GetTextureRect(Vector2.One * 50f));
             var ticksDone = construction.TicksDone(client.Data);
-            hbox.CreateLabelAsChild($"{ticksDone} / {building.NumTicksToBuild}");
-            _container.AddChild(hbox);
+            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+                building.Icon, $"{ticksDone} / {building.NumTicksToBuild}",
+                iconSize);
+            
+            _container.AddChild(box);
         }
     }
 }

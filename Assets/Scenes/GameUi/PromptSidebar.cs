@@ -18,7 +18,7 @@ public partial class PromptSidebar : ScrollContainer
         AddChild(p);
     }
 
-    public void AddPromptIcon(PromptSideIcon icon)
+    public void AddPromptIcon(PromptButton icon)
     {
         _vBox.AddChild(icon);
     }
