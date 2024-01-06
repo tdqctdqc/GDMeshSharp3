@@ -105,9 +105,9 @@ public class ChunkGraphicLayer<TGraphic> : IGraphicLayer
         Settings.Add(option);
         _settingsUpdaters.Add(option, g => update(g, option.Value));
     }
-    public void AddTransparencySetting(Func<TGraphic, Node2D> getNode, string label)
+    public void AddTransparencySetting(Func<TGraphic, Node2D> getNode, string label, float startVal = 1f)
     {
-        var option = new FloatSettingsOption(label, 1f, 0f, 1f, .05f, false);
+        var option = new FloatSettingsOption(label, startVal, 0f, 1f, .05f, false);
         AddSetting(option, (module, value) => getNode(module).Modulate = new Color(Colors.White, option.Value));
     }
 }

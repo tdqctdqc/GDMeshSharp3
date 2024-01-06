@@ -52,8 +52,8 @@ public class DeployOnLineOrder : UnitOrder
                 continue;
             }
 
-            pos.MoveToPoint(moveType, alliance, target, GoThruHostile,
-                ref movePoints, key);
+            var moveCtx = new Mover.MoveData(unit.Id, moveType, movePoints, GoThruHostile, alliance);
+            pos.MoveToPoint(moveCtx, target, key);
             
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }

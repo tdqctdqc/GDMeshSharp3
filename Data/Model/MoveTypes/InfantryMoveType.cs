@@ -5,7 +5,7 @@ using Godot;
 public class InfantryMoveType : MoveType
 {
     public InfantryMoveType() 
-        : base(true, 200f, 
+        : base(true, 10f, 
             nameof(InfantryMoveType))
     {
         
@@ -31,13 +31,11 @@ public class InfantryMoveType : MoveType
         return AllianceCanPass(a, wp, goThruHostile, d);
     }
 
-    public override float PathfindCost(Waypoint wp, Alliance a, 
+    public override float PathfindCost(Waypoint wp1,
+        Waypoint wp2,
+        Alliance a, 
         bool goThruHostile, Data d)
     {
-        if (wp is ILandWaypoint l == false || AllianceCanPass(a, wp, goThruHostile, d) == false)
-        {
-            return Mathf.Inf;
-        }
-        return l.Roughness;
+        return DefaultLandPathfindCost(wp1, wp2, a, goThruHostile, d);
     }
 }

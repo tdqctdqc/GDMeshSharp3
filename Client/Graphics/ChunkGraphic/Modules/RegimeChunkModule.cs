@@ -23,11 +23,12 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
             segmenter, 
             c => new RegimeChunkModule(c, d), 
             d);
-        l.AddTransparencySetting(m => m._fill, "Fill Transparency");
-        l.AddTransparencySetting(m => m._borders, "Border Transparency");
+        l.AddTransparencySetting(m => m._fill, "Fill Transparency", .25f);
+        l.AddTransparencySetting(m => m._borders, "Border Transparency", 0f);
         l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedOwnerRegime,
             r => r.Entity.GetChunkAndNeighboringChunks(d),
             (n, m) => { m.HandlePolygonRegimeChange(n, d); });
+        l.EnforceSettings();
         return l;
     }
 

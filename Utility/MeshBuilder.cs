@@ -207,20 +207,20 @@ public class MeshBuilder
             AddArrow(s.From, s.To, thickness, color);
         }
     }
-    public void AddArrow(Vector2 from, Vector2 to, float thickness, Color color)
+    public void AddArrow(Vector2 from, Vector2 to, 
+        float thickness, Color color)
     {
         var length = from.DistanceTo(to);
-        
+        var arrowSize = Mathf.Min(length / 2f, thickness * 2f);
         var mid = (from + to) / 2f;
         
         var axis = (to - from).Normalized();
         var perpendicular = axis.Rotated(Mathf.Pi / 2f);
-        var arrowFrom = mid - axis * length * .2f;
-        var arrowTo = mid + axis * length * .2f;
-        var arrowThickness = arrowFrom.DistanceTo(arrowTo);
+        var arrowFrom = mid - axis * arrowSize;
+        var arrowTo = mid + axis * arrowSize;
         JoinLinePoints(from, to, thickness, color);
-        AddTri(arrowTo, arrowFrom + perpendicular * arrowThickness / 2f,
-            arrowFrom - perpendicular * arrowThickness / 2f, color);
+        AddTri(arrowTo, arrowFrom + perpendicular * arrowSize / 2f,
+            arrowFrom - perpendicular * arrowSize / 2f, color);
     }
 
     public void AddNumMarkers(List<Vector2> points, float markerSize, Color color, Color textColor, Vector2 offset,

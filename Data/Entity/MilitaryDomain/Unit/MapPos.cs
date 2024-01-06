@@ -61,23 +61,36 @@ public class MapPos
             MilitaryDomain.GetTacWaypoint(WaypointLoc.Y, d));
     }
 
-    public void Set(Vector2I pos, LogicWriteKey key)
+    public void Set(Vector2I pos, Mover.MoveData moveDat, 
+        LogicWriteKey key)
     {
+        var ctx = OnWaypointAxis() || OnWaypoint()
+            ? MovementContext.WaypointToPoint
+            : MovementContext.PointToPoint;
         Pos = pos;
         WaypointLoc = -Vector2I.One;
         SetTri(key.Data);
+        key.Data.Context.AddToMovementRecord(moveDat.Id, Pos, ctx, key.Data);
     }
-    public void Set(Waypoint w, Waypoint v, Vector2I pos, LogicWriteKey key)
+    public void Set(Waypoint w, Waypoint v, Mover.MoveData moveDat, 
+        Vector2I pos, LogicWriteKey key)
     {
         Pos = pos;
         WaypointLoc = new Vector2I(w.Id, v.Id);
         SetTri(key.Data);
+        key.Data.Context.AddToMovementRecord(moveDat.Id, Pos, MovementContext.WaypointToWaypoint, key.Data);
     }
-    public void Set(Waypoint w, LogicWriteKey key)
+    public void Set(Waypoint w, Mover.MoveData moveDat, 
+        LogicWriteKey key)
     {
+        var ctx = OnWaypointAxis() || OnWaypoint()
+            ? MovementContext.WaypointToWaypoint
+            : MovementContext.PointToWaypoint;
+
         Pos = (Vector2I)w.Pos;
         WaypointLoc = new Vector2I(w.Id, -1);
         SetTri(key.Data);
+        key.Data.Context.AddToMovementRecord(moveDat.Id, Pos, ctx, key.Data);
     }
 
     private void SetTri(Data d)

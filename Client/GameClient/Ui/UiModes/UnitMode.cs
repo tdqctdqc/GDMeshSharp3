@@ -17,6 +17,7 @@ public class UnitMode : UiMode
     public override void HandleInput(InputEvent e)
     {
         var mapPos = _client.Cam().GetMousePosInMapSpace();
+        mapPos = mapPos.ClampPosition(_client.Data);
         Game.I.Client.Cam().Process(e);
         _mouseOverHandler.Process(_client.Data, mapPos);
 
@@ -31,7 +32,7 @@ public class UnitMode : UiMode
         if(u != null)
         {
             UnitTooltip(u);
-            HighlightUnitGroupMembers(u);
+            OverlayForUnit(u);
         }
         else
         {
@@ -74,8 +75,9 @@ public class UnitMode : UiMode
         }
     }
 
-    private void HighlightUnitGroupMembers(Unit u)
+    private void OverlayForUnit(Unit u)
     {
+        var unitPos = u.Position.Pos;
         var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
         var groupMembers = u.GetGroup(_client.Data).Units.Items(_client.Data);
         foreach (var gUnit in groupMembers)
@@ -84,8 +86,11 @@ public class UnitMode : UiMode
             var radius = gUnit.Radius();
             var offset = u.Position.Pos.GetOffsetTo(gUnit.Position.Pos, _client.Data);
             debug.Draw(mb => mb.AddPoint(offset, radius * 2f, new Color(Colors.Red, .5f)),
-                u.Position.Pos);
+                unitPos);
         }
+        debug.Draw(mb => mb.DrawMovementRecord(u.Id,
+                50, unitPos, _client.Data),
+            unitPos);
     }
     
 }

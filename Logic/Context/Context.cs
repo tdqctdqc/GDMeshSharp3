@@ -9,10 +9,12 @@ using Godot;
 
 public class Context
 {
+    public ConcurrentDictionary<int, MovementRecord> MovementRecords { get; private set; }
     public Dictionary<Unit, Waypoint> UnitWaypoints { get; private set; }
     public Dictionary<Waypoint, ForceBalance> WaypointForceBalances { get; private set; }
     public Dictionary<Alliance, HashSet<Waypoint>> ControlledAreas { get; private set; }
     public ConcurrentDictionary<Vector2, PolyTri> PolyTris { get; private set; }
+    
     public Context(Data data)
     {
         UnitWaypoints = new Dictionary<Unit, Waypoint>();
@@ -20,6 +22,7 @@ public class Context
         WaypointForceBalances = new Dictionary<Waypoint, ForceBalance>();
         ControlledAreas = new Dictionary<Alliance, HashSet<Waypoint>>();
         PolyTris = new ConcurrentDictionary<Vector2, PolyTri>();
+        MovementRecords = new ConcurrentDictionary<int, MovementRecord>();
     }
 
     private void AddForceBalances(Data d)
@@ -38,11 +41,15 @@ public class Context
         }
         CalculateUnitWaypointsAndForceBalances(data);
         CalculateOccupierRegimes(data);
-        // CalculateRiverControl(data);
         CalculateControlAreas(data);
     }
 
-    
+    public void AddToMovementRecord(int id, 
+        Vector2 pos, MovementContext ctx, Data d)
+    {
+        var record = MovementRecords.GetOrAdd(id, i => new MovementRecord());
+        record.Add((d.BaseDomain.GameClock.Tick, pos, ctx));
+    }
     private void CalculateUnitWaypointsAndForceBalances(Data data)
     {
         var units = data.GetAll<Unit>();
@@ -68,26 +75,6 @@ public class Context
             }
         }
     }
-
-    private void CalculateRiverControl(Data data)
-    {
-        var tacWps = data.Military
-            .TacticalWaypoints.Waypoints.Values;
-        foreach (var wp in tacWps)
-        {
-            var forceBalance = wp.GetForceBalance(data);
-            if (wp is IRiverWaypoint r == false) continue;
-            var nRegimes = wp
-                .TacNeighbors(data)
-                .Where(n => n is IRiverWaypoint == false)
-                .SelectMany(n => n.GetForceBalance(data).GetControllingRegimes())
-                .Distinct();
-            foreach (var nRegime in nRegimes)
-            {
-                forceBalance.Add(nRegime, 1f, data);
-            }
-        }
-    }
     private void CalculateOccupierRegimes(Data data)
     {
         var tacWps = data.Military
@@ -96,16 +83,23 @@ public class Context
         {
             var forceBalance = WaypointForceBalances[wp];
             var origOccupier = wp.GetOccupyingRegime(data);
-            
             var alliance = forceBalance.GetMostPowerfulAlliance();
             if (alliance != null 
                 && alliance.Members.Contains(origOccupier) == false)
             {
-                var r = forceBalance.ByRegime
-                    .Where(kvp => alliance.Members.Contains(kvp.Key))
-                    .OrderBy(kvp => kvp.Value).First().Key;
+                var origAlliance = origOccupier.GetAlliance(data);
+                var defendStr = forceBalance.ByAlliance.TryGetValue(origAlliance, out var s)
+                    ? s
+                    : 0f;
+                var attackStr = forceBalance.ByAlliance[alliance];
+                if (attackStr > 2f * defendStr)
+                {
+                    var r = forceBalance.ByRegime
+                        .Where(kvp => alliance.Members.Contains(kvp.Key))
+                        .OrderBy(kvp => kvp.Value).First().Key;
                 
-                tacWps.OccupierRegimes[wp.Id] = r.Id;
+                    tacWps.OccupierRegimes[wp.Id] = r.Id;
+                }
             }
             var occupier = wp.GetOccupyingRegime(data);
             if (occupier != null)

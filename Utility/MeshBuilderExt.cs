@@ -50,4 +50,32 @@ public static class MeshBuilderExt
             .Select(s => s.Translate(relTo.GetOffsetTo(poly.Center, data)));
         mb.AddLines(edgeBorders.ToList(), 2f, Colors.Black);
     }
+
+    public static void DrawMovementRecord(this MeshBuilder mb,
+        int id, int howFarBack, Vector2 relTo, Data d)
+    {
+        var records = d.Context.MovementRecords;
+        if (records.ContainsKey(id))
+        {
+            var last = records[id]
+                .TakeLast(howFarBack).ToList();
+            if (last.Count() == 0) return;
+            var tick = last[0].tick;
+            var tickIter = 0;
+            for (var i = 0; i < last.Count - 1; i++)
+            {
+                var from = last[i];
+                var to = last[i + 1];
+                if (to.tick != tick)
+                {
+                    tick = to.tick;
+                    tickIter++;
+                }
+
+                var color = ColorsExt.GetRainbowColor(tickIter);
+                mb.AddArrow(relTo.GetOffsetTo(from.worldPos, d), 
+                    relTo.GetOffsetTo(to.worldPos, d), 2f, color);
+            }
+        }
+    }
 }

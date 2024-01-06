@@ -64,8 +64,8 @@ public class GoToWaypointOrder : UnitOrder
             var pos = unit.Position.Copy();
             var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var movePoints = moveType.BaseSpeed;
-            pos.MoveOntoAndAlongPath(alliance, moveType, false, 
-                ref movePoints, path, key);
+            var ctx = new Mover.MoveData(unit.Id, moveType, movePoints, false, alliance);
+            pos.MoveOntoAndAlongPath(ctx, path, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }
@@ -90,7 +90,7 @@ public class GoToWaypointOrder : UnitOrder
             var from = MilitaryDomain.GetTacWaypoint(PathWaypointIds[i], d).Pos;
             var to = MilitaryDomain.GetTacWaypoint(PathWaypointIds[i + 1], d).Pos;
             mb.AddArrow(relTo.GetOffsetTo(from, d),
-                relTo.GetOffsetTo(to, d), 1f, Colors.Red);
+                relTo.GetOffsetTo(to, d), 5f, Colors.Pink);
         }
     }
 }
