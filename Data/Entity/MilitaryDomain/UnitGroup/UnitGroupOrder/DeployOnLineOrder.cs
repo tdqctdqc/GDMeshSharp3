@@ -6,18 +6,25 @@ using Godot;
 
 public class DeployOnLineOrder : UnitOrder
 {
-    public List<Vector2> Points { get; private set; }
+    public List<Vector2> FrontlinePoints { get; private set; }
+    public List<Vector2> AdvanceLinePoints { get; private set; }
     public List<int> UnitIdsInLine { get; private set; }
     public bool GoThruHostile { get; private set; }
-    public DeployOnLineOrder(List<Vector2> points,
-        List<int> unitIdsInLine, bool goThruHostile)
+    public bool Attack { get; private set; }
+    public DeployOnLineOrder(List<Vector2> frontlinePoints,
+        List<Vector2> advanceLinePoints,
+        List<int> unitIdsInLine, 
+        bool goThruHostile,
+        bool attack)
     {
         GoThruHostile = goThruHostile;
-        Points = points;
+        FrontlinePoints = frontlinePoints;
+        AdvanceLinePoints = advanceLinePoints;
         UnitIdsInLine = unitIdsInLine;
-        for (var i = 0; i < points.Count; i++)
+        Attack = attack;
+        for (var i = 0; i < frontlinePoints.Count; i++)
         {
-            var p = points[i];
+            var p = frontlinePoints[i];
             if (float.IsNaN(p.X) || float.IsNaN(p.Y))
             {
                 throw new Exception("bad point " + p);
@@ -36,8 +43,8 @@ public class DeployOnLineOrder : UnitOrder
             var unit = d.Get<Unit>(UnitIdsInLine[i]);
             var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var pos = unit.Position.Copy();
-            var movePoints = Unit.MovePoints;
-            var target = Points.GetPointAlongLine(
+            var movePoints = moveType.BaseSpeed;
+            var target = FrontlinePoints.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
             if (pos.Pos == target)
@@ -59,13 +66,13 @@ public class DeployOnLineOrder : UnitOrder
         var outerColor = group.Regime.Entity(d).PrimaryColor;
         var squareSize = 5f;
         var lineSize = 1f;
-        for (var i = 0; i < Points.Count; i++)
+        for (var i = 0; i < FrontlinePoints.Count; i++)
         {
-            var p = Points[i];
+            var p = FrontlinePoints[i];
             var pRel = relTo.GetOffsetTo(p, d);
-            if (i < Points.Count - 1)
+            if (i < FrontlinePoints.Count - 1)
             {
-                var pNext = Points[i + 1];
+                var pNext = FrontlinePoints[i + 1];
                 var pNextRel = relTo.GetOffsetTo(pNext, d);
                 mb.AddLine(pRel, pNextRel, innerColor, lineSize);
             }
@@ -79,7 +86,7 @@ public class DeployOnLineOrder : UnitOrder
             
             
             
-            var target = Points.GetPointAlongLine(
+            var target = FrontlinePoints.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
             mb.AddLine(relTo.GetOffsetTo(pos.Pos, d),

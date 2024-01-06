@@ -7,8 +7,7 @@ public partial class UnitGroupGraphic : Node2D
 {
     public UnitGroup Group { get; private set; }
     public MeshInstance2D Child { get; private set; }
-    private static float _groupIconSize = 10f;
-    private static float _unitIconSize = 5f;
+    // private static float _unitIconSize = 5f;
     private UnitGroupGraphic() { }
     public UnitGroupGraphic(UnitGroup unitGroup, GraphicsSegmenter segmenter, Data d)
     {
@@ -28,14 +27,13 @@ public partial class UnitGroupGraphic : Node2D
 
         var groupPos = Group.GetPosition(data);
         var darkened = regime.PrimaryColor.Darkened(.5f);
-        // mb.AddPointMarker(Vector2.Zero, _groupIconSize, darkened);
-        // mb.AddPointMarker(Vector2.Zero, _groupIconSize * .8f, regime.PrimaryColor);
-        
         foreach (var unit in Group.Units.Items(data))
         {
+            var iconSize = unit.Radius() * 2f * .75f;
+
             var relPos = groupPos.GetOffsetTo(unit.Position.Pos, data);
-            mb.AddPoint(relPos, _unitIconSize, darkened);
-            mb.AddPoint(relPos, _unitIconSize * .8f, regime.PrimaryColor);
+            mb.AddPoint(relPos, iconSize, regime.SecondaryColor);
+            mb.AddPoint(relPos, iconSize * .8f, regime.PrimaryColor);
         }
 
         Child = mb.GetMeshInstance();

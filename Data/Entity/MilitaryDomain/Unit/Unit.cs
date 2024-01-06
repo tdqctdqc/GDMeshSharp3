@@ -5,14 +5,12 @@ using MessagePack;
 
 public class Unit : Entity
 {
-    public static float MovePoints { get; private set; }
-        = 100f;
     public EntityRef<Regime> Regime { get; private set; }
     public EntityRef<UnitTemplate> Template { get; private set; }
     public IdCount<Troop> Troops { get; private set; }
     public TroopDomain Domain { get; private set; }
     public MapPos Position { get; private set; }
-
+    public float Radius() => 5f;
     public static Unit Create(UnitTemplate template, 
         Regime regime,
         MapPos pos,

@@ -51,7 +51,7 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
             if (front == null) continue;
             res += "\n  Front: " + front.Id;
             var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>()
-                .FirstOrDefault(s => s.LineWaypointIds.Contains(wp.Id));
+                .FirstOrDefault(s => s.FrontLineWpIds.Contains(wp.Id));
             if (seg == null) continue;
             res += "\n    Segment: " + seg.Id;
             res += "\n    Groups: " + seg.GroupIds.Count();

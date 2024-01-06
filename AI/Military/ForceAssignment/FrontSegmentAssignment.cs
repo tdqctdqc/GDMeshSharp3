@@ -8,42 +8,50 @@ using MessagePack;
 public class FrontSegmentAssignment : ForceAssignment
 {
     public static int IdealSegmentLength = 5;
-    public static float FrontagePerUnit = 10f;
     public Vector2 Center { get; private set; }
-    public List<int> LineWaypointIds { get; private set; }
+    public List<int> FrontLineWpIds { get; private set; }
+    public List<int> AdvanceLineWpIds { get; private set; }
+    public bool Attack { get; private set; }
     public Waypoint GetRallyWaypoint(Data d) 
         => MilitaryDomain.GetTacWaypoint(RallyWaypointId, d);
     public int RallyWaypointId { get; private set; }
     public static FrontSegmentAssignment Construct(
         EntityRef<Regime> r,
-        List<Waypoint> heldWaypoints,
+        List<Waypoint> frontLine,
+        List<Waypoint> advanceLine,
+        bool attack,
         LogicWriteKey key)
     {
-        var center = key.Data.Planet.GetAveragePosition(heldWaypoints.Select(wp => wp.Pos));
+        var center = key.Data.Planet.GetAveragePosition(frontLine.Select(wp => wp.Pos));
         var fsa = new FrontSegmentAssignment(key.Data.IdDispenser.TakeId(),
-            heldWaypoints.Select(wp => wp.Id).ToList(),
+            frontLine.Select(wp => wp.Id).ToList(),
+            advanceLine?.Select(wp => wp.Id).ToList(),
             center,
             new HashSet<int>(),
             r,
-            CalcRallyWaypoint(heldWaypoints, r.Entity(key.Data),
-                key.Data).Id);
+            CalcRallyWaypoint(frontLine, r.Entity(key.Data),
+                key.Data).Id,
+            attack);
         return fsa;
     }
     [SerializationConstructor] private FrontSegmentAssignment(
         int id,
-        List<int> lineWaypointIds,
+        List<int> frontLineWpIds,
+        List<int> advanceLineWpIds,
         Vector2 center,
         HashSet<int> groupIds, 
         EntityRef<Regime> regime,
-        int rallyWaypointId) 
+        int rallyWaypointId,
+        bool attack) 
         : base(groupIds, regime, id)
     {
-        if (lineWaypointIds.Count == 0) throw new Exception();
+        if (frontLineWpIds.Count == 0) throw new Exception();
+        Attack = attack;
         RallyWaypointId = rallyWaypointId;
-        LineWaypointIds = lineWaypointIds;
+        FrontLineWpIds = frontLineWpIds;
+        AdvanceLineWpIds = advanceLineWpIds;
         Center = center;
     }
-
     
     public override void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key)
     {
@@ -65,27 +73,55 @@ public class FrontSegmentAssignment : ForceAssignment
         var unreadyGroups = groups
             .Except(readyGroups).ToHashSet();
         var frontLength = GetLength(key.Data);
-        var numUnitsForFrontline = Mathf.CeilToInt(frontLength / FrontagePerUnit);
-        numUnitsForFrontline = Mathf.Min(numUnitsForFrontline, readyGroups.Sum(g => g.Units.Count()));
+        var readyGroupFrontage = readyGroups.Sum(g => g.Units.Items(key.Data).Sum(u => u.Radius() * 2f));
+        var frontageToTake = Mathf.Min(frontLength, readyGroupFrontage);
+
+        var advanceLine = AdvanceLineWpIds
+            ?.Select(id => MilitaryDomain.GetTacWaypoint(id, key.Data).Pos)
+            .ToList();
+        
         if (readyGroups.Count() > 0)
         {
-            Assigner.PickBestAndAssignAlongLine(
+            var assgns = Assigner.PickBestAndAssignAlongLine(
                 GetTacWaypoints(key.Data).ToList(),
                 readyGroups.ToList(),
-                g => g.Units.Count(),
-                numUnitsForFrontline,
+                g => g.Units.Items(key.Data).Sum(u => u.Radius() * 2f),
+                frontageToTake,
                 (v,w) => v.Pos.GetOffsetTo(w.Pos, key.Data).Length(),
                 v => v.Pos,
                 g => g.GetPosition(key.Data),
-                (v,w) => v.GetOffsetTo(w, key.Data),
-                (g, l) =>
-                {
-                    var order = new DeployOnLineOrder(l, g.Units.RefIds.ToList(), true);
-                    var proc = new SetUnitOrderProcedure(g.MakeRef(), order);
-                    key.SendMessage(proc);
-                },
-                r => unreadyGroups.AddRange(r)
+                (v,w) => v.GetOffsetTo(w, key.Data)
             );
+            foreach (var readyGroup in readyGroups)
+            {
+                if (assgns.ContainsKey(readyGroup))
+                {
+                    var assgn = assgns[readyGroup];
+        
+                    List<Vector2> advanceSubLine;
+                    if (advanceLine != null)
+                    {
+                        advanceSubLine = advanceLine.GetSubline((v, w) => v.GetOffsetTo(w, key.Data),
+                            assgn.FromProportion, assgn.ToProportion);
+                    }
+                    else
+                    {
+                        advanceSubLine = null;
+                    }
+                    var order = new DeployOnLineOrder(assgn.SubLine, 
+                        advanceSubLine,
+                        readyGroup.Units.RefIds.ToList(), 
+                        true,
+                        Attack
+                    );
+                    var proc = new SetUnitOrderProcedure(readyGroup.MakeRef(), order);
+                    key.SendMessage(proc);
+                }
+                else
+                {
+                    unreadyGroups.Add(readyGroup);
+                }
+            }
         }
         
         foreach (var unreadyGroup in unreadyGroups)
@@ -123,7 +159,7 @@ public class FrontSegmentAssignment : ForceAssignment
     }
     public IEnumerable<Waypoint> GetTacWaypoints(Data d)
     {
-        return LineWaypointIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d));
+        return FrontLineWpIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d));
     }
     public override float GetPowerPointNeed(Data data)
     {
@@ -166,10 +202,10 @@ public class FrontSegmentAssignment : ForceAssignment
     public float GetLength(Data d)
     {
         var length = 0f;
-        for (var i = 0; i < LineWaypointIds.Count - 1; i++)
+        for (var i = 0; i < FrontLineWpIds.Count - 1; i++)
         {
-            var from = MilitaryDomain.GetTacWaypoint(LineWaypointIds[i], d);
-            var to = MilitaryDomain.GetTacWaypoint(LineWaypointIds[i + 1], d);
+            var from = MilitaryDomain.GetTacWaypoint(FrontLineWpIds[i], d);
+            var to = MilitaryDomain.GetTacWaypoint(FrontLineWpIds[i + 1], d);
             length += from.Pos.GetOffsetTo(to.Pos, d).Length();
         }
 

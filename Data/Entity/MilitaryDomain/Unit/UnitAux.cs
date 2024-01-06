@@ -28,9 +28,11 @@ public class UnitAux
             d.GetEntityMeta<UnitGroup>().GetRefColMeta<Unit>(nameof(UnitGroup.Units)),
             d);
         UnitChangedGroup = new ValChangeAction<Unit, UnitGroup>();
+        
         d.Notices.FinishedStateSync.Subscribe(MakeUnitGrid);
         d.Notices.Ticked.Blank.Subscribe(MakeUnitGrid);
         d.Notices.ExitedGen.Subscribe(MakeUnitGrid);
+        d.Notices.FinishedGen.Subscribe(MakeUnitGrid);
     }
 
     private void MakeUnitGrid()

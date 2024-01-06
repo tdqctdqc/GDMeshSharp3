@@ -46,10 +46,10 @@ public partial class TheaterGraphic : Node2D
             foreach (var seg in fa.Assignments.WhereOfType<FrontSegmentAssignment>())
             {
                 var segColor = ColorsExt.GetRandomColor();
-                for (var i = 0; i < seg.LineWaypointIds.Count - 1; i++)
+                for (var i = 0; i < seg.FrontLineWpIds.Count - 1; i++)
                 {
-                    var fromWp = MilitaryDomain.GetTacWaypoint(seg.LineWaypointIds[i], d);
-                    var toWp = MilitaryDomain.GetTacWaypoint(seg.LineWaypointIds[i + 1], d);
+                    var fromWp = MilitaryDomain.GetTacWaypoint(seg.FrontLineWpIds[i], d);
+                    var toWp = MilitaryDomain.GetTacWaypoint(seg.FrontLineWpIds[i + 1], d);
                     var from = relPos(fromWp.Pos);
                     var to = relPos(toWp.Pos);
                     mb.AddLine(from, to, regimeColor, 5f);

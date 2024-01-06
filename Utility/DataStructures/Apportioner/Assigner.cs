@@ -138,7 +138,7 @@ public class Assigner
         }
     }
 
-    public static void PickBestAndAssignAlongLine<TPoint, TUnit>(
+    public static Dictionary<TUnit, LineAssignment> PickBestAndAssignAlongLine<TPoint, TUnit>(
         List<TPoint> points,
         List<TUnit> units,
         Func<TUnit, float> getStrength,
@@ -146,11 +146,9 @@ public class Assigner
         Func<TPoint, TPoint, float> getSegCost,
         Func<TPoint, Vector2> getPointPos,
         Func<TUnit, Vector2> getUnitPos,
-        Func<Vector2, Vector2, Vector2> getOffset,
-        Action<TUnit, List<Vector2>> assign,
-        Action<HashSet<TUnit>> reject)
+        Func<Vector2, Vector2, Vector2> getOffset)
     {
-        if (points.Count < 2) return;
+        if (points.Count < 2) return new Dictionary<TUnit, LineAssignment>();
         var totalCost = 0f;
         for (var i = 0; i < points.Count - 1; i++)
         {
@@ -184,12 +182,11 @@ public class Assigner
             unitsInOrder.Add(picked);
             runningStrength += getStrength(picked);
         }
-        reject(pickFrom);
 
         var strengthTaken = unitsInOrder.Sum(getStrength);
         runningStrength = 0f;
         var from = getPointPos(points[0]);
-        
+        var res = new Dictionary<TUnit, LineAssignment>();
         for (var i = 0; i < unitsInOrder.Count; i++)
         {
             var unit = unitsInOrder[i];
@@ -207,12 +204,14 @@ public class Assigner
                 }
             }
             list.Add(to);
-            assign(unit, list);
+            var assgn = new LineAssignment(list, proportion, nextProportion);
+            res.Add(unit, assgn);
             from = to;
             proportion = nextProportion;
             runningStrength += getStrength(unit);
         }
 
+        return res;
         
         Vector2 getPointAtProportion(float prop)
         {

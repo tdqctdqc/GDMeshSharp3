@@ -63,7 +63,7 @@ public class GoToWaypointOrder : UnitOrder
         {
             var pos = unit.Position.Copy();
             var moveType = unit.Template.Entity(d).MoveType.Model(d);
-            var movePoints = Unit.MovePoints;
+            var movePoints = moveType.BaseSpeed;
             pos.MoveOntoAndAlongPath(alliance, moveType, false, 
                 ref movePoints, path, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);

@@ -18,8 +18,9 @@ public partial class UiController : Node, IClientComponent
         var modes = new List<UiMode>
         {
             new BlankMode(client),
-            new TacticalMode(client),
-            new PolyMode(client)
+            new UnitMode(client),
+            new PolyMode(client),
+            new TacticalMode(client)
         };
         var names = modes.Select(m => m.GetType().Name).ToList();
         ModeOption = new TypedSettingsOption<UiMode>("Ui Mode",

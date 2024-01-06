@@ -293,6 +293,66 @@ public static class Vector2Ext
         return points.Last();
     }
     
+    
+    public static List<Vector2> GetSubline(this IList<Vector2> points,
+        Func<Vector2, Vector2, Vector2> getOffset,
+        float startRatio, float endRatio)
+    {
+        if (startRatio < 0f || startRatio > 1f || endRatio < 0f || endRatio > 1f)
+        {
+            throw new Exception($"ratio out of bounds, from {startRatio} to {endRatio}");
+        }
+        
+        var totalLength = 0f;
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            totalLength += getOffset(points[i], points[i + 1]).Length();
+        }
+
+        var res = new List<Vector2>();
+        var ratioSoFar = 0f;
+        for (var i = 0; i < points.Count - 1; i++)
+        {
+            if (ratioSoFar > endRatio) break;
+            var from = points[i];
+            var to = points[i + 1];
+            var offset = getOffset(from, to);
+            var nextRatio = ratioSoFar + offset.Length() / totalLength;
+
+            if (ratioSoFar >= startRatio && ratioSoFar <= endRatio)
+            {
+                addToRes(from);
+            }
+            if (ratioSoFar < startRatio && startRatio < nextRatio)
+            {
+                var alongSegRatio = (startRatio - ratioSoFar) / (nextRatio - ratioSoFar);
+                var startP = from + (to - from) * alongSegRatio;
+                addToRes(startP);
+            }
+            if (ratioSoFar < endRatio && endRatio < nextRatio)
+            {
+                var alongSegRatio = (endRatio - ratioSoFar) / (nextRatio - ratioSoFar);
+                var endP = from + (to - from) * alongSegRatio;
+                addToRes(endP);
+            }
+            if (nextRatio >= startRatio && nextRatio <= endRatio)
+            {
+                addToRes(to);
+            }
+
+            ratioSoFar = nextRatio;
+            
+        }
+
+        void addToRes(Vector2 p)
+        {
+            if (res.Count > 0 && res[res.Count - 1] == p) return;
+            res.Add(p);
+        }
+
+        return res;
+    }
+    
     public static Vector2 GetPointAlongCircle(this IList<Vector2> points,
         Func<Vector2, Vector2, Vector2> getOffset,
         float ratio)

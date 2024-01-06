@@ -380,7 +380,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         foreach (var fsa in segments)
         {
             var relatedLines = lines.Keys
-                .Where(l => l.Any(wp => fsa.LineWaypointIds.Contains(wp.Id)));
+                .Where(l => l.Any(wp => fsa.FrontLineWpIds.Contains(wp.Id)));
             if (relatedLines.Count() == 0)
             {
                 Assignments.Remove(fsa);
@@ -388,7 +388,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             }
 
             var mostRelated = relatedLines
-                .MaxBy(l => l.Where(wp => fsa.LineWaypointIds.Contains(wp.Id)).Count());
+                .MaxBy(l => l.Where(wp => fsa.FrontLineWpIds.Contains(wp.Id)).Count());
             lines[mostRelated].Add(fsa);
         }
         
@@ -399,15 +399,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             if (segs.Count() == 0)
             {
                 var seg = FrontSegmentAssignment
-                    .Construct(Regime, line, key);
+                    .Construct(Regime, line, null, false, key);
                 Assignments.Add(seg);
                 continue;
             }
 
             var biggest = segs.MaxBy(s => s.GroupIds.Count());
             
-            biggest.LineWaypointIds.Clear();
-            biggest.LineWaypointIds.AddRange(line.Select(wp => wp.Id));
+            biggest.FrontLineWpIds.Clear();
+            biggest.FrontLineWpIds.AddRange(line.Select(wp => wp.Id));
             foreach (var fsa in segs)
             {
                 if (fsa == biggest) continue;

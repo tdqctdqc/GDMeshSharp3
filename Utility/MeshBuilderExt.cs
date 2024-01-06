@@ -9,15 +9,15 @@ public static class MeshBuilderExt
         FrontSegmentAssignment seg, 
         Data d)
     {
-        if (seg.LineWaypointIds.Count == 0) return;
+        if (seg.FrontLineWpIds.Count == 0) return;
         Vector2 relPos(Vector2 p)
         {
             return relTo.GetOffsetTo(p, d);
         }
-        for (var i = 0; i < seg.LineWaypointIds.Count - 1; i++)
+        for (var i = 0; i < seg.FrontLineWpIds.Count - 1; i++)
         {
-            var from = MilitaryDomain.GetTacWaypoint(seg.LineWaypointIds[i], d);
-            var to = MilitaryDomain.GetTacWaypoint(seg.LineWaypointIds[i + 1], d);
+            var from = MilitaryDomain.GetTacWaypoint(seg.FrontLineWpIds[i], d);
+            var to = MilitaryDomain.GetTacWaypoint(seg.FrontLineWpIds[i + 1], d);
             mb.AddLine(relPos(from.Pos), relPos(to.Pos), Colors.Red, 3f);
         }
         var groups = seg.Groups(d);

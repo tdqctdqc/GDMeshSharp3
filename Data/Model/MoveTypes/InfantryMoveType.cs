@@ -5,7 +5,7 @@ using Godot;
 public class InfantryMoveType : MoveType
 {
     public InfantryMoveType() 
-        : base(true, 2f, 
+        : base(true, 200f, 
             nameof(InfantryMoveType))
     {
         
