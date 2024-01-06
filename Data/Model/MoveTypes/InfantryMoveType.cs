@@ -38,4 +38,9 @@ public class InfantryMoveType : MoveType
     {
         return DefaultLandPathfindCost(wp1, wp2, a, goThruHostile, d);
     }
+
+    public override float PathfindCost(Vector2 p1, PolyTri tri1, Vector2 p2, PolyTri tri2, Alliance a, bool goThruHostile, Data d)
+    {
+        return DefaultLandPathfindCost(p1, tri1, p2, tri2, a, goThruHostile, d);
+    }
 }

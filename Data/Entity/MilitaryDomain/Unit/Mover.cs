@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DelaunatorSharp;
 using Godot;
 
 public static class Mover
@@ -22,6 +23,88 @@ public static class Mover
             Alliance = alliance;
         }
     }
+
+    public interface IPathfindNode
+    {
+        Vector2 Pos { get; }
+
+    }
+
+    private class PointPathfindNode : IPathfindNode
+    {
+        public Vector2 Pos { get; private set; }
+        public HashSet<IPathfindNode> Neighbors { get; private set; }
+        public PolyTri Tri { get; private set; }
+    }
+
+    private static List<IPathfindNode> FindPath(
+        IPathfindNode start, IPathfindNode dest, MoveData moveDat, LogicWriteKey key)
+    {
+        var destIsPoint = dest is PointPathfindNode x;
+        PointPathfindNode destP = destIsPoint
+            ? (PointPathfindNode)dest : null;
+        
+        return PathFinder<IPathfindNode>.FindPath(
+            start,
+            dest,
+            getNeighbors,
+            getEdgeCost,
+            (n, m) => n.Pos.GetOffsetTo(m.Pos, key.Data).Length() / moveDat.MoveType.BaseSpeed
+        );
+
+        IEnumerable<IPathfindNode> getNeighbors(IPathfindNode n)
+        {
+            if (n is Waypoint wp)
+            {
+                if (destIsPoint && destP.Neighbors.Contains(wp))
+                {
+                    return wp.TacNeighbors(key.Data)
+                        .AsEnumerable<IPathfindNode>()
+                        .Union(destP.Yield());
+                }
+
+                return wp.TacNeighbors(key.Data);
+            }
+
+            if (n is PointPathfindNode p)
+            {
+                return p.Neighbors;
+            }
+
+            throw new Exception();
+        }
+
+        float getEdgeCost(IPathfindNode n, IPathfindNode m)
+        {
+            if (n is Waypoint wpN && m is Waypoint wpM)
+            {
+                return moveDat.MoveType.PathfindCost(wpN, wpM,
+                    moveDat.Alliance, moveDat.GoThruHostile, key.Data);
+            }
+            
+            if (n is PointPathfindNode pN && m is PointPathfindNode pM)
+            {
+                return moveDat.MoveType.PathfindCost(pN.Pos, pN.Tri, pM.Pos, pM.Tri,
+                    moveDat.Alliance, moveDat.GoThruHostile, key.Data);
+            }
+
+            var (wp, p) = getMixed(n, m);
+            var wpTri = key.Data.Context.GetPolyTri(wp.Pos, key.Data);
+            return moveDat.MoveType.PathfindCost(wp.Pos, wpTri, p.Pos, p.Tri,
+                moveDat.Alliance, moveDat.GoThruHostile, key.Data);
+        }
+
+        (Waypoint wp, PointPathfindNode n) getMixed(IPathfindNode p1, IPathfindNode p2)
+        {
+            if (p1 is Waypoint wp1)
+            {
+                return (wp1, (PointPathfindNode)p2);
+            }
+            return ((Waypoint)p2, (PointPathfindNode)p1);
+        }
+    }
+    
+    
     public static void MoveToPoint(this MapPos pos, 
         MoveData moveDat,
         Vector2 target,
