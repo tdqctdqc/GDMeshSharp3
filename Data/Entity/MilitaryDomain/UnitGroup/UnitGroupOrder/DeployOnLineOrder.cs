@@ -52,9 +52,8 @@ public class DeployOnLineOrder : UnitOrder
                 continue;
             }
 
-            var moveCtx = new Mover.MoveData(unit.Id, moveType, movePoints, GoThruHostile, alliance);
+            var moveCtx = new MoveData(unit.Id, moveType, movePoints, GoThruHostile, alliance);
             pos.MoveToPoint(moveCtx, target, key);
-            
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }
@@ -64,8 +63,9 @@ public class DeployOnLineOrder : UnitOrder
     {
         var innerColor = group.Regime.Entity(d).PrimaryColor;
         var outerColor = group.Regime.Entity(d).PrimaryColor;
-        var squareSize = 5f;
-        var lineSize = 1f;
+        var squareSize = 10f;
+        var lineSize = 5f;
+        var alliance = group.Regime.Entity(d).GetAlliance(d);
         for (var i = 0; i < FrontlinePoints.Count; i++)
         {
             var p = FrontlinePoints[i];
@@ -84,15 +84,30 @@ public class DeployOnLineOrder : UnitOrder
             var unit = d.Get<Unit>(UnitIdsInLine[i]);
             var pos = unit.Position;
             
-            
-            
             var target = FrontlinePoints.GetPointAlongLine(
                 (v, w) => v.GetOffsetTo(w, d),
                 (float)i / count);
-            mb.AddLine(relTo.GetOffsetTo(pos.Pos, d),
-                relTo.GetOffsetTo(target, d),
-                Colors.Blue, 1f);
+            var moveType = unit.Template.Entity(d).MoveType.Model(d);
+            var startNode = new PointPathfindNode(pos.Pos, moveType, alliance, d);
+            var endNode = new PointPathfindNode(target, moveType, alliance, d);
+            PointPathfindNode.Join(startNode, endNode, d);
+            var path = PathFinder.FindTacticalPath(
+                startNode, 
+                endNode,
+                alliance,
+                moveType,
+                d
+            );
+            if (path != null)
+            {
+                for (var j = 0; j < path.Count - 1; j++)
+                {
+                    var from = path[j].Pos;
+                    var to = path[j + 1].Pos;
+                    mb.AddArrow(relTo.GetOffsetTo(from, d),
+                        relTo.GetOffsetTo(to, d), 2f, Colors.Blue);
+                }
+            }
         }
-        
     }
 }

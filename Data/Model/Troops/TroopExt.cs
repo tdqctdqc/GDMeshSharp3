@@ -5,4 +5,9 @@ public static class TroopExt
     {
         return t.Hardness + t.HardAttack + t.SoftAttack + t.Hitpoints;
     }
+
+    public static float GetAttackPoints(this Troop t)
+    {
+        return t.HardAttack + t.SoftAttack;
+    }
 }

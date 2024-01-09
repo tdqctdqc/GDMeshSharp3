@@ -5,42 +5,27 @@ using Godot;
 public class InfantryMoveType : MoveType
 {
     public InfantryMoveType() 
-        : base(true, 10f, 
+        : base(true, 100f, 
             nameof(InfantryMoveType))
     {
         
     }
 
-    public override float TerrainSpeedMod(PolyTri pt, Data d)
+    public override float TerrainCostInstantaneous(PolyTri pt, Data d)
     {
         var lf = pt.Landform(d);
         if (lf.IsWater)
         {
-            if (lf is River) return .2f;
-            return 0f;
+            if (lf is River) return 5f;
+            return Mathf.Inf;
         }
-        var lfMod = 1f - lf.MinRoughness / 2f;
-        var vMod = pt.Vegetation(d).MovementMod;
+        var lfMod = 1f + lf.MinRoughness;
+        var vMod = pt.Vegetation(d).MovementCostMult;
         return lfMod * vMod;
     }
 
-    public override bool Passable(Waypoint wp, Alliance a, 
-        bool goThruHostile, Data d)
+    public override bool TerrainPassable(PolyTri pt, Data d)
     {
-        if (wp is ILandWaypoint == false) return false;
-        return AllianceCanPass(a, wp, goThruHostile, d);
-    }
-
-    public override float PathfindCost(Waypoint wp1,
-        Waypoint wp2,
-        Alliance a, 
-        bool goThruHostile, Data d)
-    {
-        return DefaultLandPathfindCost(wp1, wp2, a, goThruHostile, d);
-    }
-
-    public override float PathfindCost(Vector2 p1, PolyTri tri1, Vector2 p2, PolyTri tri2, Alliance a, bool goThruHostile, Data d)
-    {
-        return DefaultLandPathfindCost(p1, tri1, p2, tri2, a, goThruHostile, d);
+        return pt.Landform(d).IsLand;
     }
 }

@@ -44,24 +44,16 @@ public class UnitGroup : Entity
     public Waypoint GetWaypoint(Data d)
     {
         var unit = Units.Items(d).First();
-        var moveType = unit.Template.Entity(d)
-            .MoveType.Model(d);
-        var pos = unit.Position;
-        if (pos.OnWaypoint()) return pos.GetWaypoint(d);
-        if (pos.OnWaypointAxis())
-        {
-            var (w,v) = pos.GetAxisWps(d);
-            return w.Pos.GetOffsetTo(pos.Pos, d) < v.Pos.GetOffsetTo(pos.Pos, d)
-                ? w
-                : v;
-        }
-
-        var alliance = Regime.Entity(d).GetAlliance(d);
-        var found = d.Military.WaypointGrid.TryGetClosest(pos.Pos,
-            out var wp, 
-            w => MoveType(d).Passable(w, alliance, true, d));
-        if (found == false) throw new Exception();
-        return wp;
+        return d.Context.UnitWaypoints[unit];
+        // var moveType = unit.Template.Entity(d)
+        //     .MoveType.Model(d);
+        // var pos = unit.Position;
+        // var alliance = Regime.Entity(d).GetAlliance(d);
+        // var found = d.Military.WaypointGrid.TryGetClosest(pos.Pos,
+        //     out var wp, 
+        //     w => MoveType(d).TerrainPassable(w.Tri.Tri(d), d));
+        // if (found == false) throw new Exception();
+        // return wp;
     }
 
     public Vector2 GetPosition(Data d)

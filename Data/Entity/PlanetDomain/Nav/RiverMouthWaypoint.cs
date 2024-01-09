@@ -11,9 +11,13 @@ public class RiverMouthWaypoint : Waypoint, IRiverWaypoint,
     public int Sea { get; private set; }
     public bool Port { get; private set; }
     
-    public RiverMouthWaypoint(GenWriteKey key, int id, Vector2 pos, int sea, MapPolygon poly1, 
-        MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null) 
-        : base(key, id, pos, poly1, poly2, poly3, poly4)
+    public RiverMouthWaypoint(GenWriteKey key, 
+        int id, PolyTriPosition tri, Vector2 pos, 
+        int sea, MapPolygon poly1, 
+        MapPolygon poly2 = null, 
+        MapPolygon poly3 = null, 
+        MapPolygon poly4 = null) 
+        : base(key, id, tri, pos, poly1, poly2, poly3, poly4)
     {
         Sea = sea;
         Bridgeable = true;

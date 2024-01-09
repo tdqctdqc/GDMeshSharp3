@@ -25,8 +25,8 @@ public class GraphicLayerHolder
         AddLayer(IconsChunkModule.GetLayer(data, segmenter), true);
         AddLayer(ResourceChunkModule.GetLayer(data, segmenter), false);
         AddLayer(WaypointGraphicChunk.GetLayer(LayerOrder.TacWaypoints, "Tac Waypoints", data, client, 
-            p => p.GetAssocTacWaypoints(data), wp => wp.TacNeighbors(data), segmenter), false);
-        AddLayer(UnitOrdersGraphicLayer.GetLayer(segmenter, client), true);
+            p => p.GetAssocTacWaypoints(data), wp => wp.GetNeighbors(data), segmenter), false);
+        // AddLayer(UnitOrdersGraphicLayer.GetLayer(segmenter, client), true);
         AddLayer(new UnitGraphicLayer(client, segmenter, data), true);
         AddLayer(TheaterGraphicLayer.GetLayer(segmenter, client), false);
     }

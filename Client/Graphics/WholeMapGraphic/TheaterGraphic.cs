@@ -38,12 +38,12 @@ public partial class TheaterGraphic : Node2D
         var relTo = MilitaryDomain.GetTacWaypoint(relToId, d).Pos;
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
-        foreach (var fa in theater.Assignments.WhereOfType<FrontAssignment>())
+        foreach (var fa in theater.Assignments.OfType<FrontAssignment>())
         {
             var iter = 0;
             var frontColor = ColorsExt.GetRandomColor();
             
-            foreach (var seg in fa.Assignments.WhereOfType<FrontSegmentAssignment>())
+            foreach (var seg in fa.Assignments.OfType<FrontSegmentAssignment>())
             {
                 var segColor = ColorsExt.GetRandomColor();
                 for (var i = 0; i < seg.FrontLineWpIds.Count - 1; i++)
@@ -93,7 +93,7 @@ public partial class TheaterGraphic : Node2D
             var wp = MilitaryDomain.GetTacWaypoint(tId, d);
             var relPos = relTo.GetOffsetTo(wp.Pos, d);
             
-            foreach (var nWp in wp.TacNeighbors(d))
+            foreach (var nWp in wp.GetNeighbors(d))
             {
                 if (theater.TacWaypointIds.Contains(nWp.Id) == false) continue;
                 if (nWp.Id > tId) continue;

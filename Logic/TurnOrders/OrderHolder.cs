@@ -101,7 +101,7 @@ public class OrderHolder
     
 
     
-    public bool CheckReadyForFrame(Data data, bool majorTurn)
+    public bool CheckReadyForFrame(Data data)
     {
         var regimes = data.GetAll<Regime>();
         return regimes.All(r => Orders.ContainsKey(r) && Orders[r] != null);

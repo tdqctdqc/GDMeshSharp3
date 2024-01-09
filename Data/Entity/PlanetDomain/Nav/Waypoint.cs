@@ -14,13 +14,17 @@ public abstract class Waypoint
     : IWaypoint, IIdentifiable, IPolymorph
 {
     public int Id { get; private set; }
+    IEnumerable<IMapPathfindNode> IMapPathfindNode.Neighbors(Data d) => this.GetNeighbors(d);
     public HashSet<int> Neighbors { get; private set; }
     public Vector2 Pos { get; private set; }
     public Vector4I AssociatedPolyIds { get; private set; }
-
-    protected Waypoint(GenWriteKey key, int id, Vector2 pos, MapPolygon poly1,
+    public PolyTriPosition Tri { get; private set; }
+    protected Waypoint(GenWriteKey key, int id, 
+        PolyTriPosition tri,
+        Vector2 pos, MapPolygon poly1,
         MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null)
     {
+        Tri = tri;
         var associatedPolyIds = new Vector4I(poly1.Id, 
             poly2 != null ? poly2.Id : -1, 
             poly3 != null ? poly3.Id : -1,            

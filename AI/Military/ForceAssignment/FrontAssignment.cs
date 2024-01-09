@@ -13,36 +13,38 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     public static float CoverLengthWeight = 1f;
     public static float CoverOpposingWeight = 3f;
     public static float PowerPointsPerLengthToCover = .1f;
-    public HashSet<int> TacWaypointIds { get; private set; }
-
+    public HashSet<int> HeldWaypointIds { get; private set; }
+    public HashSet<int> TargetAreaWaypointIds { get; private set; }
     public HashSet<ForceAssignment> Assignments { get; private set; }
     public FrontAssignment(
         int id,
         EntityRef<Regime> regime, 
-        HashSet<int> tacWaypointIds,
+        HashSet<int> heldWaypointIds,
+        HashSet<int> targetAreaWaypointIds,
         HashSet<int> groupIds,
         HashSet<ForceAssignment> assignments) 
         : base(groupIds, regime, id)
     {
-        TacWaypointIds = tacWaypointIds;
+        HeldWaypointIds = heldWaypointIds;
+        TargetAreaWaypointIds = targetAreaWaypointIds;
         Assignments = assignments;
     }
     public Vector2 RelTo(Data d)
     {
-        var p = MilitaryDomain.GetTacWaypoint(TacWaypointIds.First(), d).Pos;
+        var p = MilitaryDomain.GetTacWaypoint(HeldWaypointIds.First(), d).Pos;
         return p.ClampPosition(d);
     }
 
-    public IEnumerable<Waypoint> GetTacWaypoints(Data data)
+    public IEnumerable<Waypoint> HeldWaypoints(Data data)
     {
-        return TacWaypointIds.Select(i => MilitaryDomain.GetTacWaypoint(i, data));
+        return HeldWaypointIds.Select(i => MilitaryDomain.GetTacWaypoint(i, data));
     }
 
     public float GetOpposingPowerPoints(Data data)
     {
         var forceBalances = data.Context.WaypointForceBalances;
         var alliance = Regime.Entity(data).GetAlliance(data);
-        return GetTacWaypoints(data)
+        return HeldWaypoints(data)
             .Sum(wp => forceBalances[wp].GetHostilePowerPoints(alliance, data));
     }
     public override void CalculateOrders(MinorTurnOrders orders, 
@@ -75,7 +77,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     public override float GetPowerPointNeed(Data data)
     {
         var opposing = GetOpposingPowerPoints(data);
-        var length = Assignments.WhereOfType<FrontSegmentAssignment>().Sum(s => s.GetLength(data));
+        var length = Assignments.OfType<FrontSegmentAssignment>().Sum(s => s.GetLength(data));
         return opposing * CoverOpposingWeight + length * CoverLengthWeight * PowerPointsPerLengthToCover;
     }
     public static void CheckSplitRemove(Regime r, 
@@ -87,7 +89,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         for (var i = 0; i < fronts.Count; i++)
         {
             var fa = fronts[i];
-            fa.TacWaypointIds.RemoveWhere(i =>
+            fa.HeldWaypointIds.RemoveWhere(i =>
             {
                 if (theater.TacWaypointIds.Contains(i) == false) return true;
                 var wp = MilitaryDomain.GetTacWaypoint(i, key.Data);
@@ -95,15 +97,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
                 if (alliance.Members.Contains(wp.GetOccupyingRegime(key.Data)) == false) return true;
                 return false;
             });
-            if (fa.TacWaypointIds.Count == 0)
+            if (fa.HeldWaypointIds.Count == 0)
             {
                 remove(fa);
                 continue;
             }
-            var flood = FloodFill<Waypoint>.GetFloodFill(fa.GetTacWaypoints(key.Data).First(),
-                wp => fa.TacWaypointIds.Contains(wp.Id),
-                wp => wp.TacNeighbors(key.Data));
-            if (flood.Count() != fa.TacWaypointIds.Count)
+            var flood = FloodFill<Waypoint>.GetFloodFill(fa.HeldWaypoints(key.Data).First(),
+                wp => fa.HeldWaypointIds.Contains(wp.Id),
+                wp => wp.GetNeighbors(key.Data));
+            if (flood.Count() != fa.HeldWaypointIds.Count)
             {
                 remove(fa);
                 var newFronts = Divide(fa, key);
@@ -119,27 +121,29 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         LogicWriteKey key)
     {
         var r = fa.Regime.Entity(key.Data);
-        var unions = UnionFind.Find(fa.TacWaypointIds,
+        var unions = UnionFind.Find(fa.HeldWaypointIds,
             (i, j) => true,
             i => MilitaryDomain.GetTacWaypoint(i, key.Data).Neighbors);
 
         var newFronts =
             unions.Select(
                 u => new FrontAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), u.ToHashSet(),
-                    new HashSet<int>(), new HashSet<ForceAssignment>()));
+                    new HashSet<int>(),
+                    new HashSet<int>(), 
+                    new HashSet<ForceAssignment>()));
         foreach (var group in fa.Groups(key.Data))
         {
             var unitWpIds = group.Units.Items(key.Data)
                 .Select(u => key.Data.Context.UnitWaypoints[u].Id).ToList();
             var mostWpsShared = newFronts
-                .MaxBy(t => unitWpIds.Where(t.TacWaypointIds.Contains).Count());
-            if (unitWpIds.Where(mostWpsShared.TacWaypointIds.Contains).Count() == 0)
+                .MaxBy(t => unitWpIds.Where(t.HeldWaypointIds.Contains).Count());
+            if (unitWpIds.Where(mostWpsShared.HeldWaypointIds.Contains).Count() == 0)
             {
                 var pos = group.GetPosition(key.Data);
                 var closest = newFronts
                     .MinBy(t => 
                         group.GetPosition(key.Data).GetOffsetTo(
-                            key.Data.Planet.GetAveragePosition(t.TacWaypointIds.Select(i =>
+                            key.Data.Planet.GetAveragePosition(t.HeldWaypointIds.Select(i =>
                                 MilitaryDomain.GetTacWaypoint(i, key.Data).Pos)),
                             key.Data).Length()
                     );
@@ -156,12 +160,12 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     public List<List<Waypoint>> GetLines(Data d)
     {
         var alliance = Regime.Entity(d).GetAlliance(d);
-        var wps = GetTacWaypoints(d);
+        var wps = HeldWaypoints(d);
         var potentialEdges = wps
             .SelectMany(wp =>
             {
                 return wp.Neighbors.Where(nId => nId < wp.Id)
-                    .Where(nId => TacWaypointIds.Contains(nId))
+                    .Where(nId => HeldWaypointIds.Contains(nId))
                     .Select(nId => new Vector2I(wp.Id, nId));
             })
             .ToHashSet();
@@ -264,14 +268,14 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 
         IEnumerable<Waypoint> getNeighborsInside(Waypoint wp)
         {
-            return wp.TacNeighbors(d)
-                .Where(n => TacWaypointIds.Contains(n.Id));
+            return wp.GetNeighbors(d)
+                .Where(n => HeldWaypointIds.Contains(n.Id));
         }
         
         IEnumerable<Waypoint> getHostiles(Waypoint wp)
         {
-            return wp.TacNeighbors(d)
-                .Where(n => TacWaypointIds.Contains(n.Id) == false
+            return wp.GetNeighbors(d)
+                .Where(n => HeldWaypointIds.Contains(n.Id) == false
                             && n.IsDirectlyThreatened(alliance, d));
         }
 
@@ -323,15 +327,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             .Where(wp => wp.IsThreatened(alliance, key.Data)
                 && wp.GetOccupyingRegime(key.Data) == r);
         var unions = UnionFind.Find(frontline, (w, v) => true,
-            w => w.TacNeighbors(key.Data));
+            w => w.GetNeighbors(key.Data));
         var dic = unions.ToDictionary(u => u, u => new List<FrontAssignment>());
         foreach (var fa in fronts)
         {
-            var faWps = fa.GetTacWaypoints(key.Data);
+            var faWps = fa.HeldWaypoints(key.Data);
             var mostShared = unions
-                .MaxBy(u => u.Where(wp => fa.TacWaypointIds.Contains(wp.Id)).Count());
+                .MaxBy(u => u.Where(wp => fa.HeldWaypointIds.Contains(wp.Id)).Count());
 
-            if (mostShared.Where(wp => fa.TacWaypointIds.Contains(wp.Id)).Count() == 0)
+            if (mostShared.Where(wp => fa.HeldWaypointIds.Contains(wp.Id)).Count() == 0)
             {
                 remove(fa);
             }
@@ -345,13 +349,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             if (kvp.Value.Count() == 0)
             {
                 var fa = new FrontAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), kvp.Key.Select(wp => wp.Id).ToHashSet(),
-                    new HashSet<int>(), new HashSet<ForceAssignment>());
+                    new HashSet<int>(),
+                    new HashSet<int>(),
+                    new HashSet<ForceAssignment>());
                 add(fa);
                 continue;
             }
-            var biggest = kvp.Value.MaxBy(fa => fa.TacWaypointIds.Count());
-            biggest.TacWaypointIds.Clear();
-            biggest.TacWaypointIds.AddRange(kvp.Key.Select(wp => wp.Id));
+            var biggest = kvp.Value.MaxBy(fa => fa.HeldWaypointIds.Count());
+            biggest.HeldWaypointIds.Clear();
+            biggest.HeldWaypointIds.AddRange(kvp.Key.Select(wp => wp.Id));
             foreach (var fa in kvp.Value)
             {
                 if (fa == biggest) continue;
@@ -376,7 +382,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             .ToDictionary(l => l, 
                 l => new List<FrontSegmentAssignment>());
         
-        var segments = Assignments.WhereOfType<FrontSegmentAssignment>().ToList();
+        var segments = Assignments.OfType<FrontSegmentAssignment>().ToList();
         foreach (var fsa in segments)
         {
             var relatedLines = lines.Keys

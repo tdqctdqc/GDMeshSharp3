@@ -6,8 +6,7 @@ public class StoneRoad : RoadModel
 {
     public StoneRoad() 
         : base(nameof(StoneRoad), 
-            4f, 
-            0f,
+            .25f, false, 0f,
             Colors.Black.Lightened(.5f))
     {
     }

@@ -9,7 +9,7 @@ public class Rifle1 : Troop
             1, 
             1f, 
             5f, 
-            10f, 
+            100f, 
             0f,
             0,
             TroopDomain.Land,

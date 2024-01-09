@@ -6,18 +6,57 @@ using Godot;
 
 public static partial class PathFinder
 {
-    public static List<Waypoint> FindPath(MoveType moveType, 
+    
+    public static List<Waypoint> FindStrategicPath(
+        MoveType moveType, 
         Alliance alliance,
         Waypoint start,
         Waypoint dest, 
-        bool goThruHostile,
         Data d)
     {
         return PathFinder<Waypoint>.FindPath(start, dest, 
-            p => p.TacNeighbors(d)
-                .Where(wp => moveType.Passable(wp, alliance, goThruHostile, d)),
-            (w, v) => moveType.PathfindCost(w, v, alliance, goThruHostile, d), 
-            (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, d).Length() / moveType.BaseSpeed);
+            p => p.GetNeighbors(d)
+                .Where(wp => moveType.Passable(wp, alliance, d)),
+            (w, v) => moveType.StratMoveEdgeCost(start, dest, d), 
+            (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, d).Length());
+    }
+    public static List<IMapPathfindNode> FindTacticalPath(
+            IMapPathfindNode start, IMapPathfindNode dest, 
+            Alliance a,
+            MoveType moveType, Data d)
+    {
+        var destIsPoint = dest is PointPathfindNode x;
+        PointPathfindNode destP = destIsPoint
+            ? (PointPathfindNode)dest : null;
+        
+        return PathFinder<IMapPathfindNode>.FindPath(
+            start,
+            dest,
+            getNeighbors,
+            (n, m) => moveType.TerrainCostPerLength(n.Tri.Tri(d), m.Tri.Tri(d), d),
+            (n, m) => n.Pos.GetOffsetTo(m.Pos, d).Length() / moveType.BaseSpeed
+        );
+
+        IEnumerable<IMapPathfindNode> getNeighbors(IMapPathfindNode n)
+        {
+            if (n is Waypoint wp)
+            {
+                if (destIsPoint && destP.Neighbors.Contains(wp))
+                {
+                    return wp.GetNeighbors(d)
+                        .Where(wp => moveType.Passable(wp, a, d))
+                        .AsEnumerable<IMapPathfindNode>()
+                        .Union(destP.Yield());
+                }
+
+                return wp.GetNeighbors(d).Where(wp => moveType.Passable(wp, a, d));
+            }
+            if (n is PointPathfindNode p)
+            {
+                return p.Neighbors;
+            }
+            throw new Exception();
+        }
     }
     
     public static List<TNode> FindPathFromGraph<TNode, TEdge>(TNode s1,

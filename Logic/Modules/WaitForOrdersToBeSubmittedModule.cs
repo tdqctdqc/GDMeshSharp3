@@ -13,7 +13,7 @@ public class WaitForOrdersToBeSubmittedModule : LogicModule
     {
         var res = new LogicResults();
         _holder.CalcAiOrders(key);
-        while (_holder.CheckReadyForFrame(key.Data, key.Data.BaseDomain.GameClock.MajorTurn(key.Data)) == false)
+        while (_holder.CheckReadyForFrame(key.Data) == false)
         {
             
         }

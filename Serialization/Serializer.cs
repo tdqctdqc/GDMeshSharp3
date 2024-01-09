@@ -61,7 +61,7 @@ public class Serializer
                 .Where(t => t.IsConcreteType());
             var unionAttributes = polymorphType
                 .GetCustomAttributes()
-                .WhereOfType<UnionAttribute>();
+                .OfType<UnionAttribute>();
             
             foreach (var type in concreteDerived)
             {

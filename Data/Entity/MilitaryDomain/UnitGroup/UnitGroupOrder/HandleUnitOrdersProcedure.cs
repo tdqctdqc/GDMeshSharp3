@@ -7,13 +7,13 @@ using MessagePack;
 public class HandleUnitOrdersProcedure : Procedure
 {
     public ConcurrentDictionary<int, MapPos> NewUnitPosesById { get; private set; }
-
     public static HandleUnitOrdersProcedure Construct()
     {
         return new HandleUnitOrdersProcedure(new ConcurrentDictionary<int, MapPos>());
     }
 
-    [SerializationConstructor] private HandleUnitOrdersProcedure(ConcurrentDictionary<int, MapPos> newUnitPosesById)
+    [SerializationConstructor] private HandleUnitOrdersProcedure(
+        ConcurrentDictionary<int, MapPos> newUnitPosesById)
     {
         NewUnitPosesById = newUnitPosesById;
     }

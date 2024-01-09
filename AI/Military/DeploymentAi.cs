@@ -13,22 +13,25 @@ public class DeploymentAi
     public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
         TheaterAssignment.CheckSplitRemove(regime,
-            ForceAssignments.WhereOfType<TheaterAssignment>().ToList(),
+            ForceAssignments.OfType<TheaterAssignment>().ToList(),
             fa => ForceAssignments.Add(fa),
             fa => ForceAssignments.Remove(fa),
             key);
         TheaterAssignment.CheckExpandMergeNew(regime,
-            ForceAssignments.WhereOfType<TheaterAssignment>().ToList(),
+            ForceAssignments.OfType<TheaterAssignment>().ToList(),
             fa => ForceAssignments.Add(fa),
             fa => ForceAssignments.Remove(fa),
             key);
         TheaterAssignment.PutGroupsInRightTheater(regime, ForceAssignments,
             key);
-        TheaterAssignment.CheckFronts(regime, ForceAssignments.WhereOfType<TheaterAssignment>().ToList(),
+        TheaterAssignment.CheckFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),
             key);
         
-        foreach (var ta in ForceAssignments.WhereOfType<TheaterAssignment>().ToList())
+        
+        
+        foreach (var ta in ForceAssignments.OfType<TheaterAssignment>().ToList())
         {
+            ta.SetTargets(key);
             ta.AssignGroups(key);
         }
         
@@ -39,7 +42,7 @@ public class DeploymentAi
     }
     public IEnumerable<FrontAssignment> GetFrontAssignments()
     {
-        return ForceAssignments.WhereOfType<FrontAssignment>();
+        return ForceAssignments.OfType<FrontAssignment>();
     }
 
 
@@ -48,7 +51,7 @@ public class DeploymentAi
         var res = new HashSet<(Waypoint wp1, Waypoint wp2)>();
         foreach (var wp in wps)
         {
-            var ns = wp.TacNeighbors(data);
+            var ns = wp.GetNeighbors(data);
             foreach (var nWp in ns)
             {
                 if (nWp.Id > wp.Id) continue;

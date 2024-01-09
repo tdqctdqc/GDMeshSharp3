@@ -55,14 +55,14 @@ public class TacticalMode : UiMode
         foreach (var regime in regimes)
         {
             var ai = _client.Data.HostLogicData.RegimeAis[regime];
-            var theater = ai.Military.Deployment.ForceAssignments.WhereOfType<TheaterAssignment>()
+            var theater = ai.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>()
                 .FirstOrDefault(t => t.TacWaypointIds.Contains(wp.Id));
             if (theater == null) continue;
             var front = theater.Assignments
-                .WhereOfType<FrontAssignment>()
-                .FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
+                .OfType<FrontAssignment>()
+                .FirstOrDefault(f => f.HeldWaypointIds.Contains(wp.Id));
             if (front == null) continue;
-            var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>()
+            var seg = front.Assignments.OfType<FrontSegmentAssignment>()
                 .FirstOrDefault(s => s.FrontLineWpIds.Contains(wp.Id));
             if (seg == null) continue;
             var relTo = seg.GetTacWaypoints(_client.Data).First().Pos;
@@ -82,7 +82,8 @@ public class TacticalMode : UiMode
         {
             tooltip.Clear();
         }
-        
+        var mg = _client.GetComponent<MapGraphics>();
+        mg.DebugOverlay.Clear();
     }
 
     private void PaintOccupation(Vector2 mapPos)
@@ -93,7 +94,7 @@ public class TacticalMode : UiMode
             var regime = _client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(_client.Data);
 
             _client.Data.Military.TacticalWaypoints.OccupierRegimes[close.Id] = regime.Id;
-            foreach (var n in close.TacNeighbors(_client.Data))
+            foreach (var n in close.GetNeighbors(_client.Data))
             {
                 if (n is IWaterWaypoint) continue;
                 _client.Data.Military.TacticalWaypoints.OccupierRegimes[n.Id] = regime.Id;

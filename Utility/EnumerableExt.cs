@@ -6,10 +6,7 @@ using System.Linq;
 public static class EnumerableExt
 {
     private static RandomNumberGenerator _rand = new RandomNumberGenerator();
-    public static IEnumerable<TSub> WhereOfType<TSub>(this IEnumerable<object> enumerable)
-    {
-        return enumerable.Where(e => e is TSub).Select(e => (TSub)e);
-    }
+    
     public static IEnumerable<T> Yield<T>(this T item)
     {
         if (item == null) yield break;

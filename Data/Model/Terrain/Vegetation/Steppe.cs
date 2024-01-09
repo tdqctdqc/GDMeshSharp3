@@ -8,7 +8,7 @@ public class Steppe : Vegetation
     public Steppe(LandformList lfs) 
         : base(new HashSet<Landform>{lfs.Hill, lfs.Plain}, 
             .1f, .6f, 
-            .1f,
+            1f,
             Colors.PaleGreen, "Steppe")
     {
     }

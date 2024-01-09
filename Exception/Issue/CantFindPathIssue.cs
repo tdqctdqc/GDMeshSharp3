@@ -3,30 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class CantFindWaypointPathIssue : Issue
+public class CantFindPathIssue : Issue
 {
-    public Waypoint Start { get; private set; }
-    public Waypoint Dest { get; private set; }
+    public IMapPathfindNode Start { get; private set; }
+    public IMapPathfindNode Dest { get; private set; }
     public MoveType MoveType { get; private set; }
     public Alliance Alliance { get; private set; }
-    public bool GoThruHostile { get; private set; }
-    public CantFindWaypointPathIssue(Vector2 point, 
+    public CantFindPathIssue(Vector2 point, 
         Alliance alliance,
-        string message, Waypoint start, Waypoint dest, 
-        MoveType moveType, bool goThruHostile) 
+        string message, IMapPathfindNode start, IMapPathfindNode dest, 
+        MoveType moveType) 
         : base(point, message)
     {
         Alliance = alliance;
         Start = start;
         Dest = dest;
         MoveType = moveType;
-        GoThruHostile = goThruHostile;
     }
 
     public override void Draw(Client c)
     {
-        var startNeighborhood = new HashSet<Waypoint>();
-        var destNeighborhood = new HashSet<Waypoint>();
+        var startNeighborhood = new HashSet<IMapPathfindNode>();
+        var destNeighborhood = new HashSet<IMapPathfindNode>();
         startNeighborhood.Add(Start);
         destNeighborhood.Add(Dest);
         int iter = 0;
@@ -40,10 +38,11 @@ public class CantFindWaypointPathIssue : Issue
             moreNeighbors = check(destNeighborhood, startNeighborhood);
             if (moreNeighbors == false) break;
 
-            bool check(HashSet<Waypoint> oldWps, HashSet<Waypoint> otherWps)
+            bool check(HashSet<IMapPathfindNode> oldWps, 
+                HashSet<IMapPathfindNode> otherWps)
             {
                 var newWps = oldWps
-                    .SelectMany(wp => wp.TacNeighbors(c.Data))
+                    .SelectMany(wp => wp.Neighbors(c.Data))
                     .Where(wp => startNeighborhood.Contains(wp) == false)
                     .ToArray();
                 if (newWps.Length == 0) return false;
@@ -64,17 +63,26 @@ public class CantFindWaypointPathIssue : Issue
             .DebugOverlay;
         debugDrawer.Clear();
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
-        foreach (var wp in union)
+        foreach (var n in union)
         {
-            Color canPass = MoveType.Passable(wp, Alliance, GoThruHostile, c.Data)
-                ? Colors.White : Colors.Black;
+            Color canPass;
+            if (n is Waypoint wp)
+            {
+                canPass = MoveType.Passable(wp, Alliance, c.Data)
+                    ? Colors.White : Colors.Black;
+            }
+            else
+            {
+                 canPass = Colors.Gray;
+            }
+            
             Color isStartOrDest = Colors.White;
             var size = 10f;
-            if (wp == Start)
+            if (n == Start)
             {
                 isStartOrDest = Colors.Green;
             }
-            else if (wp == Dest)
+            else if (n == Dest)
             {
                 isStartOrDest = Colors.Red;
             }
@@ -84,9 +92,9 @@ public class CantFindWaypointPathIssue : Issue
                 size = 5f;
             }
             debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size, canPass), 
-                wp.Pos);
+                n.Pos);
             debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size / 2f, isStartOrDest), 
-                wp.Pos);
+                n.Pos);
         }
     }
 }

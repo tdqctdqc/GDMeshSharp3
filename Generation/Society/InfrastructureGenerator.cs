@@ -253,26 +253,11 @@ public class InfrastructureGenerator : Generator
         var stone = _data.Models.RoadList.StoneRoad;
         var paved = _data.Models.RoadList.PavedRoad;
         var wpPaths = new Dictionary<Vector2I, List<Waypoint>>();
-        
-        // foreach (var polyNode in polyLevelGraph.Elements)
-        // {
-        //     foreach (var nPolyNode in polyLevelGraph.GetNeighbors(polyNode))
-        //     {
-        //         if (nPolyNode.Waypoint.Id > polyNode.Waypoint.Id) continue;
-        //         var traffic = polyLevelGraph
-        //             .GetEdge(polyNode, nPolyNode).Traffic;
-        //         if (getRoadFromTraffic(traffic) is RoadModel r == false) continue;
-        //         var key = polyNode.Waypoint.GetIdEdgeKey(nPolyNode.Waypoint);
-        //         roadPolySegs.Add(key, r);
-        //     }
-        // }
-        
+        var walk = _data.Models.MoveTypes.InfantryMove;
         polyLevelGraph.RemoveEdges(e => getRoadFromTraffic(e.Traffic) == null);
-        //just trim all edges from poly traffic graph that arent road worthy
-        //then can use dijkstra/flood search?
+        
         var dic = polyLevelGraph.Elements
             .ToDictionary(n => n.Waypoint, n => n);
-        
         
         polyLevelGraph.ForEachEdge((w, v, e) =>
         {
@@ -288,7 +273,7 @@ public class InfrastructureGenerator : Generator
                 if (roadWpSegs.ContainsKey(key))
                 {
                     var old = roadWpSegs[key];
-                    if (road.SpeedMult >= old.SpeedMult || road.SpeedOverride > old.SpeedOverride)
+                    if (road.CostOverride <= old.CostOverride)
                     {
                         roadWpSegs[key] = road;
                     }
@@ -321,7 +306,7 @@ public class InfrastructureGenerator : Generator
                 .ToHashSet();
 
             var paths = PathFinder<Waypoint>.FindMultiplePaths(
-                w, ns, wp => wp.TacNeighbors(_data).Where(x => x is ILandWaypoint),
+                w, ns, wp => wp.GetNeighbors(_data).Where(x => x is ILandWaypoint),
                 getEdgeCost, (w, v) => w.Pos.GetOffsetTo(v.Pos, _data).Length());
             foreach (var kvp in paths)
             {
@@ -346,7 +331,7 @@ public class InfrastructureGenerator : Generator
                 if (road != null)
                 {
                     var length = w.Pos.GetOffsetTo(v.Pos, _data).Length();
-                    return length / road.SpeedMult;
+                    return length / road.CostOverride;
                 }
             }
             return PathFinder.RoadBuildEdgeCost(w, v, _data);
@@ -381,7 +366,7 @@ public class InfrastructureGenerator : Generator
         foreach (var poly in coastCityPolys)
         {
             var wps = poly.GetAssocTacWaypoints(_key.Data)
-                .WhereOfType<ICoastWaypoint>();
+                .OfType<ICoastWaypoint>();
             var polySeaIds = new HashSet<int>();
             foreach (var coastWaypoint in wps)
             {

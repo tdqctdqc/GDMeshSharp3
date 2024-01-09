@@ -71,6 +71,17 @@ public class TacticalWaypointGenerator : Generator
         return genReport;
     }
 
+    private PolyTriPosition GetTri(MapPolygon p, Vector2 pos,
+        Data d)
+    {
+        var offset = p.GetOffsetTo(pos, d);
+        var t = p.Tris.Tris.FirstOrDefault(t => t.ContainsPoint(offset));
+        if (t == null)
+        {
+            t = p.Tris.Tris.MinBy(t => t.GetDistFromEdge(offset));
+        }
+        return t.GetPosition();
+    }
     private void GenerateNexusWps(GenWriteKey key)
     {
         var res = new Dictionary<MapPolyNexus, Waypoint>();
@@ -89,11 +100,13 @@ public class TacticalWaypointGenerator : Generator
             if (coast)
             {
                 var firstSeaPoly = incidentPolys.First(p => p.IsWater());
+                var firstLandPoly = incidentPolys.First(p => p.IsLand);
                 var sea = key.Data.Planet.PolygonAux.LandSea.SeaDic[firstSeaPoly].Id;
                 
                 if (river)
                 {
                     var wp = new RiverMouthWaypoint(key, _id.TakeId(),
+                        GetTri(firstLandPoly, nexus.Point, key.Data),
                         nexus.Point, sea, p0, p1, p2, p3);
                     res.Add(nexus, wp);
                 }
@@ -101,32 +114,47 @@ public class TacticalWaypointGenerator : Generator
                 {
                     var landIncident = incidentPolys.Where(p => p.IsLand);
                     Vector2 newPos;
+                    MapPolygon landPoly;
                     if (landIncident.Count() == 1)
                     {
-                        var landPoly = landIncident.First();
+                        landPoly = landIncident.First();
                         var offset = landPoly.GetOffsetTo(nexus.Point, key.Data);
                         newPos = landPoly.Center + offset.Normalized() * (offset.Length() - _edgeWaypointDist / 2f);
                     }
                     else if (landIncident.Count() == 2)
                     {
+                        //todo error when 4 incident polys and they go water-land-water-land so no edge
                         var edge = landIncident.ElementAt(0).GetEdge(landIncident.ElementAt(1), key.Data);
                         var otherNexus = edge.GetOtherNexus(nexus, key.Data);
                         var offset = otherNexus.Point.GetOffsetTo(nexus.Point, key.Data);
                         var l = Mathf.Min(offset.Length() / 4f, _edgeWaypointDist / 2f);
                         newPos = otherNexus.Point + offset.Normalized() * (offset.Length() - l);
+                        landPoly = landIncident.First();
+                    }
+                    else if (landIncident.Count() == 3)
+                    {
+                        var seaPolys = incidentPolys.Where(p => p.IsWater());
+                        if (seaPolys.Count() != 1) throw new Exception();
+                        landPoly = landIncident
+                            .First(l => l.HasNeighbor(seaPolys.First()));
+                        var offset = landPoly.GetOffsetTo(nexus.Point, key.Data);
+                        newPos = landPoly.Center + offset.Normalized() * (offset.Length() - _edgeWaypointDist / 2f);
                     }
                     else throw new Exception();
                     
                     newPos = newPos.ClampPosition(key.Data);
-                    // if (newPos.GetOffsetTo(nexus.Point, key.Data).Length() < _edgeWaypointDist / 4f) throw new Exception();
                     var wp = new CoastWaypoint(key, sea, false, _id.TakeId(),
-                        newPos, p0, p1, p2, p3);
+                        GetTri(firstLandPoly, 
+                            newPos, key.Data), newPos, 
+                        landIncident.First(), 
+                        landIncident.Count() == 2 ? landIncident.ElementAt(1) : null);
                     res.Add(nexus, wp);
                 }
             }
             else if (river)
             {
-                var wp = new RiverWaypoint(key, _id.TakeId(), nexus.Point, p0, p1, p2, p3);
+                var wp = new RiverWaypoint(key, _id.TakeId(), 
+                    GetTri(incidentPolys.First(), nexus.Point, key.Data), nexus.Point, p0, p1, p2, p3);
                 wp.MakeBridgeable(key);
                 res.Add(nexus, wp);
             }
@@ -189,7 +217,8 @@ public class TacticalWaypointGenerator : Generator
             {
                 if (river)
                 {
-                    var wp = new RiverWaypoint(key, _id.TakeId(), pos, hi, lo);
+                    var wp = new RiverWaypoint(key, _id.TakeId(), 
+                        GetTri(hi, pos, key.Data), pos, hi, lo);
                     res.Add(wp);
                 }
                 else
@@ -202,7 +231,8 @@ public class TacticalWaypointGenerator : Generator
                     var newPos = landPoly.Center + offset.Normalized() * (offset.Length() - _edgeWaypointDist / 2f);
                     newPos = newPos.ClampPosition(key.Data);
                     var wp = new CoastWaypoint(key, sea, false,
-                        _id.TakeId(), newPos, hi, lo);
+                        _id.TakeId(), 
+                        GetTri(landPoly, newPos, key.Data), newPos, landPoly);
                     res.Add(wp);
                 }
             }
@@ -237,7 +267,8 @@ public class TacticalWaypointGenerator : Generator
 
                 if (hi.PointInPolyAbs(hiWpPos, key.Data))
                 {
-                    hiWps.Add(new InlandWaypoint(key, _id.TakeId(), hiWpPos, hi));
+                    hiWps.Add(new InlandWaypoint(key, _id.TakeId(), hiWpPos,
+                        GetTri(hi, hiWpPos, key.Data), hi));
                 }
                 else
                 {
@@ -246,7 +277,8 @@ public class TacticalWaypointGenerator : Generator
                 
                 if (lo.PointInPolyAbs(loWpPos, key.Data))
                 {
-                    loWps.Add(new InlandWaypoint(key, _id.TakeId(), loWpPos, lo));
+                    loWps.Add(new InlandWaypoint(key, _id.TakeId(),
+                        loWpPos, GetTri(lo, loWpPos, key.Data), lo));
                 }
                 else
                 {
@@ -270,6 +302,7 @@ public class TacticalWaypointGenerator : Generator
         foreach (var waterPoly in polys.Where(p => p.IsWater()))
         {
             var wp = new SeaWaypoint(key, _id.TakeId(),
+                GetTri(waterPoly, waterPoly.Center, key.Data),
                 waterPoly.Center, waterPoly);
             _seaWps.Add(waterPoly, wp);
             _takenPoses.Add(waterPoly.Center);
@@ -333,7 +366,8 @@ public class TacticalWaypointGenerator : Generator
             {
                 if (_takenPoses.Contains(pos)) continue;
                 _takenPoses.Add(pos);
-                var wp = new InlandWaypoint(key, _id.TakeId(), pos, poly);
+                var wp = new InlandWaypoint(key, _id.TakeId(), 
+                    pos, GetTri(poly, pos, key.Data), poly);
                 _innerWps.Add(pos, new(poly, wp));
             }
         }
@@ -359,7 +393,8 @@ public class TacticalWaypointGenerator : Generator
                     var midPoint = edge.GetSegsRel(poly, key.Data)
                         .Segments.GetPointAlong(.5f) + poly.Center;
                     midPoint = midPoint.ClampPosition(key.Data);
-                    var midWp = new InlandWaypoint(key, _id.TakeId(), midPoint,
+                    var midWp = new InlandWaypoint(key, _id.TakeId(), 
+                        midPoint, GetTri(poly, midPoint, key.Data),
                         poly, nPoly);
                     join(midWp, wps);
                     join(midWp, nWps);

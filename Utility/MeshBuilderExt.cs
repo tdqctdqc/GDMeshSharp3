@@ -20,25 +20,15 @@ public static class MeshBuilderExt
             var to = MilitaryDomain.GetTacWaypoint(seg.FrontLineWpIds[i + 1], d);
             mb.AddLine(relPos(from.Pos), relPos(to.Pos), Colors.Red, 3f);
         }
-        var groups = seg.Groups(d);
-        foreach (var group in groups)
-        {
-            foreach (var unit in group.Units.Items(d))
-            {
-                var pos = unit.Position.Pos;
-                mb.AddPoint(relPos(pos), 10f, Colors.Red);
-            }
-        }
-
-        var rear = seg.GetRear(d, 3);
-        for (var i = 0; i < rear.Count; i++)
-        {
-            var ring = rear[i];
-            foreach (var rWp in ring)
-            {
-                mb.AddPoint(relPos(rWp.Pos), 10f, ColorsExt.GetRainbowColor(i));
-            }
-        }
+        // var groups = seg.Groups(d);
+        // foreach (var group in groups)
+        // {
+        //     foreach (var unit in group.Units.Items(d))
+        //     {
+        //         var pos = unit.Position.Pos;
+        //         mb.AddPoint(relPos(pos), 10f, Colors.Red);
+        //     }
+        // }
         mb.AddPoint(relPos(MilitaryDomain.GetTacWaypoint(seg.RallyWaypointId, d).Pos),
             20f, Colors.Blue);
     }

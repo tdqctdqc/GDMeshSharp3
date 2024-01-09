@@ -67,7 +67,7 @@ public class ForceBalance
         Alliance a, Data d)
     {
         var res = 0f;
-        foreach (var n in wp.TacNeighbors(d))
+        foreach (var n in wp.GetNeighbors(d))
         {
             if (n.IsDirectlyThreatened(a, d))
             {

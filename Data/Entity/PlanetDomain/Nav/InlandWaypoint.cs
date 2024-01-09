@@ -8,9 +8,12 @@ public class InlandWaypoint : Waypoint, ILandWaypoint
 {
     public float Roughness { get; private set; }
 
-    public InlandWaypoint(GenWriteKey key, int id, Vector2 pos, MapPolygon poly1, 
-        MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null) 
-        : base(key, id, pos, poly1, poly2, poly3, poly4)
+    public InlandWaypoint(GenWriteKey key, int id, 
+        Vector2 pos, PolyTriPosition tri, MapPolygon poly1, 
+        MapPolygon poly2 = null, 
+        MapPolygon poly3 = null, 
+        MapPolygon poly4 = null) 
+        : base(key, id, tri, pos, poly1, poly2, poly3, poly4)
     {
     }
 

@@ -41,8 +41,7 @@ public class RegimeGenerator : Generator
             var pt = 
                 capitalPoly.Center.GetPolyTri(key.Data).GetPosition();
 
-            var unitPos = new MapPos(pos, 
-                new Vector2I(wp.Id, -1), pt);
+            var unitPos = new MapPos(pos, pt);
             for (var i = 0; i < numUnits; i++)
             {
                 Unit.Create(template, regime, unitPos.Copy(), key);

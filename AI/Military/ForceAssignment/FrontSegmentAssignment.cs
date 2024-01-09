@@ -23,9 +23,12 @@ public class FrontSegmentAssignment : ForceAssignment
         LogicWriteKey key)
     {
         var center = key.Data.Planet.GetAveragePosition(frontLine.Select(wp => wp.Pos));
-        var fsa = new FrontSegmentAssignment(key.Data.IdDispenser.TakeId(),
-            frontLine.Select(wp => wp.Id).ToList(),
-            advanceLine?.Select(wp => wp.Id).ToList(),
+        var frontLineIds = frontLine.Select(wp => wp.Id).ToList();
+        var advanceLineIds = advanceLine?.Select(wp => wp.Id).ToList();
+        var fsa = new FrontSegmentAssignment(
+            key.Data.IdDispenser.TakeId(),
+            frontLineIds,
+            advanceLineIds,
             center,
             new HashSet<int>(),
             r,
@@ -63,7 +66,7 @@ public class FrontSegmentAssignment : ForceAssignment
             CalcRallyWaypoint(wps, Regime.Entity(key.Data), key.Data).Id;
         var rally = GetRallyWaypoint(key.Data);
         var moveType = key.Data.Models.MoveTypes.InfantryMove;
-        if (moveType.Passable(rally, alliance, false, key.Data) == false)
+        if (moveType.Passable(rally, alliance, key.Data) == false)
         {
             throw new Exception();
         }
@@ -146,7 +149,7 @@ public class FrontSegmentAssignment : ForceAssignment
         var closeWps = GetRear(d, 3)
             .SelectMany(h => h)
             .Union(GetTacWaypoints(d))
-            .Where(wp => moveType.Passable(wp, a, false, d))
+            .Where(wp => moveType.Passable(wp, a, d))
             .ToHashSet();
         var readyGroups = Groups(d)
             .Where(g =>
@@ -225,12 +228,12 @@ public class FrontSegmentAssignment : ForceAssignment
         if (rings.Count == 0)
         {
             return wps
-                .Where(wp => moveType.Passable(wp, alliance, false, d))
+                .Where(wp => moveType.Passable(wp, alliance, d))
                 .MinBy(wp => wp.Pos.GetOffsetTo(avgPos, d).Length());
         }
         var rally = rings.Last()
             .MinBy(wp => wp.Pos.GetOffsetTo(avgPos, d).Length());
-        if (moveType.Passable(rally, alliance, false, d) == false)
+        if (moveType.Passable(rally, alliance, d) == false)
         {
             throw new Exception();
         }
@@ -256,11 +259,11 @@ public class FrontSegmentAssignment : ForceAssignment
         for (var i = 0; i < radius; i++)
         {
             var next = prev
-                .SelectMany(r => r.TacNeighbors(data))
+                .SelectMany(r => r.GetNeighbors(data))
                 .Where(p => prev.Contains(p) == false)
                 .Where(r =>
                     wps.Contains(r) == false
-                    && moveType.Passable(r, alliance, false, data)
+                    && moveType.Passable(r, alliance, data)
                     && r.IsThreatened(alliance, data) == false
                     && r.IsControlled(alliance, data))
                 .ToHashSet();

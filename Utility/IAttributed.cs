@@ -11,6 +11,6 @@
 //     public static TAttribute GetAttribute<TAttribute>(this IAttributed model)
 //     {
 //         return model.AttributeList
-//             .SelectWhereOfType<TAttribute>().First();
+//             .OfType<TAttribute>().First();
 //     }
 // }

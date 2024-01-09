@@ -18,15 +18,22 @@ public static class WaypointExt
     {
         return d.Context.WaypointForceBalances[wp];
     }
-    public static IEnumerable<Waypoint> TacNeighbors(this Waypoint wp, Data d)
+    public static IEnumerable<Waypoint> GetNeighbors(this Waypoint wp, Data d)
     {
         return wp.Neighbors.Select(i => MilitaryDomain.GetTacWaypoint(i, d));
     }
-    public static IEnumerable<IWaypoint> TacNeighbors(this IWaypoint wp, Data d)
+    public static IEnumerable<IWaypoint> GetNeighbors(this IWaypoint wp, Data d)
     {
         return wp.Neighbors.Select(i => MilitaryDomain.GetTacWaypoint(i, d));
     }
 
+    public static bool IsHostile(this Waypoint wp,
+        Alliance alliance, Data data)
+    {
+        var r = wp.GetOccupyingRegime(data);
+        if (r == null) return false;
+        return alliance.AtWar.Contains(r.GetAlliance(data));
+    }
     public static bool IsControlled(this Waypoint wp,
         Alliance alliance, Data data)
     {
@@ -53,7 +60,7 @@ public static class WaypointExt
     public static bool IsIndirectlyThreatened(this Waypoint wp, 
         Alliance alliance, Data data)
     {
-        return wp.TacNeighbors(data)
+        return wp.GetNeighbors(data)
             .Any(n =>
                 n.IsDirectlyThreatened(alliance, data) && n.IsControlled(alliance, data) == false
             );

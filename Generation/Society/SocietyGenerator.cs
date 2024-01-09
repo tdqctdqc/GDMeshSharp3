@@ -165,7 +165,7 @@ public class SocietyGenerator : Generator
         foreach (var kvp in t)
         {
             var model = kvp.Value;
-            var comps = model.Components.WhereOfType<ExtractionProd>();
+            var comps = model.Components.OfType<ExtractionProd>();
             foreach (var extractionProd in comps)
             {
                 extractBuildings.AddOrUpdate(extractionProd.ProdItem, model);

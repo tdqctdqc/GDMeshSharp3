@@ -8,7 +8,7 @@ public class Jungle : Vegetation
     public Jungle(LandformList lfs) 
         : base(new HashSet<Landform>{lfs.Hill, lfs.Plain}, 
             .5f, .4f,
-            .5f,
+            2f,
             new Color("#4bcf0e").Darkened(.25f), nameof(Jungle))
     {
     }

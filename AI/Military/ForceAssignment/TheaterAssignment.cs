@@ -54,7 +54,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             
             var flood = FloodFill<Waypoint>.GetFloodFill(ta.GetTacWaypoints(key.Data).First(),
                 wp => ta.TacWaypointIds.Contains(wp.Id),
-                wp => wp.TacNeighbors(key.Data));
+                wp => wp.GetNeighbors(key.Data));
 
             if (flood.Count() != ta.TacWaypointIds.Count)
             {
@@ -121,7 +121,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         var uncovered = responsibility.Except(covered
             .Select(c => MilitaryDomain.GetTacWaypoint(c, key.Data))).ToList();
         var uncoveredUnions = UnionFind.Find(uncovered, (w, v) => true,
-            w => w.TacNeighbors(key.Data));
+            w => w.GetNeighbors(key.Data));
         foreach (var union in uncoveredUnions)
         {
             var ta = new TheaterAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), new HashSet<ForceAssignment>(),
@@ -143,7 +143,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         {
             var wps = freeGroup.Units.Items(key.Data)
                 .Select(u => key.Data.Context.UnitWaypoints[u]).ToHashSet();
-            var theater = forceAssignments.WhereOfType<TheaterAssignment>()
+            var theater = forceAssignments.OfType<TheaterAssignment>()
                 .FirstOrDefault(t => wps.Any(wp => t.TacWaypointIds.Contains(wp.Id)));
             if (theater == null)
             {
@@ -159,7 +159,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         {
             var wps = claimedGroup.Units.Items(key.Data)
                 .Select(u => key.Data.Context.UnitWaypoints[u]).ToHashSet();
-            var theatersClaiming = forceAssignments.WhereOfType<TheaterAssignment>()
+            var theatersClaiming = forceAssignments.OfType<TheaterAssignment>()
                 .Where(t => t.GroupIds.Contains(claimedGroup.Id));
             if (theatersClaiming.Count() > 1)
             {
@@ -171,7 +171,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             {
                 GD.Print("theater doesnt have wp for claimed unit group");
                 var theatersSharingWp = forceAssignments
-                    .WhereOfType<TheaterAssignment>()
+                    .OfType<TheaterAssignment>()
                     .Where(ta => wps.Any(wp => ta.TacWaypointIds.Contains(wp.Id)));
                 if (theatersSharingWp.Count() == 0)
                 {
@@ -183,7 +183,26 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             }
         }
     }
-    
+
+    public void SetTargets(LogicWriteKey key)
+    {
+        var alliance = Regime.Entity(key.Data).GetAlliance(key.Data);
+        foreach (var front in Assignments.OfType<FrontAssignment>())
+        {
+            var wps = front
+                .HeldWaypoints(key.Data);
+            var targets = expand(wps);
+            targets = expand(targets);
+            front.TargetAreaWaypointIds.Clear();
+            front.TargetAreaWaypointIds.AddRange(targets.Select(t => t.Id));
+            IEnumerable<Waypoint> expand(IEnumerable<Waypoint> source)
+            {
+                return source
+                    .SelectMany(wp => wp.GetNeighbors(key.Data)
+                        .Where(n => n.IsHostile(alliance, key.Data)));
+            }
+        }
+    }
     public void MergeInto(TheaterAssignment dissolve)
     {
         GroupIds.AddRange(dissolve.GroupIds);
@@ -235,13 +254,13 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         var alliance = r.GetAlliance(key.Data);
         foreach (var ta in theaters)
         {
-            FrontAssignment.CheckSplitRemove(r, ta, ta.Assignments.WhereOfType<FrontAssignment>().ToList(),
+            FrontAssignment.CheckSplitRemove(r, ta, ta.Assignments.OfType<FrontAssignment>().ToList(),
                 f => ta.Assignments.Add(f), f => ta.Assignments.Remove(f),
                 key);
-            FrontAssignment.CheckExpandMergeNew(r, ta, ta.Assignments.WhereOfType<FrontAssignment>().ToList(),
+            FrontAssignment.CheckExpandMergeNew(r, ta, ta.Assignments.OfType<FrontAssignment>().ToList(),
                 f => ta.Assignments.Add(f), f => ta.Assignments.Remove(f),
                 key);
-            foreach (var fa in ta.Assignments.WhereOfType<FrontAssignment>())
+            foreach (var fa in ta.Assignments.OfType<FrontAssignment>())
             {
                 fa.CheckSegments(key);
             }

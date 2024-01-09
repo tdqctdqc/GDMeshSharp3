@@ -41,16 +41,16 @@ public class TacWaypointTooltipTemplate : TooltipTemplate<Waypoint>
         {
             if (d.HostLogicData.RegimeAis.Dic.ContainsKey(regime) == false) continue;
             var ai = d.HostLogicData.RegimeAis[regime];
-            var theater = ai.Military.Deployment.ForceAssignments.WhereOfType<TheaterAssignment>()
+            var theater = ai.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>()
                 .FirstOrDefault(t => t.TacWaypointIds.Contains(wp.Id));
             if (theater == null) continue;
             res += $"\n{regime.Name} Theater: " + theater.Id;
             var front = theater.Assignments
-                .WhereOfType<FrontAssignment>()
-                .FirstOrDefault(f => f.TacWaypointIds.Contains(wp.Id));
+                .OfType<FrontAssignment>()
+                .FirstOrDefault(f => f.HeldWaypointIds.Contains(wp.Id));
             if (front == null) continue;
             res += "\n  Front: " + front.Id;
-            var seg = front.Assignments.WhereOfType<FrontSegmentAssignment>()
+            var seg = front.Assignments.OfType<FrontSegmentAssignment>()
                 .FirstOrDefault(s => s.FrontLineWpIds.Contains(wp.Id));
             if (seg == null) continue;
             res += "\n    Segment: " + seg.Id;

@@ -9,8 +9,10 @@ public class RiverWaypoint : Waypoint, IWaterWaypoint, IRiverWaypoint
     public bool HasBridge { get; private set; }
     public bool Bridgeable { get; private set; }
 
-    public RiverWaypoint(GenWriteKey key, int id, Vector2 pos, 
-        MapPolygon poly1, MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null) : base(key, id, pos, poly1, poly2, poly3, poly4)
+    public RiverWaypoint(GenWriteKey key, int id, 
+        PolyTriPosition tri, Vector2 pos, 
+        MapPolygon poly1, MapPolygon poly2 = null, MapPolygon poly3 = null, MapPolygon poly4 = null) 
+        : base(key, id, tri, pos, poly1, poly2, poly3, poly4)
     {
         HasBridge = false;
     }

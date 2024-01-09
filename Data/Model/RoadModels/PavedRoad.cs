@@ -7,8 +7,7 @@ public class PavedRoad : RoadModel
 {
     public PavedRoad() 
         : base(nameof(PavedRoad), 
-            6f, 
-            0f,
+            .15f, false, 0f, 
             Colors.Black.Lightened(.2f))
     {
     }

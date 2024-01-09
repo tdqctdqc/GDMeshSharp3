@@ -15,34 +15,22 @@ public class GoToWaypointOrder : UnitOrder
         var currWp = g.GetWaypoint(d);
         var moveType = g.MoveType(d);
         
-        if (moveType.Passable(destWp, alliance, false, d) == false)
+        if (moveType.Passable(destWp, alliance, d) == false)
         {
             throw new Exception($"{moveType.GetType().Name} cant go to {destWp.GetType().Name}" +
                                 $" alliance {alliance.Leader.Entity(d).Id}" +
                                 $" occupier {destWp.GetOccupyingRegime(d)?.GetAlliance(d).Leader.Entity(d).Id} ");
         }
-        
-        
         var path = PathFinder
-            .FindPath(moveType, alliance, currWp, destWp, false, d);
+            .FindStrategicPath(moveType, alliance, 
+                currWp, destWp, d);
         if (path == null)
         {
-            var issue = new CantFindWaypointPathIssue(currWp.Pos,
+            var issue = new CantFindPathIssue(currWp.Pos,
                 alliance, $"failed to find path",
-                currWp, destWp, moveType, false);
+                currWp, destWp, moveType);
             d.ClientPlayerData.Issues.Add(issue);
             return null;
-        }
-        for (var i = 0; i < path.Count; i++)
-        {
-            if (moveType.Passable(path[i], alliance, false, d) == false)
-            {
-                var issue = new CantFindWaypointPathIssue(path[i].Pos,
-                    alliance, $"impassable at {i + 1} / {path.Count}",
-                    currWp, destWp, moveType, false);
-                d.ClientPlayerData.Issues.Add(issue);
-                return null;
-            }
         }
         
         return new GoToWaypointOrder(path.Select(wp => wp.Id).ToList());
@@ -64,8 +52,8 @@ public class GoToWaypointOrder : UnitOrder
             var pos = unit.Position.Copy();
             var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var movePoints = moveType.BaseSpeed;
-            var ctx = new Mover.MoveData(unit.Id, moveType, movePoints, false, alliance);
-            pos.MoveOntoAndAlongPath(ctx, path, key);
+            var ctx = new MoveData(unit.Id, moveType, movePoints, false, alliance);
+            pos.MoveOntoAndAlongStrategicPath(ctx, path, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }

@@ -64,6 +64,8 @@ public class UnitMode : UiMode
     }
     private void UnitTooltip(Unit close)
     {
+        var mg = _client.GetComponent<MapGraphics>();
+        mg.DebugOverlay.Clear();
         var tooltip = _client.GetComponent<TooltipManager>();
         if (close != null)
         {
@@ -79,7 +81,8 @@ public class UnitMode : UiMode
     {
         var unitPos = u.Position.Pos;
         var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
-        var groupMembers = u.GetGroup(_client.Data).Units.Items(_client.Data);
+        var group = u.GetGroup(_client.Data);
+        var groupMembers = group.Units.Items(_client.Data);
         foreach (var gUnit in groupMembers)
         {
             if (gUnit == u) continue;
@@ -91,6 +94,11 @@ public class UnitMode : UiMode
         debug.Draw(mb => mb.DrawMovementRecord(u.Id,
                 50, unitPos, _client.Data),
             unitPos);
+        var order = group.Order;
+        if (order != null)
+        {
+            debug.Draw(mb => order.Draw(group, unitPos, mb, _client.Data), unitPos);
+        }
     }
     
 }
