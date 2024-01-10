@@ -157,6 +157,90 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 
         return newFronts;
     }
+
+    public List<List<Waypoint>> GetLinesNew(Data d)
+    {
+        var alliance = Regime.Entity(d).GetAlliance(d);
+        var wps = HeldWaypoints(d);
+        var potentialEdges = wps
+            .Where(wp => wp.IsThreatened(alliance, d))
+            .SelectMany(wp =>
+            {
+                return wp.Neighbors
+                    .Where(nId => nId < wp.Id)
+                    .Where(nId => HeldWaypointIds.Contains(nId))
+                    .Select(nId => new Vector2I(wp.Id, nId));
+            })
+            .ToHashSet();
+
+        potentialEdges = potentialEdges
+            .Where(e => intersectsWithPotential(e) == false)
+            .ToHashSet();
+        var counts = new Dictionary<int, int>();
+        foreach (var pEdge in potentialEdges)
+        {
+            counts.AddOrSum(pEdge.X, 1);
+            counts.AddOrSum(pEdge.Y, 1);
+        }
+        potentialEdges = potentialEdges
+            .Where(e => counts[e.X] <= 2 || counts[e.Y] <= 2)
+            .ToHashSet();
+        
+        var chains = potentialEdges
+            .Select(getLineSeg).ToList()
+            .GetChains();
+        var res = new List<List<Vector2>>();
+        for (var i = 0; i < chains.Count; i++)
+        {
+            var chain = chains[i];
+            if (chain.Count <=
+                FrontSegmentAssignment.IdealSegmentLength * 1.5f)
+            {
+                res.Add(chain.GetPoints());
+                continue;
+            }
+            var numChains = Mathf.FloorToInt((float)chain.Count / FrontSegmentAssignment.IdealSegmentLength);
+            var numLinksPerChain = Mathf.CeilToInt((float)chain.Count / numChains);
+            var iter = 0;
+            var curr = new List<LineSegment>();
+            for (var j = 0; j < chain.Count; j++)
+            {
+                curr.Add(chain[j]);
+                iter++;
+                if (iter == numLinksPerChain || j == chain.Count - 1)
+                {
+                    res.Add(curr.GetPoints());
+                    iter = 0;
+                    curr = new List<LineSegment>();
+                }
+            }
+        }
+
+        return res
+            .Select(c => c.Select(p => d.Military.TacticalWaypoints.ByPos[p])
+                .Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList())
+            .ToList();
+        
+        bool intersectsWithPotential(Vector2I edge)
+        {
+            var wp1 = MilitaryDomain.GetTacWaypoint(edge.X, d);
+            var wp2 = MilitaryDomain.GetTacWaypoint(edge.Y, d);
+            return potentialEdges.Any(pEdge =>
+            {
+                if (pEdge == edge) return false;
+                var e1 = MilitaryDomain.GetTacWaypoint(pEdge.X, d).Pos;
+                var e2 = e1.GetOffsetTo(MilitaryDomain.GetTacWaypoint(pEdge.Y, d).Pos, d);
+                var p1 = e1.GetOffsetTo(wp1.Pos, d);
+                var p2 = e1.GetOffsetTo(wp2.Pos, d);
+                return Vector2Ext.LineSegIntersect(Vector2.Zero, e2, p1, p2, false, out _);
+            });
+        }
+        LineSegment getLineSeg(Vector2I edge)
+        {
+            return new LineSegment(MilitaryDomain.GetTacWaypoint(edge.X, d).Pos,
+                MilitaryDomain.GetTacWaypoint(edge.Y, d).Pos);
+        }
+    }
     public List<List<Waypoint>> GetLines(Data d)
     {
         var alliance = Regime.Entity(d).GetAlliance(d);
@@ -215,7 +299,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         return res
             .Select(c => c.Select(p => d.Military.TacticalWaypoints.ByPos[p])
                 .Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList())
-            .ToList();;
+            .ToList();
         
         HashSet<Vector3I> getTris()
         {
@@ -405,7 +489,8 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             if (segs.Count() == 0)
             {
                 var seg = FrontSegmentAssignment
-                    .Construct(Regime, line, null, false, key);
+                    .Construct(Regime, line, 
+                        null, false, key);
                 Assignments.Add(seg);
                 continue;
             }

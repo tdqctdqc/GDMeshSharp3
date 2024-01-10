@@ -56,7 +56,8 @@ public class FrontSegmentAssignment : ForceAssignment
         Center = center;
     }
     
-    public override void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key)
+    public override void CalculateOrders(MinorTurnOrders orders,
+        LogicWriteKey key)
     {
         if (GroupIds.Count() == 0) return;
         var alliance = orders.Regime.Entity(key.Data).GetAlliance(key.Data);

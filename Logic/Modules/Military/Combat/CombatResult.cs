@@ -3,12 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MessagePack;
 
 public class CombatResult
 {
     public EntityRef<Unit> Unit { get; private set; }
     public Dictionary<int, float> LossesByTroopId { get; private set; }
-    public Vector2 ResultPos { get; private set; }
+    public Vector2 ResultOffset { get; set; }
+
+    public static CombatResult Construct(Unit u, CombatCalculator.CombatCalcData cData,
+        Data d)
+    {
+        var r = new CombatResult(u.MakeRef(), new Dictionary<int, float>(),
+            new Vector2());
+        r.RegisterLosses(cData, d);
+        return r;
+    }
+    [SerializationConstructor] private CombatResult(EntityRef<Unit> unit, Dictionary<int, float> lossesByTroopId, Vector2 resultOffset)
+    {
+        Unit = unit;
+        LossesByTroopId = lossesByTroopId;
+        ResultOffset = resultOffset;
+    }
+
     public void RegisterLosses(CombatCalculator.CombatCalcData cData,
         Data d)
     {

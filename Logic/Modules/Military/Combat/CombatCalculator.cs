@@ -21,15 +21,12 @@ public static class CombatCalculator
     public static CombatResultsProcedure Calculate(
         Dictionary<Unit, CombatAction> actions, Data d)
     {
-        var proc = new CombatResultsProcedure();
         var cData = new CombatCalcData(actions);
         SetupGraph(cData, d);
         CalcAttackProportions(cData, d);
         CalcDefendProportions(cData, d);
         CalcLosses(cData, d);
-        CalcResults(cData, d);
-        
-        return proc;
+        return CalcResults(cData, d);
     }
 
     private static void SetupGraph(CombatCalcData cData, Data d)
@@ -45,6 +42,11 @@ public static class CombatCalculator
                 var node = new DefendNode(u);
                 cData.DefendNodes.Add(u, node);
                 cData.Graph.AddNode(node);
+                if (cData.Actions.ContainsKey(u) == false)
+                {
+                    var defAction = new DefendAction();
+                    cData.Actions.Add(u, defAction);
+                }
             }
             return cData.DefendNodes[u];
         }
@@ -140,14 +142,19 @@ public static class CombatCalculator
                 attackerAction.CalculateLosses(attackNode, defNode, edge, d);
             }
         }
+        foreach (var kvp in cData.DefendNodes)
+        {
+            kvp.Value.DetermineIfHeld(cData, d);
+        }
     }
 
     
-    private static void CalcResults(CombatCalcData cData, Data d)
+    private static CombatResultsProcedure CalcResults(CombatCalcData cData, Data d)
     {
-        
+        var results = cData.Actions.AsParallel()
+            .Select(kvp => kvp.Value.CalcResult(kvp.Key, cData, d));
+        var proc = new CombatResultsProcedure();
+        proc.Results.AddRange(results);
+        return proc;
     }
-    
-
-    
 }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class DeployOnLineOrder : UnitOrder
+public class DeployOnLineOrder : UnitOrder, ICombatOrder
 {
     public List<Vector2> FrontlinePoints { get; private set; }
     public List<Vector2> AdvanceLinePoints { get; private set; }
@@ -109,5 +109,24 @@ public class DeployOnLineOrder : UnitOrder
                 }
             }
         }
+    }
+
+    public KeyValuePair<Unit, CombatAction>[] DecideCombatAction(Data d)
+    {
+        if (Attack == false) return null;
+        if (AdvanceLinePoints == null) return null;
+
+        var res = new KeyValuePair<Unit, CombatAction>[UnitIdsInLine.Count];
+        for (var i = 0; i < UnitIdsInLine.Count; i++)
+        {
+            var unit = d.Get<Unit>(UnitIdsInLine[i]);
+            var target = AdvanceLinePoints.GetPointAlongLine(
+                (v, w) => v.GetOffsetTo(w, d),
+                (float)i / UnitIdsInLine.Count);
+            var action = new LandAttackAction(target.ClampPosition(d));
+            res[i] = new KeyValuePair<Unit, CombatAction>(unit, action);
+        }
+
+        return res;
     }
 }
