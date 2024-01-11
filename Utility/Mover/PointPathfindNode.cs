@@ -20,7 +20,15 @@ public class PointPathfindNode : IMapPathfindNode
             .Where(wp => moveType.Passable(wp, a, d))
             .AsEnumerable<IMapPathfindNode>()
             .ToHashSet();
-        if (Neighbors.Count == 0) throw new Exception();
+        if (Neighbors.Count == 0)
+        {
+            Neighbors = d.Military.WaypointGrid
+                .GetWithin(pos, _joinDist * 2f)
+                .Where(wp => moveType.Passable(wp, a, d))
+                .AsEnumerable<IMapPathfindNode>()
+                .ToHashSet();
+            // if (Neighbors.Count == 0) throw new Exception();
+        }
     }
 
     public static void Join(PointPathfindNode p1, 

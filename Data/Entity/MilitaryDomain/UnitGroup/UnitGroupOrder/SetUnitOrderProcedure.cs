@@ -2,17 +2,17 @@
 public class SetUnitOrderProcedure : Procedure
 {
     public EntityRef<UnitGroup> Group { get; private set; }
-    public UnitOrder Order { get; private set; }
+    public UnitGroupOrder GroupOrder { get; private set; }
 
-    public SetUnitOrderProcedure(EntityRef<UnitGroup> group, UnitOrder order)
+    public SetUnitOrderProcedure(EntityRef<UnitGroup> group, UnitGroupOrder groupOrder)
     {
         Group = group;
-        Order = order;
+        GroupOrder = groupOrder;
     }
 
     public override void Enact(ProcedureWriteKey key)
     {
-        Group.Entity(key.Data).SetOrder(Order, key);
+        Group.Entity(key.Data).SetOrder(GroupOrder, key);
     }
 
     public override bool Valid(Data data)

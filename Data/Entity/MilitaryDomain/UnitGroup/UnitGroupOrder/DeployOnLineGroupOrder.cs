@@ -4,20 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class DeployOnLineOrder : UnitOrder, ICombatOrder
+public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
 {
+    public int RallyWaypointId { get; private set; }
     public List<Vector2> FrontlinePoints { get; private set; }
     public List<Vector2> AdvanceLinePoints { get; private set; }
     public List<int> UnitIdsInLine { get; private set; }
-    public bool GoThruHostile { get; private set; }
     public bool Attack { get; private set; }
-    public DeployOnLineOrder(List<Vector2> frontlinePoints,
+    public DeployOnLineGroupOrder(List<Vector2> frontlinePoints,
         List<Vector2> advanceLinePoints,
         List<int> unitIdsInLine, 
-        bool goThruHostile,
-        bool attack)
+        bool attack,
+        int rallyWaypointId)
     {
-        GoThruHostile = goThruHostile;
+        RallyWaypointId = rallyWaypointId;
         FrontlinePoints = frontlinePoints;
         AdvanceLinePoints = advanceLinePoints;
         UnitIdsInLine = unitIdsInLine;
@@ -44,16 +44,29 @@ public class DeployOnLineOrder : UnitOrder, ICombatOrder
             var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var pos = unit.Position.Copy();
             var movePoints = moveType.BaseSpeed;
-            var target = FrontlinePoints.GetPointAlongLine(
-                (v, w) => v.GetOffsetTo(w, d),
-                (float)i / count);
-            if (pos.Pos == target)
+            var frontLinePosition = GetFrontLinePos(unit, d);
+            var moveCtx = new MoveData(unit.Id, moveType, movePoints, alliance);
+            if (AdvanceLinePoints == null)
             {
+                if (pos.Pos == frontLinePosition)
+                {
+                    continue;
+                }
+                pos.MoveToPoint(moveCtx, frontLinePosition, key);
+                proc.NewUnitPosesById.TryAdd(unit.Id, pos);
                 continue;
             }
 
-            var moveCtx = new MoveData(unit.Id, moveType, movePoints, GoThruHostile, alliance);
-            pos.MoveToPoint(moveCtx, target, key);
+            var advanceLinePosition = GetAdvanceLinePos(unit, d);
+            var closeRel = Vector2Ext
+                .GetClosestPointOnLineSegment(
+                    Vector2.Zero,
+                    pos.Pos.GetOffsetTo(frontLinePosition, d),
+                    pos.Pos.GetOffsetTo(advanceLinePosition, d)
+                );
+            var closeAbs = pos.Pos + closeRel;
+            closeAbs = closeAbs.ClampPosition(d);
+            pos.MoveToPoint(moveCtx, closeAbs, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }
@@ -111,11 +124,73 @@ public class DeployOnLineOrder : UnitOrder, ICombatOrder
         }
     }
 
+    public override CombatResult[] GetCombatResults(
+        UnitGroup g, CombatCalculator.CombatCalcData cData, 
+        Data d)
+    {
+        var results = this.InitializeResultsWithLosses(
+            g, cData, d);
+        if (results.Length == 0) return results;
+        var rallyWp = MilitaryDomain.GetWaypoint(RallyWaypointId, d);
+        
+        foreach (var result in results)
+        {
+            var lineIndex = UnitIdsInLine.IndexOf(result.Unit.RefId);
+            if (lineIndex == -1) continue;
+            var unit = result.Unit.Entity(d);
+            var frontLinePos = GetFrontLinePos(unit, d);
+            Vector2 axis;
+            if (AdvanceLinePoints != null)
+            {
+                var advanceLinePos = GetAdvanceLinePos(unit, d);
+                axis = frontLinePos
+                    .GetOffsetTo(advanceLinePos, d)
+                    .Normalized();
+            }
+            else
+            {
+                axis = rallyWp.Pos
+                    .GetOffsetTo(frontLinePos, d)
+                    .Normalized();
+            }
+
+            if (result.HeldPosition(cData, d) == false)
+            {
+                result.ResultOffset = -axis * 10f;
+            }
+            else if (result.SuccessfulAttack(cData, d))
+            {
+                result.ResultOffset = axis * 5f;
+            }
+        }
+        
+        return results;
+    }
+
+    private Vector2 GetFrontLinePos(Unit u, Data d)
+    {
+        var i = UnitIdsInLine.IndexOf(u.Id);
+        if (i == -1) throw new Exception();
+        var alongLineRatio = (float)i / UnitIdsInLine.Count;
+        return FrontlinePoints.GetPointAlongLine(
+            (v, w) => v.GetOffsetTo(w, d),
+            alongLineRatio);
+    }
+
+    private Vector2 GetAdvanceLinePos(Unit u, Data d)
+    {
+        if (AdvanceLinePoints == null) throw new Exception();
+        var i = UnitIdsInLine.IndexOf(u.Id);
+        if (i == -1) throw new Exception();
+        var alongLineRatio = (float)i / UnitIdsInLine.Count;
+        return AdvanceLinePoints.GetPointAlongLine(
+            (v, w) => v.GetOffsetTo(w, d),
+            alongLineRatio);
+    }
     public KeyValuePair<Unit, CombatAction>[] DecideCombatAction(Data d)
     {
         if (Attack == false) return null;
         if (AdvanceLinePoints == null) return null;
-
         var res = new KeyValuePair<Unit, CombatAction>[UnitIdsInLine.Count];
         for (var i = 0; i < UnitIdsInLine.Count; i++)
         {

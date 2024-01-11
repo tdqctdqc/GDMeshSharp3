@@ -30,8 +30,4 @@ public class InlandWaypoint : Waypoint, ILandWaypoint
         Roughness = roughness;
     }
     
-    public override float GetDefendCost(Data data)
-    {
-        return Mathf.Max(.1f, Roughness);
-    }
 }

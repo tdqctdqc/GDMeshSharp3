@@ -16,10 +16,21 @@ public static class MeshBuilderExt
         }
         for (var i = 0; i < seg.FrontLineWpIds.Count - 1; i++)
         {
-            var from = MilitaryDomain.GetTacWaypoint(seg.FrontLineWpIds[i], d);
-            var to = MilitaryDomain.GetTacWaypoint(seg.FrontLineWpIds[i + 1], d);
-            mb.AddLine(relPos(from.Pos), relPos(to.Pos), Colors.Red, 3f);
+            var from = MilitaryDomain.GetWaypoint(seg.FrontLineWpIds[i], d);
+            var to = MilitaryDomain.GetWaypoint(seg.FrontLineWpIds[i + 1], d);
+            mb.AddLine(relPos(from.Pos), relPos(to.Pos), Colors.Blue, 3f);
         }
+        
+        if (seg.AdvanceLineWpIds != null)
+        {
+            for (var i = 0; i < seg.AdvanceLineWpIds.Count - 1; i++)
+            {
+                var from = MilitaryDomain.GetWaypoint(seg.AdvanceLineWpIds[i], d);
+                var to = MilitaryDomain.GetWaypoint(seg.AdvanceLineWpIds[i + 1], d);
+                mb.AddLine(relPos(from.Pos), relPos(to.Pos), Colors.Red, 3f);
+            }
+        }
+        
         // var groups = seg.Groups(d);
         // foreach (var group in groups)
         // {
@@ -29,7 +40,7 @@ public static class MeshBuilderExt
         //         mb.AddPoint(relPos(pos), 10f, Colors.Red);
         //     }
         // }
-        mb.AddPoint(relPos(MilitaryDomain.GetTacWaypoint(seg.RallyWaypointId, d).Pos),
+        mb.AddPoint(relPos(MilitaryDomain.GetWaypoint(seg.RallyWaypointId, d).Pos),
             20f, Colors.Blue);
     }
     public static void DrawPolyBorders(this MeshBuilder mb,

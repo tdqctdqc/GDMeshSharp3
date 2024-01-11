@@ -83,21 +83,22 @@ public class Context
         {
             var forceBalance = WaypointForceBalances[wp];
             var origOccupier = wp.GetOccupyingRegime(data);
-            var alliance = forceBalance.GetMostPowerfulAlliance();
-            if (alliance != null 
-                && alliance.Members.Contains(origOccupier) == false)
+            var powerfulAlliance = forceBalance.GetMostPowerfulAlliance();
+            if (powerfulAlliance != null 
+                && powerfulAlliance.Members.Contains(origOccupier) == false)
             {
                 var origAlliance = origOccupier.GetAlliance(data);
-                var defendStr = forceBalance.ByAlliance.TryGetValue(origAlliance, out var s)
-                    ? s
-                    : 0f;
-                var attackStr = forceBalance.ByAlliance[alliance];
-                if (attackStr > 2f * defendStr)
+                var defendStr = forceBalance.ByAlliance
+                    .TryGetValue(origAlliance, out var s)
+                        ? s
+                        : 0f;
+                // var attackStr = forceBalance.ByAlliance[powerfulAlliance];
+                if (defendStr <= 1f)
                 {
                     var r = forceBalance.ByRegime
-                        .Where(kvp => alliance.Members.Contains(kvp.Key))
+                        .Where(kvp => powerfulAlliance.Members.Contains(kvp.Key))
                         .OrderBy(kvp => kvp.Value).First().Key;
-                
+                    
                     tacWps.OccupierRegimes[wp.Id] = r.Id;
                 }
             }

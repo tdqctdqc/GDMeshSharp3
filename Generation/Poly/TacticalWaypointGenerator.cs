@@ -124,6 +124,19 @@ public class TacticalWaypointGenerator : Generator
                     else if (landIncident.Count() == 2)
                     {
                         //todo error when 4 incident polys and they go water-land-water-land so no edge
+                        var l1 = landIncident.ElementAt(0);
+                        var l2 = landIncident.ElementAt(1);
+
+                        if (l1.Neighbors.Contains(l2) == false)
+                        {
+                            var tri = GetTri(firstLandPoly,
+                                nexus.Point, key.Data);
+                            var nullWp = new NullWaypoint(key, _id.TakeId(), tri,
+                                nexus.Point, l1, l2);
+                            res.Add(nexus, nullWp);
+                            continue;
+                        }
+                        
                         var edge = landIncident.ElementAt(0).GetEdge(landIncident.ElementAt(1), key.Data);
                         var otherNexus = edge.GetOtherNexus(nexus, key.Data);
                         var offset = otherNexus.Point.GetOffsetTo(nexus.Point, key.Data);

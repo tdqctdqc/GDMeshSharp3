@@ -15,23 +15,9 @@ public class HandleUnitOrdersModule : LogicModule
         Parallel.ForEach(data.GetAll<UnitGroup>(), 
             group =>
             {
-                group.Order.Handle(group, key, proc);
+                group.GroupOrder.Handle(group, key, proc);
             }
         );
         key.SendMessage(proc);
-
-        var combatOrders = key.Data.GetAll<UnitGroup>()
-            .Select(g => g.Order)
-            .OfType<ICombatOrder>();
-        var combatActions = combatOrders
-            .AsParallel()
-            .Select(o => o.DecideCombatAction(key.Data))
-            .Where(a => a != null)
-            .SelectMany(a => a)
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-
-        var combatResults = CombatCalculator.Calculate(combatActions, key.Data);
-        
-        key.SendMessage(combatResults);
     }
 }

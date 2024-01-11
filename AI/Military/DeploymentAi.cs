@@ -27,8 +27,6 @@ public class DeploymentAi
         TheaterAssignment.CheckFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),
             key);
         
-        
-        
         foreach (var ta in ForceAssignments.OfType<TheaterAssignment>().ToList())
         {
             ta.SetTargets(key);

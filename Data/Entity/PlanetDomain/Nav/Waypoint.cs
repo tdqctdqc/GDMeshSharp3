@@ -10,6 +10,7 @@ using MessagePack;
 [MessagePack.Union(2, typeof(RiverMouthWaypoint))]
 [MessagePack.Union(3, typeof(RiverWaypoint))]
 [MessagePack.Union(4, typeof(SeaWaypoint))]
+[MessagePack.Union(5, typeof(NullWaypoint))]
 public abstract class Waypoint 
     : IWaypoint, IIdentifiable, IPolymorph
 {
@@ -70,6 +71,4 @@ public abstract class Waypoint
         if (AssociatedPolyIds.W == -1) return 3;
         return 4;
     }
-
-    public abstract float GetDefendCost(Data data);
 }

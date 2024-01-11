@@ -6,6 +6,12 @@ public class MapPos
 {
     public Vector2 Pos { get; private set; }
     public PolyTriPosition Tri { get; private set; }
+
+    public static MapPos Construct(Vector2 pos, Data d)
+    {
+        var mp = new MapPos(pos, d.Context.GetPolyTri(pos, d).GetPosition());
+        return mp;
+    }
     public MapPos(Vector2 pos, PolyTriPosition tri)
     {
         Pos = pos;

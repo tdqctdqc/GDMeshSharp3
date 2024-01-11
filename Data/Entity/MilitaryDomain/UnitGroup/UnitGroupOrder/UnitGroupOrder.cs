@@ -1,0 +1,15 @@
+
+using System.Collections.Generic;
+using Godot;
+
+[MessagePack.Union(0, typeof(DeployOnLineGroupOrder))]
+[MessagePack.Union(1, typeof(DoNothingUnitGroupOrder))]
+[MessagePack.Union(2, typeof(GoToWaypointGroupOrder))]
+public abstract class UnitGroupOrder : IPolymorph
+{
+    public abstract void Handle(UnitGroup g, LogicWriteKey key, HandleUnitOrdersProcedure proc);
+    public abstract void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data d);
+    public abstract CombatResult[] GetCombatResults(
+        UnitGroup g,
+        CombatCalculator.CombatCalcData cData, Data d);
+}

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -19,7 +20,8 @@ public static class CombatCalculator
         }
     }
     public static CombatResultsProcedure Calculate(
-        Dictionary<Unit, CombatAction> actions, Data d)
+        Dictionary<Unit, CombatAction> actions, 
+        Data d)
     {
         var cData = new CombatCalcData(actions);
         SetupGraph(cData, d);
@@ -33,20 +35,22 @@ public static class CombatCalculator
     {
         var edges = cData.Actions.AsParallel()
             .Select(a =>
-                (a.Key, a.Value.GetCombatGraphTargets(a.Key, d)));
+                (a.Key, a.Value.GetCombatGraphTargets(a.Key, d)))
+            .ToList();
 
         DefendNode getDefendNode(Unit u)
         {
             if (cData.DefendNodes.ContainsKey(u) == false)
             {
-                var node = new DefendNode(u);
+                DefendNode node;
+                if (u.Template.Entity(d).Domain == TroopDomain.Land)
+                {
+                    node = new LandDefendNode(u);
+                }
+                else throw new Exception();
+                
                 cData.DefendNodes.Add(u, node);
                 cData.Graph.AddNode(node);
-                if (cData.Actions.ContainsKey(u) == false)
-                {
-                    var defAction = new DefendAction();
-                    cData.Actions.Add(u, defAction);
-                }
             }
             return cData.DefendNodes[u];
         }
@@ -144,16 +148,21 @@ public static class CombatCalculator
         }
         foreach (var kvp in cData.DefendNodes)
         {
-            kvp.Value.DetermineIfHeld(cData, d);
+            kvp.Value.DetermineDefenseResult(cData, d);
         }
     }
-
-    
     private static CombatResultsProcedure CalcResults(CombatCalcData cData, Data d)
     {
-        var results = cData.Actions.AsParallel()
-            .Select(kvp => kvp.Value.CalcResult(kvp.Key, cData, d));
-        var proc = new CombatResultsProcedure();
+        // var results = cData.Actions.AsParallel()
+        //     .Select(kvp => kvp.Value.CalcResult(kvp.Key, cData, d));
+        //
+        
+        var groupsEngaged = d.GetAll<UnitGroup>()
+            .Where(g => g.Units.Items(d)
+                .Any(u => cData.AttackNodes.ContainsKey(u) || cData.DefendNodes.ContainsKey(u)));
+        var results = groupsEngaged.AsParallel()
+            .SelectMany(g => g.GroupOrder.GetCombatResults(g, cData, d));
+        var proc = CombatResultsProcedure.Construct();
         proc.Results.AddRange(results);
         return proc;
     }

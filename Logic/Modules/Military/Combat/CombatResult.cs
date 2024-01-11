@@ -14,8 +14,13 @@ public class CombatResult
     public static CombatResult Construct(Unit u, CombatCalculator.CombatCalcData cData,
         Data d)
     {
+        if (cData.AttackNodes.ContainsKey(u) == false
+            && cData.DefendNodes.ContainsKey(u) == false)
+        {
+            return null;
+        }
         var r = new CombatResult(u.MakeRef(), new Dictionary<int, float>(),
-            new Vector2());
+            Vector2.Zero);
         r.RegisterLosses(cData, d);
         return r;
     }
@@ -24,6 +29,37 @@ public class CombatResult
         Unit = unit;
         LossesByTroopId = lossesByTroopId;
         ResultOffset = resultOffset;
+    }
+    
+    public bool HeldPosition(CombatCalculator.CombatCalcData cData,
+        Data d)
+    {
+        var u = Unit.Entity(d);
+        if (cData.DefendNodes.ContainsKey(u) == false)
+        {
+            return true;
+        }
+        var defendNode = (LandDefendNode)cData.DefendNodes[u];
+        return defendNode.Held;
+    }
+
+    public bool SuccessfulAttack(CombatCalculator.CombatCalcData cData,
+        Data d)
+    {
+        var u = Unit.Entity(d);
+        if (cData.AttackNodes.ContainsKey(u) == false) return false;
+        var attackNode = cData.AttackNodes[u];
+        var defendNodes = cData.Graph
+            .GetNeighbors(attackNode);  
+        if (defendNodes.Count == 0)
+        {
+            return true;
+        }
+        else if (defendNodes.All(n => ((LandDefendNode)n).Held == false))
+        {
+            return true;
+        }
+        return false;
     }
 
     public void RegisterLosses(CombatCalculator.CombatCalcData cData,
@@ -34,17 +70,19 @@ public class CombatResult
         if (cData.AttackNodes.ContainsKey(u))
         {
             var attackNode = cData.AttackNodes[u];
-            var ns = cData.Graph.GetNeighbors(attackNode);
-            if (ns.Count != 1) throw new Exception();
-            if (ns.First() is DefendNode defendNode == false) throw new Exception();
-            var attackEdge = cData.Graph.GetEdge(attackNode, defendNode);
-            foreach (var atkLoss in attackEdge.AttackerLosses)
+            var ns = cData.Graph
+                .GetNeighbors(attackNode);
+            var enemyPower = 0f;
+            foreach (var n in ns)
             {
-                LossesByTroopId.AddOrSum(atkLoss.Key.Id, atkLoss.Value);
+                if (n is DefendNode == false) throw new Exception(); 
+                var attackEdge = cData.Graph.GetEdge(attackNode, n);
+                foreach (var atkLoss in attackEdge.AttackerLosses)
+                {
+                    LossesByTroopId.AddOrSum(atkLoss.Key.Id, atkLoss.Value);
+                }
             }
         }
-        
-
         if (cData.DefendNodes.ContainsKey(u))
         {
             var ourDefNode = cData.DefendNodes[u];

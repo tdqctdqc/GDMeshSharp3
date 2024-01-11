@@ -36,8 +36,8 @@ public class InfrastructureGenerator : Generator
             {
                 var edge = kvp.Key;
                 var road = kvp.Value;
-                var wp1 = MilitaryDomain.GetTacWaypoint((int)edge.X, _data);
-                var wp2 = MilitaryDomain.GetTacWaypoint((int)edge.Y, _data);
+                var wp1 = MilitaryDomain.GetWaypoint((int)edge.X, _data);
+                var wp2 = MilitaryDomain.GetWaypoint((int)edge.Y, _data);
                 var success = roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
                 if (success == false) throw new Exception();
             }

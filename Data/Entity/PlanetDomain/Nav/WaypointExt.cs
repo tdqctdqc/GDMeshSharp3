@@ -20,11 +20,11 @@ public static class WaypointExt
     }
     public static IEnumerable<Waypoint> GetNeighbors(this Waypoint wp, Data d)
     {
-        return wp.Neighbors.Select(i => MilitaryDomain.GetTacWaypoint(i, d));
+        return wp.Neighbors.Select(i => MilitaryDomain.GetWaypoint(i, d));
     }
     public static IEnumerable<IWaypoint> GetNeighbors(this IWaypoint wp, Data d)
     {
-        return wp.Neighbors.Select(i => MilitaryDomain.GetTacWaypoint(i, d));
+        return wp.Neighbors.Select(i => MilitaryDomain.GetWaypoint(i, d));
     }
 
     public static bool IsHostile(this Waypoint wp,

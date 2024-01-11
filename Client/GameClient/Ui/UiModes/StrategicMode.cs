@@ -83,7 +83,7 @@ public class StrategicMode : UiMode
                 }
                 foreach (var wpId in front.HeldWaypointIds)
                 {
-                    var wp = MilitaryDomain.GetTacWaypoint(wpId, _client.Data);
+                    var wp = MilitaryDomain.GetWaypoint(wpId, _client.Data);
                     debug.Draw(mb => 
                             mb.AddPoint(relTo.GetOffsetTo(wp.Pos, 
                                     _client.Data), 5f, 
@@ -93,7 +93,7 @@ public class StrategicMode : UiMode
                 }
                 foreach (var wpId in front.TargetAreaWaypointIds)
                 {
-                    var wp = MilitaryDomain.GetTacWaypoint(wpId, _client.Data);
+                    var wp = MilitaryDomain.GetWaypoint(wpId, _client.Data);
                     debug.Draw(mb => 
                             mb.AddPoint(relTo.GetOffsetTo(wp.Pos, 
                                     _client.Data), 5f, Colors.Red),

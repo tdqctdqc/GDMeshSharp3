@@ -24,7 +24,7 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
         
         this.AddIntButton("Jump to Waypoint", i =>
         {
-            var wp = MilitaryDomain.GetTacWaypoint(i, client.Data);
+            var wp = MilitaryDomain.GetWaypoint(i, client.Data);
             if (wp == null) return;
             client.Cam().JumpTo(wp.Pos);
         });

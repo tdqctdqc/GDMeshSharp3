@@ -28,10 +28,14 @@ public class DeclareWarProposal : AllianceProposal
 
     protected override void ResolveInner(bool accepted, ProcedureWriteKey key)
     {
-        var alliance = key.Data.Get<Alliance>(AllianceId);
-        var target = key.Data.Get<Alliance>(TargetAllianceId);
-        alliance.AtWar.Add(target, key);
-        target.AtWar.Add(alliance, key);
+        if (accepted)
+        {
+            var alliance = key.Data.Get<Alliance>(AllianceId);
+            var target = key.Data.Get<Alliance>(TargetAllianceId);
+            GD.Print($"war declared between {alliance.Leader.Entity(key.Data).Name} and {target.Leader.Entity(key.Data).Name}");
+            alliance.AtWar.Add(target, key);
+            target.AtWar.Add(alliance, key);
+        }
     }
     public override Control GetDisplay(Data d)
     {

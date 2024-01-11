@@ -9,7 +9,7 @@ public class UnitGroup : Entity
 {
     public EntityRef<Regime> Regime { get; private set; }
     public EntRefCol<Unit> Units { get; private set; }
-    public UnitOrder Order { get; private set; }
+    public UnitGroupOrder GroupOrder { get; private set; }
     public MoveType MoveType(Data d) => Units.Items(d)
         .FirstOrDefault()?.Template.Entity(d).MoveType.Model(d);
     public static UnitGroup Create(Regime r, IEnumerable<int> unitIds, ICreateWriteKey key)
@@ -17,19 +17,19 @@ public class UnitGroup : Entity
         var id = key.Data.IdDispenser.TakeId();
         var units = EntRefCol<Unit>.Construct(nameof(Units), id, unitIds.ToHashSet(), key.Data);
         var u = new UnitGroup(id, r.MakeRef(), units,
-            new DoNothingUnitOrder());
+            new DoNothingUnitGroupOrder());
         key.Create(u);
         return u;
     }
     [SerializationConstructor] private UnitGroup(int id,
         EntityRef<Regime> regime, 
         EntRefCol<Unit> units,
-        UnitOrder order) 
+        UnitGroupOrder groupOrder) 
         : base(id)
     {
         Regime = regime;
         Units = units;
-        Order = order;
+        GroupOrder = groupOrder;
     }
 
     public static void ChangeUnitGroup(Unit u, 
@@ -60,9 +60,9 @@ public class UnitGroup : Entity
     {
         return Units.Items(d).First().Position.Pos;
     }
-    public void SetOrder(UnitOrder order, ProcedureWriteKey key)
+    public void SetOrder(UnitGroupOrder groupOrder, ProcedureWriteKey key)
     {
-        Order = order;
+        GroupOrder = groupOrder;
     }
 
     public float GetPowerPoints(Data data)

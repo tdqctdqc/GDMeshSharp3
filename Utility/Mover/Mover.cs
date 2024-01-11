@@ -21,11 +21,11 @@ public static class Mover
             var path = PathFinder.FindTacticalPath(start, end, moveDat.Alliance, moveDat.MoveType, key.Data);
             if (path == null)
             {
-                var issue = new CantFindPathIssue(
-                    pos.Pos, moveDat.Alliance, "",
-                    start, end, moveDat.MoveType);
-                key.Data.ClientPlayerData.Issues.Add(issue);
-                pos.Set(target, moveDat, key);
+                // var issue = new CantFindPathIssue(
+                //     pos.Pos, moveDat.Alliance, "",
+                //     start, end, moveDat.MoveType);
+                // key.Data.ClientPlayerData.Issues.Add(issue);
+                // pos.Set(target, moveDat, key);
                 return;
             }
             pos.MoveAlongPathTactical(moveDat, path, key);

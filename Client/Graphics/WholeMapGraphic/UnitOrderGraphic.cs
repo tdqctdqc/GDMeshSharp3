@@ -37,7 +37,7 @@ public partial class UnitOrderGraphic : Node2D
         segmenter.AddElement(this, Group.GetPosition(d));
         
         var mb = new MeshBuilder();
-        var order = Group.Order;
+        var order = Group.GroupOrder;
         order.Draw(Group, Group.GetPosition(d), mb, d);
         if (mb.Tris.Count > 0)
         {

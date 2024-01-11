@@ -23,11 +23,11 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
             .Distinct();
         foreach (var id in wps)
         {
-            var wp = MilitaryDomain.GetTacWaypoint(id, d);
+            var wp = MilitaryDomain.GetWaypoint(id, d);
             foreach (var n in wp.Neighbors)
             {
                 if (n > wp.Id) continue;
-                var nWp = MilitaryDomain.GetTacWaypoint(n, d);
+                var nWp = MilitaryDomain.GetWaypoint(n, d);
                 if (d.Infrastructure.RoadNetwork.Get(wp, nWp, d) is RoadModel r)
                 {
                     r.Draw(mb, chunk.RelTo.GetOffsetTo(wp.Pos, d), 

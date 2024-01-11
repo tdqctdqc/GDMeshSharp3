@@ -42,8 +42,4 @@ public class CoastWaypoint : Waypoint, ICoastWaypoint, ILandWaypoint
     }
 
 
-    public override float GetDefendCost(Data data)
-    {
-        return Mathf.Max(.1f, Roughness);
-    }
 }

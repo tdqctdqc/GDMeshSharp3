@@ -5,10 +5,10 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class GoToWaypointOrder : UnitOrder
+public class GoToWaypointGroupOrder : UnitGroupOrder
 {
     public List<int> PathWaypointIds { get; private set; }
-    public static GoToWaypointOrder Construct(Waypoint destWp,
+    public static GoToWaypointGroupOrder Construct(Waypoint destWp,
         Regime r, UnitGroup g, Data d)
     {
         var alliance = r.GetAlliance(d);
@@ -33,9 +33,9 @@ public class GoToWaypointOrder : UnitOrder
             return null;
         }
         
-        return new GoToWaypointOrder(path.Select(wp => wp.Id).ToList());
+        return new GoToWaypointGroupOrder(path.Select(wp => wp.Id).ToList());
     }
-    [SerializationConstructor] private GoToWaypointOrder(List<int> pathWaypointIds)
+    [SerializationConstructor] private GoToWaypointGroupOrder(List<int> pathWaypointIds)
     {
         PathWaypointIds = pathWaypointIds;
     }
@@ -46,13 +46,13 @@ public class GoToWaypointOrder : UnitOrder
         var d = key.Data;
         var alliance = g.Regime.Entity(d).GetAlliance(d);
         var context = d.Context;
-        var path = PathWaypointIds.Select(id => MilitaryDomain.GetTacWaypoint(id, d)).ToList();
+        var path = PathWaypointIds.Select(id => MilitaryDomain.GetWaypoint(id, d)).ToList();
         foreach (var unit in g.Units.Items(d))
         {
             var pos = unit.Position.Copy();
             var moveType = unit.Template.Entity(d).MoveType.Model(d);
             var movePoints = moveType.BaseSpeed;
-            var ctx = new MoveData(unit.Id, moveType, movePoints, false, alliance);
+            var ctx = new MoveData(unit.Id, moveType, movePoints, alliance);
             pos.MoveOntoAndAlongStrategicPath(ctx, path, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
@@ -67,7 +67,7 @@ public class GoToWaypointOrder : UnitOrder
 
         var pos = group.GetPosition(d);
         var wps = PathWaypointIds
-            .Select(id => MilitaryDomain.GetTacWaypoint(id, d));
+            .Select(id => MilitaryDomain.GetWaypoint(id, d));
         var close = wps
             .MinBy(wp => wp.Pos.GetOffsetTo(pos, d).Length());
         var index = PathWaypointIds.IndexOf(close.Id);
@@ -75,10 +75,15 @@ public class GoToWaypointOrder : UnitOrder
             relTo.GetOffsetTo(close.Pos, d), 1f, Colors.Red);
         for (var i = index; i < PathWaypointIds.Count - 1; i++)
         {
-            var from = MilitaryDomain.GetTacWaypoint(PathWaypointIds[i], d).Pos;
-            var to = MilitaryDomain.GetTacWaypoint(PathWaypointIds[i + 1], d).Pos;
+            var from = MilitaryDomain.GetWaypoint(PathWaypointIds[i], d).Pos;
+            var to = MilitaryDomain.GetWaypoint(PathWaypointIds[i + 1], d).Pos;
             mb.AddArrow(relTo.GetOffsetTo(from, d),
                 relTo.GetOffsetTo(to, d), 5f, Colors.Pink);
         }
+    }
+
+    public override CombatResult[] GetCombatResults(UnitGroup g, CombatCalculator.CombatCalcData cData, Data d)
+    {
+        return this.DefaultCombatResults(g, cData, d);
     }
 }

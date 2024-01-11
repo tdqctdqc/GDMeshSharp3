@@ -65,7 +65,7 @@ public class TacticalMode : UiMode
             var seg = front.Assignments.OfType<FrontSegmentAssignment>()
                 .FirstOrDefault(s => s.FrontLineWpIds.Contains(wp.Id));
             if (seg == null) continue;
-            var relTo = seg.GetTacWaypoints(_client.Data).First().Pos;
+            var relTo = seg.GetWaypoints(_client.Data).First().Pos;
             debugDrawer.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
         }
     }

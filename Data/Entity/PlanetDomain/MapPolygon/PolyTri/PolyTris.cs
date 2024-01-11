@@ -44,8 +44,9 @@ public class PolyTris
         {
             var close = Tris.MinBy(t => t.GetDistFromEdge(pointRel));
             var dist = close.GetDistFromEdge(pointRel);
-            GD.Print($"couldnt find pt at rel point {pointRel}," +
-                     $"found tri at dist {dist}");
+            // if (dist == 0f) throw new Exception(pointRel.ToString());
+            // GD.Print($"couldnt find pt at rel point {pointRel}," +
+            //          $"found tri at dist {dist}");
             return close;
         }
         return pt;

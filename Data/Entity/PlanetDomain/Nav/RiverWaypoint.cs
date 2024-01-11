@@ -26,10 +26,6 @@ public class RiverWaypoint : Waypoint, IWaterWaypoint, IRiverWaypoint
         Bridgeable = bridgeable;
         HasBridge = hasBridge;
     }
-    public override float GetDefendCost(Data data)
-    {
-        return 1f;
-    }
 
     public void MakeBridgeable(GenWriteKey key)
     {

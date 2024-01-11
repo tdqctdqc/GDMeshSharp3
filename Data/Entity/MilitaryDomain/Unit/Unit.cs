@@ -8,7 +8,6 @@ public class Unit : Entity
     public EntityRef<Regime> Regime { get; private set; }
     public EntityRef<UnitTemplate> Template { get; private set; }
     public IdCount<Troop> Troops { get; private set; }
-    public TroopDomain Domain { get; private set; }
     public MapPos Position { get; private set; }
     public float Radius() => 5f;
     public static Unit Create(UnitTemplate template, 
@@ -18,7 +17,7 @@ public class Unit : Entity
     {
         var u = new Unit(key.Data.IdDispenser.TakeId(), regime.MakeRef(), template.MakeRef(),
             IdCount<Troop>.Construct(template.TroopCounts),
-            pos, template.Domain);
+            pos);
         key.Create(u);
         return u;
     }
@@ -26,14 +25,13 @@ public class Unit : Entity
     [SerializationConstructor] private Unit(int id, 
         EntityRef<Regime> regime,
         EntityRef<UnitTemplate> template,
-        IdCount<Troop> troops, MapPos position, TroopDomain domain) 
+        IdCount<Troop> troops, MapPos position) 
         : base(id)
     {
         Regime = regime;
         Template = template;
         Troops = troops;
         Position = position;
-        Domain = domain;
     }
 
     public void SetPosition(MapPos pos, ProcedureWriteKey key)

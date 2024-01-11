@@ -94,7 +94,7 @@ public class UnitMode : UiMode
         debug.Draw(mb => mb.DrawMovementRecord(u.Id,
                 50, unitPos, _client.Data),
             unitPos);
-        var order = group.Order;
+        var order = group.GroupOrder;
         if (order != null)
         {
             debug.Draw(mb => order.Draw(group, unitPos, mb, _client.Data), unitPos);

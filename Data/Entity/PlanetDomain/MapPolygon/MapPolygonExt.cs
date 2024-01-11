@@ -18,13 +18,13 @@ public static class MapPolygonExt
     public static Waypoint GetCenterWaypoint(this MapPolygon poly, Data data)
     {
         var id = data.Military.TacticalWaypoints.PolyCenterWpIds[poly.Id];
-        return MilitaryDomain.GetTacWaypoint(id, data);
+        return MilitaryDomain.GetWaypoint(id, data);
     }
     public static IEnumerable<Waypoint> GetAssocTacWaypoints(this MapPolygon poly, Data data)
     {
         return data.Military.TacticalWaypoints.PolyAssocWaypoints[poly.Id]
             .Select(i => 
-                MilitaryDomain.GetTacWaypoint(i, data));
+                MilitaryDomain.GetWaypoint(i, data));
     }
     public static bool PointInPolyAbs(this MapPolygon poly, Vector2 posAbs, Data data)
     {
