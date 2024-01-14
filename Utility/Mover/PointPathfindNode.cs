@@ -16,14 +16,14 @@ public class PointPathfindNode : IMapPathfindNode
         Pos = pos;
         Tri = d.Context.GetPolyTri(pos, d).GetPosition();
         Neighbors = d.Military.WaypointGrid
-            .GetWithin(pos, _joinDist)
+            .GetWithin(pos, _joinDist, v => true)
             .Where(wp => moveType.Passable(wp, a, d))
             .AsEnumerable<IMapPathfindNode>()
             .ToHashSet();
         if (Neighbors.Count == 0)
         {
             Neighbors = d.Military.WaypointGrid
-                .GetWithin(pos, _joinDist * 2f)
+                .GetWithin(pos, _joinDist * 2f, v => true)
                 .Where(wp => moveType.Passable(wp, a, d))
                 .AsEnumerable<IMapPathfindNode>()
                 .ToHashSet();

@@ -29,7 +29,7 @@ public class UnitNotMovingIssue : Issue
         debugDrawer.Draw(mb => mb.AddLine(Vector2.Zero, destRel, Colors.Blue, 2f), UnitPos);
 
         var dist = destRel.Length();
-        var wps = c.Data.Military.WaypointGrid.GetWithin(UnitPos, dist * 2f);
+        var wps = c.Data.Military.WaypointGrid.GetWithin(UnitPos, dist * 2f, v => true);
         foreach (var wp in wps)
         {
             var passable = MoveType.Passable(wp, Alliance, c.Data);

@@ -182,7 +182,7 @@ public class InfrastructureGenerator : Generator
         {
             var near = activeNodeGrid
                 .GetWithin(aNode.Waypoint.Pos, 
-                    aNode.Size * _sizeBuildRoadRangeMult);
+                    aNode.Size * _sizeBuildRoadRangeMult, v => true);
             foreach (var nearNode in near)
             {
                 if (nearNode == aNode) continue;

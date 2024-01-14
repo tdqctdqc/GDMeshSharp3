@@ -12,16 +12,14 @@ public class DeploymentAi
     }
     public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
-        TheaterAssignment.CheckSplitRemove(regime,
-            ForceAssignments.OfType<TheaterAssignment>().ToList(),
-            fa => ForceAssignments.Add(fa),
-            fa => ForceAssignments.Remove(fa),
-            key);
-        TheaterAssignment.CheckExpandMergeNew(regime,
-            ForceAssignments.OfType<TheaterAssignment>().ToList(),
-            fa => ForceAssignments.Add(fa),
-            fa => ForceAssignments.Remove(fa),
-            key);
+        var theaters = ForceAssignments.OfType<TheaterAssignment>();
+        foreach (var ta in theaters)
+        {
+            ForceAssignments.Remove(ta);
+        }
+
+        var newTheaters = theaters.Blob(regime, key.Data);
+        ForceAssignments.AddRange(newTheaters);
         TheaterAssignment.PutGroupsInRightTheater(regime, ForceAssignments,
             key);
         TheaterAssignment.CheckFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),

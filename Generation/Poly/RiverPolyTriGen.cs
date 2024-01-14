@@ -10,8 +10,6 @@ public class RiverPolyTriGen
     public TempRiverData DoRivers(GenWriteKey key)
     {
         var rd = new TempRiverData();
-        
-        //todo partition by riverpoly union find instead?
         var lms = key.Data.Planet.PolygonAux.LandSea.Landmasses;
         var riverNexi = key.Data.GetAll<MapPolyNexus>()
             .Where(n => n.IncidentEdges.Items(key.Data).Any(e => e.IsRiver())).ToList();
@@ -78,7 +76,6 @@ public class RiverPolyTriGen
     private void MakePivotsMultSegs(List<LineSegment> hiSegments, MapPolyNexus fromNexus, MapPolyNexus toNexus,
         MapPolygonEdge edge, TempRiverData rd, GenWriteKey key)
     {
-        //todo make this based on rotationally neighboring r edges instead
         var newHiSegs = new List<LineSegment>();
         var hiPoly = edge.HighPoly.Entity(key.Data);
         var fromSeg = hiSegments[0];
@@ -105,7 +102,8 @@ public class RiverPolyTriGen
         }
         
         var toSeg = hiSegments[hiSegments.Count - 1];
-        var toPivotWidth = toNexus.IncidentEdges.Items(key.Data).Average(e => River.GetWidthFromFlow(e.MoistureFlow)) / 2f;
+        var toPivotWidth = toNexus.IncidentEdges.Items(key.Data)
+            .Average(e => River.GetWidthFromFlow(e.MoistureFlow)) / 2f;
         var toSegWidth = toSeg.Length();
         if (toPivotWidth + 10f >= toSegWidth)
         {

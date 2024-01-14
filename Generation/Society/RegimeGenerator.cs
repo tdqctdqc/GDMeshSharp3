@@ -33,7 +33,7 @@ public class RegimeGenerator : Generator
                 .First();
 
             var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetPolys(key.Data).Count()));
-            var numUnits = score * 50;
+            var numUnits = score * 10;
 
             var capitalPoly = regime.Capital.Entity(key.Data);
             var wp = capitalPoly.GetCenterWaypoint(key.Data);

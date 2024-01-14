@@ -16,7 +16,7 @@ public class LandAttackAction : AttackAction
         var alliance = u.Regime.Entity(d).GetAlliance(d);
         var attackRadius = 20f;
         var hostiles = d.Military.UnitAux.UnitGrid
-            .GetWithin(u.Position.Pos, attackRadius)
+            .GetWithin(u.Position.Pos, attackRadius, v => true)
             .Where(h =>
             {
                 var offset = u.Position.Pos.GetOffsetTo(h.Position.Pos, d);

@@ -58,15 +58,30 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
             }
 
             var advanceLinePosition = GetAdvanceLinePos(unit, d);
-            var closeRel = Vector2Ext
+            var closeOffset = Vector2Ext
                 .GetClosestPointOnLineSegment(
                     Vector2.Zero,
                     pos.Pos.GetOffsetTo(frontLinePosition, d),
                     pos.Pos.GetOffsetTo(advanceLinePosition, d)
                 );
-            var closeAbs = pos.Pos + closeRel;
-            closeAbs = closeAbs.ClampPosition(d);
-            pos.MoveToPoint(moveCtx, closeAbs, key);
+            
+            var closeEnemies = d.Military.UnitAux.UnitGrid
+                .GetWithin(unit.Position.Pos, closeOffset.Length(),
+                    e => e.Hostile(alliance, d));
+            Vector2 target;
+            if (closeEnemies.Count() > 0)
+            {
+                var closeEnemyDist = closeEnemies
+                    .Min(e => unit.Position.Pos.GetOffsetTo(e.Position.Pos, d).Length());
+                var dist = Mathf.Max(0f, closeEnemyDist - unit.Radius() * 2f);
+                target = pos.Pos + closeOffset.Normalized() * closeEnemyDist;
+            }
+            else
+            {
+                target = pos.Pos + closeOffset;
+            }
+            target = target.ClampPosition(d);
+            pos.MoveToPoint(moveCtx, target, key);
             proc.NewUnitPosesById.TryAdd(unit.Id, pos);
         }
     }
@@ -132,7 +147,8 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
             g, cData, d);
         if (results.Length == 0) return results;
         var rallyWp = MilitaryDomain.GetWaypoint(RallyWaypointId, d);
-        
+        var advanceDist = 5f;
+        var retreatDist = 10f;
         foreach (var result in results)
         {
             var lineIndex = UnitIdsInLine.IndexOf(result.Unit.RefId);
@@ -143,24 +159,23 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
             if (AdvanceLinePoints != null)
             {
                 var advanceLinePos = GetAdvanceLinePos(unit, d);
-                axis = frontLinePos
-                    .GetOffsetTo(advanceLinePos, d)
-                    .Normalized();
+                axis = unit.Position.Pos
+                    .GetOffsetTo(advanceLinePos, d);
             }
             else
             {
                 axis = rallyWp.Pos
-                    .GetOffsetTo(frontLinePos, d)
-                    .Normalized();
+                    .GetOffsetTo(unit.Position.Pos, d);
             }
-
             if (result.HeldPosition(cData, d) == false)
             {
-                result.ResultOffset = -axis * 10f;
+                retreatDist = Mathf.Min(retreatDist, axis.Length());
+                result.ResultOffset = -axis.Normalized() * retreatDist;
             }
             else if (result.SuccessfulAttack(cData, d))
             {
-                result.ResultOffset = axis * 5f;
+                advanceDist = Mathf.Min(advanceDist, axis.Length());
+                result.ResultOffset = axis.Normalized() * advanceDist;
             }
         }
         

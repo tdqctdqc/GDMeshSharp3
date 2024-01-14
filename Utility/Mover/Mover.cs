@@ -15,6 +15,7 @@ public static class Mover
         inner();
         void inner()
         {
+            //todo for inside radius do move directly w/out pathfinding
             var start = new PointPathfindNode(pos.Pos, moveDat.MoveType, moveDat.Alliance, key.Data);
             var end = new PointPathfindNode(target, moveDat.MoveType, moveDat.Alliance, key.Data);
             PointPathfindNode.Join(start, end, key.Data);

@@ -319,7 +319,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     {
         var alliance = r.GetAlliance(key.Data);
         var frontline = 
-            ta.GetTacWaypoints(key.Data)
+            ta.GetWaypoints(key.Data)
             .Where(wp => wp.IsThreatened(alliance, key.Data)
                 && wp.GetOccupyingRegime(key.Data) == r);
         var unions = UnionFind.Find(frontline, (w, v) => true,
@@ -364,18 +364,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 
     }
 
-    public void MergeInto(FrontAssignment merging, LogicWriteKey key)
+    public void MergeInto(FrontAssignment dissolve, LogicWriteKey key)
     {
-        GroupIds.AddRange(merging.GroupIds);
-        Assignments.AddRange(merging.Assignments);
+        GroupIds.AddRange(dissolve.GroupIds);
+        Assignments.AddRange(dissolve.Assignments);
     }
 
 
     public void CheckSegments(LogicWriteKey key)
     {
-        
-        
-        
         var d = key.Data;
         var lines = GetLines(d)
             .ToDictionary(l => l, 
@@ -423,6 +420,12 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         }
     }
 
+    public override Waypoint GetCharacteristicWaypoint(Data d)
+    {
+        return HeldWaypointIds.Select(i => MilitaryDomain.GetWaypoint(i, d))
+            .FirstOrDefault(wp => wp.GetOccupyingRegime(d).Id == Regime.RefId);
+    }
+
     public override UnitGroup RequestGroup(LogicWriteKey key)
     {
         if (GroupIds.Count < 2) return null;
@@ -461,5 +464,10 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         {
             seg.SetAdvance(true, key);
         }
+    }
+
+    public IEnumerable<Waypoint> GetWaypoints(Data d)
+    {
+        return HeldWaypointIds.Select(id => MilitaryDomain.GetWaypoint(id, d));
     }
 }

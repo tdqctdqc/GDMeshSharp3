@@ -57,7 +57,7 @@ public class UnitMode : UiMode
     private Unit GetCloseUnit(Vector2 mapPos)
     {
         var grid = _client.Data.Military.UnitAux.UnitGrid;
-        var within = grid.GetWithin(mapPos, 50f);
+        var within = grid.GetWithin(mapPos, 50f, v => true);
         return within
             .OrderBy(u => u.Position.Pos.GetOffsetTo(mapPos, _client.Data).Length())
             .FirstOrDefault(u => mapPos.GetOffsetTo(u.Position.Pos, _client.Data).Length() <= u.Radius());

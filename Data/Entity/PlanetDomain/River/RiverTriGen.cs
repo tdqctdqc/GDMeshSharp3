@@ -6,7 +6,6 @@ using Godot;
 
 public class RiverTriGen
 {
-
     public static List<PolyTri> DoPoly(MapPolygon poly, Data data, TempRiverData rData, GenWriteKey key)
     {
         var nexiCloseIndices = new Dictionary<MapPolyNexus, int>();

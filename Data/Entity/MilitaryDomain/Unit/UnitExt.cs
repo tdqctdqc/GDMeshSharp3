@@ -21,4 +21,9 @@ public static class UnitExt
     {
         return d.Military.UnitAux.UnitByGroup[u];
     }
+
+    public static bool Hostile(this Unit u, Alliance a, Data d)
+    {
+        return u.Regime.Entity(d).GetAlliance(d).IsHostileTo(a);
+    }
 }

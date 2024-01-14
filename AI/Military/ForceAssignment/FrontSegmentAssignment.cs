@@ -72,14 +72,19 @@ public class FrontSegmentAssignment : ForceAssignment
             throw new Exception();
         }
         var groups = Groups(key.Data).ToList();
-        var readyGroups = GetReadyGroups(key.Data);
+        var readyGroups = 
+            // groups.ToHashSet();
+            GetReadyGroups(key.Data);
         
         var unreadyGroups = groups
             .Except(readyGroups).ToHashSet();
         var frontLength = GetLength(key.Data);
         var readyGroupFrontage = readyGroups.Sum(g => g.Units.Items(key.Data).Sum(u => u.Radius() * 2f));
-        var frontageToTake = Mathf.Min(frontLength, readyGroupFrontage);
-
+        
+        // var frontageToTake = Mathf.Min(frontLength, readyGroupFrontage);
+        var frontageToTake = readyGroupFrontage;
+        
+        
         var advanceLine = AdvanceLineWpIds
             ?.Select(id => MilitaryDomain.GetWaypoint(id, key.Data).Pos)
             .ToList();
@@ -98,33 +103,30 @@ public class FrontSegmentAssignment : ForceAssignment
             );
             foreach (var readyGroup in readyGroups)
             {
-                if (assgns.ContainsKey(readyGroup))
+                if (assgns.ContainsKey(readyGroup) == false)
                 {
-                    var assgn = assgns[readyGroup];
-        
-                    List<Vector2> advanceSubLine;
-                    if (advanceLine != null)
-                    {
-                        advanceSubLine = advanceLine.GetSubline((v, w) => v.GetOffsetTo(w, key.Data),
-                            assgn.FromProportion, assgn.ToProportion);
-                    }
-                    else
-                    {
-                        advanceSubLine = null;
-                    }
-                    var order = new DeployOnLineGroupOrder(assgn.SubLine, 
-                        advanceSubLine,
-                        readyGroup.Units.RefIds.ToList(), 
-                        Attack,
-                        RallyWaypointId
-                    );
-                    var proc = new SetUnitOrderProcedure(readyGroup.MakeRef(), order);
-                    key.SendMessage(proc);
+                    unreadyGroups.Add(readyGroup);
+                    continue;
+                }
+                var assgn = assgns[readyGroup];
+                List<Vector2> advanceSubLine;
+                if (advanceLine != null)
+                {
+                    advanceSubLine = advanceLine.GetSubline((v, w) => v.GetOffsetTo(w, key.Data),
+                        assgn.FromProportion, assgn.ToProportion);
                 }
                 else
                 {
-                    unreadyGroups.Add(readyGroup);
+                    advanceSubLine = null;
                 }
+                var order = new DeployOnLineGroupOrder(assgn.SubLine, 
+                    advanceSubLine,
+                    readyGroup.Units.RefIds.ToList(), 
+                    Attack,
+                    RallyWaypointId
+                );
+                var proc = new SetUnitOrderProcedure(readyGroup.MakeRef(), order);
+                key.SendMessage(proc);
             }
         }
         
@@ -146,7 +148,7 @@ public class FrontSegmentAssignment : ForceAssignment
     {
         var moveType = d.Models.MoveTypes.InfantryMove;
         var a = Regime.Entity(d).GetAlliance(d);
-        var closeDist = 100f;
+        var closeDist = 500f;
         var closeWps = GetRear(d, 3)
             .SelectMany(h => h)
             .Union(GetWaypoints(d))
@@ -334,5 +336,10 @@ public class FrontSegmentAssignment : ForceAssignment
         }
 
         return res;
+    }
+    public override Waypoint GetCharacteristicWaypoint(Data d)
+    {
+        return GetWaypoints(d)
+            .FirstOrDefault(wp => wp.GetOccupyingRegime(d).Id == Regime.RefId);
     }
 }

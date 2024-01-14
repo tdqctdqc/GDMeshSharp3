@@ -29,7 +29,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         return Assignments.Sum(fa => fa.GetPowerPointNeed(d));
     }
 
-    public IEnumerable<Waypoint> GetTacWaypoints(Data d)
+    public IEnumerable<Waypoint> GetWaypoints(Data d)
     {
         return TacWaypointIds.Select(id => MilitaryDomain.GetWaypoint(id, d));
     }
@@ -51,7 +51,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
                 return;
             }
             
-            var flood = FloodFill<Waypoint>.GetFloodFill(ta.GetTacWaypoints(key.Data).First(),
+            var flood = FloodFill<Waypoint>.GetFloodFill(ta.GetWaypoints(key.Data).First(),
                 wp => ta.TacWaypointIds.Contains(wp.Id),
                 wp => wp.GetNeighbors(key.Data));
 
@@ -238,17 +238,15 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     {
         var alliance = r.GetAlliance(key.Data);
         
-        
-        
-        
         foreach (var ta in theaters)
         {
-            FrontAssignment.CheckSplitRemove(r, ta, ta.Assignments.OfType<FrontAssignment>().ToList(),
-                f => ta.Assignments.Add(f), f => ta.Assignments.Remove(f),
-                key);
-            FrontAssignment.CheckExpandMergeNew(r, ta, ta.Assignments.OfType<FrontAssignment>().ToList(),
-                f => ta.Assignments.Add(f), f => ta.Assignments.Remove(f),
-                key);
+            var fronts = ta.Assignments.OfType<FrontAssignment>();
+            foreach (var fa in fronts)
+            {
+                ta.Assignments.Remove(fa);
+            }
+            var newFronts = fronts.Blob(ta, key);
+            ta.Assignments.AddRange(newFronts);
             foreach (var fa in ta.Assignments.OfType<FrontAssignment>())
             {
                 fa.CheckSegments(key);
@@ -284,5 +282,11 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     public override void TakeAwayGroup(UnitGroup g, LogicWriteKey key)
     {
         this.TakeAwayGroupCompound(g, key);
+    }
+    
+    public override Waypoint GetCharacteristicWaypoint(Data d)
+    {
+        return GetWaypoints(d)
+            .FirstOrDefault(wp => wp.GetOccupyingRegime(d).Id == Regime.RefId);
     }
 }
