@@ -5,25 +5,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DebugScratchMode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCells.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/ForceAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/ForceAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/BlankMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/BlankMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/TacticalMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/TacticalMode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/TempRiverData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/TempRiverData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Exception/Issue/UnitNotMovingIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/UnitNotMovingIssue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/RiverPolyTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/RiverPolyTriGen.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/LandAttackAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/LandAttackAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/CylinderGrid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/CylinderGrid.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Mover/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Mover/Mover.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Mover/PointPathfindNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Mover/PointPathfindNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ICameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ICameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/WorldCameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/WorldCameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/TriangleExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Triangulation/TriangleExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -449,7 +448,9 @@
       <workItem from="1704990919643" duration="6707000" />
       <workItem from="1705000564210" duration="4508000" />
       <workItem from="1705015752875" duration="7448000" />
-      <workItem from="1705250704413" duration="679000" />
+      <workItem from="1705250704413" duration="4286000" />
+      <workItem from="1705259536270" duration="7222000" />
+      <workItem from="1705268796729" duration="3327000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -661,14 +662,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00090" summary="made UnitGroup pos just pos of first unit to fix pathfinding bug">
-      <option name="closed" value="true" />
-      <created>1702929844835</created>
-      <option name="number" value="00090" />
-      <option name="presentableId" value="LOCAL-00090" />
-      <option name="project" value="LOCAL" />
-      <updated>1702929844835</updated>
-    </task>
     <task id="LOCAL-00091" summary="made logic to put units in right theater, made better (?) front line algorithm">
       <option name="closed" value="true" />
       <created>1703019546165</created>
@@ -813,7 +806,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705003886001</updated>
     </task>
-    <option name="localTasksCounter" value="109" />
+    <task id="LOCAL-00109" summary="before removing continuous movement">
+      <option name="closed" value="true" />
+      <created>1705251881330</created>
+      <option name="number" value="00109" />
+      <option name="presentableId" value="LOCAL-00109" />
+      <option name="project" value="LOCAL" />
+      <updated>1705251881330</updated>
+    </task>
+    <option name="localTasksCounter" value="110" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -835,7 +836,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="working on front building logic" />
     <MESSAGE value="made exe" />
     <MESSAGE value="working on theater" />
     <MESSAGE value="made tactical waypoints a grid" />
@@ -860,6 +860,7 @@
     <MESSAGE value="tweaking movement" />
     <MESSAGE value="implementing combat" />
     <MESSAGE value="working on movement after combat, made order decide that instead of comb result, made Blobber" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on movement after combat, made order decide that instead of comb result, made Blobber" />
+    <MESSAGE value="before removing continuous movement" />
+    <option name="LAST_COMMIT_MESSAGE" value="before removing continuous movement" />
   </component>
 </project>

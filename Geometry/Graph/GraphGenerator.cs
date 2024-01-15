@@ -75,9 +75,64 @@ public static class GraphGenerator
             }
         });
     }
+
+    public static Vector2[][] GenerateVoronoiPolysForInterior(
+        Vector2[] boundaryPoints
+    )
+    {
+        var interiorPoints = new List<Vector2>();
+        boundaryPoints.GenerateInteriorPoints(30f, 
+            .2f, 
+            v => interiorPoints.Add(v));
+        var minX = boundaryPoints.Min(v => v.X);
+        var maxX = boundaryPoints.Max(v => v.X);
+        var midX = (maxX + minX) / 2f;
+        var minY = boundaryPoints.Min(v => v.Y);
+        var maxY = boundaryPoints.Max(v => v.Y);
+        var midY = (maxY + minY) / 2f;
+        var xRange = maxX - minX;
+        var yRange = maxY - minY;
+        var mid = new Vector2(midX, midY);
+        var maxRange = Mathf.Max(yRange, xRange);
+        for (int i = 0; i < 12; i++)
+        {
+            var angle = Vector2.Up.Rotated(2f * Mathf.Pi
+                                              * (float)i / 12);
+            interiorPoints.Add(mid + angle * maxRange * 2f);
+        }
+        
+        var graph = GenerateVoronoiGraph(
+            interiorPoints, 
+            v => v,
+            (v1, v2, n1, n2) => 
+                new LineSegment(v1, v2),
+            Vector2.Inf);
+        var res = new List<Vector2[]>();
+        foreach (var cellCenter in graph.Elements)
+        {
+            var ns = graph
+                .GetNeighbors(cellCenter);
+            var cellBoundary = ns.Select(
+                    n => graph.GetEdge(cellCenter, n))
+                .ToList().FlipChainify();
+            var cellBoundaryPs = cellBoundary.GetPoints().ToArray();
+            var intersections =
+                Geometry2D.IntersectPolygons(cellBoundaryPs, boundaryPoints);
+            foreach (var intersection in intersections)
+            {
+                res.Add(intersection);
+            }
+        }
+        return res.ToArray();
+    }
+    
+    
+    
     public static Graph<TNode, TEdge> GenerateVoronoiGraph<TNode, TEdge>
     (List<TNode> elements, Func<TNode, Vector2> posFunc,
-        Func<Vector2, Vector2, TNode, TNode, TEdge> getEdgeFunc, Vector2 bounds) where TNode : class
+        Func<Vector2, Vector2, TNode, TNode, TEdge> getEdgeFunc, 
+        Vector2 bounds) 
+        // where TNode : class
     {
         var graph = new Graph<TNode, TEdge>();
         elements.ForEach(e => graph.AddNode(e));
@@ -117,12 +172,15 @@ public static class GraphGenerator
                 var p = circum.GetIntV2();
                 var oP = oppCircum.GetIntV2();
 
-                if (p.Y >= bounds.Y) p.Y = bounds.Y;
-                if (oP.Y >= bounds.Y) oP.Y = bounds.Y;
-                if (p.X >= bounds.X) p.X = bounds.X;
-                if (oP.X >= bounds.X) oP.X = bounds.X;
-                if (p == oP)
+                if (bounds != Vector2.Inf)
                 {
+                    if (p.Y >= bounds.Y) p.Y = bounds.Y;
+                    if (oP.Y >= bounds.Y) oP.Y = bounds.Y;
+                    if (p.X >= bounds.X) p.X = bounds.X;
+                    if (oP.X >= bounds.X) oP.X = bounds.X;
+                }
+                if (p == oP)
+                { 
                     return;
                 }
                 var tEdge = getEdgeFunc(p, oP, el1, el2);

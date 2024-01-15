@@ -22,7 +22,7 @@ public class StrategicMode : UiMode
     public override void HandleInput(InputEvent e)
     {
         var mapPos = _client.Cam().GetMousePosInMapSpace();
-        Game.I.Client.Cam().Process(e);
+        Game.I.Client.Cam().HandleInput(e);
         _mouseOverHandler.Process(_client.Data, mapPos);
         var mg = _client.GetComponent<MapGraphics>();
         mg.DebugOverlay.Clear();

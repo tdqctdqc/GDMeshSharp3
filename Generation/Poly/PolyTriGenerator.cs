@@ -23,10 +23,17 @@ public class PolyTriGenerator : Generator
         report.StopSection("Finding rivers");
         
         report.StartSection();
-        Parallel.ForEach(polys, p =>
-        {
-            BuildTris(p, riverData, key);
-        });
+
+        var cells = polys.AsParallel()
+            .Select(p =>
+            {
+                var cells = BuildTris(p, riverData, key);
+                return (p, cells);
+            })
+            .ToArray()
+            .SelectMany(v => v.cells)
+            .ToArray();
+        PolyCells.Create(cells, key);
         report.StopSection("Building poly terrain tris");
         
         report.StartSection();
@@ -45,28 +52,28 @@ public class PolyTriGenerator : Generator
 
         return report;
     }
-    private void BuildTris(MapPolygon poly, TempRiverData rd, GenWriteKey key)
+    private PolyCell[] BuildTris(MapPolygon poly, TempRiverData rd, GenWriteKey key)
     {
-        List<PolyTri> tris;
+        (List<PolyTri> tris, PolyCell[] cells) divs;
         if (poly.IsWater())
         {
-            tris = DoSeaPoly(poly, key);
+            divs = DoSeaPoly(poly, key);
         }
         else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus(key.Data)))
         {
-            tris = RiverTriGen.DoPoly(poly, key.Data, rd, key);
+            divs = RiverTriGen.DoPoly(poly, key.Data, rd, key);
         }
         else
         {
-            tris = DoLandPolyNoRivers(poly, key);
+            divs = DoLandPolyNoRivers(poly, key);
         }
 
-        var polyTerrainTris = PolyTris.Create(tris,  key);
+        var polyTerrainTris = PolyTris.Create(divs.tris,  key);
         if (polyTerrainTris == null) throw new Exception();
         poly.SetTerrainTris(polyTerrainTris, key);
+        return divs.cells;
     }
-    
-    private List<PolyTri> DoSeaPoly(MapPolygon poly, GenWriteKey key)
+    private (List<PolyTri>, PolyCell[]) DoSeaPoly(MapPolygon poly, GenWriteKey key)
     {
         var tris = new List<PolyTri>();
         var boundaryPs = poly.GetOrderedBoundaryPoints(_data);
@@ -79,14 +86,39 @@ public class PolyTriGenerator : Generator
             tris.Add(PolyTri.Construct(poly.Id, a,b,c,_data.Models.Landforms.Sea,
                 _data.Models.Vegetations.Barren));
         }
-        return tris;
+
+        var cell = new PolyCell(
+            poly.Center, boundaryPs.ToArray(),
+            key.Data.Models.Vegetations.Barren.MakeRef(),
+            key.Data.Models.Landforms.Sea.MakeRef()
+        );
+        return (tris, new PolyCell[]{cell});
     }
     
-    private List<PolyTri> DoLandPolyNoRivers(MapPolygon poly, GenWriteKey key)
+    private (List<PolyTri>, PolyCell[]) DoLandPolyNoRivers(MapPolygon poly, GenWriteKey key)
     {
         var borderPs = poly.GetOrderedBoundaryPoints(_data);
         List<PolyTri> tris = borderPs.PolyTriangulate(key.Data, poly);
-        return tris;
+        
+        
+        
+        return (tris, GetLandCellsForBoundary(borderPs, poly, key.Data));
+    }
+
+    public static PolyCell[] GetLandCellsForBoundary(Vector2[] boundary,
+        MapPolygon poly, Data d)
+    {
+        var boundaries = GraphGenerator
+            .GenerateVoronoiPolysForInterior(boundary);
+        var cells = boundaries.Select(b =>
+        {
+            var lf = d.Models.Landforms.GetAtPoint(poly, b.First(), d);
+            var v = d.Models.Vegetations.GetAtPoint(poly, b.First(), lf, d);
+            var cell = new PolyCell(poly.Center, b,
+                v.MakeRef(), lf.MakeRef());
+            return cell;
+        }).ToArray();
+        return cells;
     }
     private void Postprocess(GenWriteKey key)
     {

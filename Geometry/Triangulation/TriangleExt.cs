@@ -27,6 +27,7 @@ public static class TriangleExt
             centroid + (t.B - centroid) * shrinkFactor,
             centroid + (t.C - centroid) * shrinkFactor);
     }
+
     public static List<Vector2> GetTriPoints(this List<Triangle> tris)
     {
         var res = new List<Vector2>();

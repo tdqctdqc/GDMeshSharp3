@@ -52,7 +52,7 @@ public partial class WorldCameraController : Camera2D, ICameraController
         Position = new Vector2(0f, y);
         XScrollRatio = worldPos.X / _data.Planet.Width;
     }
-    public void Process(InputEvent e)
+    public void HandleInput(InputEvent e)
     {
         if (e is InputEventMouseButton mb)
         {

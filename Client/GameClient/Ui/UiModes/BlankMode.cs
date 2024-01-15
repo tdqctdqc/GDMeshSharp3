@@ -9,7 +9,7 @@ public class BlankMode : UiMode
 
     public override void HandleInput(InputEvent e)
     {
-        _client.Cam().Process(e);
+        _client.Cam().HandleInput(e);
     }
 
     public override void Clear()

@@ -18,7 +18,7 @@ public class UnitMode : UiMode
     {
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         mapPos = mapPos.ClampPosition(_client.Data);
-        Game.I.Client.Cam().Process(e);
+        Game.I.Client.Cam().HandleInput(e);
         _mouseOverHandler.Process(_client.Data, mapPos);
 
         if(e.IsAction("Open Regime Overview"))

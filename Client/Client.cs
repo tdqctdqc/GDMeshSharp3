@@ -73,8 +73,6 @@ public partial class Client : Node, IClient
         {
             u.Invoke();
         }
-        
-        
     }
     public override void _UnhandledInput(InputEvent @event)
     {
