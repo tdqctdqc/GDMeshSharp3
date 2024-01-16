@@ -24,17 +24,23 @@ public class PolyTriGenerator : Generator
         
         report.StartSection();
 
-        var cells = polys.AsParallel()
+        var cellsByPoly = polys.AsParallel()
             .Select(p =>
             {
                 var cells = BuildTris(p, riverData, key);
                 return (p, cells);
             })
-            .ToArray()
-            .SelectMany(v => v.cells)
-            .ToArray();
+            .ToDictionary(v => v.p, v => v.cells);
+        var cells = cellsByPoly.SelectMany(kvp => kvp.Value).ToArray();
+        
+        report.StopSection("Building poly terrain tris and cells");
+        
+        report.StartSection();
+        ConnectDiffPolyCells(cellsByPoly, cells, key.Data);
+        report.StopSection("connecting cells");
+
         PolyCells.Create(cells, key);
-        report.StopSection("Building poly terrain tris");
+        
         
         report.StartSection();
         var edgeTris = new ConcurrentBag<(PolyTriPosition[], PolyTriPosition[])>();
@@ -67,10 +73,11 @@ public class PolyTriGenerator : Generator
         {
             divs = DoLandPolyNoRivers(poly, key);
         }
-
-        var polyTerrainTris = PolyTris.Create(divs.tris,  key);
+        
+        var polyTerrainTris = PolyTris.Create(divs.tris, key);
         if (polyTerrainTris == null) throw new Exception();
         poly.SetTerrainTris(polyTerrainTris, key);
+        
         return divs.cells;
     }
     private (List<PolyTri>, PolyCell[]) DoSeaPoly(MapPolygon poly, GenWriteKey key)
@@ -83,15 +90,16 @@ public class PolyTriGenerator : Generator
             var a = boundaryPs[triPIndices[i]];
             var b = boundaryPs[triPIndices[i+1]];
             var c = boundaryPs[triPIndices[i+2]];
-            tris.Add(PolyTri.Construct(poly.Id, a,b,c,_data.Models.Landforms.Sea,
+            tris.Add(PolyTri.Construct(poly.Id, a,b,c,
+                _data.Models.Landforms.Sea,
                 _data.Models.Vegetations.Barren));
         }
 
-        var cell = new PolyCell(
-            poly.Center, boundaryPs.ToArray(),
-            key.Data.Models.Vegetations.Barren.MakeRef(),
-            key.Data.Models.Landforms.Sea.MakeRef()
-        );
+        var cell = PolyCell.Construct(
+            poly, boundaryPs.ToArray(), 
+            _data.Models.Landforms.Sea,
+            _data.Models.Vegetations.Barren,
+            key);
         return (tris, new PolyCell[]{cell});
     }
     
@@ -99,26 +107,66 @@ public class PolyTriGenerator : Generator
     {
         var borderPs = poly.GetOrderedBoundaryPoints(_data);
         List<PolyTri> tris = borderPs.PolyTriangulate(key.Data, poly);
-        
-        
-        
-        return (tris, GetLandCellsForBoundary(borderPs, poly, key.Data));
+        return (tris, GraphGenerator.GenerateAndConnectPolyCellsForInterior(poly, borderPs, key));
     }
 
-    public static PolyCell[] GetLandCellsForBoundary(Vector2[] boundary,
-        MapPolygon poly, Data d)
+    private void ConnectDiffPolyCells(Dictionary<MapPolygon, PolyCell[]> cellsByPoly,
+        PolyCell[] cells,
+        Data d)
     {
-        var boundaries = GraphGenerator
-            .GenerateVoronoiPolysForInterior(boundary);
-        var cells = boundaries.Select(b =>
+        var links = new ConcurrentBag<Vector2I>();
+        var dic = cells.ToDictionary(c => c.Id, c => c);
+        var boundaryCells = cellsByPoly
+            .AsParallel()
+            .ToDictionary(kvp => kvp.Key, kvp =>
+            {
+                var poly = kvp.Key;
+                var border = poly.GetOrderedBoundaryPoints(d);
+                var bCells = kvp.Value.Where(c => boundaryCell(border, c)).ToArray();
+                return bCells;
+            });
+        
+        
+        Parallel.ForEach(cellsByPoly, kvp =>
         {
-            var lf = d.Models.Landforms.GetAtPoint(poly, b.First(), d);
-            var v = d.Models.Vegetations.GetAtPoint(poly, b.First(), lf, d);
-            var cell = new PolyCell(poly.Center, b,
-                v.MakeRef(), lf.MakeRef());
-            return cell;
-        }).ToArray();
-        return cells;
+            var poly = kvp.Key;
+            var polyBCells = boundaryCells[poly];
+
+            var nBCells = poly.Neighbors.Items(d)
+                .Where(n => n.Id < poly.Id)
+                .SelectMany(n => boundaryCells[n])
+                .ToArray();
+            PolyCell.Connect(nBCells, polyBCells, poly.Center, 
+                (v,w) => links.Add(new Vector2I(v.Id, w.Id)),
+                d);
+        });
+        
+        foreach (var vector2I in links)
+        {
+            var c1 = dic[vector2I.X];
+            var c2 = dic[vector2I.Y];
+            c1.Neighbors.Add(c2.Id);
+            c2.Neighbors.Add(c1.Id);
+        }
+
+        bool boundaryCell(Vector2[] boundary, PolyCell cell)
+        {
+            for (var i = 0; i < boundary.Length; i++)
+            {
+                var from = boundary[i];
+                var to = boundary[(i + 1) % boundary.Length];
+                if (cell.RelBoundary.Any(p => onSegment(p, from, to))) return true;
+            }
+
+            return false;
+        }
+        bool onSegment(Vector2 p, Vector2 from, Vector2 to)
+        {
+            float tolerance = .1f;
+            var close = p.GetClosestPointOnLineSegment(
+                new Vector2(from.X, from.Y), new Vector2(to.X, to.Y));
+            return close.DistanceTo(p) <= tolerance;
+        }
     }
     private void Postprocess(GenWriteKey key)
     {

@@ -76,8 +76,10 @@ public static class GraphGenerator
         });
     }
 
-    public static Vector2[][] GenerateVoronoiPolysForInterior(
-        Vector2[] boundaryPoints
+    public static PolyCell[] GenerateAndConnectPolyCellsForInterior(
+        MapPolygon poly,
+        Vector2[] boundaryPoints,
+        GenWriteKey key
     )
     {
         var interiorPoints = new List<Vector2>();
@@ -100,34 +102,36 @@ public static class GraphGenerator
                                               * (float)i / 12);
             interiorPoints.Add(mid + angle * maxRange * 2f);
         }
-        
         var graph = GenerateVoronoiGraph(
             interiorPoints, 
             v => v,
             (v1, v2, n1, n2) => 
                 new LineSegment(v1, v2),
             Vector2.Inf);
-        var res = new List<Vector2[]>();
+        var res = new List<PolyCell>();
         foreach (var cellCenter in graph.Elements)
         {
             var ns = graph
                 .GetNeighbors(cellCenter);
+            //todo can just order by clockwise here instead of chainifying?
+            
             var cellBoundary = ns.Select(
                     n => graph.GetEdge(cellCenter, n))
                 .ToList().FlipChainify();
+            
             var cellBoundaryPs = cellBoundary.GetPoints().ToArray();
             var intersections =
                 Geometry2D.IntersectPolygons(cellBoundaryPs, boundaryPoints);
             foreach (var intersection in intersections)
             {
-                res.Add(intersection);
+                var cell = PolyCell.Construct(poly, intersection, key);
+                res.Add(cell);
             }
         }
+        PolyCell.Connect(res, key.Data); 
         return res.ToArray();
     }
-    
-    
-    
+
     public static Graph<TNode, TEdge> GenerateVoronoiGraph<TNode, TEdge>
     (List<TNode> elements, Func<TNode, Vector2> posFunc,
         Func<Vector2, Vector2, TNode, TNode, TEdge> getEdgeFunc, 
@@ -138,15 +142,10 @@ public static class GraphGenerator
         elements.ForEach(e => graph.AddNode(e));
         var iPoints = elements.Select(posFunc).Select(v => v.GetIPoint()).ToArray();
         var d = new Delaunator(iPoints);
-        var voronoiCells = d.GetVoronoiCells().ToList();
-
+        
         var pointElements = new Dictionary<IPoint, TNode>();
-        var elementCells = new Dictionary<TNode, IVoronoiCell>();
-        var cellElements = new Dictionary<IVoronoiCell, TNode>();
         for (var i = 0; i < elements.Count; i++)
         {
-            elementCells.Add(elements[i], voronoiCells[i]);
-            cellElements.Add(voronoiCells[i], elements[i]);
             pointElements.Add(iPoints[i], elements[i]);
         }
 

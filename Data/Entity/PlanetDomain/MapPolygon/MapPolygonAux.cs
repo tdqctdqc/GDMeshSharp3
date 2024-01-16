@@ -9,6 +9,7 @@ public class MapPolygonAux
     public IReadOnlyGraph<MapPolygon, PolyBorderChain> BorderGraph { get; private set; }
     public EntityValueCache<MapPolygon, PolyAuxData> AuxDatas { get; private set; }
     public PolyGrid MapPolyGrid { get; private set; }
+    
     public HashSet<MapChunk> Chunks { get; private set; }
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public LandSeaManager LandSea { get; private set; }

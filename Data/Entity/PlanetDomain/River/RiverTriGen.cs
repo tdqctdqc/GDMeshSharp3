@@ -158,9 +158,12 @@ public class RiverTriGen
                     var t = PolyTri.Construct(poly.Id, edgeSegs[0].From, fromPivot, fromClose,
                         data.Models.Landforms.River, data.Models.Vegetations.Barren);
                     innerBoundarySegs.Add(new LineSegment(fromClose, fromPivot));
-                    cells.Add(new PolyCell(poly.Center, new Vector2[]{t.A, t.B, t.C}, 
-                        data.Models.Vegetations.Barren.MakeRef(),
-                        data.Models.Landforms.River.MakeRef()));
+
+                    var cell = PolyCell.Construct(poly,
+                        new Vector2[] { t.A, t.B, t.C },
+                        data.Models.Landforms.River,
+                        data.Models.Vegetations.Barren, key);
+                    cells.Add(cell);
                     tris.Add(t);
                 }
             }
@@ -176,9 +179,11 @@ public class RiverTriGen
                     var t = PolyTri.Construct(poly.Id, edgeSegs[edgeSegs.Count - 1].To, toPivot, toClose,
                         data.Models.Landforms.River, data.Models.Vegetations.Barren);
                     innerBoundarySegs.Add(new LineSegment(toPivot, toClose));
-                    cells.Add(new PolyCell(poly.Center, new Vector2[]{t.A, t.B, t.C}, 
-                        data.Models.Vegetations.Barren.MakeRef(),
-                        data.Models.Landforms.River.MakeRef()));
+                    var cell = PolyCell.Construct(poly,
+                        new Vector2[] { t.A, t.B, t.C },
+                        data.Models.Landforms.River,
+                        data.Models.Vegetations.Barren, key);
+                    cells.Add(cell);
                     tris.Add(t);
                 }
             }
@@ -228,9 +233,10 @@ public class RiverTriGen
                 
                 riverPortionBoundary.AddRange(edgeSegs);
                 var riverBPoints = riverPortionBoundary.GetPoints().ToArray();
-                var cell = new PolyCell(poly.Center, riverBPoints,
-                    key.Data.Models.Vegetations.Barren.MakeRef(),
-                    key.Data.Models.Landforms.River.MakeRef());
+                var cell = PolyCell.Construct(poly, riverBPoints,
+                    key.Data.Models.Landforms.River, 
+                    key.Data.Models.Vegetations.Barren,
+                    key);
                 cells.Add(cell);
                 var bankTriPs = Geometry2D.TriangulatePolygon(riverBPoints);
                 for (var i = 0; i < bankTriPs.Length; i+=3)
@@ -254,14 +260,28 @@ public class RiverTriGen
             
         }
 
+        var riverCells = cells.ToHashSet();
+        MakeLandCells(poly, cells, innerBoundarySegs, tris, key);
+        var landCells = cells.Except(riverCells);
         
-        
+        PolyCell.Connect(landCells, riverCells, poly.Center,
+            (v, w) =>
+            {
+                v.Neighbors.Add(w.Id);
+                w.Neighbors.Add(v.Id);
+            }, data);
+    }
+
+    private static void MakeLandCells(MapPolygon poly,
+        List<PolyCell> cells,
+        HashSet<LineSegment> innerBoundarySegs,
+        List<PolyTri> tris, GenWriteKey key)
+    {
         try
         {
             Vector2[] innerBoundaryPs = innerBoundarySegs.ToList().Chainify().GetPoints().ToArray();
-            tris.AddRange(innerBoundaryPs.PolyTriangulate(data, poly));
-            cells.AddRange(PolyTriGenerator
-                .GetLandCellsForBoundary(innerBoundaryPs, poly, data));
+            tris.AddRange(innerBoundaryPs.PolyTriangulate(key.Data, poly));
+            cells.AddRange(GraphGenerator.GenerateAndConnectPolyCellsForInterior(poly, innerBoundaryPs, key));
         }
         catch
         {
@@ -271,9 +291,8 @@ public class RiverTriGen
             try
             {
                 Vector2[] innerBoundaryPs = innerBoundarySegs.ToList().Chainify().GetPoints().ToArray();
-                tris.AddRange(innerBoundaryPs.PolyTriangulate(data, poly));
-                cells.AddRange(PolyTriGenerator
-                    .GetLandCellsForBoundary(innerBoundaryPs, poly, data));
+                tris.AddRange(innerBoundaryPs.PolyTriangulate(key.Data, poly));
+                cells.AddRange(GraphGenerator.GenerateAndConnectPolyCellsForInterior(poly, innerBoundaryPs, key));
                 var a = badTri[0].From;
                 var b = badTri[0].To;
                 Vector2 c = badTri[1].From != a && badTri[1].From != b
@@ -282,8 +301,8 @@ public class RiverTriGen
                     
                 var center = (a + b + c) / 3f;
                 tris.Add(PolyTri.Construct(poly.Id, a,b,c, 
-                    data.Models.Landforms.River, data.Models.Vegetations.Barren
-                    ));
+                    key.Data.Models.Landforms.River, key.Data.Models.Vegetations.Barren
+                ));
             }
             catch
             {

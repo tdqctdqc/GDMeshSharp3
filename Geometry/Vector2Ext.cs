@@ -411,4 +411,21 @@ public static class Vector2Ext
         }
         return closeOnLine;
     }
+
+    public static (Vector2, Vector2) Order(this Vector2 v, Vector2 w)
+    {
+        if (v.X < w.X)
+        {
+            return (v, w);
+        }
+        if (w.X < v.X)
+        {
+            return (w, v);
+        }
+        if (v.Y < w.Y)
+        {
+            return (v, w);
+        }
+        return (w, v);
+    }
 }
