@@ -106,12 +106,25 @@ public class PolyTriGenerator : Generator
         return (tris, GraphGenerator.GenerateAndConnectPolyCellsForInterior(poly, borderPs, key));
     }
 
-    private void ConnectDiffPolyCells(Dictionary<MapPolygon, PolyCell[]> cellsByPoly, 
+    private void ConnectDiffPolyCells(
+        Dictionary<MapPolygon, PolyCell[]> cellsByPoly, 
         GenWriteKey key)
     {
         var d = key.Data;
+        var cellHolder = d.GetAll<PolyCells>().First();
+        var cells = cellHolder.Cells;
+        MergeSmallRiverCellsInPolys(key, cellsByPoly);
+        ConnectAcrossNonRiverEdges(cellsByPoly, d, cells);
+        MergeRiverCellsAcrossEdges(key, cellHolder);
+        ConnectLandCellsOverRiverEdges(key, cellHolder);
+        
+    }
+
+    private void ConnectAcrossNonRiverEdges(
+        Dictionary<MapPolygon, PolyCell[]> cellsByPoly, 
+        Data d, Dictionary<int, PolyCell> cells)
+    {
         var links = new ConcurrentBag<Vector2I>();
-        var cells = d.GetAll<PolyCells>().First().Cells;
         var boundaryCells = cellsByPoly
             .AsParallel()
             .ToDictionary(kvp => kvp.Key, kvp =>
@@ -121,9 +134,9 @@ public class PolyTriGenerator : Generator
                 var bCells = kvp.Value.Where(c => boundaryCell(border, c)).ToArray();
                 return bCells;
             });
-        
-        
-        Parallel.ForEach(_data.GetAll<MapPolygonEdge>(), 
+
+
+        Parallel.ForEach(_data.GetAll<MapPolygonEdge>(),
             e =>
             {
                 if (e.IsRiver()) return;
@@ -142,27 +155,27 @@ public class PolyTriGenerator : Generator
                     var water = hi.IsWater() ? hi : lo;
                     var land = hi.IsWater() ? lo : hi;
                     PolyCell.ConnectCellsByEdge(
-                        cellsByPoly[land], 
-                        cellsByPoly[water], 
-                        water.Center, 
-                        (v,w) => links.Add(new Vector2I(v.Id, w.Id)),
+                        cellsByPoly[land],
+                        cellsByPoly[water],
+                        water.Center,
+                        (v, w) => links.Add(new Vector2I(v.Id, w.Id)),
                         d);
                     return;
                 }
+
                 var hiCells = boundaryCells[hi]
-                        .Where(c => c is RiverCell == false);
+                    .Where(c => c is RiverCell == false);
                 var loCells = boundaryCells[lo]
-                        .Where(c => c is RiverCell == false);
+                    .Where(c => c is RiverCell == false);
                 PolyCell.ConnectCellsByEdge(
-                    hiCells, 
-                    loCells, 
-                    lo.Center, 
-                    (v,w) => links.Add(new Vector2I(v.Id, w.Id)),
+                    hiCells,
+                    loCells,
+                    lo.Center,
+                    (v, w) => links.Add(new Vector2I(v.Id, w.Id)),
                     d);
             }
         );
-        
-        
+
         foreach (var vector2I in links)
         {
             var c1 = cells[vector2I.X];
@@ -170,81 +183,14 @@ public class PolyTriGenerator : Generator
             c1.Neighbors.Add(c2.Id);
             c2.Neighbors.Add(c1.Id);
         }
-        links.Clear();
-        
-        //merge river cells by edge
-        var rCells = cells
-            .Values.OfType<RiverCell>()
-            .SortInto(c => c.Edge.RefId);
-        
-        foreach (var kvp in rCells)
+
+
+        bool onSegment(Vector2 p, Vector2 from, Vector2 to)
         {
-            var edge = d.Get<MapPolygonEdge>(kvp.Key);
-            var thisRCells = kvp.Value;
-            if (thisRCells.Count() != 2)
-            {
-                // GD.Print("multi cell river cell edge");
-                continue;
-            }
-            GD.Print("merging river cells across edge");
-            var first = thisRCells[0];
-            var second = thisRCells[1];
-            var offset = first.RelTo.GetOffsetTo(second.RelTo, d);
-
-            var secondBoundaryTransposed = second.RelBoundary
-                .Select(v =>
-                {
-                    var vRel = first.RelTo.GetOffsetTo(v + second.RelTo, d);
-                    for (var i = 0; i < first.RelBoundary.Length; i++)
-                    {
-                        var firstP = first.RelBoundary[i];
-                        if (firstP.DistanceTo(vRel) <= .1f)
-                        {
-                            vRel = firstP;
-                            break;
-                        }
-                    }
-
-                    return vRel;
-                }).ToArray();
-            var union = Geometry2D.MergePolygons(
-                first.RelBoundary,
-                secondBoundaryTransposed);
-            if (union.Count() != 1)
-            {
-                continue;
-            }
-
-            var newRiverCell = RiverCell.Construct(
-                edge, first.RelTo,
-                union.First(), key);
-            newRiverCell.Neighbors.AddRange(first.Neighbors);
-            newRiverCell.Neighbors.AddRange(second.Neighbors);
-            foreach (var n1 in first.Neighbors)
-            {
-                var cell = cells[n1];
-                cell.Neighbors.Remove(first.Id);
-                cell.Neighbors.Add(newRiverCell.Id);
-            }
-            foreach (var n2 in second.Neighbors)
-            {
-                var cell = cells[n2];
-                cell.Neighbors.Remove(second.Id);
-                cell.Neighbors.Add(newRiverCell.Id);
-            }
-
-            cells.Remove(first.Id);
-            cells.Remove(second.Id);
-            cells.Add(newRiverCell.Id, newRiverCell);
-        }
-        
-        
-        foreach (var vector2I in links)
-        {
-            var c1 = cells[vector2I.X];
-            var c2 = cells[vector2I.Y];
-            c1.Neighbors.Add(c2.Id);
-            c2.Neighbors.Add(c1.Id);
+            float tolerance = .1f;
+            var close = p.GetClosestPointOnLineSegment(
+                new Vector2(from.X, from.Y), new Vector2(to.X, to.Y));
+            return close.DistanceTo(p) <= tolerance;
         }
 
         bool boundaryCell(Vector2[] boundary, PolyCell cell)
@@ -258,12 +204,107 @@ public class PolyTriGenerator : Generator
 
             return false;
         }
-        bool onSegment(Vector2 p, Vector2 from, Vector2 to)
+    }
+
+    private static void MergeSmallRiverCellsInPolys(
+        GenWriteKey key, Dictionary<MapPolygon, PolyCell[]> cellsByPoly)
+    {
+        Parallel.ForEach(cellsByPoly, kvp =>
         {
-            float tolerance = .1f;
-            var close = p.GetClosestPointOnLineSegment(
-                new Vector2(from.X, from.Y), new Vector2(to.X, to.Y));
-            return close.DistanceTo(p) <= tolerance;
+            
+        });
+    }
+    
+    private static void MergeRiverCellsAcrossEdges(GenWriteKey key, 
+        PolyCells cellHolder)
+    {
+        var cells = cellHolder.Cells;
+        var d = key.Data;
+        var rCellsByEdge = cells
+            .Values.OfType<RiverCell>()
+            .SortInto(c => c.Edge.RefId);
+
+        foreach (var kvp in rCellsByEdge)
+        {
+            var edge = d.Get<MapPolygonEdge>(kvp.Key);
+            var thisRCells = kvp.Value;
+            if (thisRCells.Count() != 2)
+            {
+                // GD.Print("multi cell river cell edge");
+                continue;
+            }
+        
+            var first = thisRCells[0];
+            var second = thisRCells[1];
+            var offset = first.RelTo.GetOffsetTo(second.RelTo, d);
+        
+            var secondBoundaryTransposed = second.CoordinateBoundary(first, d);
+            var union = Geometry2D.MergePolygons(
+                first.RelBoundary,
+                secondBoundaryTransposed);
+            if (union.Count() != 1)
+            {
+                continue;
+            }
+        
+            var newRiverCell = RiverCell.Construct(
+                edge, first.RelTo,
+                union.First(), key);
+            newRiverCell.Neighbors.AddRange(first.Neighbors);
+            newRiverCell.Neighbors.AddRange(second.Neighbors);
+            foreach (var n1 in first.Neighbors)
+            {
+                var cell = cells[n1];
+                cell.Neighbors.Remove(first.Id);
+                cell.Neighbors.Add(newRiverCell.Id);
+            }
+        
+            foreach (var n2 in second.Neighbors)
+            {
+                var cell = cells[n2];
+                cell.Neighbors.Remove(second.Id);
+                cell.Neighbors.Add(newRiverCell.Id);
+            }
+        
+            cells.Remove(first.Id);
+            cells.Remove(second.Id);
+            cells.Add(newRiverCell.Id, newRiverCell);
+        }
+
+        
+    }
+
+    private void ConnectLandCellsOverRiverEdges(GenWriteKey key, 
+        PolyCells cellHolder)
+    {
+        var rCells = cellHolder.Cells.Values.OfType<RiverCell>();
+        var links = new ConcurrentBag<Vector2I>();
+        Parallel.ForEach(rCells, rCell =>
+        {
+            var landCellNsByPoly = rCell.Neighbors.Select(n => cellHolder.Cells[n])
+                .OfType<LandCell>().SortInto(c => c.Polygon.RefId);
+            foreach (var kvp in landCellNsByPoly)
+            {
+                var landCells = kvp.Value;
+                foreach (var landCell in landCells)
+                {
+                    var p = landCell.RelBoundary.First() + landCell.RelTo;
+                    foreach (var kvp2 in landCellNsByPoly)
+                    {
+                        if (kvp2.Key == kvp.Key) continue;
+                        var min = kvp2.Value.MinBy(c =>
+                            (c.RelBoundary.First() + c.RelTo).GetOffsetTo(p, key.Data).Length());
+                        links.Add(new Vector2I(landCell.Id, min.Id));
+                    }
+                }
+            }
+        });
+        foreach (var vector2I in links)
+        {
+            var c1 = cellHolder.Cells[vector2I.X];
+            var c2 = cellHolder.Cells[vector2I.Y];
+            c1.Neighbors.Add(c2.Id);
+            c2.Neighbors.Add(c1.Id);
         }
     }
     private void Postprocess(GenWriteKey key)

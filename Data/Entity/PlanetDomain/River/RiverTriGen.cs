@@ -203,7 +203,7 @@ public class RiverTriGen
                     var polyNexusCoastEdges = nexus.IncidentEdges.Items(data)
                         .Where(e => e.IsCoast(key.Data));
                     if (polyNexusRiverEdges.Count() > 1) throw new Exception();
-                    var riverEdge = (polyNexusRiverEdges.Count() > 0)
+                    var riverEdge = (riverEdges.Count() == 2)
                         ? polyNexusRiverEdges.First()
                         : edge;
 

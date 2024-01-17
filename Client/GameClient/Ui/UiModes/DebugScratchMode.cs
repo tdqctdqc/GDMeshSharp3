@@ -17,7 +17,6 @@ public class DebugScratchMode : UiMode
     {
         _client.Cam().HandleInput(e);
         Highlight();
-        return;
         if (_drawn) return;
         _drawn = true;
         var mg = _client.GetComponent<MapGraphics>();
@@ -29,10 +28,12 @@ public class DebugScratchMode : UiMode
             var v = c.Vegetation.Model(_client.Data);
             var lf = c.Landform.Model(_client.Data);
             var vegCol = v.Color.Darkened(lf.DarkenFactor);
-            var col = ColorsExt.GetRandomColor();
+            // var col = ColorsExt.GetRandomColor();
             mg.DebugOverlay.Draw(mb =>
             {
-                mb.DrawPolygon(c.RelBoundary, col);
+                // mb.DrawPolygon(c.RelBoundary, col);
+                mb.DrawPolygon(c.RelBoundary, lf.Color);
+                mb.DrawPolygon(c.RelBoundary, vegCol);
             }, c.RelTo);
         }
     }

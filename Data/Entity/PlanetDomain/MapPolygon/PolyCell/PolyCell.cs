@@ -106,4 +106,39 @@ public abstract class PolyCell : IPolymorph
     {
         RelBoundary = boundary;
     }
+
+    public float Area()
+    {
+        var tris = Geometry2D.TriangulatePolygon(RelBoundary);
+        var area = 0f;
+        for (var i = 0; i < tris.Length; i+=3)
+        {
+            var a = RelBoundary[tris[i]];
+            var b = RelBoundary[tris[i+1]];
+            var c = RelBoundary[tris[i+2]];
+            area += TriangleExt.GetArea(a, b, c);
+        }
+
+        return area;
+    }
+
+    public Vector2[] CoordinateBoundary(PolyCell coord, Data d)
+    {
+        return RelBoundary
+            .Select(v =>
+            {
+                var vRel = coord.RelTo.GetOffsetTo(v + RelTo, d);
+                for (var i = 0; i < coord.RelBoundary.Length; i++)
+                {
+                    var firstP = coord.RelBoundary[i];
+                    if (firstP.DistanceTo(vRel) <= .1f)
+                    {
+                        vRel = firstP;
+                        break;
+                    }
+                }
+
+                return vRel;
+            }).ToArray();
+    }
 }
