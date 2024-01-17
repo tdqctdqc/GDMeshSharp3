@@ -4,7 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PolyCell
+[MessagePack.Union(0, typeof(LandCell))]
+[MessagePack.Union(1, typeof(RiverCell))]
+[MessagePack.Union(2, typeof(SeaCell))]
+public abstract class PolyCell : IPolymorph
 {
     public int Id { get; private set; }
     public HashSet<int> Neighbors { get; private set; }
@@ -12,30 +15,8 @@ public class PolyCell
     public Vector2[] RelBoundary { get; private set; }
     public ModelRef<Vegetation> Vegetation { get; private set; }
     public ModelRef<Landform> Landform { get; private set; }
-
-    public static PolyCell Construct(MapPolygon poly,
-        Vector2[] relBoundary, GenWriteKey key)
-    {
-        var lf = key.Data.Models.Landforms.GetAtPoint(poly, relBoundary.First(), key.Data);
-        var v = key.Data.Models.Vegetations.GetAtPoint(poly, relBoundary.First(), lf, key.Data);
-        var id = key.Data.IdDispenser.TakeId();
-
-        var c = new PolyCell(poly.Center, relBoundary,
-            v.MakeRef(), lf.MakeRef(), new HashSet<int>(), id);
-        return c;
-    }
     
-    public static PolyCell Construct(MapPolygon poly,
-        Vector2[] relBoundary, Landform lf, Vegetation v,
-        GenWriteKey key)
-    {
-        var id = key.Data.IdDispenser.TakeId();
-        var c = new PolyCell(poly.Center, relBoundary,
-            v.MakeRef(), lf.MakeRef(), new HashSet<int>(), id);
-        return c;
-    }
-    
-    private PolyCell(Vector2 relTo, 
+    protected PolyCell(Vector2 relTo, 
         Vector2[] relBoundary,
         ModelRef<Vegetation> vegetation,
         ModelRef<Landform> landform,
@@ -50,7 +31,7 @@ public class PolyCell
         Neighbors = neighbors;
     }
 
-    public static void Connect(
+    public static void ConnectCellsSharingPoints(
         IEnumerable<PolyCell> cells, Data d)
     {
         var dic = new Dictionary<Vector2, LinkedList<PolyCell>>();
@@ -78,14 +59,14 @@ public class PolyCell
         }
     }
     
-    public static void Connect(IEnumerable<PolyCell> c1s,
-        IEnumerable<PolyCell> c2s, 
-        Vector2 rel2,
+    public static void ConnectCellsByEdge(IEnumerable<PolyCell> c1s,
+        IEnumerable<PolyCell> edgeCells, 
+        Vector2 edgeRel,
         Action<PolyCell, PolyCell> link,
         Data d)
     {
         var dic = new Dictionary<Vector4, List<PolyCell>>();
-        foreach (var c2 in c2s)
+        foreach (var c2 in edgeCells)
         {
             for (var i = 0; i < c2.RelBoundary.Length; i++)
             {
@@ -99,7 +80,7 @@ public class PolyCell
         }
         foreach (var c1 in c1s)
         {
-            var offset = rel2.GetOffsetTo(c1.RelTo, d);
+            var offset = edgeRel.GetOffsetTo(c1.RelTo, d);
             foreach (var kvp in dic)
             {
                 var lineSeg = kvp.Key;
@@ -119,5 +100,10 @@ public class PolyCell
                 new Vector2(seg.X, seg.Y), new Vector2(seg.Z, seg.W));
             return close.DistanceTo(p) <= tolerance;
         }
+    }
+
+    public void SetBoundary(Vector2[] boundary, GenWriteKey key)
+    {
+        RelBoundary = boundary;
     }
 }

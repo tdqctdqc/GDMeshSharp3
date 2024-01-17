@@ -6,13 +6,24 @@ using Godot;
 
 public class RiverTriGen
 {
+    private class RiverTriGenScratch
+    {
+        public Dictionary<MapPolyNexus, int> NexiCloseIndices { get; private set; }
+        public Dictionary<MapPolygonEdge, Vector2> InnerEdgeIndices { get; private set; }
+        public List<PolyTri> Tris { get; private set; }
+        public Vector2[] InsetPoints { get; set; }
+
+        public RiverTriGenScratch()
+        {
+            NexiCloseIndices = new Dictionary<MapPolyNexus, int>();
+            InnerEdgeIndices = new Dictionary<MapPolygonEdge, Vector2>();
+            Tris = new List<PolyTri>();
+        }
+    }
     public static (List<PolyTri>, PolyCell[]) DoPoly(MapPolygon poly, Data data, TempRiverData rData, GenWriteKey key)
     {
-        var nexiCloseIndices = new Dictionary<MapPolyNexus, int>();
-        var innerEdgeIndices = new Dictionary<MapPolygonEdge, Vector2>();
-        var tris = new List<PolyTri>();
-        var cells = new List<PolyCell>();
-
+        var scratch = new RiverTriGenScratch();
+       
         var edges = poly.GetEdges(data);
         var rEdges = edges.Where(e => e.IsRiver());
         var rWidth = 0f;
@@ -29,23 +40,19 @@ public class RiverTriGen
         
         var insetsSource = (Vector2[])Geometry2D.OffsetPolygon(bPoints, -rWidth / 2f)[0];
         var insetPoints = insetsSource.Where((v, i) => v.DistanceTo(insetsSource.Modulo(i + 1)) > 1f).ToArray();
-
         var minEdgeLength = 10f;
         var oldInset = insetPoints.ToList();
-
-        bool fixedIt = false;
         if (edges.Any(e => e.GetLength(data) <= minEdgeLength))
         {
             var t = ConstrainInsetForShortEdges(poly, edges, data, insetPoints);
-            if (t != insetPoints) fixedIt = true;
             insetPoints = t;
         }
+
+        scratch.InsetPoints = insetPoints;
         
-        MakeInnerEdges(poly, data, nexiCloseIndices, innerEdgeIndices, insetPoints);
-        MakeTris(poly, data, rData, nexiCloseIndices, innerEdgeIndices,
-            tris, cells, insetPoints, key);
-        
-        return (tris, cells.ToArray());
+        MakeInnerEdges(poly, data, scratch, insetPoints);
+        var cells = MakeTris(poly, data, rData, scratch, key);
+        return (scratch.Tris, cells.ToArray());
     }
 
     private static Vector2[] ConstrainInsetForShortEdges(MapPolygon poly, IEnumerable<MapPolygonEdge> edges,
@@ -84,8 +91,8 @@ public class RiverTriGen
         }
         return newInset.ToArray();
     }
-    private static void MakeInnerEdges(MapPolygon poly, Data data, Dictionary<MapPolyNexus, int> nexiCloseIndices, 
-        Dictionary<MapPolygonEdge, Vector2> innerEdgeIndices, Vector2[] insetPoints)
+    private static void MakeInnerEdges(MapPolygon poly, Data data, 
+        RiverTriGenScratch scratch, Vector2[] insetPoints)
     {
         var edges = poly.GetEdges(data);
         var rEdges = edges.Where(e => e.IsRiver());
@@ -108,170 +115,230 @@ public class RiverTriGen
             }
 
             if (index == -1) throw new Exception();
-            nexiCloseIndices.Add(nexus, index);
+            scratch.NexiCloseIndices.Add(nexus, index);
         }
         
         //check overlap?
         foreach (var rEdge in rEdges)
         {
             var fromTo = rEdge.OrderNexi(poly, data);
-            var fromIndex = nexiCloseIndices[fromTo.from];
-            var toIndex = nexiCloseIndices[fromTo.to];
+            var fromIndex = scratch.NexiCloseIndices[fromTo.from];
+            var toIndex = scratch.NexiCloseIndices[fromTo.to];
             if (fromIndex == toIndex)
             {
-                innerEdgeIndices.Add(rEdge, new Vector2(-1, -1));
+                scratch.InnerEdgeIndices.Add(rEdge, new Vector2(-1, -1));
                 continue;
             }
-            innerEdgeIndices.Add(rEdge, new Vector2(fromIndex, toIndex)); 
+            scratch.InnerEdgeIndices.Add(rEdge, new Vector2(fromIndex, toIndex)); 
         }
     }
 
-    private static void MakeTris(MapPolygon poly, Data data, TempRiverData rData,
-        Dictionary<MapPolyNexus, int> nexiCloseIndices, Dictionary<MapPolygonEdge, Vector2> innerEdgeIndices,
-        List<PolyTri> tris, List<PolyCell> cells,
-        Vector2[] insetPoints, GenWriteKey key)
+    private static List<PolyCell> MakeTris(MapPolygon poly, 
+        Data data, TempRiverData rData,
+        RiverTriGenScratch scratch, GenWriteKey key)
     {
+        var cells = new List<PolyCell>();
         var innerBoundarySegs = new HashSet<LineSegment>();
         var edges = poly.GetEdges(data);
         var bPoints = poly.GetOrderedBoundaryPoints(data);
         //a. make pivot tris and bank tris
         foreach (var edge in edges)
         {
-            var edgeSegs = edge.GetSegsRel(poly, data).Segments;
-            var fromTo = edge.OrderNexi(poly, data);
-            if(fromTo.from.IsRiverNexus(data) == false 
-               && fromTo.to.IsRiverNexus(data) == false)
-            {
-                innerBoundarySegs.AddRange(edgeSegs);
-                continue;
-            }
-
-            var fromPivot = edgeSegs[0].To; 
-            var fromClose = insetPoints[nexiCloseIndices[fromTo.from]];
-            var toPivot = edgeSegs[edgeSegs.Count - 1].From;
-            var toClose = insetPoints[nexiCloseIndices[fromTo.to]];
-            
-            if (fromTo.from.IsRiverNexus(data))
-            {
-                if (edge.IsRiver() == false)
-                {
-                    var t = PolyTri.Construct(poly.Id, edgeSegs[0].From, fromPivot, fromClose,
-                        data.Models.Landforms.River, data.Models.Vegetations.Barren);
-                    innerBoundarySegs.Add(new LineSegment(fromClose, fromPivot));
-
-                    var cell = PolyCell.Construct(poly,
-                        new Vector2[] { t.A, t.B, t.C },
-                        data.Models.Landforms.River,
-                        data.Models.Vegetations.Barren, key);
-                    cells.Add(cell);
-                    tris.Add(t);
-                }
-            }
-            else
-            {
-                innerBoundarySegs.Add(edgeSegs[0]);
-            }
-            
-            if (fromTo.to.IsRiverNexus(data))
-            {
-                if (edge.IsRiver() == false)
-                {
-                    var t = PolyTri.Construct(poly.Id, edgeSegs[edgeSegs.Count - 1].To, toPivot, toClose,
-                        data.Models.Landforms.River, data.Models.Vegetations.Barren);
-                    innerBoundarySegs.Add(new LineSegment(toPivot, toClose));
-                    var cell = PolyCell.Construct(poly,
-                        new Vector2[] { t.A, t.B, t.C },
-                        data.Models.Landforms.River,
-                        data.Models.Vegetations.Barren, key);
-                    cells.Add(cell);
-                    tris.Add(t);
-                }
-            }
-            else
-            {
-                innerBoundarySegs.Add(edgeSegs[edgeSegs.Count - 1]);
-            }
-
-            var innerEdgeHash = new HashSet<int>();
-            if (edge.IsRiver())
-            {
-                var thisEdgeInnerIndices = innerEdgeIndices[edge];
-                var from = (int)thisEdgeInnerIndices.X;
-                var to = (int)thisEdgeInnerIndices.Y;
-                bool add = from != -1 && to != -1 && from != to;
-                int iter = 0;
-                if (from < to)
-                {
-                    iter = to - from;
-                }
-                else
-                {
-                    iter = to + (insetPoints.Length - from);
-                }
-                var curr = to;
-                
-                var riverPortionBoundary = new List<LineSegment>{};
-                if (add)
-                {
-                    riverPortionBoundary.Add(new LineSegment(edgeSegs[edgeSegs.Count - 1].To,
-                        insetPoints[to]));
-                }
-                while (add && iter > 0)
-                {
-                    iter--;
-                    var prev = (curr - 1 + insetPoints.Length) % insetPoints.Length;
-                    if(innerEdgeHash.Contains(curr) == false)
-                    {
-                        innerEdgeHash.Add(curr);
-                        innerBoundarySegs.Add(new LineSegment(insetPoints[prev], insetPoints[curr]));
-                    }
-                    riverPortionBoundary.Add(new LineSegment(insetPoints[curr], insetPoints[prev]));
-                    curr = prev;
-                    if (curr == to) break;
-                }
-                if(add) riverPortionBoundary.Add(new LineSegment(insetPoints[from], edgeSegs[0].From));
-                
-                riverPortionBoundary.AddRange(edgeSegs);
-                var riverBPoints = riverPortionBoundary.GetPoints().ToArray();
-                var cell = PolyCell.Construct(poly, riverBPoints,
-                    key.Data.Models.Landforms.River, 
-                    key.Data.Models.Vegetations.Barren,
-                    key);
-                cells.Add(cell);
-                var bankTriPs = Geometry2D.TriangulatePolygon(riverBPoints);
-                for (var i = 0; i < bankTriPs.Length; i+=3)
-                {
-                    var a = riverBPoints[bankTriPs[i]];
-                    var b = riverBPoints[bankTriPs[i + 1]];
-                    var c = riverBPoints[bankTriPs[i + 2]];
-                    var t = PolyTri.Construct(poly.Id, a, b, c,
-                        data.Models.Landforms.River,
-                        data.Models.Vegetations.Barren);
-                    tris.Add(t);
-                }
-            }
-            else
-            {
-                for (var i = 1; i < edgeSegs.Count - 1; i++)
-                {
-                    innerBoundarySegs.Add(edgeSegs[i]);
-                }
-            }
-            
+            DoEdge(edge, poly, key, scratch, cells, innerBoundarySegs);
         }
 
-        var riverCells = cells.ToHashSet();
-        MakeLandCells(poly, cells, innerBoundarySegs, tris, key);
-        var landCells = cells.Except(riverCells);
+        MakeLandCells(poly, cells, innerBoundarySegs, scratch.Tris, key);
+        var landCells = cells.OfType<LandCell>();
+        var newRiverCells = MergeRiverCells(cells, key);
+        var allCells = ((IEnumerable<PolyCell>)landCells)
+            .Union(newRiverCells).ToList();
         
-        PolyCell.Connect(landCells, riverCells, poly.Center,
+        PolyCell.ConnectCellsByEdge(landCells, newRiverCells, poly.Center,
             (v, w) =>
             {
                 v.Neighbors.Add(w.Id);
                 w.Neighbors.Add(v.Id);
             }, data);
+        PolyCell.ConnectCellsSharingPoints(newRiverCells, key.Data);
+
+        return allCells;
     }
 
+    private static void DoEdge(MapPolygonEdge edge, 
+        MapPolygon poly,
+        GenWriteKey key,
+        RiverTriGenScratch scratch,
+        List<PolyCell> cells, 
+        HashSet<LineSegment> innerBoundarySegs)
+    {
+        var data = key.Data;
+        var edgeSegs = edge.GetSegsRel(poly, data).Segments;
+        var fromTo = edge.OrderNexi(poly, data);
+        if(fromTo.from.IsRiverNexus(data) == false 
+           && fromTo.to.IsRiverNexus(data) == false)
+        {
+            innerBoundarySegs.AddRange(edgeSegs);
+            return;
+        }
+
+        var fromPivot = edgeSegs[0].To; 
+        var fromClose = scratch.InsetPoints[scratch.NexiCloseIndices[fromTo.from]];
+        var toPivot = edgeSegs[edgeSegs.Count - 1].From;
+        var toClose = scratch.InsetPoints[scratch.NexiCloseIndices[fromTo.to]];
+        
+        doCorner(fromTo.from, edgeSegs[0],edgeSegs[0].From, fromClose, fromPivot, false);
+        doCorner(fromTo.to, edgeSegs[edgeSegs.Count - 1], edgeSegs[edgeSegs.Count - 1].To, toClose, toPivot, true);
+        void doCorner(MapPolyNexus nexus, LineSegment borderSeg,
+            Vector2 corner, Vector2 close, Vector2 pivot, bool end)
+        {
+            if (nexus.IsRiverNexus(data))
+            {
+                if (edge.IsRiver() == false)
+                {
+                    var riverEdges = 
+                        nexus.IncidentEdges.Items(data)
+                            .Where(e => e.IsRiver());
+                    var polyNexusRiverEdges = 
+                        riverEdges.Where(e => e.EdgeToPoly(poly));
+                    var polyNexusCoastEdges = nexus.IncidentEdges.Items(data)
+                        .Where(e => e.IsCoast(key.Data));
+                    if (polyNexusRiverEdges.Count() > 1) throw new Exception();
+                    var riverEdge = (polyNexusRiverEdges.Count() > 0)
+                        ? polyNexusRiverEdges.First()
+                        : edge;
+
+                    var t = PolyTri.Construct(poly.Id, corner, pivot, close,
+                        data.Models.Landforms.River, data.Models.Vegetations.Barren);
+
+                    var newSeg = new LineSegment(end ? pivot : close,
+                        end ? close : pivot);
+                    innerBoundarySegs.Add(newSeg);
+                
+                    var cell = RiverCell.Construct(riverEdge, poly.Center, 
+                        new Vector2[] { t.A, t.B, t.C }, key);
+                    cells.Add(cell);
+                    scratch.Tris.Add(t);
+                }
+            }
+            else
+            {
+                innerBoundarySegs.Add(borderSeg);
+            }
+        }
+        
+        
+        var innerEdgeHash = new HashSet<int>();
+        if (edge.IsRiver())
+        {
+            var thisEdgeInnerIndices = scratch.InnerEdgeIndices[edge];
+            var from = (int)thisEdgeInnerIndices.X;
+            var to = (int)thisEdgeInnerIndices.Y;
+            bool add = from != -1 && to != -1 && from != to;
+            int iter = 0;
+            if (from < to)
+            {
+                iter = to - from;
+            }
+            else
+            {
+                iter = to + (scratch.InsetPoints.Length - from);
+            }
+            var curr = to;
+            
+            var riverPortionBoundary = new List<LineSegment>{};
+            if (add)
+            {
+                riverPortionBoundary.Add(new LineSegment(edgeSegs[edgeSegs.Count - 1].To,
+                    scratch.InsetPoints[to]));
+            }
+            while (add && iter > 0)
+            {
+                iter--;
+                var prev = (curr - 1 + scratch.InsetPoints.Length) % scratch.InsetPoints.Length;
+                if(innerEdgeHash.Contains(curr) == false)
+                {
+                    innerEdgeHash.Add(curr);
+                    innerBoundarySegs.Add(new LineSegment(scratch.InsetPoints[prev], scratch.InsetPoints[curr]));
+                }
+                riverPortionBoundary.Add(new LineSegment(scratch.InsetPoints[curr], scratch.InsetPoints[prev]));
+                curr = prev;
+                if (curr == to) break;
+            }
+            if(add) riverPortionBoundary.Add(new LineSegment(scratch.InsetPoints[from], edgeSegs[0].From));
+            
+            riverPortionBoundary.AddRange(edgeSegs);
+            var riverBPoints = riverPortionBoundary.GetPoints().ToArray();
+            var cell = RiverCell.Construct(edge, poly.Center, riverBPoints, key);
+            cells.Add(cell);
+            var bankTriPs = Geometry2D.TriangulatePolygon(riverBPoints);
+            for (var i = 0; i < bankTriPs.Length; i+=3)
+            {
+                var a = riverBPoints[bankTriPs[i]];
+                var b = riverBPoints[bankTriPs[i + 1]];
+                var c = riverBPoints[bankTriPs[i + 2]];
+                var t = PolyTri.Construct(poly.Id, a, b, c,
+                    data.Models.Landforms.River,
+                    data.Models.Vegetations.Barren);
+                scratch.Tris.Add(t);
+            }
+        }
+        else
+        {
+            for (var i = 1; i < edgeSegs.Count - 1; i++)
+            {
+                innerBoundarySegs.Add(edgeSegs[i]);
+            }
+        }
+    }
+    private static List<RiverCell> MergeRiverCells(
+        List<PolyCell> cells, GenWriteKey key)
+    {
+        var riverCellsByEdge = cells.OfType<RiverCell>().SortInto(c => c.Edge.RefId);
+        var newRiverCells = new List<RiverCell>();
+        foreach (var kvp in riverCellsByEdge)
+        {
+            if (kvp.Value.Count > 3) throw new Exception();
+            if (kvp.Value.Count == 3)
+            {
+                var triCells = kvp.Value.Where(c => c.RelBoundary.Count() == 3);
+                if (triCells.Count() != 2) throw new Exception();
+                var big = kvp.Value.Except(triCells).First();
+                foreach (var tCell in triCells)
+                {
+                    var newBounds = Geometry2D.MergePolygons(tCell.RelBoundary, big.RelBoundary);
+                    if (newBounds.Count() != 1)
+                    {
+                        //SET ISSUE
+                        continue;
+                    }
+                    big.SetBoundary(newBounds.First(), key);
+                }
+                newRiverCells.Add(big);
+            }
+            if (kvp.Value.Count == 2)
+            {
+                var union = Geometry2D.MergePolygons(
+                    kvp.Value[0].RelBoundary,
+                    kvp.Value[1].RelBoundary);
+                if (union.Count() != 1)
+                {
+                    //DO ISSUE
+                    continue;
+                }
+
+                var c1 = kvp.Value[0];
+                c1.SetBoundary(union.First(), key);
+                newRiverCells.Add(c1);
+                // GD.Print(union.Count);
+            }
+            else if (kvp.Value.Count == 1)
+            {
+                newRiverCells.Add(kvp.Value.First());
+            }
+        }
+
+        return newRiverCells;
+    }
     private static void MakeLandCells(MapPolygon poly,
         List<PolyCell> cells,
         HashSet<LineSegment> innerBoundarySegs,

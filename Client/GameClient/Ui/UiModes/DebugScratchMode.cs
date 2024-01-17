@@ -16,55 +16,48 @@ public class DebugScratchMode : UiMode
     public override void HandleInput(InputEvent e)
     {
         _client.Cam().HandleInput(e);
-        
+        Highlight();
+        return;
         if (_drawn) return;
         _drawn = true;
         var mg = _client.GetComponent<MapGraphics>();
 
         var cells = _client.Data.GetAll<PolyCells>().First();
-        var byId = cells.Cells.ToDictionary(v => v.Id, v => v);
         
-        foreach (var c in cells.Cells)
+        foreach (var c in cells.Cells.Values)
         {
             var v = c.Vegetation.Model(_client.Data);
             var lf = c.Landform.Model(_client.Data);
             var vegCol = v.Color.Darkened(lf.DarkenFactor);
             var col = ColorsExt.GetRandomColor();
-            col = new Color(col, .5f);
             mg.DebugOverlay.Draw(mb =>
             {
-                var tris = Geometry2D.TriangulatePolygon(c.RelBoundary);
-                for (var i = 0; i < tris.Length; i+=3)
-                {
-                    var p1 = c.RelBoundary[tris[i]];
-                    var p2 = c.RelBoundary[tris[i+1]];
-                    var p3 = c.RelBoundary[tris[i+2]];
-                    // mb.AddTri(p1, p2, p3, lf.Color);
-                    // mb.AddTri(p1, p2, p3, v.Color);
-                    mb.AddTri(p1, p2, p3, col);
-                }
+                mb.DrawPolygon(c.RelBoundary, col);
             }, c.RelTo);
-        }
-        foreach (var c in cells.Cells)
-        {
-            // if (c.Border() == false) continue;
-            var mid = c.RelBoundary.Avg() + c.RelTo;
-            mg.DebugOverlay.Draw(mb =>
-            {
-                var ns = c.Neighbors.Select(n => byId[n]);
-                foreach (var n in ns)
-                {
-                    var nMid = n.RelBoundary.Avg() + n.RelTo;
-                    var offset = mid.GetOffsetTo(nMid, _client.Data);
-                    mb.AddLine(Vector2.Zero, offset, Colors.Red, 3f);
-                }
-            }, mid);
         }
     }
 
     private void Highlight()
     {
+        var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
+        highlighter.Clear();
+        var mapPos = _client.Cam().GetMousePosInMapSpace();
+        var cell = _client.Data.Planet.PolygonAux.PolyCellGrid
+            .GetElementAtPoint(mapPos, _client.Data);
         
+        highlighter.Draw(mb =>
+            mb.DrawPolygon(cell.RelBoundary, Colors.Red), cell.RelTo);
+        var cells = _client.Data.GetAll<PolyCells>()
+            .First().Cells;
+        
+        foreach (var nId in cell.Neighbors)
+        {
+            var nCell = cells[nId];
+            var col = Colors.Blue.Darkened(Game.I.Random.RandfRange(0f, .5f));
+            highlighter.Draw(mb =>
+                mb.DrawPolygon(nCell.RelBoundary, 
+                    col), nCell.RelTo);
+        }
     }
     public override void Clear()
     {

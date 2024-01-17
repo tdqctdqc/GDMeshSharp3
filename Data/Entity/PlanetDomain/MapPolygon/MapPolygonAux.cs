@@ -8,8 +8,8 @@ public class MapPolygonAux
 {
     public IReadOnlyGraph<MapPolygon, PolyBorderChain> BorderGraph { get; private set; }
     public EntityValueCache<MapPolygon, PolyAuxData> AuxDatas { get; private set; }
-    public PolyGrid MapPolyGrid { get; private set; }
-    
+    public PolyGrid<MapPolygon> MapPolyGrid { get; private set; }
+    public PolyGrid<PolyCell> PolyCellGrid { get; private set; }
     public HashSet<MapChunk> Chunks { get; private set; }
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public LandSeaManager LandSea { get; private set; }
@@ -55,6 +55,9 @@ public class MapPolygonAux
         
         data.Notices.SetPolyShapes.Subscribe(() => UpdateAuxDatas(data));
         data.Notices.FinishedStateSync.Subscribe(() => UpdateAuxDatas(data));
+        
+        data.Notices.FinishedGen.Subscribe(() => BuildCellGrid(data));
+        data.Notices.FinishedStateSync.Subscribe(() => BuildCellGrid(data));
     }
 
     private void UpdateAuxDatas(Data data)
@@ -72,11 +75,29 @@ public class MapPolygonAux
     }
     private void BuildPolyGrid(Data data)
     {
-        var sw = new Stopwatch();
-        var gridCellSize = 500f;
-        var numPartitions = Mathf.CeilToInt(data.Planet.Info.Dimensions.X / gridCellSize);
-        MapPolyGrid = new PolyGrid(data.Planet.Info.Dimensions, 300f);
-        MapPolyGrid.Set(data);
+        MapPolyGrid = new PolyGrid<MapPolygon>(
+            data.Planet.Info.Dimensions, 
+            300f,
+            p => p.GetOrderedBoundaryPoints(data),
+            p => p.Center);
+        foreach (var element in data.GetAll<MapPolygon>())
+        {
+            MapPolyGrid.AddElement(element);
+        }
+    }
+
+    private void BuildCellGrid(Data data)
+    {
+        PolyCellGrid = new PolyGrid<PolyCell>(
+            data.Planet.Info.Dimensions, 
+            100f,
+            p => p.RelBoundary,
+            p => p.RelTo);
+        foreach (var element in 
+                 data.GetAll<PolyCells>().First().Cells.Values)
+        {
+            PolyCellGrid.AddElement(element);
+        }
     }
     private void BuildChunks(Data data)
     {

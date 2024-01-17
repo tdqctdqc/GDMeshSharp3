@@ -5,13 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/LandCell.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/RiverCell.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/SeaCell.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DebugScratchMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DebugScratchMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCells.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCells.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +79,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/UiModes/BlankMode.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/UiModes/DebugScratchMode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
@@ -442,6 +449,9 @@
       <workItem from="1705268796729" duration="3327000" />
       <workItem from="1705349121952" duration="6964000" />
       <workItem from="1705358750977" duration="3240000" />
+      <workItem from="1705424143148" duration="4701000" />
+      <workItem from="1705431176916" duration="2920000" />
+      <workItem from="1705443027673" duration="9030000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -653,14 +663,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00092" summary="one more front construction algorithm">
-      <option name="closed" value="true" />
-      <created>1703098757291</created>
-      <option name="number" value="00092" />
-      <option name="presentableId" value="LOCAL-00092" />
-      <option name="project" value="LOCAL" />
-      <updated>1703098757291</updated>
-    </task>
     <task id="LOCAL-00093" summary="working on unit movement">
       <option name="closed" value="true" />
       <created>1703792909674</created>
@@ -805,7 +807,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705349270731</updated>
     </task>
-    <option name="localTasksCounter" value="111" />
+    <task id="LOCAL-00111" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1705427219123</created>
+      <option name="number" value="00111" />
+      <option name="presentableId" value="LOCAL-00111" />
+      <option name="project" value="LOCAL" />
+      <updated>1705427219123</updated>
+    </task>
+    <option name="localTasksCounter" value="112" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -843,7 +853,6 @@
     <MESSAGE value="bugfixing pathfinding and movement" />
     <MESSAGE value="changing road generation" />
     <MESSAGE value="made MapOverlayDrawer" />
-    <MESSAGE value="ditto" />
     <MESSAGE value="made fronts only take certain num of units" />
     <MESSAGE value="working on advance line" />
     <MESSAGE value="doot" />
@@ -852,6 +861,7 @@
     <MESSAGE value="working on movement after combat, made order decide that instead of comb result, made Blobber" />
     <MESSAGE value="before removing continuous movement" />
     <MESSAGE value="working on new PolyCell system" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on new PolyCell system" />
+    <MESSAGE value="ditto" />
+    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
   </component>
 </project>

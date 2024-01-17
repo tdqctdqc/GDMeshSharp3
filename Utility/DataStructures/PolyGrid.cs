@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PolyGrid
+public class PolyGrid<TPoly>
+    where TPoly : class
 {
-    public Dictionary<Vector2I, HashSet<MapPolygon>> Cells { get; private set; }
+    public Dictionary<Vector2I, HashSet<TPoly>> Cells { get; private set; }
     public (Vector2I, float)[] SearchSpiralKeyOffsets { get; private set; }
     public float CellWidth { get; }
     public float CellHeight { get; }
@@ -14,36 +15,36 @@ public class PolyGrid
     public int NumXPartitions { get; }
     public int NumYPartitions { get; }
     public Vector2 Dimension { get; }
+    private Func<TPoly, Vector2[]> _getRelBoundary;
+    private Func<TPoly, Vector2> _getCenter;
     
-    public PolyGrid(Vector2 dim, float maxCellSideLength)
+    public PolyGrid(Vector2 dim, float maxCellSideLength,
+        Func<TPoly, Vector2[]> getRelBoundary, 
+        Func<TPoly, Vector2> getCenter)
     {
+        _getRelBoundary = getRelBoundary;
+        _getCenter = getCenter;
         NumXPartitions = Mathf.CeilToInt(dim.X / maxCellSideLength);
         CellWidth = dim.X / NumXPartitions;
         NumYPartitions = Mathf.CeilToInt(dim.Y / maxCellSideLength);
         CellHeight = dim.Y / NumYPartitions;
-        Cells = new Dictionary<Vector2I, HashSet<MapPolygon>>();
+        Cells = new Dictionary<Vector2I, HashSet<TPoly>>();
         Dimension = dim;
         for (var i = 0; i < NumXPartitions; i++)
         {
             for (var j = 0; j < NumYPartitions; j++)
             {
                 var key = new Vector2I(i, j);
-                Cells.Add(key, new HashSet<MapPolygon>());
+                Cells.Add(key, new HashSet<TPoly>());
             }
         }
 
         SearchSpiralKeyOffsets = GetSearchSpiral();
     }
-    public void Set(Data d)
+    public void AddElement(TPoly poly)
     {
-        foreach (var element in d.GetAll<MapPolygon>())
-        {
-            AddElement(element, d);
-        }
-    }
-    public void AddElement(MapPolygon poly, Data d)
-    {
-        var boundary = poly.GetOrderedBoundaryPoints(d);
+        var boundary = _getRelBoundary(poly);
+        var center = _getCenter(poly);
         if (boundary == null) return;
         int minXCell = int.MaxValue;
         int maxXCell = int.MinValue;
@@ -51,7 +52,7 @@ public class PolyGrid
         int maxYCell = int.MinValue;
         foreach (var relP in boundary)
         {
-            var absP = poly.Center + relP;
+            var absP = center + relP;
             var key = GetUnclampedKey(absP);
             minXCell = Mathf.Min(key.X, minXCell);
             maxXCell = Mathf.Max(key.X, maxXCell);
@@ -66,7 +67,7 @@ public class PolyGrid
                 var key = ClampKey(new Vector2I(i, j));
                 if (Cells.ContainsKey(key) == false)
                 {
-                    Cells.Add(key, new HashSet<MapPolygon>());
+                    Cells.Add(key, new HashSet<TPoly>());
                 }
                 Cells[key].Add(poly);
             }
@@ -84,15 +85,15 @@ public class PolyGrid
     {
         return true;
     }
-    public MapPolygon GetElementAtPoint(Vector2 point, Data d)
+    public TPoly GetElementAtPoint(Vector2 point, Data d)
     {
-        var key = GetKey(point);
+        var key = ClampKey(GetKey(point));
         if (Cells.ContainsKey(key) == false)
         {
             throw new Exception($"no key {key}, x partitions {NumXPartitions} y partitions {NumYPartitions}");
         }
         var found = Cells[key]
-            .FirstOrDefault(p => p.PointInPolyAbs(point, d));
+            .FirstOrDefault(p => PointInPolyAbs(p, point, d));
         if (found != null) return found;  
         
         var (poly, issue) = ForceGet(point, key, d);
@@ -100,10 +101,16 @@ public class PolyGrid
         return poly;
     }
 
-    private (MapPolygon, NoPolyAtPointIssue) ForceGet(Vector2 point, Vector2I key, Data d)
+    private bool PointInPolyAbs(TPoly poly, Vector2 p, Data d)
     {
-        
-        var issue = new NoPolyAtPointIssue(point, null, "");
+        var boundary = _getRelBoundary(poly);
+        var center = _getCenter(poly);
+        var posRel = center.GetOffsetTo(p, d);
+        return Geometry2D.IsPointInPolygon(posRel, boundary);
+    }
+    private (TPoly, NoPolyAtPointIssue<TPoly>) ForceGet(Vector2 point, Vector2I key, Data d)
+    {
+        var issue = new NoPolyAtPointIssue<TPoly>(point, null, "");
         issue.Message += $"couldn't find poly at point {point}" +
                          $" cell {key}, force getting";
         var (close, dist) = GetClosestInCell(point, key, d);
@@ -117,7 +124,7 @@ public class PolyGrid
         issue.Message += $"\ncouldn't find close poly at point {point}" +
                $"cell {key}, expanding search";
 
-        (MapPolygon, float) res = (null, Mathf.Inf);
+        (TPoly, float) res = (null, Mathf.Inf);
         for (int i = -1; i < 1; i++)
         {
             for (int j = -1; j < 1; j++)
@@ -146,7 +153,7 @@ public class PolyGrid
                             $"key {key}");
     }
 
-    private (MapPolygon, float) GetClosestInCell(Vector2 point, Vector2I key, Data d)
+    private (TPoly, float) GetClosestInCell(Vector2 point, Vector2I key, Data d)
     {
         if (Cells.ContainsKey(key) == false)
         {
@@ -160,16 +167,18 @@ public class PolyGrid
             return (null, Mathf.Inf);
         }
 
-        var contains = cell.FirstOrDefault(p => p.PointInPolyAbs(point, d));
+        var contains = cell.FirstOrDefault(p => 
+            PointInPolyAbs(p, point, d));
         if (contains != null) return (contains, 0f);
         
         
         var dist = Mathf.Inf;
-        MapPolygon res = null;
+        TPoly res = null;
         foreach (var p in cell)
         {
-            var rel = p.Center.GetOffsetTo(point, d);
-            var bps = p.GetOrderedBoundaryPoints(d);
+            var center = _getCenter(p);
+            var rel = center.GetOffsetTo(point, d);
+            var bps = _getRelBoundary(p);
             var minDist = Mathf.Inf;
             for (var i = 0; i <= bps.Length; i++)
             {

@@ -79,4 +79,19 @@ public static class MeshBuilderExt
             }
         }
     }
+
+    public static void DrawPolygon(this MeshBuilder mb,
+        Vector2[] boundaryPoints, Color color)
+    {
+        var tris = Geometry2D.TriangulatePolygon(boundaryPoints);
+        for (var i = 0; i < tris.Length; i+=3)
+        {
+            var p1 = boundaryPoints[tris[i]];
+            var p2 = boundaryPoints[tris[i+1]];
+            var p3 = boundaryPoints[tris[i+2]];
+            // mb.AddTri(p1, p2, p3, lf.Color);
+            // mb.AddTri(p1, p2, p3, v.Color);
+            mb.AddTri(p1, p2, p3, color);
+        }
+    }
 }

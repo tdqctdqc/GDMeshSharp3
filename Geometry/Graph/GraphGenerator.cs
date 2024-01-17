@@ -124,11 +124,11 @@ public static class GraphGenerator
                 Geometry2D.IntersectPolygons(cellBoundaryPs, boundaryPoints);
             foreach (var intersection in intersections)
             {
-                var cell = PolyCell.Construct(poly, intersection, key);
+                var cell = LandCell.Construct(poly, intersection, key);
                 res.Add(cell);
             }
         }
-        PolyCell.Connect(res, key.Data); 
+        PolyCell.ConnectCellsSharingPoints(res, key.Data); 
         return res.ToArray();
     }
 
