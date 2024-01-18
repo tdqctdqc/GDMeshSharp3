@@ -27,9 +27,9 @@ public class Factory : BuildingModel
         
     }
 
-    protected override bool CanBuildInTriSpec(PolyTri t, Data data)
+    protected override bool CanBuildInCell(PolyCell t, Data data)
     {
-        return t.Landform(data).IsLand && t.Landform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness;
+        return t.GetLandform(data).IsLand && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness;
     }
 
     public override bool CanBuildInPoly(MapPolygon p, Data data)

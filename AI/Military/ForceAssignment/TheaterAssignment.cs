@@ -7,14 +7,14 @@ using Godot;
 public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
 {
     public HashSet<ForceAssignment> Assignments { get; private set; }
-    public HashSet<int> TacWaypointIds { get; private set; }
+    public HashSet<int> HeldCellIds { get; private set; }
     public TheaterAssignment(int id, EntityRef<Regime> regime, 
         HashSet<ForceAssignment> assignments,
-        HashSet<int> tacWaypointIds, HashSet<int> groupIds) 
+        HashSet<int> heldCellIds, HashSet<int> groupIds) 
         : base(groupIds, regime, id)
     {
         Assignments = assignments;
-        TacWaypointIds = tacWaypointIds;
+        HeldCellIds = heldCellIds;
     }
     public override void CalculateOrders(MinorTurnOrders orders, LogicWriteKey key)
     {
@@ -29,9 +29,9 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         return Assignments.Sum(fa => fa.GetPowerPointNeed(d));
     }
 
-    public IEnumerable<Waypoint> GetWaypoints(Data d)
+    public IEnumerable<PolyCell> GetCells(Data d)
     {
-        return TacWaypointIds.Select(id => MilitaryDomain.GetWaypoint(id, d));
+        return HeldCellIds.Select(id => PlanetDomainExt.GetPolyCell(id, d));
     }
     public static void CheckSplitRemove(Regime r, List<TheaterAssignment> theaters, 
         Action<ForceAssignment> add, Action<ForceAssignment> remove, LogicWriteKey key)
@@ -39,23 +39,23 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         var alliance = r.GetAlliance(key.Data);
         
         var controlledWps = key.Data.Context
-            .ControlledAreas[alliance];
+            .ControlledAreas[r];
         for (var i = 0; i < theaters.Count; i++)
         {
             var ta = theaters[i];
-            ta.TacWaypointIds.RemoveWhere(i => controlledWps.Contains(MilitaryDomain.GetWaypoint(i, key.Data)) == false);
+            ta.HeldCellIds.RemoveWhere(i => controlledWps.Contains(PlanetDomainExt.GetPolyCell(i, key.Data)) == false);
             
-            if (ta.TacWaypointIds.Count == 0)
+            if (ta.HeldCellIds.Count == 0)
             {
                 remove(ta);
                 return;
             }
             
-            var flood = FloodFill<Waypoint>.GetFloodFill(ta.GetWaypoints(key.Data).First(),
-                wp => ta.TacWaypointIds.Contains(wp.Id),
+            var flood = FloodFill<PolyCell>.GetFloodFill(ta.GetCells(key.Data).First(),
+                wp => ta.HeldCellIds.Contains(wp.Id),
                 wp => wp.GetNeighbors(key.Data));
 
-            if (flood.Count() != ta.TacWaypointIds.Count)
+            if (flood.Count() != ta.HeldCellIds.Count)
             {
                 remove(ta);
                 var newTheaters = Divide(ta, key);
@@ -83,7 +83,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         var toMerge = new Dictionary<HashSet<int>, List<TheaterAssignment>>();
         foreach (var ta in theaters)
         {
-            var first = ta.TacWaypointIds.First();
+            var first = ta.HeldCellIds.First();
             if (covered.Contains(first))
             {
                 var k = toMerge.First(kvp => kvp.Key.Contains(first)).Key;
@@ -93,10 +93,10 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             {
                 var flood = FloodFill<int>.GetFloodFill(
                     first, responsibilityIds.Contains,
-                    t => MilitaryDomain.GetWaypoint(t, key.Data).Neighbors);
+                    t => PlanetDomainExt.GetPolyCell(t, key.Data).Neighbors);
                 covered.AddRange(flood);
                 toMerge.Add(flood, new List<TheaterAssignment>{ta});
-                ta.TacWaypointIds.AddRange(flood);
+                ta.HeldCellIds.AddRange(flood);
             }
         }
         
@@ -117,7 +117,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         }
 
         var uncovered = responsibility.Except(covered
-            .Select(c => MilitaryDomain.GetWaypoint(c, key.Data))).ToList();
+            .Select(c => PlanetDomainExt.GetPolyCell(c, key.Data))).ToList();
         var uncoveredUnions = UnionFind.Find(uncovered, (w, v) => true,
             w => w.GetNeighbors(key.Data));
         foreach (var union in uncoveredUnions)
@@ -139,15 +139,15 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         var claimedGroups = groups.Except(freeGroups).ToHashSet();
         foreach (var freeGroup in freeGroups)
         {
-            var wps = freeGroup.Units.Items(key.Data)
-                .Select(u => key.Data.Context.UnitWaypoints[u]).ToHashSet();
+            var freeGroupCells = freeGroup.Units.Items(key.Data)
+                .Select(u => u.Position.GetCell(key.Data)).ToHashSet();
             var theater = forceAssignments.OfType<TheaterAssignment>()
-                .FirstOrDefault(t => wps.Any(wp => t.TacWaypointIds.Contains(wp.Id)));
+                .FirstOrDefault(t => freeGroupCells.Any(wp => t.HeldCellIds.Contains(wp.Id)));
             if (theater == null)
             {
                 GD.Print($"couldnt find theater for free unit group " +
                          $"of {r.Name} " +
-                         $"at wp {wps.First().Id}");
+                         $"at wp {freeGroupCells.First().Id}");
                 continue;
             }
             theater.GroupIds.Add(freeGroup.Id);
@@ -155,8 +155,8 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         
         foreach (var claimedGroup in claimedGroups)
         {
-            var wps = claimedGroup.Units.Items(key.Data)
-                .Select(u => key.Data.Context.UnitWaypoints[u]).ToHashSet();
+            var claimedGroupCells = claimedGroup.Units.Items(key.Data)
+                .Select(u => u.Position.GetCell(key.Data)).ToHashSet();
             var theatersClaiming = forceAssignments.OfType<TheaterAssignment>()
                 .Where(t => t.GroupIds.Contains(claimedGroup.Id));
             if (theatersClaiming.Count() > 1)
@@ -165,12 +165,12 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
                 throw new Exception();
             }
             var theaterClaiming = theatersClaiming.First();
-            if (wps.Any(wp => theaterClaiming.TacWaypointIds.Contains(wp.Id)) == false)
+            if (claimedGroupCells.Any(wp => theaterClaiming.HeldCellIds.Contains(wp.Id)) == false)
             {
                 GD.Print("theater doesnt have wp for claimed unit group");
                 var theatersSharingWp = forceAssignments
                     .OfType<TheaterAssignment>()
-                    .Where(ta => wps.Any(wp => ta.TacWaypointIds.Contains(wp.Id)));
+                    .Where(ta => claimedGroupCells.Any(wp => ta.HeldCellIds.Contains(wp.Id)));
                 if (theatersSharingWp.Count() == 0)
                 {
                     GD.Print("couldnt find theater for claimed unit group");
@@ -197,9 +197,9 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     public static IEnumerable<TheaterAssignment> Divide(TheaterAssignment ta, LogicWriteKey key)
     {
         var r = ta.Regime.Entity(key.Data);
-        var unions = UnionFind.Find(ta.TacWaypointIds,
+        var unions = UnionFind.Find(ta.HeldCellIds,
             (i, j) => true,
-            i => MilitaryDomain.GetWaypoint(i, key.Data).Neighbors);
+            i => PlanetDomainExt.GetPolyCell(i, key.Data).Neighbors);
         
         var newTheaters =
             unions.Select(
@@ -207,25 +207,25 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
                     u.ToHashSet(), new HashSet<int>()));
         foreach (var group in ta.Groups(key.Data))
         {
-            var unitWpIds = group.Units.Items(key.Data)
-                .Select(u => key.Data.Context.UnitWaypoints[u].Id).ToList();
-            var mostWpsShared = newTheaters
-                .MaxBy(t => unitWpIds.Where(t.TacWaypointIds.Contains).Count());
-            if (unitWpIds.Where(mostWpsShared.TacWaypointIds.Contains).Count() == 0)
+            var unitCellIds = group.Units.Items(key.Data)
+                .Select(u => u.Position.PolyCell).ToList();
+            var mostCellsShared = newTheaters
+                .MaxBy(t => unitCellIds.Where(t.HeldCellIds.Contains).Count());
+            if (unitCellIds.Where(mostCellsShared.HeldCellIds.Contains).Count() == 0)
             {
                 var pos = group.GetPosition(key.Data);
                 var closest = newTheaters
                     .MinBy(t => 
                         group.GetPosition(key.Data).GetOffsetTo(
-                        key.Data.Planet.GetAveragePosition(t.TacWaypointIds.Select(i =>
-                            MilitaryDomain.GetWaypoint(i, key.Data).Pos)),
+                        key.Data.Planet.GetAveragePosition(t.HeldCellIds.Select(i =>
+                            PlanetDomainExt.GetPolyCell(i, key.Data).GetCenter())),
                         key.Data).Length()
                     );
                 closest.GroupIds.Add(group.Id);
             }
             else
             {
-                mostWpsShared.GroupIds.Add(group.Id);
+                mostCellsShared.GroupIds.Add(group.Id);
             }
         }
 
@@ -284,9 +284,9 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         this.TakeAwayGroupCompound(g, key);
     }
     
-    public override Waypoint GetCharacteristicWaypoint(Data d)
+    public override PolyCell GetCharacteristicCell(Data d)
     {
-        return GetWaypoints(d)
-            .FirstOrDefault(wp => wp.GetOccupyingRegime(d).Id == Regime.RefId);
+        return GetCells(d)
+            .FirstOrDefault(wp => wp.Controller.RefId == Regime.RefId);
     }
 }

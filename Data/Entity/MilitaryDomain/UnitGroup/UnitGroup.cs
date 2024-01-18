@@ -41,10 +41,10 @@ public class UnitGroup : Entity
         key.Data.Military.UnitAux.UnitChangedGroup.Invoke(u, newG, oldG);
     }
 
-    public Waypoint GetWaypoint(Data d)
+    public PolyCell GetCell(Data d)
     {
         var unit = Units.Items(d).First();
-        return d.Context.UnitWaypoints[unit];
+        return unit.Position.GetCell(d);
         // var moveType = unit.Template.Entity(d)
         //     .MoveType.Model(d);
         // var pos = unit.Position;
@@ -58,7 +58,7 @@ public class UnitGroup : Entity
 
     public Vector2 GetPosition(Data d)
     {
-        return Units.Items(d).First().Position.Pos;
+        return Units.Items(d).First().Position.GetCell(d).GetCenter();
     }
     public void SetOrder(UnitGroupOrder groupOrder, ProcedureWriteKey key)
     {

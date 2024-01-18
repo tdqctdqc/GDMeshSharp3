@@ -3,18 +3,20 @@ using MessagePack;
 
 public class MapBuilding : Entity
 {
-    public int AssocWaypoint { get; private set; }
-    public PolyTriPosition Position { get; protected set; }
+    public int PolyCellId { get; protected set; }
     public ModelRef<BuildingModel> Model { get; protected set; }
-    
-    public static MapBuilding Create(PolyTriPosition pos, 
-        int assocWaypoint, BuildingModel model, ICreateWriteKey key)
+    public EntityRef<MapPolygon> Polygon { get; private set; }
+    public static MapBuilding Create(PolyCell cell, 
+        MapPolygon polygon,
+        BuildingModel model, ICreateWriteKey key)
     {
-        var b = new MapBuilding(key.Data.IdDispenser.TakeId(), pos, model.MakeRef(), assocWaypoint);
+        var b = new MapBuilding(key.Data.IdDispenser.TakeId(), 
+            cell.Id, model.MakeRef(), polygon.MakeRef());
         key.Create(b);
         return b;
     }
-    public static MapBuilding CreateGen(MapPolygon poly, int assocWaypoint, BuildingModel model, GenWriteKey key)
+    public static MapBuilding CreateGen(MapPolygon poly, 
+        BuildingModel model, GenWriteKey key)
     {
         var slots = poly.PolyBuildingSlots;
         if (slots.AvailableSlots.TryGetValue(model.BuildingType, out var numSlots) == false || numSlots.Count < 1)
@@ -24,15 +26,16 @@ public class MapBuilding : Entity
         }
         var pos = slots.AvailableSlots[model.BuildingType].First.Value;
         slots.AvailableSlots[model.BuildingType].RemoveFirst();
-        var b = new MapBuilding(key.Data.IdDispenser.TakeId(), pos, model.MakeRef(), assocWaypoint);
+        var b = new MapBuilding(key.Data.IdDispenser.TakeId(), 
+            pos, model.MakeRef(), poly.MakeRef());
         key.Create(b);
         return b;
     }
-    [SerializationConstructor] private MapBuilding(int id, PolyTriPosition position, 
-        ModelRef<BuildingModel> model, int assocWaypoint) : base(id)
+    [SerializationConstructor] private MapBuilding(int id, int polyCellId, 
+        ModelRef<BuildingModel> model, EntityRef<MapPolygon> polygon) : base(id)
     {
-        Position = position;
+        PolyCellId = polyCellId;
         Model = model;
-        AssocWaypoint = assocWaypoint;
+        Polygon = polygon;
     }
 }

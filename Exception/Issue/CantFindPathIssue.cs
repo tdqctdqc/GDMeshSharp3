@@ -5,13 +5,15 @@ using Godot;
 
 public class CantFindPathIssue : Issue
 {
-    public IMapPathfindNode Start { get; private set; }
-    public IMapPathfindNode Dest { get; private set; }
+    public PolyCell Start { get; private set; }
+    public PolyCell Dest { get; private set; }
     public MoveType MoveType { get; private set; }
     public Alliance Alliance { get; private set; }
     public CantFindPathIssue(Vector2 point, 
         Alliance alliance,
-        string message, IMapPathfindNode start, IMapPathfindNode dest, 
+        string message, 
+        PolyCell start, 
+        PolyCell dest, 
         MoveType moveType) 
         : base(point, message)
     {
@@ -23,8 +25,8 @@ public class CantFindPathIssue : Issue
 
     public override void Draw(Client c)
     {
-        var startNeighborhood = new HashSet<IMapPathfindNode>();
-        var destNeighborhood = new HashSet<IMapPathfindNode>();
+        var startNeighborhood = new HashSet<PolyCell>();
+        var destNeighborhood = new HashSet<PolyCell>();
         startNeighborhood.Add(Start);
         destNeighborhood.Add(Dest);
         int iter = 0;
@@ -38,11 +40,11 @@ public class CantFindPathIssue : Issue
             moreNeighbors = check(destNeighborhood, startNeighborhood);
             if (moreNeighbors == false) break;
 
-            bool check(HashSet<IMapPathfindNode> oldWps, 
-                HashSet<IMapPathfindNode> otherWps)
+            bool check(HashSet<PolyCell> oldWps, 
+                HashSet<PolyCell> otherWps)
             {
                 var newWps = oldWps
-                    .SelectMany(wp => wp.Neighbors(c.Data))
+                    .SelectMany(wp => wp.GetNeighbors(c.Data))
                     .Where(wp => startNeighborhood.Contains(wp) == false)
                     .ToArray();
                 if (newWps.Length == 0) return false;
@@ -65,16 +67,8 @@ public class CantFindPathIssue : Issue
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
         foreach (var n in union)
         {
-            Color canPass;
-            if (n is Waypoint wp)
-            {
-                canPass = MoveType.Passable(wp, Alliance, c.Data)
-                    ? Colors.White : Colors.Black;
-            }
-            else
-            {
-                 canPass = Colors.Gray;
-            }
+            Color canPass = canPass = MoveType.Passable(n, Alliance, c.Data)
+                ? Colors.White : Colors.Black;
             
             Color isStartOrDest = Colors.White;
             var size = 10f;
@@ -92,9 +86,9 @@ public class CantFindPathIssue : Issue
                 size = 5f;
             }
             debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size, canPass), 
-                n.Pos);
+                n.GetCenter());
             debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size / 2f, isStartOrDest), 
-                n.Pos);
+                n.GetCenter());
         }
     }
 }

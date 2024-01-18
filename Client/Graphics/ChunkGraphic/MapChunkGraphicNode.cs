@@ -105,12 +105,6 @@ public abstract partial class MapChunkGraphicNode<TKey>
         _graphics.Remove(key);
     }
     
-    protected void SetRelPos(Node2D node, PolyTriPosition pos, Data data)
-    {
-        var poly = pos.Poly(data);
-        var offset = Chunk.RelTo.GetOffsetTo(poly, data);
-        node.Position = offset + pos.Tri(data).GetCentroid();
-    }
     protected void SetRelPos(Node2D node, MapPolygon poly, Data data)
     {
         node.Position = Chunk.RelTo.GetOffsetTo(poly, data);

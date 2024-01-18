@@ -42,7 +42,7 @@ public abstract class ForceAssignment : IPolymorph
         return assigned / need;
     }
 
-    public abstract Waypoint GetCharacteristicWaypoint(Data d);
+    public abstract PolyCell GetCharacteristicCell(Data d);
     public abstract UnitGroup RequestGroup(LogicWriteKey key);
     public abstract void TakeAwayGroup(UnitGroup g, LogicWriteKey key);
     public abstract void AssignGroups(LogicWriteKey key);

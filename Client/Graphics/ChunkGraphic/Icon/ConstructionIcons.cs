@@ -19,7 +19,8 @@ public partial class ConstructionIcons : MapChunkGraphicNode<Construction>
         var icon = construction.Model.Model(data).Icon.GetMeshInstance(size);
         var constrSignMesh = data.Models.Flows.ConstructionCap.Icon.GetMeshInstance(size);
         icon.AddChild(constrSignMesh);
-        SetRelPos(icon, construction.Pos, data);
+        var cell = PlanetDomainExt.GetPolyCell(construction.PolyCellId, data);
+        SetRelPos(icon, cell.GetCenter(), data);
         return icon;
     }
 

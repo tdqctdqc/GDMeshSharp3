@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
+public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, PolyCell cell)>
 {
     public PolyTooltipTemplate() : base()
     {
     }
 
-    protected override List<Func<PolyTriPosition, Data, Control>> _fastGetters { get; }
-        = new List<Func<PolyTriPosition, Data, Control>>
+    protected override List<Func<(MapPolygon poly, PolyCell cell), Data, Control>> _fastGetters { get; }
+        = new List<Func<(MapPolygon poly, PolyCell cell), Data, Control>>
         {
             GetId,
             GetRegime,
             GetLandform,
             GetVeg,
         };
-    protected override List<Func<PolyTriPosition, Data, Control>> _slowGetters { get; }
-        = new List<Func<PolyTriPosition, Data, Control>>
+    protected override List<Func<(MapPolygon poly, PolyCell cell), Data, Control>> _slowGetters { get; }
+        = new List<Func<(MapPolygon poly, PolyCell cell), Data, Control>>
         {
             GetSettlementName,
             // GetSettlementSize, 
@@ -30,9 +30,9 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             // GetSlots
         };
 
-    private static Control GetBuildings(PolyTriPosition t, Data d)
+    private static Control GetBuildings((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        var bs = t.Poly(d).GetBuildings(d);
+        var bs = t.poly.GetBuildings(d);
         var control = new VBoxContainer();
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
         if (bs != null)
@@ -47,7 +47,7 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             }
         }
 
-        var foods = t.Poly(d).PolyFoodProd.Nums;
+        var foods = t.poly.PolyFoodProd.Nums;
         foreach (var kvp in foods)
         {
             var technique = d.Models.GetModel<FoodProdTechnique>(kvp.Key);
@@ -58,28 +58,28 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
         return control;
     }
 
-    private static Control GetAltitude(PolyTriPosition t, Data d)
+    private static Control GetAltitude((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        return NodeExt.CreateLabel("Altitude: " + t.Poly(d).Altitude);
+        return NodeExt.CreateLabel("Altitude: " + t.poly.Altitude);
     }
 
-    private static Control GetVeg(PolyTriPosition t, Data d)
+    private static Control GetVeg((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        var tri = t.Tri(d);
+        var tri = t.cell;
         if (tri == null) return null; //todo this should be fixed when the tri holes are fixed
-        return NodeExt.CreateLabel("Landform: " + tri.Vegetation(d).Name);
+        return NodeExt.CreateLabel("Landform: " + tri.GetVegetation(d).Name);
     }
 
-    private static Control GetLandform(PolyTriPosition t, Data d)
+    private static Control GetLandform((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        var tri = t.Tri(d);
+        var tri = t.cell;
         if (tri == null) return null; //todo this should be fixed when the tri holes are fixed
-        return NodeExt.CreateLabel("Landform: " + tri.Landform(d).Name);
+        return NodeExt.CreateLabel("Landform: " + tri.GetLandform(d).Name);
     }
 
-    private static Control GetRegime(PolyTriPosition t, Data d)
+    private static Control GetRegime((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        var polyR = t.Poly(d).OwnerRegime;
+        var polyR = t.poly.OwnerRegime;
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
 
         if (polyR.Empty())
@@ -93,9 +93,9 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
             r.Name, iconSize);
         return box;
     }
-    private static Control GetPeeps(PolyTriPosition t, Data d)
+    private static Control GetPeeps((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        var peeps = t.Poly(d).GetPeep(d);
+        var peeps = t.poly.GetPeep(d);
         if (peeps == null)
         {
             var l = new Label();
@@ -108,7 +108,7 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
         var size = new Label();
         size.Text = "Num Peeps: " + peeps.Size;
         jobs.AddChild(size);
-        var peepJobCounts = t.Poly(d).GetPeep(d).Employment.Counts
+        var peepJobCounts = t.poly.GetPeep(d).Employment.Counts
             // .Where(kvp => kvp.Value > 0)
             .Select(kvp => new KeyValuePair<PeepJob, int>((PeepJob)d.Models[kvp.Key], kvp.Value))
             .ToList();
@@ -121,12 +121,12 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
         }
         return jobs;
     }
-    private static Control GetConstructions(PolyTriPosition t, Data d)
+    private static Control GetConstructions((MapPolygon poly, PolyCell cell) t, Data d)
     {
         var entries = new VBoxContainer();
-        if (d.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(t.PolyId) == false)
+        if (d.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(t.poly.Id) == false)
             return entries;
-        var constructions = d.Infrastructure.CurrentConstruction.ByPoly[t.PolyId];
+        var constructions = d.Infrastructure.CurrentConstruction.ByPoly[t.poly.Id];
         if(constructions.Count == 0) 
             return entries;
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
@@ -148,15 +148,15 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
 
         return entries;
     }
-    private static Control GetId(PolyTriPosition t, Data d)
+    private static Control GetId((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        return NodeExt.CreateLabel("Poly Id: " + t.Poly(d).Id.ToString());
+        return NodeExt.CreateLabel("Poly Id: " + t.poly.Id.ToString());
     }
-    private static Control GetResourceDeposits(PolyTriPosition t, Data d)
+    private static Control GetResourceDeposits((MapPolygon poly, PolyCell cell) t, Data d)
     {
         var iconSize = Vector2.One * Game.I.Client.Settings.MedIconSize.Value;
 
-        var rs = t.Poly(d).GetResourceDeposits(d);
+        var rs = t.poly.GetResourceDeposits(d);
         if (rs != null)
         {
             var label = new Label();
@@ -172,24 +172,24 @@ public class PolyTooltipTemplate : TooltipTemplate<PolyTriPosition>
         return null;
     }
 
-    private static Control GetSettlementSize(PolyTriPosition t, Data d)
+    private static Control GetSettlementSize((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        return  d.Infrastructure.SettlementAux.ByPoly[t.Poly(d)] is Settlement s
-            ? NodeExt.CreateLabel("Settlement Size: " + t.Poly(d).GetPeep(d).Size)
+        return  d.Infrastructure.SettlementAux.ByPoly[t.poly] is Settlement s
+            ? NodeExt.CreateLabel("Settlement Size: " + t.poly.GetPeep(d).Size)
             : null;
     }
 
-    private static Control GetSettlementName(PolyTriPosition t, Data d)
+    private static Control GetSettlementName((MapPolygon poly, PolyCell cell) t, Data d)
     {
-        return  d.Infrastructure.SettlementAux.ByPoly[t.Poly(d)] is Settlement s
+        return  d.Infrastructure.SettlementAux.ByPoly[t.poly] is Settlement s
             ? NodeExt.CreateLabel("Settlement Name: " + s.Name)
             : null;
     }
 
-    private static Control GetSlots(PolyTriPosition t, Data d)
+    private static Control GetSlots((MapPolygon poly, PolyCell cell) t, Data d)
     {
         var c = new VBoxContainer();
-        foreach (var kvp in t.Poly(d).PolyBuildingSlots.AvailableSlots)
+        foreach (var kvp in t.poly.PolyBuildingSlots.AvailableSlots)
         {
             c.AddChild(NodeExt.CreateLabel($"Available {kvp.Key} Slots: {kvp.Value.Count}"));
         }

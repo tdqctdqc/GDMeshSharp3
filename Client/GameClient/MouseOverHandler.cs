@@ -6,8 +6,7 @@ using Godot;
 public class MouseOverHandler
 {
     public MapPolygon MouseOverPoly { get; private set; }
-    public PolyTri MouseOverTri { get; private set; }
-    public Waypoint MouseOverWaypoint { get; private set; }
+    public PolyCell MouseOverCell { get; private set; }
     public MouseOverHandler()
     {
     }
@@ -15,32 +14,21 @@ public class MouseOverHandler
     public void Process(Data data, Vector2 mousePosMapSpace)
     {
         FindPoly(data, mousePosMapSpace);
-        FindTri(MouseOverPoly, data, mousePosMapSpace);
-        FindWaypoint(data, mousePosMapSpace);
+        FindCell(MouseOverPoly, data, mousePosMapSpace);
     }
 
-    private void FindWaypoint(Data data, Vector2 mousePosMapSpace)
-    {
-        MouseOverWaypoint = null;
-        if (data.Military.WaypointGrid.TryGetClosest(mousePosMapSpace, 
-                out var wp, 
-                wp => true))
-        {
-            MouseOverWaypoint = wp;
-        }
-    }
     private void FindPoly(Data data, Vector2 mousePosMapSpace)
     {
 
         if (mousePosMapSpace.Y <= 0f || mousePosMapSpace.Y >= data.Planet.Height)
         {
             MouseOverPoly = null;
-            MouseOverTri = null;
+            MouseOverCell = null;
             return;
         }
         else if (MouseOverPoly != null && MouseOverPoly.PointInPolyAbs(mousePosMapSpace, data))
         {
-            if (MouseOverTri != null && MouseOverTri.ContainsPoint(mousePosMapSpace - MouseOverPoly.Center))
+            if (MouseOverCell != null && MouseOverCell.ContainsPoint(mousePosMapSpace, data))
             {
                 return;
             }
@@ -60,14 +48,14 @@ public class MouseOverHandler
             MouseOverPoly = p;
         }
     }
-    private void FindTri(MapPolygon p, Data data, Vector2 mousePosMapSpace)
+    private void FindCell(MapPolygon p, Data data, Vector2 mousePosMapSpace)
     {
         if (MouseOverPoly == null)
         {
-            MouseOverTri = null;
+            MouseOverCell = null;
             return;
         }
-        var offset = MouseOverPoly.GetOffsetTo(mousePosMapSpace, data);
-        MouseOverTri = MouseOverPoly.Tris.GetAtPoint(offset, data);
+
+        MouseOverCell = data.Planet.PolygonAux.PolyCellGrid.GetElementAtPoint(mousePosMapSpace, data);
     }
 }

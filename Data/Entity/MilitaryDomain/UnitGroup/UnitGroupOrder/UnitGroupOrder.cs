@@ -4,7 +4,7 @@ using Godot;
 
 [MessagePack.Union(0, typeof(DeployOnLineGroupOrder))]
 [MessagePack.Union(1, typeof(DoNothingUnitGroupOrder))]
-[MessagePack.Union(2, typeof(GoToWaypointGroupOrder))]
+[MessagePack.Union(2, typeof(GoToCellGroupOrder))]
 public abstract class UnitGroupOrder : IPolymorph
 {
     public abstract void Handle(UnitGroup g, LogicWriteKey key, HandleUnitOrdersProcedure proc);

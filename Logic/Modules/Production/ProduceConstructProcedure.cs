@@ -12,23 +12,23 @@ public class ProduceConstructProcedure : Procedure
     public ConcurrentDictionary<int, IdCount<Item>> RegimeResourceProds { get; private set; }
     public ConcurrentDictionary<int, RegimeFlows> RegimeFlows { get; private set; }
     public ConcurrentDictionary<int, PeepEmploymentReport> EmploymentReports { get; private set; }
-    public ConcurrentDictionary<PolyTriPosition, float> ConstructionProgresses { get; private set; }
+    public ConcurrentDictionary<int, float> ConstructionProgressesByCellId { get; private set; }
     
     public static ProduceConstructProcedure Create()
     {
         return new ProduceConstructProcedure(
             new ConcurrentDictionary<int, IdCount<Item>>(), 
             new ConcurrentDictionary<int, PeepEmploymentReport>(),
-            new ConcurrentDictionary<PolyTriPosition, float>(),
+            new ConcurrentDictionary<int, float>(),
             new ConcurrentDictionary<int, RegimeFlows>());
     }
     [SerializationConstructor] private ProduceConstructProcedure(
         ConcurrentDictionary<int, IdCount<Item>> regimeResourceProds, 
         ConcurrentDictionary<int, PeepEmploymentReport> employmentReports,
-        ConcurrentDictionary<PolyTriPosition, float> constructionProgresses,
+        ConcurrentDictionary<int, float> constructionProgressesByCellId,
         ConcurrentDictionary<int, RegimeFlows> regimeFlows)
     {
-        ConstructionProgresses = constructionProgresses;
+        ConstructionProgressesByCellId = constructionProgressesByCellId;
         RegimeResourceProds = regimeResourceProds;
         EmploymentReports = employmentReports;
         RegimeFlows = regimeFlows;
@@ -86,11 +86,12 @@ public class ProduceConstructProcedure : Procedure
     
     private void ProgressConstruction(ProcedureWriteKey key)
     {
-        foreach (var kvp in ConstructionProgresses)
+        foreach (var kvp in ConstructionProgressesByCellId)
         {
-            var pos = kvp.Key;
-            var r = pos.Poly(key.Data).OwnerRegime.Entity(key.Data);
-            var construction = key.Data.Infrastructure.CurrentConstruction.ByTri[pos];
+            var id = kvp.Key;
+            var cell = PlanetDomainExt.GetPolyCell(id, key.Data);
+            var r = ((LandCell)cell).Polygon.Entity(key.Data).OwnerRegime.Entity(key.Data);
+            var construction = key.Data.Infrastructure.CurrentConstruction.ByPolyCell[id];
             construction.ProgressConstruction(kvp.Value,  key);
         }
     }

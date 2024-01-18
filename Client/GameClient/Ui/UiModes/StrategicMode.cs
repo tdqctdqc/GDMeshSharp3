@@ -81,21 +81,21 @@ public class StrategicMode : UiMode
                 {
                     debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
                 }
-                foreach (var wpId in front.HeldWaypointIds)
+                foreach (var wpId in front.HeldCellIds)
                 {
-                    var wp = MilitaryDomain.GetWaypoint(wpId, _client.Data);
+                    var wp = PlanetDomainExt.GetPolyCell(wpId, _client.Data);
                     debug.Draw(mb => 
-                            mb.AddPoint(relTo.GetOffsetTo(wp.Pos, 
+                            mb.AddPoint(relTo.GetOffsetTo(wp.GetCenter(), 
                                     _client.Data), 5f, 
-                                wp.IsThreatened(alliance, _client.Data)
+                                wp.RivalControlled(alliance, _client.Data)
                                     ? Colors.Orange :  Colors.Green),
                         relTo);
                 }
-                foreach (var wpId in front.TargetAreaWaypointIds)
+                foreach (var wpId in front.TargetAreaCellIds)
                 {
-                    var wp = MilitaryDomain.GetWaypoint(wpId, _client.Data);
+                    var wp = PlanetDomainExt.GetPolyCell(wpId, _client.Data);
                     debug.Draw(mb => 
-                            mb.AddPoint(relTo.GetOffsetTo(wp.Pos, 
+                            mb.AddPoint(relTo.GetOffsetTo(wp.GetCenter(), 
                                     _client.Data), 5f, Colors.Red),
                         relTo);
                 }

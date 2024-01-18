@@ -7,13 +7,16 @@ using Godot;
 [MessagePack.Union(0, typeof(LandCell))]
 [MessagePack.Union(1, typeof(RiverCell))]
 [MessagePack.Union(2, typeof(SeaCell))]
-public abstract class PolyCell : IPolymorph
+public abstract class PolyCell : IPolymorph, IIdentifiable
 {
     public int Id { get; private set; }
+    public EntityRef<Regime> Controller { get; private set; }
     public HashSet<int> Neighbors { get; private set; }
     public Vector2 RelTo { get; private set; }
     public Vector2[] RelBoundary { get; private set; }
+    public Vegetation GetVegetation(Data d) => Vegetation.Model(d);
     public ModelRef<Vegetation> Vegetation { get; private set; }
+    public Landform GetLandform(Data d) => Landform.Model(d);
     public ModelRef<Landform> Landform { get; private set; }
     
     protected PolyCell(Vector2 relTo, 
@@ -21,6 +24,7 @@ public abstract class PolyCell : IPolymorph
         ModelRef<Vegetation> vegetation,
         ModelRef<Landform> landform,
         HashSet<int> neighbors,
+        EntityRef<Regime> controller,
         int id)
     {
         Id = id;
@@ -29,6 +33,8 @@ public abstract class PolyCell : IPolymorph
         Landform = landform;
         Vegetation = vegetation;
         Neighbors = neighbors;
+        Controller = controller;
+        if (RelBoundary.Length < 3) throw new Exception();
     }
 
     public static void ConnectCellsSharingPoints(
@@ -105,8 +111,31 @@ public abstract class PolyCell : IPolymorph
     public void SetBoundary(Vector2[] boundary, GenWriteKey key)
     {
         RelBoundary = boundary;
+        if (RelBoundary.Length < 3) throw new Exception();
     }
 
+    public void SetVegetation(Vegetation v, GenWriteKey key)
+    {
+        Vegetation = v.MakeRef();
+    }
+    public void SetLandform(Landform lf, GenWriteKey key)
+    {
+        Landform = lf.MakeRef();
+    }
+
+    public bool AnyNeighbor(Func<PolyCell, bool> pred, Data d)
+    {
+        return Neighbors.Select(n => PlanetDomainExt.GetPolyCell(n, d))
+            .Any(pred);
+    }
+
+    public void ForEachNeighbor(Action<PolyCell> act, Data d)
+    {
+        foreach (var nCell in Neighbors.Select(n => PlanetDomainExt.GetPolyCell(n, d)))
+        {
+            act(nCell);
+        }
+    }
     public float Area()
     {
         var tris = Geometry2D.TriangulatePolygon(RelBoundary);
@@ -122,6 +151,11 @@ public abstract class PolyCell : IPolymorph
         return area;
     }
 
+    public bool ContainsPoint(Vector2 p, Data d)
+    {
+        var offset = RelTo.GetOffsetTo(p, d);
+        return Geometry2D.IsPointInPolygon(offset, RelBoundary);
+    }
     public Vector2[] CoordinateBoundary(PolyCell coord, Data d)
     {
         return RelBoundary
@@ -140,5 +174,39 @@ public abstract class PolyCell : IPolymorph
 
                 return vRel;
             }).ToArray();
+    }
+
+    public Vector2 GetCenter()
+    {
+        return RelBoundary.Avg() + RelTo;
+    }
+
+    public IEnumerable<PolyCell> GetNeighbors(Data d)
+    {
+        return Neighbors.Select(i => PlanetDomainExt.GetPolyCell(i, d));
+    }
+
+    public void SetController(Regime controller, LogicWriteKey key)
+    {
+        Controller = controller.MakeRef();
+    }
+    public void SetController(Regime controller, GenWriteKey key)
+    {
+        Controller = controller.MakeRef();
+    }
+
+    public List<Triangle> GetTriangles(Vector2 relTo, Data d)
+    {
+        var tris = Geometry2D.TriangulatePolygon(RelBoundary);
+        var res = new List<Triangle>();
+        for (var i = 0; i < tris.Length; i+=3)
+        {
+            res.Add(new Triangle(
+                relTo.GetOffsetTo(RelBoundary[tris[i]] + RelTo, d) ,
+                relTo.GetOffsetTo(RelBoundary[tris[i + 1]] + RelTo, d) ,
+                relTo.GetOffsetTo(RelBoundary[tris[i + 2]] + RelTo, d)));
+        }
+        
+        return res;
     }
 }

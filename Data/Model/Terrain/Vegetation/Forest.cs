@@ -11,13 +11,6 @@ public class Forest : Vegetation, IDecaledTerrain
     {
         
     }
-
-    public void GetDecal(MeshBuilder mb, PolyTri pt, Vector2 offset)
-    {
-        
-    }
-    
-    
     Mesh IDecaledTerrain.GetDecal()
     {
         var size = 3f;

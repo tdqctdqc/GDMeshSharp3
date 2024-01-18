@@ -6,25 +6,26 @@ using MessagePack;
 
 public class PolyBuildingSlots
 {
-    public Dictionary<BuildingType, LinkedList<PolyTriPosition>> AvailableSlots { get; private set; }
+    public Dictionary<BuildingType, LinkedList<int>> AvailableSlots { get; private set; }
     public int this[BuildingType type] => AvailableSlots.ContainsKey(type) ? AvailableSlots[type].Count : 0;
 
     public static PolyBuildingSlots Construct()
     {
-        return new PolyBuildingSlots(new Dictionary<BuildingType, LinkedList<PolyTriPosition>>());
+        return new PolyBuildingSlots(new Dictionary<BuildingType, LinkedList<int>>());
     }
-    [SerializationConstructor] private PolyBuildingSlots(Dictionary<BuildingType, LinkedList<PolyTriPosition>> availableSlots)
+    [SerializationConstructor] private PolyBuildingSlots(Dictionary<BuildingType, LinkedList<int>> availableSlots)
     {
         AvailableSlots = availableSlots;
     }
     
-    public void RemoveSlot(BuildingType type, PolyTriPosition pos)
+    public void RemoveSlot(BuildingType type, int pos)
     {
         var removed = AvailableSlots[type].Remove(pos);
         if (removed == false) throw new Exception();
     }
     public void SetSlotNumbers(MapPolygon poly, StrongWriteKey key)
     {
+        if (poly.IsWater()) return;
         var industrySlots = 5;
         var govSlots = 1;
         var extractSlots = 5;
@@ -34,32 +35,36 @@ public class PolyBuildingSlots
         var totalSlots = industrySlots + govSlots + extractSlots + financialSlots + milSlots;
         
         AvailableSlots.Clear();
-        var tris = poly.Tris.Tris.Where(t => t.Landform(key.Data).IsLand)
-            .Select(t => t.Index)
+        var cells = poly.GetCells(key.Data)
             .OrderBy(t => Game.I.Random.Randi())
+            .Select(c => c.Id)
             .ToHashSet();
+            
+            
+            
         
-        if (totalSlots > tris.Count)
+        if (totalSlots > cells.Count)
         {
             return;
-            throw new Exception($"{totalSlots} slots {tris.Count} tris");
+            throw new Exception($"{totalSlots} slots {cells.Count} tris");
         }
         
-        AddSlots(BuildingType.Industry, poly, tris, industrySlots);
-        AddSlots(BuildingType.Government, poly, tris, govSlots);
-        AddSlots(BuildingType.Extraction, poly, tris, extractSlots);
-        AddSlots(BuildingType.Financial, poly, tris, financialSlots);
-        AddSlots(BuildingType.Military, poly, tris, milSlots);
+        AddSlots(BuildingType.Industry, poly, cells, industrySlots);
+        AddSlots(BuildingType.Government, poly, cells, govSlots);
+        AddSlots(BuildingType.Extraction, poly, cells, extractSlots);
+        AddSlots(BuildingType.Financial, poly, cells, financialSlots);
+        AddSlots(BuildingType.Military, poly, cells, milSlots);
     }
-    private void AddSlots(BuildingType type, MapPolygon poly, HashSet<byte> availTriIds, int num)
+    private void AddSlots(BuildingType type, 
+        MapPolygon poly, HashSet<int> availCellIds, int num)
     {
-        AvailableSlots.Add(type, new LinkedList<PolyTriPosition>());
+        AvailableSlots.Add(type, new LinkedList<int>());
         for (var i = 0; i < num; i++)
         {
-            if (availTriIds.Count == 0) throw new Exception();
-            var id = availTriIds.First();
-            availTriIds.Remove(id);
-            AvailableSlots[type].AddLast(new PolyTriPosition(poly.Id, id));
+            if (availCellIds.Count == 0) throw new Exception();
+            var id = availCellIds.First();
+            availCellIds.Remove(id);
+            AvailableSlots[type].AddLast(id);
         }
     }
 }

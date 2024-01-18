@@ -24,7 +24,16 @@ public class RegimeGenerator : Generator
         var report = new GenReport(GetType().Name);
         report.StartSection();
         GenerateRegimes();
-        _data.Military.TacticalWaypoints.SetInitialOccupiers(key);
+
+        var landCells = _data.Planet.PolygonAux.PolyCells.Cells.Values.OfType<LandCell>();
+        
+        foreach (var landCell in landCells)
+        {
+            var r = landCell.Polygon.Entity(_data).OccupierRegime.Entity(_data);
+            landCell.SetController(r, key);
+        }
+        
+        
         _data.Notices.GeneratedRegimes.Invoke();
         
         foreach (var regime in key.Data.GetAll<Regime>())
@@ -36,12 +45,8 @@ public class RegimeGenerator : Generator
             var numUnits = score * 10;
 
             var capitalPoly = regime.Capital.Entity(key.Data);
-            var wp = capitalPoly.GetCenterWaypoint(key.Data);
-            var pos = (Vector2I)capitalPoly.Center;
-            var pt = 
-                capitalPoly.Center.GetPolyTri(key.Data).GetPosition();
-
-            var unitPos = new MapPos(pos, pt);
+            var cell = capitalPoly.GetCells(key.Data)[0];
+            var unitPos = new MapPos(cell.Id, (-1, 0f));
             for (var i = 0; i < numUnits; i++)
             {
                 Unit.Create(template, regime, unitPos.Copy(), key);

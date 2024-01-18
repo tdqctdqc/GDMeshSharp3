@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Godot;
 using MessagePack;
 
-public class SeaCell : PolyCell
+public class SeaCell : PolyCell, ISinglePolyCell
 {
     public EntityRef<MapPolygon> Polygon { get; private set; }
     public static SeaCell Construct(MapPolygon poly,
@@ -18,7 +18,9 @@ public class SeaCell : PolyCell
     }
     [SerializationConstructor] private SeaCell(
         EntityRef<MapPolygon> polygon,
-        Vector2 relTo, Vector2[] relBoundary, ModelRef<Vegetation> vegetation, ModelRef<Landform> landform, HashSet<int> neighbors, int id) : base(relTo, relBoundary, vegetation, landform, neighbors, id)
+        Vector2 relTo, Vector2[] relBoundary, ModelRef<Vegetation> vegetation, ModelRef<Landform> landform, HashSet<int> neighbors, int id) 
+            : base(relTo, relBoundary, vegetation, landform, 
+                neighbors, new EntityRef<Regime>(-1), id)
     {
         Polygon = polygon;
     }

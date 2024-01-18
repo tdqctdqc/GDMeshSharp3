@@ -38,9 +38,9 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
         var useTroops = RegimeUseTroopsProcedure.Construct(regime);
         var capitalPoly = regime.Capital.Entity(key.Data);
         var pos = (Vector2I)capitalPoly.Center;
-        var pt = 
-            capitalPoly.Center.GetPolyTri(key.Data).GetPosition();
-        var unitPos = new MapPos(pos, pt);
+        var cell = 
+            capitalPoly.GetCells(key.Data)[0];
+        var unitPos = new MapPos(cell.Id, (-1, 0f));
         
         foreach (var (template, num) in toBuild)
         {

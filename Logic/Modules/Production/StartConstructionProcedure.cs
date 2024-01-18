@@ -11,11 +11,10 @@ public class StartConstructionProcedure : Procedure
     public Construction Construction { get; private set; }
 
     public static StartConstructionProcedure Construct(ModelRef<BuildingModel> building, 
-        PolyTriPosition pos, 
-        int waypoint,
+        int polyCellId, 
         EntityRef<Regime> orderingRegime, Data data)
     {
-        var c = new Construction(building, pos, building.Model(data).NumTicksToBuild, waypoint);
+        var c = new Construction(building, polyCellId, building.Model(data).NumTicksToBuild);
         return new StartConstructionProcedure(c, orderingRegime);
     }
     [SerializationConstructor] private StartConstructionProcedure(Construction construction, 
@@ -27,7 +26,9 @@ public class StartConstructionProcedure : Procedure
 
     public override bool Valid(Data data)
     {
-        var poly = Construction.Pos.Poly(data);
+        var cell = PlanetDomainExt.GetPolyCell(Construction.PolyCellId, data);
+
+        var poly = ((LandCell)cell).Polygon.Entity(data);
         var regime = OrderingRegime.Entity(data);
         var noOngoing = data.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(poly.Id) == false;
         if (noOngoing == false)
@@ -51,9 +52,11 @@ public class StartConstructionProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        Construction.Pos.Poly(key.Data).PolyBuildingSlots
-            .RemoveSlot(Construction.Model.Model(key.Data).BuildingType, Construction.Pos);
-        var regime = Construction.Pos.Poly(key.Data).OwnerRegime.Entity(key.Data);
+        var cell = PlanetDomainExt.GetPolyCell(Construction.PolyCellId, key.Data);
+        var poly = ((LandCell)cell).Polygon.Entity(key.Data);
+        poly.PolyBuildingSlots
+            .RemoveSlot(Construction.Model.Model(key.Data).BuildingType, Construction.PolyCellId);
+        var regime = poly.OwnerRegime.Entity(key.Data);
 
         var itemCosts = Construction.Model.Model(key.Data)
             .Makeable.ItemCosts.GetEnumerableModel(key.Data);

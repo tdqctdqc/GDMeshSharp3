@@ -123,7 +123,7 @@ public class ProduceConstructModule : LogicModule
         foreach (var construction in constructions)
         {
             var spend = ratio * construction.Model.Model(data).ConstructionCapPerTick;
-            proc.ConstructionProgresses.TryAdd(construction.Pos, ratio);
+            proc.ConstructionProgressesByCellId.TryAdd(construction.PolyCellId, ratio);
         }
     }
 

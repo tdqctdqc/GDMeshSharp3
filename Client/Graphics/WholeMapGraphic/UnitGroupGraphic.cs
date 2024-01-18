@@ -31,7 +31,7 @@ public partial class UnitGroupGraphic : Node2D
         {
             var iconSize = unit.Radius() * 2f * .75f;
 
-            var relPos = groupPos.GetOffsetTo(unit.Position.Pos, data);
+            var relPos = groupPos.GetOffsetTo(unit.Position.GetCell(data).GetCenter(), data);
             mb.AddPoint(relPos, iconSize, regime.SecondaryColor);
             mb.AddPoint(relPos, iconSize * .8f, regime.PrimaryColor);
         }

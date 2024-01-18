@@ -21,17 +21,17 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
         var icon = element.Tier.Model(data).Icon;
         var size = Game.I.Client.Settings.MedIconSize.Value;
         var poly = element.Poly.Entity(data);
-        var urbanTris = poly.Tris.Tris
-            .Where(t => t.Landform(data) == data.Models.Landforms.Urban);
-        if (urbanTris.Count() == 0)
+        var urbanCells = poly.GetCells(data)
+            .Where(t => t.GetLandform(data) == data.Models.Landforms.Urban);
+        if (urbanCells.Count() == 0)
         {
             GD.Print("no urban tri settlement at " + element.Poly.Entity(data).Id);
             return new Node2D();
         }
-        foreach (var urbanTri in urbanTris)
+        foreach (var urbanCell in urbanCells)
         {
             var mesh = icon.GetMeshInstance(size);
-            SetRelPos(mesh, new PolyTriPosition(poly.Id, urbanTri.Index), data);
+            SetRelPos(mesh, urbanCell.GetCenter(), data);
             node.AddChild(mesh);
         }
 
@@ -40,7 +40,7 @@ public partial class SettlementIcons : MapChunkGraphicNode<Settlement>
         nameLabel.Text = element.Name;
         nameLabel.Theme = UiThemes.DefaultTheme;
         nameLabel.LabelSettings = UiThemes.MapLabelSettings;
-        SetRelPos(nameNode, urbanTris.First().GetPosition(), data);
+        SetRelPos(nameNode, urbanCells.First().GetCenter(), data);
         nameNode.AddChild(nameLabel);
         node.AddChild(nameNode);
 

@@ -42,63 +42,36 @@ public class TacticalMode : UiMode
         var debugDrawer 
             = Game.I.Client.GetComponent<MapGraphics>()
                 .DebugOverlay;
-        if (_mouseOverHandler.MouseOverWaypoint == null)
+        if (_mouseOverHandler.MouseOverCell == null)
         {
             return;
         }
-        var wp = _mouseOverHandler.MouseOverWaypoint;
+        var cell = _mouseOverHandler.MouseOverCell;
         var regimes = _client.Data.HostLogicData.AllianceAis.Dic.Values
             .SelectMany(v => v.MilitaryAi.AreasOfResponsibility
                 .Where(kvp =>
-                    kvp.Value.Contains(_mouseOverHandler.MouseOverWaypoint)))
+                    kvp.Value.Contains(_mouseOverHandler.MouseOverCell)))
             .Select(kvp => kvp.Key);
         foreach (var regime in regimes)
         {
             var ai = _client.Data.HostLogicData.RegimeAis[regime];
             var theater = ai.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>()
-                .FirstOrDefault(t => t.TacWaypointIds.Contains(wp.Id));
+                .FirstOrDefault(t => t.HeldCellIds.Contains(cell.Id));
             if (theater == null) continue;
             var front = theater.Assignments
                 .OfType<FrontAssignment>()
-                .FirstOrDefault(f => f.HeldWaypointIds.Contains(wp.Id));
+                .FirstOrDefault(f => f.HeldCellIds.Contains(cell.Id));
             if (front == null) continue;
             var seg = front.Assignments.OfType<FrontSegmentAssignment>()
-                .FirstOrDefault(s => s.FrontLineWpIds.Contains(wp.Id));
+                .FirstOrDefault(s => s.FrontLineCellIds.Contains(cell.Id));
             if (seg == null) continue;
-            var relTo = seg.GetWaypoints(_client.Data).First().Pos;
+            var relTo = seg.GetCells(_client.Data).First().GetCenter();
             debugDrawer.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
         }
     }
 
     private void Tooltip(Vector2 mapPos)
     {
-        var tooltip = _client.GetComponent<TooltipManager>();
-        if (_mouseOverHandler.MouseOverWaypoint != null)
-        {
-            var template = new TacWaypointTooltipTemplate();
-            tooltip.PromptTooltip(template, _mouseOverHandler.MouseOverWaypoint);
-        }
-        else
-        {
-            tooltip.Clear();
-        }
-        var mg = _client.GetComponent<MapGraphics>();
-        mg.DebugOverlay.Clear();
-    }
-
-    private void PaintOccupation(Vector2 mapPos)
-    {
-        var found = _client.Data.Military.WaypointGrid.TryGetClosest(mapPos, out var close, wp => true);
-        if (found)
-        {
-            var regime = _client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(_client.Data);
-
-            _client.Data.Military.TacticalWaypoints.OccupierRegimes[close.Id] = regime.Id;
-            foreach (var n in close.GetNeighbors(_client.Data))
-            {
-                if (n is IWaterWaypoint) continue;
-                _client.Data.Military.TacticalWaypoints.OccupierRegimes[n.Id] = regime.Id;
-            }
-        }
+        
     }
 }

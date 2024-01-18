@@ -11,50 +11,7 @@ using Poly2Tri;
 
 public static class Triangulator
 {
-    public static List<PolyTri> PolyTriangulate(this Vector2[] boundaryPoints, Data data, MapPolygon poly)
-    {
-        Func<Vector2, Vector2, Vector2, PolyTri> constructor = (v, w, x) =>
-        {
-            var lf = data.Models.Landforms.GetAtPoint(poly, (v + w + x) / 3f, data);
-            var vg = data.Models.Vegetations.GetAtPoint(poly, (v + w + x) / 3f, lf, data);
-            return PolyTri.Construct(poly.Id, v, w, x, lf, vg);
-        };
-        var polygon = new Poly2Tri.Polygon(boundaryPoints.Select(p => new PolygonPoint(p.X, p.Y)));
-
-        
-        boundaryPoints.GenerateInteriorPointsMargin(30f, 10f, 
-            v => polygon.AddSteinerPoint(new TriangulationPoint(v.X, v.Y)));
-        
-        
-        var sweep = new Poly2Tri.DTSweepContext();
-        for (var i = 0; i < boundaryPoints.Length; i++)
-        {
-            var seg = boundaryPoints[i];
-            var next = boundaryPoints.Modulo(i + 1);
-            sweep.NewConstraint(new TriangulationPoint(seg.X, seg.Y),
-                new TriangulationPoint(next.X, next.Y));
-        }
-        polygon.Prepare(sweep);
-        
-        P2T.Triangulate(polygon);
-        
-        var tris = new List<PolyTri>{};
-        for (var i = 0; i < polygon.Triangles.Count; i++)
-        {
-            var t = polygon.Triangles[i];
-            var a = new Vector2(t.Points[0].Xf, t.Points[0].Yf);
-            var b = new Vector2(t.Points[1].Xf, t.Points[1].Yf);
-            var c = new Vector2(t.Points[2].Xf, t.Points[2].Yf);
-            var center = (a + b + c) / 3f;
-
-            //cache poly border tris and check against them?
-            if (Geometry2D.IsPointInPolygon(center, boundaryPoints))
-            {
-                tris.Add(constructor(a, b, c));
-            }
-        }
-        return tris;
-    }
+    
     
     public static List<Triangle> TriangulatePoints(List<Vector2> points)
     {

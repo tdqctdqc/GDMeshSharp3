@@ -6,21 +6,21 @@ using MessagePack;
 
 public class CurrentConstruction : Entity
 {
-    public Dictionary<PolyTriPosition, Construction> ByTri { get; private set; }
+    public Dictionary<int, Construction> ByPolyCell { get; private set; }
     public Dictionary<int, List<Construction>> ByPoly { get; private set; }
     public static CurrentConstruction Create(GenWriteKey key)
     {
         var cc = new CurrentConstruction(key.Data.IdDispenser.TakeId(), 
-            new Dictionary<PolyTriPosition, Construction>(),
+            new Dictionary<int, Construction>(),
             new Dictionary<int, List<Construction>>());
         key.Create(cc);
         return cc;
     }
     [SerializationConstructor] private CurrentConstruction(int id, 
-        Dictionary<PolyTriPosition, Construction> byTri,
+        Dictionary<int, Construction> byPolyCell,
         Dictionary<int, List<Construction>> byPoly) : base(id)
     {
-        ByTri = byTri;
+        ByPolyCell = byPolyCell;
         ByPoly = byPoly;
     }
 
@@ -30,24 +30,26 @@ public class CurrentConstruction : Entity
             ? ByPoly[poly.Id]
             : null;
     }
-    public void StartConstruction(Construction construction, ProcedureWriteKey key)
+    public void StartConstruction(Construction construction, 
+        ProcedureWriteKey key)
     {
-        var poly = construction.Pos.Poly(key.Data);
+        var polyCell = PlanetDomainExt.GetPolyCell(construction.PolyCellId, key.Data);
+        var poly = ((LandCell)polyCell).Polygon.Entity(key.Data);
         ByPoly.AddOrUpdate(poly.Id, construction);
-        if (ByTri.ContainsKey(construction.Pos))
+        if (ByPolyCell.ContainsKey(construction.PolyCellId))
         {
             throw new Exception($"trying to build {construction.Model.Model(key.Data).Name}" +
-                                $"but already constructing {ByTri[construction.Pos].Model.Model(key.Data).Name} in tri");
+                                $"but already constructing {ByPolyCell[construction.PolyCellId].Model.Model(key.Data).Name} in tri");
         }
-        ByTri.Add(construction.Pos, construction);
+        ByPolyCell.Add(construction.PolyCellId, construction);
         key.Data.Infrastructure.ConstructionAux.StartedConstruction.Invoke(construction);
     }
-    public void FinishConstruction(MapPolygon poly, PolyTriPosition pos, ProcedureWriteKey key)
+    public void FinishConstruction(MapPolygon poly, PolyCell cell, ProcedureWriteKey key)
     {
-        var construction = ByTri[pos];
+        var construction = ByPolyCell[cell.Id];
         key.Data.Infrastructure.ConstructionAux.EndedConstruction.Invoke(construction);
-        ByPoly[poly.Id].RemoveAll(c => c.Pos.Equals(pos));
+        ByPoly[poly.Id].RemoveAll(c => c.PolyCellId == cell.Id);
         if (ByPoly[poly.Id].Count == 0) ByPoly.Remove(poly.Id);
-        ByTri.Remove(pos);
+        ByPolyCell.Remove(cell.Id);
     }
 }

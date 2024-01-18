@@ -19,19 +19,21 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
 
     private static void DrawRoads(MapChunk chunk, Data d, MeshBuilder mb)
     {
-        var wps = chunk.Polys.SelectMany(p => d.Military.TacticalWaypoints.PolyAssocWaypoints[p.Id])
+        var wps = chunk.Polys
+            .Where(p => p.IsLand)
+            .SelectMany(p => 
+                p.GetCells(d))
             .Distinct();
-        foreach (var id in wps)
+        foreach (var cell in wps)
         {
-            var wp = MilitaryDomain.GetWaypoint(id, d);
-            foreach (var n in wp.Neighbors)
+            foreach (var n in cell.Neighbors)
             {
-                if (n > wp.Id) continue;
-                var nWp = MilitaryDomain.GetWaypoint(n, d);
-                if (d.Infrastructure.RoadNetwork.Get(wp, nWp, d) is RoadModel r)
+                if (n > cell.Id) continue;
+                var nCell = PlanetDomainExt.GetPolyCell(n, d);
+                if (d.Infrastructure.RoadNetwork.Get(cell, nCell, d) is RoadModel r)
                 {
-                    r.Draw(mb, chunk.RelTo.GetOffsetTo(wp.Pos, d), 
-                        chunk.RelTo.GetOffsetTo(nWp.Pos, d), _drawWidth);
+                    r.Draw(mb, chunk.RelTo.GetOffsetTo(cell.GetCenter(), d), 
+                        chunk.RelTo.GetOffsetTo(nCell.GetCenter(), d), _drawWidth);
                 }
             }
         }

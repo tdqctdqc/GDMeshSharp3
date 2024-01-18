@@ -17,7 +17,8 @@ public partial class BuildingIcons : MapChunkGraphicNode<MapBuilding>
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;
         var icon = element.Model.Model(data).Icon.GetMeshInstance(size);
-        SetRelPos(icon, element.Position, data);
+        var cell = PlanetDomainExt.GetPolyCell(element.PolyCellId, data);
+        SetRelPos(icon, cell.GetCenter(), data);
         return icon;
     }
 

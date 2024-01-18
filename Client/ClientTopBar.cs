@@ -22,11 +22,11 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
             client.Cam().JumpTo(poly.Center);
         });
         
-        this.AddIntButton("Jump to Waypoint", i =>
+        this.AddIntButton("Jump to Cell", i =>
         {
-            var wp = MilitaryDomain.GetWaypoint(i, client.Data);
+            var wp = PlanetDomainExt.GetPolyCell(i, client.Data);
             if (wp == null) return;
-            client.Cam().JumpTo(wp.Pos);
+            client.Cam().JumpTo(wp.GetCenter());
         });
         var uiFrame = client.GetComponent<UiFrame>();
         uiFrame.AddTopBar(this);

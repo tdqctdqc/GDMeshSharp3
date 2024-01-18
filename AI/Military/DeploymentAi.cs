@@ -40,21 +40,4 @@ public class DeploymentAi
     {
         return ForceAssignments.OfType<FrontAssignment>();
     }
-
-
-    private static HashSet<(Waypoint wp1, Waypoint wp2)> GetEdgesWithin(HashSet<Waypoint> wps, Vector2 relTo, Data data)
-    {
-        var res = new HashSet<(Waypoint wp1, Waypoint wp2)>();
-        foreach (var wp in wps)
-        {
-            var ns = wp.GetNeighbors(data);
-            foreach (var nWp in ns)
-            {
-                if (nWp.Id > wp.Id) continue;
-                if (wps.Contains(nWp) == false) continue;
-                res.Add((wp, nWp));
-            }
-        }
-        return res;
-    }
 }

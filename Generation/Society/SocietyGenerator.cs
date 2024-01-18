@@ -93,7 +93,6 @@ public class SocietyGenerator : Generator
             var buildingSurplus = technique.BaseProd - technique.BaseLabor * foodConsPerPeep;
             Parallel.ForEach(territory, p =>
             {
-                var tris = p.Tris.Tris;
                 var numBuilding = Mathf
                     .RoundToInt(technique.NumForPoly(p, _data) * developmentScale);
                 if (numBuilding == 0) return;
@@ -117,9 +116,10 @@ public class SocietyGenerator : Generator
         for (var i = 0; i < regimeUnionPolys.Count; i++)
         {
             var p = regimeUnionPolys[i];
-            if (p.Tris.Tris.Any(t => t.Landform(_data) != _data.Models.Landforms.Mountain
-                           && t.Landform(_data) != _data.Models.Landforms.Peak
-                           && t.Landform(_data) != _data.Models.Landforms.River))
+            var cells = p.GetCells(_key.Data);
+            if (cells.Any(t => t.GetLandform(_data) != _data.Models.Landforms.Mountain
+                           && t.GetLandform(_data) != _data.Models.Landforms.Peak
+                           && t.GetLandform(_data) != _data.Models.Landforms.River))
             {
                 polyQueue.Enqueue(p, -PolyHabitability(p));
             }
@@ -145,7 +145,7 @@ public class SocietyGenerator : Generator
     private float PolyHabitability(MapPolygon poly)
     {
         var score = 2f * (poly.Moisture + (1f - poly.Roughness * .5f));
-        if (poly.Tris.Tris.Any(t => t.Landform(_data) == _data.Models.Landforms.River))
+        if (poly.GetEdges(_key.Data).Any(e => e.IsRiver()))
         {
             score *= 1.5f;
         }
@@ -201,7 +201,7 @@ public class SocietyGenerator : Generator
             {
                 var w = model.GetComponent<Workplace>();
                 laborDemand += w.JobLaborReqs.Sum(kvp2 => kvp2.Value);
-                MapBuilding.CreateGen(poly, poly.GetCenterWaypoint(_key.Data).Id, model, _key);
+                MapBuilding.CreateGen(poly, model, _key);
             }
         }
 
@@ -212,7 +212,7 @@ public class SocietyGenerator : Generator
         var townHall = _data.Models.Buildings.TownHall;
         foreach (var p in settlementPolys)
         {
-            MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, townHall, _key);
+            MapBuilding.CreateGen(p, townHall, _key);
         }
 
         return townHall.GetComponent<Workplace>().TotalLaborReq() * settlementPolys.Count();
@@ -236,7 +236,7 @@ public class SocietyGenerator : Generator
             
             for (var j = 0; j < num; j++)
             {
-                MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, model, _key);
+                MapBuilding.CreateGen(p, model, _key);
             }
         }
     }
@@ -254,7 +254,7 @@ public class SocietyGenerator : Generator
             num = Mathf.Min(p.PolyBuildingSlots[model.BuildingType], num);
             for (var j = 0; j < num; j++)
             {
-                MapBuilding.CreateGen(p, p.GetCenterWaypoint(_key.Data).Id, model, _key);
+                MapBuilding.CreateGen(p, model, _key);
             }
         }
     }
@@ -330,11 +330,12 @@ public class SocietyGenerator : Generator
         
         foreach (var p in settlementPolys)
         {
-            var availTris = p.Tris.Tris
-                .Where(t => t.Landform(_data) != _data.Models.Landforms.River
-                            && t.Landform(_data) != _data.Models.Landforms.Mountain
-                            && t.Landform(_data) != _data.Models.Landforms.Peak)
-                .OrderBy(t => t.GetCentroid().LengthSquared()).ToList();
+            var cells = p.GetCells(_data);
+            var availCells = cells
+                .Where(t => t.GetLandform(_data) != _data.Models.Landforms.River
+                            && t.GetLandform(_data) != _data.Models.Landforms.Mountain
+                            && t.GetLandform(_data) != _data.Models.Landforms.Peak)
+                .OrderBy(t => t.RelBoundary.Avg().LengthSquared()).ToList();
             var settlement = p.GetSettlement(_data);
             var tier = settlement.Tier.Model(_data);
             var numUrbanTris = Mathf.Max(1, tier.NumTris);
@@ -342,12 +343,12 @@ public class SocietyGenerator : Generator
             {
                 numUrbanTris = 1;
             }
-            numUrbanTris = Mathf.Min(availTris.Count, numUrbanTris);
+            numUrbanTris = Mathf.Min(availCells.Count, numUrbanTris);
             
             for (var j = 0; j < numUrbanTris; j++)
             {
-                availTris[j].SetLandform(_data.Models.Landforms.Urban, _key);
-                availTris[j].SetVegetation(_data.Models.Vegetations.Barren, _key);
+                availCells[j].SetLandform(_data.Models.Landforms.Urban, _key);
+                availCells[j].SetVegetation(_data.Models.Vegetations.Barren, _key);
             }
         }
     }
@@ -369,9 +370,9 @@ public class SocietyGenerator : Generator
                 beneath = tundra;
             }
             
-            var choppableTris = poly.Tris.Tris
-                .Where(t => t.Vegetation(_data) == forest
-                    || t.Vegetation(_data) == jungle);
+            var choppableCells = poly.GetCells(_data)
+                .Where(t => t.GetVegetation(_data) == forest
+                    || t.GetVegetation(_data) == jungle);
             float deforestStr = 0f;
             if (poly.HasSettlement(_data))
             {
@@ -382,12 +383,12 @@ public class SocietyGenerator : Generator
                 deforestStr = .05f;
             }
             else continue;
-            foreach (var tri in choppableTris)
+            foreach (var cell in choppableCells)
             {
                 var sample = Game.I.Random.Randf();
                 if (sample < deforestStr)
                 {
-                    tri.SetVegetation(beneath, _key);
+                    cell.SetVegetation(beneath, _key);
                 }
             }
         }

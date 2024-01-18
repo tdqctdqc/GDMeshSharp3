@@ -8,7 +8,6 @@ public partial class IconsChunkModule : MapChunkGraphicModule
     public BuildingIcons BuildingIcons { get; private set; }
     public SettlementIcons SettlementIcons { get; private set; }
     public ConstructionIcons ConstructionIcons { get; private set; }
-    public InfrastructureIcons InfrastructureIcons { get; private set; }
     public IconsChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(IconsChunkModule))
     {
         ConstructionIcons = new ConstructionIcons(chunk, data);
@@ -19,9 +18,6 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         
         BuildingIcons = new BuildingIcons(chunk, data);
         AddNode(BuildingIcons);
-
-        InfrastructureIcons = new InfrastructureIcons(chunk, data);
-        AddNode(InfrastructureIcons);
     }
     
     public static ChunkGraphicLayer<IconsChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
@@ -29,7 +25,7 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         var l = new ChunkGraphicLayer<IconsChunkModule>(LayerOrder.Icons, "Icons", segmenter,
             c => new IconsChunkModule(c, d),
             d);
-        l.RegisterForEntityLifetime(n => n.Position.Poly(d).GetChunk(d), 
+        l.RegisterForEntityLifetime(n => PlanetDomainExt.GetPolyCell(n.PolyCellId, d).GetChunk(d), 
             m => m.BuildingIcons, d);
         
         l.RegisterForEntityLifetime(n => n.Poly.Entity(d).GetChunk(d), 
@@ -40,10 +36,10 @@ public partial class IconsChunkModule : MapChunkGraphicModule
             (notice, graphic) => graphic.SettlementIcons.QueueChange(notice.Entity));
         
         l.RegisterForAdd(d.Infrastructure.ConstructionAux.StartedConstruction,
-            k => k.Pos.Poly(d).GetChunk(d),
+            k => PlanetDomainExt.GetPolyCell(k.PolyCellId, d).GetChunk(d),
             n => n.ConstructionIcons);
         l.RegisterForRemove(d.Infrastructure.ConstructionAux.EndedConstruction,
-            k => k.Pos.Poly(d).GetChunk(d),
+            k => PlanetDomainExt.GetPolyCell(k.PolyCellId, d).GetChunk(d),
             n => n.ConstructionIcons);
 
         return l;

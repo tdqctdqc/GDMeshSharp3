@@ -12,14 +12,15 @@ public class Farm : FoodProdTechnique
 
     public override int NumForPoly(MapPolygon poly, Data data)
     {
-        return Mathf.FloorToInt(poly.Tris.Tris
+        
+        return Mathf.FloorToInt(poly.GetCells(data)
                     .Where(t =>
-                        t.Landform(data).IsLand
-                        && t.Landform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
-                        && t.Vegetation(data).MinMoisture >= data.Models.Vegetations.Arid.MinMoisture
-                        && float.IsNaN(t.GetArea()) == false
+                        t.GetLandform(data).IsLand
+                        && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
+                        && t.GetVegetation(data).MinMoisture >= data.Models.Vegetations.Arid.MinMoisture
+                        && float.IsNaN(t.Area()) == false
                     )
-                    .Sum(t => t.GetArea() * t.Landform(data).FertilityMod * t.Vegetation(data).FertilityMod)
+                    .Sum(t => t.Area() * t.GetLandform(data).FertilityMod * t.GetVegetation(data).FertilityMod)
                 / 5000f);
     }
 }

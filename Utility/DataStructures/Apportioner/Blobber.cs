@@ -93,19 +93,19 @@ public static class Blobber
     public static IEnumerable<TheaterAssignment>
         Blob(this IEnumerable<TheaterAssignment> theaters, Regime regime, Data d)
     {
-        var wps = d.Military.TacticalWaypoints.Waypoints.Values
-            .Where(wp => wp.GetOccupyingRegime(d) == regime);
+        var cells = d.Planet.PolygonAux.PolyCells.Cells.Values
+            .OfType<LandCell>().Where(c => c.Controller.RefId == regime.Id);
         return Blob(
-            wps, theaters,
-            t => t.GetWaypoints(d),
-            wp => wp.GetNeighbors(d),
-            wp => wp.GetOccupyingRegime(d) == regime,
+            cells, theaters,
+            t => t.GetCells(d).OfType<LandCell>(),
+            wp => wp.GetNeighbors(d).OfType<LandCell>(),
+            wp => wp.Controller.RefId == regime.Id,
             divideInto,
             mergeInto,
             makeBlob
         );
 
-        TheaterAssignment makeBlob(IEnumerable<Waypoint> wps)
+        TheaterAssignment makeBlob(IEnumerable<LandCell> wps)
         {
             return new TheaterAssignment(d.IdDispenser.TakeId(),
                 regime.MakeRef(), new HashSet<ForceAssignment>(),
@@ -120,8 +120,8 @@ public static class Blobber
         {
             foreach (var assgn in dissolve.Assignments)
             {
-                var wp = assgn.GetCharacteristicWaypoint(d);
-                var theater = intos.First(t => t.TacWaypointIds.Contains(wp.Id));
+                var wp = assgn.GetCharacteristicCell(d);
+                var theater = intos.First(t => t.HeldCellIds.Contains(wp.Id));
                 theater.Assignments.Add(assgn);
             }
         }
@@ -133,19 +133,19 @@ public static class Blobber
     {
         var d = key.Data;
         var regime = theater.Regime.Entity(d);
-        var wps = theater.GetWaypoints(d);
+        var wps = theater.GetCells(d);
 
         return Blob(
             wps, fronts,
-            t => t.GetWaypoints(d),
+            t => t.GetCells(d),
             wp => wp.GetNeighbors(d),
-            wp => wp.GetOccupyingRegime(d) == regime,
+            wp => wp.Controller.RefId == regime.Id,
             divideInto,
             mergeInto,
             makeBlob
         );
 
-        FrontAssignment makeBlob(IEnumerable<Waypoint> wps)
+        FrontAssignment makeBlob(IEnumerable<PolyCell> wps)
         {
             return new FrontAssignment(d.IdDispenser.TakeId(),
                 regime.MakeRef(), wps.Select(wp => wp.Id).ToHashSet(), 
@@ -161,8 +161,8 @@ public static class Blobber
         {
             foreach (var assgn in dissolve.Assignments)
             {
-                var wp = assgn.GetCharacteristicWaypoint(d);
-                var front = intos.First(t => t.HeldWaypointIds.Contains(wp.Id));
+                var wp = assgn.GetCharacteristicCell(d);
+                var front = intos.First(t => t.HeldCellIds.Contains(wp.Id));
                 front.Assignments.Add(assgn);
                 front.GroupIds.AddRange(assgn.GroupIds);
             }

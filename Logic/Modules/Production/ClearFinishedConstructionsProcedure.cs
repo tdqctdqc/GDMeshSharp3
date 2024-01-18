@@ -6,16 +6,16 @@ using MessagePack;
 public class 
     ClearFinishedConstructionsProcedure : Procedure
 {
-    public List<PolyTriPosition> Positions { get; private set; }
+    public List<int> PolyCellIds { get; private set; }
 
     public static ClearFinishedConstructionsProcedure Construct()
     {
-        return new ClearFinishedConstructionsProcedure(new List<PolyTriPosition>());
+        return new ClearFinishedConstructionsProcedure(new List<int>());
     }
 
-    [SerializationConstructor] private ClearFinishedConstructionsProcedure(List<PolyTriPosition> positions)
+    [SerializationConstructor] private ClearFinishedConstructionsProcedure(List<int> polyCellIds)
     {
-        Positions = positions;
+        PolyCellIds = polyCellIds;
     }
 
     public override bool Valid(Data data)
@@ -25,11 +25,12 @@ public class
 
     public override void Enact(ProcedureWriteKey key)
     {
-        foreach (var pos in Positions)
+        foreach (var id in PolyCellIds)
         {
-            var poly = pos.Poly(key.Data);
+            var cell = PlanetDomainExt.GetPolyCell(id, key.Data);
+            var poly = ((LandCell)cell).Polygon.Entity(key.Data);
             var r = poly.OwnerRegime.Entity(key.Data);
-            key.Data.Infrastructure.CurrentConstruction.FinishConstruction(poly, pos, key);
+            key.Data.Infrastructure.CurrentConstruction.FinishConstruction(poly, cell, key);
         }
     }
 }

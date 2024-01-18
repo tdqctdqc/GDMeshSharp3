@@ -36,11 +36,6 @@ public class Unit : Entity
 
     public void SetPosition(MapPos pos, ProcedureWriteKey key)
     {
-        if (float.IsNaN(pos.Pos.X) || float.IsNaN(pos.Pos.Y))
-        {
-            throw new Exception("bad unit pos");
-        }
-
         Position = pos;
     }
 }

@@ -29,11 +29,14 @@ public class PolyMode : UiMode
     }
     private void Tooltip(Vector2 mapPos)
     {
-        if (_mouseOverHandler.MouseOverWaypoint != null)
+        var tooltip = _client.GetComponent<TooltipManager>();
+        tooltip.Clear();
+        if (_mouseOverHandler.MouseOverPoly != null
+            && _mouseOverHandler.MouseOverCell != null)
         {
             var template = new PolyTooltipTemplate();
             _client.GetComponent<TooltipManager>()
-                .PromptTooltip(template, _mouseOverHandler.MouseOverTri.GetPosition());
+                .PromptTooltip(template, (_mouseOverHandler.MouseOverPoly, _mouseOverHandler.MouseOverCell));
         }
     }
     public override void Clear()

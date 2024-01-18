@@ -7,56 +7,18 @@ using Godot;
 public static partial class PathFinder
 {
     
-    public static List<Waypoint> FindStrategicPath(
+    public static List<PolyCell> FindPath(
         MoveType moveType, 
         Alliance alliance,
-        Waypoint start,
-        Waypoint dest, 
+        PolyCell start,
+        PolyCell dest, 
         Data d)
     {
-        return PathFinder<Waypoint>.FindPath(start, dest, 
+        return PathFinder<PolyCell>.FindPath(start, dest, 
             p => p.GetNeighbors(d)
                 .Where(wp => moveType.Passable(wp, alliance, d)),
             (w, v) => moveType.StratMoveEdgeCost(start, dest, d), 
-            (p1, p2) => p1.Pos.GetOffsetTo(p2.Pos, d).Length());
-    }
-    public static List<IMapPathfindNode> FindTacticalPath(
-            IMapPathfindNode start, IMapPathfindNode dest, 
-            Alliance a,
-            MoveType moveType, Data d)
-    {
-        var destIsPoint = dest is PointPathfindNode x;
-        PointPathfindNode destP = destIsPoint
-            ? (PointPathfindNode)dest : null;
-        
-        return PathFinder<IMapPathfindNode>.FindPath(
-            start,
-            dest,
-            getNeighbors,
-            (n, m) => moveType.TerrainCostPerLength(n.Tri.Tri(d), m.Tri.Tri(d), d),
-            (n, m) => n.Pos.GetOffsetTo(m.Pos, d).Length() / moveType.BaseSpeed
-        );
-
-        IEnumerable<IMapPathfindNode> getNeighbors(IMapPathfindNode n)
-        {
-            if (n is Waypoint wp)
-            {
-                if (destIsPoint && destP.Neighbors.Contains(wp))
-                {
-                    return wp.GetNeighbors(d)
-                        .Where(wp => moveType.Passable(wp, a, d))
-                        .AsEnumerable<IMapPathfindNode>()
-                        .Union(destP.Yield());
-                }
-
-                return wp.GetNeighbors(d).Where(wp => moveType.Passable(wp, a, d));
-            }
-            if (n is PointPathfindNode p)
-            {
-                return p.Neighbors;
-            }
-            throw new Exception();
-        }
+            (p1, p2) => p1.GetCenter().GetOffsetTo(p2.GetCenter(), d).Length());
     }
     
     public static List<TNode> FindPathFromGraph<TNode, TEdge>(TNode s1,
@@ -93,28 +55,28 @@ public static partial class PathFinder
         if (p.IsWater()) return Mathf.Inf;
         return p.Roughness;
     }
-    public static float RoadBuildEdgeCost(Waypoint p1, Waypoint p2, Data data)
+    public static float RoadBuildEdgeCost(PolyCell p1, PolyCell p2, Data data)
     {
-        if (p1 is ILandWaypoint l1 == false) return Mathf.Inf;
-        if (p2 is ILandWaypoint l2 == false) return Mathf.Inf;
+        if (p1 is LandCell l1 == false) return Mathf.Inf;
+        if (p2 is LandCell l2 == false) return Mathf.Inf;
         
-        var cost = p1.Pos.GetOffsetTo(p2.Pos, data).Length();
-        cost *= 1f + l1.Roughness;
-        cost *= 1f + l2.Roughness;
+        var cost = p1.GetCenter().GetOffsetTo(p2.GetCenter(), data).Length();
+        cost *= 1f + l1.GetLandform(data).MinRoughness;
+        cost *= 1f + l2.GetLandform(data).MinRoughness;
         
         return cost * 3f;
     }
-    public static float EdgeRoughnessCost(Waypoint p1, Waypoint p2, Data data)
+    public static float EdgeRoughnessCost(PolyCell p1, PolyCell p2, Data data)
     {
-        var cost = p1.Pos.GetOffsetTo(p2.Pos, data).Length();
+        var cost = p1.GetCenter().GetOffsetTo(p2.GetCenter(), data).Length();
         var roughCost = 0f;
-        if (p1 is ILandWaypoint n1)
+        if (p1 is LandCell n1)
         {
-            roughCost += 1f + n1.Roughness;
+            roughCost += 1f + n1.GetLandform(data).MinRoughness;
         }
-        if (p2 is ILandWaypoint n2)
+        if (p2 is LandCell n2)
         {
-            roughCost += 1f + n2.Roughness;
+            roughCost += 1f + n2.GetLandform(data).MinRoughness;
         }
         return cost + roughCost * roughCost;
     }

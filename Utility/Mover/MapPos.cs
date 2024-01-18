@@ -4,61 +4,35 @@ using Godot;
 
 public class MapPos
 {
-    public Vector2 Pos { get; private set; }
-    public PolyTriPosition Tri { get; private set; }
+    public int PolyCell { get; private set; }
+    public (int DestCellId, float proportion) DestCell { get; private set; }
 
-    public static MapPos Construct(Vector2 pos, Data d)
+    public static MapPos Construct(PolyCell cell)
     {
-        var mp = new MapPos(pos, d.Context.GetPolyTri(pos, d).GetPosition());
+        var mp = new MapPos(cell.Id, (-1, 0f));
         return mp;
     }
-    public MapPos(Vector2 pos, PolyTriPosition tri)
+    public MapPos(int polyCell, (int DestCellId, float proportion) destCell)
     {
-        Pos = pos;
-        Tri = tri;
+        PolyCell = polyCell;
+        DestCell = destCell;
     }
 
-    public PolyTri GetTri(Data d)
-    {
-        return Tri.Tri(d);
-    }
-    public void Set(Vector2 pos, MoveData moveDat, 
+    public void Set(int polyCell, (int DestCellId, float proportion) destCell,
+        MoveData moveDat, 
         LogicWriteKey key)
     {
-        var ctx = MovementContext.PointToPoint;
-        Pos = pos;
-        SetTri(key.Data);
-        key.Data.Context.AddToMovementRecord(moveDat.Id, Pos, ctx, key.Data);
-    }
-    
-    public void Set(Waypoint w, MoveData moveDat, 
-        LogicWriteKey key)
-    {
-        var ctx = MovementContext.PointToPoint;
-        Pos = (Vector2I)w.Pos;
-        SetTri(key.Data);
-        key.Data.Context.AddToMovementRecord(moveDat.Id, Pos, ctx, key.Data);
+        PolyCell = polyCell;
+        DestCell = destCell;
+        key.Data.Context.AddToMovementRecord(moveDat.Id, this, key.Data);
     }
 
-    private void SetTri(Data d)
+    public PolyCell GetCell(Data d)
     {
-        var poly = Tri.Poly(d);
-        var tri = GetTri(d);
-        var rel = poly.Center.GetOffsetTo(Pos, d);
-        if (tri.ContainsPoint(rel))
-        {
-            return;
-        }
-
-        if (poly.PointInPolyRel(rel, d))
-        {
-            Tri = poly.Tris.GetAtPoint(rel, d).GetPosition();
-            return;
-        }
-        Tri = Pos.GetPolyTri(d).GetPosition();
+        return PlanetDomainExt.GetPolyCell(PolyCell, d);
     }
     public MapPos Copy()
     {
-        return new MapPos(Pos, Tri);
+        return new MapPos(PolyCell, DestCell);
     }
 }

@@ -83,7 +83,6 @@ public class WorldGenerator
         
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyTriGenerator());
-        RunGenerator(new TacticalWaypointGenerator());
         RunGenerator(new RegimeGenerator());
         RunGenerator(new SocietyGenerator());
         RunGenerator(new InfrastructureGenerator());

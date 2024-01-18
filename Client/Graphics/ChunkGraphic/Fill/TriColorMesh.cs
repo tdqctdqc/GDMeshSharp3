@@ -51,7 +51,9 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
                 iter++;
             }
         }
-        _arrayMesh = MeshGenerator.GetArrayMesh(_vertices.ToArray(), _colors.ToArray());
+
+        if (_vertices.Count < 3) _arrayMesh = new ArrayMesh();
+        else _arrayMesh = MeshGenerator.GetArrayMesh(_vertices.ToArray(), _colors.ToArray());
         Mesh = _arrayMesh;
     }
     public void Update(Data d, ConcurrentQueue<Action> queue)

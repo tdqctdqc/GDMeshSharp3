@@ -16,13 +16,14 @@ public class Fishery : FoodProdTechnique
         var waterNs = poly.Neighbors.Items(data).Where(n => n.IsWater());
         if(waterNs.Count() > 0)
         {
-            val += waterNs.Sum(n => n.Tris.Tris.Sum(t => t.GetArea()));
+            val += waterNs.Sum(n => n.GetArea(data));
         }
-
-        var riverTris = poly.Tris.Tris.Where(t => t.Landform(data) == data.Models.Landforms.River);
-        if(riverTris.Count() > 0)
+        
+        var riverCells = poly.GetCells(data)
+            .OfType<RiverCell>();
+        if(riverCells.Count() > 0)
         {
-            val +=  riverTris.Sum(t => t.GetArea()) * 50f;
+            val +=  riverCells.Sum(t => t.Area()) * 50f;
         }
 
         if (val < 0f)

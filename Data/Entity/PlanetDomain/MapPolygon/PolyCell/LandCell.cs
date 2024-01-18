@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class LandCell : PolyCell
+public class LandCell : PolyCell, ISinglePolyCell
 {
     public EntityRef<MapPolygon> Polygon { get; private set; }
     public static LandCell Construct(MapPolygon poly,
@@ -22,7 +22,9 @@ public class LandCell : PolyCell
         Vector2[] relBoundary, 
         ModelRef<Vegetation> vegetation, 
         ModelRef<Landform> landform, 
-        HashSet<int> neighbors, int id) : base(relTo, relBoundary, vegetation, landform, neighbors, id)
+        HashSet<int> neighbors, int id) 
+            : base(relTo, relBoundary, vegetation, landform, 
+                neighbors, new EntityRef<Regime>(-1), id)
     {
         Polygon = polygon;
     }

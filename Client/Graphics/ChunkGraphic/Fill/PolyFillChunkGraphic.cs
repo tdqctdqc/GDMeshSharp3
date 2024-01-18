@@ -9,8 +9,7 @@ public partial class PolyFillChunkGraphic : TriColorMesh<MapPolygon>
             : base(name, getColor,
                 (p, d) =>
                 {
-                    var offset = chunk.RelTo.GetOffsetTo(p, d);
-                    return p.Tris.Tris.Select(t => t.Transpose(offset));
+                    return p.GetTriangles(chunk.RelTo.Center, d);
                 }, d => chunk.Polys, data)
     {
     }

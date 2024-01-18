@@ -6,16 +6,15 @@ using Godot;
 public class Construction
 {
     public ModelRef<BuildingModel> Model { get; private set; }
-    public PolyTriPosition Pos { get; private set; }
-    public int Waypoint { get; private set; }
+    public int PolyCellId { get; private set; }
     public float TicksLeft { get; private set; }
 
-    public Construction(ModelRef<BuildingModel> model, PolyTriPosition pos, float ticksLeft, int waypoint)
+    public Construction(ModelRef<BuildingModel> model, 
+        int polyCellId, float ticksLeft)
     {
         Model = model;
-        Pos = pos;
+        PolyCellId = polyCellId;
         TicksLeft = ticksLeft;
-        Waypoint = waypoint;
     }
 
     public bool ProgressConstruction(float laborRatio, ProcedureWriteKey key)

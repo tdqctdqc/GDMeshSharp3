@@ -15,17 +15,6 @@ public static class MapPolygonExt
     {
         return data.Planet.PolygonAux.AuxDatas[poly];
     }
-    public static Waypoint GetCenterWaypoint(this MapPolygon poly, Data data)
-    {
-        var id = data.Military.TacticalWaypoints.PolyCenterWpIds[poly.Id];
-        return MilitaryDomain.GetWaypoint(id, data);
-    }
-    public static IEnumerable<Waypoint> GetAssocTacWaypoints(this MapPolygon poly, Data data)
-    {
-        return data.Military.TacticalWaypoints.PolyAssocWaypoints[poly.Id]
-            .Select(i => 
-                MilitaryDomain.GetWaypoint(i, data));
-    }
     public static bool PointInPolyAbs(this MapPolygon poly, Vector2 posAbs, Data data)
     {
         var posRel = poly.GetOffsetTo(posAbs, data);
@@ -156,9 +145,41 @@ public static class MapPolygonExt
             .Union(p.Neighbors.Items(d).Select(n => n.GetChunk(d))).Distinct();
     }
 
-    public static bool LineEntersPoly(this MapPolygon poly, Vector2 aRel, Vector2 bRel, Data data)
+    public static List<PolyCell> GetCells(this MapPolygon p, Data d)
     {
-        return poly.GetOrderedBoundaryPoints(data)
-            .Any(p => Vector2Ext.LineSegIntersect(Vector2.Zero, p, aRel, bRel, true, out _));
+        return d.Planet.PolygonAux.CellsByPoly[p];
     }
+
+    public static float GetArea(this MapPolygon p, Data d)
+    {
+        var ps = p.GetOrderedBoundaryPoints(d);
+        var tris = Geometry2D.TriangulatePolygon(ps);
+        var area = 0f;
+        for (var i = 0; i < tris.Length; i+=3)
+        {
+            var a = ps[tris[i]];
+            var b = ps[tris[i+1]];
+            var c = ps[tris[i+2]];
+            area += TriangleExt.GetArea(a, b, c);
+        }
+
+        return area;
+    }
+
+    public static Triangle[] GetTriangles(this MapPolygon p, Vector2 relTo, Data d)
+    {
+        var RelBoundary = p.GetOrderedBoundaryPoints(d);
+        var tris = Geometry2D.TriangulatePolygon(RelBoundary);
+        var res = new Triangle[tris.Length / 3];
+        for (var i = 0; i < tris.Length; i+=3)
+        {
+            res[i / 3] = new Triangle(
+                relTo.GetOffsetTo(RelBoundary[tris[i]] + p.Center, d) ,
+                relTo.GetOffsetTo(RelBoundary[tris[i + 1]] + p.Center, d) ,
+                relTo.GetOffsetTo(RelBoundary[tris[i + 2]] + p.Center, d));
+        }
+
+        return res;
+    }
+    
 }

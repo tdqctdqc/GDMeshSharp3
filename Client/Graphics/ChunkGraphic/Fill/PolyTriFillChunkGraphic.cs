@@ -3,18 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PolyTriFillChunkGraphic : TriColorMesh<PolyTri>
+public partial class PolyTriFillChunkGraphic : TriColorMesh<PolyCell>
 {
     public PolyTriFillChunkGraphic(string name, MapChunk chunk, 
-        Func<PolyTri, Data, Color> getColor, Data data) 
+        Func<PolyCell, Data, Color> getColor, Data data) 
         : base(name, getColor,
             (pt, d) =>
             {
-                var poly = pt.GetPosition().Poly(d);
-                var offset = chunk.RelTo.GetOffsetTo(poly, d);
-                return pt.Transpose(offset).Yield();
+                var offset = chunk.RelTo.GetOffsetTo(pt.RelTo, d);
+                return pt.GetTriangles(chunk.RelTo.Center, d);
             }, 
-            data => chunk.Polys.SelectMany(p => p.Tris.Tris),
+            data => chunk.Cells,
             data)
     {
     }

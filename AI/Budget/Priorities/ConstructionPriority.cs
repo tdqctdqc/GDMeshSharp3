@@ -66,7 +66,6 @@ public class ConstructionPriority : SolverPriority<BuildingModel>
                 var proc = StartConstructionProcedure.Construct(
                     building.MakeRef<BuildingModel>(),
                     pos,
-                    poly.GetCenterWaypoint(key.Data).Id,
                     r.MakeRef(),
                     key.Data
                 );

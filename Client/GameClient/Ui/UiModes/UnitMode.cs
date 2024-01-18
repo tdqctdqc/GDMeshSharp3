@@ -56,11 +56,11 @@ public class UnitMode : UiMode
 
     private Unit GetCloseUnit(Vector2 mapPos)
     {
-        var grid = _client.Data.Military.UnitAux.UnitGrid;
-        var within = grid.GetWithin(mapPos, 50f, v => true);
-        return within
-            .OrderBy(u => u.Position.Pos.GetOffsetTo(mapPos, _client.Data).Length())
-            .FirstOrDefault(u => mapPos.GetOffsetTo(u.Position.Pos, _client.Data).Length() <= u.Radius());
+        var cell = _mouseOverHandler.MouseOverCell;
+        if (cell == null) return null;
+
+        var units = _client.Data.Context.UnitsByCell[cell];
+        return units.FirstOrDefault();
     }
     private void UnitTooltip(Unit close)
     {
@@ -79,26 +79,7 @@ public class UnitMode : UiMode
 
     private void OverlayForUnit(Unit u)
     {
-        var unitPos = u.Position.Pos;
-        var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
-        var group = u.GetGroup(_client.Data);
-        var groupMembers = group.Units.Items(_client.Data);
-        foreach (var gUnit in groupMembers)
-        {
-            if (gUnit == u) continue;
-            var radius = gUnit.Radius();
-            var offset = u.Position.Pos.GetOffsetTo(gUnit.Position.Pos, _client.Data);
-            debug.Draw(mb => mb.AddPoint(offset, radius * 2f, new Color(Colors.Red, .5f)),
-                unitPos);
-        }
-        debug.Draw(mb => mb.DrawMovementRecord(u.Id,
-                50, unitPos, _client.Data),
-            unitPos);
-        var order = group.GroupOrder;
-        if (order != null)
-        {
-            debug.Draw(mb => order.Draw(group, unitPos, mb, _client.Data), unitPos);
-        }
+        
     }
     
 }

@@ -9,7 +9,9 @@ public class UnitAux
     public EntityMultiIndexer<Regime, UnitGroup> UnitGroupByRegime { get; private set; }
     public EntityMultiIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
     public ValChangeAction<Unit, UnitGroup> UnitChangedGroup { get; private set; }
-    public CylinderGrid<Unit> UnitGrid { get; private set; }
+    
+    
+    
     private Data _data;
     public UnitAux(Data d)
     {
@@ -41,11 +43,6 @@ public class UnitAux
         sw.Start();
         var dim = new Vector2(_data.Planet.Width, _data.Planet.Height);
 
-        UnitGrid = new CylinderGrid<Unit>(dim, 200f, u => u.Position.Pos);
-        foreach (var unit in _data.GetAll<Unit>())
-        {
-            UnitGrid.Add(unit);
-        }
         sw.Stop();
         _data.Logger.Log("Make unit grid time " + sw.Elapsed.TotalMilliseconds,
             LogType.Logic);

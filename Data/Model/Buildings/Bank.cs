@@ -25,9 +25,9 @@ public class Bank : BuildingModel
         )
     {
     }
-    protected override bool CanBuildInTriSpec(PolyTri t, Data data)
+    protected override bool CanBuildInCell(PolyCell t, Data data)
     {
-        return t.Landform(data).IsLand;
+        return t is LandCell;
     }
 
     public override bool CanBuildInPoly(MapPolygon p, Data data)

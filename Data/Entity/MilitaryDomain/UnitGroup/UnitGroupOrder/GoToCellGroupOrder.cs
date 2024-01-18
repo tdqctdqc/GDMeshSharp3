@@ -5,37 +5,37 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class GoToWaypointGroupOrder : UnitGroupOrder
+public class GoToCellGroupOrder : UnitGroupOrder
 {
     public List<int> PathWaypointIds { get; private set; }
-    public static GoToWaypointGroupOrder Construct(Waypoint destWp,
+    public static GoToCellGroupOrder Construct(PolyCell destWp,
         Regime r, UnitGroup g, Data d)
     {
         var alliance = r.GetAlliance(d);
-        var currWp = g.GetWaypoint(d);
+        var currWp = g.GetCell(d);
         var moveType = g.MoveType(d);
         
         if (moveType.Passable(destWp, alliance, d) == false)
         {
             throw new Exception($"{moveType.GetType().Name} cant go to {destWp.GetType().Name}" +
                                 $" alliance {alliance.Leader.Entity(d).Id}" +
-                                $" occupier {destWp.GetOccupyingRegime(d)?.GetAlliance(d).Leader.Entity(d).Id} ");
+                                $" occupier {destWp.Controller.RefId} ");
         }
         var path = PathFinder
-            .FindStrategicPath(moveType, alliance, 
+            .FindPath(moveType, alliance, 
                 currWp, destWp, d);
         if (path == null)
         {
-            var issue = new CantFindPathIssue(currWp.Pos,
+            var issue = new CantFindPathIssue(currWp.GetCenter(),
                 alliance, $"failed to find path",
                 currWp, destWp, moveType);
             d.ClientPlayerData.Issues.Add(issue);
             return null;
         }
         
-        return new GoToWaypointGroupOrder(path.Select(wp => wp.Id).ToList());
+        return new GoToCellGroupOrder(path.Select(wp => wp.Id).ToList());
     }
-    [SerializationConstructor] private GoToWaypointGroupOrder(List<int> pathWaypointIds)
+    [SerializationConstructor] private GoToCellGroupOrder(List<int> pathWaypointIds)
     {
         PathWaypointIds = pathWaypointIds;
     }
@@ -46,7 +46,7 @@ public class GoToWaypointGroupOrder : UnitGroupOrder
         var d = key.Data;
         var alliance = g.Regime.Entity(d).GetAlliance(d);
         var context = d.Context;
-        var path = PathWaypointIds.Select(id => MilitaryDomain.GetWaypoint(id, d)).ToList();
+        var path = PathWaypointIds.Select(id => PlanetDomainExt.GetPolyCell(id, d)).ToList();
         foreach (var unit in g.Units.Items(d))
         {
             var pos = unit.Position.Copy();
@@ -67,16 +67,16 @@ public class GoToWaypointGroupOrder : UnitGroupOrder
 
         var pos = group.GetPosition(d);
         var wps = PathWaypointIds
-            .Select(id => MilitaryDomain.GetWaypoint(id, d));
+            .Select(id => PlanetDomainExt.GetPolyCell(id, d));
         var close = wps
-            .MinBy(wp => wp.Pos.GetOffsetTo(pos, d).Length());
+            .MinBy(wp => wp.GetCenter().GetOffsetTo(pos, d).Length());
         var index = PathWaypointIds.IndexOf(close.Id);
         mb.AddArrow(relTo.GetOffsetTo(pos, d),
-            relTo.GetOffsetTo(close.Pos, d), 1f, Colors.Red);
+            relTo.GetOffsetTo(close.GetCenter(), d), 1f, Colors.Red);
         for (var i = index; i < PathWaypointIds.Count - 1; i++)
         {
-            var from = MilitaryDomain.GetWaypoint(PathWaypointIds[i], d).Pos;
-            var to = MilitaryDomain.GetWaypoint(PathWaypointIds[i + 1], d).Pos;
+            var from = PlanetDomainExt.GetPolyCell(PathWaypointIds[i], d).GetCenter();
+            var to = PlanetDomainExt.GetPolyCell(PathWaypointIds[i + 1], d).GetCenter();
             mb.AddArrow(relTo.GetOffsetTo(from, d),
                 relTo.GetOffsetTo(to, d), 5f, Colors.Pink);
         }

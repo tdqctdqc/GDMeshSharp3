@@ -16,7 +16,6 @@ public class MapPolygon : Entity
     public float Moisture { get; protected set; }
     public EntityRef<Regime> OwnerRegime { get; protected set; }
     public EntityRef<Regime> OccupierRegime { get; private set; }
-    public PolyTris Tris { get; protected set; }
     public bool IsLand { get; protected set; }
     public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
@@ -24,7 +23,7 @@ public class MapPolygon : Entity
         Dictionary<int, PolyBorderChain> neighborBorders, Color color, float altitude, float roughness, 
         float moisture, EntityRef<Regime> ownerRegime, 
         EntityRef<Regime> occupierRegime,
-        PolyTris tris, bool isLand,
+        bool isLand,
         PolyBuildingSlots polyBuildingSlots, PolyFoodProd polyFoodProd) 
             : base(id)
     {
@@ -37,7 +36,6 @@ public class MapPolygon : Entity
         Moisture = moisture;
         OwnerRegime = ownerRegime;
         OccupierRegime = occupierRegime;
-        Tris = tris;
         IsLand = isLand;
         PolyBuildingSlots = polyBuildingSlots;
         PolyFoodProd = polyFoodProd;
@@ -62,7 +60,6 @@ public class MapPolygon : Entity
             0f,
             new EntityRef<Regime>(-1),
             new EntityRef<Regime>(-1),
-            null,
             true,
             PolyBuildingSlots.Construct(),
             PolyFoodProd.Construct()
@@ -105,10 +102,6 @@ public class MapPolygon : Entity
         var old = OccupierRegime.Entity(key.Data);
         OccupierRegime = r.MakeRef();
         key.Data.Planet.PolygonAux.ChangedOccupierRegime.Invoke(this, r, old);
-    }
-    public void SetTerrainTris(PolyTris tris, GenWriteKey key)
-    {
-        Tris = tris;
     }
 
     public void SetTerrainStats(GenWriteKey key)

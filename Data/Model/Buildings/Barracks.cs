@@ -20,9 +20,9 @@ public class Barracks : BuildingModel
     {
     }
 
-    protected override bool CanBuildInTriSpec(PolyTri t, Data data)
+    protected override bool CanBuildInCell(PolyCell t, Data data)
     {
-        return true;
+        return t is LandCell;
     }
 
     public override bool CanBuildInPoly(MapPolygon p, Data data)

@@ -27,9 +27,9 @@ public class CombatResultsProcedure : Procedure
                 unit.Troops.Remove(kvp.Key, Mathf.Min(max, kvp.Value));
             }
 
-            var newPos = unit.Position.Pos + result.ResultOffset;
-            newPos = newPos.ClampPosition(key.Data);
-            unit.SetPosition(MapPos.Construct(newPos, key.Data), key);
+            // var newPos = unit.Position.Pos + result.ResultOffset;
+            // newPos = newPos.ClampPosition(key.Data);
+            // unit.SetPosition(MapPos.Construct(newPos, key.Data), key);
         }
     }
 

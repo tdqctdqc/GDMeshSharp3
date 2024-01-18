@@ -29,10 +29,9 @@ public class Mine : BuildingModel
         if (prodItem is IMineable == false) throw new Exception();
     }
 
-    protected override bool CanBuildInTriSpec(PolyTri t, Data data) => CanBuildInTri(t, data);
-    public static bool CanBuildInTri(PolyTri t, Data data)
+    protected override bool CanBuildInCell(PolyCell t, Data data)
     {
-        return t.Landform(data).IsLand;
+        return t is LandCell;
     }
     public override bool CanBuildInPoly(MapPolygon p, Data data)
     {

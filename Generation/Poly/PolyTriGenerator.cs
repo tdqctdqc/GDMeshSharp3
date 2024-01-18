@@ -40,70 +40,49 @@ public class PolyTriGenerator : Generator
         ConnectDiffPolyCells(cellsByPoly, key);
         report.StopSection("connecting cells");
 
-        
-        
-        report.StartSection();
-        var edgeTris = new ConcurrentBag<(PolyTriPosition[], PolyTriPosition[])>();
-        report.StopSection("making poly tri paths");
-        
         _data.Notices.SetPolyShapes.Invoke();
-        
+
         report.StartSection();
         Postprocess(key);
         report.StopSection("postprocessing polytris");
+        
+        _data.Notices.MadeCells.Invoke();
+
 
         report.StartSection();
         Parallel.ForEach(polys, p => p.SetTerrainStats(key)); 
         report.StopSection("setting terrain stats");
-
         return report;
     }
     private PolyCell[] BuildTris(MapPolygon poly, TempRiverData rd, GenWriteKey key)
     {
-        (List<PolyTri> tris, PolyCell[] cells) divs;
+        PolyCell[] cells;
         if (poly.IsWater())
         {
-            divs = DoSeaPoly(poly, key);
+            cells = DoSeaPoly(poly, key);
         }
         else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus(key.Data)))
         {
-            divs = RiverTriGen.DoPoly(poly, key.Data, rd, key);
+            cells = RiverTriGen.DoPoly(poly, key.Data, rd, key);
         }
         else
         {
-            divs = DoLandPolyNoRivers(poly, key);
+            cells = DoLandPolyNoRivers(poly, key);
         }
         
-        var polyTerrainTris = PolyTris.Create(divs.tris, key);
-        if (polyTerrainTris == null) throw new Exception();
-        poly.SetTerrainTris(polyTerrainTris, key);
-        
-        return divs.cells;
+        return cells;
     }
-    private (List<PolyTri>, PolyCell[]) DoSeaPoly(MapPolygon poly, GenWriteKey key)
+    private PolyCell[] DoSeaPoly(MapPolygon poly, GenWriteKey key)
     {
-        var tris = new List<PolyTri>();
         var boundaryPs = poly.GetOrderedBoundaryPoints(_data);
-        var triPIndices = Geometry2D.TriangulatePolygon(boundaryPs);
-        for (var i = 0; i < triPIndices.Length; i+=3)
-        {
-            var a = boundaryPs[triPIndices[i]];
-            var b = boundaryPs[triPIndices[i+1]];
-            var c = boundaryPs[triPIndices[i+2]];
-            tris.Add(PolyTri.Construct(poly.Id, a,b,c,
-                _data.Models.Landforms.Sea,
-                _data.Models.Vegetations.Barren));
-        }
-
         var cell = SeaCell.Construct(poly, boundaryPs.ToArray(), key);
-        return (tris, new PolyCell[]{cell});
+        return new PolyCell[]{cell};
     }
     
-    private (List<PolyTri>, PolyCell[]) DoLandPolyNoRivers(MapPolygon poly, GenWriteKey key)
+    private PolyCell[] DoLandPolyNoRivers(MapPolygon poly, GenWriteKey key)
     {
         var borderPs = poly.GetOrderedBoundaryPoints(_data);
-        List<PolyTri> tris = borderPs.PolyTriangulate(key.Data, poly);
-        return (tris, GraphGenerator.GenerateAndConnectPolyCellsForInterior(poly, borderPs, key));
+        return GraphGenerator.GenerateAndConnectPolyCellsForInterior(poly, borderPs, key);
     }
 
     private void ConnectDiffPolyCells(
@@ -324,88 +303,96 @@ public class PolyTriGenerator : Generator
         var grassland = key.Data.Models.Vegetations.Grassland;
         var tundra = key.Data.Models.Vegetations.Tundra;
 
-        Parallel.ForEach(polys, poly =>
+
+        var landCells = key.Data.Planet.PolygonAux.PolyCells.Cells.Values
+            .OfType<LandCell>();
+        var landCellsByPoly = landCells
+            .SortInto(l => l.Polygon.Entity(key.Data));
+        Parallel.ForEach(landCellsByPoly, kvp =>
         {
-            foreach (var tri in poly.Tris.Tris)
+            var cells = kvp.Value;
+            var poly = kvp.Key;
+            foreach (var cell in cells)
             {
-                erode(poly, tri);
-                irrigate(poly, tri);
-                mountainRidging(poly, tri);
-                swampRidging(poly, tri);
+                erode(poly, cell);
+                irrigate(poly, cell);
+                mountainRidging(poly, cell);
+                swampRidging(cell);
             }
         });
 
-        void erode(MapPolygon poly, PolyTri tri)
+        void erode(MapPolygon poly, PolyCell cell)
         {
             if (
-                (tri.Landform(_data) == _data.Models.Landforms.Mountain || tri.Landform(_data) == _data.Models.Landforms.Peak)
-                && tri.AnyNeighbor(poly, n => n.Landform(_data).IsWater)
+                (cell.GetLandform(_data) == _data.Models.Landforms.Mountain || cell.GetLandform(_data) == _data.Models.Landforms.Peak)
+                && cell.AnyNeighbor(n => n.GetLandform(_data).IsWater, _data)
                 && Game.I.Random.Randf() < erodeChance
             )
             {
-                var v = key.Data.Models.Vegetations.GetAtPoint(poly, tri.GetCentroid(), 
+                var v = key.Data.Models.Vegetations.GetAtPoint(poly, 
+                    poly.GetOffsetTo(cell.GetCenter(), key.Data), 
                     _data.Models.Landforms.Hill, _data);
-                tri.SetLandform(_data.Models.Landforms.Hill, key);
-                tri.SetVegetation(v, key);
+                cell.SetLandform(_data.Models.Landforms.Hill, key);
+                cell.SetVegetation(v, key);
             }
         }
 
-        void irrigate(MapPolygon poly, PolyTri tri)
+        void irrigate(MapPolygon poly, PolyCell cell)
         {
             if (poly.DistFromEquatorRatio(_data) >= tundra.MinDistFromEquatorRatio) return;
-            if (tri.Landform(_data).IsLand
-                && tri.Vegetation(_data).MinMoisture < _data.Models.Vegetations.Grassland.MinMoisture
-                && _data.Models.Vegetations.Grassland.AllowedLandforms.Contains(tri.Landform(_data))
-                && tri.AnyNeighbor(poly, n => n.Landform(_data).IsWater))
+            if (cell.GetLandform(_data).IsLand
+                && cell.GetVegetation(_data).MinMoisture < _data.Models.Vegetations.Grassland.MinMoisture
+                && _data.Models.Vegetations.Grassland.AllowedLandforms.Contains(cell.GetLandform(_data))
+                && cell.AnyNeighbor(n => n.GetLandform(_data).IsWater, _data))
             {
-                tri.SetVegetation(_data.Models.Vegetations.Grassland, key);
-                tri.ForEachNeighbor(poly, nTri =>
+                cell.SetVegetation(_data.Models.Vegetations.Grassland, key);
+                cell.ForEachNeighbor(nCell =>
                 {
-                    if (nTri.Landform(_data).IsLand
-                        && nTri.Vegetation(_data).MinMoisture < _data.Models.Vegetations.Steppe.MinMoisture
-                        && _data.Models.Vegetations.Steppe.AllowedLandforms.Contains(nTri.Landform(_data)))
+                    if (nCell.GetLandform(_data).IsLand
+                        && nCell.GetVegetation(_data).MinMoisture < _data.Models.Vegetations.Steppe.MinMoisture
+                        && _data.Models.Vegetations.Steppe.AllowedLandforms.Contains(nCell.GetLandform(_data)))
                     {
-                        nTri.SetVegetation(_data.Models.Vegetations.Steppe, key);
+                        nCell.SetVegetation(_data.Models.Vegetations.Steppe, key);
                     }
-                });
+                }, _data);
             }
         }
 
-        void swampRidging(MapPolygon poly, PolyTri tri)
+        void swampRidging(PolyCell cell)
         {
-            if (tri.Vegetation(_data) == _data.Models.Vegetations.Swamp)
+            if (cell.Vegetation.Model(_data) == _data.Models.Vegetations.Swamp)
             {
-                var globalPos = tri.GetCentroid() + poly.Center;
+                var globalPos = cell.GetCenter();
                 var noise = swampNoise.GetNoise2D(globalPos.X, globalPos.Y);
                 var wideNoise = swampWideNoise.GetNoise2D(globalPos.X, globalPos.Y);
                 if (noise < -.3f && wideNoise < 0f)
                 {
-                    tri.SetVegetation(_data.Models.Vegetations.Forest, key);
+                    cell.SetVegetation(_data.Models.Vegetations.Forest, key);
                 }
                 else if (noise < -.2f && wideNoise < 0f)
                 {
                     
-                    tri.SetVegetation(_data.Models.Vegetations.Grassland, key);
+                    cell.SetVegetation(_data.Models.Vegetations.Grassland, key);
                 }
             }
         }
 
-        void mountainRidging(MapPolygon poly, PolyTri tri)
+        void mountainRidging(MapPolygon poly, PolyCell cell)
         {
-            if (tri.Landform(_data).IsLand && tri.Landform(_data).MinRoughness >= _data.Models.Landforms.Peak.MinRoughness)
+            if (cell.GetLandform(_data).IsLand && cell.GetLandform(_data).MinRoughness >= _data.Models.Landforms.Peak.MinRoughness)
             {
-                var globalPos = tri.GetCentroid() + poly.Center;
+                var globalPos = cell.GetCenter();
                 var noise = mountainNoise.GetNoise2D(globalPos.X, globalPos.Y);
-                if(noise < .2f) tri.SetLandform(_data.Models.Landforms.Mountain, key);
+                if(noise < .2f) cell.SetLandform(_data.Models.Landforms.Mountain, key);
             }
-            else if (tri.Landform(_data).IsLand && tri.Landform(_data).MinRoughness >= _data.Models.Landforms.Mountain.MinRoughness)
+            else if (cell.GetLandform(_data).IsLand && cell.GetLandform(_data).MinRoughness >= _data.Models.Landforms.Mountain.MinRoughness)
             {
-                var globalPos = tri.GetCentroid() + poly.Center;
+                var globalPos = cell.GetCenter();
                 var noise = mountainNoise.GetNoise2D(globalPos.X, globalPos.Y);
                 if(noise < 0f)
                 {
-                    tri.SetLandform(_data.Models.Landforms.Hill, key);
-                    tri.SetVegetation(_data.Models.Vegetations.GetAtPoint(poly, tri.GetCentroid(), _data.Models.Landforms.Hill, _data), key);
+                    cell.SetLandform(_data.Models.Landforms.Hill, key);
+                    cell.SetVegetation(_data.Models.Vegetations.GetAtPoint(poly, poly.Center.GetOffsetTo(cell.GetCenter(), key.Data), _data.Models.Landforms.Hill, _data), key);
                 }
             }
         }

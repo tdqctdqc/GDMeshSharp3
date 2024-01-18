@@ -25,14 +25,10 @@ public abstract class BuildingModel : IModel, IMakeable
         Components = components;
         Makeable = makeable;
     }
-
-    protected abstract bool CanBuildInTriSpec(PolyTri t, Data data);
+    
+    protected abstract bool CanBuildInCell(PolyCell t, Data data);
     public abstract bool CanBuildInPoly(MapPolygon p, Data data);
-    public bool CanBuildInTri(PolyTri t, Data data)
-    {
-        return t.GetBuilding(data) == null && CanBuildInTriSpec(t, data);
-    }
-
+    
     public T GetComponent<T>(Func<T, bool> good) where T : BuildingModelComponent
     {
         return (T) Components.FirstOrDefault(c => c is T t && good(t));

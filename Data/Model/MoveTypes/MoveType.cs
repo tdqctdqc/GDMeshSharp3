@@ -3,20 +3,19 @@ using Godot;
 
 public abstract class MoveType : IModel
 {
-    public abstract float TerrainCostInstantaneous(PolyTri pt, Data d);
+    public abstract float TerrainCostInstantaneous(PolyCell pt, Data d);
 
-    public bool Passable(Waypoint wp, Alliance a, Data d)
+    public bool Passable(PolyCell cell, Alliance a, Data d)
     {
-        return TerrainPassable(wp.Tri.Tri(d), d) && 
-            AllianceCanPass(a,
-            wp.GetOccupyingRegime(d).GetAlliance(d), d);
+        return TerrainPassable(cell, d) && 
+            AllianceCanPass(a, cell, d);
     }
-    public abstract bool TerrainPassable(PolyTri p, Data d);
+    public abstract bool TerrainPassable(PolyCell p, Data d);
 
-    public float StratMoveEdgeCost(Waypoint from, Waypoint to, Data d)
+    public float StratMoveEdgeCost(PolyCell from, PolyCell to, Data d)
     {
-        var l = from.Pos.GetOffsetTo(to.Pos, d).Length();
-        var terrCostPerLength = TerrainCostPerLength(from.Tri.Tri(d), to.Tri.Tri(d), d);
+        var l = from.GetCenter().GetOffsetTo(to.GetCenter(), d).Length();
+        var terrCostPerLength = TerrainCostPerLength(from, to, d);
         if (UseRoads)
         {
             var r = from.GetRoadWith(to, d);
@@ -39,10 +38,10 @@ public abstract class MoveType : IModel
         }
         return cost;
     }
-    public float TerrainCostPerLength(PolyTri tri1, PolyTri tri2, Data d)
+    public float TerrainCostPerLength(PolyCell cell1, PolyCell cell2, Data d)
     {
-        return (TerrainCostInstantaneous(tri1, d) 
-                + TerrainCostInstantaneous(tri2, d)) / 2f;
+        return (TerrainCostInstantaneous(cell1, d) 
+                + TerrainCostInstantaneous(cell2, d)) / 2f;
     }
     public bool UseRoads { get; private set; }
     public float BaseSpeed { get; private set; }
@@ -55,8 +54,10 @@ public abstract class MoveType : IModel
         Name = name;
     }
     protected static bool AllianceCanPass(Alliance moverAlliance, 
-        Alliance territoryAlliance, Data d)
+        PolyCell cell, Data d)
     {
+        if (cell is LandCell l == false) return true;
+        var territoryAlliance = l.Polygon.Entity(d).OccupierRegime.Entity(d).GetAlliance(d);
         return moverAlliance == territoryAlliance;
     }
 }

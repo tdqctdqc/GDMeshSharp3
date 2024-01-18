@@ -68,3 +68,11 @@ public class PlanetDomain
         return ClampPosition(relTo + avg);
     }
 }
+
+public static class PlanetDomainExt
+{
+    public static PolyCell GetPolyCell(int id, Data d)
+    {
+        return d.Planet.PolygonAux.PolyCells.Cells[id];
+    }
+}

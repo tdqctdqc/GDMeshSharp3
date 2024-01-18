@@ -9,21 +9,21 @@ public partial class TheaterGraphic : Node2D
         GraphicsSegmenter segmenter, Data d)
     {
         Draw(theater, d);
-        var relToId = theater.TacWaypointIds.First();
-        var relTo = MilitaryDomain.GetWaypoint(relToId, d).Pos;
+        var relToId = theater.HeldCellIds.First();
+        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         segmenter.AddElement(this, relTo);
     }
 
     public void Draw(TheaterAssignment theater, Data d)
     {
         this.ClearChildren();
-        if (theater.TacWaypointIds.Count() == 0) return;
+        if (theater.HeldCellIds.Count() == 0) return;
         var alliance = theater.Regime.Entity(d).GetAlliance(d);
         var outer = theater.Regime.Entity(d).PrimaryColor;
         var inner = ColorsExt.GetRandomColor();
         
-        var relToId = theater.TacWaypointIds.First();
-        var relTo = MilitaryDomain.GetWaypoint(relToId, d).Pos;
+        var relToId = theater.HeldCellIds.First();
+        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         var mb = new MeshBuilder();
         var color = ColorsExt.GetRandomColor();
         DrawTheaterWps(theater, mb, color, d);
@@ -34,8 +34,8 @@ public partial class TheaterGraphic : Node2D
     private void DrawFronts(TheaterAssignment theater, 
         Data d, MeshBuilder mb, Color theaterColor)
     {
-        var relToId = theater.TacWaypointIds.First();
-        var relTo = MilitaryDomain.GetWaypoint(relToId, d).Pos;
+        var relToId = theater.HeldCellIds.First();
+        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
         foreach (var fa in theater.Assignments.OfType<FrontAssignment>())
@@ -46,12 +46,12 @@ public partial class TheaterGraphic : Node2D
             foreach (var seg in fa.Assignments.OfType<FrontSegmentAssignment>())
             {
                 var segColor = ColorsExt.GetRandomColor();
-                for (var i = 0; i < seg.FrontLineWpIds.Count - 1; i++)
+                for (var i = 0; i < seg.FrontLineCellIds.Count - 1; i++)
                 {
-                    var fromWp = MilitaryDomain.GetWaypoint(seg.FrontLineWpIds[i], d);
-                    var toWp = MilitaryDomain.GetWaypoint(seg.FrontLineWpIds[i + 1], d);
-                    var from = relPos(fromWp.Pos);
-                    var to = relPos(toWp.Pos);
+                    var fromWp = PlanetDomainExt.GetPolyCell(seg.FrontLineCellIds[i], d);
+                    var toWp = PlanetDomainExt.GetPolyCell(seg.FrontLineCellIds[i + 1], d);
+                    var from = relPos(fromWp.GetCenter());
+                    var to = relPos(toWp.GetCenter());
                     mb.AddLine(from, to, regimeColor, 5f);
                     mb.AddLine(from, to, frontColor, 2.5f);
                     mb.AddLine(from, to, segColor, 1f);
@@ -68,15 +68,15 @@ public partial class TheaterGraphic : Node2D
     private void DrawTheaterWps(TheaterAssignment theater, 
         MeshBuilder mb, Color theaterColor, Data d)
     {
-        var relToId = theater.TacWaypointIds.First();
-        var relTo = MilitaryDomain.GetWaypoint(relToId, d).Pos;
+        var relToId = theater.HeldCellIds.First();
+        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
         var size = 5f;
         
-        foreach (var tId in theater.TacWaypointIds)
+        foreach (var tId in theater.HeldCellIds)
         {
-            var wp = MilitaryDomain.GetWaypoint(tId, d);
-            var relPos = relTo.GetOffsetTo(wp.Pos, d);
+            var wp = PlanetDomainExt.GetPolyCell(tId, d);
+            var relPos = relTo.GetOffsetTo(wp.GetCenter(), d);
             mb.AddPoint(relPos, size, regimeColor);
             mb.AddPoint(relPos, size * .6f, theaterColor);
         }
@@ -84,20 +84,20 @@ public partial class TheaterGraphic : Node2D
 
     private void DrawLinks(TheaterAssignment theater, MeshBuilder mb, Data d)
     {
-        var relToId = theater.TacWaypointIds.First();
-        var relTo = MilitaryDomain.GetWaypoint(relToId, d).Pos;
+        var relToId = theater.HeldCellIds.First();
+        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
 
-        foreach (var tId in theater.TacWaypointIds)
+        foreach (var tId in theater.HeldCellIds)
         {
-            var wp = MilitaryDomain.GetWaypoint(tId, d);
-            var relPos = relTo.GetOffsetTo(wp.Pos, d);
+            var wp = PlanetDomainExt.GetPolyCell(tId, d);
+            var relPos = relTo.GetOffsetTo(wp.GetCenter(), d);
             
             foreach (var nWp in wp.GetNeighbors(d))
             {
-                if (theater.TacWaypointIds.Contains(nWp.Id) == false) continue;
+                if (theater.HeldCellIds.Contains(nWp.Id) == false) continue;
                 if (nWp.Id > tId) continue;
-                var nRelPos = relTo.GetOffsetTo(nWp.Pos, d);
+                var nRelPos = relTo.GetOffsetTo(nWp.GetCenter(), d);
         
                 mb.AddLine(relPos, nRelPos, regimeColor, 2f);
             }

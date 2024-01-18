@@ -1,11 +1,11 @@
 public class InfrastructureNode
 {
-    public Waypoint Waypoint { get; private set; }
+    public PolyCell Cell { get; private set; }
     public float Size { get; private set; }
 
-    public InfrastructureNode(Waypoint waypoint, float size)
+    public InfrastructureNode(PolyCell cell, float size)
     {
-        Waypoint = waypoint;
+        Cell = cell;
         Size = size;
     }
 }

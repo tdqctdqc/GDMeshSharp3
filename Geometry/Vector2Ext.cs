@@ -14,14 +14,6 @@ public static class Vector2Ext
     {
         return data.Planet.GetOffsetTo(v1, v2);
     }
-    public static PolyTri GetPolyTri(this Vector2I pos, Data d)
-    {
-        return GetPolyTri((Vector2)pos, d);
-    }
-    public static PolyTri GetPolyTri(this Vector2 pos, Data d)
-    {
-        return d.Context.GetPolyTri(pos, d);
-    }
 
     public static Vector2 ClampPosition(this Vector2 v, Data d)
     {

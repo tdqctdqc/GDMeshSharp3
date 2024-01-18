@@ -9,25 +9,25 @@ public static class MeshBuilderExt
         FrontSegmentAssignment seg, 
         Data d)
     {
-        if (seg.FrontLineWpIds.Count == 0) return;
+        if (seg.FrontLineCellIds.Count == 0) return;
         Vector2 relPos(Vector2 p)
         {
             return relTo.GetOffsetTo(p, d);
         }
-        for (var i = 0; i < seg.FrontLineWpIds.Count - 1; i++)
+        for (var i = 0; i < seg.FrontLineCellIds.Count - 1; i++)
         {
-            var from = MilitaryDomain.GetWaypoint(seg.FrontLineWpIds[i], d);
-            var to = MilitaryDomain.GetWaypoint(seg.FrontLineWpIds[i + 1], d);
-            mb.AddLine(relPos(from.Pos), relPos(to.Pos), Colors.Blue, 3f);
+            var from = PlanetDomainExt.GetPolyCell(seg.FrontLineCellIds[i], d);
+            var to = PlanetDomainExt.GetPolyCell(seg.FrontLineCellIds[i + 1], d);
+            mb.AddLine(relPos(from.GetCenter()), relPos(to.GetCenter()), Colors.Blue, 3f);
         }
         
-        if (seg.AdvanceLineWpIds != null)
+        if (seg.AdvanceLineCellIds != null)
         {
-            for (var i = 0; i < seg.AdvanceLineWpIds.Count - 1; i++)
+            for (var i = 0; i < seg.AdvanceLineCellIds.Count - 1; i++)
             {
-                var from = MilitaryDomain.GetWaypoint(seg.AdvanceLineWpIds[i], d);
-                var to = MilitaryDomain.GetWaypoint(seg.AdvanceLineWpIds[i + 1], d);
-                mb.AddLine(relPos(from.Pos), relPos(to.Pos), Colors.Red, 3f);
+                var from = PlanetDomainExt.GetPolyCell(seg.AdvanceLineCellIds[i], d);
+                var to = PlanetDomainExt.GetPolyCell(seg.AdvanceLineCellIds[i + 1], d);
+                mb.AddLine(relPos(from.GetCenter()), relPos(to.GetCenter()), Colors.Red, 3f);
             }
         }
         
@@ -40,7 +40,7 @@ public static class MeshBuilderExt
         //         mb.AddPoint(relPos(pos), 10f, Colors.Red);
         //     }
         // }
-        mb.AddPoint(relPos(MilitaryDomain.GetWaypoint(seg.RallyWaypointId, d).Pos),
+        mb.AddPoint(relPos(PlanetDomainExt.GetPolyCell(seg.RallyWaypointId, d).GetCenter()),
             20f, Colors.Blue);
     }
     public static void DrawPolyBorders(this MeshBuilder mb,
@@ -66,7 +66,10 @@ public static class MeshBuilderExt
             for (var i = 0; i < last.Count - 1; i++)
             {
                 var from = last[i];
+                var fromCell = PlanetDomainExt.GetPolyCell(from.cellId, d);
                 var to = last[i + 1];
+                var toCell = PlanetDomainExt.GetPolyCell(to.cellId, d);
+
                 if (to.tick != tick)
                 {
                     tick = to.tick;
@@ -74,8 +77,8 @@ public static class MeshBuilderExt
                 }
 
                 var color = ColorsExt.GetRainbowColor(tickIter);
-                mb.AddArrow(relTo.GetOffsetTo(from.worldPos, d), 
-                    relTo.GetOffsetTo(to.worldPos, d), 2f, color);
+                mb.AddArrow(relTo.GetOffsetTo(fromCell.GetCenter(), d), 
+                    relTo.GetOffsetTo(toCell.GetCenter(), d), 2f, color);
             }
         }
     }

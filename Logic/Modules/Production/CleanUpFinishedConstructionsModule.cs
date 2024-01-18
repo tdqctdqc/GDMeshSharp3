@@ -12,7 +12,7 @@ public class CleanUpFinishedConstructionsModule : LogicModule
         var clear = ClearFinishedConstructionsProcedure.Construct();
         foreach (var r in key.Data.GetAll<Regime>())
         {
-            foreach (var kvp in key.Data.Infrastructure.CurrentConstruction.ByTri)
+            foreach (var kvp in key.Data.Infrastructure.CurrentConstruction.ByPolyCell)
             {
                 if (kvp.Value.TicksLeft < 0)
                 {
@@ -22,8 +22,9 @@ public class CleanUpFinishedConstructionsModule : LogicModule
         }
         foreach (var c in finished)
         {
-            clear.Positions.Add(c.Pos);
-            MapBuilding.Create(c.Pos, c.Waypoint, 
+            var cell = PlanetDomainExt.GetPolyCell(c.PolyCellId, key.Data);
+            clear.PolyCellIds.Add(c.PolyCellId);
+            MapBuilding.Create(cell, ((LandCell)cell).Polygon.Entity(key.Data),
                 c.Model.Model(key.Data), key);
         }
         key.SendMessage(clear);
