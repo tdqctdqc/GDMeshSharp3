@@ -77,4 +77,20 @@ public static Color GetColor(int index)
 
         return colors;
     }
+
+    public static Color Saturate(this Color c, float s)
+    {
+        Func<float, float> clamp = i => Math.Min(1f, Math.Max(0, i));
+        return new Color(clamp((0.213f + 0.787f * s) * c.R + (0.715f - 0.715f * s) * c.G + (0.072f - 0.072f * s) * c.B),
+            clamp((0.213f - 0.213f * s) * c.R + (0.715f + 0.285f * s) * c.G + (0.072f - 0.072f * s) * c.B),
+            clamp((0.213f - 0.213f * s) * c.R + (0.715f - 0.715f * s) * c.G + (0.072f + 0.928f * s) * c.B));
+    }
+
+    public static Color Interpolate(this Color c, Color target, float ratio)
+    {
+        var r = c.R + (target.R - c.R) * ratio;
+        var g = c.G + (target.G - c.G) * ratio;
+        var b = c.B + (target.B - c.B) * ratio;
+        return new Color(r, g, b);
+    }
 }

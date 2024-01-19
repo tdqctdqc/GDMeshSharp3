@@ -45,7 +45,7 @@ public class RegimeGenerator : Generator
             var numUnits = score * 10;
 
             var capitalPoly = regime.Capital.Entity(key.Data);
-            var cell = capitalPoly.GetCells(key.Data)[0];
+            var cell = capitalPoly.GetCells(key.Data).First(c => c is LandCell);
             var unitPos = new MapPos(cell.Id, (-1, 0f));
             for (var i = 0; i < numUnits; i++)
             {

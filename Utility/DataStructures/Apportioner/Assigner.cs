@@ -138,35 +138,35 @@ public class Assigner
         }
     }
 
-    public static Dictionary<TUnit, LineAssignment> PickBestAndAssignAlongLine<TPoint, TUnit>(
-        List<TPoint> points,
-        List<TUnit> units,
+    public static Dictionary<TUnit, TFace> 
+        PickBestAndAssignAlongFacesSingle<TUnit, TFace>(
+        List<TFace> faces,
+        IEnumerable<TUnit> units,
         Func<TUnit, float> getStrength,
+        Func<TUnit, TFace, float> rank,
         float minStrengthToTake,
-        Func<TPoint, TPoint, float> getSegCost,
-        Func<TPoint, Vector2> getPointPos,
-        Func<TUnit, Vector2> getUnitPos,
-        Func<Vector2, Vector2, Vector2> getOffset)
+        Func<TFace, float> getFaceCost)
     {
-        if (points.Count < 2) return new Dictionary<TUnit, LineAssignment>();
-        var totalCost = 0f;
-        for (var i = 0; i < points.Count - 1; i++)
-        {
-            totalCost += getSegCost(points[i], points[i + 1]);
-        }
-
-        if (units.Sum(getStrength) < minStrengthToTake) throw new Exception(); 
+        if (faces.Count == 0) return new Dictionary<TUnit, TFace>();
+        if (faces.Count == 1) return units.ToDictionary(u => u, u => faces.First());
         
+        var totalCost = 0f;
+        for (var i = 0; i < faces.Count; i++)
+        {
+            totalCost += getFaceCost(faces[i]);
+        }
+        if (units.Sum(getStrength) < minStrengthToTake) throw new Exception(); 
         if (totalCost == 0f) throw new Exception();
         if (float.IsNaN(totalCost)) throw new Exception();
-        
-        var pointProportions = new List<float>{0};
+
+        var res = new Dictionary<TUnit, TFace>();
+        var faceProportions = new float[faces.Count];
         var runningCost = 0f;
-        for (var i = 1; i < points.Count; i++)
+        for (var i = 0; i < faces.Count; i++)
         {
-            runningCost += getSegCost(points[i - 1], points[i]);
+            runningCost += getFaceCost(faces[i]);
             if (float.IsNaN(runningCost)) throw new Exception();
-            pointProportions.Add(runningCost / totalCost);
+            faceProportions[i] = runningCost / totalCost;
         }
 
         var runningStrength = 0f;
@@ -175,68 +175,92 @@ public class Assigner
         while (runningStrength / minStrengthToTake < 1f)
         {
             var proportion = runningStrength / minStrengthToTake;
-            var pos = getPointAtProportion(proportion);
-            var picked = pickFrom
-                .MinBy(u => getOffset(getUnitPos(u), pos).Length());
+            var face = getFaceAtProportion(proportion);
+            var picked = pickFrom.MaxBy(u => rank(u, face));
             pickFrom.Remove(picked);
             unitsInOrder.Add(picked);
+            res.Add(picked, face);
             runningStrength += getStrength(picked);
-        }
-
-        var strengthTaken = unitsInOrder.Sum(getStrength);
-        runningStrength = 0f;
-        var from = getPointPos(points[0]);
-        var res = new Dictionary<TUnit, LineAssignment>();
-        for (var i = 0; i < unitsInOrder.Count; i++)
-        {
-            var unit = unitsInOrder[i];
-            var proportion = runningStrength / strengthTaken;
-            var nextProportion = proportion + getStrength(unit) / strengthTaken;
-            var to = getPointAtProportion(nextProportion);
-            var list = new List<Vector2>{from};
-            var index = pointProportions.FindIndex(p => p > proportion && p < nextProportion);
-            if (index != -1)
-            {
-                for (var j = index; j < pointProportions.Count; j++)
-                {
-                    if (pointProportions[j] >= nextProportion) break;
-                    list.Add(getPointAtProportion(pointProportions[j]));
-                }
-            }
-            list.Add(to);
-            var assgn = new LineAssignment(list, proportion, nextProportion);
-            res.Add(unit, assgn);
-            from = to;
-            proportion = nextProportion;
-            runningStrength += getStrength(unit);
         }
 
         return res;
         
-        Vector2 getPointAtProportion(float prop)
+        TFace getFaceAtProportion(float prop)
         {
-            if (prop == 0f) return getPointPos(points[0]);
-            if (prop == 1f) return getPointPos(points[points.Count - 1]);
-            var lowerBoundIndex = pointProportions
-                .FindLastIndex(f => prop >= f);
-            if (lowerBoundIndex == -1)
+            if (prop == 0f) return faces[0];
+            if (prop == 1f) return faces[faces.Count - 1];
+            for (var i = 0; i < faceProportions.Length; i++)
             {
-                throw new Exception();
-            }
-            if (lowerBoundIndex == points.Count - 1)
-            {
-                return getPointPos(points[points.Count - 1]);
+                var faceProp = faceProportions[i];
+                if (faceProp >= prop) return faces[i];
             }
 
-            var lowerPoint = points[lowerBoundIndex];
-            var upperPoint = points[lowerBoundIndex + 1];
-            var lowerPointProportion = pointProportions[lowerBoundIndex];
-            var upperPointProportion = pointProportions[lowerBoundIndex + 1];
+            return faces[faces.Count - 1];
+        }
+    }
+    
+    public static Dictionary<TUnit, List<TFace>> 
+        PickBestAndAssignAlongFaces<TUnit, TFace>(
+        List<TFace> faces,
+        IEnumerable<TUnit> units,
+        Func<TUnit, float> getStrength,
+        Func<TUnit, TFace, float> rank,
+        float minStrengthToTake,
+        Func<TFace, float> getFaceCost)
+    {
+        if (faces.Count == 0) throw new Exception();
+        if (faces.Count == 1) return units.ToDictionary(u => u, 
+            u => new List<TFace>{faces.First()});
+        
+        var totalCost = 0f;
+        for (var i = 0; i < faces.Count; i++)
+        {
+            totalCost += getFaceCost(faces[i]);
+        }
+        if (units.Sum(getStrength) < minStrengthToTake) throw new Exception(); 
+        if (totalCost == 0f) throw new Exception();
+        if (float.IsNaN(totalCost)) throw new Exception();
 
-            var ratioAlongSeg = (prop - lowerPointProportion) / (upperPointProportion - lowerPointProportion);
+        var res = new Dictionary<TUnit, List<TFace>>();
+        var faceProportions = new float[faces.Count];
+        var runningCost = 0f;
+        for (var i = 0; i < faces.Count; i++)
+        {
+            runningCost += getFaceCost(faces[i]);
+            if (float.IsNaN(runningCost)) throw new Exception();
+            faceProportions[i] = runningCost / totalCost;
+        }
 
-            var offset = getOffset(getPointPos(lowerPoint), getPointPos(upperPoint));
-            return getPointPos(lowerPoint) + offset * ratioAlongSeg;
+        var runningStrength = 0f;
+        var pickFrom = units.ToHashSet();
+        while (runningStrength / minStrengthToTake < 1f)
+        {
+            var startFace = getFaceAtProportion(runningStrength / minStrengthToTake);
+            var picked = pickFrom.MaxBy(u => rank(u, faces[startFace]));
+            runningStrength += getStrength(picked);
+            var endFace = getFaceAtProportion(runningStrength / minStrengthToTake);
+            var list = new List<TFace>();
+            for (int i = startFace; i <= endFace; i++)
+            {
+                list.Add(faces[i]);
+            }
+            pickFrom.Remove(picked);
+            res.Add(picked, list);
+        }
+
+        return res;
+        
+        int getFaceAtProportion(float prop)
+        {
+            if (prop == 0f) return 0;
+            if (prop == 1f) return faces.Count - 1;
+            for (var i = 0; i < faceProportions.Length; i++)
+            {
+                var faceProp = faceProportions[i];
+                if (faceProp >= prop) return i;
+            }
+
+            return faces.Count - 1;
         }
     }
 }

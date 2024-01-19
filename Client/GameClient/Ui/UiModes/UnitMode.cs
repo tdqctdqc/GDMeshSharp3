@@ -59,7 +59,8 @@ public class UnitMode : UiMode
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell == null) return null;
 
-        var units = _client.Data.Context.UnitsByCell[cell];
+        var units = _client.Data.Context
+            .UnitsByCell[cell];
         return units.FirstOrDefault();
     }
     private void UnitTooltip(Unit close)

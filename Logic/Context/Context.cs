@@ -12,11 +12,13 @@ public class Context
     public ConcurrentDictionary<int, MovementRecord> MovementRecords { get; private set; }
     public Dictionary<Regime, HashSet<LandCell>> ControlledAreas { get; private set; }
     public Dictionary<PolyCell, HashSet<Unit>> UnitsByCell { get; private set; }
+    public PathCache PathCache { get; private set; }
     public Context(Data data)
     {
         ControlledAreas = new Dictionary<Regime, HashSet<LandCell>>();
         MovementRecords = new ConcurrentDictionary<int, MovementRecord>();
         UnitsByCell = new Dictionary<PolyCell, HashSet<Unit>>();
+        PathCache = new PathCache(data);
     }
 
     public void Calculate(Data data)
@@ -35,14 +37,12 @@ public class Context
         ControlledAreas.Clear();
         var landCells = data.Planet.PolygonAux.PolyCells
             .Cells.Values.OfType<LandCell>().ToHashSet();
-        var unions = UnionFind.Find(landCells,
-            (l, k) => l.Controller.RefId == k.Controller.RefId,
-            l => l.GetNeighbors(data).OfType<LandCell>());
-        
+        var unions = landCells.SortInto(c => c.Controller.Entity(data));
+            
         foreach (var union in unions)
         {
-            var regime = union[0].Controller.Entity(data);
-            ControlledAreas.Add(regime, union.ToHashSet());
+            var regime = union.Key;
+            ControlledAreas.Add(regime, union.Value.ToHashSet());
         }
     }
 

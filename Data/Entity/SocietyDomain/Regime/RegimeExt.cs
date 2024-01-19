@@ -1,9 +1,20 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public static class RegimeExt
 {
+    public static Color GetUnitColor(this Regime r)
+    {
+        return r.PrimaryColor
+            .Interpolate(Colors.Black, .25f);
+    }
+    public static Color GetMapColor(this Regime r)
+    {
+        return r.PrimaryColor
+            .Interpolate(Colors.Gray, .25f);
+    }
     public static IEnumerable<Unit> GetUnits(this Regime r, Data d)
     {
         return d.Military.UnitAux.UnitByRegime[r];

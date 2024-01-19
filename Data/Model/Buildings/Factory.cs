@@ -29,7 +29,7 @@ public class Factory : BuildingModel
 
     protected override bool CanBuildInCell(PolyCell t, Data data)
     {
-        return t.GetLandform(data).IsLand && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness;
+        return t is LandCell && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness;
     }
 
     public override bool CanBuildInPoly(MapPolygon p, Data data)

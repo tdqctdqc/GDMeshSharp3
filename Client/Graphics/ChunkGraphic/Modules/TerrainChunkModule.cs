@@ -7,11 +7,15 @@ public partial class TerrainChunkModule : MapChunkGraphicModule
 {
     public TerrainChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(TerrainChunkModule))
     {
-        var lfLayer = new PolyTriFillChunkGraphic("Landform", chunk, 
-            (pt, d) => pt.GetLandform(data).Color, data);
+        var colorWobble = .1f;
+        var lfLayer = new PolyCellFillChunkGraphic("Landform", chunk, 
+            (pt, d) => pt.GetLandform(data)
+                .Color.Darkened(Game.I.Random.RandfRange(-colorWobble, colorWobble)), data);
         AddNode(lfLayer);
-        var vegLayer = new PolyTriFillChunkGraphic("Vegetation", chunk,
-            (pt, d) => pt.GetVegetation(data).Color.Darkened(pt.GetLandform(data).DarkenFactor), data);
+        var vegLayer = new PolyCellFillChunkGraphic("Vegetation", chunk,
+            (pt, d) => pt.GetVegetation(data)
+                .Color.Darkened(pt.GetLandform(data).DarkenFactor).Darkened(Game.I.Random.RandfRange(-colorWobble, colorWobble)),
+                    data);
         AddNode(vegLayer);
     }
 }

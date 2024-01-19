@@ -17,7 +17,7 @@ public static partial class PathFinder
         return PathFinder<PolyCell>.FindPath(start, dest, 
             p => p.GetNeighbors(d)
                 .Where(wp => moveType.Passable(wp, alliance, d)),
-            (w, v) => moveType.StratMoveEdgeCost(start, dest, d), 
+            (w, v) => moveType.EdgeCost(start, dest, d), 
             (p1, p2) => p1.GetCenter().GetOffsetTo(p2.GetCenter(), d).Length());
     }
     

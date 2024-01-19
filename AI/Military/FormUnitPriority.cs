@@ -39,7 +39,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
         var capitalPoly = regime.Capital.Entity(key.Data);
         var pos = (Vector2I)capitalPoly.Center;
         var cell = 
-            capitalPoly.GetCells(key.Data)[0];
+            capitalPoly.GetCells(key.Data).First(c => c is LandCell);
         var unitPos = new MapPos(cell.Id, (-1, 0f));
         
         foreach (var (template, num) in toBuild)
@@ -47,7 +47,8 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
             useTroops.AddTroopCosts(template, num, key.Data);
             for (var i = 0; i < num; i++)
             {
-                Unit.Create(template, regime, unitPos.Copy(), key);
+                Unit.Create(template, regime, 
+                    unitPos.Copy(), key);
             }
         }
     }

@@ -9,13 +9,13 @@ public class CantFindPathIssue : Issue
     public PolyCell Dest { get; private set; }
     public MoveType MoveType { get; private set; }
     public Alliance Alliance { get; private set; }
-    public CantFindPathIssue(Vector2 point, 
+    public CantFindPathIssue(
         Alliance alliance,
         string message, 
         PolyCell start, 
         PolyCell dest, 
         MoveType moveType) 
-        : base(point, message)
+        : base(start.GetCenter(), message)
     {
         Alliance = alliance;
         Start = start;

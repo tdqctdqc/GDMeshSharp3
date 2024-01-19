@@ -4,44 +4,91 @@ using Godot;
 
 public static class MeshBuilderExt
 {
+    public static void DrawFront(this MeshBuilder mb,
+        Vector2 relTo, FrontAssignment front, Data d)
+    {
+        foreach (var c in front.GetCells(d))
+        {
+            mb.DrawPolygon(c.RelBoundary.Select(p => relTo.GetOffsetTo(p + c.RelTo, d)).ToArray(),
+                front.Color);
+        }
+        
+        // var line = FrontFinder.FindFrontSimple(
+        //     front.GetCells(d),
+        //     c => c.GetNeighbors(d),
+        //     (p, q) => p.GetCenter().GetOffsetTo(q.GetCenter(), d),
+        //     c => c.Id
+        // );
+        // for (var i = 0; i < line.Count; i++)
+        // {
+        //     var edge = line[i];
+        //     var from = PlanetDomainExt.GetPolyCell(edge.X, d);
+        //     var to = PlanetDomainExt.GetPolyCell(edge.Y, d);
+        //     mb.AddLine(relTo.GetOffsetTo(from.GetCenter(), d),
+        //         relTo.GetOffsetTo(to.GetCenter(), d),
+        //         front.Color.Inverted(), 10f);
+        // }
+    }
     public static void DrawFrontSegment(this MeshBuilder mb,
         Vector2 relTo,
         FrontSegmentAssignment seg, 
         Data d)
     {
-        if (seg.FrontLineCellIds.Count == 0) return;
-        Vector2 relPos(Vector2 p)
+        var markerSize = 5f;
+        var color = seg.Color;
+        if (seg.FrontLineFaces.Count == 1)
         {
-            return relTo.GetOffsetTo(p, d);
+            var face = seg.FrontLineFaces[0];
+            var cell = PlanetDomainExt.GetPolyCell(face.nativeId, d);
+            mb.AddPoint(relTo.GetOffsetTo(cell.GetCenter(), d),
+                markerSize, color);
         }
-        for (var i = 0; i < seg.FrontLineCellIds.Count - 1; i++)
+        for (var i = 0; i < seg.FrontLineFaces.Count - 1; i++)
         {
-            var from = PlanetDomainExt.GetPolyCell(seg.FrontLineCellIds[i], d);
-            var to = PlanetDomainExt.GetPolyCell(seg.FrontLineCellIds[i + 1], d);
-            mb.AddLine(relPos(from.GetCenter()), relPos(to.GetCenter()), Colors.Blue, 3f);
+            var face = seg.FrontLineFaces[i];
+            var nextFace = seg.FrontLineFaces[i + 1];
+            var from = PlanetDomainExt.GetPolyCell(face.nativeId, d);
+            var to = PlanetDomainExt.GetPolyCell(nextFace.nativeId, d);
+            
+            mb.AddLine(relTo.GetOffsetTo(from.GetCenter(),d),
+                relTo.GetOffsetTo(to.GetCenter(), d),
+                color, markerSize);
         }
         
-        if (seg.AdvanceLineCellIds != null)
+        
+        for (var i = 0; i < seg.FrontLineFaces.Count; i++)
         {
-            for (var i = 0; i < seg.AdvanceLineCellIds.Count - 1; i++)
+            var face = seg.FrontLineFaces[i];
+            var native = PlanetDomainExt.GetPolyCell(face.nativeId, d);
+            var foreign = PlanetDomainExt.GetPolyCell(face.foreignId, d);
+            mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
+                relTo.GetOffsetTo(foreign.GetCenter(), d),
+                markerSize / 5f, color);
+        }
+    }
+
+    public static void DrawLineOrder(this MeshBuilder mb,
+        Vector2 relTo, DeployOnLineGroupOrder order, UnitGroup group, Data d)
+    {
+        var markerSize = 2.5f;
+        var color = group.Color;
+        for (var i = 0; i < order.Faces.Count; i++)
+        {
+            var face = order.Faces[i];
+            var native = PlanetDomainExt.GetPolyCell(face.nativeId, d);
+            var foreign = PlanetDomainExt.GetPolyCell(face.foreignId, d);
+            if (i < order.Faces.Count - 1)
             {
-                var from = PlanetDomainExt.GetPolyCell(seg.AdvanceLineCellIds[i], d);
-                var to = PlanetDomainExt.GetPolyCell(seg.AdvanceLineCellIds[i + 1], d);
-                mb.AddLine(relPos(from.GetCenter()), relPos(to.GetCenter()), Colors.Red, 3f);
+                var nextFace = order.Faces[i + 1];
+                var nextNative = PlanetDomainExt.GetPolyCell(nextFace.nativeId, d);
+                mb.AddLine(relTo.GetOffsetTo(native.GetCenter(),d),
+                    relTo.GetOffsetTo(nextNative.GetCenter(), d),
+                    color, markerSize);
             }
+            mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
+                relTo.GetOffsetTo(foreign.GetCenter(), d),
+                markerSize / 5f, color);
         }
-        
-        // var groups = seg.Groups(d);
-        // foreach (var group in groups)
-        // {
-        //     foreach (var unit in group.Units.Items(d))
-        //     {
-        //         var pos = unit.Position.Pos;
-        //         mb.AddPoint(relPos(pos), 10f, Colors.Red);
-        //     }
-        // }
-        mb.AddPoint(relPos(PlanetDomainExt.GetPolyCell(seg.RallyWaypointId, d).GetCenter()),
-            20f, Colors.Blue);
     }
     public static void DrawPolyBorders(this MeshBuilder mb,
         Vector2 relTo, MapPolygon poly, Data data)

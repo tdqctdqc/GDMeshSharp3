@@ -29,11 +29,11 @@ public partial class UnitGroupGraphic : Node2D
         var darkened = regime.PrimaryColor.Darkened(.5f);
         foreach (var unit in Group.Units.Items(data))
         {
-            var iconSize = unit.Radius() * 2f * .75f;
+            var iconSize = 15f;
 
             var relPos = groupPos.GetOffsetTo(unit.Position.GetCell(data).GetCenter(), data);
-            mb.AddPoint(relPos, iconSize, regime.SecondaryColor);
-            mb.AddPoint(relPos, iconSize * .8f, regime.PrimaryColor);
+            mb.AddPoint(relPos, iconSize, Group.Color);
+            mb.AddPoint(relPos, iconSize * .8f, regime.GetUnitColor());
         }
 
         Child = mb.GetMeshInstance();

@@ -147,18 +147,17 @@ public class RiverTriGen
 
         MakeLandCells(poly, cells, innerBoundarySegs, key);
         var landCells = cells.OfType<LandCell>();
-        var newRiverCells = MergeRiverCells(cells, key);
+        var riverCells = cells.OfType<RiverCell>();
         var allCells = ((IEnumerable<PolyCell>)landCells)
-            .Union(newRiverCells).ToList();
+            .Union(riverCells).ToList();
         
-        PolyCell.ConnectCellsByEdge(landCells, newRiverCells, poly.Center,
+        PolyCell.ConnectCellsByEdge(landCells, riverCells, poly.Center,
             (v, w) =>
             {
                 v.Neighbors.Add(w.Id);
                 w.Neighbors.Add(v.Id);
             }, data);
-        PolyCell.ConnectCellsSharingPoints(newRiverCells, key.Data);
-
+        PolyCell.ConnectCellsSharingPoints(riverCells, key.Data);
         return allCells;
     }
 
@@ -201,9 +200,11 @@ public class RiverTriGen
                     var polyNexusCoastEdges = nexus.IncidentEdges.Items(data)
                         .Where(e => e.IsCoast(key.Data));
                     if (polyNexusRiverEdges.Count() > 1) throw new Exception();
-                    var riverEdge = (riverEdges.Count() == 2)
-                        ? polyNexusRiverEdges.First()
-                        : edge;
+                    var riverEdge = edge;
+                        
+                        // (polyNexusRiverEdges.Count() > 1)
+                        // ? polyNexusRiverEdges.First()
+                        // : edge;
 
                     var newSeg = new LineSegment(end ? pivot : close,
                         end ? close : pivot);
@@ -273,55 +274,7 @@ public class RiverTriGen
             }
         }
     }
-    private static List<RiverCell> MergeRiverCells(
-        List<PolyCell> cells, GenWriteKey key)
-    {
-        var riverCellsByEdge = cells.OfType<RiverCell>().SortInto(c => c.Edge.RefId);
-        var newRiverCells = new List<RiverCell>();
-        foreach (var kvp in riverCellsByEdge)
-        {
-            if (kvp.Value.Count > 3) throw new Exception();
-            if (kvp.Value.Count == 3)
-            {
-                var triCells = kvp.Value.Where(c => c.RelBoundary.Count() == 3);
-                if (triCells.Count() != 2) throw new Exception();
-                var big = kvp.Value.Except(triCells).First();
-                foreach (var tCell in triCells)
-                {
-                    var newBounds = Geometry2D.MergePolygons(tCell.RelBoundary, big.RelBoundary);
-                    if (newBounds.Count() != 1)
-                    {
-                        //SET ISSUE
-                        continue;
-                    }
-                    big.SetBoundary(newBounds.First(), key);
-                }
-                newRiverCells.Add(big);
-            }
-            if (kvp.Value.Count == 2)
-            {
-                var union = Geometry2D.MergePolygons(
-                    kvp.Value[0].RelBoundary,
-                    kvp.Value[1].RelBoundary);
-                if (union.Count() != 1)
-                {
-                    //DO ISSUE
-                    continue;
-                }
-
-                var c1 = kvp.Value[0];
-                c1.SetBoundary(union.First(), key);
-                newRiverCells.Add(c1);
-                // GD.Print(union.Count);
-            }
-            else if (kvp.Value.Count == 1)
-            {
-                newRiverCells.Add(kvp.Value.First());
-            }
-        }
-
-        return newRiverCells;
-    }
+    
     private static void MakeLandCells(MapPolygon poly,
         List<PolyCell> cells,
         HashSet<LineSegment> innerBoundarySegs,

@@ -9,7 +9,6 @@ public class Unit : Entity
     public EntityRef<UnitTemplate> Template { get; private set; }
     public IdCount<Troop> Troops { get; private set; }
     public MapPos Position { get; private set; }
-    public float Radius() => 5f;
     public static Unit Create(UnitTemplate template, 
         Regime regime,
         MapPos pos,

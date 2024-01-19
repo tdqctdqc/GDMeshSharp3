@@ -47,26 +47,27 @@ public class TacticalMode : UiMode
             return;
         }
         var cell = _mouseOverHandler.MouseOverCell;
-        var regimes = _client.Data.HostLogicData.AllianceAis.Dic.Values
-            .SelectMany(v => v.MilitaryAi.AreasOfResponsibility
-                .Where(kvp =>
-                    kvp.Value.Contains(_mouseOverHandler.MouseOverCell)))
-            .Select(kvp => kvp.Key);
-        foreach (var regime in regimes)
+        if (cell.Controller.Empty()) return;
+        var regime = cell.Controller.Entity(_client.Data);
+        if (regime.IsPlayerRegime(_client.Data)) return;
+        if (_client.Logic is HostLogic h == false) return;
+        var ready = h.OrderHolder.Orders.ContainsKey(regime);
+        if (ready == false) return;
+        var ai = _client.Data.HostLogicData.RegimeAis[regime];
+        var deployment = ai.Military.Deployment;
+        foreach (var theater in deployment.ForceAssignments.OfType<TheaterAssignment>())
         {
-            var ai = _client.Data.HostLogicData.RegimeAis[regime];
-            var theater = ai.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>()
-                .FirstOrDefault(t => t.HeldCellIds.Contains(cell.Id));
-            if (theater == null) continue;
-            var front = theater.Assignments
-                .OfType<FrontAssignment>()
-                .FirstOrDefault(f => f.HeldCellIds.Contains(cell.Id));
-            if (front == null) continue;
-            var seg = front.Assignments.OfType<FrontSegmentAssignment>()
-                .FirstOrDefault(s => s.FrontLineCellIds.Contains(cell.Id));
-            if (seg == null) continue;
-            var relTo = seg.GetCells(_client.Data).First().GetCenter();
-            debugDrawer.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
+            foreach (var front in theater.Assignments.OfType<FrontAssignment>())
+            {
+                foreach (var seg in front.Assignments.OfType<FrontSegmentAssignment>())
+                {
+                    var center = seg.GetCells(_client.Data).First().GetCenter();
+                    debugDrawer.Draw(mb => mb.DrawFrontSegment(
+                        center,
+                        seg, _client.Data
+                        ), center);
+                }
+            }
         }
     }
 

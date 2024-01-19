@@ -10,6 +10,7 @@ public class UnitGroup : Entity
     public EntityRef<Regime> Regime { get; private set; }
     public EntRefCol<Unit> Units { get; private set; }
     public UnitGroupOrder GroupOrder { get; private set; }
+    public Color Color { get; private set; }
     public MoveType MoveType(Data d) => Units.Items(d)
         .FirstOrDefault()?.Template.Entity(d).MoveType.Model(d);
     public static UnitGroup Create(Regime r, IEnumerable<int> unitIds, ICreateWriteKey key)
@@ -17,19 +18,22 @@ public class UnitGroup : Entity
         var id = key.Data.IdDispenser.TakeId();
         var units = EntRefCol<Unit>.Construct(nameof(Units), id, unitIds.ToHashSet(), key.Data);
         var u = new UnitGroup(id, r.MakeRef(), units,
-            new DoNothingUnitGroupOrder());
+            new DoNothingUnitGroupOrder(),
+            ColorsExt.GetRandomColor());
         key.Create(u);
         return u;
     }
     [SerializationConstructor] private UnitGroup(int id,
         EntityRef<Regime> regime, 
         EntRefCol<Unit> units,
-        UnitGroupOrder groupOrder) 
+        UnitGroupOrder groupOrder,
+        Color color) 
         : base(id)
     {
         Regime = regime;
         Units = units;
         GroupOrder = groupOrder;
+        Color = color;
     }
 
     public static void ChangeUnitGroup(Unit u, 

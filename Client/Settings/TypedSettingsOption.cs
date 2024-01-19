@@ -35,6 +35,7 @@ public class TypedSettingsOption<T> : SettingsOption<T>
         );
         SettingChanged.Subscribe(t => list.Select(_options.IndexOf(t.newVal)));
         list.Select(0);
+        list.FocusMode = Control.FocusModeEnum.None;
         return list;
     }
 }

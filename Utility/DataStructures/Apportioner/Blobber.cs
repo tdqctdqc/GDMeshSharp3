@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public static class Blobber
 {
@@ -133,10 +134,12 @@ public static class Blobber
     {
         var d = key.Data;
         var regime = theater.Regime.Entity(d);
-        var wps = theater.GetCells(d);
+        var alliance = regime.GetAlliance(d);
 
+        var cells = theater.GetCells(d)
+            .Where(c => c.GetNeighbors(d).Any(n => n.RivalControlled(alliance, d)));
         return Blob(
-            wps, fronts,
+            cells, fronts,
             t => t.GetCells(d),
             wp => wp.GetNeighbors(d),
             wp => wp.Controller.RefId == regime.Id,
@@ -150,7 +153,8 @@ public static class Blobber
             return new FrontAssignment(d.IdDispenser.TakeId(),
                 regime.MakeRef(), wps.Select(wp => wp.Id).ToHashSet(), 
                 new HashSet<int>(),
-                new HashSet<int>(), new HashSet<ForceAssignment>());
+                new HashSet<int>(), new HashSet<ForceAssignment>(),
+                ColorsExt.GetRandomColor());
         }
 
         void mergeInto((FrontAssignment dissolve, FrontAssignment into) v)

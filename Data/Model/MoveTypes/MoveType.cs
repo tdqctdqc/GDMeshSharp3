@@ -12,7 +12,7 @@ public abstract class MoveType : IModel
     }
     public abstract bool TerrainPassable(PolyCell p, Data d);
 
-    public float StratMoveEdgeCost(PolyCell from, PolyCell to, Data d)
+    public float EdgeCost(PolyCell from, PolyCell to, Data d)
     {
         var l = from.GetCenter().GetOffsetTo(to.GetCenter(), d).Length();
         var terrCostPerLength = TerrainCostPerLength(from, to, d);

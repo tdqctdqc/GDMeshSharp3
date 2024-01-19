@@ -5,7 +5,8 @@ using Godot;
 public class InfantryMoveType : MoveType
 {
     public InfantryMoveType() 
-        : base(true, 100f, 
+        : base(true, 
+            1000f, 
             nameof(InfantryMoveType))
     {
         
@@ -13,12 +14,8 @@ public class InfantryMoveType : MoveType
 
     public override float TerrainCostInstantaneous(PolyCell pt, Data d)
     {
+        if (pt is LandCell == false) return Mathf.Inf;
         var lf = pt.GetLandform(d);
-        if (lf.IsWater)
-        {
-            if (lf is River) return 5f;
-            return Mathf.Inf;
-        }
         var lfMod = 1f + lf.MinRoughness;
         var vMod = pt.GetVegetation(d).MovementCostMult;
         return lfMod * vMod;

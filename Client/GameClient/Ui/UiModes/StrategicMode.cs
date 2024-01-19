@@ -61,6 +61,7 @@ public class StrategicMode : UiMode
         }
         
         DrawRegimeTheaters(regime);
+        // DrawRegimeLineOrders(regime);
     }
 
     private void DrawRegimeTheaters(Regime regime)
@@ -71,38 +72,36 @@ public class StrategicMode : UiMode
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var relTo = regime.GetPolys(_client.Data).First().Center;
         var theaters = ai.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>();
-        foreach (var theater in theaters)
+        var fronts = theaters.SelectMany(t => t.Assignments.OfType<FrontAssignment>());
+        var segs = fronts.SelectMany(f => f.Assignments.OfType<FrontSegmentAssignment>());
+        foreach (var front in fronts)
         {
-            var fronts = theater.Assignments.OfType<FrontAssignment>();
-            foreach (var front in fronts)
-            {
-                var segs = front.Assignments.OfType<FrontSegmentAssignment>();
-                foreach (var seg in segs)
-                {
-                    debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
-                }
-                foreach (var wpId in front.HeldCellIds)
-                {
-                    var wp = PlanetDomainExt.GetPolyCell(wpId, _client.Data);
-                    debug.Draw(mb => 
-                            mb.AddPoint(relTo.GetOffsetTo(wp.GetCenter(), 
-                                    _client.Data), 5f, 
-                                wp.RivalControlled(alliance, _client.Data)
-                                    ? Colors.Orange :  Colors.Green),
-                        relTo);
-                }
-                foreach (var wpId in front.TargetAreaCellIds)
-                {
-                    var wp = PlanetDomainExt.GetPolyCell(wpId, _client.Data);
-                    debug.Draw(mb => 
-                            mb.AddPoint(relTo.GetOffsetTo(wp.GetCenter(), 
-                                    _client.Data), 5f, Colors.Red),
-                        relTo);
-                }
-            }
+            debug.Draw(mb => mb.DrawFront(relTo, front, _client.Data), relTo);
         }
+        foreach (var seg in segs)
+        {
+            debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
+        }
+        
     }
 
+    private void DrawRegimeLineOrders(Regime regime)
+    {
+        var ai = _client.Data.HostLogicData.RegimeAis[regime];
+        var groups = _client.Data.Military.UnitAux.UnitGroupByRegime[regime];
+        var lineOrders = groups
+            .Where(g => g.GroupOrder is DeployOnLineGroupOrder)
+            .Select(g => (g, (DeployOnLineGroupOrder)g.GroupOrder));
+        var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
+        foreach (var pair in lineOrders)
+        {
+            var group = pair.g;
+            var order = pair.Item2;
+            var relTo = PlanetDomainExt.GetPolyCell(order.Faces.First().nativeId, _client.Data)
+                .GetCenter();
+            debug.Draw(mb => mb.DrawLineOrder(relTo, order, group, _client.Data), relTo);
+        }
+    }
     private void DrawRegimeBorders(Regime regime)
     {
         var alliance = regime.GetAlliance(_client.Data);

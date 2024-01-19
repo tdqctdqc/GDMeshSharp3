@@ -332,9 +332,10 @@ public class SocietyGenerator : Generator
         {
             var cells = p.GetCells(_data);
             var availCells = cells
-                .Where(t => t.GetLandform(_data) != _data.Models.Landforms.River
-                            && t.GetLandform(_data) != _data.Models.Landforms.Mountain
-                            && t.GetLandform(_data) != _data.Models.Landforms.Peak)
+                .Where(t => t is LandCell 
+                    && t.GetLandform(_data) != _data.Models.Landforms.River
+                    && t.GetLandform(_data) != _data.Models.Landforms.Mountain
+                    && t.GetLandform(_data) != _data.Models.Landforms.Peak)
                 .OrderBy(t => t.RelBoundary.Avg().LengthSquared()).ToList();
             var settlement = p.GetSettlement(_data);
             var tier = settlement.Tier.Model(_data);

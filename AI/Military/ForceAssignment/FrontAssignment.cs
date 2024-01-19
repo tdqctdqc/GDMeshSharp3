@@ -6,38 +6,40 @@ using System.Text.RegularExpressions;
 using GDMeshSharp3.Exception;
 using Godot;
 using MathNet.Numerics.Statistics;
+using Microsoft.FSharp.Data.UnitSystems.SI.UnitNames;
 
 public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 {
     
-    public static float CoverLengthWeight = 1f;
     public static float CoverOpposingWeight = 3f;
-    public static float PowerPointsPerLengthToCover = .1f;
+    public static float DesiredOpposingPpRatio = 2f;
+    public static float CoverLengthWeight = 1f;
+    public static float PowerPointsPerCellFaceToCover = 10f;
     public HashSet<int> HeldCellIds { get; private set; }
     public HashSet<int> TargetAreaCellIds { get; private set; }
     public HashSet<ForceAssignment> Assignments { get; private set; }
+    public Color Color { get; private set; }
     public FrontAssignment(
         int id,
         EntityRef<Regime> regime, 
         HashSet<int> heldCellIds,
         HashSet<int> targetAreaCellIds,
         HashSet<int> groupIds,
-        HashSet<ForceAssignment> assignments) 
+        HashSet<ForceAssignment> assignments,
+        Color color) 
         : base(groupIds, regime, id)
     {
         HeldCellIds = heldCellIds;
         TargetAreaCellIds = targetAreaCellIds;
         Assignments = assignments;
+        Color = color;
     }
 
-    public IEnumerable<PolyCell> HeldCells(Data data)
-    {
-        return HeldCellIds.Select(i => PlanetDomainExt.GetPolyCell(i, data));
-    }
+    
     public float GetOpposingPowerPoints(Data data)
     {
         var alliance = Regime.Entity(data).GetAlliance(data);
-        return HeldCells(data)
+        return GetCells(data)
             .SelectMany(c => c.GetNeighbors(data))
             .Distinct()
             .Where(n => n.RivalControlled(alliance, data))
@@ -60,9 +62,8 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 
     public override void AssignGroups(LogicWriteKey key)
     {
-        
-        this.ShiftGroups(key);
         this.AssignFreeGroups(key);
+        this.ShiftGroups(key);
         foreach (var assgn in Assignments)
         {
             assgn.AssignGroups(key);
@@ -74,200 +75,103 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     {
         var opposing = GetOpposingPowerPoints(data);
         var length = Assignments.OfType<FrontSegmentAssignment>().Sum(s => s.GetLength(data));
-        return opposing * CoverOpposingWeight + length * CoverLengthWeight * PowerPointsPerLengthToCover;
+        return opposing * CoverOpposingWeight + length * CoverLengthWeight * PowerPointsPerCellFaceToCover;
     }
-    public static void CheckSplitRemove(Regime r, 
-        TheaterAssignment theater,
-        List<FrontAssignment> fronts, 
-        Action<FrontAssignment> add, Action<FrontAssignment> remove, LogicWriteKey key)
+    public List<List<(PolyCell native, PolyCell foreign)>> GetLines(Data d)
     {
-        var alliance = r.GetAlliance(key.Data);
-        for (var i = 0; i < fronts.Count; i++)
+        var alliance = Regime.Entity(d).GetAlliance(d);
+        var cells = GetCells(d);
+        var lines = FrontFinder.FindFrontNew<PolyCell>(cells,
+            c =>
+            {
+                if (c.Controller.Empty()) return false;
+                var controllerRegime = c.Controller.Entity(d);
+                var controllerAlliance = controllerRegime.GetAlliance(d);
+                return alliance.Rivals.Contains(controllerAlliance);
+            },
+            c => HeldCellIds.Contains(c.Id),
+            c => c.GetNeighbors(d),
+            (p,q) => p.GetCenter().GetOffsetTo(q.GetCenter(), d));
+        if (lines.Any(l => l.Count == 0))
         {
-            var fa = fronts[i];
-            fa.HeldCellIds.RemoveWhere(i => theater.HeldCellIds.Contains(i) == false);
-            if (fa.HeldCellIds.Count == 0)
-            {
-                remove(fa);
-                continue;
-            }
-            var flood = FloodFill<PolyCell>.GetFloodFill(
-                fa.HeldCells(key.Data).First(),
-                wp => fa.HeldCellIds.Contains(wp.Id),
-                wp => wp.GetNeighbors(key.Data));
-            var unions = UnionFind.Find(fa.HeldCellIds,
-                (i, j) => true,
-                i => PlanetDomainExt.GetPolyCell(i, key.Data).Neighbors);
+            throw new Exception();
+        }
 
-            if (unions.Count() != 1)
+        // var hash = lines.ToHashSet();
+        // var res = new List<List<(PolyCell native, PolyCell foreign)>>();
+        // while (hash.Count > 0)
+        // {
+        //     var line = hash.First();
+        //     hash.Remove(line);
+        //     var ll = new LinkedList<(PolyCell native, PolyCell foreign)>(line);
+        //     while (hash.FirstOrDefault(l => sharesEnd(ll, l))
+        //            is List<(PolyCell native, PolyCell foreign)> shares)
+        //     {
+        //         hash.Remove(shares);
+        //         merge(ll, shares);
+        //     }
+        //     
+        //     res.Add(ll.ToList());
+        //     
+        // }
+        return lines;
+        bool sharesEnd(LinkedList<(PolyCell native, PolyCell foreign)> ll,
+            List<(PolyCell native, PolyCell foreign)> cand)
+        {
+            var lineFirst = ll.First.Value.native;
+            var lineLast = ll.Last.Value.native;
+            var candFirst = cand.First().native;
+            var candLast = cand.Last().native;
+            return linked(lineFirst, candFirst) 
+                   || linked(lineFirst, candLast) 
+                   || linked(lineLast, candFirst) 
+                   || linked(lineLast, candLast);
+        }
+
+        void merge(LinkedList<(PolyCell native, PolyCell foreign)> ll,
+            List<(PolyCell native, PolyCell foreign)> shares)
+        {
+            var lineFirst = ll.First.Value.native;
+            var lineLast = ll.Last.Value.native;
+            var sharesFirst = shares.First().native;
+            var sharesLast = shares.Last().native;
+            if (linked(lineFirst, sharesFirst))
             {
-                remove(fa);
-                var newFronts = Divide(fa, key);
-                foreach (var newFa in newFronts)
+                for (var i = 0; i < shares.Count; i++)
                 {
-                    add(newFa);
+                    ll.AddFirst(shares[i]);
+                }
+            }
+            else if (linked(lineFirst, sharesLast))
+            {
+                for (var i = shares.Count - 1; i >= 0; i--)
+                {
+                    ll.AddFirst(shares[i]);
+                }
+            }
+            else if (linked(lineLast, sharesFirst))
+            {
+                for (var i = 0; i < shares.Count; i++)
+                {
+                    ll.AddLast(shares[i]);
+                }
+            }
+            else if (linked(lineLast, sharesLast))
+            {
+                for (var i = shares.Count - 1; i >= 0; i--)
+                {
+                    ll.AddLast(shares[i]);
                 }
             }
         }
+
+        bool linked(PolyCell p1, PolyCell p2)
+        {
+            return p1 == p2 || p1.Neighbors.Contains(p2.Id);
+        }
     }
+
     
-    public static IEnumerable<FrontAssignment> Divide(FrontAssignment fa, 
-        LogicWriteKey key)
-    {
-        var r = fa.Regime.Entity(key.Data);
-        var unions = UnionFind.Find(fa.HeldCellIds,
-            (i, j) => true,
-            i => PlanetDomainExt.GetPolyCell(i, key.Data).Neighbors);
-
-        var newFronts =
-            unions.Select(
-                u => new FrontAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), u.ToHashSet(),
-                    new HashSet<int>(),
-                    new HashSet<int>(), 
-                    new HashSet<ForceAssignment>()));
-        foreach (var group in fa.Groups(key.Data))
-        {
-            var unitCellIds = group.Units.Items(key.Data)
-                .Select(u => u.Position.PolyCell).ToList();
-            var mostWpsShared = newFronts
-                .MaxBy(t => unitCellIds.Where(t.HeldCellIds.Contains).Count());
-            if (unitCellIds.Where(mostWpsShared.HeldCellIds.Contains).Count() == 0)
-            {
-                var pos = group.GetPosition(key.Data);
-                var closest = newFronts
-                    .MinBy(t => 
-                        group.GetPosition(key.Data).GetOffsetTo(
-                            key.Data.Planet.GetAveragePosition(t.HeldCellIds.Select(i =>
-                                PlanetDomainExt.GetPolyCell(i, key.Data).GetCenter())),
-                            key.Data).Length()
-                    );
-                closest.GroupIds.Add(group.Id);
-            }
-            else
-            {
-                mostWpsShared.GroupIds.Add(group.Id);
-            }
-        }
-
-        return newFronts;
-    }
-    public List<List<PolyCell>> GetLines(Data d)
-    {
-        return null;
-        // var alliance = Regime.Entity(d).GetAlliance(d);
-        // var frontCells = HeldCells(d)
-        //     .Where(c => c.Threatened(alliance, d))
-        //     .ToHashSet();
-        // var potentialEdges = frontCells
-        //     .SelectMany(cell =>
-        //     {
-        //         return cell.Neighbors.Where(nId => nId < cell.Id)
-        //             .Where(nId => frontCells.Contains(nId))
-        //             .Select(nId => new Vector2I(cell.Id, nId));
-        //     })
-        //     .ToHashSet();
-        // var edges = potentialEdges.ToHashSet();
-        // return OrderSegments(edges, d);
-        //
-    }
-
-    // private List<List<PolyCell>> OrderSegments(
-    //     HashSet<Vector2I> edges, Data d)
-    // {
-    //     var chains = edges
-    //         .Select(getLineSeg).ToList()
-    //         .GetChains();
-    //     var res = new List<List<Vector2>>();
-    //     for (var i = 0; i < chains.Count; i++)
-    //     {
-    //         var chain = chains[i];
-    //         if (chain.Count <=
-    //             FrontSegmentAssignment.IdealSegmentLength * 1.5f)
-    //         {
-    //             res.Add(chain.GetPoints());
-    //             continue;
-    //         }
-    //         var numChains = Mathf.FloorToInt((float)chain.Count / FrontSegmentAssignment.IdealSegmentLength);
-    //         var numLinksPerChain = Mathf.CeilToInt((float)chain.Count / numChains);
-    //         var iter = 0;
-    //         var curr = new List<LineSegment>();
-    //         for (var j = 0; j < chain.Count; j++)
-    //         {
-    //             curr.Add(chain[j]);
-    //             iter++;
-    //             if (iter == numLinksPerChain || j == chain.Count - 1)
-    //             {
-    //                 res.Add(curr.GetPoints());
-    //                 iter = 0;
-    //                 curr = new List<LineSegment>();
-    //             }
-    //         }
-    //     }
-    //
-    //     return res
-    //         .Select(c => c.Select(p => d.Military.TacticalWaypoints.ByPos[p])
-    //             .Select(id => MilitaryDomain.GetWaypoint(id, d)).ToList())
-    //         .ToList();
-    //     
-    //     LineSegment getLineSeg(Vector2I edge)
-    //     {
-    //         return new LineSegment(MilitaryDomain.GetWaypoint(edge.X, d).Pos,
-    //             MilitaryDomain.GetWaypoint(edge.Y, d).Pos);
-    //     }
-    // }
-    public static void CheckExpandMergeNew(Regime r, 
-        TheaterAssignment ta,
-        List<FrontAssignment> fronts, 
-        Action<FrontAssignment> add,
-        Action<FrontAssignment> remove,
-        LogicWriteKey key)
-    {
-        var alliance = r.GetAlliance(key.Data);
-        var frontline = 
-            ta.GetCells(key.Data)
-            .Where(wp => wp.RivalControlled(alliance, key.Data));
-        var unions = UnionFind.Find(frontline, (w, v) => true,
-            w => w.GetNeighbors(key.Data));
-        var dic = unions.ToDictionary(u => u, u => new List<FrontAssignment>());
-        foreach (var fa in fronts)
-        {
-            var faWps = fa.HeldCells(key.Data);
-            var mostShared = unions
-                .MaxBy(u => u.Where(wp => fa.HeldCellIds.Contains(wp.Id)).Count());
-
-            if (mostShared.Where(wp => fa.HeldCellIds.Contains(wp.Id)).Count() == 0)
-            {
-                remove(fa);
-            }
-            else
-            {
-                dic[mostShared].Add(fa);
-            }
-        }
-        foreach (var kvp in dic)
-        {
-            if (kvp.Value.Count() == 0)
-            {
-                var fa = new FrontAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), kvp.Key.Select(wp => wp.Id).ToHashSet(),
-                    new HashSet<int>(),
-                    new HashSet<int>(),
-                    new HashSet<ForceAssignment>());
-                add(fa);
-                continue;
-            }
-            var biggest = kvp.Value.MaxBy(fa => fa.HeldCellIds.Count());
-            biggest.HeldCellIds.Clear();
-            biggest.HeldCellIds.AddRange(kvp.Key.Select(wp => wp.Id));
-            foreach (var fa in kvp.Value)
-            {
-                if (fa == biggest) continue;
-                biggest.MergeInto(fa, key);
-                remove(fa);
-            }
-        }
-
-    }
-
     public void MergeInto(FrontAssignment dissolve, LogicWriteKey key)
     {
         GroupIds.AddRange(dissolve.GroupIds);
@@ -286,15 +190,14 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         foreach (var fsa in segments)
         {
             var relatedLines = lines.Keys
-                .Where(l => l.Any(wp => fsa.FrontLineCellIds.Contains(wp.Id)));
+                .Where(l => l.Any(wp => fsa.FrontLineFaces.Contains((wp.native.Id, wp.foreign.Id))));
             if (relatedLines.Count() == 0)
             {
                 Assignments.Remove(fsa);
                 continue; 
             }
-
             var mostRelated = relatedLines
-                .MaxBy(l => l.Where(wp => fsa.FrontLineCellIds.Contains(wp.Id)).Count());
+                .MaxBy(l => l.Where(wp => fsa.FrontLineFaces.Contains((wp.native.Id, wp.foreign.Id))).Count());
             lines[mostRelated].Add(fsa);
         }
         
@@ -306,15 +209,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             {
                 var seg = FrontSegmentAssignment
                     .Construct(Regime, line, 
-                        null, false, key);
+                        false, key);
                 Assignments.Add(seg);
                 continue;
             }
 
             var biggest = segs.MaxBy(s => s.GroupIds.Count());
             
-            biggest.FrontLineCellIds.Clear();
-            biggest.FrontLineCellIds.AddRange(line.Select(wp => wp.Id));
+            biggest.FrontLineFaces.Clear();
+            biggest.FrontLineFaces.AddRange(line.Select(wp => (wp.native.Id, wp.foreign.Id)));
             foreach (var fsa in segs)
             {
                 if (fsa == biggest) continue;

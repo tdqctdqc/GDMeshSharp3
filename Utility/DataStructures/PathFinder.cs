@@ -157,7 +157,7 @@ public static class PathFinder<T>
             Parents.Clear();
         }
     }
-    public static List<T> FindPathMultipleEnds(T start, Func<T, bool> isEnd, 
+    public static T FindClosest(T start, Func<T, bool> isEnd, 
         Func<T, IEnumerable<T>> getNeighbors, 
         Func<T,T,float> getEdgeCost)
     {
@@ -173,7 +173,7 @@ public static class PathFinder<T>
             if (isEnd(current))
             {
                 _pool.Return(info);
-                return BuildPathBackwards(current, info.Parents);
+                return current;
             }
             iter++;
 
@@ -197,7 +197,7 @@ public static class PathFinder<T>
             }
         }
         _pool.Return(info);
-        return null;
+        return default;
     }
     
     public static Graph<T, List<T>> TransformGraph<TOldEdge>(

@@ -8,7 +8,9 @@ public static class PolyCellExt
 
     public static bool RivalControlled(this PolyCell p, Alliance a, Data d)
     {
-        return a.Rivals.RefIds.Contains(p.Controller.RefId);
+        if (p.Controller.Empty()) return false;
+        var controllerAlliance = p.Controller.Entity(d).GetAlliance(d);
+        return a.Rivals.RefIds.Contains(controllerAlliance.Id);
     }
     public static bool Controlled(this PolyCell p, Alliance a, Data d)
     {

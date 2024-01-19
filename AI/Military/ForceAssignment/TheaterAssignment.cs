@@ -33,101 +33,6 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     {
         return HeldCellIds.Select(id => PlanetDomainExt.GetPolyCell(id, d));
     }
-    public static void CheckSplitRemove(Regime r, List<TheaterAssignment> theaters, 
-        Action<ForceAssignment> add, Action<ForceAssignment> remove, LogicWriteKey key)
-    {
-        var alliance = r.GetAlliance(key.Data);
-        
-        var controlledWps = key.Data.Context
-            .ControlledAreas[r];
-        for (var i = 0; i < theaters.Count; i++)
-        {
-            var ta = theaters[i];
-            ta.HeldCellIds.RemoveWhere(i => controlledWps.Contains(PlanetDomainExt.GetPolyCell(i, key.Data)) == false);
-            
-            if (ta.HeldCellIds.Count == 0)
-            {
-                remove(ta);
-                return;
-            }
-            
-            var flood = FloodFill<PolyCell>.GetFloodFill(ta.GetCells(key.Data).First(),
-                wp => ta.HeldCellIds.Contains(wp.Id),
-                wp => wp.GetNeighbors(key.Data));
-
-            if (flood.Count() != ta.HeldCellIds.Count)
-            {
-                remove(ta);
-                var newTheaters = Divide(ta, key);
-                foreach (var newTa in newTheaters)
-                {
-                    add(newTa);
-                }
-            }
-        }
-    }
-    
-    public static void CheckExpandMergeNew(Regime r, List<TheaterAssignment> theaters, 
-        Action<ForceAssignment> add,
-        Action<ForceAssignment> remove,
-        LogicWriteKey key)
-    {
-        var alliance = r.GetAlliance(key.Data);
-        var allianceAi = key.Data.HostLogicData.AllianceAis[alliance];
-        var responsibility = allianceAi
-            .MilitaryAi.AreasOfResponsibility[r].ToHashSet();
-        
-        var responsibilityIds = responsibility.Select(r => r.Id).ToHashSet();
-        
-        var covered = new HashSet<int>();
-        var toMerge = new Dictionary<HashSet<int>, List<TheaterAssignment>>();
-        foreach (var ta in theaters)
-        {
-            var first = ta.HeldCellIds.First();
-            if (covered.Contains(first))
-            {
-                var k = toMerge.First(kvp => kvp.Key.Contains(first)).Key;
-                toMerge[k].Add(ta);
-            }
-            else
-            {
-                var flood = FloodFill<int>.GetFloodFill(
-                    first, responsibilityIds.Contains,
-                    t => PlanetDomainExt.GetPolyCell(t, key.Data).Neighbors);
-                covered.AddRange(flood);
-                toMerge.Add(flood, new List<TheaterAssignment>{ta});
-                ta.HeldCellIds.AddRange(flood);
-            }
-        }
-        
-        foreach (var kvp in toMerge)
-        {
-            var list = kvp.Value;
-            if (list.Count == 1)
-            {
-                continue;
-            }
-            
-            var into = list[0];
-            for (var i = 1; i < list.Count; i++)
-            {
-                into.MergeInto(list[i]);
-                remove(list[i]);
-            }
-        }
-
-        var uncovered = responsibility.Except(covered
-            .Select(c => PlanetDomainExt.GetPolyCell(c, key.Data))).ToList();
-        var uncoveredUnions = UnionFind.Find(uncovered, (w, v) => true,
-            w => w.GetNeighbors(key.Data));
-        foreach (var union in uncoveredUnions)
-        {
-            var ta = new TheaterAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), new HashSet<ForceAssignment>(),
-                union.Select(u => u.Id).ToHashSet(), new HashSet<int>());
-            add(ta);
-        }
-    }
-
     public static void PutGroupsInRightTheater(Regime r, 
         IEnumerable<ForceAssignment> forceAssignments, 
         LogicWriteKey key)
@@ -141,7 +46,8 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         {
             var freeGroupCells = freeGroup.Units.Items(key.Data)
                 .Select(u => u.Position.GetCell(key.Data)).ToHashSet();
-            var theater = forceAssignments.OfType<TheaterAssignment>()
+            var theater = forceAssignments
+                .OfType<TheaterAssignment>()
                 .FirstOrDefault(t => freeGroupCells.Any(wp => t.HeldCellIds.Contains(wp.Id)));
             if (theater == null)
             {
@@ -188,49 +94,6 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             front.SetTargets(key);
         }
     }
-    public void MergeInto(TheaterAssignment dissolve)
-    {
-        GroupIds.AddRange(dissolve.GroupIds);
-        Assignments.AddRange(dissolve.Assignments);
-    }
-
-    public static IEnumerable<TheaterAssignment> Divide(TheaterAssignment ta, LogicWriteKey key)
-    {
-        var r = ta.Regime.Entity(key.Data);
-        var unions = UnionFind.Find(ta.HeldCellIds,
-            (i, j) => true,
-            i => PlanetDomainExt.GetPolyCell(i, key.Data).Neighbors);
-        
-        var newTheaters =
-            unions.Select(
-                u => new TheaterAssignment(key.Data.IdDispenser.TakeId(), r.MakeRef(), new HashSet<ForceAssignment>(),
-                    u.ToHashSet(), new HashSet<int>()));
-        foreach (var group in ta.Groups(key.Data))
-        {
-            var unitCellIds = group.Units.Items(key.Data)
-                .Select(u => u.Position.PolyCell).ToList();
-            var mostCellsShared = newTheaters
-                .MaxBy(t => unitCellIds.Where(t.HeldCellIds.Contains).Count());
-            if (unitCellIds.Where(mostCellsShared.HeldCellIds.Contains).Count() == 0)
-            {
-                var pos = group.GetPosition(key.Data);
-                var closest = newTheaters
-                    .MinBy(t => 
-                        group.GetPosition(key.Data).GetOffsetTo(
-                        key.Data.Planet.GetAveragePosition(t.HeldCellIds.Select(i =>
-                            PlanetDomainExt.GetPolyCell(i, key.Data).GetCenter())),
-                        key.Data).Length()
-                    );
-                closest.GroupIds.Add(group.Id);
-            }
-            else
-            {
-                mostCellsShared.GroupIds.Add(group.Id);
-            }
-        }
-
-        return newTheaters;
-    }
     
     public static void CheckFronts(Regime r, 
         List<TheaterAssignment> theaters, 
@@ -240,7 +103,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         
         foreach (var ta in theaters)
         {
-            var fronts = ta.Assignments.OfType<FrontAssignment>();
+            var fronts = ta.Assignments.OfType<FrontAssignment>().ToArray();
             foreach (var fa in fronts)
             {
                 ta.Assignments.Remove(fa);
@@ -255,8 +118,8 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     }
     public override void AssignGroups(LogicWriteKey key)
     {
-        this.ShiftGroups(key);
         this.AssignFreeGroups(key);
+        this.ShiftGroups(key);
         foreach (var fa in Assignments)
         {
             fa.AssignGroups(key);
