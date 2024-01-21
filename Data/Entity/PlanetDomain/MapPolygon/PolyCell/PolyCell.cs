@@ -64,6 +64,68 @@ public abstract class PolyCell : IPolymorph, IIdentifiable
             }
         }
     }
+
+    public static void ConnectOverMapPolyEdge(
+        MapPolygonEdge edge,
+        Dictionary<MapPolygon, PolyCell[]> byPoly,
+        Action<PolyCell, PolyCell> link,
+        Data d)
+    {
+        // if (edge.IsRiver()) throw new Exception();
+        var p1 = edge.HighPoly.Entity(d);
+        var p2 = edge.LowPoly.Entity(d);
+
+        var borderSegs1 
+            = getBorderPoints(p1);
+        foreach (var cell in byPoly[p2])
+        {
+            for (var i = 0; i < cell.RelBoundary.Length; i++)
+            {
+                var from = p1.Center.GetOffsetTo(cell.RelBoundary[i] + cell.RelTo, d);
+                var to = p1.Center.GetOffsetTo(cell.RelBoundary.Modulo(i + 1) + cell.RelTo, d);
+                for (var j = 0; j < borderSegs1.Count; j++)
+                {
+                    var seg = borderSegs1[j];
+                    var close = Geometry2D
+                        .GetClosestPointsBetweenSegments(
+                            from, to, seg.Item1, seg.Item2);
+                    if (close[0].DistanceTo(close[1]) < .1f)
+                    {
+                        link(cell, seg.Item3);
+                    }
+                }
+            }
+        }
+
+        
+        
+
+
+        List<(Vector2, Vector2, PolyCell)> getBorderPoints(MapPolygon poly)
+        {
+            var segs = edge.GetSegsRel(poly, d).Segments;
+            var borderPoints = new List<(Vector2, Vector2, PolyCell)>();
+            for (var i = 0; i < byPoly[poly].Length; i++)
+            {
+                var cell = byPoly[poly][i];
+                for (var j = 0; j < cell.RelBoundary.Length; j++)
+                {
+                    var from = poly.Center.GetOffsetTo(cell.RelBoundary[j] + cell.RelTo, d);
+                    var to = poly.Center.GetOffsetTo(cell.RelBoundary.Modulo(j + 1) + cell.RelTo, d);
+                    if (segs.Any(s =>
+                        {
+                            var close = Geometry2D.GetClosestPointsBetweenSegments(
+                                from, to, s.From, s.To);
+                            return close[0].DistanceTo(close[1]) <= .1f;
+                        }))
+                    {
+                        borderPoints.Add((from, to, cell));
+                    }
+                }
+            }
+            return borderPoints;
+        }
+    }
     
     public static void ConnectCellsByEdge(IEnumerable<PolyCell> c1s,
         IEnumerable<PolyCell> edgeCells, 
@@ -101,7 +163,7 @@ public abstract class PolyCell : IPolymorph, IIdentifiable
         }
         bool onSegment(Vector2 p, Vector4 seg)
         {
-            float tolerance = .1f;
+            float tolerance = 1f;
             var close = p.GetClosestPointOnLineSegment(
                 new Vector2(seg.X, seg.Y), new Vector2(seg.Z, seg.W));
             return close.DistanceTo(p) <= tolerance;

@@ -71,9 +71,13 @@ public class LineSegment : ISegment<Vector2>
         return From.DistanceTo(To);
     }
 
-    public bool ContainsPoint(Vector2 p)
+    public bool PointIsCloseToLine(Vector2 p, out Vector2 close)
     {
-        return (p - From).Normalized() == (To - p).Normalized();
+        close = Geometry2D.GetClosestPointToSegment(p, From, To);
+        return close.DistanceTo(p) < .1f;
+        
+        return ContainsVertex(p) 
+               || (p - From).Normalized() == (To - From).Normalized();
     }
     public bool ContainsVertex(Vector2 p)
     {

@@ -15,10 +15,41 @@ public class DebugScratchMode : UiMode
     public override void HandleInput(InputEvent e)
     {
         _client.Cam().HandleInput(e);
-        Highlight();
+        HighlightCellAndAdjacent();
+        // HighlightBoundaryCells();
     }
 
-    private void Highlight()
+    private void HighlightBoundaryCells()
+    {
+        var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
+        highlighter.Clear();
+        
+        var mapPos = _client.Cam().GetMousePosInMapSpace();
+        var poly = _client.Data.Planet.PolygonAux.MapPolyGrid
+            .GetElementAtPoint(mapPos, _client.Data);
+        if (poly == null) return;
+        var bSegs = poly.GetEdges(_client.Data)
+            .SelectMany(e => e.GetSegsRel(poly, _client.Data).Segments);
+        var bCells = poly
+            .GetCells(_client.Data)
+            .Where(c => c.RelBoundary
+                .Any(p => bSegs.Any(s => s.DistanceTo(p) < .1f)));
+        foreach (var lineSegment in bSegs)
+        {
+            
+            highlighter.Draw(mb =>
+                mb.AddLine(lineSegment.From, lineSegment.To, 
+                    Colors.Blue, 10f), poly.Center);
+        }
+        foreach (var bCell in bCells)
+        {
+            highlighter.Draw(mb =>
+                mb.DrawPolygon(bCell.RelBoundary, 
+                    Colors.Red.GetPeriodicShade(bCell.Id)), bCell.RelTo);
+        }
+
+    }
+    private void HighlightCellAndAdjacent()
     {
         var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
         highlighter.Clear();

@@ -6,6 +6,14 @@ using GeometRi;
 
 public static class Vector2Ext
 {
+    public static bool RangeOverlap(this Vector2 v, Vector2 w)
+    {
+        if (w.X <= v.X && v.X <= w.Y) return true;
+        if (w.X <= v.Y && v.Y <= w.Y) return true;
+        if (v.X <= w.X && w.X <= v.Y) return true;
+        if (v.X <= w.Y && w.Y <= v.Y) return true;
+        return false;
+    }
     public static Vector2 GetOffsetTo(this Vector2 v1, Vector2 v2, Data data)
     {
         return data.Planet.GetOffsetTo(v1, v2);

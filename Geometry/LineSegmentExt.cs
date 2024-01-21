@@ -349,4 +349,32 @@ public static class LineSegmentExt
 
         return segs[segs.Count - 1].To;
     }
+
+    public static Dictionary<Vector2, float> ProportionsAlong(this IReadOnlyList<LineSegment> segs,
+        IEnumerable<Vector2> points)
+    {
+        var res = new Dictionary<Vector2, float>();
+        var totalLength = segs.Sum(s => s.Length());
+        foreach (var p in points)
+        {
+            var l = 0f;
+            var found = false;
+            for (var i = 0; i < segs.Count; i++)
+            {
+                var seg = segs[i];
+                if (seg.PointIsCloseToLine(p, out var close))
+                {
+                    l += seg.From.DistanceTo(close);
+                    found = true;
+                    break;
+                }
+                l += seg.Length();
+            }
+
+            if (found == false) throw new Exception();
+            res.Add(p, l / totalLength);
+        }
+        
+        return res;
+    }
 }

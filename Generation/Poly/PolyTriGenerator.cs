@@ -61,10 +61,10 @@ public class PolyTriGenerator : Generator
         {
             cells = DoSeaPoly(poly, key);
         }
-        else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus(key.Data)))
-        {
-            cells = RiverTriGen.DoPoly(poly, key.Data, rd, key);
-        }
+        // else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus(key.Data)))
+        // {
+        //     cells = RiverTriGen.DoPoly(poly, key.Data, rd, key);
+        // }
         else
         {
             cells = DoLandPolyNoRivers(poly, key);
@@ -96,7 +96,6 @@ public class PolyTriGenerator : Generator
         ConnectAcrossNonRiverEdges(cellsByPoly, d, cells);
         MergeRiverCellsAcrossEdges(key, cellHolder);
         ConnectLandCellsOverRiverEdges(key, cellHolder);
-        
     }
 
     private void ConnectAcrossNonRiverEdges(
@@ -104,21 +103,11 @@ public class PolyTriGenerator : Generator
         Data d, Dictionary<int, PolyCell> cells)
     {
         var links = new ConcurrentBag<Vector2I>();
-        var boundaryCells = cellsByPoly
-            .AsParallel()
-            .ToDictionary(kvp => kvp.Key, kvp =>
-            {
-                var poly = kvp.Key;
-                var border = poly.GetOrderedBoundaryPoints(d);
-                var bCells = kvp.Value.Where(c => boundaryCell(border, c)).ToArray();
-                return bCells;
-            });
-
-
+        
         Parallel.ForEach(_data.GetAll<MapPolygonEdge>(),
             e =>
             {
-                if (e.IsRiver()) return;
+                // if (e.IsRiver()) return;
                 var hi = e.HighPoly.Entity(d);
                 var lo = e.LowPoly.Entity(d);
                 if (hi.IsWater() && lo.IsWater())
@@ -128,7 +117,7 @@ public class PolyTriGenerator : Generator
                         cellsByPoly[lo][0].Id));
                     return;
                 }
-
+                
                 if (e.IsCoast(d))
                 {
                     var water = hi.IsWater() ? hi : lo;
@@ -141,47 +130,18 @@ public class PolyTriGenerator : Generator
                         d);
                     return;
                 }
-
-                var hiCells = boundaryCells[hi]
-                    .Where(c => c is RiverCell == false);
-                var loCells = boundaryCells[lo]
-                    .Where(c => c is RiverCell == false);
-                PolyCell.ConnectCellsByEdge(
-                    hiCells,
-                    loCells,
-                    lo.Center,
+                
+                PolyCell.ConnectOverMapPolyEdge(e, cellsByPoly,
                     (v, w) => links.Add(new Vector2I(v.Id, w.Id)),
                     d);
             }
         );
-
         foreach (var vector2I in links)
         {
             var c1 = cells[vector2I.X];
             var c2 = cells[vector2I.Y];
             c1.Neighbors.Add(c2.Id);
             c2.Neighbors.Add(c1.Id);
-        }
-
-
-        bool onSegment(Vector2 p, Vector2 from, Vector2 to)
-        {
-            float tolerance = .1f;
-            var close = p.GetClosestPointOnLineSegment(
-                new Vector2(from.X, from.Y), new Vector2(to.X, to.Y));
-            return close.DistanceTo(p) <= tolerance;
-        }
-
-        bool boundaryCell(Vector2[] boundary, PolyCell cell)
-        {
-            for (var i = 0; i < boundary.Length; i++)
-            {
-                var from = boundary[i];
-                var to = boundary[(i + 1) % boundary.Length];
-                if (cell.RelBoundary.Any(p => onSegment(p, from, to))) return true;
-            }
-
-            return false;
         }
     }
 
