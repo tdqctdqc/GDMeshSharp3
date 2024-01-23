@@ -147,7 +147,9 @@ public class Data
         EntitiesById.Remove(eId);
     }
 
-    public void SubscribeForCreation<TEntity>(Action<EntityCreatedNotice> callback) where TEntity : Entity
+    public void SubscribeForCreation<TEntity>
+        (Action<EntityCreatedNotice> callback) 
+            where TEntity : Entity
     {
         _entityTypeTree.Get(typeof(TEntity)).Created.Subscribe(callback);
     }

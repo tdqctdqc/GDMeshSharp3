@@ -7,7 +7,7 @@ public partial class TerrainChunkModule : MapChunkGraphicModule
 {
     public TerrainChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(TerrainChunkModule))
     {
-        var colorWobble = .1f;
+        var colorWobble = .05f;
         var lfLayer = new PolyCellFillChunkGraphic("Landform", chunk, 
             (pt, d) => pt.GetLandform(data)
                 .Color.Darkened(Game.I.Random.RandfRange(-colorWobble, colorWobble)), data);

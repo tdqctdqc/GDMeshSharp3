@@ -10,24 +10,8 @@ public static class MeshBuilderExt
         foreach (var c in front.GetCells(d))
         {
             mb.DrawPolygon(c.RelBoundary.Select(p => relTo.GetOffsetTo(p + c.RelTo, d)).ToArray(),
-                front.Color);
+                new Color(front.Color, .5f));
         }
-        
-        // var line = FrontFinder.FindFrontSimple(
-        //     front.GetCells(d),
-        //     c => c.GetNeighbors(d),
-        //     (p, q) => p.GetCenter().GetOffsetTo(q.GetCenter(), d),
-        //     c => c.Id
-        // );
-        // for (var i = 0; i < line.Count; i++)
-        // {
-        //     var edge = line[i];
-        //     var from = PlanetDomainExt.GetPolyCell(edge.X, d);
-        //     var to = PlanetDomainExt.GetPolyCell(edge.Y, d);
-        //     mb.AddLine(relTo.GetOffsetTo(from.GetCenter(), d),
-        //         relTo.GetOffsetTo(to.GetCenter(), d),
-        //         front.Color.Inverted(), 10f);
-        // }
     }
     public static void DrawFrontSegment(this MeshBuilder mb,
         Vector2 relTo,

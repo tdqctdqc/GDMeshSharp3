@@ -15,14 +15,17 @@ public class DebugScratchMode : UiMode
     public override void HandleInput(InputEvent e)
     {
         _client.Cam().HandleInput(e);
+        var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
+        highlighter.Clear();
+
         HighlightCellAndAdjacent();
+        HighlightPolyBorder();
         // HighlightBoundaryCells();
     }
 
     private void HighlightBoundaryCells()
     {
         var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
-        highlighter.Clear();
         
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         var poly = _client.Data.Planet.PolygonAux.MapPolyGrid
@@ -49,13 +52,50 @@ public class DebugScratchMode : UiMode
         }
 
     }
-    private void HighlightCellAndAdjacent()
+
+    private void HighlightPolyBorder()
     {
         var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
-        highlighter.Clear();
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         var cell = _client.Data.Planet.PolygonAux.PolyCellGrid
             .GetElementAtPoint(mapPos, _client.Data);
+
+        if (cell is ISinglePolyCell s)
+        {
+            var poly = s.Polygon.Entity(_client.Data);
+            drawPoly(poly);
+        }
+        else if (cell is IEdgeCell e)
+        {
+            var p1 = e.Edge.Entity(_client.Data)
+                .HighPoly.Entity(_client.Data);
+            var p2 = e.Edge.Entity(_client.Data)
+                .LowPoly.Entity(_client.Data);
+            drawPoly(p1);
+            drawPoly(p2);
+        }
+
+        void drawPoly(MapPolygon poly)
+        {
+            highlighter.Draw(mb =>
+            {
+                var ps = poly.GetOrderedBoundaryPoints(_client.Data);
+                for (var i = 0; i < ps.Length; i++)
+                {
+                    var from = ps[i];
+                    var to = ps.Modulo(i + 1);
+                    mb.AddLine(from, to, Colors.Black, 3f);
+                }
+            }, poly.Center);
+        }
+    }
+    private void HighlightCellAndAdjacent()
+    {
+        var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
+        var mapPos = _client.Cam().GetMousePosInMapSpace();
+        var cell = _client.Data.Planet.PolygonAux.PolyCellGrid
+            .GetElementAtPoint(mapPos, _client.Data);
+
         
         highlighter.Draw(mb =>
             mb.DrawPolygon(cell.RelBoundary, Colors.Red), cell.RelTo);

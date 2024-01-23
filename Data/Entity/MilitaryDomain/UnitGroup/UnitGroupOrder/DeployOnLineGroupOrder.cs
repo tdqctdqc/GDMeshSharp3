@@ -38,8 +38,8 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
                 var foreignRegime = foreignCell.Controller.Entity(key.Data);
                 var foreignAlliance = foreignRegime.GetAlliance(key.Data);
 
-                var units = key.Data.Context.UnitsByCell[foreignCell];
-                if (units.Count == 0) return FrontAssignment.PowerPointsPerCellFaceToCover;
+                var units = foreignCell.GetUnits(key.Data);
+                if (units == null || units.Count == 0) return FrontAssignment.PowerPointsPerCellFaceToCover;
 
                 if (alliance.Rivals.Contains(foreignAlliance) == false) return 0f;
                 float mult = 1f;

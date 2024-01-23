@@ -9,8 +9,9 @@ public class UnitAux
     public EntityMultiIndexer<Regime, UnitGroup> UnitGroupByRegime { get; private set; }
     public EntityMultiIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
     public ValChangeAction<Unit, UnitGroup> UnitChangedGroup { get; private set; }
-    
-    
+    public ValChangeAction<Unit, MapPos> UnitChangedPos { get; private set; }
+
+    public PropertyMultiIndexer<PolyCell, Unit> UnitsByCell { get; private set; }
     
     private Data _data;
     public UnitAux(Data d)
@@ -29,7 +30,23 @@ public class UnitAux
             g => g.Units.Items(d),  
             d.GetEntityMeta<UnitGroup>().GetRefColMeta<Unit>(nameof(UnitGroup.Units)),
             d);
+        UnitChangedPos = new ValChangeAction<Unit, MapPos>();
         UnitChangedGroup = new ValChangeAction<Unit, UnitGroup>();
+        
+       
+       var unitChangedCell = new ValChangeAction<Unit, PolyCell>();
+       UnitChangedPos.Subscribe(n => unitChangedCell.Invoke(n.Entity, n.NewVal.GetCell(d), n.OldVal.GetCell(d)));
+
+        UnitsByCell = new PropertyMultiIndexer<PolyCell, Unit>(
+            d, u => u.Position.GetCell(d),
+            new RefAction[]
+            {
+                d.Notices.FinishedGen,
+                d.Notices.FinishedStateSync
+            }, 
+            unitChangedCell
+        );
+        
         
         d.Notices.FinishedStateSync.Subscribe(MakeUnitGrid);
         d.Notices.Ticked.Blank.Subscribe(MakeUnitGrid);

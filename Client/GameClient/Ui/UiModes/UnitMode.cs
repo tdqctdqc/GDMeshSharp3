@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -16,6 +17,8 @@ public class UnitMode : UiMode
     
     public override void HandleInput(InputEvent e)
     {
+        var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
+        debug.Clear();
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         mapPos = mapPos.ClampPosition(_client.Data);
         Game.I.Client.Cam().HandleInput(e);
@@ -25,19 +28,13 @@ public class UnitMode : UiMode
         {
             _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverPoly);
         }
+
+        if (e is InputEventMouseButton m && m.ButtonIndex == MouseButton.Left && m.Pressed == false)
+        {
+            CycleUnits();
+        }
         Highlight(mapPos);
-        var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
-        debug.Clear();
-        var u = GetCloseUnit(mapPos);
-        if(u != null)
-        {
-            UnitTooltip(u);
-            OverlayForUnit(u);
-        }
-        else
-        {
-            _client.GetComponent<MapGraphics>().DebugOverlay.Clear();
-        }
+        UnitTooltip();
     }
 
     public override void Clear()
@@ -54,33 +51,39 @@ public class UnitMode : UiMode
         _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
     }
 
-    private Unit GetCloseUnit(Vector2 mapPos)
+    private void UnitTooltip()
     {
-        var cell = _mouseOverHandler.MouseOverCell;
-        if (cell == null) return null;
-
-        var units = _client.Data.Context
-            .UnitsByCell[cell];
-        return units.FirstOrDefault();
-    }
-    private void UnitTooltip(Unit close)
-    {
-        var mg = _client.GetComponent<MapGraphics>();
-        mg.DebugOverlay.Clear();
         var tooltip = _client.GetComponent<TooltipManager>();
-        if (close != null)
-        {
-            tooltip.PromptTooltip(new UnitTooltipTemplate(), close);
-        }
-        else
+        var cell = _mouseOverHandler.MouseOverCell;
+        if (cell == null
+            || cell.GetUnits(_client.Data) is HashSet<Unit> units == false
+            || units.Count == 0)
         {
             tooltip.Clear();
+            return;
         }
+        var unitGraphics = _client.GetComponent<MapGraphics>()
+            .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
+        var close = unitGraphics
+            .Graphics[cell.GetChunk(_client.Data)]
+            .UnitsInOrder[cell].First();
+        tooltip.PromptTooltip(new UnitTooltipTemplate(), close);
     }
 
     private void OverlayForUnit(Unit u)
     {
         
+    }
+
+    private void CycleUnits()
+    {
+        var cell = _mouseOverHandler.MouseOverCell;
+        if (cell != null)
+        {
+            var unitGraphics = _client.GetComponent<MapGraphics>()
+                .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
+            unitGraphics.CycleCell(_mouseOverHandler.MouseOverCell, _client.Data);
+        }
     }
     
 }

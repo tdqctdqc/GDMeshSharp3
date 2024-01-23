@@ -1,18 +1,16 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
-public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
-    where TSingle : Entity 
+public class PropertyMultiIndexer<TSingle, TMult>
     where TMult : Entity
 {
     public HashSet<TMult> this[TSingle t] => _dic.ContainsKey(t) ? _dic[t] : null;
     protected Dictionary<TSingle, HashSet<TMult>> _dic;
     private Func<TMult, TSingle> _getSingle;
-    public EntityMultiIndexer(Data data, Func<TMult, TSingle> getSingle,
+    public PropertyMultiIndexer(Data data, Func<TMult, TSingle> getSingle,
         RefAction[] recalcTriggers,
-        params ValChangeAction<TMult, TSingle>[] changeTriggers) : base(data)
+        params ValChangeAction<TMult, TSingle>[] changeTriggers)
     {
         _dic = new Dictionary<TSingle, HashSet<TMult>>();
         _getSingle = getSingle;
@@ -24,7 +22,6 @@ public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
         {
             changeTrigger.Subscribe(HandleValChanged);
         }
-        data.SubscribeForDestruction<TSingle>(HandleTSingleRemoved);
     }
 
     private void HandleValChanged(ValChangeNotice<TMult, TSingle> n)
@@ -44,17 +41,13 @@ public class EntityMultiIndexer<TSingle, TMult> : AuxData<TMult>
             HandleAdded(entity);
         }
     }
-    public override void HandleAdded(TMult added)
+    public void HandleAdded(TMult added)
     {
         var single = _getSingle(added);
         if(single != null) _dic.AddOrUpdate(single, added);
     }
 
-    private void HandleTSingleRemoved(EntityDestroyedNotice n)
-    {
-        _dic.Remove((TSingle)n.Entity);
-    }
-    public override void HandleRemoved(TMult removing)
+    public void HandleRemoved(TMult removing)
     {
         var single = _getSingle(removing);
         if(single != null) _dic[single].Remove(removing);

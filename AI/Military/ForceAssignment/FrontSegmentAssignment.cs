@@ -51,7 +51,6 @@ public class FrontSegmentAssignment : ForceAssignment
         var cells = GetCells(key.Data).ToList();
         var rear = GetRear(key.Data.Models.MoveTypes.InfantryMove,
             3, key.Data);
-        
         var groups = Groups(key.Data).ToList();
         var readyGroups = GetReadyGroups(key.Data);
         
@@ -75,8 +74,8 @@ public class FrontSegmentAssignment : ForceAssignment
                         var foreignRegime = foreignCell.Controller.Entity(key.Data);
                         var foreignAlliance = foreignRegime.GetAlliance(key.Data);
 
-                        var units = key.Data.Context.UnitsByCell[foreignCell];
-                        if (units.Count == 0) return FrontAssignment.PowerPointsPerCellFaceToCover;
+                        var units = foreignCell.GetUnits(key.Data);
+                        if (units == null || units.Count == 0) return FrontAssignment.PowerPointsPerCellFaceToCover;
 
                         if (alliance.Rivals.Contains(foreignAlliance) == false) return 0f;
                         float mult = 1f;
@@ -158,7 +157,12 @@ public class FrontSegmentAssignment : ForceAssignment
             .SelectMany(c => c.GetNeighbors(data))
             .Distinct()
             .Where(n => n.RivalControlled(alliance, data))
-            .Sum(n => data.Context.UnitsByCell[n].Sum(u => u.GetPowerPoints(data)));
+            .Sum(n =>
+            {
+                var us = n.GetUnits(data);
+                if (us == null) return 0f;
+                return us.Sum(u => u.GetPowerPoints(data));
+            });
     }
     
     public void MergeInto(FrontSegmentAssignment merging, LogicWriteKey key)

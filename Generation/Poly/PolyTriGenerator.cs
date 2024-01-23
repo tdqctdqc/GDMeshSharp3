@@ -34,8 +34,12 @@ public class PolyTriGenerator : Generator
         var cells = cellsByPoly.SelectMany(kvp => kvp.Value).ToArray();
         
         report.StopSection("Building poly terrain tris and cells");
+        
         PolyCells.Create(cells, key);
-
+        
+        
+        
+        
         report.StartSection();
         ConnectDiffPolyCells(cellsByPoly, key);
         report.StopSection("connecting cells");
@@ -85,6 +89,8 @@ public class PolyTriGenerator : Generator
         return GraphGenerator.GenerateAndConnectPolyCellsForInterior(poly, borderPs, key);
     }
 
+
+    
     private void ConnectDiffPolyCells(
         Dictionary<MapPolygon, PolyCell[]> cellsByPoly, 
         GenWriteKey key)
@@ -92,10 +98,11 @@ public class PolyTriGenerator : Generator
         var d = key.Data;
         var cellHolder = d.GetAll<PolyCells>().First();
         var cells = cellHolder.Cells;
-        MergeSmallRiverCellsInPolys(key, cellsByPoly);
-        ConnectAcrossNonRiverEdges(cellsByPoly, d, cells);
+        // MergeSmallRiverCellsInPolys(key, cellsByPoly);
         MergeRiverCellsAcrossEdges(key, cellHolder);
+        ConnectAcrossNonRiverEdges(cellsByPoly, d, cells);
         ConnectLandCellsOverRiverEdges(key, cellHolder);
+        // FixShortEdgeConnections(cellsByPoly, key);
     }
 
     private void ConnectAcrossNonRiverEdges(
@@ -193,17 +200,27 @@ public class PolyTriGenerator : Generator
             newRiverCell.Neighbors.AddRange(second.Neighbors);
             foreach (var n1 in first.Neighbors)
             {
+                if (cells.ContainsKey(n1) == false)
+                {
+                    throw new Exception($"{first.Id} neighbor {n1} doest not exist");
+                }
                 var cell = cells[n1];
                 cell.Neighbors.Remove(first.Id);
                 cell.Neighbors.Add(newRiverCell.Id);
             }
+            first.Neighbors.Clear();
         
             foreach (var n2 in second.Neighbors)
             {
+                if (cells.ContainsKey(n2) == false)
+                {
+                    throw new Exception($"{second.Id} neighbor {n2} doest not exist");
+                }
                 var cell = cells[n2];
                 cell.Neighbors.Remove(second.Id);
                 cell.Neighbors.Add(newRiverCell.Id);
             }
+            second.Neighbors.Clear();
         
             cells.Remove(first.Id);
             cells.Remove(second.Id);
@@ -246,6 +263,78 @@ public class PolyTriGenerator : Generator
             c2.Neighbors.Add(c1.Id);
         }
     }
+    // private void FixShortEdgeConnections(Dictionary<MapPolygon, PolyCell[]> cellsByPoly, 
+    //     GenWriteKey key)
+    // {
+    //     var cells = key.Data.GetAll<PolyCells>().First().Cells;
+    //     var makeLinks = new ConcurrentBag<Vector2I>();
+    //     var severLinks = new ConcurrentBag<Vector2I>();
+    //     Parallel.ForEach(cells.Values.OfType<LandCell>(),
+    //         landCell =>
+    //         {
+    //             doForSquares(landCell, (p1, p2, p3, p4) =>
+    //             {
+    //                 var length13 = p1.GetCenter().GetOffsetTo(p3.GetCenter(), key.Data).Length();
+    //                 var length24 = p2.GetCenter().GetOffsetTo(p4.GetCenter(), key.Data).Length();
+    //                 var (shortEdge, longEdge) = length13 < length24 
+    //                     ? (new Vector2I(p1.Id, p3.Id), new Vector2I(p2.Id, p4.Id))
+    //                     : (new Vector2I(p2.Id, p4.Id), new Vector2I(p1.Id, p3.Id));
+    //                 if (p1.Neighbors.Contains(p3.Id) 
+    //                     && p2.Neighbors.Contains(p4.Id))
+    //                 {
+    //                     severLinks.Add(longEdge);
+    //                 }
+    //                 else if (p1.Neighbors.Contains(p3.Id) == false
+    //                          && p2.Neighbors.Contains(p4.Id) == false)
+    //                 {
+    //                     makeLinks.Add(shortEdge);
+    //                 }
+    //             });
+    //         });
+    //     
+    //     // foreach (var (x, y) in severLinks)
+    //     // {
+    //     //     var c1 = cells[x];
+    //     //     c1.Neighbors.Remove(y);
+    //     //     var c2 = cells[y];
+    //     //     c2.Neighbors.Remove(x);
+    //     // }
+    //     foreach (var (x, y) in makeLinks)
+    //     {
+    //         var c1 = cells[x];            
+    //         c1.Neighbors.Add(y);
+    //         var c2 = cells[y];
+    //         c2.Neighbors.Add(x);
+    //     }
+    //     void doForSquares(PolyCell p1,
+    //         Action<PolyCell, PolyCell, PolyCell, PolyCell> act)
+    //     {
+    //         foreach (var p2 in getNeighbors(p1.Id, p1))
+    //         {
+    //             foreach (var p3 in getNeighbors(p1.Id, p2, p1))
+    //             {
+    //                 foreach (var p4 in getNeighbors(p1.Id, p3, p1, p2)
+    //                              .Where(p => p.Neighbors.Contains(p1.Id)))
+    //                 {
+    //                     act(p1, p2, p3, p4);
+    //                 }
+    //             }
+    //         }
+    //     }
+    //
+    //     IEnumerable<PolyCell> getNeighbors(int baseId, PolyCell p,
+    //         PolyCell avoid1 = null, PolyCell avoid2 = null, PolyCell avoid3 = null)
+    //     {
+    //         return p.Neighbors.Select(n => cells[n])
+    //             .Where(n => 
+    //                 // n.Id > baseId 
+    //             // && 
+    //                 n is LandCell
+    //             && n != avoid1
+    //             && n != avoid2
+    //             && n != avoid3);
+    //     }
+    // }
     private void Postprocess(GenWriteKey key)
     {
         var polys = key.Data.GetAll<MapPolygon>();

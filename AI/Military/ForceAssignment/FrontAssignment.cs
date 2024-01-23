@@ -11,9 +11,9 @@ using Microsoft.FSharp.Data.UnitSystems.SI.UnitNames;
 public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 {
     
-    public static float CoverOpposingWeight = 3f;
-    public static float DesiredOpposingPpRatio = 2f;
+    public static float CoverOpposingWeight = 2f;
     public static float CoverLengthWeight = 1f;
+    public static float DesiredOpposingPpRatio = 2f;
     public static float PowerPointsPerCellFaceToCover = 10f;
     public HashSet<int> HeldCellIds { get; private set; }
     public HashSet<int> TargetAreaCellIds { get; private set; }
@@ -43,7 +43,12 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             .SelectMany(c => c.GetNeighbors(data))
             .Distinct()
             .Where(n => n.RivalControlled(alliance, data))
-            .Sum(n => data.Context.UnitsByCell[n].Sum(u => u.GetPowerPoints(data)));
+            .Sum(n =>
+            {
+                var us = n.GetUnits(data);
+                if(us == null) return 0f;
+                return us.Sum(u => u.GetPowerPoints(data));
+            });
     }
     public override void CalculateOrders(MinorTurnOrders orders, 
         LogicWriteKey key)
@@ -97,24 +102,25 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             throw new Exception();
         }
 
-        // var hash = lines.ToHashSet();
-        // var res = new List<List<(PolyCell native, PolyCell foreign)>>();
-        // while (hash.Count > 0)
-        // {
-        //     var line = hash.First();
-        //     hash.Remove(line);
-        //     var ll = new LinkedList<(PolyCell native, PolyCell foreign)>(line);
-        //     while (hash.FirstOrDefault(l => sharesEnd(ll, l))
-        //            is List<(PolyCell native, PolyCell foreign)> shares)
-        //     {
-        //         hash.Remove(shares);
-        //         merge(ll, shares);
-        //     }
-        //     
-        //     res.Add(ll.ToList());
-        //     
-        // }
-        return lines;
+        var res = new List<List<(PolyCell native, PolyCell foreign)>>();
+        foreach (var l in lines)
+        {
+            if (l.Count <= FrontSegmentAssignment.IdealSegmentLength * 2)
+            {
+                res.Add(l);
+                continue;
+            }
+
+            var facesPerSeg = Mathf.CeilToInt((float)l.Count / FrontSegmentAssignment.IdealSegmentLength);
+            var startI = 0;
+            while (startI < l.Count)
+            {
+                var count = Mathf.Min(facesPerSeg, l.Count - startI);
+                res.Add(l.GetRange(startI, count));
+                startI += count;
+            }
+        }
+        return res;
         bool sharesEnd(LinkedList<(PolyCell native, PolyCell foreign)> ll,
             List<(PolyCell native, PolyCell foreign)> cand)
         {

@@ -42,7 +42,7 @@ public class RegimeGenerator : Generator
                 .First();
 
             var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetPolys(key.Data).Count()));
-            var numUnits = score * 10;
+            var numUnits = score * 20;
 
             var capitalPoly = regime.Capital.Entity(key.Data);
             var cell = capitalPoly.GetCells(key.Data).First(c => c is LandCell);

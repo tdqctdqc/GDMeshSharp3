@@ -10,8 +10,9 @@ public static class Mover
         MoveData moveDat, PolyCell dest, 
         LogicWriteKey key)
     {
-        var path = PathFinder.FindPath(moveDat.MoveType,
-            moveDat.Alliance, pos.GetCell(key.Data), dest, key.Data);
+        var path = key.Data.Context.PathCache.GetOrAdd(
+            (moveDat.MoveType, moveDat.Alliance, pos.GetCell(key.Data), dest));
+            
         if (path == null)
         {
             var issue = new CantFindPathIssue(

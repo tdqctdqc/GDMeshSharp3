@@ -82,7 +82,6 @@ public class StrategicMode : UiMode
         {
             debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
         }
-        
     }
 
     private void DrawRegimeLineOrders(Regime regime)

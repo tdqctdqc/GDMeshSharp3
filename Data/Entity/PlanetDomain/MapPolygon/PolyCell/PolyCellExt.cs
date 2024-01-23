@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+
 public static class PolyCellExt
 {
     public static RoadModel GetRoadWith(this PolyCell p1, PolyCell p2, Data d)
@@ -20,5 +22,10 @@ public static class PolyCellExt
     public static MapChunk GetChunk(this PolyCell p, Data d)
     {
         return d.Planet.PolygonAux.ChunksByCell[p];
+    }
+
+    public static HashSet<Unit> GetUnits(this PolyCell cell, Data d)
+    {
+        return d.Military.UnitAux.UnitsByCell[cell];
     }
 }

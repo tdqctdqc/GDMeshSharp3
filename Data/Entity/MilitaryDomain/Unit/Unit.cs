@@ -35,6 +35,9 @@ public class Unit : Entity
 
     public void SetPosition(MapPos pos, ProcedureWriteKey key)
     {
+        var old = Position;
         Position = pos;
+        key.Data.Military.UnitAux.UnitChangedPos.Invoke(
+            this, pos, old);
     }
 }

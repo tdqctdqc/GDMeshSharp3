@@ -49,7 +49,7 @@ public class RiverTriGen
         scratch.InsetPoints = insetPoints;
         
         MakeInnerEdges(poly, data, scratch, insetPoints);
-        var cells = MakeTris(poly, data, rData, scratch, key);
+        var cells = MakeCells(poly, data, rData, scratch, key);
         return cells.ToArray();
     }
 
@@ -131,7 +131,7 @@ public class RiverTriGen
         }
     }
 
-    private static List<PolyCell> MakeTris(MapPolygon poly, 
+    private static List<PolyCell> MakeCells(MapPolygon poly, 
         Data data, TempRiverData rData,
         RiverTriGenScratch scratch, GenWriteKey key)
     {
@@ -142,14 +142,14 @@ public class RiverTriGen
         //a. make pivot tris and bank tris
         foreach (var edge in edges)
         {
-            DoEdge(edge, poly, key, scratch, cells, innerBoundarySegs);
+            MakeRiverCellsForEdge(edge, poly, key, scratch, cells, innerBoundarySegs);
         }
 
         MakeLandCells(poly, cells, innerBoundarySegs, key);
         var landCells = cells.OfType<LandCell>();
         var riverCells = cells.OfType<RiverCell>();
-        var allCells = ((IEnumerable<PolyCell>)landCells)
-            .Union(riverCells).ToList();
+        // var allCells = ((IEnumerable<PolyCell>)landCells)
+        //     .Union(riverCells).ToList();
         
         PolyCell.ConnectCellsByEdge(landCells, riverCells, poly.Center,
             (v, w) =>
@@ -158,10 +158,10 @@ public class RiverTriGen
                 w.Neighbors.Add(v.Id);
             }, data);
         PolyCell.ConnectCellsSharingPoints(riverCells, key.Data);
-        return allCells;
+        return cells;
     }
 
-    private static void DoEdge(MapPolygonEdge edge, 
+    private static void MakeRiverCellsForEdge(MapPolygonEdge edge, 
         MapPolygon poly,
         GenWriteKey key,
         RiverTriGenScratch scratch,

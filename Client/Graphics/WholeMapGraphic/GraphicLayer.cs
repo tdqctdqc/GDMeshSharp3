@@ -96,7 +96,7 @@ public abstract class GraphicLayer<TKey, TGraphic> : IGraphicLayer
     }
 }
 
-public static class WholeMapGraphicLayerExt
+public static class GraphicLayerExt
 {
     public static void RegisterForEntityLifetime<TEntity, TGraphic>
         (this GraphicLayer<TEntity, TGraphic> layer, Client client,

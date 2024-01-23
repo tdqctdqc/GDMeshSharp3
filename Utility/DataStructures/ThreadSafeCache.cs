@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using Godot;
 
 public abstract class ThreadSafeCache<TKey, TValue>
 {
