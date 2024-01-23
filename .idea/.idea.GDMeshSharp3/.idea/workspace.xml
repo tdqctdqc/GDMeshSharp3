@@ -4,37 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/ChunkUnitsGraphic.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Repo/PropertyMultiIndexer.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="path caching">
+      <change afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Desert.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DebugScratchMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DebugScratchMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/AlliancePolyFill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/AlliancePolyFill.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/TerrainChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/TerrainChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGroupGraphic.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/PolyCellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/PolyCellExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/EntityMultiIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/EntityMultiIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/ThreadSafeCache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/ThreadSafeCache.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Mover/MapPos.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/MapPos.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Mover/MoveData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/MoveData.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Mover/MovementContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/MovementContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Mover/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/Mover.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Generation/MoistureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +71,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/UiModes/DebugScratchMode.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Fill/AlliancePolyFill.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
@@ -482,7 +458,7 @@
       <workItem from="1705873486351" duration="595000" />
       <workItem from="1705882027946" duration="2902000" />
       <workItem from="1706024526824" duration="6916000" />
-      <workItem from="1706033920208" duration="3578000" />
+      <workItem from="1706033920208" duration="4176000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -694,14 +670,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00097" summary="added unitMoveType">
-      <option name="closed" value="true" />
-      <created>1703895442799</created>
-      <option name="number" value="00097" />
-      <option name="presentableId" value="LOCAL-00097" />
-      <option name="project" value="LOCAL" />
-      <updated>1703895442800</updated>
-    </task>
     <task id="LOCAL-00098" summary="bugfixing pathfinding and movement">
       <option name="closed" value="true" />
       <created>1703985062360</created>
@@ -846,7 +814,15 @@
       <option name="project" value="LOCAL" />
       <updated>1705702371788</updated>
     </task>
-    <option name="localTasksCounter" value="116" />
+    <task id="LOCAL-00116" summary="path caching">
+      <option name="closed" value="true" />
+      <created>1706040763197</created>
+      <option name="number" value="00116" />
+      <option name="presentableId" value="LOCAL-00116" />
+      <option name="project" value="LOCAL" />
+      <updated>1706040763197</updated>
+    </task>
+    <option name="localTasksCounter" value="117" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -868,7 +844,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="another extension method" />
     <MESSAGE value="still working on front" />
     <MESSAGE value="working on shifting unitgroups between existing force assigns as needed" />
     <MESSAGE value="made UnitGroup pos just pos of first unit to fix pathfinding bug" />
@@ -893,6 +868,7 @@
     <MESSAGE value="before removing waypoints + polytris" />
     <MESSAGE value="replaced waypoints and polytris with polycells" />
     <MESSAGE value="working on front algorithm" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on front algorithm" />
+    <MESSAGE value="path caching" />
+    <option name="LAST_COMMIT_MESSAGE" value="path caching" />
   </component>
 </project>
