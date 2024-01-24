@@ -77,7 +77,6 @@ public partial class ChunkUnitsGraphic : Node2D
                 graphic.ZIndex = units.Count - i;
                 graphic.ZAsRelative = true;
                 graphic.Position = relPos;
-                graphic.Draw(unit, data);
                 AddChild(graphic);
             }
         }
@@ -107,5 +106,11 @@ public partial class ChunkUnitsGraphic : Node2D
     
     public override void _Process(double delta)
     {
+        var zoom = Game.I.Client.Cam().ScaledZoomOut;
+        if (zoom > .5f)
+        {
+            Visible = false;
+        }
+        else Visible = true;
     }
 }

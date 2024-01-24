@@ -24,14 +24,8 @@ public class VegetationList : ModelList<Vegetation>
         Grassland = new Grassland(lfs);
         Arid = new Arid(lfs);
         Steppe = new Steppe(lfs);
-        Desert = new Vegetation(
-            new HashSet<Landform>{lfs.Hill, lfs.Plain}, 
-            0f, .0f, 
-            1f, Colors.Tan, "Desert");
-        Barren = new Vegetation(
-            new HashSet<Landform>{lfs.Mountain, lfs.Peak, lfs.Urban, lfs.River, lfs.Sea}, 
-            0f, 0f, 
-            1f, Colors.Transparent, "Barren");
+        Desert = new Desert(lfs);
+        Barren = new Barren(lfs);
         Jungle = new Jungle(lfs);
         Tundra = new Tundra(lfs);
         

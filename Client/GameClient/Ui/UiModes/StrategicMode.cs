@@ -27,6 +27,7 @@ public class StrategicMode : UiMode
         var mg = _client.GetComponent<MapGraphics>();
         mg.DebugOverlay.Clear();
         DrawRegime();
+        Highlight(mapPos);
     }
 
     private void DrawRegime()
@@ -74,10 +75,10 @@ public class StrategicMode : UiMode
         var theaters = ai.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>();
         var fronts = theaters.SelectMany(t => t.Assignments.OfType<FrontAssignment>());
         var segs = fronts.SelectMany(f => f.Assignments.OfType<FrontSegmentAssignment>());
-        foreach (var front in fronts)
-        {
-            debug.Draw(mb => mb.DrawFront(relTo, front, _client.Data), relTo);
-        }
+        // foreach (var front in fronts)
+        // {
+        //     debug.Draw(mb => mb.DrawFront(relTo, front, _client.Data), relTo);
+        // }
         foreach (var seg in segs)
         {
             debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
@@ -154,9 +155,17 @@ public class StrategicMode : UiMode
             }
         }
     }
+    private void Highlight(Vector2 mapPos)
+    {
+        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
+        highlight.Clear();
+        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
+    }
     public override void Clear()
     {
         var mg = _client.GetComponent<MapGraphics>();
         mg.DebugOverlay.Clear();
+        mg.Highlighter.Clear();
     }
 }

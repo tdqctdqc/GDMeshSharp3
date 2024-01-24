@@ -21,10 +21,17 @@ public static class UiActions
     public static void HighlightPoly(this Client client, MapPolygon poly)
     {
         var highlighter = client.GetComponent<MapGraphics>().Highlighter;
-        highlighter.Clear();
         if (poly != null)
         {
             highlighter.Draw(mb => mb.DrawPolyBorders(poly.Center, poly, client.Data), poly.Center);
+        }
+    }
+    public static void HighlightCell(this Client client, PolyCell cell)
+    {
+        var highlighter = client.GetComponent<MapGraphics>().Highlighter;
+        if (cell != null)
+        {
+            highlighter.Draw(mb => mb.DrawCellBorders(cell.GetCenter(), cell, client.Data), cell.GetCenter());
         }
     }
 }

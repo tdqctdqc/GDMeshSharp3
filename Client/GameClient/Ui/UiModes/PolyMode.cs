@@ -24,7 +24,10 @@ public class PolyMode : UiMode
         {
             _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverPoly);
         }
+        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
+        highlight.Clear();
         _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
         Tooltip(mapPos);
     }
     private void Tooltip(Vector2 mapPos)

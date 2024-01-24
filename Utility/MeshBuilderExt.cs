@@ -43,11 +43,48 @@ public static class MeshBuilderExt
         for (var i = 0; i < seg.FrontLineFaces.Count; i++)
         {
             var face = seg.FrontLineFaces[i];
+            var covering = seg.FaceCoveringGroupIds[i];
+            if (covering == -1) continue;
+            var coveringGroup = d.Get<UnitGroup>(covering);
             var native = PlanetDomainExt.GetPolyCell(face.nativeId, d);
             var foreign = PlanetDomainExt.GetPolyCell(face.foreignId, d);
             mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
                 relTo.GetOffsetTo(foreign.GetCenter(), d),
-                markerSize / 5f, color);
+                markerSize / 5f, coveringGroup.Color);
+        }
+
+        var group = -1;
+        var groupStart = -1;
+        for (var i = 0; i < seg.FrontLineFaces.Count; i++)
+        {
+            var covering = seg.FaceCoveringGroupIds[i];
+            if (covering != group)
+            {
+                drawGroupLine(group, groupStart, i - 1);
+                group = covering;
+                groupStart = i;
+            }
+            if (i == seg.FrontLineFaces.Count - 1)
+            {
+                drawGroupLine(group, groupStart, i);
+            }
+        }
+
+        void drawGroupLine(int groupId, int groupFrom, int groupTo)
+        {
+            if (groupId == -1) return;
+            var group = d.Get<UnitGroup>(groupId);
+            var line = seg.FrontLineFaces.GetRange(groupFrom, groupTo - groupFrom + 1);
+            for (var i = 0; i < line.Count - 1; i++)
+            {
+                var a = PlanetDomainExt.GetPolyCell(line[i].nativeId, d);
+                var b = PlanetDomainExt.GetPolyCell(line[i + 1].nativeId, d);
+                if (a == b) continue;
+                
+                mb.AddLine(relTo.GetOffsetTo(a.GetCenter(), d),
+                    relTo.GetOffsetTo(b.GetCenter(), d),
+                    group.Color, markerSize / 2f);
+            }
         }
     }
 
@@ -82,7 +119,18 @@ public static class MeshBuilderExt
             .Select(s => s.Translate(relTo.GetOffsetTo(poly.Center, data)));
         mb.AddLines(edgeBorders.ToList(), 2f, Colors.Black);
     }
-
+    public static void DrawCellBorders(this MeshBuilder mb,
+        Vector2 relTo, PolyCell cell, Data data)
+    {
+        for (var i = 0; i < cell.RelBoundary.Length; i++)
+        {
+            mb.AddLine(
+                relTo.GetOffsetTo(cell.RelBoundary[i] + cell.RelTo, data), 
+                relTo.GetOffsetTo(cell.RelBoundary.Modulo(i + 1) + cell.RelTo, data),
+                Colors.Black, 1f);
+        }
+    }
+    
     public static void DrawMovementRecord(this MeshBuilder mb,
         int id, int howFarBack, Vector2 relTo, Data d)
     {

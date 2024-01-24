@@ -13,12 +13,12 @@ public class UnitGraphicLayer : GraphicLayer<MapChunk, ChunkUnitsGraphic>
         UnitGraphics = new Dictionary<Unit, UnitGraphic>();
         foreach (var unit in d.GetAll<Unit>())
         {
-            var unitGraphic = new UnitGraphic();
+            var unitGraphic = new UnitGraphic(unit, d);
             UnitGraphics.Add(unit, unitGraphic);
         }
         d.SubscribeForCreation<Unit>(u =>
         {
-            var unitGraphic = new UnitGraphic();
+            var unitGraphic = new UnitGraphic((Unit)u.Entity, d);
             UnitGraphics.Add((Unit)u.Entity, unitGraphic);
         });
         d.SubscribeForDestruction<Unit>(u =>
@@ -40,6 +40,13 @@ public class UnitGraphicLayer : GraphicLayer<MapChunk, ChunkUnitsGraphic>
             {
                 g.Value.Update(d, this, segmenter, client.QueuedUpdates);
             }
+            client.QueuedUpdates.Enqueue(() =>
+            {
+                foreach (var (unit, graphic) in UnitGraphics)
+                {
+                    graphic.Draw(unit, d);
+                }
+            });
         });
     }
 

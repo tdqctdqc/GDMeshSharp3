@@ -48,7 +48,12 @@ public class UnitMode : UiMode
 
     private void Highlight(Vector2 mapPos)
     {
+        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
+        highlight.Clear();
         _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
+        OverlayForUnit();
+
     }
 
     private void UnitTooltip()
@@ -70,9 +75,23 @@ public class UnitMode : UiMode
         tooltip.PromptTooltip(new UnitTooltipTemplate(), close);
     }
 
-    private void OverlayForUnit(Unit u)
+    private void OverlayForUnit()
     {
-        
+        var cell = _mouseOverHandler.MouseOverCell;
+        if (cell == null
+            || cell.GetUnits(_client.Data) is HashSet<Unit> units == false
+            || units.Count == 0)
+        {
+            return;
+        }
+        var unitGraphics = _client.GetComponent<MapGraphics>()
+            .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
+        var close = unitGraphics
+            .Graphics[cell.GetChunk(_client.Data)]
+            .UnitsInOrder[cell].First();
+        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
+        highlight.Draw(mb => mb.DrawMovementRecord(close.Id, 4, cell.GetCenter(), _client.Data),
+            cell.GetCenter());
     }
 
     private void CycleUnits()
