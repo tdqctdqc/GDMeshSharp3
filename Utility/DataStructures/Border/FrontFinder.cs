@@ -39,10 +39,27 @@ public static class FrontFinder
         }
         return links;
     }
-    
-    
-    
-    public static List<List<(T native, T foreign)>> FindFrontNew<T>(
+
+
+    public static List<List<(PolyCell native, PolyCell foreign)>>
+        FindPolyCellFront(IEnumerable<PolyCell> cells,
+            Alliance alliance,
+            Func<PolyCell, bool> isNative,
+            Data d)
+    {
+        return FindFront<PolyCell>(cells,
+                c =>
+                {
+                    if (c.Controller.Empty()) return false;
+                    var controllerRegime = c.Controller.Entity(d);
+                    var controllerAlliance = controllerRegime.GetAlliance(d);
+                    return alliance.Rivals.Contains(controllerAlliance);
+                },
+                isNative,
+                c => c.GetNeighbors(d),
+                (p,q) => p.GetCenter().GetOffsetTo(q.GetCenter(), d));
+    }
+    public static List<List<(T native, T foreign)>> FindFront<T>(
         IEnumerable<T> elements,
         Func<T, bool> isForeign,
         Func<T, bool> isNative,
@@ -99,108 +116,40 @@ public static class FrontFinder
             go(e, add);
         }
     }
-
-    public static List<List<(T native, T foreign)>> FindFront<T>(
-        IEnumerable<T> elements,
-        Func<T, bool> foreign,
-        Func<T, IEnumerable<T>> getNeighbors,
-        Func<T, T, Vector2> getOffset)
-            where T : class
+    public static List<(T native, T foreign)> 
+        PathfindOnFront<T>((T native, T foreign) start,
+            (T native, T foreign) dest,
+            Func<T, IEnumerable<T>> getNeighbors,
+            Func<T, bool> isForeign, 
+            Func<T, bool> isNative,
+            Func<T, T, Vector2> getOffset,
+            Data d)
     {
-        var res = new List<List<(T native, T foreign)>>();
-
-        var oppositions = new HashSet<(T native, T foreign)>();
-        oppositions.AddRange(
-            elements.SelectMany(e =>
-            {
-                return getNeighbors(e).Where(foreign)
-                    .Select(f => (e, f));
-            })
-        );
-
-        while (oppositions.Count > 0)
-        {
-            var start = oppositions.First();
-            oppositions.Remove(start);
-            var list = new LinkedList<(T native, T foreign)>();
-            list.AddFirst(start);
-
-            var curr = start;
-            while (true)
-            {
-                var next = getNext(curr);
-                if (next.native == null) break;
-                list.AddLast(next);
-                curr = next;
-            }
-
-            curr = start;
-            while (true)
-            {
-                var next = getNext(curr);
-                if (next.native == null) break;
-                list.AddFirst(next);
-                curr = next;
-            }
-            res.Add(list.ToList());
-        }
-
-        return res;
-        (T native, T foreign) getNext((T native, T foreign) curr)
-        {
-            var currForeignClose =
-                getNeighbors(curr.native).Where(foreign)
-                    .Select(f => (curr.native, f))
-                    .Where(f => oppositions.Contains(f) 
-                                && f.f != curr.foreign
-                                && getNeighbors(curr.foreign).Contains(f.f));
-            if (currForeignClose.Count() > 0)
-            {
-                var offset = getOffset(curr.native, curr.foreign);
-                var next = currForeignClose
-                    .OrderBy(f =>
-                    {
-                        var fOffset = getOffset(f.native, f.f);
-                        return offset.AngleTo(fOffset);
-                    })
-                    .First();
-                oppositions.Remove(next);
-                return next;
-            }
-                
-                
-            var currForeign =
-                getNeighbors(curr.native).Where(foreign)
-                    .Select(f => (curr.native, f))
-                    .Where(f => oppositions.Contains(f)
-                                && f.f != curr.foreign);
-            if (currForeign.Count() > 0)
-            {
-                var offset = getOffset(curr.native, curr.foreign);
-                var next = currForeign.OrderBy(f =>
-                {
-                    var fOffset = getOffset(f.native, f.f);
-                    return offset.AngleTo(fOffset);
-                }).First();
-                oppositions.Remove(next);
-                return next;
-            }
-                
-                
-                
-            var foreignNative = getNeighbors(curr.foreign)
-                .Where(n => foreign(n) == false && getNeighbors(curr.native).Contains(n))
-                .Select(n => (n, curr.foreign))
-                .Where(f => oppositions.Contains(f) 
-                    && f.n != curr.native);
-            if (foreignNative.Count() > 0)
-            {
-                var next = foreignNative.First();
-                oppositions.Remove(next);
-                return next;
-            }
-
-            return (null, null);
-        }
+        return PathFinder<(T native, T foreign)>
+            .FindPath(start, dest,
+                v => GetFaceNeighbors(v, getNeighbors, isForeign, isNative),
+                (t, r) => 1f,
+                (t, r) => getOffset(t.native, r.native).Length()
+            );
     }
+    public static IEnumerable<(T native, T foreign)> 
+        GetFaceNeighbors<T>((T native, T foreign) face,
+            Func<T, IEnumerable<T>> getNeighbors,
+            Func<T, bool> isForeign, 
+            Func<T, bool> isNative)
+    {
+        return getNeighbors(face.native)
+            .Intersect(getNeighbors(face.foreign))
+            .Where(n => isNative(n) || isForeign(n))
+            .Select(n =>
+            {
+                if (isForeign(n))
+                {
+                    return (face.native, n);
+                }
+
+                return (n, face.foreign);
+            });
+    }
+    
 }

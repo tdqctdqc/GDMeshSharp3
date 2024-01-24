@@ -5,20 +5,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Barren.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/ChunkUnitsGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/ChunkUnitsGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/InfantryMoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/InfantryMoveType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Border/FrontFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Border/FrontFinder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,12 +74,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Fill/AlliancePolyFill.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/Terrain/Vegetation/Arid.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Blobber.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -468,6 +462,8 @@
       <workItem from="1705882027946" duration="2902000" />
       <workItem from="1706024526824" duration="6916000" />
       <workItem from="1706033920208" duration="13327000" />
+      <workItem from="1706059557345" duration="5091000" />
+      <workItem from="1706107627794" duration="7138000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -679,14 +675,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00099" summary="changing road generation">
-      <option name="closed" value="true" />
-      <created>1704050743427</created>
-      <option name="number" value="00099" />
-      <option name="presentableId" value="LOCAL-00099" />
-      <option name="project" value="LOCAL" />
-      <updated>1704050743428</updated>
-    </task>
     <task id="LOCAL-00100" summary="ditto">
       <option name="closed" value="true" />
       <created>1704241960973</created>
@@ -831,7 +819,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706041653526</updated>
     </task>
-    <option name="localTasksCounter" value="118" />
+    <task id="LOCAL-00118" summary="doot">
+      <option name="closed" value="true" />
+      <created>1706059640835</created>
+      <option name="number" value="00118" />
+      <option name="presentableId" value="LOCAL-00118" />
+      <option name="project" value="LOCAL" />
+      <updated>1706059640835</updated>
+    </task>
+    <option name="localTasksCounter" value="119" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -865,7 +861,6 @@
     <MESSAGE value="made MapOverlayDrawer" />
     <MESSAGE value="made fronts only take certain num of units" />
     <MESSAGE value="working on advance line" />
-    <MESSAGE value="doot" />
     <MESSAGE value="tweaking movement" />
     <MESSAGE value="implementing combat" />
     <MESSAGE value="working on movement after combat, made order decide that instead of comb result, made Blobber" />
@@ -878,6 +873,7 @@
     <MESSAGE value="working on front algorithm" />
     <MESSAGE value="path caching" />
     <MESSAGE value="tweaked moisture gen" />
-    <option name="LAST_COMMIT_MESSAGE" value="tweaked moisture gen" />
+    <MESSAGE value="doot" />
+    <option name="LAST_COMMIT_MESSAGE" value="doot" />
   </component>
 </project>

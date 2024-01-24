@@ -103,7 +103,8 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         
         foreach (var ta in theaters)
         {
-            var fronts = ta.Assignments.OfType<FrontAssignment>().ToArray();
+            var fronts = ta.Assignments
+                .OfType<FrontAssignment>().ToArray();
             foreach (var fa in fronts)
             {
                 ta.Assignments.Remove(fa);
@@ -119,7 +120,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     public override void AssignGroups(LogicWriteKey key)
     {
         this.AssignFreeGroups(key);
-        this.ShiftGroups(key);
+        // this.ShiftGroups(key);
         foreach (var fa in Assignments)
         {
             fa.AssignGroups(key);

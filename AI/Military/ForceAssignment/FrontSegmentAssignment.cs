@@ -92,12 +92,14 @@ public class FrontSegmentAssignment : ForceAssignment
             key.SendMessage(proc);
         }
 
-        var lineGroups = FaceCoveringGroupIds.ToHashSet();
-        var unoccupiedGroups = GroupIds.Except(lineGroups)
+        var lineGroups = FaceCoveringGroupIds
+            .ToHashSet();
+        var unoccupiedGroups = GroupIds
+            .Except(lineGroups)
             .Select(id => key.Data.Get<UnitGroup>(id));
         
         var frontlineCells = GetCells(key.Data).ToHashSet();
-
+        
         foreach (var unreadyGroup in unoccupiedGroups)
         {
             var moveType = unreadyGroup.MoveType(key.Data);
@@ -118,12 +120,12 @@ public class FrontSegmentAssignment : ForceAssignment
 
     private void DoNewGroupToFaceAssignment(Data d)
     {
-        
         var nativeCells = FrontLineFaces
             .Select(f => PlanetDomainExt.GetPolyCell(f.nativeId, d))
             .ToHashSet();
-        var readyGroups = GroupIds.Select(id => d.Get<UnitGroup>(id))
-            .Where(g => nativeCells.Contains(g.GetCell(d)));
+        var readyGroups = GroupIds
+            .Select(id => d.Get<UnitGroup>(id))
+            .Where(g => nativeCells.Intersect(g.Units.Items(d).Select(u => u.Position.GetCell(d))).Count() > 0);
         if (readyGroups.Count() == 0) return;
         var alliance = Regime.Entity(d).GetAlliance(d);
         
@@ -152,7 +154,6 @@ public class FrontSegmentAssignment : ForceAssignment
                     return units.Sum(u => u.GetPowerPoints(d)) * mult;
                 }
             );
-        
         foreach (var (unitGroup, faces) in assgns)
         {
             var first = FrontLineFaces.IndexOf(faces.First());
@@ -164,12 +165,20 @@ public class FrontSegmentAssignment : ForceAssignment
             }
         }
 
-        if (FaceCoveringGroupIds.Any(i => i == -1)) throw new Exception();
+        // if (FaceCoveringGroupIds.Any(f => f == -1))
+        // {
+        //     throw new Exception();
+        // }
     }
 
     private void AdjustFaceGroups(Data d)
     {
         
+    }
+
+    public IEnumerable<FrontSegmentAssignment> Correct(Data d)
+    {
+        return this.Yield();
     }
     
     public IEnumerable<PolyCell> GetCells(Data d)
@@ -208,8 +217,10 @@ public class FrontSegmentAssignment : ForceAssignment
     
     public override UnitGroup RequestGroup(LogicWriteKey key)
     {
+        return null;
         if (GroupIds.Count < 2) return null;
-        var notInLine = GroupIds.Except(FaceCoveringGroupIds);
+        var notInLine = GroupIds
+            .Except(FaceCoveringGroupIds);
         if (notInLine.Count() > 0)
         {
             var de = notInLine.First();
@@ -231,7 +242,6 @@ public class FrontSegmentAssignment : ForceAssignment
                 FaceCoveringGroupIds[i] = -1;
             }
         }
-
         GroupIds.Remove(g.Id);
     }
 
@@ -247,7 +257,6 @@ public class FrontSegmentAssignment : ForceAssignment
     
     public override PolyCell GetCharacteristicCell(Data d)
     {
-        return GetCells(d)
-            .FirstOrDefault(wp => wp.Controller.RefId == Regime.RefId);
+        return GetCells(d).First();
     }
 }

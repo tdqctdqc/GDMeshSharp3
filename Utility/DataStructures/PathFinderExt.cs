@@ -20,6 +20,8 @@ public static partial class PathFinder
             (w, v) => moveType.EdgeCost(start, dest, d), 
             (p1, p2) => p1.GetCenter().GetOffsetTo(p2.GetCenter(), d).Length());
     }
+
+    
     
     public static List<TNode> FindPathFromGraph<TNode, TEdge>(TNode s1,
         TNode s2, 

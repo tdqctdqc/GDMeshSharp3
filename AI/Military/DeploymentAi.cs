@@ -12,7 +12,8 @@ public class DeploymentAi
     }
     public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {
-        var theaters = ForceAssignments.OfType<TheaterAssignment>();
+        var theaters = 
+            ForceAssignments.OfType<TheaterAssignment>().ToList();
         foreach (var ta in theaters)
         {
             ForceAssignments.Remove(ta);
@@ -20,6 +21,7 @@ public class DeploymentAi
 
         var newTheaters = theaters.Blob(regime, key.Data);
         ForceAssignments.AddRange(newTheaters);
+        GD.Print("new theaters count " + ForceAssignments.OfType<TheaterAssignment>().Count());
         TheaterAssignment.PutGroupsInRightTheater(regime, ForceAssignments,
             key);
         TheaterAssignment.CheckFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),
