@@ -48,4 +48,16 @@ public static class FrontFaceExt
     {
         return PlanetDomainExt.GetPolyCell(f.Foreign, d);
     }
+
+    public static IEnumerable<FrontFace<PolyCell>> GetFrontNeighbors
+        (this FrontFace<PolyCell> face, Regime r, Alliance a, Data d)
+    {
+        return face.GetNeighbors(c => c.GetNeighbors(d),
+            c =>
+            {
+                return a.Rivals.Contains(c.Controller.Entity(d).GetAlliance(d));
+            },
+            c => c.Controller.RefId == r.Id,
+            i => d.Planet.PolygonAux.PolyCells.Cells[i]);
+    }
 }

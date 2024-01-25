@@ -82,9 +82,83 @@ public class FrontSegmentAssignment : ForceAssignment
         var freeGroups = GetFreeGroups(key.Data);
         Insert.InsertGroups(this, freeGroups, key);
     }
-    public IEnumerable<FrontSegmentAssignment> Correct(Data d)
+    public IEnumerable<FrontSegmentAssignment> ValidateFaces
+        (HashSet<FrontFace<PolyCell>> frontFaces,
+            LogicWriteKey key)
     {
+        var d = key.Data;
+        var regime = Regime.Entity(d);
+        var alliance = regime.GetAlliance(d);
+        var valid = FrontLineFaces
+            .Where(f => f.GetNative(d).Controller.RefId == Regime.RefId);
+        if (valid.Count() == FrontLineFaces.Count) return this.Yield();
+
+        var newFronts = new List<List<FrontFace<PolyCell>>>();
+
+        var goodSegStart = -1;
+        for (var i = 0; i < FrontLineFaces.Count; i++)
+        {
+            var face = FrontLineFaces[i];
+            var good = face.GetNative(d).Controller.RefId == Regime.RefId;
+            if (good == false)
+            {
+                addNewSeg(goodSegStart, i - 1);
+                goodSegStart = -1;
+            }
+            else
+            {
+                if (goodSegStart == -1) goodSegStart = i;
+            }
+            if (i == FrontLineFaces.Count() - 1)
+            {
+                addNewSeg(goodSegStart, i);
+            }
+        }
+
+        if (newFronts.Count == 1)
+        {
+            
+            
+        }
+        
+        
+        //try to connect the new lines
         return this.Yield();
+
+        
+        
+        
+        
+
+
+        void addNewSeg(int start, int end)
+        {
+            if (start == -1) return;
+            var faces = FrontLineFaces.GetRange(start, end - start + 1);
+            newFronts.Add(faces);
+        }
+        
+        
+    }
+
+    private void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,
+        LogicWriteKey key)
+    {
+        foreach (var groupId in GroupIds)
+        {
+            if (HoldLine.BoundsByGroupId.ContainsKey(groupId))
+            {
+                
+            }
+            else if (Reserve.GroupIds.Contains(groupId))
+            {
+                
+            }
+            else if (Insert.Insertions.ContainsKey(groupId))
+            {
+                
+            }
+        }
     }
     
     public IEnumerable<PolyCell> GetCells(Data d)
@@ -159,7 +233,6 @@ public class FrontSegmentAssignment : ForceAssignment
         if (de != -1)
         {
             var group = key.Data.Get<UnitGroup>(de);
-            GD.Print("transfering group out");
             GroupIds.Remove(de);
             return group;
         }

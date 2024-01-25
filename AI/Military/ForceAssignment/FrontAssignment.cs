@@ -14,7 +14,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     public static float CoverOpposingWeight {get; private set;} = .5f;
     public static float CoverLengthWeight {get; private set;} = 1f;
     public static float DesiredOpposingPpRatio {get; private set;} = 2f;
-    public static float PowerPointsPerCellFaceToCover {get; private set;} = 10f;
+    public static float PowerPointsPerCellFaceToCover {get; private set;} = 100f;
     public HashSet<int> HeldCellIds { get; private set; }
     public HashSet<int> TargetAreaCellIds { get; private set; }
     public HashSet<ForceAssignment> Assignments { get; private set; }
@@ -102,7 +102,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 
     public void CheckSegments(LogicWriteKey key)
     {
-        // ExpandExistingSegmentsOverGaps(key);
+        ValidateSegments(key);
         MakeNewSegmentsForUncoveredFaces(key);
         TransferFacesBetweenSegments(key);
         //shift faces + groups between segments to make them good size
@@ -116,18 +116,17 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         }
     }
     
-    private void ExpandExistingSegmentsOverGaps(LogicWriteKey key)
+    private void ValidateSegments(LogicWriteKey key)
     {
         var d = key.Data;
         var faces = GetLines(d)
             .SelectMany(l => l)
             .ToHashSet();
-        var segments = Assignments
-            .OfType<FrontSegmentAssignment>().ToList();
-        foreach (var seg in segments)
+        foreach (var seg in Assignments
+                     .OfType<FrontSegmentAssignment>().ToList())
         {
             Assignments.Remove(seg);
-            var newSegs = seg.Correct(d);
+            var newSegs = seg.ValidateFaces(faces, key);
             Assignments.AddRange(newSegs);
         }
     }
