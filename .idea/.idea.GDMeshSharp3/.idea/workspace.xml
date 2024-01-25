@@ -5,13 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Geometry/Vector2IExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/InsertionSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/InsertionSubAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Vector2Ext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Vector2Ext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,6 +70,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
@@ -77,8 +78,6 @@
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Assigner.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Assigner.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -466,7 +465,8 @@
       <workItem from="1706107627794" duration="16813000" />
       <workItem from="1706129574306" duration="17000" />
       <workItem from="1706138823218" duration="8259000" />
-      <workItem from="1706147369278" duration="313000" />
+      <workItem from="1706147369278" duration="954000" />
+      <workItem from="1706194664686" duration="5667000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -678,14 +678,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00103" summary="made fronts only take certain num of units">
-      <option name="closed" value="true" />
-      <created>1704430444665</created>
-      <option name="number" value="00103" />
-      <option name="presentableId" value="LOCAL-00103" />
-      <option name="project" value="LOCAL" />
-      <updated>1704430444665</updated>
-    </task>
     <task id="LOCAL-00104" summary="working on advance line">
       <option name="closed" value="true" />
       <created>1704499952033</created>
@@ -830,7 +822,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706142673775</updated>
     </task>
-    <option name="localTasksCounter" value="122" />
+    <task id="LOCAL-00122" summary="split frontSegment logic into subAssignments">
+      <option name="closed" value="true" />
+      <created>1706148323879</created>
+      <option name="number" value="00122" />
+      <option name="presentableId" value="LOCAL-00122" />
+      <option name="project" value="LOCAL" />
+      <updated>1706148323880</updated>
+    </task>
+    <option name="localTasksCounter" value="123" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -852,7 +852,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="made logic to put units in right theater, made better (?) front line algorithm" />
     <MESSAGE value="one more front construction algorithm" />
     <MESSAGE value="working on unit movement" />
     <MESSAGE value="reforming unit pos" />
@@ -877,6 +876,7 @@
     <MESSAGE value="fixed front bug" />
     <MESSAGE value="working on front logic" />
     <MESSAGE value="ditto" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
+    <MESSAGE value="split frontSegment logic into subAssignments" />
+    <option name="LAST_COMMIT_MESSAGE" value="split frontSegment logic into subAssignments" />
   </component>
 </project>

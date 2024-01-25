@@ -33,17 +33,15 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
             units.Sum(u => u.GetPowerPoints(key.Data)),
             f =>
             {
+                return 1f;
                 var foreignCell = PlanetDomainExt.GetPolyCell(f.Foreign, key.Data);
                 if (foreignCell.Controller.RefId == -1) return 0f;
                 var foreignRegime = foreignCell.Controller.Entity(key.Data);
                 var foreignAlliance = foreignRegime.GetAlliance(key.Data);
-
                 var units = foreignCell.GetUnits(key.Data);
                 if (units == null || units.Count == 0) return FrontAssignment.PowerPointsPerCellFaceToCover;
-
                 if (alliance.Rivals.Contains(foreignAlliance) == false) return 0f;
-                float mult = 1f;
-                if (alliance.AtWar.Contains(foreignAlliance)) mult = 2f;
+                float mult = FrontAssignment.DesiredOpposingPpRatio;
                 return units.Sum(u => u.GetPowerPoints(key.Data)) * mult;
             }
         );

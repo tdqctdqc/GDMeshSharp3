@@ -97,8 +97,10 @@ public class FrontSegmentAssignment : ForceAssignment
         var opposing = GetOpposingPowerPoints(data);
         var length = GetLength(data);
 
-        return opposing * FrontAssignment.CoverOpposingWeight * FrontAssignment.DesiredOpposingPpRatio
-               + length * FrontAssignment.CoverLengthWeight * FrontAssignment.PowerPointsPerCellFaceToCover;
+        var oppNeed = opposing * FrontAssignment.DesiredOpposingPpRatio;
+        var lengthNeed = length * FrontAssignment.PowerPointsPerCellFaceToCover;
+
+        return Mathf.Max(oppNeed, lengthNeed);
     }
     public float GetOpposingPowerPoints(Data data)
     {
@@ -123,19 +125,45 @@ public class FrontSegmentAssignment : ForceAssignment
     
     public override UnitGroup RequestGroup(LogicWriteKey key)
     {
-        return null;
         if (GroupIds.Count < 2) return null;
+        
         var freeGroups = GetFreeGroups(key.Data);
+        int de = -1;
         if (freeGroups.Count() > 0)
         {
-            var de = freeGroups.First();
-            GroupIds.Remove(de.Id);
-            return de;
+            de = freeGroups.First().Id;
         }
-        else
+        else if(Reserve.GroupIds.Count() > 0)
         {
-            return null;
+            de = Reserve.GroupIds.First();
+            Reserve.GroupIds.Remove(de);
         }
+        else if(Insert.Insertions.Count() > 0)
+        {
+            de = Insert.Insertions.First().Key;
+            Insert.Insertions.Remove(de);
+        }
+        else if (HoldLine.BoundsByGroupId.Count > 1)
+        {
+            var lineGroups = HoldLine.BoundsByGroupId
+                .Select(kvp => key.Data.Get<UnitGroup>(kvp.Key));
+            var numUnits = lineGroups.Sum(g => g.Units.Count());
+            var smallest = lineGroups.MinBy(g => g.Units.Count());
+            if (numUnits - smallest.Units.Count() >= FrontLineFaces.Count)
+            {
+                HoldLine.BoundsByGroupId.Remove(smallest.Id);
+                de = smallest.Id;
+            }
+        }
+
+        if (de != -1)
+        {
+            var group = key.Data.Get<UnitGroup>(de);
+            GD.Print("transfering group out");
+            GroupIds.Remove(de);
+            return group;
+        }
+        return null;
     }
 
     public override void TakeAwayGroup(UnitGroup g, LogicWriteKey key)

@@ -11,10 +11,10 @@ using Microsoft.FSharp.Data.UnitSystems.SI.UnitNames;
 public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 {
     
-    public static float CoverOpposingWeight = 0f;//2f;
-    public static float CoverLengthWeight = 1f;
-    public static float DesiredOpposingPpRatio = 2f;
-    public static float PowerPointsPerCellFaceToCover = 10f;
+    public static float CoverOpposingWeight {get; private set;} = .5f;
+    public static float CoverLengthWeight {get; private set;} = 1f;
+    public static float DesiredOpposingPpRatio {get; private set;} = 2f;
+    public static float PowerPointsPerCellFaceToCover {get; private set;} = 10f;
     public HashSet<int> HeldCellIds { get; private set; }
     public HashSet<int> TargetAreaCellIds { get; private set; }
     public HashSet<ForceAssignment> Assignments { get; private set; }
@@ -68,7 +68,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     public override void AssignGroups(LogicWriteKey key)
     {
         this.AssignFreeGroups(key);
-        // this.ShiftGroups(key);
+        this.ShiftGroups(key);
         foreach (var assgn in Assignments)
         {
             assgn.AssignGroups(key);
@@ -80,7 +80,10 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     {
         var opposing = GetOpposingPowerPoints(data);
         var length = Assignments.OfType<FrontSegmentAssignment>().Sum(s => s.GetLength(data));
-        return opposing * CoverOpposingWeight + length * CoverLengthWeight * PowerPointsPerCellFaceToCover;
+
+        var oppNeed = opposing * DesiredOpposingPpRatio;
+        var lengthNeed = length * PowerPointsPerCellFaceToCover;
+        return Mathf.Max(oppNeed, lengthNeed);
     }
     public List<List<FrontFace<PolyCell>>> 
         GetLines(Data d)
@@ -97,14 +100,6 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         return lines;
     }
 
-    
-    public void MergeInto(FrontAssignment dissolve, LogicWriteKey key)
-    {
-        GroupIds.AddRange(dissolve.GroupIds);
-        Assignments.AddRange(dissolve.Assignments);
-    }
-
-
     public void CheckSegments(LogicWriteKey key)
     {
         // ExpandExistingSegmentsOverGaps(key);
@@ -112,6 +107,13 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         TransferFacesBetweenSegments(key);
         //shift faces + groups between segments to make them good size
         //shift support groups + reserves
+
+        var segmentFaces = Assignments.OfType<FrontSegmentAssignment>()
+            .SelectMany(s => s.FrontLineFaces);
+        if (segmentFaces.Count() != segmentFaces.Distinct().Count())
+        {
+            throw new Exception();
+        }
     }
     
     private void ExpandExistingSegmentsOverGaps(LogicWriteKey key)
@@ -205,21 +207,16 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 
     public override UnitGroup RequestGroup(LogicWriteKey key)
     {
-        return null;
         if (GroupIds.Count < 2) return null;
         UnitGroup deassign = null;
-        if (Assignments.Count > 0)
+        var bySatisfaction = Assignments
+            .OrderBy(s => s.GetSatisfiedRatio(key.Data))
+            .ToArray();
+        for (var i = 0; i < bySatisfaction.Length; i++)
         {
-            deassign = Assignments
-                .MaxBy(s => s.GetSatisfiedRatio(key.Data))
-                .RequestGroup(key);
+            deassign = bySatisfaction[i].RequestGroup(key);
+            if (deassign != null) break;
         }
-        
-        if(deassign == null)
-        {
-            deassign = key.Data.Get<UnitGroup>(GroupIds.First());
-        }
-        
         if(deassign != null) GroupIds.Remove(deassign.Id);
         return deassign;
     }

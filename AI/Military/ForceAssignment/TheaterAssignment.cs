@@ -120,7 +120,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
     public override void AssignGroups(LogicWriteKey key)
     {
         this.AssignFreeGroups(key);
-        // this.ShiftGroups(key);
+        this.ShiftGroups(key);
         foreach (var fa in Assignments)
         {
             fa.AssignGroups(key);
