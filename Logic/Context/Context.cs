@@ -17,6 +17,7 @@ public class Context
         ControlledAreas = new Dictionary<Regime, HashSet<LandCell>>();
         MovementRecords = new ConcurrentDictionary<int, MovementRecord>();
         PathCache = new PathCache(data);
+        data.Notices.Ticked.Subscribe(i => PathCache.Clear());
     }
 
     public void Calculate(Data data)

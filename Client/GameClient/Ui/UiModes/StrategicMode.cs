@@ -97,7 +97,7 @@ public class StrategicMode : UiMode
         {
             var group = pair.g;
             var order = pair.Item2;
-            var relTo = PlanetDomainExt.GetPolyCell(order.Faces.First().nativeId, _client.Data)
+            var relTo = PlanetDomainExt.GetPolyCell(order.Faces.First().Native, _client.Data)
                 .GetCenter();
             debug.Draw(mb => mb.DrawLineOrder(relTo, order, group, _client.Data), relTo);
         }

@@ -48,8 +48,8 @@ public partial class TheaterGraphic : Node2D
                 var segColor = ColorsExt.GetRandomColor();
                 for (var i = 0; i < seg.FrontLineFaces.Count - 1; i++)
                 {
-                    var fromWp = PlanetDomainExt.GetPolyCell(seg.FrontLineFaces[i].nativeId, d);
-                    var toWp = PlanetDomainExt.GetPolyCell(seg.FrontLineFaces[i + 1].nativeId, d);
+                    var fromWp = seg.FrontLineFaces[i].GetNative(d);
+                    var toWp = seg.FrontLineFaces[i + 1].GetNative(d);
                     var from = relPos(fromWp.GetCenter());
                     var to = relPos(toWp.GetCenter());
                     mb.AddLine(from, to, regimeColor, 5f);

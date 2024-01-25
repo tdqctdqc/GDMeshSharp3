@@ -11,7 +11,7 @@ using Microsoft.FSharp.Data.UnitSystems.SI.UnitNames;
 public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
 {
     
-    public static float CoverOpposingWeight = 2f;
+    public static float CoverOpposingWeight = 0f;//2f;
     public static float CoverLengthWeight = 1f;
     public static float DesiredOpposingPpRatio = 2f;
     public static float PowerPointsPerCellFaceToCover = 10f;
@@ -82,14 +82,13 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         var length = Assignments.OfType<FrontSegmentAssignment>().Sum(s => s.GetLength(data));
         return opposing * CoverOpposingWeight + length * CoverLengthWeight * PowerPointsPerCellFaceToCover;
     }
-    public List<List<(PolyCell native, PolyCell foreign)>> 
+    public List<List<FrontFace<PolyCell>>> 
         GetLines(Data d)
     {
         var alliance = Regime.Entity(d).GetAlliance(d);
         var cells = GetCells(d);
         var lines = FrontFinder.FindPolyCellFront(
-                cells, alliance, 
-                c => HeldCellIds.Contains(c.Id), d);
+                cells, alliance, d);
         if (lines.Any(l => l.Count == 0))
         {
             throw new Exception();
@@ -143,8 +142,6 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         var coveredFaces = 
             segments
             .SelectMany(s => s.FrontLineFaces)
-            .Select(f => (PlanetDomainExt.GetPolyCell(f.nativeId, d),
-                PlanetDomainExt.GetPolyCell(f.foreignId, d)))
             .ToHashSet();
         var uncoveredFaces = facesHash.Except(coveredFaces).ToHashSet();
         

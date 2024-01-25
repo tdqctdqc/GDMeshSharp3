@@ -21,7 +21,6 @@ public class DeploymentAi
 
         var newTheaters = theaters.Blob(regime, key.Data);
         ForceAssignments.AddRange(newTheaters);
-        GD.Print("new theaters count " + ForceAssignments.OfType<TheaterAssignment>().Count());
         TheaterAssignment.PutGroupsInRightTheater(regime, ForceAssignments,
             key);
         TheaterAssignment.CheckFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),

@@ -6,9 +6,9 @@ using Godot;
 
 public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
 {
-    public List<(int nativeId, int foreignId)> Faces { get; private set; }
+    public List<FrontFace<PolyCell>> Faces { get; private set; }
     public bool Attack { get; private set; }
-    public DeployOnLineGroupOrder(List<(int nativeId, int foreignId)> faces,
+    public DeployOnLineGroupOrder(List<FrontFace<PolyCell>> faces,
         bool attack)
     {
         Faces = faces;
@@ -21,19 +21,19 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
         var units = g.Units.Items(key.Data);
         var alliance = g.Regime.Entity(key.Data).GetAlliance(key.Data);
         var assgn = Assigner
-            .PickBestAndAssignAlongFacesSingle<Unit, (int nativeId, int foreignId)>
+            .PickBestAndAssignAlongFacesSingle<Unit, FrontFace<PolyCell>>
         (
             Faces,
             units,
             u => u.GetPowerPoints(key.Data),
             (u, f) => 
                 u.Position.GetCell(key.Data).GetCenter().GetOffsetTo(
-                    PlanetDomainExt.GetPolyCell(f.nativeId, key.Data).GetCenter(), key.Data).Length(),
+                    PlanetDomainExt.GetPolyCell(f.Native, key.Data).GetCenter(), key.Data).Length(),
             
             units.Sum(u => u.GetPowerPoints(key.Data)),
             f =>
             {
-                var foreignCell = PlanetDomainExt.GetPolyCell(f.foreignId, key.Data);
+                var foreignCell = PlanetDomainExt.GetPolyCell(f.Foreign, key.Data);
                 if (foreignCell.Controller.RefId == -1) return 0f;
                 var foreignRegime = foreignCell.Controller.Entity(key.Data);
                 var foreignAlliance = foreignRegime.GetAlliance(key.Data);
@@ -49,7 +49,7 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
         );
         foreach (var unit in units)
         {
-            var dest = PlanetDomainExt.GetPolyCell(assgn[unit].nativeId, key.Data);
+            var dest = PlanetDomainExt.GetPolyCell(assgn[unit].Native, key.Data);
             var pos = unit.Position.Copy();
             var moveType = unit.Template.Entity(key.Data).MoveType.Model(key.Data);
             var movePoints = moveType.BaseSpeed;

@@ -23,7 +23,7 @@ public static class MeshBuilderExt
         if (seg.FrontLineFaces.Count == 1)
         {
             var face = seg.FrontLineFaces[0];
-            var cell = PlanetDomainExt.GetPolyCell(face.nativeId, d);
+            var cell = face.GetNative(d);
             mb.AddPoint(relTo.GetOffsetTo(cell.GetCenter(), d),
                 markerSize, color);
         }
@@ -31,8 +31,8 @@ public static class MeshBuilderExt
         {
             var face = seg.FrontLineFaces[i];
             var nextFace = seg.FrontLineFaces[i + 1];
-            var from = PlanetDomainExt.GetPolyCell(face.nativeId, d);
-            var to = PlanetDomainExt.GetPolyCell(nextFace.nativeId, d);
+            var from = face.GetNative(d);
+            var to = nextFace.GetNative(d);
             
             mb.AddLine(relTo.GetOffsetTo(from.GetCenter(),d),
                 relTo.GetOffsetTo(to.GetCenter(), d),
@@ -43,11 +43,11 @@ public static class MeshBuilderExt
         for (var i = 0; i < seg.FrontLineFaces.Count; i++)
         {
             var face = seg.FrontLineFaces[i];
-            var covering = seg.FaceCoveringGroupIds[i];
+            var covering = seg.FrontFaceGroupIds[i];
             if (covering == -1) continue;
             var coveringGroup = d.Get<UnitGroup>(covering);
-            var native = PlanetDomainExt.GetPolyCell(face.nativeId, d);
-            var foreign = PlanetDomainExt.GetPolyCell(face.foreignId, d);
+            var native = face.GetNative(d);
+            var foreign = face.GetForeign(d);
             mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
                 relTo.GetOffsetTo(foreign.GetCenter(), d),
                 markerSize / 5f, coveringGroup.Color);
@@ -57,7 +57,7 @@ public static class MeshBuilderExt
         var groupStart = -1;
         for (var i = 0; i < seg.FrontLineFaces.Count; i++)
         {
-            var covering = seg.FaceCoveringGroupIds[i];
+            var covering = seg.FrontFaceGroupIds[i];
             if (covering != group)
             {
                 drawGroupLine(group, groupStart, i - 1);
@@ -69,6 +69,17 @@ public static class MeshBuilderExt
                 drawGroupLine(group, groupStart, i);
             }
         }
+        
+        foreach (var kvp in seg.InsertingGroups)
+        {
+            var insertingGroup = d.Get<UnitGroup>(kvp.Key);
+            if (kvp.Value.HasValue == false) continue;
+            var native = kvp.Value.Value.GetNative(d);
+            var foreign = kvp.Value.Value.GetForeign(d);
+            var offset = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);
+            var nativePos = relTo.GetOffsetTo(native.GetCenter(), d);
+            mb.AddArrow(nativePos - offset, nativePos, 10f, insertingGroup.Color);
+        }
 
         void drawGroupLine(int groupId, int groupFrom, int groupTo)
         {
@@ -77,8 +88,8 @@ public static class MeshBuilderExt
             var line = seg.FrontLineFaces.GetRange(groupFrom, groupTo - groupFrom + 1);
             for (var i = 0; i < line.Count - 1; i++)
             {
-                var a = PlanetDomainExt.GetPolyCell(line[i].nativeId, d);
-                var b = PlanetDomainExt.GetPolyCell(line[i + 1].nativeId, d);
+                var a = line[i].GetNative(d);
+                var b = line[i + 1].GetNative(d);
                 if (a == b) continue;
                 
                 mb.AddLine(relTo.GetOffsetTo(a.GetCenter(), d),
@@ -96,12 +107,12 @@ public static class MeshBuilderExt
         for (var i = 0; i < order.Faces.Count; i++)
         {
             var face = order.Faces[i];
-            var native = PlanetDomainExt.GetPolyCell(face.nativeId, d);
-            var foreign = PlanetDomainExt.GetPolyCell(face.foreignId, d);
+            var native = face.GetNative(d);
+            var foreign = face.GetForeign(d);
             if (i < order.Faces.Count - 1)
             {
                 var nextFace = order.Faces[i + 1];
-                var nextNative = PlanetDomainExt.GetPolyCell(nextFace.nativeId, d);
+                var nextNative = nextFace.GetNative(d);
                 mb.AddLine(relTo.GetOffsetTo(native.GetCenter(),d),
                     relTo.GetOffsetTo(nextNative.GetCenter(), d),
                     color, markerSize);

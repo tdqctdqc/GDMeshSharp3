@@ -41,50 +41,52 @@ public static class FrontFinder
     }
 
 
-    public static List<List<(PolyCell native, PolyCell foreign)>>
+    public static List<List<FrontFace<PolyCell>>>
         FindPolyCellFront(IEnumerable<PolyCell> cells,
             Alliance alliance,
-            Func<PolyCell, bool> isNative,
             Data d)
     {
-        return FindFront<PolyCell>(cells,
-                c =>
-                {
-                    if (c.Controller.Empty()) return false;
-                    var controllerRegime = c.Controller.Entity(d);
-                    var controllerAlliance = controllerRegime.GetAlliance(d);
-                    return alliance.Rivals.Contains(controllerAlliance);
-                },
-                isNative,
-                c => c.GetNeighbors(d),
-                (p,q) => p.GetCenter().GetOffsetTo(q.GetCenter(), d));
+        return FindFront<PolyCell>(
+            cells.ToHashSet(),
+            isForeign,
+            c => c.GetNeighbors(d),
+            (p,q) => p.GetCenter().GetOffsetTo(q.GetCenter(), d),
+            i => d.Planet.PolygonAux.PolyCells.Cells[i]);
+
+        bool isForeign(PolyCell c)
+        {
+            if (c.Controller.Empty()) return false;
+            var controllerRegime = c.Controller.Entity(d);
+            var controllerAlliance = controllerRegime.GetAlliance(d);
+            return alliance.Rivals.Contains(controllerAlliance);
+        }
     }
-    public static List<List<(T native, T foreign)>> FindFront<T>(
-        IEnumerable<T> elements,
+    
+    
+    public static List<List<FrontFace<T>>> FindFront<T>(
+        HashSet<T> natives,
         Func<T, bool> isForeign,
-        Func<T, bool> isNative,
         Func<T, IEnumerable<T>> getNeighbors,
-        Func<T, T, Vector2> getOffset)
-        where T : class
+        Func<T, T, Vector2> getOffset,
+        Func<int, T> getElement)
+        where T : IIdentifiable
     {
+        var res = new List<List<FrontFace<T>>>();
+        var oppositions = natives.SelectMany(e =>
+        {
+            return getNeighbors(e)
+                .Where(isForeign)
+                .Select(f => new FrontFace<T>(e.Id, f.Id));
+        }).ToHashSet();
         
-        var res = new List<List<(T native, T foreign)>>();
-        var oppositions = new HashSet<(T native, T foreign)>();
-        oppositions.AddRange(
-            elements.SelectMany(e =>
-            {
-                return getNeighbors(e)
-                    .Where(isForeign)
-                    .Select(f => (e, f));
-            })
-        );
+        var oppositionsHash = oppositions.ToHashSet();
 
         int maxIter = 10_000;
-        while (oppositions.Count > 0)
+        while (oppositionsHash.Count > 0)
         {
-            var first = oppositions.First();
-            oppositions.Remove(first);
-            var list = new LinkedList<(T native, T foreign)>();
+            var first = oppositionsHash.First();
+            oppositionsHash.Remove(first);
+            var list = new LinkedList<FrontFace<T>>();
             list.AddFirst(first);
             go(first, t => list.AddFirst(t));
             go(first, t => list.AddLast(t));
@@ -92,64 +94,45 @@ public static class FrontFinder
         }
         return res;
 
-        void go((T native, T foreign) edge,
-            Action<(T native, T foreign)> add)
+        void go(FrontFace<T> edge,
+            Action<FrontFace<T>> add)
         {
-            var mutualNs = getNeighbors(edge.native)
-                .Intersect(getNeighbors(edge.foreign))
-                .Where(n => isNative(n) || isForeign(n))
-                .Select(n =>
-                {
-                    if (isForeign(n))
-                    {
-                        return (edge.native, n);
-                    }
-
-                    return (n, edge.foreign);
-                })
-                .Where(oppositions.Contains);
+            var native = getElement(edge.Native);
+            var foreign = getElement(edge.Foreign);
+            var mutualNs = edge.GetNeighbors(
+                    getNeighbors, isForeign, natives.Contains, 
+                    getElement)
+                .Where(oppositionsHash.Contains);
             if (mutualNs.Count() == 0) return;
             
             var e = mutualNs.First();
             add(e);
-            oppositions.Remove(e);
+            oppositionsHash.Remove(e);
             go(e, add);
         }
     }
-    public static List<(T native, T foreign)> 
-        PathfindOnFront<T>((T native, T foreign) start,
-            (T native, T foreign) dest,
+    
+    
+    public static List<FrontFace<T>> 
+        PathfindOnFront<T>(FrontFace<T> start,
+            FrontFace<T> dest,
             Func<T, IEnumerable<T>> getNeighbors,
             Func<T, bool> isForeign, 
             Func<T, bool> isNative,
             Func<T, T, Vector2> getOffset,
+            Func<int, T> getElement,
             Data d)
+                where T : IIdentifiable
     {
-        return PathFinder<(T native, T foreign)>
+        Func<FrontFace<T>, IEnumerable<FrontFace<T>>> getFaceNeighbors = f =>
+        {
+            return f.GetNeighbors(getNeighbors, isForeign, isNative, getElement);
+        };
+        return PathFinder<FrontFace<T>>
             .FindPath(start, dest,
-                v => GetFaceNeighbors(v, getNeighbors, isForeign, isNative),
+                getFaceNeighbors,
                 (t, r) => 1f,
-                (t, r) => getOffset(t.native, r.native).Length()
+                (t, r) => getOffset(getElement(t.Native), getElement(r.Native)).Length()
             );
     }
-    public static IEnumerable<(T native, T foreign)> 
-        GetFaceNeighbors<T>((T native, T foreign) face,
-            Func<T, IEnumerable<T>> getNeighbors,
-            Func<T, bool> isForeign, 
-            Func<T, bool> isNative)
-    {
-        return getNeighbors(face.native)
-            .Intersect(getNeighbors(face.foreign))
-            .Where(n => isNative(n) || isForeign(n))
-            .Select(n =>
-            {
-                if (isForeign(n))
-                {
-                    return (face.native, n);
-                }
-
-                return (n, face.foreign);
-            });
-    }
-    
 }
