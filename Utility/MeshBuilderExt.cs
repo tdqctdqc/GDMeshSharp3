@@ -42,31 +42,22 @@ public static class MeshBuilderExt
         
         for (var i = 0; i < seg.FrontLineFaces.Count; i++)
         {
-            var face = seg.FrontLineFaces[i];
-            var covering = seg.FrontFaceGroupIds[i];
-            if (covering == -1) continue;
-            var coveringGroup = d.Get<UnitGroup>(covering);
-            var native = face.GetNative(d);
-            var foreign = face.GetForeign(d);
-            mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
-                relTo.GetOffsetTo(foreign.GetCenter(), d),
-                markerSize / 5f, coveringGroup.Color);
-        }
-
-        var group = -1;
-        var groupStart = -1;
-        for (var i = 0; i < seg.FrontLineFaces.Count; i++)
-        {
-            var covering = seg.FrontFaceGroupIds[i];
-            if (covering != group)
-            {
-                drawGroupLine(group, groupStart, i - 1);
-                group = covering;
-                groupStart = i;
             }
-            if (i == seg.FrontLineFaces.Count - 1)
+
+        foreach (var kvp in seg.HoldLine.BoundsByGroupId)
+        {
+            drawGroupLine(kvp.Key, kvp.Value.X, kvp.Value.Y);
+            for (var i = kvp.Value.X; i <= kvp.Value.Y; i++)
             {
-                drawGroupLine(group, groupStart, i);
+                var face = seg.FrontLineFaces[i];
+                var covering = kvp.Key;
+                if (covering == -1) continue;
+                var coveringGroup = d.Get<UnitGroup>(covering);
+                var native = face.GetNative(d);
+                var foreign = face.GetForeign(d);
+                mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
+                    relTo.GetOffsetTo(foreign.GetCenter(), d),
+                    markerSize / 5f, coveringGroup.Color);
             }
         }
         

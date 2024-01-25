@@ -6,6 +6,22 @@ using GeometRi;
 
 public static class Vector2Ext
 {
+    public static int Compare(this Vector2 a, Vector2 b)
+    {
+        if (a.X < b.X) return -1;
+        if (a.X > b.X) return 1;
+        if (a.Y < b.Y) return -1;
+        if (a.Y > b.Y) return 1;
+        return 0;
+    }
+    public static int Compare(this Vector2I a, Vector2I b)
+    {
+        if (a.X < b.X) return -1;
+        if (a.X > b.X) return 1;
+        if (a.Y < b.Y) return -1;
+        if (a.Y > b.Y) return 1;
+        return 0;
+    }
     public static bool RangeOverlap(this Vector2 v, Vector2 w)
     {
         if (w.X <= v.X && v.X <= w.Y) return true;
