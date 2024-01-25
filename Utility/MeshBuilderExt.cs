@@ -20,17 +20,17 @@ public static class MeshBuilderExt
     {
         var markerSize = 5f;
         var color = seg.Color;
-        if (seg.FrontLineFaces.Count == 1)
+        if (seg.Segment.Faces.Count == 1)
         {
-            var face = seg.FrontLineFaces[0];
+            var face = seg.Segment.Faces[0];
             var cell = face.GetNative(d);
             mb.AddPoint(relTo.GetOffsetTo(cell.GetCenter(), d),
                 markerSize, color);
         }
-        for (var i = 0; i < seg.FrontLineFaces.Count - 1; i++)
+        for (var i = 0; i < seg.Segment.Faces.Count - 1; i++)
         {
-            var face = seg.FrontLineFaces[i];
-            var nextFace = seg.FrontLineFaces[i + 1];
+            var face = seg.Segment.Faces[i];
+            var nextFace = seg.Segment.Faces[i + 1];
             var from = face.GetNative(d);
             var to = nextFace.GetNative(d);
             
@@ -40,45 +40,23 @@ public static class MeshBuilderExt
         }
         
         
-        for (var i = 0; i < seg.FrontLineFaces.Count; i++)
+        for (var i = 0; i < seg.Segment.Faces.Count; i++)
         {
             }
 
-        foreach (var kvp in seg.HoldLine.BoundsByGroupId)
+        foreach (var kvp in seg.HoldLine.FacesByGroupId)
         {
-            var from = seg.FrontLineFaces.IndexOf(kvp.Value.Item1);
-            var to = seg.FrontLineFaces.IndexOf(kvp.Value.Item2);
-            drawGroupLine(kvp.Key, from, to);
-            for (var i = from; i <= to; i++)
+            var line = kvp.Value;
+            var group = d.Get<UnitGroup>(kvp.Key);
+            for (var i = 0; i < line.Count; i++)
             {
-                var face = seg.FrontLineFaces[i];
-                var covering = kvp.Key;
-                if (covering == -1) continue;
-                var coveringGroup = d.Get<UnitGroup>(covering);
+                var face = seg.Segment.Faces[i];
                 var native = face.GetNative(d);
                 var foreign = face.GetForeign(d);
                 mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
                     relTo.GetOffsetTo(foreign.GetCenter(), d),
-                    markerSize / 5f, coveringGroup.Color);
+                    markerSize / 5f, group.Color);
             }
-        }
-        
-        // foreach (var kvp in seg.InsertingGroups)
-        // {
-        //     var insertingGroup = d.Get<UnitGroup>(kvp.Key);
-        //     if (kvp.Value.HasValue == false) continue;
-        //     var native = kvp.Value.Value.GetNative(d);
-        //     var foreign = kvp.Value.Value.GetForeign(d);
-        //     var offset = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);
-        //     var nativePos = relTo.GetOffsetTo(native.GetCenter(), d);
-        //     mb.AddArrow(nativePos - offset, nativePos, 10f, insertingGroup.Color);
-        // }
-
-        void drawGroupLine(int groupId, int groupFrom, int groupTo)
-        {
-            if (groupId == -1) return;
-            var group = d.Get<UnitGroup>(groupId);
-            var line = seg.FrontLineFaces.GetRange(groupFrom, groupTo - groupFrom + 1);
             for (var i = 0; i < line.Count - 1; i++)
             {
                 var a = line[i].GetNative(d);
@@ -89,6 +67,16 @@ public static class MeshBuilderExt
                     relTo.GetOffsetTo(b.GetCenter(), d),
                     group.Color, markerSize / 2f);
             }
+        }
+        
+        foreach (var kvp in seg.Insert.Insertions)
+        {
+            var insertingGroup = d.Get<UnitGroup>(kvp.Key);
+            var native = kvp.Value.GetNative(d);
+            var foreign = kvp.Value.GetForeign(d);
+            var offset = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);
+            var nativePos = relTo.GetOffsetTo(native.GetCenter(), d);
+            mb.AddArrow(nativePos - offset, nativePos, 10f, insertingGroup.Color);
         }
     }
 

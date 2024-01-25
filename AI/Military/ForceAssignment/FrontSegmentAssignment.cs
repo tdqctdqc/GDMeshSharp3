@@ -9,7 +9,7 @@ using MessagePack;
 public class FrontSegmentAssignment : ForceAssignment
 {
     public static int IdealSegmentLength = 5;
-    public List<FrontFace<PolyCell>> FrontLineFaces { get; private set; }
+    public FrontSegment Segment { get; private set; }
     public HoldLineSubAssignment HoldLine { get; private set; }
     public ReserveSubAssignment Reserve { get; private set; }
     public InsertionSubAssignment Insert { get; private set; }
@@ -25,7 +25,7 @@ public class FrontSegmentAssignment : ForceAssignment
         var cells = frontLine.Select(face => face.GetNative(key.Data)).ToHashSet();
         var fsa = new FrontSegmentAssignment(
             key.Data.IdDispenser.TakeId(),
-            frontLineFaces,
+            new FrontSegment(frontLineFaces),
             new HashSet<int>(),
             r,
             attack,
@@ -38,7 +38,7 @@ public class FrontSegmentAssignment : ForceAssignment
     }
     [SerializationConstructor] private FrontSegmentAssignment(
         int id,
-        List<FrontFace<PolyCell>> frontLineFaces,
+        FrontSegment segment,
         HashSet<int> groupIds, 
         EntityRef<Regime> regime,
         bool attack,
@@ -50,9 +50,9 @@ public class FrontSegmentAssignment : ForceAssignment
         : base(groupIds, regime, id)
     {
         Color = color;
-        if (frontLineFaces.Count == 0) throw new Exception();
+        if (segment.Faces.Count == 0) throw new Exception();
         Attack = attack;
-        FrontLineFaces = frontLineFaces;
+        Segment = segment;
         HoldLine = holdLine;
         Reserve = reserve;
         Insert = insert;
@@ -70,7 +70,7 @@ public class FrontSegmentAssignment : ForceAssignment
     private IEnumerable<UnitGroup> GetFreeGroups(Data d)
     {
         return GroupIds
-            .Except(HoldLine.BoundsByGroupId.Keys)
+            .Except(HoldLine.FacesByGroupId.Keys)
             .Except(Insert.Insertions.Keys)
             .Except(Reserve.GroupIds)
             .Select(i => d.Get<UnitGroup>(i));
@@ -85,19 +85,48 @@ public class FrontSegmentAssignment : ForceAssignment
     public IEnumerable<FrontSegmentAssignment> ValidateFaces
         (   List<List<FrontFace<PolyCell>>> frontLines,
             HashSet<FrontFace<PolyCell>> frontFaces,
+            HashSet<FrontSegmentAssignment> allSegs,
             LogicWriteKey key)
     {
-        if (FrontLineFaces.All(frontFaces.Contains)) return this.Yield();
-        return this.Yield();
-        //
-        // var d = key.Data;
-        // var regime = Regime.Entity(d);
-        // var alliance = regime.GetAlliance(d);
-        // var newFronts = new List<List<FrontFace<PolyCell>>>();
-        //
-        // var validFacesHash = FrontLineFaces.Where()
-        //
+        if (Segment.Faces.All(frontFaces.Contains)) return this.Yield();
+        
+        
+        //first try to reunite front
+            //if so then validate subassgns
+        var otherSegFaces = allSegs.Except(this.Yield()).SelectMany(s => s.Segment.Faces).ToHashSet();
+        var reunited = Segment.CheckReunite(frontLines, 
+            frontFaces, 
+            otherSegFaces,
+            key, out var res);
+        if (reunited)
+        {
+            HoldLine.ValidateGroupFaces(this, key);
+            Insert.ValidateInsertionPoints(this, key);
+            Reserve.Validate(this, key);
+            return this.Yield();
+        }
 
+        var newSegs = res.Select(
+            r => FrontSegmentAssignment.Construct(new EntityRef<Regime>(Regime.RefId),
+                r, false, key)).ToList();
+        var freeGroups = GetFreeGroups(key.Data);
+        HoldLine.DistributeAmong(newSegs, key);
+        Insert.DistributeAmong(newSegs, key);
+        Reserve.DistributeAmong(newSegs, key);
+        foreach (var freeGroup in freeGroups)
+        {
+            var groupCell = freeGroup.GetCell(key.Data);
+            var close = newSegs
+                .MinBy(s =>
+                    s.GetCharacteristicCell(key.Data)
+                        .GetCenter()
+                        .GetOffsetTo(groupCell.GetCenter(), key.Data));
+            close.GroupIds.Add(freeGroup.Id);
+        }
+        
+        
+        
+        return newSegs;
     }
 
     private void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,
@@ -105,7 +134,7 @@ public class FrontSegmentAssignment : ForceAssignment
     {
         foreach (var groupId in GroupIds)
         {
-            if (HoldLine.BoundsByGroupId.ContainsKey(groupId))
+            if (HoldLine.FacesByGroupId.ContainsKey(groupId))
             {
                 
             }
@@ -122,7 +151,7 @@ public class FrontSegmentAssignment : ForceAssignment
     
     public IEnumerable<PolyCell> GetCells(Data d)
     {
-        return FrontLineFaces
+        return Segment.Faces
             .Select(face => PlanetDomainExt.GetPolyCell(face.Native, d)).Distinct();
     }
     public override float GetPowerPointNeed(Data data)
@@ -176,15 +205,15 @@ public class FrontSegmentAssignment : ForceAssignment
             de = Insert.Insertions.First().Key;
             Insert.Insertions.Remove(de);
         }
-        else if (HoldLine.BoundsByGroupId.Count > 1)
+        else if (HoldLine.FacesByGroupId.Count > 1)
         {
-            var lineGroups = HoldLine.BoundsByGroupId
+            var lineGroups = HoldLine.FacesByGroupId
                 .Select(kvp => key.Data.Get<UnitGroup>(kvp.Key));
             var numUnits = lineGroups.Sum(g => g.Units.Count());
             var smallest = lineGroups.MinBy(g => g.Units.Count());
-            if (numUnits - smallest.Units.Count() >= FrontLineFaces.Count)
+            if (numUnits - smallest.Units.Count() >= Segment.Faces.Count)
             {
-                HoldLine.BoundsByGroupId.Remove(smallest.Id);
+                HoldLine.FacesByGroupId.Remove(smallest.Id);
                 de = smallest.Id;
             }
         }
@@ -201,7 +230,7 @@ public class FrontSegmentAssignment : ForceAssignment
     public override void TakeAwayGroup(UnitGroup g, LogicWriteKey key)
     {
         Insert.Insertions.Remove(g.Id);
-        HoldLine.BoundsByGroupId.Remove(g.Id);
+        HoldLine.FacesByGroupId.Remove(g.Id);
         Reserve.GroupIds.Remove(g.Id);
         GroupIds.Remove(g.Id);
     }
@@ -212,7 +241,7 @@ public class FrontSegmentAssignment : ForceAssignment
 
     public int GetLength(Data d)
     {
-        return FrontLineFaces.Count;
+        return Segment.Faces.Count;
     }
 
     

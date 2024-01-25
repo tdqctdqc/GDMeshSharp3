@@ -46,10 +46,10 @@ public partial class TheaterGraphic : Node2D
             foreach (var seg in fa.Assignments.OfType<FrontSegmentAssignment>())
             {
                 var segColor = ColorsExt.GetRandomColor();
-                for (var i = 0; i < seg.FrontLineFaces.Count - 1; i++)
+                for (var i = 0; i < seg.Segment.Faces.Count - 1; i++)
                 {
-                    var fromWp = seg.FrontLineFaces[i].GetNative(d);
-                    var toWp = seg.FrontLineFaces[i + 1].GetNative(d);
+                    var fromWp = seg.Segment.Faces[i].GetNative(d);
+                    var toWp = seg.Segment.Faces[i + 1].GetNative(d);
                     var from = relPos(fromWp.GetCenter());
                     var to = relPos(toWp.GetCenter());
                     mb.AddLine(from, to, regimeColor, 5f);

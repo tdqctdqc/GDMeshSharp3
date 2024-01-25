@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -32,17 +33,17 @@ public class InsertionSubAssignment
         var insertionCellsByGroupIds = new Dictionary<Vector2I, FrontFace<PolyCell>>();
         insertionCellsByGroupIds.Add(new Vector2I(-1, 
                 lineGroupIds.First()),
-            seg.FrontLineFaces.First());
+            seg.Segment.Faces.First());
         for (var i = 0; i < lineGroupIds.Count - 1; i++)
         {
             var prevGroupId = lineGroupIds[i];
             var nextGroupId = lineGroupIds[i + 1];
-            var lastFaceOfPrev = seg.HoldLine.BoundsByGroupId[prevGroupId].Item2;
+            var lastFaceOfPrev = seg.HoldLine.FacesByGroupId[prevGroupId].Last();
             insertionCellsByGroupIds.Add(new Vector2I(prevGroupId, nextGroupId),
                 lastFaceOfPrev);
         }
         insertionCellsByGroupIds.Add(new Vector2I(lineGroupIds.Last(), -1),
-            seg.FrontLineFaces.Last());
+            seg.Segment.Faces.Last());
         return insertionCellsByGroupIds;
     }
     public void Handle(FrontSegmentAssignment seg, LogicWriteKey key)
@@ -51,26 +52,28 @@ public class InsertionSubAssignment
         var lineGroupIds = seg.HoldLine
             .GetGroupsInOrder(seg, key.Data).Select(g => g.Id).ToList();
         var insertionCellsByGroupIds = GetInsertionCellsByGroupIds(seg, key.Data);
-        
-        foreach (var kvp in 
-                 Insertions.ToList())
-        {
-            ValidateInsertionPoint(kvp.Key, seg, 
-                insertionCellsByGroupIds, lineGroupIds, key.Data);
-        }
+        ValidateInsertionPoints(seg, key);
         GiveOrders(seg, key);
     }
 
+    public void ValidateInsertionPoints(FrontSegmentAssignment seg,
+        LogicWriteKey key)
+    {
+        var insertionCellsByGroupIds = GetInsertionCellsByGroupIds(seg, key.Data);
+        foreach (var groupId in Insertions.Keys.ToList())
+        {
+            ValidateInsertionPoint(groupId, seg, insertionCellsByGroupIds, key.Data);
+        }
+    }
     private void ValidateInsertionPoint(
         int groupId,
         FrontSegmentAssignment seg, 
         Dictionary<Vector2I, FrontFace<PolyCell>> insertionCellsByGroupIds,
-        List<int> lineGroupIds,
         Data d)
     {
         var group = d.Get<UnitGroup>(groupId);
         var old = Insertions[groupId];
-        if (seg.FrontLineFaces.Contains(old)) return;
+        if (seg.Segment.Faces.Contains(old)) return;
 
         if (insertionCellsByGroupIds == null)
         {
@@ -80,8 +83,8 @@ public class InsertionSubAssignment
         }
         else
         {
-            var close = seg.FrontLineFaces
-                .MinBy(f => f.GetNative(d).GetCenter().GetOffsetTo(group.GetCell(d).GetCenter(), d).Length());
+            var close = seg.Segment
+                .Faces.MinBy(f => f.GetNative(d).GetCenter().GetOffsetTo(group.GetCell(d).GetCenter(), d).Length());
             Insertions[groupId] = close;
         }
     }
@@ -117,7 +120,7 @@ public class InsertionSubAssignment
             FrontFace<PolyCell> close;
             if (insertionCells == null)
             {
-                close = seg.FrontLineFaces.MinBy(f => f.GetNative(key.Data).GetCenter()
+                close = seg.Segment.Faces.MinBy(f => f.GetNative(key.Data).GetCenter()
                     .GetOffsetTo(group.GetCell(key.Data).GetCenter(), key.Data)
                     .Length());
             }
@@ -129,5 +132,10 @@ public class InsertionSubAssignment
             }
             Insertions[group.Id] = close;
         }
+    }
+
+    public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
+    {
+        throw new NotImplementedException();
     }
 }

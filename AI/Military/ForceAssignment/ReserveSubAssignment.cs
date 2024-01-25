@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using MessagePack;
 
@@ -17,5 +18,14 @@ public class ReserveSubAssignment
     {
         GroupIds = groupIds;
         CellId = cellId;
+    }
+
+    public void Validate(FrontSegmentAssignment seg, LogicWriteKey key)
+    {
+        
+    }
+    public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
+    {
+        throw new NotImplementedException();
     }
 }

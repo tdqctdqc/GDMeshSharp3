@@ -109,7 +109,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         //shift support groups + reserves
 
         var segmentFaces = Assignments.OfType<FrontSegmentAssignment>()
-            .SelectMany(s => s.FrontLineFaces);
+            .SelectMany(s => s.Segment.Faces);
         if (segmentFaces.Count() != segmentFaces.Distinct().Count())
         {
             throw new Exception();
@@ -123,11 +123,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         var faces = lines
             .SelectMany(l => l)
             .ToHashSet();
+        
         foreach (var seg in Assignments
                      .OfType<FrontSegmentAssignment>().ToList())
         {
             Assignments.Remove(seg);
-            var newSegs = seg.ValidateFaces(lines, faces, key);
+            var newSegs = seg.ValidateFaces(lines, 
+                faces, 
+                Assignments.OfType<FrontSegmentAssignment>().ToHashSet(),
+                key);
             Assignments.AddRange(newSegs);
         }
     }
@@ -143,7 +147,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             .OfType<FrontSegmentAssignment>().ToList();
         var coveredFaces = 
             segments
-            .SelectMany(s => s.FrontLineFaces)
+            .SelectMany(s => s.Segment.Faces)
             .ToHashSet();
         var uncoveredFaces = facesHash.Except(coveredFaces).ToHashSet();
         

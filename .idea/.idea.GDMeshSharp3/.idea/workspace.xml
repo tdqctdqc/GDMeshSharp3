@@ -4,14 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="ditto">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="added flag on unit graphics, made holdLine data not depend on order of faces in owning frontSegAssignment">
+      <change afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/InsertionSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/InsertionSubAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,6 +71,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/ForceAssignment/FrontAssignment.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/ForceAssignment/FrontAssignment.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
@@ -468,7 +469,7 @@
       <workItem from="1706138823218" duration="8259000" />
       <workItem from="1706147369278" duration="954000" />
       <workItem from="1706194664686" duration="8691000" />
-      <workItem from="1706210916171" duration="7008000" />
+      <workItem from="1706210916171" duration="9116000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -680,14 +681,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00106" summary="tweaking movement">
-      <option name="closed" value="true" />
-      <created>1704585239836</created>
-      <option name="number" value="00106" />
-      <option name="presentableId" value="LOCAL-00106" />
-      <option name="project" value="LOCAL" />
-      <updated>1704585239836</updated>
-    </task>
     <task id="LOCAL-00107" summary="implementing combat">
       <option name="closed" value="true" />
       <created>1704831526976</created>
@@ -832,7 +825,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706214228776</updated>
     </task>
-    <option name="localTasksCounter" value="125" />
+    <task id="LOCAL-00125" summary="added flag on unit graphics, made holdLine data not depend on order of faces in owning frontSegAssignment">
+      <option name="closed" value="true" />
+      <created>1706219357899</created>
+      <option name="number" value="00125" />
+      <option name="presentableId" value="LOCAL-00125" />
+      <option name="project" value="LOCAL" />
+      <updated>1706219357899</updated>
+    </task>
+    <option name="localTasksCounter" value="126" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -854,7 +855,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="working on unit movement" />
     <MESSAGE value="reforming unit pos" />
     <MESSAGE value="added unitMoveType" />
     <MESSAGE value="bugfixing pathfinding and movement" />
@@ -879,6 +879,7 @@
     <MESSAGE value="split frontSegment logic into subAssignments" />
     <MESSAGE value="tweaked assigner, working on reassigning groups btwn assignments" />
     <MESSAGE value="ditto" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
+    <MESSAGE value="added flag on unit graphics, made holdLine data not depend on order of faces in owning frontSegAssignment" />
+    <option name="LAST_COMMIT_MESSAGE" value="added flag on unit graphics, made holdLine data not depend on order of faces in owning frontSegAssignment" />
   </component>
 </project>
