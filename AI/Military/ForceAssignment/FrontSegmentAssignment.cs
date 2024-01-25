@@ -83,62 +83,21 @@ public class FrontSegmentAssignment : ForceAssignment
         Insert.InsertGroups(this, freeGroups, key);
     }
     public IEnumerable<FrontSegmentAssignment> ValidateFaces
-        (HashSet<FrontFace<PolyCell>> frontFaces,
+        (   List<List<FrontFace<PolyCell>>> frontLines,
+            HashSet<FrontFace<PolyCell>> frontFaces,
             LogicWriteKey key)
     {
-        var d = key.Data;
-        var regime = Regime.Entity(d);
-        var alliance = regime.GetAlliance(d);
-        var valid = FrontLineFaces
-            .Where(f => f.GetNative(d).Controller.RefId == Regime.RefId);
-        if (valid.Count() == FrontLineFaces.Count) return this.Yield();
-
-        var newFronts = new List<List<FrontFace<PolyCell>>>();
-
-        var goodSegStart = -1;
-        for (var i = 0; i < FrontLineFaces.Count; i++)
-        {
-            var face = FrontLineFaces[i];
-            var good = face.GetNative(d).Controller.RefId == Regime.RefId;
-            if (good == false)
-            {
-                addNewSeg(goodSegStart, i - 1);
-                goodSegStart = -1;
-            }
-            else
-            {
-                if (goodSegStart == -1) goodSegStart = i;
-            }
-            if (i == FrontLineFaces.Count() - 1)
-            {
-                addNewSeg(goodSegStart, i);
-            }
-        }
-
-        if (newFronts.Count == 1)
-        {
-            
-            
-        }
-        
-        
-        //try to connect the new lines
+        if (FrontLineFaces.All(frontFaces.Contains)) return this.Yield();
         return this.Yield();
+        //
+        // var d = key.Data;
+        // var regime = Regime.Entity(d);
+        // var alliance = regime.GetAlliance(d);
+        // var newFronts = new List<List<FrontFace<PolyCell>>>();
+        //
+        // var validFacesHash = FrontLineFaces.Where()
+        //
 
-        
-        
-        
-        
-
-
-        void addNewSeg(int start, int end)
-        {
-            if (start == -1) return;
-            var faces = FrontLineFaces.GetRange(start, end - start + 1);
-            newFronts.Add(faces);
-        }
-        
-        
     }
 
     private void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,

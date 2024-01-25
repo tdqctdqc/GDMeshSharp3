@@ -7,7 +7,7 @@ public partial class UnitGraphic : Node2D
     private MeshInstance2D 
         _borderAndGroupColor,
         _regimeColor,
-        _healthMesh;
+        _healthMesh, _flagRect;
 
     private Label _powerPoints;
     private TextureRect _troopRect;
@@ -16,7 +16,7 @@ public partial class UnitGraphic : Node2D
     static UnitGraphic()
     {
         _labelSettings = new LabelSettings();
-        _labelSettings.FontSize = 20;
+        _labelSettings.FontSize = 25;
     }
     private UnitGraphic() {}
     
@@ -36,12 +36,20 @@ public partial class UnitGraphic : Node2D
         AddChild(_regimeColor);
         mb.Clear();
         
+        _flagRect = regime.Template.Model(data).Flag
+            .GetMeshInstance(iconSize * .25f);
+        _flagRect.Position = new Vector2(iconSize * .2f, iconSize * .25f);
+        AddChild(_flagRect);
+        
         _troopRect = new TextureRect();
         _troopRect.ExpandMode = TextureRect.ExpandModeEnum.FitWidth;
         _troopRect.StretchMode = TextureRect.StretchModeEnum.KeepAspect;
         _troopRect.Size = iconSize * .7f * Vector2.One;
         _troopRect.Position = -_troopRect.Size / 2f;
         AddChild(_troopRect);
+        
+        
+        
         
         var healthMarkerSize = iconSize * .1f;
         var healthMarkerPos = new Vector2(iconSize * .35f, -iconSize * .35f);
@@ -56,8 +64,9 @@ public partial class UnitGraphic : Node2D
         _powerPoints = new Label();
         _powerPoints.LabelSettings = _labelSettings;
         _powerPoints.Scale = .1f * Vector2.One;
+        // _powerPoints.GrowHorizontal = Control.GrowDirection.Both;
         _powerPoints.HorizontalAlignment = HorizontalAlignment.Center;
-        _powerPoints.Position = new Vector2(0f, iconSize * .2f);
+        _powerPoints.Position = new Vector2(0f, -iconSize * .4f);
         AddChild(_powerPoints);
         
         Draw(unit, data);

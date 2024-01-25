@@ -8,12 +8,12 @@ using MessagePack;
 
 public class HoldLineSubAssignment
 {
-    public Dictionary<int, Vector2I> BoundsByGroupId { get; private set; }
+    public Dictionary<int, (FrontFace<PolyCell>, FrontFace<PolyCell>)> BoundsByGroupId { get; private set; }
     public static HoldLineSubAssignment Construct()
     {
-        return new HoldLineSubAssignment(new Dictionary<int, Vector2I>());
+        return new HoldLineSubAssignment(new Dictionary<int, (FrontFace<PolyCell>, FrontFace<PolyCell>)>());
     }
-    [SerializationConstructor] private HoldLineSubAssignment(Dictionary<int, Vector2I> boundsByGroupId) 
+    [SerializationConstructor] private HoldLineSubAssignment(Dictionary<int, (FrontFace<PolyCell>, FrontFace<PolyCell>)> boundsByGroupId) 
     {
         BoundsByGroupId = boundsByGroupId;
     }
@@ -23,23 +23,32 @@ public class HoldLineSubAssignment
         AdjustFaceGroups(seg, key.Data);
         GiveLineOrders(seg, key);
     }
-    public List<UnitGroup> GetGroupsInOrder(Data d)
+    public List<UnitGroup> GetGroupsInOrder(FrontSegmentAssignment seg, Data d)
     {
         var list = BoundsByGroupId
+            // .OrderBy(v => seg.FrontLineFaces.IndexOf(v.Value.Item1))
             .Select(v => d.Get<UnitGroup>(v.Key))
             .ToList();
         list.Sort((g, f) =>
         {
             var boundsG = BoundsByGroupId[g.Id];
+            var gFirst = seg.FrontLineFaces.IndexOf(boundsG.Item1);
+            var gLast = seg.FrontLineFaces.IndexOf(boundsG.Item2);
             var boundsF = BoundsByGroupId[f.Id];
-            return boundsG.Compare(boundsF);
+            var fFirst = seg.FrontLineFaces.IndexOf(boundsF.Item1);
+            var fLast = seg.FrontLineFaces.IndexOf(boundsF.Item2);
+            if (gFirst < fFirst) return -1;
+            if (fFirst < gFirst) return 1;
+            if (gLast < fLast) return -1;
+            if (fLast < gLast) return 1;
+            return 0;
         });
         return list;
     }
     private void AdjustFaceGroups(FrontSegmentAssignment seg, 
         Data d)
     {
-        var lineGroups = GetGroupsInOrder(d);
+        var lineGroups = GetGroupsInOrder(seg, d);
         if (lineGroups.Count() == 0) return;
         var alliance = seg.Regime.Entity(d).GetAlliance(d);
         var faceCosts = GetFaceCosts(seg, d);
@@ -56,7 +65,7 @@ public class HoldLineSubAssignment
             var first = faces.X;
             var last = faces.Y;
             if (first > last) throw new Exception();
-            BoundsByGroupId[unitGroup.Id] = new Vector2I(first, last);
+            BoundsByGroupId[unitGroup.Id] = (seg.FrontLineFaces[first], seg.FrontLineFaces[last]);
         }
     }
 
@@ -111,9 +120,8 @@ public class HoldLineSubAssignment
     public void AddGroupToLine(FrontSegmentAssignment seg,
         UnitGroup g, FrontFace<PolyCell> face)
     {
-        var index = seg.FrontLineFaces.IndexOf(face);
-        if (index == -1) throw new Exception();
-        BoundsByGroupId.Add(g.Id, new Vector2I(index, index));
+        if(seg.FrontLineFaces.Contains(face) == false) throw new Exception();
+        BoundsByGroupId.Add(g.Id, (face, face));
     }
     private void GiveLineOrders(FrontSegmentAssignment seg,
         LogicWriteKey key)
@@ -122,7 +130,9 @@ public class HoldLineSubAssignment
         {
             var group = key.Data.Get<UnitGroup>(kvp.Key);
             var bounds = kvp.Value;
-            var line = seg.FrontLineFaces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
+            var from = seg.FrontLineFaces.IndexOf(bounds.Item1);
+            var to = seg.FrontLineFaces.IndexOf(bounds.Item2);
+            var line = seg.FrontLineFaces.GetRange(from, to - from + 1);
             var order = new DeployOnLineGroupOrder(line, false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),

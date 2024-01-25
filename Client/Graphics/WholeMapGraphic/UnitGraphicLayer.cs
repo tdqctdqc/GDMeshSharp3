@@ -18,8 +18,11 @@ public class UnitGraphicLayer : GraphicLayer<MapChunk, ChunkUnitsGraphic>
         }
         d.SubscribeForCreation<Unit>(u =>
         {
-            var unitGraphic = new UnitGraphic((Unit)u.Entity, d);
-            UnitGraphics.Add((Unit)u.Entity, unitGraphic);
+            client.QueuedUpdates.Enqueue(() =>
+            {
+                var unitGraphic = new UnitGraphic((Unit)u.Entity, d);
+                UnitGraphics.Add((Unit)u.Entity, unitGraphic);
+            });
         });
         d.SubscribeForDestruction<Unit>(u =>
         {

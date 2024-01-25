@@ -119,14 +119,15 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     private void ValidateSegments(LogicWriteKey key)
     {
         var d = key.Data;
-        var faces = GetLines(d)
+        var lines = GetLines(d);
+        var faces = lines
             .SelectMany(l => l)
             .ToHashSet();
         foreach (var seg in Assignments
                      .OfType<FrontSegmentAssignment>().ToList())
         {
             Assignments.Remove(seg);
-            var newSegs = seg.ValidateFaces(faces, key);
+            var newSegs = seg.ValidateFaces(lines, faces, key);
             Assignments.AddRange(newSegs);
         }
     }

@@ -46,8 +46,10 @@ public static class MeshBuilderExt
 
         foreach (var kvp in seg.HoldLine.BoundsByGroupId)
         {
-            drawGroupLine(kvp.Key, kvp.Value.X, kvp.Value.Y);
-            for (var i = kvp.Value.X; i <= kvp.Value.Y; i++)
+            var from = seg.FrontLineFaces.IndexOf(kvp.Value.Item1);
+            var to = seg.FrontLineFaces.IndexOf(kvp.Value.Item2);
+            drawGroupLine(kvp.Key, from, to);
+            for (var i = from; i <= to; i++)
             {
                 var face = seg.FrontLineFaces[i];
                 var covering = kvp.Key;

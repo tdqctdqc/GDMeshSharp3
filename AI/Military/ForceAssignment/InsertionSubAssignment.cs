@@ -25,7 +25,7 @@ public class InsertionSubAssignment
             Data d)
     {
         var lineGroupIds = seg.HoldLine
-            .GetGroupsInOrder(d)
+            .GetGroupsInOrder(seg, d)
             .Select(g => g.Id)
             .ToList();
         if (lineGroupIds.Count == 0) return null;
@@ -37,10 +37,9 @@ public class InsertionSubAssignment
         {
             var prevGroupId = lineGroupIds[i];
             var nextGroupId = lineGroupIds[i + 1];
-            var lastIndexOfPrev = seg.HoldLine.BoundsByGroupId[prevGroupId].Y;
-            var lastOfPrev = seg.FrontLineFaces[lastIndexOfPrev];
+            var lastFaceOfPrev = seg.HoldLine.BoundsByGroupId[prevGroupId].Item2;
             insertionCellsByGroupIds.Add(new Vector2I(prevGroupId, nextGroupId),
-                lastOfPrev);
+                lastFaceOfPrev);
         }
         insertionCellsByGroupIds.Add(new Vector2I(lineGroupIds.Last(), -1),
             seg.FrontLineFaces.Last());
@@ -50,7 +49,7 @@ public class InsertionSubAssignment
     {
         if (Insertions.Count == 0) return;
         var lineGroupIds = seg.HoldLine
-            .GetGroupsInOrder(key.Data).Select(g => g.Id).ToList();
+            .GetGroupsInOrder(seg, key.Data).Select(g => g.Id).ToList();
         var insertionCellsByGroupIds = GetInsertionCellsByGroupIds(seg, key.Data);
         
         foreach (var kvp in 
