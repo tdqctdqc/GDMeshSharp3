@@ -11,9 +11,9 @@ public class FrontSegmentAssignment : ForceAssignment
     public static int IdealSegmentLength = 5;
     public List<FrontFace<PolyCell>> FrontLineFaces { get; private set; }
     public List<int> FrontFaceGroupIds { get; private set; }
-    public Dictionary<int, FrontFace<PolyCell>?> InsertingGroups { get; private set; }
-    public HashSet<(int withdrawing, int replacing)> WithdrawingGroups { get; private set; }
-    public HashSet<int> Reserve { get; private set; }
+    public HoldLineSubAssignment HoldLine { get; private set; }
+    public ReserveSubAssignment Reserve { get; private set; }
+    public InsertionSubAssignment Insert { get; private set; }
     public Color Color { get; private set; }
     public bool Attack { get; private set; }
     public static FrontSegmentAssignment Construct(
@@ -33,9 +33,10 @@ public class FrontSegmentAssignment : ForceAssignment
             r,
             attack,
             ColorsExt.GetRandomColor(),
-            new Dictionary<int, FrontFace<PolyCell>?>(),
-            new HashSet<(int withdrawing, int replacing)>(),
-            new HashSet<int>());
+            HoldLineSubAssignment.Construct(),
+            ReserveSubAssignment.Construct(),
+            InsertionSubAssignment.Construct()
+        );
         return fsa;
     }
     [SerializationConstructor] private FrontSegmentAssignment(
@@ -46,9 +47,10 @@ public class FrontSegmentAssignment : ForceAssignment
         EntityRef<Regime> regime,
         bool attack,
         Color color,
-        Dictionary<int, FrontFace<PolyCell>?> insertingGroups,
-        HashSet<(int withdrawing, int replacing)> withdrawingGroups,
-        HashSet<int> reserve) 
+        HoldLineSubAssignment holdLine,
+        ReserveSubAssignment reserve,
+        InsertionSubAssignment insert
+        ) 
         : base(groupIds, regime, id)
     {
         Color = color;
@@ -56,9 +58,9 @@ public class FrontSegmentAssignment : ForceAssignment
         FrontFaceGroupIds = frontFaceGroupIds;
         Attack = attack;
         FrontLineFaces = frontLineFaces;
-        InsertingGroups = insertingGroups;
-        WithdrawingGroups = withdrawingGroups;
+        HoldLine = holdLine;
         Reserve = reserve;
+        Insert = insert;
     }
     
     public override void CalculateOrders(MinorTurnOrders orders,
@@ -68,107 +70,12 @@ public class FrontSegmentAssignment : ForceAssignment
         MoveDistantGroupsToFront(key);
         HandleInsertions(key);
         HandleCyclingOut(key);
-        // if (FrontFaceGroupIds.All(id => id == -1))
-        // {
-        //     DoNewGroupToFaceAssignment(key.Data);
-        // }
-        // else
-        // {
-        //      AdjustFaceGroups(key.Data);
-        // }
-        
         AdjustFaceGroups(key.Data);
         GiveLineOrders(key);
     }
 
-    private IEnumerable<UnitGroup> GetFreeGroups(Data d)
-    {
-        return GroupIds
-            .Except(FrontFaceGroupIds)
-            .Except(InsertingGroups.Select(v => v.Key))
-            .Except(WithdrawingGroups.Select(w => w.withdrawing))
-            .Except(WithdrawingGroups.Select(w => w.replacing))
-            .Select(id => d.Get<UnitGroup>(id));
-    }
     private void HandleInsertions(LogicWriteKey key)
     {
-        //HANDLE GROUPS READY TO INSERT
-        var insertableFaces = getInsertableFaces();
-        foreach (var (id, oldFace) in InsertingGroups.ToList())
-        {
-            var group = key.Data.Get<UnitGroup>(id);
-            var groupCell = group.GetCell(key.Data);
-            if (insertableFaces.Any(f => f.Native == groupCell.Id))
-            {
-                var face = insertableFaces.First(f => f.Native == groupCell.Id);
-                InsertingGroups.Remove(id);
-                var index = FrontLineFaces.IndexOf(face);
-                FrontFaceGroupIds[index] = group.Id;
-            }
-        }
-        
-        
-        //ORDER FREE GROUPS TO INSERT
-        foreach (var freeGroup in GetFreeGroups(key.Data))
-        {
-            InsertingGroups.Add(freeGroup.Id, null);
-        }
-        if (InsertingGroups.Count() == 0) return;
-        var segCell = GetCharacteristicCell(key.Data);
-        var byDist = InsertingGroups
-            .Select(v => key.Data.Get<UnitGroup>(v.Key))
-            .OrderBy(g => g.GetCell(key.Data).GetCenter()
-                .GetOffsetTo(segCell.GetCenter(), key.Data).Length())
-            .ToList();
-
-        var insertionFaces = getInsertableFaces();
-        foreach (var g in byDist)
-        {
-            if (insertionFaces.Count() == 0)
-            {
-                sendOrder(segCell, g);
-                InsertingGroups.Remove(g.Id);
-                continue;
-            }
-            var cell = g.GetCell(key.Data);
-            var closest = insertionFaces
-                .MinBy(f => cell.GetCenter().GetOffsetTo(f.GetNative(key.Data).GetCenter(), key.Data).Length());
-            sendOrder(closest.GetNative(key.Data), g);
-            InsertingGroups[g.Id] = closest;
-            insertionFaces.Remove(closest);
-        }
-
-        void sendOrder(PolyCell cell, UnitGroup group)
-        {
-            var order = GoToCellGroupOrder.Construct(
-                cell, Regime.Entity(key.Data),
-                group, key.Data);
-            key.SendMessage(new SetUnitOrderProcedure(group.MakeRef(), order));
-        }
-
-        HashSet<FrontFace<PolyCell>> getInsertableFaces()
-        {
-            var insertableFaces = new HashSet<FrontFace<PolyCell>>();
-            for (var i = 0; i < FrontLineFaces.Count; i++)
-            {
-                var face = FrontLineFaces[i];
-                var groupId = FrontFaceGroupIds[i];
-                var insert = (groupId == -1)
-                             || (getPrevGroupId(i) != groupId
-                                 && getNextGroupId(i) == groupId)
-                             || (getPrevGroupId(i) == groupId
-                                 && getNextGroupId(i) != groupId);
-                if (insert)
-                {
-                    insertableFaces.Add(face);
-                }
-                int getPrevGroupId(int index) => index > 0 ? FrontFaceGroupIds[index - 1] : -1;
-                int getNextGroupId(int index) => index < FrontLineFaces.Count - 1 
-                    ? FrontFaceGroupIds[index + 1] : -1;
-            }
-
-            return insertableFaces;
-        }
     }
     private void HandleCyclingOut(LogicWriteKey key)
     {
@@ -251,7 +158,6 @@ public class FrontSegmentAssignment : ForceAssignment
                 FrontLineFaces,
                 lineGroups.ToList(),
                 g => g.GetPowerPoints(d),
-                lineGroups.Sum(g => g.GetPowerPoints(d)),
                 f =>
                 {
                     var foreignCell = PlanetDomainExt.GetPolyCell(f.Foreign, d);

@@ -70,16 +70,16 @@ public static class MeshBuilderExt
             }
         }
         
-        foreach (var kvp in seg.InsertingGroups)
-        {
-            var insertingGroup = d.Get<UnitGroup>(kvp.Key);
-            if (kvp.Value.HasValue == false) continue;
-            var native = kvp.Value.Value.GetNative(d);
-            var foreign = kvp.Value.Value.GetForeign(d);
-            var offset = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);
-            var nativePos = relTo.GetOffsetTo(native.GetCenter(), d);
-            mb.AddArrow(nativePos - offset, nativePos, 10f, insertingGroup.Color);
-        }
+        // foreach (var kvp in seg.InsertingGroups)
+        // {
+        //     var insertingGroup = d.Get<UnitGroup>(kvp.Key);
+        //     if (kvp.Value.HasValue == false) continue;
+        //     var native = kvp.Value.Value.GetNative(d);
+        //     var foreign = kvp.Value.Value.GetForeign(d);
+        //     var offset = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);
+        //     var nativePos = relTo.GetOffsetTo(native.GetCenter(), d);
+        //     mb.AddArrow(nativePos - offset, nativePos, 10f, insertingGroup.Color);
+        // }
 
         void drawGroupLine(int groupId, int groupFrom, int groupTo)
         {

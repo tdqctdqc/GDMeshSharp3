@@ -199,70 +199,7 @@ public class Assigner
         }
     }
     
-    public static Dictionary<TUnit, List<TFace>> 
-        PickBestAndAssignAlongFaces<TUnit, TFace>(
-        List<TFace> faces,
-        IEnumerable<TUnit> units,
-        Func<TUnit, float> getStrength,
-        Func<TUnit, TFace, float> rank,
-        float minStrengthToTake,
-        Func<TFace, float> getFaceCost)
-    {
-        if (faces.Count == 0) throw new Exception();
-        if (faces.Count == 1) return units.ToDictionary(u => u, 
-            u => new List<TFace>{faces.First()});
-        
-        var totalCost = 0f;
-        for (var i = 0; i < faces.Count; i++)
-        {
-            totalCost += getFaceCost(faces[i]);
-        }
-        if (units.Sum(getStrength) < minStrengthToTake) throw new Exception(); 
-        if (totalCost == 0f) throw new Exception();
-        if (float.IsNaN(totalCost)) throw new Exception();
-
-        var res = new Dictionary<TUnit, List<TFace>>();
-        var faceProportions = new float[faces.Count];
-        var runningCost = 0f;
-        for (var i = 0; i < faces.Count; i++)
-        {
-            runningCost += getFaceCost(faces[i]);
-            if (float.IsNaN(runningCost)) throw new Exception();
-            faceProportions[i] = runningCost / totalCost;
-        }
-
-        var runningStrength = 0f;
-        var pickFrom = units.ToHashSet();
-        while (runningStrength / minStrengthToTake < 1f)
-        {
-            var startFace = getFaceAtProportion(runningStrength / minStrengthToTake);
-            var picked = pickFrom.MaxBy(u => rank(u, faces[startFace]));
-            runningStrength += getStrength(picked);
-            var endFace = getFaceAtProportion(runningStrength / minStrengthToTake);
-            var list = new List<TFace>();
-            for (int i = startFace; i <= endFace; i++)
-            {
-                list.Add(faces[i]);
-            }
-            pickFrom.Remove(picked);
-            res.Add(picked, list);
-        }
-
-        return res;
-        
-        int getFaceAtProportion(float prop)
-        {
-            if (prop == 0f) return 0;
-            if (prop == 1f) return faces.Count - 1;
-            for (var i = 0; i < faceProportions.Length; i++)
-            {
-                var faceProp = faceProportions[i];
-                if (faceProp >= prop) return i;
-            }
-
-            return faces.Count - 1;
-        }
-    }
+    
     
     
     
@@ -272,7 +209,6 @@ public class Assigner
         List<TFace> faces,
         IEnumerable<TUnit> units,
         Func<TUnit, float> getStrength,
-        float minStrengthToTake,
         Func<TFace, float> getFaceCost)
     {
         if (faces.Count == 0) throw new Exception();
@@ -284,10 +220,10 @@ public class Assigner
         {
             totalCost += getFaceCost(faces[i]);
         }
-        if (units.Sum(getStrength) < minStrengthToTake) throw new Exception(); 
         if (totalCost == 0f) throw new Exception();
         if (float.IsNaN(totalCost)) throw new Exception();
-
+        var totalStrength = units.Sum(getStrength);
+        if (totalStrength == 0f) throw new Exception();
         var res = new Dictionary<TUnit, List<TFace>>();
         var faceProportions = new float[faces.Count];
         var runningCost = 0f;
@@ -301,12 +237,12 @@ public class Assigner
 
         var runningStrength = 0f;
         var pickFrom = units.ToList();
-        while (runningStrength / minStrengthToTake < 1f)
+        while (runningStrength / totalStrength < 1f)
         {
-            var startFace = getFaceAtProportion(runningStrength / minStrengthToTake);
+            var startFace = getFaceAtProportion(runningStrength / totalStrength);
             var picked = pickFrom.First();
             runningStrength += getStrength(picked);
-            var endFace = getFaceAtProportion(runningStrength / minStrengthToTake);
+            var endFace = getFaceAtProportion(runningStrength / totalStrength);
             var list = new List<TFace>();
             for (int i = startFace; i <= endFace; i++)
             {
