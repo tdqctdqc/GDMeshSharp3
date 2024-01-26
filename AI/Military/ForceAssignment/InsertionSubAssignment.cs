@@ -136,6 +136,27 @@ public class InsertionSubAssignment
 
     public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
     {
-        throw new NotImplementedException();
+        foreach (var kvp in Insertions)
+        {
+            var groupId = kvp.Key;
+            var insertionFace = kvp.Value;
+            var seg = segs
+                .FirstOrDefault(s => s.Segment.Faces.Contains(insertionFace));
+            if (seg == null)
+            {
+                var group = key.Data.Get<UnitGroup>(groupId);
+                var groupCell = group.GetCell(key.Data);
+                seg = segs.MinBy(s =>
+                    s.GetCharacteristicCell(key.Data)
+                        .GetCenter()
+                        .GetOffsetTo(groupCell.GetCenter(), key.Data));
+                insertionFace = seg.Segment.Faces.MinBy(f => 
+                    f.GetNative(key.Data).GetCenter().GetOffsetTo(groupCell.GetCenter(), key.Data));
+            }
+            seg.GroupIds.Add(groupId);
+            seg.Insert.Insertions.Add(groupId, insertionFace);
+        }
+
+        Insertions.Clear();
     }
 }

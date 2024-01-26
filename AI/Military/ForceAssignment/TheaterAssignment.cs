@@ -113,7 +113,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             ta.Assignments.AddRange(newFronts);
             foreach (var fa in ta.Assignments.OfType<FrontAssignment>())
             {
-                fa.CheckSegments(key);
+                fa.Validate(key);
             }
         }
     }

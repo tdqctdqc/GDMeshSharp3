@@ -142,9 +142,45 @@ public class HoldLineSubAssignment
     public void ValidateGroupFaces(FrontSegmentAssignment seg,
         LogicWriteKey key)
     {
+        //make sure contiguous
+        //and all in seg faces
+        foreach (var kvp in FacesByGroupId.ToList())
+        {
+            var groupId = kvp.Key;
+            var faces = kvp.Value;
+            faces.RemoveAll(f => seg.Segment.Faces.Contains(f));
+            if (faces.Count() == 0)
+            {
+                FacesByGroupId.Remove(groupId);
+                continue;
+            }
+            for (var i = 0; i < faces.Count - 1; i++)
+            {
+                var face = faces[i];
+                var nextFace = faces[i + 1];
+                if (face.Adjacent(nextFace) == false)
+                {
+                    throw new Exception();
+                }
+            }
+        }
     }
     public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
     {
-        throw new NotImplementedException();
+        foreach (var kvp in FacesByGroupId)
+        {
+            var groupId = kvp.Key;
+            var groupFaces = kvp.Value;
+            var seg = segs
+                .FirstOrDefault(s => s.Segment.Faces.Intersect(groupFaces).Count() > 0);
+            if (seg == null)
+            {
+                continue;
+            }
+            var newFaces = groupFaces.Intersect(seg.Segment.Faces).ToList();
+            seg.GroupIds.Add(groupId);
+            seg.HoldLine.FacesByGroupId.Add(groupId, newFaces);
+        }
+        FacesByGroupId.Clear();
     }
 }

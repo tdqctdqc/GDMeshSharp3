@@ -82,7 +82,7 @@ public class FrontSegmentAssignment : ForceAssignment
         var freeGroups = GetFreeGroups(key.Data);
         Insert.InsertGroups(this, freeGroups, key);
     }
-    public IEnumerable<FrontSegmentAssignment> ValidateFaces
+    public IEnumerable<FrontSegmentAssignment> Validate
         (   List<List<FrontFace<PolyCell>>> frontLines,
             HashSet<FrontFace<PolyCell>> frontFaces,
             HashSet<FrontSegmentAssignment> allSegs,
@@ -90,9 +90,6 @@ public class FrontSegmentAssignment : ForceAssignment
     {
         if (Segment.Faces.All(frontFaces.Contains)) return this.Yield();
         
-        
-        //first try to reunite front
-            //if so then validate subassgns
         var otherSegFaces = allSegs.Except(this.Yield()).SelectMany(s => s.Segment.Faces).ToHashSet();
         var reunited = Segment.CheckReunite(frontLines, 
             frontFaces, 
@@ -106,9 +103,20 @@ public class FrontSegmentAssignment : ForceAssignment
             return this.Yield();
         }
 
+        if (res.Count() == 0) return null;
+        
         var newSegs = res.Select(
             r => FrontSegmentAssignment.Construct(new EntityRef<Regime>(Regime.RefId),
                 r, false, key)).ToList();
+        
+        PartitionAmong(newSegs, key);
+        
+        return newSegs;
+    }
+
+    private void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,
+        LogicWriteKey key)
+    {
         var freeGroups = GetFreeGroups(key.Data);
         HoldLine.DistributeAmong(newSegs, key);
         Insert.DistributeAmong(newSegs, key);
@@ -122,30 +130,6 @@ public class FrontSegmentAssignment : ForceAssignment
                         .GetCenter()
                         .GetOffsetTo(groupCell.GetCenter(), key.Data));
             close.GroupIds.Add(freeGroup.Id);
-        }
-        
-        
-        
-        return newSegs;
-    }
-
-    private void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,
-        LogicWriteKey key)
-    {
-        foreach (var groupId in GroupIds)
-        {
-            if (HoldLine.FacesByGroupId.ContainsKey(groupId))
-            {
-                
-            }
-            else if (Reserve.GroupIds.Contains(groupId))
-            {
-                
-            }
-            else if (Insert.Insertions.ContainsKey(groupId))
-            {
-                
-            }
         }
     }
     
@@ -177,11 +161,6 @@ public class FrontSegmentAssignment : ForceAssignment
                 if (us == null) return 0f;
                 return us.Sum(u => u.GetPowerPoints(data));
             });
-    }
-    
-    public void MergeInto(FrontSegmentAssignment merging, LogicWriteKey key)
-    {
-        GroupIds.AddRange(merging.GroupIds);
     }
 
     

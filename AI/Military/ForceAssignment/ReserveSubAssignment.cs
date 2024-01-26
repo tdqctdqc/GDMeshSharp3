@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using MessagePack;
 
 public class ReserveSubAssignment
@@ -26,6 +27,18 @@ public class ReserveSubAssignment
     }
     public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
     {
-        throw new NotImplementedException();
+        foreach (var groupId in GroupIds)
+        {
+            var groupCell = key.Data.Get<UnitGroup>(groupId)
+                .GetCell(key.Data);
+            var close = segs
+                .MinBy(s =>
+                    s.GetCharacteristicCell(key.Data)
+                        .GetCenter()
+                        .GetOffsetTo(groupCell.GetCenter(), key.Data));
+            close.GroupIds.Add(groupId);
+            close.Reserve.GroupIds.Add(groupId);
+        }
+        GroupIds.Clear();
     }
 }

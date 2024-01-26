@@ -21,7 +21,6 @@ public class FrontSegment
         for (var i = 0; i < frontLines.Count; i++)
         {
             var line = frontLines[i];
-            var goodLineStart = -1;
             line.DoForRuns(
                 c =>
                 {
@@ -39,6 +38,10 @@ public class FrontSegment
         }
 
         res = resInner;
+        if (res.Count == 1)
+        {
+            Faces = res.First();
+        }
         return res.Count() == 1;
     }
 }

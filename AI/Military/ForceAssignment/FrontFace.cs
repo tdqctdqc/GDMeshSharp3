@@ -36,6 +36,12 @@ public struct FrontFace<T> where T : IIdentifiable
                 return new FrontFace<T>(n.Id, foreign);
             });
     }
+
+    public bool Adjacent(FrontFace<T> face)
+    {
+        return Native == face.Native || Foreign == face.Foreign;
+    }
+
 }
 
 public static class FrontFaceExt

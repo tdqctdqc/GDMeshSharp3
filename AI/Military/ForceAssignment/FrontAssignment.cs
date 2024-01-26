@@ -100,7 +100,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         return lines;
     }
 
-    public void CheckSegments(LogicWriteKey key)
+    public void Validate(LogicWriteKey key)
     {
         ValidateSegments(key);
         MakeNewSegmentsForUncoveredFaces(key);
@@ -128,7 +128,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
                      .OfType<FrontSegmentAssignment>().ToList())
         {
             Assignments.Remove(seg);
-            var newSegs = seg.ValidateFaces(lines, 
+            var newSegs = seg.Validate(lines, 
                 faces, 
                 Assignments.OfType<FrontSegmentAssignment>().ToHashSet(),
                 key);
@@ -159,35 +159,16 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             }
             if (line.All(uncoveredFaces.Contains) == false)
             {
-                var sublineStart = -1;
-                for (var i = 0; i < line.Count; i++)
-                {
-                    var face = line[i];
-                    if (uncoveredFaces.Contains(face) == false)
+                line.DoForRuns(
+                    v => uncoveredFaces.Contains(v),
+                    l =>
                     {
-                        addSegment(sublineStart, i - 1);
-                        sublineStart = -1;
+                        var subLineSeg = FrontSegmentAssignment.Construct(
+                            new EntityRef<Regime>(Regime.RefId),
+                            l, false, key);
+                        Assignments.Add(subLineSeg);
                     }
-                    else if (sublineStart == -1)
-                    {
-                        sublineStart = i;
-                    }
-
-                    if (i == line.Count() - 1)
-                    {
-                        addSegment(sublineStart, i);
-                    }
-                }
-
-                void addSegment(int start, int end)
-                {
-                    if (start == -1) return;
-                    var subLine = line.GetRange(start, end - start + 1);
-                    var subLineSeg = FrontSegmentAssignment.Construct(
-                        new EntityRef<Regime>(Regime.RefId),
-                        subLine, false, key);
-                    Assignments.Add(subLineSeg);
-                }
+                );
                 continue;
             }
 
