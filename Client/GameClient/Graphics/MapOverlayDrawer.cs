@@ -32,11 +32,12 @@ public class MapOverlayDrawer
 
     public void Draw(Action<MeshBuilder> draw, Vector2 pos)
     {
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         draw(mb);
         var mi = mb.GetMeshInstance();
         mi.ZIndex = _z;
         _nodes.Add(mi);
         _segmenter.AddElement(mi, pos);
+        mb.Return();
     }
 }

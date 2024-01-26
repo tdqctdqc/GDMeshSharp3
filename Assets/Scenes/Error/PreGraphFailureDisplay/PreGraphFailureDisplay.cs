@@ -6,7 +6,7 @@ public partial class PreGraphFailureDisplay : Node2D
 {
     public void Setup(PreGraphFailureException e)
     {
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         foreach (var lineSegment in e.Graph.Edges)
         {
             mb.AddArrow(lineSegment.From, lineSegment.To, 3f, Colors.Red);
@@ -17,5 +17,6 @@ public partial class PreGraphFailureDisplay : Node2D
             mb.AddPointMarkers(new List<Vector2>{center}, 10f, Colors.Blue);
         }
         AddChild(mb.GetMeshInstance());
+        mb.Return();
     }
 }

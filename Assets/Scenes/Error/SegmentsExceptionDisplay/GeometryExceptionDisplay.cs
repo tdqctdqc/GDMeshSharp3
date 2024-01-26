@@ -27,10 +27,11 @@ public partial class GeometryExceptionDisplay : Node2D
 
     private void SetupSegs(GeometryException e)
     {
+        var mb = MeshBuilder.GetFromPool();
         for (int i = 0; i < e.SegLayers.Count; i++)
         {
             _iter++;
-            var mb = new MeshBuilder();
+            mb.Clear();
             mb.AddCircle(Vector2.Zero, 10f, 12, Colors.Pink);
             var segs = e.SegLayers[i];
             
@@ -65,13 +66,16 @@ public partial class GeometryExceptionDisplay : Node2D
             AddChild(child);
             MovePos(height);
         }
+        mb.Return();
     }
 
     private void SetupPoints(GeometryException e)
     {
+        var mb = MeshBuilder.GetFromPool();
+
         for (var i = 0; i < e.PointSets.Count; i++)
         {
-            var mb = new MeshBuilder();
+            mb.Clear();
             _iter++;
             var points = e.PointSets[i];
             var col = ColorsExt.GetRainbowColor(_iter);
@@ -93,12 +97,14 @@ public partial class GeometryExceptionDisplay : Node2D
             
             MovePos(height);
         }
+        mb.Return();
     }
     private void SetupTris(GeometryException e)
     {
+        var mb = MeshBuilder.GetFromPool();
         for (var i = 0; i < e.TriSets.Count; i++)
         {
-            var mb = new MeshBuilder();
+            mb.Clear();
             _iter++;
             var col = ColorsExt.GetRainbowColor(_iter);
 
@@ -123,6 +129,7 @@ public partial class GeometryExceptionDisplay : Node2D
             
             MovePos(height);
         }
+        mb.Return();
     }
     private void MovePos(float shift)
     {

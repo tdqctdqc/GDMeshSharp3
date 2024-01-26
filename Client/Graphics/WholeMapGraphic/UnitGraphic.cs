@@ -22,7 +22,7 @@ public partial class UnitGraphic : Node2D
     
     public UnitGraphic(Unit unit, Data data)
     {
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         var regime = unit.Regime.Entity(data);
         var iconSize = 15f;
         mb.AddPoint(Vector2.Zero, iconSize, Colors.Black);
@@ -70,6 +70,7 @@ public partial class UnitGraphic : Node2D
         AddChild(_powerPoints);
         
         Draw(unit, data);
+        mb.Return();
     }
     public void Draw(Unit unit, Data data)
     {

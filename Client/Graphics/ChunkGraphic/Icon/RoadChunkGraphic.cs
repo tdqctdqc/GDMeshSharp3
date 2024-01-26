@@ -11,14 +11,16 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
     public RoadChunkGraphicNode(MapChunk chunk, Data d) 
         : base(chunk, nameof(RoadChunkGraphicNode))
     {
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         DrawRoads(chunk, d, mb);
         if (mb.Tris.Count == 0) return;
-        AddChild(mb.GetMeshInstance());
+        mb.Return();
     }
 
-    private static void DrawRoads(MapChunk chunk, Data d, MeshBuilder mb)
+    public void DrawRoads(MapChunk chunk, Data d, 
+        MeshBuilder mb)
     {
+        this.ClearChildren();
         var wps = chunk.Polys
             .Where(p => p.IsLand)
             .SelectMany(p => 
@@ -37,15 +39,29 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
                 }
             }
         }
-        var edges = d.Infrastructure.RoadNetwork.Roads.Dic.Keys
-            .Where(k => chunk.Polys.Contains(d[(int)k.X]));
-        
+        AddChild(mb.GetMeshInstance());
     }
-    public static ChunkGraphicLayer<RoadChunkGraphicNode> GetLayer(Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<RoadChunkGraphicNode> 
+        GetLayer(Client client, GraphicsSegmenter segmenter)
     {
+        
         var l = new ChunkGraphicLayer<RoadChunkGraphicNode>(LayerOrder.Roads,
             "Roads", segmenter, 
-            c => new RoadChunkGraphicNode(c, d), d);
+            c => new RoadChunkGraphicNode(c, client.Data), client.Data);
+        
+        client.Data.Notices.Ticked.Blank.Subscribe(() =>
+        {
+            client.QueuedUpdates.Enqueue(() =>
+            {
+                var mb = MeshBuilder.GetFromPool();
+                foreach (var kvp in l.ByChunkCoords)
+                {
+                    kvp.Value.DrawRoads(kvp.Value.Chunk, client.Data, mb);
+                }
+                mb.Return();
+            });
+        });
+        
         return l;
     }
 }

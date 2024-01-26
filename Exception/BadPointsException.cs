@@ -12,9 +12,11 @@ public class BadPointsException : DisplayableException
     }
     public override Node2D GetGraphic()
     {
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         mb.AddPointMarkers(Points, 20f, Colors.White);
-        return mb.GetMeshInstance();
+        var mi = mb.GetMeshInstance();
+        mb.Return();
+        return mi;
     }
 
     public override Control GetUi()

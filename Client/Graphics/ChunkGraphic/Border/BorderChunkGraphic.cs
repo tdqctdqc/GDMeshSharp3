@@ -31,7 +31,7 @@ public abstract partial class BorderChunkNode
     public void Draw(Data data)
     {
         this.ClearChildren();
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         var polys = Chunk.Polys;
         foreach (var element in polys)
         {
@@ -46,5 +46,6 @@ public abstract partial class BorderChunkNode
         
         if (mb.Tris.Count == 0) return;
         AddChild(mb.GetMeshInstance());
+        mb.Return();
     }
 }

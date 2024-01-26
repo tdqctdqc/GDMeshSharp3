@@ -4,15 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="made icon graphics use multimesh">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="just made frontSegs redistribute themselves into new front segs every turn">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/EnumerableExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/EnumerableExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/BadTriangulationDisplay/BadTriangulationDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/BadTriangulationDisplay/BadTriangulationDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/PreGraphFailureDisplay/PreGraphFailureDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/PreGraphFailureDisplay/PreGraphFailureDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitOrderGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitOrderGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/BadPointsException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/BadPointsException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,7 +75,6 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/ForceAssignment/FrontAssignment.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
@@ -79,6 +82,7 @@
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Blobber.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -472,7 +476,7 @@
       <workItem from="1706229743367" duration="5137000" />
       <workItem from="1706237643022" duration="4743000" />
       <workItem from="1706295623616" duration="595000" />
-      <workItem from="1706302176432" duration="2720000" />
+      <workItem from="1706302176432" duration="4046000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -684,14 +688,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00110" summary="working on new PolyCell system">
-      <option name="closed" value="true" />
-      <created>1705349270730</created>
-      <option name="number" value="00110" />
-      <option name="presentableId" value="LOCAL-00110" />
-      <option name="project" value="LOCAL" />
-      <updated>1705349270731</updated>
-    </task>
     <task id="LOCAL-00111" summary="ditto">
       <option name="closed" value="true" />
       <created>1705427219123</created>
@@ -836,7 +832,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706302390661</updated>
     </task>
-    <option name="localTasksCounter" value="129" />
+    <task id="LOCAL-00129" summary="just made frontSegs redistribute themselves into new front segs every turn">
+      <option name="closed" value="true" />
+      <created>1706305386196</created>
+      <option name="number" value="00129" />
+      <option name="presentableId" value="LOCAL-00129" />
+      <option name="project" value="LOCAL" />
+      <updated>1706305386197</updated>
+    </task>
+    <option name="localTasksCounter" value="130" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -858,7 +862,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="bugfixing pathfinding and movement" />
     <MESSAGE value="changing road generation" />
     <MESSAGE value="made MapOverlayDrawer" />
     <MESSAGE value="made fronts only take certain num of units" />
@@ -883,6 +886,7 @@
     <MESSAGE value="working on frontSegment reunification" />
     <MESSAGE value="ditto" />
     <MESSAGE value="made icon graphics use multimesh" />
-    <option name="LAST_COMMIT_MESSAGE" value="made icon graphics use multimesh" />
+    <MESSAGE value="just made frontSegs redistribute themselves into new front segs every turn" />
+    <option name="LAST_COMMIT_MESSAGE" value="just made frontSegs redistribute themselves into new front segs every turn" />
   </component>
 </project>

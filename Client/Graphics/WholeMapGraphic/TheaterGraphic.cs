@@ -24,11 +24,12 @@ public partial class TheaterGraphic : Node2D
         
         var relToId = theater.HeldCellIds.First();
         var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         var color = ColorsExt.GetRandomColor();
         DrawTheaterWps(theater, mb, color, d);
         // DrawLinks(theater, mb, d);
         DrawFronts(theater, d, mb, color);
+        mb.Return();
     }
 
     private void DrawFronts(TheaterAssignment theater, 

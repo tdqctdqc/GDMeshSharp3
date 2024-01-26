@@ -36,7 +36,7 @@ public partial class UnitOrderGraphic : Node2D
         }
         segmenter.AddElement(this, Group.GetPosition(d));
         
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         var order = Group.GroupOrder;
         order.Draw(Group, Group.GetPosition(d), mb, d);
         if (mb.Tris.Count > 0)
@@ -44,5 +44,6 @@ public partial class UnitOrderGraphic : Node2D
             Mesh = mb.GetMeshInstance();
             AddChild(Mesh);
         }
+        mb.Return();
     }
 }

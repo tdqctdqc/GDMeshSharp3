@@ -11,7 +11,7 @@ public partial class BadTriangulationDisplay : Node2D
         var label = (Label) FindChild("Label");
         label.Text = err.Poly.Id + " at " + err.Poly.Center;
         
-        var mb = new MeshBuilder();
+        var mb = MeshBuilder.GetFromPool();
         mb.AddPointMarkers(new List<Vector2>{Vector2.Zero}, 10f, Colors.Red);
         mb.AddPointMarkers(new List<Vector2>{err.Poly.GetOrderedBoundarySegs(err.Data).Average()}, 10f, Colors.Green);
         for (var i = 0; i < err.Tris.Count; i++)
@@ -36,5 +36,6 @@ public partial class BadTriangulationDisplay : Node2D
         }
         
         AddChild(mb.GetMeshInstance());
+        mb.Return();
     }
 }

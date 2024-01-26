@@ -2,12 +2,28 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using LightObjectPool;
 
 public class MeshBuilder
 {
+    private static Pool<MeshBuilder> _pool;
     public List<Triangle> Tris { get; private set; }
     public List<Color> Colors { get; private set; }
     public List<Label> Labels { get; private set; }
+    static MeshBuilder()
+    {
+        var policy = new PoolPolicy<MeshBuilder>(
+            f => f.GetPooledObject().Value,
+            p => p.Clear(),
+            100
+        );
+        _pool = LightObjectPool.Pool.Create<MeshBuilder>(p => p.Clear(), 100);
+    }
+
+    public static MeshBuilder GetFromPool()
+    {
+        return _pool.Get();
+    }
 
     public MeshBuilder()
     {
@@ -15,7 +31,10 @@ public class MeshBuilder
         Colors = new List<Color>();
         Labels = new List<Label>();
     }
-
+    public void Return()
+    {
+        _pool.Return(this);
+    }
     public void Clear()
     {
         Tris.Clear();
