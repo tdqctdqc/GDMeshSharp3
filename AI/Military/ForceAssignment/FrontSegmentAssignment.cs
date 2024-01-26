@@ -88,9 +88,20 @@ public class FrontSegmentAssignment : ForceAssignment
             HashSet<FrontSegmentAssignment> allSegs,
             LogicWriteKey key)
     {
-        if (Segment.Faces.All(frontFaces.Contains)) return this.Yield();
-        
-        var otherSegFaces = allSegs.Except(this.Yield()).SelectMany(s => s.Segment.Faces).ToHashSet();
+        var otherSegFaces = allSegs
+            .Where(s => s != this)
+            .SelectMany(s => s.Segment.Faces).ToHashSet();
+        if (otherSegFaces.Intersect(Segment.Faces).Count() > 0)
+        {
+            throw new Exception();
+        }
+        if (Segment.Faces.All(frontFaces.Contains))
+        {
+            HoldLine.ValidateGroupFaces(this, key);
+            Insert.ValidateInsertionPoints(this, key);
+            Reserve.Validate(this, key);
+            return this.Yield();
+        }
         var reunited = Segment.CheckReunite(frontLines, 
             frontFaces, 
             otherSegFaces,
@@ -103,7 +114,11 @@ public class FrontSegmentAssignment : ForceAssignment
             return this.Yield();
         }
 
-        if (res.Count() == 0) return null;
+        if (res.Count() == 0)
+        {
+            //merge into some other seg
+            return null;
+        }
         
         var newSegs = res.Select(
             r => FrontSegmentAssignment.Construct(new EntityRef<Regime>(Regime.RefId),

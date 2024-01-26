@@ -15,26 +15,33 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
         AddNode(_borders);
     }
 
-    public static ChunkGraphicLayer<RegimeChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<RegimeChunkModule> GetLayer(Client client, GraphicsSegmenter segmenter)
     {
         var l = new ChunkGraphicLayer<RegimeChunkModule>(
             LayerOrder.PolyFill,
             "Regimes",
             segmenter, 
-            c => new RegimeChunkModule(c, d), 
-            d);
+            c => new RegimeChunkModule(c, client.Data), 
+            client.Data);
         l.AddTransparencySetting(m => m._fill, "Fill Transparency", .25f);
-        l.AddTransparencySetting(m => m._borders, "Border Transparency", 0f);
-        l.RegisterForChunkNotice(d.Planet.PolygonAux.ChangedOwnerRegime,
-            r => r.Entity.GetChunkAndNeighboringChunks(d),
-            (n, m) => { m.HandlePolygonRegimeChange(n, d); });
+        l.AddTransparencySetting(m => m._borders, "Border Transparency", 1f);
+        
+        
+        client.Data.Notices.Ticked.Blank.Subscribe(() =>
+        {
+            client.QueuedUpdates.Enqueue(() =>
+            {
+                foreach (var kvp in l.ByChunkCoords)
+                {
+                    var v = kvp.Value;
+                    v._fill.Update(client.Data);
+                    v._borders.Draw(client.Data);
+                }
+            });
+        });
+        
         l.EnforceSettings();
         return l;
     }
 
-    private void HandlePolygonRegimeChange(ValChangeNotice<MapPolygon, Regime> notice, Data data)
-    {
-        _fill.Updates.Add(notice.Entity);
-        _borders.QueueChangeAround(notice.Entity, data);
-    }
 }

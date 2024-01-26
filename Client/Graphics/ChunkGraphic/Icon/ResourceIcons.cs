@@ -3,44 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class ResourceIcons : MapChunkGraphicNode<MapPolygon>
+public partial class ResourceIcons 
+    : ChunkIconsMultiMesh<Item, ResourceDeposit>
 {
-    public ResourceIcons(MapChunk chunk, Data data) 
-        : base(nameof(ResourceIcons), data, chunk)
+    public ResourceIcons(MapChunk chunk, Data d) 
+        : base("Resources", chunk, Vector2.One * 25f)
     {
-    }
-    private ResourceIcons() : base()
-    {
+        Draw(d);
     }
 
-    protected override Node2D MakeGraphic(MapPolygon element, Data data)
+    protected override Texture2D GetTexture(Item t)
     {
-        var deps = element.GetResourceDeposits(data);
-        var node = new Node2D();
-        var hbox = new HBoxContainer();
-        hbox.Alignment = BoxContainer.AlignmentMode.Center;
-        node.AddChild(hbox);
-        var size = Game.I.Client.Settings.MedIconSize.Value;
-        foreach (var dep in deps)
-        {
-            if (dep.Size == 0) continue;
-            var icon = dep.Item.Model(data).Icon
-                .GetTextureRect(size);
-            hbox.AddChild(icon);
-        }
-
-        hbox.Position = new Vector2(-size * deps.Count() / 2f, 0f);
-        SetRelPos(node, element, data);
-        return node;
+        return t.Icon.Texture;
     }
 
-    protected override IEnumerable<MapPolygon> GetKeys(Data data)
+    protected override IEnumerable<ResourceDeposit> GetElements(Data d)
     {
-        return Chunk.Polys;
+        return Chunk.Polys
+            .Select(p => p.GetResourceDeposits(d))
+            .Where(r => r != null)
+            .SelectMany(r => r);
     }
 
-    protected override bool Ignore(MapPolygon element, Data data)
+    protected override Item GetModel(ResourceDeposit t, Data d)
     {
-        return element.GetResourceDeposits(data) == null;
+        return t.Item.Model(d);
+    }
+
+    protected override Vector2 GetWorldPos(ResourceDeposit t, Data d)
+    {
+        return t.Poly.Entity(d).Center;
     }
 }

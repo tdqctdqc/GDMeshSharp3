@@ -3,35 +3,35 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class BuildingIcons : MapChunkGraphicNode<MapBuilding>
+public partial class BuildingIcons 
+    : ChunkIconsMultiMesh<BuildingModel, MapBuilding>
 {
-    public BuildingIcons(MapChunk chunk, Data data) 
-        : base(nameof(BuildingIcons), data, chunk)
+    public BuildingIcons(MapChunk chunk, Data d) 
+        : base("Buildings", chunk, Vector2.One * 25f) 
     {
-    }
-    private BuildingIcons() : base()
-    {
+        Draw(d);
     }
 
-    protected override Node2D MakeGraphic(MapBuilding element, Data data)
+    protected override Texture2D GetTexture(BuildingModel t)
     {
-        var size = Game.I.Client.Settings.SmallIconSize.Value;
-        var icon = element.Model.Model(data).Icon.GetMeshInstance(size);
-        var cell = PlanetDomainExt.GetPolyCell(element.PolyCellId, data);
-        SetRelPos(icon, cell.GetCenter(), data);
-        return icon;
+        return t.Icon.Texture;
     }
 
-    protected override IEnumerable<MapBuilding> GetKeys(Data data)
+    protected override IEnumerable<MapBuilding> GetElements(Data d)
     {
-        var keys = Chunk.Polys
-            .Where(p => p.GetBuildings(data) != null)
-            .SelectMany(p => p.GetBuildings(data));
-        return keys;
+        return Chunk.Polys
+            .Select(p => p.GetBuildings(d))
+            .Where(bs => bs != null)
+            .SelectMany(bs => bs);
     }
 
-    protected override bool Ignore(MapBuilding element, Data data)
+    protected override BuildingModel GetModel(MapBuilding t, Data d)
     {
-        return false;
+        return t.Model.Model(d);
+    }
+
+    protected override Vector2 GetWorldPos(MapBuilding t, Data d)
+    {
+        return PlanetDomainExt.GetPolyCell(t.PolyCellId, d).GetCenter();
     }
 }

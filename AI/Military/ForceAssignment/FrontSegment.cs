@@ -16,7 +16,8 @@ public class FrontSegment
         LogicWriteKey key,
         out List<List<FrontFace<PolyCell>>> res)
     {
-        var valid = Faces.Where(frontFaces.Contains).ToHashSet();
+        var valid = Faces
+            .Where(frontFaces.Contains).ToHashSet();
         var resInner = new List<List<FrontFace<PolyCell>>>();
         for (var i = 0; i < frontLines.Count; i++)
         {
@@ -29,9 +30,13 @@ public class FrontSegment
                 },
                 r =>
                 {
+                    //bc of 'single' edges !!
                     if (r.Any(valid.Contains))
                     {
-                        resInner.Add(r);
+                        var start = r.FindIndex(f => valid.Contains(f));
+                        var end = r.FindLastIndex(f => valid.Contains(f));
+                        var l = r.GetRange(start, end - start + 1);
+                        resInner.Add(l);
                     }
                 }
             );
@@ -41,6 +46,10 @@ public class FrontSegment
         if (res.Count == 1)
         {
             Faces = res.First();
+        }
+        else
+        {
+            Faces.Clear();
         }
         return res.Count() == 1;
     }

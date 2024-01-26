@@ -5,7 +5,7 @@ using Godot;
 
 public partial class RegimeBordersNode : BorderChunkNode
 {
-    private static float _thickness = 20f;
+    private static float _thickness = 5f;
     public RegimeBordersNode(MapChunk chunk, Data data) 
         : base(nameof(RegimeBordersNode), chunk, data)
     {

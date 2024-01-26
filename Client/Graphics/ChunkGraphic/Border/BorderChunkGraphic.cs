@@ -1,17 +1,24 @@
 
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
 public abstract partial class BorderChunkNode 
-    : MapChunkGraphicNode<MapPolygon>
+    : Node2D, IMapChunkGraphicNode
 {
+    public MapChunk Chunk { get; private set; }
+    public string Name { get; private set; }
+    Node2D IMapChunkGraphicNode.Node => this;
+
     public BorderChunkNode(string name, MapChunk chunk, 
         Data data)
-        : base(name, data, chunk)
     {
+        Chunk = chunk;
+        Name = name;
+        Draw(data);
     }
     private BorderChunkNode() : base()
     {
@@ -21,48 +28,23 @@ public abstract partial class BorderChunkNode
     protected abstract float GetThickness(MapPolygon p1, MapPolygon p2, Data data);
     protected abstract Color GetColor(MapPolygon p1, Data data);
     
-    protected override Node2D MakeGraphic(MapPolygon element, Data data)
+    public void Draw(Data data)
     {
+        this.ClearChildren();
         var mb = new MeshBuilder();
-        var color = GetColor(element, data);
-        var offset = Chunk.RelTo.GetOffsetTo(element, data);
-        foreach (var n in element.Neighbors.Items(data))
+        var polys = Chunk.Polys;
+        foreach (var element in polys)
         {
-            if (InUnion(n, element, data)) continue;
-            mb.DrawPolyEdge(element, n, p => GetColor(p, data), GetThickness(element, n, data), Chunk.RelTo, data);
+            var color = GetColor(element, data);
+            var offset = Chunk.RelTo.GetOffsetTo(element, data);
+            foreach (var n in element.Neighbors.Items(data))
+            {
+                if (InUnion(n, element, data)) continue;
+                mb.DrawPolyEdge(element, n, p => GetColor(p, data), GetThickness(element, n, data), Chunk.RelTo, data);
+            }
         }
         
-        if (mb.Tris.Count == 0) return new Node2D();
-        return mb.GetMeshInstance();
-    }
-
-    protected override IEnumerable<MapPolygon> GetKeys(Data data)
-    {
-        return Chunk.Polys
-            .Where(p =>
-            {
-                var ns = p.Neighbors.Items(data);
-                var r = p.OwnerRegime;
-                var rFulfilled = p.OwnerRegime.Fulfilled();
-                var nNotInUnion = ns.Any(n => InUnion(n, p, data) == false);
-                return rFulfilled
-                       && nNotInUnion;
-            });
-    }
-
-    protected override bool Ignore(MapPolygon element, Data data)
-    {
-        return element.OwnerRegime.Fulfilled() == false
-               || element.Neighbors.Items(data).Any(n => n.OwnerRegime.RefId != element.OwnerRegime.RefId) == false;
-    }
-
-    public void QueueChangeAround(MapPolygon poly, Data data)
-    {
-        if(Chunk.Polys.Contains(poly)) QueueChange(poly);
-        foreach (var n in poly.Neighbors.Items(data).Where(n => Chunk.Polys.Contains(n)))
-        {
-            if (Ignore(n, data)) continue;
-            QueueChange(n);
-        }
+        if (mb.Tris.Count == 0) return;
+        AddChild(mb.GetMeshInstance());
     }
 }

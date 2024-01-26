@@ -12,7 +12,6 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
     private Dictionary<TElement, List<int>> _triIndicesByElement;
     private List<Vector2> _vertices;
     private List<Color> _colors;
-    public HashSet<TElement> Updates { get; private set; }
     private Func<TElement, Data, Color> _getColor;
     private Func<TElement, Data, IEnumerable<Triangle>> _getTris;
     private Func<Data, IEnumerable<TElement>> _getElements;
@@ -23,12 +22,9 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
         Data data)
     {
         Name = name;
-        Updates = new HashSet<TElement>();
         _getColor = getColor;
         _getTris = getTris;
         _getElements = getElements;
-        
-        
         _triIndicesByElement = new Dictionary<TElement, List<int>>();
         _vertices = new List<Vector2>();
         _colors = new List<Color>();
@@ -56,29 +52,23 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
         else _arrayMesh = MeshGenerator.GetArrayMesh(_vertices.ToArray(), _colors.ToArray());
         Mesh = _arrayMesh;
     }
-    public void Update(Data d, ConcurrentQueue<Action> queue)
+    public void Update(Data d)
     {
-        if (Updates.Count == 0) return;
-        // Init(d);
-        queue.Enqueue(() =>
+        var mdt = new MeshDataTool();
+        mdt.CreateFromSurface(_arrayMesh, 0);
+        _arrayMesh.ClearSurfaces();
+        foreach (var key in _triIndicesByElement.Keys)
         {
-            var mdt = new MeshDataTool();
-            mdt.CreateFromSurface(_arrayMesh, 0);
-        
-            foreach (var key in _triIndicesByElement.Keys)
+            var tris = _triIndicesByElement[key];
+            var color = _getColor(key, d);
+            foreach (var tri in tris)
             {
-                var tris = _triIndicesByElement[key];
-                var color = _getColor(key, d);
-                foreach (var tri in tris)
-                {
-                    mdt.SetVertexColor(tri*3, color);
-                    mdt.SetVertexColor(tri*3 + 1, color);
-                    mdt.SetVertexColor(tri*3 + 2, color);
-                }
+                mdt.SetVertexColor(tri*3, color);
+                mdt.SetVertexColor(tri*3 + 1, color);
+                mdt.SetVertexColor(tri*3 + 2, color);
             }
-        
-            mdt.CommitToSurface(_arrayMesh);
-            Updates.Clear();
-        });
+        }
+    
+        mdt.CommitToSurface(_arrayMesh);
     }
 }

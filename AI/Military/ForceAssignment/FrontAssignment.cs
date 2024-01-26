@@ -103,17 +103,18 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
     public void Validate(LogicWriteKey key)
     {
         ValidateSegments(key);
-        MakeNewSegmentsForUncoveredFaces(key);
-        TransferFacesBetweenSegments(key);
-        //shift faces + groups between segments to make them good size
-        //shift support groups + reserves
-
         var segmentFaces = Assignments.OfType<FrontSegmentAssignment>()
             .SelectMany(s => s.Segment.Faces);
         if (segmentFaces.Count() != segmentFaces.Distinct().Count())
         {
             throw new Exception();
         }
+        MakeNewSegmentsForUncoveredFaces(key);
+        TransferFacesBetweenSegments(key);
+        //shift faces + groups between segments to make them good size
+        //shift support groups + reserves
+
+        
     }
     
     private void ValidateSegments(LogicWriteKey key)
@@ -123,9 +124,9 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         var faces = lines
             .SelectMany(l => l)
             .ToHashSet();
-        
-        foreach (var seg in Assignments
-                     .OfType<FrontSegmentAssignment>().ToList())
+        var oldSegs = Assignments
+            .OfType<FrontSegmentAssignment>().ToList();
+        foreach (var seg in oldSegs)
         {
             Assignments.Remove(seg);
             var newSegs = seg.Validate(lines, 

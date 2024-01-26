@@ -62,7 +62,8 @@ public class MeshBuilder
         AddTri(toIn, toOut, fromIn, color);
     }
 
-    public void DrawPolyEdge(MapPolygon poly, MapPolygon n, Func<MapPolygon, Color> color,
+    public void DrawPolyEdge(MapPolygon poly, MapPolygon n, 
+        Func<MapPolygon, Color> color,
         float thickness, MapPolygon relTo, Data d)
     {
         var offset = relTo.GetOffsetTo(poly, d);
@@ -79,26 +80,9 @@ public class MeshBuilder
             var toPerp = seg.To - perp;
             var fromPerp = seg.From - perp;
 
-            var toInnerV = Geometry2D.LineIntersectsLine(toPerp, axis, 
-                Vector2.Zero, seg.To);
-            var fromInnerV = Geometry2D.LineIntersectsLine(fromPerp, axis, 
-                Vector2.Zero, seg.From);
-            if (toInnerV.Obj is Vector2 toInner && fromInnerV.Obj is Vector2 fromInner)
-            {
-                AddTri(new Triangle(seg.From, seg.To, fromInner).Transpose(offset), color(poly));
-                AddTri(new Triangle(toInner, seg.To, fromInner).Transpose(offset), color(poly));
-                // AddLine(seg.To + offset, toInner + offset, color(poly), 2.5f);
-                // AddLine(fromInner + offset, toInner + offset, color(poly), 2.5f);
-                // AddPointMarker(toPerp + offset, 10f, color(poly));
-                // AddPointMarker(toInner + offset, 10f, color(poly));
-                // AddPointMarker(fromInner + offset, 10f, color(poly));
-            }
-        }
+            AddTri(new Triangle(seg.From, seg.To, toPerp).Transpose(offset), color(poly));
+            AddTri(new Triangle(toPerp, seg.From, fromPerp).Transpose(offset), color(poly));
 
-        Vector2 getInner(Vector2 point, float theta)
-        {
-            if (Mathf.Sin(theta) == 0f) throw new Exception();
-            return point.Normalized() * Mathf.Abs(point.Length() - thickness) / Mathf.Sin(theta);
         }
     }
 

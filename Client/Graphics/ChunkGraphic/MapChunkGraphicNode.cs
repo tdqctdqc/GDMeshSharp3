@@ -122,6 +122,5 @@ public interface IMapChunkGraphicNode
 {
     string Name { get; }
     Node2D Node { get; }
-    void Update(Data d, ConcurrentQueue<Action> queue);
 }
 

@@ -20,9 +20,9 @@ public class GraphicLayerHolder
     {
         Layers = new List<IGraphicLayer>();
         AddLayer(Terrain(segmenter, data), true);
-        AddLayer(PolyFill(segmenter, data), true);
-        AddLayer(Roads(2, segmenter, data), true);
-        AddLayer(IconsChunkModule.GetLayer(data, segmenter), true);
+        AddLayer(PolyFill(client, segmenter), true);
+        AddLayer(Roads(segmenter, data), true);
+        AddLayer(IconsChunkModule.GetLayer(client, segmenter), true);
         AddLayer(ResourceChunkModule.GetLayer(data, segmenter), false);
         // AddLayer(UnitOrdersGraphicLayer.GetLayer(segmenter, client), true);
         AddLayer(new UnitGraphicLayer(client, segmenter, data), true);
@@ -35,14 +35,15 @@ public class GraphicLayerHolder
         Layers.Add(layer);
     }
 
-    private ChunkGraphicSwitchLayer PolyFill(GraphicsSegmenter segmenter, Data data)
+    private ChunkGraphicSwitchLayer PolyFill(Client client,
+        GraphicsSegmenter segmenter)
     {
-        var regime = RegimeChunkModule.GetLayer(data, segmenter);
-        var diplomacy = DiplomacyChunkModule.GetLayer(data, segmenter);
-        var alliance = AllianceChunkModule.GetLayer(data, segmenter);
+        var regime = RegimeChunkModule.GetLayer(client, segmenter);
+        var diplomacy = DiplomacyChunkModule.GetLayer(client, segmenter);
+        var alliance = AllianceChunkModule.GetLayer(client, segmenter);
         return new ChunkGraphicSwitchLayer(LayerOrder.PolyFill, "Poly Fill", regime, diplomacy, alliance);
     }
-    private ChunkGraphicLayer<RoadChunkGraphicNode> Roads(int z, GraphicsSegmenter segmenter, 
+    private ChunkGraphicLayer<RoadChunkGraphicNode> Roads(GraphicsSegmenter segmenter, 
         Data d)
     {
         var l = new ChunkGraphicLayer<RoadChunkGraphicNode>(LayerOrder.Roads, "Roads", segmenter,

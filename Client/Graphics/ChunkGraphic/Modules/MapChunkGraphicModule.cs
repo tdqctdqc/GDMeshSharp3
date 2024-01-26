@@ -26,15 +26,5 @@ public partial class MapChunkGraphicModule : Node2D, IMapChunkGraphicNode
         AddChild((Node)layer);
         Nodes.Add(layer.Name, layer);
     }
-
-
-    public void Update(Data d, ConcurrentQueue<Action> queue)
-    {
-        foreach (var kvp in Nodes)
-        {
-            kvp.Value.Update(d, queue);
-        }
-    }
-
     Node2D IMapChunkGraphicNode.Node => this;
 }

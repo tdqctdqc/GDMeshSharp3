@@ -39,6 +39,7 @@ public struct FrontFace<T> where T : IIdentifiable
 
     public bool Adjacent(FrontFace<T> face)
     {
+        if (face.Equals(this)) return false;
         return Native == face.Native || Foreign == face.Foreign;
     }
 

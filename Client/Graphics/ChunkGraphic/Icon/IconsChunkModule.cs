@@ -20,20 +20,13 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         AddNode(BuildingIcons);
     }
     
-    public static ChunkGraphicLayer<IconsChunkModule> GetLayer(Data d, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<IconsChunkModule> GetLayer(Client client, GraphicsSegmenter segmenter)
     {
-        var l = new ChunkGraphicLayer<IconsChunkModule>(LayerOrder.Icons, "Icons", segmenter,
+        var d = client.Data;
+        var l = new ChunkGraphicLayer<IconsChunkModule>(
+            LayerOrder.Icons, "Icons", segmenter,
             c => new IconsChunkModule(c, d),
             d);
-        l.RegisterForEntityLifetime(n => PlanetDomainExt.GetPolyCell(n.PolyCellId, d).GetChunk(d), 
-            m => m.BuildingIcons, d);
-        
-        l.RegisterForEntityLifetime(n => n.Poly.Entity(d).GetChunk(d), 
-            m => m.SettlementIcons, d);
-        
-        l.RegisterForChunkNotice(d.Infrastructure.SettlementAux.ChangedTier, 
-            n => ((Settlement)n.Entity).Poly.Entity(d).GetChunk(d).Yield(),
-            (notice, graphic) => graphic.SettlementIcons.QueueChange(notice.Entity));
         
         l.RegisterForAdd(d.Infrastructure.ConstructionAux.StartedConstruction,
             k => PlanetDomainExt.GetPolyCell(k.PolyCellId, d).GetChunk(d),
@@ -41,7 +34,20 @@ public partial class IconsChunkModule : MapChunkGraphicModule
         l.RegisterForRemove(d.Infrastructure.ConstructionAux.EndedConstruction,
             k => PlanetDomainExt.GetPolyCell(k.PolyCellId, d).GetChunk(d),
             n => n.ConstructionIcons);
-
+        
+        d.Notices.Ticked.Blank.Subscribe(() =>
+        {
+            client.QueuedUpdates.Enqueue(() =>
+            {
+                foreach (var kvp in l.ByChunkCoords)
+                {
+                    var v = kvp.Value;
+                    v.SettlementIcons.Draw(d);
+                    v.BuildingIcons.Draw(d);
+                }
+            });
+        });
+        
         return l;
     }
 }
