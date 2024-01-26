@@ -4,18 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="just made frontSegs redistribute themselves into new front segs every turn">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/BadTriangulationDisplay/BadTriangulationDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/BadTriangulationDisplay/BadTriangulationDisplay.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/PreGraphFailureDisplay/PreGraphFailureDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/PreGraphFailureDisplay/PreGraphFailureDisplay.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitOrderGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitOrderGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Exception/BadPointsException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Exception/BadPointsException.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="made meshbuilder use pool">
       <change beforePath="$PROJECT_DIR$/Utility/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -476,7 +465,7 @@
       <workItem from="1706229743367" duration="5137000" />
       <workItem from="1706237643022" duration="4743000" />
       <workItem from="1706295623616" duration="595000" />
-      <workItem from="1706302176432" duration="4046000" />
+      <workItem from="1706302176432" duration="4348000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -688,14 +677,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00111" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1705427219123</created>
-      <option name="number" value="00111" />
-      <option name="presentableId" value="LOCAL-00111" />
-      <option name="project" value="LOCAL" />
-      <updated>1705427219123</updated>
-    </task>
     <task id="LOCAL-00112" summary="gettin there">
       <option name="closed" value="true" />
       <created>1705452232879</created>
@@ -840,7 +821,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706305386197</updated>
     </task>
-    <option name="localTasksCounter" value="130" />
+    <task id="LOCAL-00130" summary="made meshbuilder use pool">
+      <option name="closed" value="true" />
+      <created>1706306512760</created>
+      <option name="number" value="00130" />
+      <option name="presentableId" value="LOCAL-00130" />
+      <option name="project" value="LOCAL" />
+      <updated>1706306512760</updated>
+    </task>
+    <option name="localTasksCounter" value="131" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -862,7 +851,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="changing road generation" />
     <MESSAGE value="made MapOverlayDrawer" />
     <MESSAGE value="made fronts only take certain num of units" />
     <MESSAGE value="working on advance line" />
@@ -887,6 +875,7 @@
     <MESSAGE value="ditto" />
     <MESSAGE value="made icon graphics use multimesh" />
     <MESSAGE value="just made frontSegs redistribute themselves into new front segs every turn" />
-    <option name="LAST_COMMIT_MESSAGE" value="just made frontSegs redistribute themselves into new front segs every turn" />
+    <MESSAGE value="made meshbuilder use pool" />
+    <option name="LAST_COMMIT_MESSAGE" value="made meshbuilder use pool" />
   </component>
 </project>

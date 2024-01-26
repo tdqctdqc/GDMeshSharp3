@@ -15,7 +15,7 @@ public class MeshBuilder
         var policy = new PoolPolicy<MeshBuilder>(
             f => f.GetPooledObject().Value,
             p => p.Clear(),
-            100
+            1000
         );
         _pool = LightObjectPool.Pool.Create<MeshBuilder>(p => p.Clear(), 100);
     }
