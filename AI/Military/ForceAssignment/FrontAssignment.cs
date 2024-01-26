@@ -109,32 +109,35 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         {
             throw new Exception();
         }
-        MakeNewSegmentsForUncoveredFaces(key);
+
+        // Assignments.RemoveWhere(a => a.GroupIds.Count == 0);
+        
+        // MakeNewSegmentsForUncoveredFaces(key);
         TransferFacesBetweenSegments(key);
         //shift faces + groups between segments to make them good size
         //shift support groups + reserves
-
-        
     }
     
     private void ValidateSegments(LogicWriteKey key)
     {
         var d = key.Data;
         var lines = GetLines(d);
-        var faces = lines
-            .SelectMany(l => l)
-            .ToHashSet();
-        var oldSegs = Assignments
-            .OfType<FrontSegmentAssignment>().ToList();
-        foreach (var seg in oldSegs)
+        if (lines.Count == 0)
         {
-            Assignments.Remove(seg);
-            var newSegs = seg.Validate(lines, 
-                faces, 
-                Assignments.OfType<FrontSegmentAssignment>().ToHashSet(),
-                key);
-            Assignments.AddRange(newSegs);
+            Assignments.Clear();
+            GroupIds.Clear();
+            return;
         }
+        var newSegs = lines
+            .Select(l => FrontSegmentAssignment
+                .Construct(new EntityRef<Regime>(Regime.RefId), l, false, key)).ToList();
+        foreach (var seg in Assignments
+                     .OfType<FrontSegmentAssignment>())
+        {
+            seg.PartitionAmong(newSegs, key);
+        }
+        Assignments.Clear();
+        Assignments.AddRange(newSegs);
     }
 
     private void MakeNewSegmentsForUncoveredFaces(LogicWriteKey key)
@@ -226,7 +229,37 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         //     seg.SetAdvance(true, key);
         // }
     }
+    public void DistributeInto(IEnumerable<FrontAssignment> intos, Data d)
+    {
+        foreach (var assgn in Assignments)
+        {
+            var wp = assgn.GetCharacteristicCell(d);
+            var front = intos.FirstOrDefault(t => t.HeldCellIds.Contains(wp.Id));
+            if (front == null)
+            {
+                front = intos.MinBy(f => f.GetCharacteristicCell(d)
+                    .GetCenter().GetOffsetTo(wp.GetCenter(), d).Length());
+            }
+            front.Assignments.Add(assgn);
+            front.GroupIds.AddRange(assgn.GroupIds);
+            GroupIds.RemoveWhere(assgn.GroupIds.Contains);
+        }
 
+        foreach (var dissolveGroupId in GroupIds)
+        {
+            var group = d.Get<UnitGroup>(dissolveGroupId);
+            var front = intos.FirstOrDefault(f => f.HeldCellIds.Contains(group.GetCell(d).Id));
+            if (front is FrontAssignment == false)
+            {
+                front = intos
+                    .MinBy(f =>
+                        f.GetCharacteristicCell(d).GetCenter()
+                            .GetOffsetTo(group.GetCell(d).GetCenter(), d));
+            }
+
+            front.GroupIds.Add(group.Id);
+        }
+    }
     public IEnumerable<PolyCell> GetCells(Data d)
     {
         return HeldCellIds.Select(id => PlanetDomainExt.GetPolyCell(id, d));

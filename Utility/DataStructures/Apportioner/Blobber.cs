@@ -98,7 +98,7 @@ public static class Blobber
             cells, fronts,
             t => t.GetCells(d),
             wp => wp.GetNeighbors(d),
-            divideInto,
+            (f,fs) => f.DistributeInto(fs, d),
             makeBlob
         );
 
@@ -111,31 +111,6 @@ public static class Blobber
                 new HashSet<int>(), new HashSet<ForceAssignment>(),
                 ColorsExt.GetRandomColor());
         }
-        void divideInto(FrontAssignment dissolve, IEnumerable<FrontAssignment> intos)
-        {
-            foreach (var assgn in dissolve.Assignments)
-            {
-                var wp = assgn.GetCharacteristicCell(d);
-                var front = intos.First(t => t.HeldCellIds.Contains(wp.Id));
-                front.Assignments.Add(assgn);
-                front.GroupIds.AddRange(assgn.GroupIds);
-                dissolve.GroupIds.RemoveWhere(assgn.GroupIds.Contains);
-            }
-
-            foreach (var dissolveGroupId in dissolve.GroupIds)
-            {
-                var group = d.Get<UnitGroup>(dissolveGroupId);
-                var front = intos.FirstOrDefault(f => f.HeldCellIds.Contains(group.GetCell(d).Id));
-                if (front is FrontAssignment == false)
-                {
-                    front = intos
-                        .MinBy(f =>
-                            f.GetCharacteristicCell(d).GetCenter()
-                                .GetOffsetTo(group.GetCell(d).GetCenter(), d));
-                }
-
-                front.GroupIds.Add(group.Id);
-            }
-        }
+        
     }
 }

@@ -18,12 +18,12 @@ public class DeploymentAi
         {
             ForceAssignments.Remove(ta);
         }
-
         var newTheaters = theaters.Blob(regime, key.Data);
         ForceAssignments.AddRange(newTheaters);
         TheaterAssignment.PutGroupsInRightTheater(regime, ForceAssignments,
             key);
-        TheaterAssignment.CheckFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),
+        //something to change groups of units who are cut off from rest of group
+        TheaterAssignment.ValidateFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),
             key);
         
         foreach (var ta in ForceAssignments.OfType<TheaterAssignment>().ToList())

@@ -95,7 +95,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
         }
     }
     
-    public static void CheckFronts(Regime r, 
+    public static void ValidateFronts(Regime r, 
         List<TheaterAssignment> theaters, 
         LogicWriteKey key)
     {
@@ -115,6 +115,7 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             {
                 fa.Validate(key);
             }
+            // ta.Assignments.RemoveWhere(a => a.GroupIds.Count == 0);
         }
     }
     public override void AssignGroups(LogicWriteKey key)

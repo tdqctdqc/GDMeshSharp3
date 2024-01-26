@@ -129,13 +129,15 @@ public class FrontSegmentAssignment : ForceAssignment
         return newSegs;
     }
 
-    private void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,
+    public void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,
         LogicWriteKey key)
     {
         var freeGroups = GetFreeGroups(key.Data);
         HoldLine.DistributeAmong(newSegs, key);
         Insert.DistributeAmong(newSegs, key);
         Reserve.DistributeAmong(newSegs, key);
+        
+        //goes last bc subassignments might discard groups
         foreach (var freeGroup in freeGroups)
         {
             var groupCell = freeGroup.GetCell(key.Data);
@@ -143,7 +145,7 @@ public class FrontSegmentAssignment : ForceAssignment
                 .MinBy(s =>
                     s.GetCharacteristicCell(key.Data)
                         .GetCenter()
-                        .GetOffsetTo(groupCell.GetCenter(), key.Data));
+                        .GetOffsetTo(groupCell.GetCenter(), key.Data).Length());
             close.GroupIds.Add(freeGroup.Id);
         }
     }

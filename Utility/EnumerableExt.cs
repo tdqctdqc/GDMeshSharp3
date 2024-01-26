@@ -224,7 +224,6 @@ public static class EnumerableExt
         if (res.Sum(r => r.Count) != en.Count) throw new Exception();
         return res;
     }
-
     public static void DoForRuns<T>(this List<T> list,
         Func<T, bool> valid,
         Action<List<T>> handleRun)

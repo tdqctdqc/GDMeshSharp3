@@ -148,7 +148,7 @@ public class HoldLineSubAssignment
         {
             var groupId = kvp.Key;
             var faces = kvp.Value;
-            faces.RemoveAll(f => seg.Segment.Faces.Contains(f));
+            faces.RemoveAll(f => seg.Segment.Faces.Contains(f) == false);
             if (faces.Count() == 0)
             {
                 FacesByGroupId.Remove(groupId);
@@ -177,9 +177,18 @@ public class HoldLineSubAssignment
             {
                 continue;
             }
-            var newFaces = groupFaces.Intersect(seg.Segment.Faces).ToList();
+
+            var newFaces = new List<List<FrontFace<PolyCell>>>();
+            seg.Segment.Faces.DoForRuns(
+                groupFaces.Contains,
+                r => newFaces.Add(r));
+            if (newFaces.Count == 0)
+            {
+                continue;
+            }
+            
             seg.GroupIds.Add(groupId);
-            seg.HoldLine.FacesByGroupId.Add(groupId, newFaces);
+            seg.HoldLine.FacesByGroupId.Add(groupId, newFaces.MaxBy(l => l));
         }
         FacesByGroupId.Clear();
     }
