@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c23xrm52s0ygc"]
+
+[ext_resource type="Script" path="res://Data/Model/Terrain/Vegetation/VegetationRes.cs" id="1_khbyd"]
+
+[resource]
+script = ExtResource("1_khbyd")
+Name = "Desert"
+Color = Color(0.823529, 0.705882, 0.54902, 1)
+MinMoisture = 0.0
+FertilityMod = 0.0
+MovementCostMult = 1.0

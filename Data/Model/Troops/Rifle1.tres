@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c64g6078noly2"]
+
+[ext_resource type="Script" path="res://Data/Model/Troops/TroopRes.cs" id="1_6ccax"]
+
+[resource]
+script = ExtResource("1_6ccax")
+DisplayName = "Musket"
+HardAttack = 1.0
+SoftAttack = 5.0
+Hitpoints = 100.0
+Hardness = 0.0
+Echelon = 0

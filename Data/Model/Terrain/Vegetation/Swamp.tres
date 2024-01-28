@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cmiv5w261g2ff"]
+
+[ext_resource type="Script" path="res://Data/Model/Terrain/Vegetation/VegetationRes.cs" id="1_vy8v6"]
+
+[resource]
+script = ExtResource("1_vy8v6")
+Name = "Swamp"
+Color = Color(0.333333, 0.419608, 0.184314, 1)
+MinMoisture = 0.7
+FertilityMod = 0.25
+MovementCostMult = 1.75

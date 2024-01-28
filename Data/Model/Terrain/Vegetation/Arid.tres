@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://b1kb0iuk33vwx"]
+
+[ext_resource type="Script" path="res://Data/Model/Terrain/Vegetation/VegetationRes.cs" id="1_ofvpj"]
+
+[resource]
+script = ExtResource("1_ofvpj")
+Name = "Arid"
+Color = Color(0.721569, 0.862745, 0.439216, 1)
+MinMoisture = 0.1
+FertilityMod = 0.3
+MovementCostMult = 1.0

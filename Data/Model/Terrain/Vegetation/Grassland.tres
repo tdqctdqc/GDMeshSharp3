@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://br5px320b1547"]
+
+[ext_resource type="Script" path="res://Data/Model/Terrain/Vegetation/VegetationRes.cs" id="1_xfri1"]
+
+[resource]
+script = ExtResource("1_xfri1")
+Name = "Grassland"
+Color = Color(0.235294, 0.701961, 0.443137, 1)
+MinMoisture = 0.2
+FertilityMod = 1.0
+MovementCostMult = 1.0

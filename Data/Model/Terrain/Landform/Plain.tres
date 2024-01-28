@@ -1,0 +1,12 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://ctpqryt1oigor"]
+
+[ext_resource type="Script" path="res://Data/Model/Terrain/Landform/LandformRes.cs" id="1_22u8e"]
+
+[resource]
+script = ExtResource("1_22u8e")
+Name = "Plain"
+MinRoughness = 0.0
+FertilityMod = 1.0
+DarkenFactor = 0.0
+Color = Color(0.647059, 0.164706, 0.164706, 1)
+IsWater = false

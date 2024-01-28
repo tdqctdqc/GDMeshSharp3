@@ -1,0 +1,11 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://ceiswlhihtbn4"]
+
+[ext_resource type="Script" path="res://Data/Model/Terrain/Vegetation/VegetationRes.cs" id="1_dvm1i"]
+
+[resource]
+script = ExtResource("1_dvm1i")
+Name = "Tundra"
+Color = Color(0, 0.545098, 0.545098, 1)
+MinMoisture = 0.0
+FertilityMod = 0.2
+MovementCostMult = 1.0
