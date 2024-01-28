@@ -156,7 +156,6 @@ public class InsertionSubAssignment
             seg.GroupIds.Add(groupId);
             seg.Insert.Insertions.Add(groupId, insertionFace);
         }
-
         Insertions.Clear();
     }
 }

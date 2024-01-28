@@ -132,7 +132,7 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
             .Select(l => FrontSegmentAssignment
                 .Construct(new EntityRef<Regime>(Regime.RefId), l, false, key)).ToList();
         foreach (var seg in Assignments
-                     .OfType<FrontSegmentAssignment>())
+                     .OfType<FrontSegmentAssignment>().ToArray())
         {
             seg.PartitionAmong(newSegs, key);
         }

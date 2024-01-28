@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -11,6 +12,19 @@ public static class MeshBuilderExt
         {
             mb.DrawPolygon(c.RelBoundary.Select(p => relTo.GetOffsetTo(p + c.RelTo, d)).ToArray(),
                 new Color(front.Color, .5f));
+        }
+    }
+
+    public static void DrawCellPath(this MeshBuilder mb,
+        Vector2 relTo, List<PolyCell> path,
+        Color color, float thickness, Data d)
+    {
+        for (var j = 0; j < path.Count - 1; j++)
+        {
+            var from = path[j].GetCenter();
+            var to = path[j + 1].GetCenter();
+            mb.AddArrow(relTo.GetOffsetTo(from, d),
+                relTo.GetOffsetTo(to, d), thickness, color);
         }
     }
     public static void DrawFrontSegment(this MeshBuilder mb,

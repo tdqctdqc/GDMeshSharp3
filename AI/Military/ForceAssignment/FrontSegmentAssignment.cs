@@ -129,7 +129,8 @@ public class FrontSegmentAssignment : ForceAssignment
         return newSegs;
     }
 
-    public void PartitionAmong(IEnumerable<FrontSegmentAssignment> newSegs,
+    public void PartitionAmong(
+        IEnumerable<FrontSegmentAssignment> newSegs,
         LogicWriteKey key)
     {
         var freeGroups = GetFreeGroups(key.Data);

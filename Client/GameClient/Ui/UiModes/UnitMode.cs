@@ -30,6 +30,7 @@ public class UnitMode : UiMode
         if (e is InputEventMouseButton m && m.ButtonIndex == MouseButton.Left && m.Pressed == false)
         {
             CycleUnits();
+            Highlight();
         }
         UnitTooltip();
     }
@@ -73,6 +74,8 @@ public class UnitMode : UiMode
 
     private void OverlayForUnit()
     {
+        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
+        highlight.Clear();
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell == null
             || cell.GetUnits(_client.Data) is HashSet<Unit> units == false
@@ -80,14 +83,21 @@ public class UnitMode : UiMode
         {
             return;
         }
+        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
         var unitGraphics = _client.GetComponent<MapGraphics>()
             .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
-        var close = unitGraphics
+        var unit = unitGraphics
             .Graphics[cell.GetChunk(_client.Data)]
             .UnitsInOrder[cell].First();
-        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
-        highlight.Draw(mb => mb.DrawMovementRecord(close.Id, 4, cell.GetCenter(), _client.Data),
+        var group = unit.GetGroup(_client.Data);
+        highlight.Draw(mb => mb.DrawMovementRecord(unit.Id, 4, cell.GetCenter(), _client.Data),
             cell.GetCenter());
+        if (group.GroupOrder != null)
+        {
+            highlight.Draw(mb => group.GroupOrder.Draw(group, cell.GetCenter(), mb, _client.Data),
+                cell.GetCenter());
+        }
     }
 
     private void CycleUnits()

@@ -49,11 +49,25 @@ public class GoToCellGroupOrder : UnitGroupOrder
     }
     public override void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data d)
     {
-        
+        var dest = PlanetDomainExt.GetPolyCell(DestId, d);
+        var alliance = group.Regime.Entity(d).GetAlliance(d);
+        foreach (var unit in group.Units.Items(d))
+        {
+            var from = unit.Position.GetCell(d);
+            var moveType = unit.Template.Entity(d).MoveType.Model(d);
+            var path = d.Context.PathCache
+                .GetOrAdd((moveType, alliance, from, dest));
+            mb.DrawCellPath(relTo, path, group.Color, 2f, d);
+        }
     }
 
     public override void RegisterCombatActions(CombatCalculator combat, LogicWriteKey key)
     {
         
+    }
+
+    public override string GetDescription(Data d)
+    {
+        return $"Going to cell {DestId}";
     }
 }

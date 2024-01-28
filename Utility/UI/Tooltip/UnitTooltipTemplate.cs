@@ -10,6 +10,7 @@ public class UnitTooltipTemplate : TooltipTemplate<Unit>
         = new()
         {
             GetRegimeEtc,
+            GetOrders,
             GetTroopCounts
         };
     protected override List<Func<Unit, Data, Control>> _slowGetters { get; }
@@ -36,6 +37,16 @@ public class UnitTooltipTemplate : TooltipTemplate<Unit>
         }
 
         return box;
+    }
+
+    private static Control GetOrders(Unit u, Data d)
+    {
+        var g = u.GetGroup(d);
+        if (g == null) return new Control();
+        
+        var order = g.GroupOrder;
+        if (order == null) return NodeExt.CreateLabel("No order");
+        return NodeExt.CreateLabel(order.GetDescription(d));
     }
     
 }
