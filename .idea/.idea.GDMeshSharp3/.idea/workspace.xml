@@ -4,29 +4,16 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="tweaking unitGraphic, making meshes shared">
-      <change afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformRes.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationRes.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Data/Model/Troops/TroopRes.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/IDecaledTerrain.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Hill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Hill.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Landform.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Landform.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTierList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTierList.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Mountain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Mountain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Peak.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Peak.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/TerrainAspect.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/TerrainAspect.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Barren.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Barren.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Desert.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Desert.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Forest.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Forest.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Grassland.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Grassland.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Tundra.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Tundra.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Vegetation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Vegetation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troops.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troops.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,10 +77,10 @@
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/Terrain/Vegetation/Arid.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Blobber.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/MeshBuilder.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -490,7 +477,8 @@
       <workItem from="1706302176432" duration="4581000" />
       <workItem from="1706311601297" duration="4707000" />
       <workItem from="1706320419113" duration="630000" />
-      <workItem from="1706399138875" duration="5956000" />
+      <workItem from="1706399138875" duration="7755000" />
+      <workItem from="1706459282837" duration="40000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -702,14 +690,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00114" summary="replaced waypoints and polytris with polycells">
-      <option name="closed" value="true" />
-      <created>1705537539404</created>
-      <option name="number" value="00114" />
-      <option name="presentableId" value="LOCAL-00114" />
-      <option name="project" value="LOCAL" />
-      <updated>1705537539404</updated>
-    </task>
     <task id="LOCAL-00115" summary="working on front algorithm">
       <option name="closed" value="true" />
       <created>1705702371788</created>
@@ -854,7 +834,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706402085186</updated>
     </task>
-    <option name="localTasksCounter" value="133" />
+    <task id="LOCAL-00133" summary="made terrain use resources">
+      <option name="closed" value="true" />
+      <created>1706405284938</created>
+      <option name="number" value="00133" />
+      <option name="presentableId" value="LOCAL-00133" />
+      <option name="project" value="LOCAL" />
+      <updated>1706405284974</updated>
+    </task>
+    <option name="localTasksCounter" value="134" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -876,7 +864,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="made fronts only take certain num of units" />
     <MESSAGE value="working on advance line" />
     <MESSAGE value="tweaking movement" />
     <MESSAGE value="implementing combat" />
@@ -901,6 +888,7 @@
     <MESSAGE value="made meshbuilder use pool" />
     <MESSAGE value="doot" />
     <MESSAGE value="tweaking unitGraphic, making meshes shared" />
-    <option name="LAST_COMMIT_MESSAGE" value="tweaking unitGraphic, making meshes shared" />
+    <MESSAGE value="made terrain use resources" />
+    <option name="LAST_COMMIT_MESSAGE" value="made terrain use resources" />
   </component>
 </project>

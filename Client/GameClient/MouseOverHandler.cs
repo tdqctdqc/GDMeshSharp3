@@ -7,6 +7,8 @@ public class MouseOverHandler
 {
     public MapPolygon MouseOverPoly { get; private set; }
     public PolyCell MouseOverCell { get; private set; }
+    public Action<PolyCell> ChangedCell { get; set; }
+    public Action<MapPolygon> ChangedPoly { get; set; }
     private TimerAction _timerAction;
     public MouseOverHandler(Data data)
     {
@@ -26,11 +28,10 @@ public class MouseOverHandler
 
     private void FindPoly(Data data, Vector2 mousePosMapSpace)
     {
-
         if (mousePosMapSpace.Y <= 0f || mousePosMapSpace.Y >= data.Planet.Height)
         {
-            MouseOverPoly = null;
-            MouseOverCell = null;
+            SetPoly(null);
+            SetCell(null);
             return;
         }
         else if (MouseOverPoly != null && MouseOverPoly.PointInPolyAbs(mousePosMapSpace, data))
@@ -45,24 +46,43 @@ public class MouseOverHandler
                          .FirstOrDefault(n => n.PointInPolyAbs(mousePosMapSpace, data))
                      is MapPolygon neighbor)
         {
-            MouseOverPoly = neighbor;
+            SetPoly(neighbor);
         }
         else
         {
             var p = data.Planet.PolygonAux.MapPolyGrid
                 .GetElementAtPoint(mousePosMapSpace, data);
-            if (p == null) return;
-            MouseOverPoly = p;
+            SetPoly(p);
         }
     }
+
+    
     private void FindCell(MapPolygon p, Data data, Vector2 mousePosMapSpace)
     {
         if (MouseOverPoly == null)
         {
-            MouseOverCell = null;
+            SetCell(null);
             return;
         }
 
-        MouseOverCell = data.Planet.PolygonAux.PolyCellGrid.GetElementAtPoint(mousePosMapSpace, data);
+        var c = data.Planet.PolygonAux.PolyCellGrid.GetElementAtPoint(mousePosMapSpace, data);
+        SetCell(c);
+    }
+    private void SetPoly(MapPolygon p)
+    {
+        if (p != MouseOverPoly)
+        {
+            MouseOverPoly = p;
+            ChangedPoly?.Invoke(MouseOverPoly);
+        }
+    }
+
+    private void SetCell(PolyCell c)
+    {
+        if (c != MouseOverCell)
+        {
+            MouseOverCell = c;
+            ChangedCell?.Invoke(MouseOverCell);
+        }
     }
 }

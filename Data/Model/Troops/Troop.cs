@@ -4,8 +4,8 @@ using System.Collections.Generic;
 public class Troop : IModel, IMakeable
 {
     public string Name { get; private set; }
+    public string DisplayName { get; private set; }
     public int Id { get; private set; }
-    public int Level { get; private set; }
     public float HardAttack { get; private set; }
     public float SoftAttack { get; private set; }
     public float Hitpoints { get; private set; }
@@ -14,23 +14,20 @@ public class Troop : IModel, IMakeable
     public Icon Icon { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public TroopDomain Domain { get; private set; }
-    public Troop(string name, int level, float hardAttack, 
-        float softAttack, 
-        float hitpoints, 
-        float hardness,
-        int echelon,
+    public Troop(string name, 
         TroopDomain domain,
         MakeableAttribute makeable)
     {
+        var res = GD.Load<TroopRes>($"res://Data/Model/Troops/{name}.tres");
         Name = name;
-        Level = level;
-        HardAttack = hardAttack;
-        SoftAttack = softAttack;
-        Hitpoints = hitpoints;
-        Hardness = hardness;
-        Echelon = echelon;
+        DisplayName = res.DisplayName;
+        HardAttack = res.HardAttack;
+        SoftAttack = res.SoftAttack;
+        Hitpoints = res.Hitpoints;
+        Hardness = res.Hardness;
+        Echelon = res.Echelon;
         Domain = domain;
         Makeable = makeable;
-        Icon = Icon.Create(Name.ToLower(), Vector2I.One);
+        Icon = Icon.Create(name.ToLower(), Vector2I.One);
     }
 }

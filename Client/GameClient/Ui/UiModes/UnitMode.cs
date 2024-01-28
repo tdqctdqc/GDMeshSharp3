@@ -10,6 +10,8 @@ public class UnitMode : UiMode
     public UnitMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
+        _mouseOverHandler.ChangedCell += c => Highlight();
+        _mouseOverHandler.ChangedPoly += c => Highlight();
     }
     public override void Process(float delta)
     {
@@ -18,22 +20,17 @@ public class UnitMode : UiMode
     
     public override void HandleInput(InputEvent e)
     {
-        var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
-        debug.Clear();
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         mapPos = mapPos.ClampPosition(_client.Data);
-        Game.I.Client.Cam().HandleInput(e);
 
         if(e.IsAction("Open Regime Overview"))
         {
             _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverPoly);
         }
-
         if (e is InputEventMouseButton m && m.ButtonIndex == MouseButton.Left && m.Pressed == false)
         {
             CycleUnits();
         }
-        Highlight(mapPos);
         UnitTooltip();
     }
 
@@ -46,14 +43,13 @@ public class UnitMode : UiMode
         tooltip.Clear();
     }
 
-    private void Highlight(Vector2 mapPos)
+    private void Highlight()
     {
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
         highlight.Clear();
         _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
         _client.HighlightCell(_mouseOverHandler.MouseOverCell);
         OverlayForUnit();
-
     }
 
     private void UnitTooltip()

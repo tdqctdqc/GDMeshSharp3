@@ -14,16 +14,9 @@ public class LandformList : ModelList<Landform>
     public Landform River { get; private set; } = new River();
     public Landform Urban { get; private set; } = new Urban();
     public List<Landform> ByPriority { get; private set; }
-    public Dictionary<byte, Landform> ByMarker { get; private set; }
     public LandformList()
     {
-        ByPriority = new List<Landform> { River, Peak, Mountain, Hill, Sea, Plain, Urban };
-        ByMarker = new Dictionary<byte, Landform>();
-        for (var i = 0; i < ByPriority.Count; i++)
-        {
-            ByMarker.Add((byte)i, ByPriority[i]);
-            ByPriority[i].SetMarker((byte) i);
-        }
+        ByPriority = new List<Landform> { Peak, Mountain, Hill, Sea, Plain, Urban, River };
     }
     
     public Landform GetAtPoint(MapPolygon poly, Vector2 pRel, Data data)

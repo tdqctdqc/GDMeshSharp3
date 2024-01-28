@@ -15,7 +15,6 @@ public class VegetationList : ModelList<Vegetation>
     public Vegetation Jungle { get; private set; }
     public Tundra Tundra { get; private set; }
     public List<Vegetation> ByPriority { get; private set; }
-    public Dictionary<byte, Vegetation> ByMarker { get; private set; }
 
     public VegetationList(LandformList lfs)
     {
@@ -31,12 +30,6 @@ public class VegetationList : ModelList<Vegetation>
         
         ByPriority = new List<Vegetation> { Swamp, Jungle, Forest, Tundra,
             Grassland, Steppe, Arid, Desert, Barren };
-        ByMarker = new Dictionary<byte, Vegetation>();
-        for (var i = 0; i < ByPriority.Count; i++)
-        {
-            ByMarker.Add((byte)i, ByPriority[i]);
-            ByPriority[i].SetMarker((byte) i);
-        }
     }
     public Vegetation GetAtPoint(MapPolygon poly, Vector2 pRel, Landform lf, Data data)
     {

@@ -8,6 +8,7 @@ public class TacticalMode : UiMode
     public TacticalMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
+        _mouseOverHandler.ChangedCell += c => DrawFrontSegment();
     }
 
     public override void Process(float delta)
@@ -17,24 +18,20 @@ public class TacticalMode : UiMode
 
     public override void HandleInput(InputEvent e)
     {
-        var mapPos = _client.Cam().GetMousePosInMapSpace();
-        Game.I.Client.Cam().HandleInput(e);
         if(e.IsAction("Open Regime Overview"))
         {
             _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverPoly);
         }
-        
-        var debugDrawer 
-            = Game.I.Client.GetComponent<MapGraphics>()
-                .DebugOverlay;
-        debugDrawer.Clear();
-        
-        DrawFrontSegment();
+        var mapPos = _client.Cam().GetMousePosInMapSpace();
         Tooltip(mapPos);
     }
 
     public override void Clear()
     {
+        var debugDrawer 
+            = Game.I.Client.GetComponent<MapGraphics>()
+                .DebugOverlay;
+        debugDrawer.Clear();
     }
     
     private void DrawFrontSegment()
@@ -42,6 +39,7 @@ public class TacticalMode : UiMode
         var debugDrawer 
             = Game.I.Client.GetComponent<MapGraphics>()
                 .DebugOverlay;
+        debugDrawer.Clear();
         if (_mouseOverHandler.MouseOverCell == null)
         {
             return;

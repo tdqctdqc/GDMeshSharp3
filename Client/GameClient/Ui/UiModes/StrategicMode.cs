@@ -12,6 +12,9 @@ public class StrategicMode : UiMode
     public StrategicMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
+        _mouseOverHandler.ChangedPoly += c => DrawRegime();
+        _mouseOverHandler.ChangedCell += c => Highlight();
+        _mouseOverHandler.ChangedPoly += c => Highlight();
     }
 
     public override void Process(float delta)
@@ -21,17 +24,12 @@ public class StrategicMode : UiMode
 
     public override void HandleInput(InputEvent e)
     {
-        var mapPos = _client.Cam().GetMousePosInMapSpace();
-        Game.I.Client.Cam().HandleInput(e);
-        // _mouseOverHandler.Process(_client.Data, mapPos);
-        var mg = _client.GetComponent<MapGraphics>();
-        mg.DebugOverlay.Clear();
-        DrawRegime();
-        Highlight(mapPos);
     }
 
     private void DrawRegime()
     {
+        var mg = _client.GetComponent<MapGraphics>();
+        mg.DebugOverlay.Clear();
         if (_mouseOverHandler.MouseOverPoly == null)
         {
             return;
@@ -155,10 +153,12 @@ public class StrategicMode : UiMode
             }
         }
     }
-    private void Highlight(Vector2 mapPos)
+    private void Highlight()
     {
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
         highlight.Clear();
+        if (_mouseOverHandler.MouseOverPoly == null
+            || _mouseOverHandler.MouseOverCell == null) return;
         _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
         _client.HighlightCell(_mouseOverHandler.MouseOverCell);
     }

@@ -4,25 +4,30 @@ using Godot;
 
 public class DebugScratchMode : UiMode
 {
+    private MouseOverHandler _mouseOverHandler;
     public DebugScratchMode(Client client) : base(client)
     {
+        _mouseOverHandler = new MouseOverHandler(client.Data);
+        _mouseOverHandler.ChangedPoly += p => Highlight();
+        _mouseOverHandler.ChangedCell += c => Highlight();
     }
 
     public override void Process(float delta)
     {
+        _mouseOverHandler.Process(delta);
     }
 
     public override void HandleInput(InputEvent e)
     {
-        _client.Cam().HandleInput(e);
-        var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
-        highlighter.Clear();
-
-        HighlightCellAndAdjacent();
-        HighlightPolyBorder();
-        // HighlightBoundaryCells();
     }
 
+    private void Highlight()
+    {
+        var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
+        highlighter.Clear();
+        HighlightCellAndAdjacent();
+        HighlightPolyBorder();
+    }
     private void HighlightBoundaryCells()
     {
         var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
@@ -56,9 +61,8 @@ public class DebugScratchMode : UiMode
     private void HighlightPolyBorder()
     {
         var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
-        var mapPos = _client.Cam().GetMousePosInMapSpace();
-        var cell = _client.Data.Planet.PolygonAux.PolyCellGrid
-            .GetElementAtPoint(mapPos, _client.Data);
+        var cell = _mouseOverHandler.MouseOverCell;
+        if (cell == null) return;
 
         if (cell is ISinglePolyCell s)
         {

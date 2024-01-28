@@ -74,9 +74,10 @@ public partial class Client : Node, IClient
             u.Invoke();
         }
     }
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _UnhandledInput(InputEvent e)
     {
-        UiController.Mode.HandleInput(@event);
+        this.Cam()?.HandleInput(e);
+        UiController.Mode.HandleInput(e);
     }
     public void AddComponent(IClientComponent component)
     {
