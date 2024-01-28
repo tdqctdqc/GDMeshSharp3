@@ -7,14 +7,21 @@ public class MouseOverHandler
 {
     public MapPolygon MouseOverPoly { get; private set; }
     public PolyCell MouseOverCell { get; private set; }
-    public MouseOverHandler()
+    private TimerAction _timerAction;
+    public MouseOverHandler(Data data)
     {
+        _timerAction = new TimerAction(.1f, 0f,
+            () =>
+            {
+                var mousePos = Game.I.Client.Cam().GetMousePosInMapSpace();
+                FindPoly(data, mousePos);
+                FindCell(MouseOverPoly, data, mousePos);
+            });
     }
     
-    public void Process(Data data, Vector2 mousePosMapSpace)
+    public void Process(float delta)
     {
-        FindPoly(data, mousePosMapSpace);
-        FindCell(MouseOverPoly, data, mousePosMapSpace);
+        _timerAction.Process(delta);
     }
 
     private void FindPoly(Data data, Vector2 mousePosMapSpace)

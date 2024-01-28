@@ -3,7 +3,7 @@ using System;
 using Godot;
 using MessagePack;
 
-public class Unit : Entity
+public class Unit : Entity, ICombatGraphNode
 {
     public EntityRef<Regime> Regime { get; private set; }
     public EntityRef<UnitTemplate> Template { get; private set; }

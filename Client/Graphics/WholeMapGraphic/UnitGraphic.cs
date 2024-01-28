@@ -5,72 +5,78 @@ using Godot;
 public partial class UnitGraphic : Node2D
 {
     private MeshInstance2D 
-        _borderAndGroupColor,
+        _borderColor,
+        _groupColor,
         _regimeColor,
-        _healthMesh, _flagRect;
+        _healthMesh;
 
-    private Label _powerPoints;
-    private TextureRect _troopRect;
+    // private Label _powerPoints;
+    private TextureRect _troopRect, _flagRect;
     private static LabelSettings _labelSettings;
+    private static QuadMesh _border, _group, _regime, 
+        _health;
 
+    private static float _iconSize = 15f;
     static UnitGraphic()
     {
         _labelSettings = new LabelSettings();
         _labelSettings.FontSize = 25;
+        _border = new QuadMesh();
+        _border.Size = Vector2.One * _iconSize;
+        _group = new QuadMesh();
+        _group.Size = Vector2.One * (_iconSize - .2f);
+        _regime = new QuadMesh();
+        _regime.Size = Vector2.One * _iconSize * .8f;
+        _health = new QuadMesh();
+        _health.Size = Vector2.One * _iconSize * .15f;
     }
     private UnitGraphic() {}
     
     public UnitGraphic(Unit unit, Data data)
     {
-        var mb = MeshBuilder.GetFromPool();
         var regime = unit.Regime.Entity(data);
-        var iconSize = 15f;
-        mb.AddPoint(Vector2.Zero, iconSize, Colors.Black);
-        mb.AddPoint(Vector2.Zero, iconSize - .2f, Colors.White);
-        _borderAndGroupColor = mb.GetMeshInstance();
-        AddChild(_borderAndGroupColor);
-        mb.Clear();
         
-        mb.AddPoint(Vector2.Zero, iconSize * .8f, regime.GetUnitColor());
-        _regimeColor = mb.GetMeshInstance();
+        _borderColor = new MeshInstance2D();
+        _borderColor.Mesh = _border;
+        _borderColor.Modulate = Colors.Black;
+        AddChild(_borderColor);
+
+        _groupColor = new MeshInstance2D();
+        _groupColor.Mesh = _group;
+        AddChild(_groupColor);
+
+        _regimeColor = new MeshInstance2D();
+        _regimeColor.Mesh = _regime;
         AddChild(_regimeColor);
-        mb.Clear();
-        
-        _flagRect = regime.Template.Model(data).Flag
-            .GetMeshInstance(iconSize * .25f);
-        _flagRect.Position = new Vector2(iconSize * .2f, iconSize * .25f);
+
+        _flagRect = regime.Template.Model(data).Flag.
+            GetTextureRect(_iconSize * .25f);
+        _flagRect.Position = new Vector2(0f, _iconSize * .1f);
         AddChild(_flagRect);
         
         _troopRect = new TextureRect();
         _troopRect.ExpandMode = TextureRect.ExpandModeEnum.FitWidth;
         _troopRect.StretchMode = TextureRect.StretchModeEnum.KeepAspect;
-        _troopRect.Size = iconSize * .7f * Vector2.One;
+        _troopRect.Size = _iconSize * .7f * Vector2.One;
         _troopRect.Position = -_troopRect.Size / 2f;
         AddChild(_troopRect);
         
-        
-        
-        
-        var healthMarkerSize = iconSize * .1f;
-        var healthMarkerPos = new Vector2(iconSize * .35f, -iconSize * .35f);
-        mb.AddPoint(healthMarkerPos, healthMarkerSize,
-            Colors.Black);
-        mb.AddPoint(healthMarkerPos, healthMarkerSize * .8f,
-            Colors.White);
-        _healthMesh = mb.GetMeshInstance();
-        AddChild(_healthMesh);
-        mb.Clear();
+        var healthMarkerPos = new Vector2(_iconSize * .35f, -_iconSize * .35f);
 
-        _powerPoints = new Label();
-        _powerPoints.LabelSettings = _labelSettings;
-        _powerPoints.Scale = .1f * Vector2.One;
-        // _powerPoints.GrowHorizontal = Control.GrowDirection.Both;
-        _powerPoints.HorizontalAlignment = HorizontalAlignment.Center;
-        _powerPoints.Position = new Vector2(0f, -iconSize * .4f);
-        AddChild(_powerPoints);
+        _healthMesh = new MeshInstance2D();
+        _healthMesh.Position = new Vector2(_iconSize * .3f, -_iconSize * .3f);
+        _healthMesh.Mesh = _health;
+        AddChild(_healthMesh);
+
+        // _powerPoints = new Label();
+        // _powerPoints.LabelSettings = _labelSettings;
+        // _powerPoints.Scale = .1f * Vector2.One;
+        // _powerPoints.HorizontalAlignment = HorizontalAlignment.Center;
+        // _powerPoints.AnchorsPreset = (int)Control.LayoutPreset.CenterTop;
+        // _powerPoints.Position = new Vector2(-_iconSize * .25f, -_iconSize * .4f);
+        // AddChild(_powerPoints);
         
         Draw(unit, data);
-        mb.Return();
     }
     public void Draw(Unit unit, Data data)
     {
@@ -81,13 +87,15 @@ public partial class UnitGraphic : Node2D
         var healthRatio = Mathf.Clamp(totalPp / templatePp, 0f, 1f);
         _healthMesh.Modulate = Colors.Red.Lerp(Colors.Green, healthRatio);
 
+        _regimeColor.Modulate = unit.Regime.Entity(data).GetUnitColor();
+        
         if (unit.GetGroup(data) is UnitGroup g)
         {
-            _borderAndGroupColor.Modulate = g.Color;
+            _groupColor.Modulate = g.Color;
         }
         else
         {
-            _borderAndGroupColor.Modulate = Colors.White;
+            _groupColor.Modulate = Colors.White;
         }
         
         
@@ -101,6 +109,6 @@ public partial class UnitGraphic : Node2D
         var maxPowerTroop = data.Models.GetModel<Troop>(maxPowerId);
 
         _troopRect.Texture = maxPowerTroop.Icon.Texture;
-        _powerPoints.Text = Mathf.RoundToInt(totalPp).ToString();
+        // _powerPoints.Text = Mathf.RoundToInt(totalPp).ToString();
     }
 }

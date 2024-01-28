@@ -7,7 +7,7 @@ public partial class ResourceIcons
     : ChunkIconsMultiMesh<Item, ResourceDeposit>
 {
     public ResourceIcons(MapChunk chunk, Data d) 
-        : base("Resources", chunk, Vector2.One * 25f)
+        : base("Resources", chunk, MeshExt.GetQuadMesh(Vector2.One * 25f))
     {
         Draw(d);
     }

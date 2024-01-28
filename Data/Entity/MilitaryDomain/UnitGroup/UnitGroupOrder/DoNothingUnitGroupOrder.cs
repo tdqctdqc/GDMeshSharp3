@@ -15,8 +15,8 @@ public class DoNothingUnitGroupOrder : UnitGroupOrder
         return;
     }
 
-    public override CombatResult[] GetCombatResults(UnitGroup g, CombatCalculator.CombatCalcData cData, Data d)
+    public override void RegisterCombatActions(CombatCalculator combat, LogicWriteKey key)
     {
-        return this.DefaultCombatResults(g, cData, d);
+        
     }
 }

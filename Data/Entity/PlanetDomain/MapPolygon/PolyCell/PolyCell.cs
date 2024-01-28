@@ -7,7 +7,8 @@ using Godot;
 [MessagePack.Union(0, typeof(LandCell))]
 [MessagePack.Union(1, typeof(RiverCell))]
 [MessagePack.Union(2, typeof(SeaCell))]
-public abstract class PolyCell : IPolymorph, IIdentifiable
+public abstract class PolyCell : IPolymorph,
+    IIdentifiable, ICombatGraphNode
 {
     public int Id { get; private set; }
     public EntityRef<Regime> Controller { get; private set; }

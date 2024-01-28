@@ -11,19 +11,19 @@ public class StrategicMode : UiMode
     private Regime _regime;
     public StrategicMode(Client client) : base(client)
     {
-        _mouseOverHandler = new MouseOverHandler();
+        _mouseOverHandler = new MouseOverHandler(client.Data);
     }
 
     public override void Process(float delta)
     {
-        
+        _mouseOverHandler.Process(delta);
     }
 
     public override void HandleInput(InputEvent e)
     {
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         Game.I.Client.Cam().HandleInput(e);
-        _mouseOverHandler.Process(_client.Data, mapPos);
+        // _mouseOverHandler.Process(_client.Data, mapPos);
         var mg = _client.GetComponent<MapGraphics>();
         mg.DebugOverlay.Clear();
         DrawRegime();

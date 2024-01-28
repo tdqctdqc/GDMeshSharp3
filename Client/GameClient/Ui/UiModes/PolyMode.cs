@@ -7,19 +7,18 @@ public class PolyMode : UiMode
 
     public PolyMode(Client client) : base(client)
     {
-        _mouseOverHandler = new MouseOverHandler();
+        _mouseOverHandler = new MouseOverHandler(client.Data);
     }
 
     public override void Process(float delta)
     {
-        
+        _mouseOverHandler.Process(delta);
     }
-
+    
     public override void HandleInput(InputEvent e)
     {
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         Game.I.Client.Cam().HandleInput(e);
-        _mouseOverHandler.Process(_client.Data, mapPos);
         if(e.IsAction("Open Regime Overview"))
         {
             _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverPoly);

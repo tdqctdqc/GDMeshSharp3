@@ -7,14 +7,15 @@ public abstract partial class ChunkIconsMultiMesh<TModel, TInstance>
 {
     public string Name { get; private set; }
     public MapChunk Chunk { get; private set; }
-    public Vector2 IconDim { get; private set; }
+    private Mesh _mesh;
     Node2D IMapChunkGraphicNode.Node => this;
     public Dictionary<TModel, MultiMeshInstance2D> MultiMeshes { get; private set; }
     
-    public ChunkIconsMultiMesh(string name, MapChunk chunk, Vector2 iconDim)
+    public ChunkIconsMultiMesh(string name, 
+        MapChunk chunk, Mesh mesh)
     {
+        _mesh = mesh;
         Name = name;
-        IconDim = iconDim;
         Chunk = chunk;
         MultiMeshes = new Dictionary<TModel, MultiMeshInstance2D>();
     }
@@ -33,10 +34,8 @@ public abstract partial class ChunkIconsMultiMesh<TModel, TInstance>
                 {
                     var mmi = new MultiMeshInstance2D();
                     mmi.Texture = GetTexture(model);
-                    var quad = new QuadMesh();
-                    quad.Size = IconDim;
                     mmi.Multimesh = new MultiMesh();
-                    mmi.Multimesh.Mesh = quad;
+                    mmi.Multimesh.Mesh = _mesh;
                     AddChild(mmi);
                     return mmi;
                 });

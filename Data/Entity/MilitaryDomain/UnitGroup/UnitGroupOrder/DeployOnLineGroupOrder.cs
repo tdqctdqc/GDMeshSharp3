@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
+public class DeployOnLineGroupOrder : UnitGroupOrder
 {
     public List<FrontFace<PolyCell>> Faces { get; private set; }
     public bool Attack { get; private set; }
@@ -110,58 +110,8 @@ public class DeployOnLineGroupOrder : UnitGroupOrder, ICombatOrder
         // }
     }
 
-    public override CombatResult[] GetCombatResults(
-        UnitGroup g, CombatCalculator.CombatCalcData cData, 
-        Data d)
+    public override void RegisterCombatActions(CombatCalculator combat, LogicWriteKey key)
     {
-        var results = this.InitializeResultsWithLosses(
-            g, cData, d);
-        if (results.Length == 0) return results;
-
-        return results;
-        
-        //
-        //
-        // var rallyWp = MilitaryDomain.GetWaypoint(RallyWaypointId, d);
-        // var advanceDist = 5f;
-        // var retreatDist = 10f;
-        // foreach (var result in results)
-        // {
-        //     var lineIndex = UnitIdsInLine.IndexOf(result.Unit.RefId);
-        //     if (lineIndex == -1) continue;
-        //     var unit = result.Unit.Entity(d);
-        //     var frontLinePos = GetFrontLinePos(unit, d);
-        //     Vector2 axis;
-        //     if (AdvanceLinePoints != null)
-        //     {
-        //         var advanceLinePos = GetAdvanceLinePos(unit, d);
-        //         axis = unit.Position.Pos
-        //             .GetOffsetTo(advanceLinePos, d);
-        //     }
-        //     else
-        //     {
-        //         axis = rallyWp.Pos
-        //             .GetOffsetTo(unit.Position.Pos, d);
-        //     }
-        //     if (result.HeldPosition(cData, d) == false)
-        //     {
-        //         retreatDist = Mathf.Min(retreatDist, axis.Length());
-        //         result.ResultOffset = -axis.Normalized() * retreatDist;
-        //     }
-        //     else if (result.SuccessfulAttack(cData, d))
-        //     {
-        //         advanceDist = Mathf.Min(advanceDist, axis.Length());
-        //         result.ResultOffset = axis.Normalized() * advanceDist;
-        //     }
-        // }
-        //
-        // return results;
-    }
-
-    
-    public KeyValuePair<Unit, CombatAction>[] DecideCombatAction(Data d)
-    {
-        return new KeyValuePair<Unit, CombatAction>[0];
         // if (Attack == false) return null;
         // if (AdvanceLinePoints == null) return null;
         // var res = new KeyValuePair<Unit, CombatAction>[UnitIdsInLine.Count];

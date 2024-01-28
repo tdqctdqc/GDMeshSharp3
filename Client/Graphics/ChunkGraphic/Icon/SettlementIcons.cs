@@ -7,7 +7,7 @@ public partial class SettlementIcons
     : ChunkIconsMultiMesh<SettlementTier, PolyCell>
 {
     public SettlementIcons(MapChunk chunk, Data d) 
-        : base("Settlements", chunk, Vector2.One * 50f)
+        : base("Settlements", chunk, MeshExt.GetQuadMesh(Vector2.One * 50f))
     {
         Draw(d);
     }

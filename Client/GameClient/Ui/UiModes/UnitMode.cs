@@ -9,10 +9,11 @@ public class UnitMode : UiMode
     private MouseOverHandler _mouseOverHandler;
     public UnitMode(Client client) : base(client)
     {
-        _mouseOverHandler = new MouseOverHandler();
+        _mouseOverHandler = new MouseOverHandler(client.Data);
     }
     public override void Process(float delta)
     {
+        _mouseOverHandler.Process(delta);
     }
     
     public override void HandleInput(InputEvent e)
@@ -22,7 +23,6 @@ public class UnitMode : UiMode
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         mapPos = mapPos.ClampPosition(_client.Data);
         Game.I.Client.Cam().HandleInput(e);
-        _mouseOverHandler.Process(_client.Data, mapPos);
 
         if(e.IsAction("Open Regime Overview"))
         {

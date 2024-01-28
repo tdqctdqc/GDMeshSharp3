@@ -7,7 +7,7 @@ public partial class BuildingIcons
     : ChunkIconsMultiMesh<BuildingModel, MapBuilding>
 {
     public BuildingIcons(MapChunk chunk, Data d) 
-        : base("Buildings", chunk, Vector2.One * 25f) 
+        : base("Buildings", chunk, MeshExt.GetQuadMesh(Vector2.One * 25f)) 
     {
         Draw(d);
     }
