@@ -10,21 +10,17 @@ public class Vegetation : TerrainAspect
     public float MinMoisture { get; private set; }
     public float FertilityMod { get; private set; }
     public float MovementCostMult { get; private set; }
-    public override string Name { get; protected set; }
-    public override Color Color { get; protected set; }
-    public override int Id { get; protected set; }
 
-    public Vegetation(HashSet<Landform> allowedLandforms, 
-        float minMoisture, float fertilityMod, 
-        float movementCostMult,
-        Color color, string name)
+    public Vegetation(HashSet<Landform> allowedLandforms,
+        string name)
     {
-        FertilityMod = fertilityMod;
+        var res = GD.Load<VegetationRes>($"Data/Model/Terrain/Vegetation/{name}.tres");
+        FertilityMod = res.FertilityMod;
         AllowedLandforms = allowedLandforms;
-        MinMoisture = minMoisture;
-        Color = color;
+        MinMoisture = res.MinMoisture;
+        Color = res.Color;
         Name = name;
-        MovementCostMult = movementCostMult;
+        MovementCostMult = res.MovementCostMult;
     }
     
     public virtual bool Allowed(MapPolygon p, float moisture, Landform lf, Data data)

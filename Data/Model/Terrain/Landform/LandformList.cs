@@ -9,10 +9,8 @@ public class LandformList : ModelList<Landform>
         = new Peak();
     public Landform Mountain { get; private set; } = new Mountain();
     public Landform Hill { get; private set; } = new Hill();
-    public Landform Plain  { get; private set; } 
-        = new Landform("Plain", 0f, 1f, Colors.SaddleBrown, false);
-    public Landform Sea  { get; private set; } = new Landform("Sea", Mathf.Inf, 0f, 
-        Colors.DodgerBlue.Darkened(.2f), true);
+    public Landform Plain  { get; private set; } = new Landform(nameof(Plain));
+    public Landform Sea  { get; private set; } = new Landform(nameof(Sea));
     public Landform River { get; private set; } = new River();
     public Landform Urban { get; private set; } = new Urban();
     public List<Landform> ByPriority { get; private set; }

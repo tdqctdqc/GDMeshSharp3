@@ -6,10 +6,8 @@ public class Tundra : Vegetation
 {
     public float MinDistFromEquatorRatio { get; private set; }  = .45f;
     public Tundra(LandformList lfs) 
-        : base(new HashSet<Landform>{lfs.Hill, lfs.Plain}, 
-            0f, .2f, 
-            1f,
-            Colors.DarkCyan, nameof(Tundra))
+        : base(new HashSet<Landform>{lfs.Hill, lfs.Plain},
+            nameof(Tundra))
     {
     }
     public override bool Allowed(MapPolygon p, float moisture, Landform lf, Data data)
