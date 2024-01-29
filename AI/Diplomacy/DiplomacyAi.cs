@@ -22,7 +22,7 @@ public class DiplomacyAi
     {
         var alliance = _regime.GetAlliance(key.Data);
         var alliancePower = alliance.GetPowerScore(key.Data);
-        var rivalPower = alliance.Rivals.Items(key.Data)
+        var rivalPower = alliance.GetRivals(key.Data)
             .Sum(a => a.GetPowerScore(key.Data));
         if (alliancePower > rivalPower * DesiredFriendToRivalPowerRatio)
         {
@@ -58,7 +58,7 @@ public class DiplomacyAi
                 if (a == regimeAlliance) return false;
                 var power = a.GetPowerScore(data);
                 if (power > rivalPowerToFill) return false;
-                return regimeAlliance.Rivals.Contains(a) == false;
+                return regimeAlliance.IsRivals(a, data) == false;
             })
             .ToHashSet();
         if (neutralNeighbors.Count == 0) return;
@@ -94,7 +94,7 @@ public class DiplomacyAi
             .Where(a =>
             {
                 if (a == regimeAlliance) return false;
-                return regimeAlliance.Rivals.Contains(a) == false;
+                return regimeAlliance.IsRivals(a, data) == false;
             })
             .ToHashSet();
         if (neutralNeighbors.Count == 0) return;
@@ -113,8 +113,8 @@ public class DiplomacyAi
         var res = 0f;
         var power = target.GetPowerScore(data);
         res += power * 2f;
-        var ourEnemies = alliance.Rivals.Items(data);
-        var sharedEnemies = target.Rivals.Items(data)
+        var ourEnemies = alliance.GetRivals(data);
+        var sharedEnemies = target.GetRivals(data)
             .Where(ourEnemies.Contains);
         if (sharedEnemies.Count() > 0)
         {
@@ -128,10 +128,10 @@ public class DiplomacyAi
     {
         if (friendPower < rivalPower * DesiredFriendToRivalPowerRatio) return;
         var regimeAlliance = _regime.GetAlliance(data);
-        var enemyPower = regimeAlliance.AtWar.Items(data).Sum(a => a.GetPowerScore(data));
+        var enemyPower = regimeAlliance.GetAtWar(data).Sum(a => a.GetPowerScore(data));
         if (enemyPower * DesiredFriendToEnemyPowerRatio > friendPower) return;
-        var nonEnemyRivals = regimeAlliance.Rivals.Items(data)
-            .Except(regimeAlliance.AtWar.Items(data)).ToList();
+        var nonEnemyRivals = regimeAlliance.GetRivals(data)
+            .Except(regimeAlliance.GetAtWar(data)).ToList();
         if (nonEnemyRivals.Count == 0) return;
         if (Game.I.Random.Randf() < .1f)
         {

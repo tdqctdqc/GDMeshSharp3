@@ -22,9 +22,9 @@ public partial class DiplomacyPolyFill : PolyFillChunkGraphic
         var polyAlliance = p.OwnerRegime.Entity(d).GetAlliance(d);
         if (playerAlliance.Members.RefIds.Contains(p.OwnerRegime.RefId)) 
             return Colors.SkyBlue;
-        if (playerAlliance.AtWar.Contains(polyAlliance)) 
+        if (playerAlliance.IsAtWar(polyAlliance, d)) 
             return Colors.Red;
-        if (playerAlliance.Rivals.Contains(polyAlliance)) 
+        if (playerAlliance.IsRivals(polyAlliance, d)) 
             return Colors.Orange;
         return Colors.Gray;
     }

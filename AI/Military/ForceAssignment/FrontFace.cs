@@ -62,7 +62,7 @@ public static class FrontFaceExt
         return face.GetNeighbors(c => c.GetNeighbors(d),
             c =>
             {
-                return a.Rivals.Contains(c.Controller.Entity(d).GetAlliance(d));
+                return a.IsRivals(c.Controller.Entity(d).GetAlliance(d), d);
             },
             c => c.Controller.RefId == r.Id,
             i => d.Planet.PolygonAux.PolyCells.Cells[i]);

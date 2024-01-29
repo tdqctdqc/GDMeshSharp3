@@ -5,63 +5,278 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/ControllerRegimePolyCellFill.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/ChangePolyCellControllerProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/DestroyUnitProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/TroopLossesProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/MoveUnitProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/IdRecycler.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/DiplomacyGraph.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/IDiploGraphEdge.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/RivalEdge.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/WarEdge.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/DeploymentAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/ForceAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/ForceAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontSegmentAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontFace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/FrontFace.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/InsertionSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/InsertionSubAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/ReserveSubAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/ReserveSubAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceAssignment/TheaterAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/FormUnitPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/FormUnitPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/ClientTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientTopBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/BorderChunkGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/RegimeBordersNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/RegimeBordersNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/RegimePolyFill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/RegimePolyFill.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/TriColorMesh.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/TriColorMesh.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/RegimeChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/OwnerRegimeChunkModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicsSegmenter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicsSegmenter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/ChunkUnitsGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/ChunkUnitsGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/DiplomacyPolyFill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/DiplomacyPolyFill.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DoNothingUnitGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DoNothingUnitGroupOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitGroupOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Fishery.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Fishery.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/PropertyMultiIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/PropertyMultiIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/TriangleExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Geometry/Triangulation/TriangleExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/HostLogicData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogicData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/BaseDomain/BaseDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/BaseDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/BaseDomain/GameClock/GameClock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClock.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/BaseDomain/GameClock/GameClockAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClockAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/BaseDomain/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/Player.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/BaseDomain/PlayerAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/PlayerAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/BaseDomain/RuleVars/RuleVars.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/RuleVars/RuleVars.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Entity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityCreatedNotice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityCreatedNotice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityDestroyedNotice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityDestroyedNotice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityTypeTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTree.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/EntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTreeNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/IEntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityTypeTree/IEntityTypeTreeNotice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNotice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Building/BuildingAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/BuildingAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Building/BuildingExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/BuildingExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Building/MapBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/MapBuilding.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Building/WorkBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/WorkBuilding.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/CurrentConstruction/Construction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/CurrentConstruction/Construction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/CurrentConstruction/ConstructionAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/CurrentConstruction/ConstructionAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/CurrentConstruction/CurrentConstruction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/CurrentConstruction/CurrentConstruction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/InfrastructureDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/InfrastructureDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Road/RoadAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Road/RoadNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadNetwork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/InfrastructureDomain/Road/RoadSegment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadSegment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/MilitaryDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/MilitaryDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/Unit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/Unit.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/Unit/UnitExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/SetUnitGroupProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/SetUnitGroupProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroup.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroup.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/CombatModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/CombatModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DoNothingUnitGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/DoNothingUnitGroupOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/HandleUnitOrdersProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/SetUnitOrderProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/SetUnitOrderProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitGroupOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitGroupOrderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/UnitGroupOrderExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/EdgeEndKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/EdgeEndKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/LandSea/LandSeaManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/LandSea/LandSeaManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/LandSea/Landmass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/LandSea/Landmass.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/LandSea/Sea.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/LandSea/Sea.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapChunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapChunk.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolyNexus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolyNexus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolyNexusExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolyNexusExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonEdge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonEdgeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonEdgeExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PeepEmploymentReport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PeepEmploymentReport.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyAuxData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyAuxData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyBuildingSlots.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyBuildingSlots.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/ChangePolyCellControllerProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/ChangePolyCellControllerProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/IEdgeCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/IEdgeCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/ISinglePolyCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/ISinglePolyCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/LandCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/LandCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/PolyCellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/PolyCellExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/RiverCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/RiverCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCell/SeaCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/SeaCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCells.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCells.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyCornerKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCornerKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyEdgeAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyEdgeAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/MapPolygon/PolyFoodProd.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyFoodProd.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/PlanetDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/PlanetDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/PlanetInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/PlanetInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/ResourceDeposit/ResourceDepositAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDepositAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/RiverTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/River/RiverTriGen.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/PlanetDomain/River/TempRiverData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/River/TempRiverData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Alliance/Alliance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Alliance/AllianceAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Alliance/AllianceExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Location/Location.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/Location.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Location/SettlementAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/SettlementAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Market/Market.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Market/Market.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Job/PeepJob.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Job/PeepJob.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Job/PeepJobList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Job/PeepJobList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Job/PeepJobManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Job/PeepJobManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/Peep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Peep/PolyPeepAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/PolyPeepAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Proposals/ProposalList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Proposals/ProposalList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ChooseRegimeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ChooseRegimeCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ItemManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ItemManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/ManufacturingQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ManufacturingQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/TroopManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/TroopManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/ManufacturingQueue/UnitManufactureProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/UnitManufactureProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeFinance/RegimeFinance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeFinance/RegimeFinance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeHistory/RegimeHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeHistory/RegimeHistory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeHistory/RegimeItemReport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeHistory/RegimeItemReport.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeHistory/RegimePeepsReport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeHistory/RegimePeepsReport.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/Regime/RegimeMilitary/RegimeMilitary.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeMilitary/RegimeMilitary.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/SocietyDomain/SocietyDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/SocietyDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntitiesCreationUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntitiesCreationUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntitiesDeletionUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntitiesDeletionUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntityCreationUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityCreationUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntityDeletionUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityDeletionUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntityExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/EntityMeta.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityMeta.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/IEntityMeta.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/IEntityMeta.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/Ref/EntRefCol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/EntRefCol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/Ref/EntityRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/EntityRef.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/Ref/IRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/IRef.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/ROERefCol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Utility/Ref/RefColMeta.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/RefColMeta.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/ConstructionCap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/ConstructionCap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/Flow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/Flow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/FlowData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/FlowData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/FlowList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/FlowList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/Income.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/Income.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/IndustrialPower.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/IndustrialPower.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Flow/RegimeFlows.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/RegimeFlows.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/BadPointsException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/BadPointsException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/BadTriangulationException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/BadTriangulationException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/DisplayableException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/DisplayableException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/EntityTypeException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/EntityTypeException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/GeometryException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/GeometryException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/CantFindPathIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/Issue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/Issue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/IssueWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/IssueWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/NoPolyAtPointIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolyAtPointIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/NoPolysInCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/Issue/UnitNotMovingIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/UnitNotMovingIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/NoticeException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/NoticeException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/PreGraphFailureException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/PreGraphFailureException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/SerializationException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/SerializationException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Exception/TimeOuter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/TimeOuter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/CountryNames.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/CountryNames.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/DrainGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/DrainGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/EdgeDisturber.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/EdgeDisturber.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/GenAuxiliaryData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/GenAuxiliaryData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/GenData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/GenData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/GenReport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/GenReport.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/GenerationUtility.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/GenerationUtility.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Generator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Generator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/FaultLine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/FaultLine.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/FaultLineManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/FaultLineManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/GenCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/GenContinent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenContinent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/GenMass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenMass.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/GenPlate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenPlate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/MeshGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/MeshGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/PointsGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/PointsGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolyTriGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolyTriGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Poly/PolygonGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolygonGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Poly/RiverPolyTriGen.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/RiverPolyTriGen.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/ResourceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/ResourceGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/InfrastructureNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/NameGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/NameGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/WorldGenLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/WorldGenLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/WorldGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/BorderEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/BorderEdge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Edge/Edge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Edge/Edge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/GeometryExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/GeometryExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/Graph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/Graph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/GraphConverter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/GraphConverter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/GraphGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/GraphGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/GraphNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/GraphNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/IGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IGraphExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/IGraphExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IGraphNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/IGraphNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IReadOnlyGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/IReadOnlyGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IReadOnlyGraphNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/IReadOnlyGraphNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/IStaticNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/IStaticNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/ImplicitGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/ImplicitGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Graph/NodeList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/NodeList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/LineSegment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/LineSegment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/LineSegmentExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/LineSegmentExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/MapGenInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/MapGenInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/ColorTri.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/ColorTri.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/AUTHORS.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/AUTHORS.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/LICENSE.txt" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/LICENSE.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/P2T.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/P2T.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Polygon/Polygon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Polygon/Polygon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Polygon/PolygonPoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Polygon/PolygonPoint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Polygon/PolygonSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Polygon/PolygonSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/DelaunayTriangle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/DelaunayTriangle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/AdvancingFront.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/AdvancingFront.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/AdvancingFrontNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/AdvancingFrontNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweep.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepBasin.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepBasin.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepConstraint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepConstraint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepDebugContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepDebugContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepEdgeEvent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepEdgeEvent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepPointComparator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/DTSweepPointComparator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/PointOnEdgeException.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Delaunay/Sweep/PointOnEdgeException.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/ITriangulatable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/ITriangulatable.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Orientation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Orientation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Sets/ConstrainedPointSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Sets/ConstrainedPointSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Sets/PointSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Sets/PointSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/TriangulationAlgorithm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/TriangulationAlgorithm.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/TriangulationConstraint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/TriangulationConstraint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/TriangulationContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/TriangulationContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/TriangulationDebugContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/TriangulationDebugContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/TriangulationMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/TriangulationMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/TriangulationPoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/TriangulationPoint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/TriangulationUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/TriangulationUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Util/PointGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Util/PointGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Triangulation/Util/PolygonGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Triangulation/Util/PolygonGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Utility/FixedArray3.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Utility/FixedArray3.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/P2T/Utility/FixedBitArray3.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/P2T/Utility/FixedBitArray3.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/Triangle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/Triangle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/TriangleExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/TriangleExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/TriangleStruct.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/TriangleStruct.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Triangulation/Triangulator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/Triangulator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Vector2Ext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Vector2Ext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/Vector2IExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Vector2IExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/CHANGELOG.md.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/CHANGELOG.md.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Delaunator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Delaunator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/IEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/IEdge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/IPoint.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/IPoint.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/ITriangle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/ITriangle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/IVoronoiCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Interfaces/IVoronoiCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/Edge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/Edge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/Point.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/Point.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/Triangle.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/Triangle.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/VoronoiCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/DelaunatorSharp/Models/VoronoiCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Circle.PNG" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Circle.PNG" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Circle.PNG.import" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Circle.PNG.import" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Package Manager.png" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Package Manager.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Package Manager.png.import" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Package Manager.png.import" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Rectangle.png" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Rectangle.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Rectangle.png.import" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Rectangle.png.import" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Unity_Example.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Unity_Example.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/Images/Delaunator_Unity_Example_Mesh.gif" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/Images/Delaunator_Unity_Example_Mesh.gif" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/LICENSE" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/LICENSE" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Geometry/delaunator-sharp-master/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/delaunator-sharp-master/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareRivalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareRivalProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareRivalProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareRivalProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareWarProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareWarProposal.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/ResolveProposalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/ResolveProposalProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellAttackEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellAttackEdge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellAttackNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellAttackNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatGraph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ICombatGraphEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ICombatGraphEdge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitAttackEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitAttackEdge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitCombatEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitCombatEdge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Mover/MapPos.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/MapPos.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/MessagePackManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/MessagePackManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/PacketProtocol.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/PacketProtocol.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/IPolymorph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Polymorph/IPolymorph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Polymorph/PolymorphMessage.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Polymorph/PolymorphMessage.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/ColorFormatter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Resolvers/ColorFormatter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/EntityFormatter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Resolvers/EntityFormatter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/EntityResolver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Resolvers/EntityResolver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/GodotResolver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Resolvers/GodotResolver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Resolvers/Vector2Formatter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Resolvers/Vector2Formatter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Save/SaveFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Save/SaveFile.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Save/Saver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Save/Saver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Serialization/Serializer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Serializer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Border/FrontFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Border/FrontFinder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/IdGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/IdGraph.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,13 +336,12 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/ForceAssignment/HoldLineSubAssignment.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Entity/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/Entity/Utility/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/Ref/ROERefCol.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -529,7 +743,7 @@
       <workItem from="1706399138875" duration="7755000" />
       <workItem from="1706459263338" duration="11029000" />
       <workItem from="1706476691355" duration="8814000" />
-      <workItem from="1706490970111" duration="928000" />
+      <workItem from="1706490970111" duration="3141000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -741,14 +955,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00118" summary="doot">
-      <option name="closed" value="true" />
-      <created>1706059640835</created>
-      <option name="number" value="00118" />
-      <option name="presentableId" value="LOCAL-00118" />
-      <option name="project" value="LOCAL" />
-      <updated>1706059640835</updated>
-    </task>
     <task id="LOCAL-00119" summary="fixed front bug">
       <option name="closed" value="true" />
       <created>1706115652232</created>
@@ -893,7 +1099,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706463977918</updated>
     </task>
-    <option name="localTasksCounter" value="137" />
+    <task id="LOCAL-00137" summary="starting implementing combat again">
+      <option name="closed" value="true" />
+      <created>1706492153237</created>
+      <option name="number" value="00137" />
+      <option name="presentableId" value="LOCAL-00137" />
+      <option name="project" value="LOCAL" />
+      <updated>1706492153237</updated>
+    </task>
+    <option name="localTasksCounter" value="138" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -915,7 +1129,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="working on movement after combat, made order decide that instead of comb result, made Blobber" />
     <MESSAGE value="before removing continuous movement" />
     <MESSAGE value="working on new PolyCell system" />
     <MESSAGE value="gettin there" />
@@ -940,6 +1153,7 @@
     <MESSAGE value="made ui modes, mouseoverhandler use actions instead of drawing every time" />
     <MESSAGE value="resources" />
     <MESSAGE value="reimplemented unit order drawing" />
-    <option name="LAST_COMMIT_MESSAGE" value="reimplemented unit order drawing" />
+    <MESSAGE value="starting implementing combat again" />
+    <option name="LAST_COMMIT_MESSAGE" value="starting implementing combat again" />
   </component>
 </project>

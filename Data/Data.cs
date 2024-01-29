@@ -20,6 +20,7 @@ public class Data
     public SocietyDomain Society { get; private set; }
     public MilitaryDomain Military { get; private set; }
     public InfrastructureDomain Infrastructure { get; private set; }
+    
     public Context Context { get; private set; }
     private EntityTypeTree _entityTypeTree;
 
@@ -143,6 +144,7 @@ public class Data
     public void RemoveEntity(int eId, StrongWriteKey key)
     {
         var e = EntitiesById[eId];
+        e.CleanUp(key);
         key.Data._entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
         EntitiesById.Remove(eId);
     }

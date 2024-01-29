@@ -32,9 +32,7 @@ public class DeclareWarProposal : AllianceProposal
         {
             var alliance = key.Data.Get<Alliance>(AllianceId);
             var target = key.Data.Get<Alliance>(TargetAllianceId);
-            GD.Print($"war declared between {alliance.Leader.Entity(key.Data).Name} and {target.Leader.Entity(key.Data).Name}");
-            alliance.AtWar.Add(target, key);
-            target.AtWar.Add(alliance, key);
+            key.Data.Society.DiploGraph.AddEdge(alliance, target, DiploRelation.War, key);            
         }
     }
     public override Control GetDisplay(Data d)
@@ -64,7 +62,7 @@ public class DeclareWarProposal : AllianceProposal
         {
             var alliance = data.Get<Alliance>(AllianceId);
             var target = data.Get<Alliance>(TargetAllianceId);
-            return alliance.Rivals.Contains(target);
+            return alliance.IsRivals(target, data);
         }
     }
 }

@@ -14,8 +14,7 @@ public class DeclareRivalProcedure : Procedure
     {
         var a = key.Data.Get<Alliance>(AllianceId);
         var t = key.Data.Get<Alliance>(TargetAllianceId);
-        a.Rivals.Add(t, key);
-        t.Rivals.Add(a, key);
+        key.Data.Society.DiploGraph.AddEdge(a, t, DiploRelation.Rivals, key);
     }
 
     public override bool Valid(Data data)

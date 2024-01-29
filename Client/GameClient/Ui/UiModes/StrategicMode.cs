@@ -139,11 +139,11 @@ public class StrategicMode : UiMode
             else
             {
                 var foreignAlliance = foreign.OccupierRegime.Entity(_client.Data).GetAlliance(_client.Data);
-                if (alliance.AtWar.Contains(foreignAlliance))
+                if (alliance.IsAtWar(foreignAlliance, _client.Data))
                 {
                     color = Colors.Red;
                 }
-                else if (alliance.Rivals.Contains(foreignAlliance))
+                else if (alliance.IsRivals(foreignAlliance, _client.Data))
                 {
                     color = Colors.Orange;
                 }

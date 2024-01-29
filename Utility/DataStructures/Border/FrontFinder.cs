@@ -58,7 +58,7 @@ public static class FrontFinder
             if (c.Controller.Empty()) return false;
             var controllerRegime = c.Controller.Entity(d);
             var controllerAlliance = controllerRegime.GetAlliance(d);
-            return alliance.Rivals.Contains(controllerAlliance);
+            return alliance.IsRivals(controllerAlliance, d);
         }
     }
     

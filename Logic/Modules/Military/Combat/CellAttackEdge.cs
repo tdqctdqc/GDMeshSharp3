@@ -122,7 +122,7 @@ public class CellAttackEdge : ICombatGraphEdge
             }
             else
             {
-                var proc = DestroyUnitProcedure.Construct(defender);
+                var proc = EntityDeletionUpdate.Create(defender.Id, key);
                 key.SendMessage(proc);
             }
         }

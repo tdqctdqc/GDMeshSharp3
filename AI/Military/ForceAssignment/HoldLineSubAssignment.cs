@@ -110,12 +110,12 @@ public class HoldLineSubAssignment
         var foreignAlliance = foreignRegime.GetAlliance(d);
         var units = foreignCell.GetUnits(d);
         if (units == null || units.Count == 0) return 0f;
-        if (alliance.Rivals.Contains(foreignAlliance) == false)
+        if (alliance.IsRivals(foreignAlliance, d) == false)
         {
             throw new Exception();
         }
         float mult = 1f;
-        if (alliance.AtWar.Contains(foreignAlliance)) mult = 2f;
+        if (alliance.IsAtWar(foreignAlliance, d)) mult = 2f;
         return units.Sum(u => u.GetPowerPoints(d)) * mult;
     }
     public void AddGroupToLine(FrontSegmentAssignment seg,

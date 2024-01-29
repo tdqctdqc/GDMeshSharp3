@@ -49,7 +49,6 @@ public class AllianceMergeProposal : DiplomacyProposal
     {
         if (accepted)
         {
-            GD.Print($"removing alliance {Alliance0}");
             var alliance0 = key.Data.Get<Alliance>(Alliance0);
             var alliance1 = key.Data.Get<Alliance>(Alliance1);
             var members0 = alliance0.Members.Items(key.Data).ToList();
@@ -61,23 +60,7 @@ public class AllianceMergeProposal : DiplomacyProposal
                 alliance1.Members.Add(r, key);
             }
             
-            var enemies0 = alliance0.Rivals.Items(key.Data).ToList();
-            for (var i = 0; i < enemies0.Count; i++)
-            {
-                var e = enemies0[i];
-                e.Rivals.Remove(e, key);
-                alliance1.Rivals.Add(e, key);
-                e.Rivals.Add(alliance1, key);
-            }
-            
-            var war0 = alliance0.AtWar.Items(key.Data).ToList();
-            for (var i = 0; i < war0.Count; i++)
-            {
-                var e = war0[i];
-                e.AtWar.Remove(alliance0, key);
-                alliance1.AtWar.Add(e, key);
-                e.AtWar.Add(alliance1, key);
-            }
+            key.Data.Society.DiploGraph.MergeRelations(alliance0, alliance1, key);
             key.Data.RemoveEntity(alliance0.Id, key);
         }
     }
@@ -88,6 +71,6 @@ public class AllianceMergeProposal : DiplomacyProposal
         if (data.HasEntity(Alliance1) == false) return false;
         var a0 = (Alliance) data.EntitiesById[Alliance0];
         var a1 = (Alliance) data.EntitiesById[Alliance1];
-        return a0.Rivals.Contains(a1) == false;
+        return a0.IsRivals(a1, data) == false;
     }
 }

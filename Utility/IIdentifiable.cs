@@ -20,4 +20,14 @@ public static class IIdentifiableExt
             : i1.Id;
         return new Vector2I(hi, lo);
     }
+    public static Vector2I GetIdEdgeKey(this IIdentifiable i1, int i2)
+    {
+        var hi = i1.Id > i2
+            ? i1.Id
+            : i2;
+        var lo = i1.Id > i2
+            ? i2
+            : i1.Id;
+        return new Vector2I(hi, lo);
+    }
 }

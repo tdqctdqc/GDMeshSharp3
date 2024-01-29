@@ -30,4 +30,9 @@ public class IdDispenser : Entity
             return _index;
         }
     }
+
+    public override void CleanUp(StrongWriteKey key)
+    {
+        
+    }
 }
