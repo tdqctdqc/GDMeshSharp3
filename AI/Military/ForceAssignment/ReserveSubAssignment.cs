@@ -25,10 +25,18 @@ public class ReserveSubAssignment
     {
         
     }
+    public void ValidateGroups(LogicWriteKey key)
+    {
+        GroupIds.RemoveWhere(id => key.Data.EntitiesById.ContainsKey(id) == false);
+    }
     public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
     {
         foreach (var groupId in GroupIds)
         {
+            if (key.Data.EntitiesById.ContainsKey(groupId) == false)
+            {
+                continue;
+            }
             var groupCell = key.Data.Get<UnitGroup>(groupId)
                 .GetCell(key.Data);
             var close = segs

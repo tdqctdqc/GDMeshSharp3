@@ -54,6 +54,7 @@ public partial class TriColorMesh<TElement> : MeshInstance2D, IMapChunkGraphicNo
     }
     public void Update(Data d)
     {
+        if (_vertices.Count < 3) return;
         var mdt = new MeshDataTool();
         mdt.CreateFromSurface(_arrayMesh, 0);
         _arrayMesh.ClearSurfaces();

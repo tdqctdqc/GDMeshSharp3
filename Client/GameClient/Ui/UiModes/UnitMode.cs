@@ -93,7 +93,7 @@ public class UnitMode : UiMode
         var group = unit.GetGroup(_client.Data);
         highlight.Draw(mb => mb.DrawMovementRecord(unit.Id, 4, cell.GetCenter(), _client.Data),
             cell.GetCenter());
-        if (group.GroupOrder != null)
+        if (group != null && group.GroupOrder != null)
         {
             highlight.Draw(mb => group.GroupOrder.Draw(group, cell.GetCenter(), mb, _client.Data),
                 cell.GetCenter());

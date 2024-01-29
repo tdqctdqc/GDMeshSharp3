@@ -16,6 +16,7 @@ public class ResolveProposalProcedure : Procedure
     {
         if (key.Data.Society.Proposals.Proposals.ContainsKey(ProposalId) == false) return;
         var proposal = key.Data.Society.Proposals.Proposals[ProposalId];
+        
         proposal.Resolve(Accepted, key);
         key.Data.Society.Proposals.Proposals.Remove(proposal.Id);
     }

@@ -80,6 +80,12 @@ public class StrategicMode : UiMode
         foreach (var seg in segs)
         {
             debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
+            foreach (var (groupId, faces) in seg.HoldLine.FacesByGroupId)
+            {
+                var group = _client.Data.Get<UnitGroup>(groupId);
+                var centerFace = faces[faces.Count / 2];
+                debug.Label(groupId.ToString(), group.Color, centerFace.GetNative(_client.Data).GetCenter());
+            }
         }
     }
 

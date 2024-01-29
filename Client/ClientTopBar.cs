@@ -21,13 +21,25 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
             if (poly == null) return;
             client.Cam().JumpTo(poly.Center);
         });
-        
         this.AddIntButton("Jump to Cell", i =>
         {
             var wp = PlanetDomainExt.GetPolyCell(i, client.Data);
             if (wp == null) return;
             client.Cam().JumpTo(wp.GetCenter());
         });
+        this.AddIntButton("Jump to Unit", i =>
+        {
+            var unit = client.Data.Get<Unit>(i);
+            if (unit == null) return;
+            client.Cam().JumpTo(unit.Position.GetCell(client.Data).GetCenter());
+        });
+        this.AddIntButton("Jump to Group", i =>
+        {
+            var group = client.Data.Get<UnitGroup>(i);
+            if (group == null) return;
+            client.Cam().JumpTo(group.GetCell(client.Data).GetCenter());
+        });
+        
         var uiFrame = client.GetComponent<UiFrame>();
         uiFrame.AddTopBar(this);
     }

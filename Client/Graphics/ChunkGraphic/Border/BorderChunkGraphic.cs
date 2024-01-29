@@ -6,21 +6,21 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract partial class BorderChunkNode 
+public abstract partial class PolyBorderChunkNode 
     : Node2D, IMapChunkGraphicNode
 {
     public MapChunk Chunk { get; private set; }
     public string Name { get; private set; }
     Node2D IMapChunkGraphicNode.Node => this;
 
-    public BorderChunkNode(string name, MapChunk chunk, 
+    public PolyBorderChunkNode(string name, MapChunk chunk, 
         Data data)
     {
         Chunk = chunk;
         Name = name;
         Draw(data);
     }
-    private BorderChunkNode() : base()
+    private PolyBorderChunkNode() : base()
     {
     }
 

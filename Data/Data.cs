@@ -164,7 +164,6 @@ public class Data
 
     public T Get<T>(int id) where T : Entity
     {
-        if (EntitiesById.ContainsKey(id) == false) return null;
         return (T) EntitiesById[id];
     }
 
@@ -189,5 +188,10 @@ public class Data
     public IEnumerable<IEntityTypeTreeNode> GetAllEntityTypeNodes()
     {
         return _entityTypeTree.Nodes.Values;
+    }
+
+    public bool HasEntity(int id)
+    {
+        return EntitiesById.ContainsKey(id);
     }
 }

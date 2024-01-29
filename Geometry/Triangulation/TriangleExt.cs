@@ -44,9 +44,9 @@ public static class TriangleExt
         return Mathf.Min(p0.DistToLine(p1, p2), Mathf.Min(p1.DistToLine(p0, p2), p2.DistToLine(p0, p1)));
     }
 
-    public static float GetArea(this Triangle t)
+    public static float GetApproxArea(this Triangle t)
     {
-        return GetArea(t.A, t.B, t.C);
+        return GetApproxArea(t.A, t.B, t.C);
     }
     public static Vector2 GetRandomPointInside(this Triangle t, float minArcRatio, float maxArcRatio)
     {
@@ -57,13 +57,20 @@ public static class TriangleExt
         var arc2Ratio = totalArcRatio - arc1Ratio;
         return t.A + arc1 * arc1Ratio + arc2 * arc2Ratio;
     }
-    public static float GetArea(Vector2 p0, Vector2 p1, Vector2 p2)
+    public static float GetApproxArea(Vector2 p0, Vector2 p1, Vector2 p2)
     {
         var l0 = p0.DistanceTo(p1);
         var l1 = p1.DistanceTo(p2);
         var l2 = p2.DistanceTo(p0);
         var semiPerim = (l0 + l1 + l2) / 2f;
-        return Mathf.Sqrt( semiPerim * (semiPerim - l0) * (semiPerim - l1) * (semiPerim - l2) );
+        var perimScore = semiPerim * (semiPerim - l0) * (semiPerim - l1) * (semiPerim - l2);
+        if (perimScore < 0f)
+        {
+            return 0f;
+        }
+        var area = Mathf.Sqrt(semiPerim * (semiPerim - l0) * (semiPerim - l1) * (semiPerim - l2) );
+        if (float.IsNaN(area)) throw new Exception($"bad tri area {p0} {p1} {p2} semi perims {l0} {l1} {l2}");
+        return area;
     }
     public static bool ContainsPoint(this Triangle tri, Vector2 p)
     {

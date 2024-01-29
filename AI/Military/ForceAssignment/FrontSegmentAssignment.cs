@@ -82,53 +82,14 @@ public class FrontSegmentAssignment : ForceAssignment
         var freeGroups = GetFreeGroups(key.Data);
         Insert.InsertGroups(this, freeGroups, key);
     }
-    public IEnumerable<FrontSegmentAssignment> Validate
-        (   List<List<FrontFace<PolyCell>>> frontLines,
-            HashSet<FrontFace<PolyCell>> frontFaces,
-            HashSet<FrontSegmentAssignment> allSegs,
-            LogicWriteKey key)
+
+    public override void ValidateGroups(LogicWriteKey key)
     {
-        var otherSegFaces = allSegs
-            .Where(s => s != this)
-            .SelectMany(s => s.Segment.Faces).ToHashSet();
-        if (otherSegFaces.Intersect(Segment.Faces).Count() > 0)
-        {
-            throw new Exception();
-        }
-        if (Segment.Faces.All(frontFaces.Contains))
-        {
-            HoldLine.ValidateGroupFaces(this, key);
-            Insert.ValidateInsertionPoints(this, key);
-            Reserve.Validate(this, key);
-            return this.Yield();
-        }
-        var reunited = Segment.CheckReunite(frontLines, 
-            frontFaces, 
-            otherSegFaces,
-            key, out var res);
-        if (reunited)
-        {
-            HoldLine.ValidateGroupFaces(this, key);
-            Insert.ValidateInsertionPoints(this, key);
-            Reserve.Validate(this, key);
-            return this.Yield();
-        }
-
-        if (res.Count() == 0)
-        {
-            //merge into some other seg
-            return null;
-        }
-        
-        var newSegs = res.Select(
-            r => FrontSegmentAssignment.Construct(new EntityRef<Regime>(Regime.RefId),
-                r, false, key)).ToList();
-        
-        PartitionAmong(newSegs, key);
-        
-        return newSegs;
+        GroupIds.RemoveWhere(id => key.Data.EntitiesById.ContainsKey(id) == false);
+        HoldLine.ValidateGroups(key);
+        Insert.ValidateGroups(key);
+        Reserve.ValidateGroups(key);
     }
-
     public void PartitionAmong(
         IEnumerable<FrontSegmentAssignment> newSegs,
         LogicWriteKey key)

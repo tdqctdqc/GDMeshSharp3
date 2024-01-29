@@ -30,6 +30,18 @@ public class Fishery : FoodProdTechnique
         {
             return 0;
         }
-        return Mathf.CeilToInt(val / 80_000f);
+        var num = Mathf.CeilToInt(val / 80_000f);
+        if (num < 0 || num > 100)
+        {
+            throw new Exception($"{num} fisheries" +
+                                $"\n{waterNs.Count()} water ns" +
+                                $"\n{(waterNs.Count() == 0 ? 0f :
+                                    waterNs.Sum(n => n.GetArea(data)))} water score" +
+                                $"\n{riverCells.Count()} river cells" +
+                                $"\n{(riverCells.Count() == 0 ? 0f :
+                                    riverCells.Sum(t => t.Area()) * 50f)} river score");
+            
+        }
+        return num;
     }
 }

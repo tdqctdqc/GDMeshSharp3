@@ -23,7 +23,8 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         var assgn = GetAssignments(g, key.Data);
         foreach (var unit in units)
         {
-            var dest = PlanetDomainExt.GetPolyCell(assgn[unit].Native, key.Data);
+            var dest = PlanetDomainExt
+                .GetPolyCell(assgn[unit].Native, key.Data);
             var pos = unit.Position.Copy();
             var moveType = unit.Template.Entity(key.Data).MoveType.Model(key.Data);
             var movePoints = moveType.BaseSpeed;
@@ -127,22 +128,25 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         }
     }
 
-    public override void RegisterCombatActions(CombatCalculator combat, LogicWriteKey key)
+    public override void RegisterCombatActions(
+        UnitGroup g, 
+        CombatCalculator combat, LogicWriteKey key)
     {
-        // if (Attack == false) return null;
-        // if (AdvanceLinePoints == null) return null;
-        // var res = new KeyValuePair<Unit, CombatAction>[UnitIdsInLine.Count];
-        // for (var i = 0; i < UnitIdsInLine.Count; i++)
-        // {
-        //     var unit = d.Get<Unit>(UnitIdsInLine[i]);
-        //     var target = AdvanceLinePoints.GetPointAlongLine(
-        //         (v, w) => v.GetOffsetTo(w, d),
-        //         (float)i / UnitIdsInLine.Count);
-        //     var action = new LandAttackAction(target.ClampPosition(d));
-        //     res[i] = new KeyValuePair<Unit, CombatAction>(unit, action);
-        // }
-        //
-        // return res;
+        // if (Attack == false) return;
+        var d = key.Data;
+        var units = g.Units.Items(d);
+        var natives = Faces.Select(f => f.GetNative(d)).ToHashSet();
+        var foreigns = Faces.Select(f => f.GetForeign(d)).ToHashSet();
+        foreach (var unit in units)
+        {
+            var cell = unit.Position.GetCell(d);
+            if (natives.Contains(cell) == false) continue;
+            var targets = cell.GetNeighbors(d)
+                .Intersect(foreigns);
+            if (targets.Count() == 0) continue;
+            var target = targets.GetRandomElement();
+            var attackEdge = UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
+        }
     }
 
     public override string GetDescription(Data d)

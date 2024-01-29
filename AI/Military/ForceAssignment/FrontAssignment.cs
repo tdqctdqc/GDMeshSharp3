@@ -100,6 +100,14 @@ public class FrontAssignment : ForceAssignment, ICompoundForceAssignment
         return lines;
     }
 
+    public override void ValidateGroups(LogicWriteKey key)
+    {
+        GroupIds.RemoveWhere(id => key.Data.EntitiesById.ContainsKey(id) == false);
+        foreach (var fa in Assignments)
+        {
+            fa.ValidateGroups(key);
+        }
+    }
     public void Validate(LogicWriteKey key)
     {
         ValidateSegments(key);

@@ -133,12 +133,23 @@ public class InsertionSubAssignment
             Insertions[group.Id] = close;
         }
     }
-
+    public void ValidateGroups(LogicWriteKey key)
+    {
+        var badIds = Insertions.Keys.Where(id => key.Data.EntitiesById.ContainsKey(id) == false).ToArray();
+        foreach (var badId in badIds)
+        {
+            Insertions.Remove(badId);
+        }
+    }
     public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
     {
         foreach (var kvp in Insertions)
         {
             var groupId = kvp.Key;
+            if (key.Data.EntitiesById.ContainsKey(groupId) == false)
+            {
+                continue;
+            }
             var insertionFace = kvp.Value;
             var seg = segs
                 .FirstOrDefault(s => s.Segment.Faces.Contains(insertionFace));
@@ -149,9 +160,10 @@ public class InsertionSubAssignment
                 seg = segs.MinBy(s =>
                     s.GetCharacteristicCell(key.Data)
                         .GetCenter()
-                        .GetOffsetTo(groupCell.GetCenter(), key.Data));
+                        .GetOffsetTo(groupCell.GetCenter(), key.Data).Length());
                 insertionFace = seg.Segment.Faces.MinBy(f => 
-                    f.GetNative(key.Data).GetCenter().GetOffsetTo(groupCell.GetCenter(), key.Data));
+                    f.GetNative(key.Data).GetCenter()
+                        .GetOffsetTo(groupCell.GetCenter(), key.Data).Length());
             }
             seg.GroupIds.Add(groupId);
             seg.Insert.Insertions.Add(groupId, insertionFace);

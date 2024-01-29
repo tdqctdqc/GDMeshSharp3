@@ -20,6 +20,10 @@ public class CombatGraph
         _nodesByEdge = new Dictionary<ICombatGraphEdge, (ICombatGraphNode, ICombatGraphNode)>();
     }
 
+    public bool HasNode(ICombatGraphNode n)
+    {
+        return _edgesByNode.ContainsKey(n);
+    }
     public void AddNode(ICombatGraphNode n)
     {
         if (_edgesByNode.ContainsKey(n)) return;
@@ -27,47 +31,54 @@ public class CombatGraph
         _edgesByNode.Add(n, new List<ICombatGraphEdge>());
     }
 
-    public IReadOnlyList<ICombatGraphEdge> GetEdges(
+    public IReadOnlyList<ICombatGraphEdge> GetEdgesBetween(
         ICombatGraphNode n1,
         ICombatGraphNode n2)
     {
         return _edgesByEdgeId[n1.GetIdEdgeKey(n2)];
     }
-    public void AddEdge(ICombatGraphNode n1, 
-        ICombatGraphNode n2,
-        ICombatGraphEdge edge, Data d)
+
+    public IReadOnlyList<ICombatGraphEdge> GetNodeEdges
+        (ICombatGraphNode n)
     {
-        AddNode(n1);
-        AddNode(n2);
-        var edgeId = n1.GetIdEdgeKey(n2);
-        _edgesByEdgeId[edgeId].Add(edge);
-        _edgesByNode[n1].Add(edge);
-        _edgesByNode[n2].Add(edge);
-        _nodesByEdge.Add(edge, (n1, n2));
-        edge.PrepareGraph(_combat, n1, n2, d);
+        AddNode(n);
+        return _edgesByNode[n];
     }
-    public void Calculate(Data d)
+    public void AddEdge(ICombatGraphEdge edge, Data d)
     {
-        Do((e, combat, n1, n2) 
-            => e.Calculate(combat, n1, n2, d));
+        AddNode(edge.Node1);
+        AddNode(edge.Node2);
+        var edgeId = edge.Node1.GetIdEdgeKey(edge.Node2);
+        _edgesByEdgeId.GetOrAdd(edgeId, e => new List<ICombatGraphEdge>())
+            .Add(edge);
+        _edgesByNode[edge.Node1].Add(edge);
+        _edgesByNode[edge.Node2].Add(edge);
+        _nodesByEdge.Add(edge, (edge.Node1, edge.Node2));
     }
-    public void DirectResults(Data d)
+    public void CalculateCombat(Data d)
     {
-        Do((e, combat, n1, n2) 
-            => e.DirectResults(combat, n1, n2, d));
+        Do((e, combat) 
+            => e.CalculateCombat(combat, d));
     }
-    public void InvoluntaryResults(Data d)
+    public void EnactDirectResults(LogicWriteKey key)
     {
-        Do((e, combat, n1, n2) 
-            => e.InvoluntaryResults(combat, n1, n2, d));
+        Do((e, combat) 
+            => e.DirectResults(combat, key));
     }
-    public void VoluntaryResults(Data d)
+    public void EnactInvoluntaryResults(LogicWriteKey key)
     {
-        Do((e, combat, n1, n2) 
-            => e.VoluntaryResults(combat, n1, n2, d));
+        Do((e, combat) 
+            => e.InvoluntaryResults(combat, key));
     }
-    private void Do(Action<ICombatGraphEdge, CombatCalculator, 
-        ICombatGraphNode, ICombatGraphNode> act)
+    public void EnactVoluntaryResults(LogicWriteKey key)
+    {
+        Do((e, combat) =>
+        {
+            if (e.Suppressed(combat, key.Data)) return;
+            e.VoluntaryResults(combat, key);
+        });
+    }
+    private void Do(Action<ICombatGraphEdge, CombatCalculator> act)
     {
         foreach (var (edgeId, edges) in _edgesByEdgeId)
         {
@@ -75,7 +86,7 @@ public class CombatGraph
             var n2 = _nodesById[edgeId.X];
             foreach (var edge in edges)
             {
-                act(edge, _combat, n1, n2);
+                act(edge, _combat);
             }
         }
     }

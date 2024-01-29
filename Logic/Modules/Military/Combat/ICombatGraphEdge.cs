@@ -2,23 +2,17 @@ using System.Collections.Generic;
 
 public interface ICombatGraphEdge
 {
-    void PrepareGraph(CombatCalculator combat,
-        ICombatGraphNode n1, ICombatGraphNode n2,
-        Data d);
-    void Calculate(CombatCalculator combat,
-        ICombatGraphNode n1, ICombatGraphNode n2,
+    ICombatGraphNode Node1 { get; }
+    ICombatGraphNode Node2 { get; }
+    void CalculateCombat(CombatCalculator combat,
         Data d);
     void DirectResults(CombatCalculator combat,
-        ICombatGraphNode n1, ICombatGraphNode n2,
-        Data d);
+        LogicWriteKey key);
     void InvoluntaryResults(CombatCalculator combat,
-        ICombatGraphNode n1, ICombatGraphNode n2,
-        Data d);
+        LogicWriteKey key);
     void VoluntaryResults(CombatCalculator combat,
-        ICombatGraphNode n1, ICombatGraphNode n2,
-        Data d);
+        LogicWriteKey key);
 
     bool Suppressed(CombatCalculator combat,
-        ICombatGraphNode n1, ICombatGraphNode n2,
         Data d);
 }

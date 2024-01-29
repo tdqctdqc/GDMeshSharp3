@@ -1,18 +1,21 @@
 
 public abstract class UnitCombatEdge : ICombatGraphEdge
 {
-    public abstract void PrepareGraph(CombatCalculator combat, ICombatGraphNode n1, ICombatGraphNode n2, Data d);
-    public abstract void Calculate(CombatCalculator combat, ICombatGraphNode n1, ICombatGraphNode n2, Data d);
-    public abstract void DirectResults(CombatCalculator combat, ICombatGraphNode n1, ICombatGraphNode n2, Data d);
-    public abstract void InvoluntaryResults(CombatCalculator combat, ICombatGraphNode n1, ICombatGraphNode n2, Data d);
-    public abstract void VoluntaryResults(CombatCalculator combat, ICombatGraphNode n1, ICombatGraphNode n2, Data d);
-    public bool Suppressed(CombatCalculator combat, 
-        ICombatGraphNode n1, ICombatGraphNode n2, Data d)
-    {
-        var u = GetUnit(combat, n1, n2, d);
-        return combat.Suppressed.Contains(u);
-    }
+    public Unit Unit { get; private set; }
+    ICombatGraphNode ICombatGraphEdge.Node1 => Unit;
+    public abstract ICombatGraphNode Node2 { get; }
+    public abstract void CalculateCombat(CombatCalculator combat, Data d);
+    public abstract void DirectResults(CombatCalculator combat, LogicWriteKey key);
+    public abstract void InvoluntaryResults(CombatCalculator combat, LogicWriteKey key);
+    public abstract void VoluntaryResults(CombatCalculator combat, LogicWriteKey key);
 
-    protected abstract Unit GetUnit(CombatCalculator combat,
-        ICombatGraphNode n1, ICombatGraphNode n2, Data d);
+    protected UnitCombatEdge(Unit u)
+    {
+        Unit = u;
+    }
+    public bool Suppressed(CombatCalculator combat, 
+        Data d)
+    {
+        return combat.Suppressed.Contains(Unit);
+    }
 }

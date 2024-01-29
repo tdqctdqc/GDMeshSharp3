@@ -49,6 +49,7 @@ public class AllianceMergeProposal : DiplomacyProposal
     {
         if (accepted)
         {
+            GD.Print($"removing alliance {Alliance0}");
             var alliance0 = key.Data.Get<Alliance>(Alliance0);
             var alliance1 = key.Data.Get<Alliance>(Alliance1);
             var members0 = alliance0.Members.Items(key.Data).ToList();
@@ -83,8 +84,8 @@ public class AllianceMergeProposal : DiplomacyProposal
 
     public override bool Valid(Data data)
     {
-        if (data.EntitiesById.ContainsKey(Alliance0) == false) return false;
-        if (data.EntitiesById.ContainsKey(Alliance1) == false) return false;
+        if (data.HasEntity(Alliance0) == false) return false;
+        if (data.HasEntity(Alliance1) == false) return false;
         var a0 = (Alliance) data.EntitiesById[Alliance0];
         var a1 = (Alliance) data.EntitiesById[Alliance1];
         return a0.Rivals.Contains(a1) == false;

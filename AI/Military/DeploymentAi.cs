@@ -23,7 +23,7 @@ public class DeploymentAi
         TheaterAssignment.PutGroupsInRightTheater(regime, ForceAssignments,
             key);
         //something to change groups of units who are cut off from rest of group
-        TheaterAssignment.ValidateFronts(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),
+        TheaterAssignment.Validate(regime, ForceAssignments.OfType<TheaterAssignment>().ToList(),
             key);
         
         foreach (var ta in ForceAssignments.OfType<TheaterAssignment>().ToList())

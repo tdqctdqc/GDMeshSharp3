@@ -165,6 +165,15 @@ public class HoldLineSubAssignment
             }
         }
     }
+
+    public void ValidateGroups(LogicWriteKey key)
+    {
+        var badIds = FacesByGroupId.Keys.Where(id => key.Data.EntitiesById.ContainsKey(id) == false).ToArray();
+        foreach (var badId in badIds)
+        {
+            FacesByGroupId.Remove(badId);
+        }
+    }
     public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
     {
         foreach (var kvp in FacesByGroupId)
@@ -177,7 +186,7 @@ public class HoldLineSubAssignment
             {
                 continue;
             }
-
+            if (seg.HoldLine == this) throw new Exception();
             var newFaces = new List<List<FrontFace<PolyCell>>>();
             seg.Segment.Faces.DoForRuns(
                 groupFaces.Contains,
@@ -188,7 +197,7 @@ public class HoldLineSubAssignment
             }
             
             seg.GroupIds.Add(groupId);
-            seg.HoldLine.FacesByGroupId.Add(groupId, newFaces.MaxBy(l => l));
+            seg.HoldLine.FacesByGroupId.Add(groupId, newFaces.MaxBy(l => l.Count()));
         }
         FacesByGroupId.Clear();
     }

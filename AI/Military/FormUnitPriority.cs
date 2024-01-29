@@ -40,7 +40,16 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
         var pos = (Vector2I)capitalPoly.Center;
         var cell = 
             capitalPoly.GetCells(key.Data).First(c => c is LandCell);
-        var unitPos = new MapPos(cell.Id, (-1, 0f));
+        var deployPolyCell = regime.GetPolys(key.Data)
+            .First(p => p.GetCells(key.Data).Any(goodDeployCell))
+            .GetCells(key.Data).Where(goodDeployCell).First();
+
+        bool goodDeployCell(PolyCell c)
+        {
+            return c.Controller.RefId == regime.Id;
+        }
+        
+        var unitPos = new MapPos(deployPolyCell.Id, (-1, 0f));
         
         foreach (var (template, num) in toBuild)
         {

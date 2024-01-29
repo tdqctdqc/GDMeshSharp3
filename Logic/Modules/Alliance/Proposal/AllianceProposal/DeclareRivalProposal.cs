@@ -61,7 +61,8 @@ public class DeclareRivalProposal : AllianceProposal
     public override bool Valid(Data data)
     {
         return base.Valid(data) 
-               && data.EntitiesById.ContainsKey(TargetAllianceId)
+               && data.HasEntity(TargetAllianceId)
+               && data.HasEntity(AllianceId)
                && data.Get<Alliance>(AllianceId).Members.RefIds.Contains(TargetAllianceId) == false;
     }
 }

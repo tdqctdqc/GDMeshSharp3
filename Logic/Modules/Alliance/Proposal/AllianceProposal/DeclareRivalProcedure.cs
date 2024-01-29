@@ -20,6 +20,8 @@ public class DeclareRivalProcedure : Procedure
 
     public override bool Valid(Data data)
     {
-        return AllianceId != TargetAllianceId;
+        return AllianceId != TargetAllianceId 
+               && data.HasEntity(TargetAllianceId)
+               && data.HasEntity(AllianceId);
     }
 }

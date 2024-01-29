@@ -25,7 +25,8 @@ public class ROERefCol<TRef>
     }
     public IEnumerable<TRef> Items(Data data)
     {
-        return RefIds.Where(id => data.EntitiesById.ContainsKey(id)).Select(id => (TRef) data[id]);
+        return RefIds
+            .Select(id => (TRef) data[id]);
     }
     public bool Contains(TRef entity)
     {

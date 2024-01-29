@@ -6,23 +6,26 @@ using Godot;
 public class CombatCalculator
 {
     public CombatGraph Graph { get; private set; }
-    public Dictionary<(Alliance, PolyCell), CellAttackNode> CellAttackNodes { get; private set; }
     public HashSet<Unit> Suppressed { get; private set; }
     public void Calculate(LogicWriteKey key)
     {
         Graph = new CombatGraph(this);
         Suppressed = new HashSet<Unit>();
+        key.Data.HostLogicData.CombatGraphIds.Reset();
         SetupGraph(key);
-        
+        Graph.CalculateCombat(key.Data);
+        Graph.EnactDirectResults(key);
+        Graph.EnactInvoluntaryResults(key);
+        Graph.EnactVoluntaryResults(key);
     }
 
     private void SetupGraph(LogicWriteKey key)
     {
-        foreach (var order in key.Data.GetAll<UnitGroup>()
-                     .Select(g => g.GroupOrder))
+        foreach (var group in key.Data.GetAll<UnitGroup>())
         {
+            var order = group.GroupOrder;
             if (order == null) continue;
-            order.RegisterCombatActions(this, key);
+            order.RegisterCombatActions(group, this, key);
         }
     }
     private static void CalcLosses(Data d)

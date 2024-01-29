@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class RegimeBordersNode : BorderChunkNode
+public partial class RegimeBordersNode : PolyBorderChunkNode
 {
     private static float _thickness = 5f;
     public RegimeBordersNode(MapChunk chunk, Data data) 

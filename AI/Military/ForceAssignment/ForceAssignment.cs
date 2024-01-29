@@ -46,4 +46,5 @@ public abstract class ForceAssignment : IPolymorph
     public abstract UnitGroup RequestGroup(LogicWriteKey key);
     public abstract void TakeAwayGroup(UnitGroup g, LogicWriteKey key);
     public abstract void AssignGroups(LogicWriteKey key);
+    public abstract void ValidateGroups(LogicWriteKey key);
 }

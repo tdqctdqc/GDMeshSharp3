@@ -6,30 +6,30 @@ using Godot;
 
 public class UnitGraphicLayer : GraphicLayer<MapChunk, ChunkUnitsGraphic>
 {
-    public Dictionary<Unit, UnitGraphic> UnitGraphics { get; private set; }
+    private Dictionary<Unit, UnitGraphic> _unitGraphics;
     public UnitGraphicLayer(Client client, GraphicsSegmenter segmenter, Data d) 
         : base(LayerOrder.Units, "Units", segmenter)
     {
-        UnitGraphics = new Dictionary<Unit, UnitGraphic>();
+        _unitGraphics = new Dictionary<Unit, UnitGraphic>();
         foreach (var unit in d.GetAll<Unit>())
         {
             var unitGraphic = new UnitGraphic(unit, d);
-            UnitGraphics.Add(unit, unitGraphic);
+            _unitGraphics.Add(unit, unitGraphic);
         }
         d.SubscribeForCreation<Unit>(u =>
         {
             client.QueuedUpdates.Enqueue(() =>
             {
                 var unitGraphic = new UnitGraphic((Unit)u.Entity, d);
-                UnitGraphics.Add((Unit)u.Entity, unitGraphic);
+                _unitGraphics.Add((Unit)u.Entity, unitGraphic);
             });
         });
         d.SubscribeForDestruction<Unit>(u =>
         {
             var unit = (Unit)u.Entity;
-            var graphic = UnitGraphics[unit];
+            var graphic = _unitGraphics[unit];
             graphic.QueueFree();
-            UnitGraphics.Remove(unit);
+            _unitGraphics.Remove(unit);
         });
         
         foreach (var cell in d.Planet.PolygonAux.Chunks)
@@ -45,7 +45,7 @@ public class UnitGraphicLayer : GraphicLayer<MapChunk, ChunkUnitsGraphic>
             }
             client.QueuedUpdates.Enqueue(() =>
             {
-                foreach (var (unit, graphic) in UnitGraphics)
+                foreach (var (unit, graphic) in _unitGraphics)
                 {
                     graphic.Draw(unit, d);
                 }
@@ -58,6 +58,11 @@ public class UnitGraphicLayer : GraphicLayer<MapChunk, ChunkUnitsGraphic>
         var chunk = cell.GetChunk(d);
         var graphic = Graphics[chunk];
         graphic.CycleUnits(cell, _segmenter, this, d);
+    }
+
+    public UnitGraphic GetUnitGraphic(Unit u, Data d)
+    {
+        return _unitGraphics.GetOrAdd(u, u => new UnitGraphic(u, d));
     }
     protected override ChunkUnitsGraphic GetGraphic(MapChunk key, Data d)
     {

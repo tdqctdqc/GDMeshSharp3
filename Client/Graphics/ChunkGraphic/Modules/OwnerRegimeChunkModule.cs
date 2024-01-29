@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class RegimeChunkModule : MapChunkGraphicModule
+public partial class OwnerRegimeChunkModule : MapChunkGraphicModule
 {
     private RegimePolyFill _fill;
     private RegimeBordersNode _borders;
-    public RegimeChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(RegimeChunkModule))
+    public OwnerRegimeChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(OwnerRegimeChunkModule))
     {
         _fill = new RegimePolyFill(chunk, data);
         AddNode(_fill);
@@ -15,13 +15,13 @@ public partial class RegimeChunkModule : MapChunkGraphicModule
         AddNode(_borders);
     }
 
-    public static ChunkGraphicLayer<RegimeChunkModule> GetLayer(Client client, GraphicsSegmenter segmenter)
+    public static ChunkGraphicLayer<OwnerRegimeChunkModule> GetLayer(Client client, GraphicsSegmenter segmenter)
     {
-        var l = new ChunkGraphicLayer<RegimeChunkModule>(
+        var l = new ChunkGraphicLayer<OwnerRegimeChunkModule>(
             LayerOrder.PolyFill,
-            "Regimes",
+            "Owner",
             segmenter, 
-            c => new RegimeChunkModule(c, client.Data), 
+            c => new OwnerRegimeChunkModule(c, client.Data), 
             client.Data);
         l.AddTransparencySetting(m => m._fill, "Fill Transparency", .25f);
         l.AddTransparencySetting(m => m._borders, "Border Transparency", 1f);

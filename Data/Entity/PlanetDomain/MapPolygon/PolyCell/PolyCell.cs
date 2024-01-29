@@ -208,7 +208,7 @@ public abstract class PolyCell : IPolymorph,
             var a = RelBoundary[tris[i]];
             var b = RelBoundary[tris[i+1]];
             var c = RelBoundary[tris[i+2]];
-            area += TriangleExt.GetArea(a, b, c);
+            area += TriangleExt.GetApproxArea(a, b, c);
         }
 
         return area;
@@ -249,7 +249,7 @@ public abstract class PolyCell : IPolymorph,
         return Neighbors.Select(i => PlanetDomainExt.GetPolyCell(i, d));
     }
 
-    public void SetController(Regime controller, LogicWriteKey key)
+    public void SetController(Regime controller, StrongWriteKey key)
     {
         Controller = controller.MakeRef();
     }

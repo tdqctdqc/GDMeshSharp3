@@ -33,7 +33,8 @@ public partial class GraphicsSegmenter : Node2D, IGraphicsSegmenter
         elements.ForEach(e => AddElement(e, getGamePos(e)));
     }
 
-    public int AddElement<T>(T e, Vector2 gamePos) where T : Node2D
+    public int AddElement<T>(T e, Vector2 gamePos) 
+        where T : Node2D
     {
         var segmentIndex = Mathf.FloorToInt(gamePos.X / _segWidth) % _numSegments;
         while (segmentIndex < 0) segmentIndex += _numSegments;

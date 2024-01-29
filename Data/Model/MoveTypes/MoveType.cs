@@ -57,7 +57,7 @@ public abstract class MoveType : IModel
         PolyCell cell, Data d)
     {
         if (cell is LandCell l == false) return true;
-        var territoryAlliance = l.Polygon.Entity(d).OccupierRegime.Entity(d).GetAlliance(d);
-        return moverAlliance == territoryAlliance;
+        var controllerAlliance = cell.Controller.Entity(d).GetAlliance(d);
+        return moverAlliance == controllerAlliance;
     }
 }

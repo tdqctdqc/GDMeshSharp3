@@ -160,9 +160,9 @@ public static class MapPolygonExt
             var a = ps[tris[i]];
             var b = ps[tris[i+1]];
             var c = ps[tris[i+2]];
-            area += TriangleExt.GetArea(a, b, c);
+            area += TriangleExt.GetApproxArea(a, b, c);
         }
-
+        
         return area;
     }
 

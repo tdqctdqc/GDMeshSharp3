@@ -1,17 +1,23 @@
 
+using System;
+using System.Linq;
+
 public static class CombatExt
 {
-    public static CellAttackNode GetCellAttackNode(
-        this CombatCalculator combat, Alliance a, 
+    public static CellAttackNode GetOrAddCellAttackNode(
+        this CombatCalculator combat,
         PolyCell target, Data d)
     {
-        if (combat.CellAttackNodes.ContainsKey((a, target)) == false)
+        var cellAttackEdges = combat.Graph
+            .GetNodeEdges(target)
+            .OfType<CellAttackEdge>();
+        if (cellAttackEdges.Count() > 1) throw new Exception();
+        var cellAttackEdge = cellAttackEdges.FirstOrDefault();
+        if (cellAttackEdge == null)
         {
-            // var node = new CellAttackNode();
-            // var edge = new CellAttackEdge();
-            // combat.Graph.AddEdge(node, target, edge, d);
+            cellAttackEdge = CellAttackEdge.ConstructAndAddToGraph(target, combat, d);
         }
 
-        return combat.CellAttackNodes[(a, target)];
+        return cellAttackEdge.AttackNode;
     }
 }

@@ -14,6 +14,7 @@ public class PropertyMultiIndexer<TSingle, TMult>
     {
         _dic = new Dictionary<TSingle, HashSet<TMult>>();
         _getSingle = getSingle;
+        data.SubscribeForDestruction<TMult>(HandleTMultRemoved);
         foreach (var recalcTrigger in recalcTriggers)
         {
             recalcTrigger.Subscribe(() => Recalc(data));
@@ -47,9 +48,9 @@ public class PropertyMultiIndexer<TSingle, TMult>
         if(single != null) _dic.AddOrUpdate(single, added);
     }
 
-    public void HandleRemoved(TMult removing)
+    public void HandleTMultRemoved(EntityDestroyedNotice removing)
     {
-        var single = _getSingle(removing);
-        if(single != null) _dic[single].Remove(removing);
+        var single = _getSingle((TMult)removing.Entity);
+        if(single != null) _dic[single].Remove((TMult)removing.Entity);
     }
 }

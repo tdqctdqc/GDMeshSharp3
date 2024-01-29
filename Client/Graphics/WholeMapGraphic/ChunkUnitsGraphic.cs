@@ -70,7 +70,7 @@ public partial class ChunkUnitsGraphic : Node2D
             for (var i = 0; i < units.Count; i++)
             {
                 var unit = units[i];
-                var graphic = layer.UnitGraphics[unit];
+                var graphic = layer.GetUnitGraphic(unit, data);
                 graphic.GetParent()?.RemoveChild(graphic);
                 var proportion = (float)i / units.Count;
                 var relPos = from.Lerp(to, proportion);

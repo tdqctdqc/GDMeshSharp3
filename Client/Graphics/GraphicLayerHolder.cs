@@ -38,10 +38,12 @@ public class GraphicLayerHolder
     private ChunkGraphicSwitchLayer PolyFill(Client client,
         GraphicsSegmenter segmenter)
     {
-        var regime = RegimeChunkModule.GetLayer(client, segmenter);
+        var regime = OwnerRegimeChunkModule.GetLayer(client, segmenter);
+        var control = ControllerRegimePolyCellFill.GetLayer(client, segmenter);
         var diplomacy = DiplomacyChunkModule.GetLayer(client, segmenter);
         var alliance = AllianceChunkModule.GetLayer(client, segmenter);
-        return new ChunkGraphicSwitchLayer(LayerOrder.PolyFill, "Poly Fill", regime, diplomacy, alliance);
+        
+        return new ChunkGraphicSwitchLayer(LayerOrder.PolyFill, "Poly Fill", control, regime, diplomacy, alliance);
     }
     private ChunkGraphicLayer<RoadChunkGraphicNode> Roads(GraphicsSegmenter segmenter, 
         Data d)

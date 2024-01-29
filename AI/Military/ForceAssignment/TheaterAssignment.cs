@@ -94,15 +94,24 @@ public class TheaterAssignment : ForceAssignment, ICompoundForceAssignment
             front.SetTargets(key);
         }
     }
-    
-    public static void ValidateFronts(Regime r, 
+    public override void ValidateGroups(LogicWriteKey key)
+    {
+        GroupIds.RemoveWhere(id => key.Data.EntitiesById.ContainsKey(id) == false);
+        foreach (var fa in Assignments)
+        {
+            fa.ValidateGroups(key);
+        }
+    }
+    public static void Validate(Regime r, 
         List<TheaterAssignment> theaters, 
         LogicWriteKey key)
     {
+        
         var alliance = r.GetAlliance(key.Data);
         
         foreach (var ta in theaters)
         {
+            ta.ValidateGroups(key);
             var fronts = ta.Assignments
                 .OfType<FrontAssignment>().ToArray();
             foreach (var fa in fronts)

@@ -172,7 +172,7 @@ public class Assigner
         var runningStrength = 0f;
         var unitsInOrder = new List<TUnit>();
         var pickFrom = units.ToHashSet();
-        while (runningStrength / minStrengthToTake < 1f)
+        while (runningStrength / minStrengthToTake < 1f && pickFrom.Count > 0)
         {
             var proportion = runningStrength / minStrengthToTake;
             var face = getFaceAtProportion(proportion);
