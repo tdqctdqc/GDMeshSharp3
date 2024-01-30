@@ -1,5 +1,5 @@
 
 public interface ISinglePolyCell
 {
-    EntityRef<MapPolygon> Polygon { get; }
+    ERef<MapPolygon> Polygon { get; }
 }

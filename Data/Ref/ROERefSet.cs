@@ -3,21 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class ROERefCol<TRef> 
+public class ROERefSet<TRef> 
     : IReadOnlyRefCollection<TRef> where TRef : Entity
 {
     public string Name { get; protected set; }
     public int OwnerEntityId { get; protected set; }
     public HashSet<int> RefIds { get; protected set; }
     public int Count() => RefIds.Count;
-    public static ROERefCol<TRef> Construct(string name, 
+    public static ROERefSet<TRef> Construct(string name, 
         int ownerId,
         HashSet<int> refIds, Data data)
     {
-        var col = new ROERefCol<TRef>(name, ownerId, refIds);
+        var col = new ROERefSet<TRef>(name, ownerId, refIds);
         return col;
     }
-    [SerializationConstructor] protected ROERefCol(string name, int ownerEntityId, HashSet<int> refIds)
+    [SerializationConstructor] protected ROERefSet(string name, int ownerEntityId, HashSet<int> refIds)
     {
         OwnerEntityId = ownerEntityId;
         Name = name;
@@ -33,11 +33,6 @@ public class ROERefCol<TRef>
         if (entity == null) return false;
         if (RefIds == null) return false;
         return RefIds.Contains(entity.Id);
-    }
-   
-    public void ClearRef()
-    {
-        RefIds?.Clear();
     }
     public void UpdateOwnerId(int newId, StrongWriteKey key)
     {

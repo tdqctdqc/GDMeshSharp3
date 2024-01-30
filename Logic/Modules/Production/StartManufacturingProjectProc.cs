@@ -4,13 +4,13 @@ using Godot;
 
 public class StartManufacturingProjectProc : Procedure
 {
-    public StartManufacturingProjectProc(EntityRef<Regime> regime, ManufactureProject project)
+    public StartManufacturingProjectProc(ERef<Regime> regime, ManufactureProject project)
     {
         Regime = regime;
         Project = project;
     }
 
-    public EntityRef<Regime> Regime { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public ManufactureProject Project { get; private set; }
     public override void Enact(ProcedureWriteKey key)
     {

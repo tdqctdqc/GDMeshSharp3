@@ -6,7 +6,7 @@ public class UnitTemplate : Entity, IMakeable
 {
     public string Name { get; private set; }
     public IdCount<Troop> TroopCounts { get; private set; }
-    public EntityRef<Regime> Regime { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public ModelRef<MoveType> MoveType { get; private set; }
     public TroopDomain Domain { get; private set; }
@@ -40,7 +40,7 @@ public class UnitTemplate : Entity, IMakeable
     }
     [SerializationConstructor] protected UnitTemplate(string name,
         IdCount<Troop> troopCounts, ModelRef<MoveType> moveType,
-        EntityRef<Regime> regime, int id, 
+        ERef<Regime> regime, int id, 
         MakeableAttribute makeable,
         TroopDomain domain) 
         : base(id)

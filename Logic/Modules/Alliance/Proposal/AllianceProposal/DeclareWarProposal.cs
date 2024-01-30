@@ -14,7 +14,7 @@ public class DeclareWarProposal : AllianceProposal
         return new DeclareWarProposal(-1, proposer.MakeRef(), proposer.GetAlliance(data).Id,
             targetAlliance.Id, new HashSet<int>(), new HashSet<int>());
     }
-    [SerializationConstructor] private DeclareWarProposal(int id, EntityRef<Regime> proposer, int allianceId, 
+    [SerializationConstructor] private DeclareWarProposal(int id, ERef<Regime> proposer, int allianceId, 
         int targetAllianceId, HashSet<int> inFavor, HashSet<int> against) 
         : base(id, proposer, allianceId, inFavor, against)
     {

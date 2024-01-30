@@ -6,7 +6,7 @@ using Godot;
 public static class MeshBuilderExt
 {
     public static void DrawFront(this MeshBuilder mb,
-        Vector2 relTo, FrontAssignment front, Data d)
+        Vector2 relTo, Front front, Data d)
     {
         foreach (var c in front.GetCells(d))
         {
@@ -85,7 +85,7 @@ public static class MeshBuilderExt
         
         foreach (var kvp in seg.Insert.Insertions)
         {
-            var insertingGroup = d.Get<UnitGroup>(kvp.Key);
+            var insertingGroup = kvp.Key.Entity(d);
             var native = kvp.Value.GetNative(d);
             var foreign = kvp.Value.GetForeign(d);
             var offset = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);

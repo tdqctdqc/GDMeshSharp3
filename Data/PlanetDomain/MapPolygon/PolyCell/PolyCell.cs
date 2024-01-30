@@ -11,7 +11,7 @@ public abstract class PolyCell : IPolymorph,
     IIdentifiable, ICombatGraphNode
 {
     public int Id { get; private set; }
-    public EntityRef<Regime> Controller { get; private set; }
+    public ERef<Regime> Controller { get; private set; }
     public HashSet<int> Neighbors { get; private set; }
     public Vector2 RelTo { get; private set; }
     public Vector2[] RelBoundary { get; private set; }
@@ -25,7 +25,7 @@ public abstract class PolyCell : IPolymorph,
         ModelRef<Vegetation> vegetation,
         ModelRef<Landform> landform,
         HashSet<int> neighbors,
-        EntityRef<Regime> controller,
+        ERef<Regime> controller,
         int id)
     {
         Id = id;

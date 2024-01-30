@@ -7,7 +7,7 @@ using MessagePack;
 
 public class Settlement : Location
 {
-    public EntityRef<MapPolygon> Poly { get; protected set; }
+    public ERef<MapPolygon> Poly { get; protected set; }
     public ModelRef<SettlementTier> Tier { get; private set; }
     public string Name { get; protected set; }
     
@@ -20,7 +20,7 @@ public class Settlement : Location
         key.Create(s);
         return s;
     }
-    [SerializationConstructor] private Settlement(int id, EntityRef<MapPolygon> poly,
+    [SerializationConstructor] private Settlement(int id, ERef<MapPolygon> poly,
         ModelRef<SettlementTier> tier, 
         string name) : base(id)
     {

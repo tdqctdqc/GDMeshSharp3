@@ -23,7 +23,7 @@ public partial class PromptManager : Node, IClientComponent
             () =>
             {
                 var p = client.Data.BaseDomain.PlayerAux.LocalPlayer;
-                if (p.Regime.Empty())
+                if (p.Regime.IsEmpty())
                 {
                     AddPrompt(new ChooseRegimePrompt(client));
                 }

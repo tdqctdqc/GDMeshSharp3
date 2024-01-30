@@ -35,9 +35,11 @@ public static class Blobber
         return newBlobs.Values;
     }
 
-    public static IEnumerable<TheaterAssignment>
-        Blob(this IEnumerable<TheaterAssignment> theaters, Regime regime, Data d)
+    public static IEnumerable<Theater>
+        Blob(this IEnumerable<Theater> theaters, 
+            Regime regime, LogicWriteKey key)
     {
+        var d = key.Data;
         var cells = d.Planet.PolygonAux.PolyCells.Cells.Values
             .OfType<LandCell>().Where(c => c.Controller.RefId == regime.Id);
         return Blob(
@@ -45,47 +47,20 @@ public static class Blobber
             theaters,
             t => t.GetCells(d).OfType<LandCell>(),
             wp => wp.GetNeighbors(d).OfType<LandCell>(),
-            divideInto,
+            (t, ts) => t.DissolveInto(ts, key),
             makeBlob
         );
 
-        TheaterAssignment makeBlob(IEnumerable<LandCell> wps)
+        Theater makeBlob(IEnumerable<LandCell> wps)
         {
-            return new TheaterAssignment(d.IdDispenser.TakeId(),
-                regime.MakeRef(), new HashSet<ForceAssignment>(),
-                wps.Select(wp => wp.Id).ToHashSet(), new HashSet<int>());
-        }
-        void divideInto(TheaterAssignment dissolve, IEnumerable<TheaterAssignment> intos)
-        {
-
-            foreach (var assgn in dissolve.Assignments)
-            {
-                var wp = assgn.GetCharacteristicCell(d);
-                var theater = intos.First(t => t.HeldCellIds.Contains(wp.Id));
-                theater.Assignments.Add(assgn);
-                theater.GroupIds.AddRange(assgn.GroupIds);
-                dissolve.GroupIds.RemoveWhere(assgn.GroupIds.Contains);
-            }
-
-            foreach (var dissolveGroupId in dissolve.GroupIds)
-            {
-                var group = d.Get<UnitGroup>(dissolveGroupId);
-                var theater = intos.FirstOrDefault(f => f.HeldCellIds.Contains(group.GetCell(d).Id));
-                if (theater is TheaterAssignment == false)
-                {
-                    theater = intos
-                        .MinBy(f =>
-                            f.GetCharacteristicCell(d).GetCenter()
-                                .GetOffsetTo(group.GetCell(d).GetCenter(), d));
-                }
-
-                theater.GroupIds.Add(group.Id);
-            }
+            return new Theater(d.IdDispenser.TakeId(),
+                regime.MakeRef(), new HashSet<DeploymentBranch>(),
+                wps.Select(wp => wp.Id).ToHashSet());
         }
     }
-    public static IEnumerable<FrontAssignment>
-        Blob(this IEnumerable<FrontAssignment> fronts, 
-            TheaterAssignment theater,
+    public static IEnumerable<Front>
+        Blob(this IEnumerable<Front> fronts, 
+            Theater theater,
             LogicWriteKey key)
     {
         var d = key.Data;
@@ -98,19 +73,18 @@ public static class Blobber
             cells, fronts,
             t => t.GetCells(d),
             wp => wp.GetNeighbors(d),
-            (f,fs) => f.DistributeInto(fs, d),
+            (f,fs) => f.DissolveInto(fs, key),
             makeBlob
         );
 
-        FrontAssignment makeBlob(IEnumerable<PolyCell> wps)
+        Front makeBlob(IEnumerable<PolyCell> wps)
         {
-            return new FrontAssignment(d.IdDispenser.TakeId(),
+            return new Front(d.IdDispenser.TakeId(),
                 regime.MakeRef(), 
                 wps.Select(wp => wp.Id).ToHashSet(), 
                 new HashSet<int>(),
-                new HashSet<int>(), new HashSet<ForceAssignment>(),
+                new HashSet<DeploymentBranch>(),
                 ColorsExt.GetRandomColor());
         }
-        
     }
 }

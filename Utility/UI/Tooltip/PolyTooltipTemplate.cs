@@ -82,7 +82,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, PolyCell ce
         var polyR = t.poly.OwnerRegime;
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
 
-        if (polyR.Empty())
+        if (polyR.IsEmpty())
         {
             return NodeExt.CreateLabel("None");
         }

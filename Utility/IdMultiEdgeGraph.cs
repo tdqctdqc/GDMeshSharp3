@@ -24,6 +24,7 @@ public class IdMultiEdgeGraph<T, V> where T : IIdentifiable
     
     public void TryAddNode(T n)
     {
+        if (NodeNeighbors.ContainsKey(n.Id)) return;
         NodeNeighbors.Add(n.Id, new HashSet<int>());
     }
     public HashSet<V> GetEdge(T n1, T n2)
@@ -71,15 +72,17 @@ public class IdMultiEdgeGraph<T, V> where T : IIdentifiable
     {
         TryAddNode(t);
         return NodeNeighbors[t.Id]
-            .Where(n => EdgesByEdgeId[t.GetIdEdgeKey(n)].Any(match));
+            .Where(n => EdgesByEdgeId.ContainsKey(t.GetIdEdgeKey(n))
+                && EdgesByEdgeId[t.GetIdEdgeKey(n)].Any(match));
     }
 
     public void Remove(T t)
     {
-        foreach (var n in NodeNeighbors[t.Id])
+        foreach (var n in NodeNeighbors[t.Id].ToList())
         {
             var key = t.GetIdEdgeKey(n);
             EdgesByEdgeId.Remove(key);
+            NodeNeighbors[n].Remove(t.Id);
         }
 
         NodeNeighbors.Remove(t.Id);

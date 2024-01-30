@@ -15,7 +15,7 @@ public partial class DiplomacyPolyFill : PolyFillChunkGraphic
     {
         if (p.OwnerRegime.Fulfilled() == false) return Colors.Transparent;
         if (d.BaseDomain.PlayerAux.LocalPlayer == null) return Colors.Gray;
-        if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.Empty()) return Colors.Gray;
+        if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.IsEmpty()) return Colors.Gray;
         var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(d);
         if (p.OwnerRegime.RefId == playerRegime.Id) return Colors.Green;
         var playerAlliance = playerRegime.GetAlliance(d);

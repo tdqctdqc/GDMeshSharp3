@@ -4,7 +4,7 @@ using MessagePack;
 
 public class RegimeUseTroopsProcedure : Procedure
 {
-    public EntityRef<Regime> Regime { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public Dictionary<int, float> UsageByTroopId { get; private set; }
 
     public static RegimeUseTroopsProcedure Construct(Regime r)
@@ -13,7 +13,7 @@ public class RegimeUseTroopsProcedure : Procedure
             new Dictionary<int, float>());
     }
     [SerializationConstructor] private RegimeUseTroopsProcedure
-        (EntityRef<Regime> regime, Dictionary<int, float> usageByTroopId)
+        (ERef<Regime> regime, Dictionary<int, float> usageByTroopId)
     {
         Regime = regime;
         UsageByTroopId = usageByTroopId;

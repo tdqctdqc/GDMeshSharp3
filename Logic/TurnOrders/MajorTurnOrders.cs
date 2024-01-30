@@ -14,7 +14,7 @@ public class MajorTurnOrders : RegimeTurnOrders
             TradeOrders.Construct(), 
             DiplomacyMajTurnOrders.Construct());
     }
-    [SerializationConstructor] private MajorTurnOrders(int tick, EntityRef<Regime> regime,
+    [SerializationConstructor] private MajorTurnOrders(int tick, ERef<Regime> regime,
         TradeOrders tradeOrders, 
         DiplomacyMajTurnOrders diplomacy) 
         : base(tick, regime)

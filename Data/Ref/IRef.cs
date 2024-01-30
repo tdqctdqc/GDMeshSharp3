@@ -3,12 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public interface IRef
-{
-    void ClearRef();
-}
 
-public interface IReadOnlyRefCollection : IRef
+public interface IReadOnlyRefCollection
 {
     int OwnerEntityId { get; }
     void UpdateOwnerId(int newId, StrongWriteKey key);

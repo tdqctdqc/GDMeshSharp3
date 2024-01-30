@@ -10,15 +10,15 @@ public class MapPolygonEdge : Entity
     public float MoistureFlow { get; protected set; }
     public PolyBorderChain LowSegsRel(Data data) => LowPoly.Entity(data).NeighborBorders[HighPoly.RefId];
     public PolyBorderChain HighSegsRel(Data data) => HighPoly.Entity(data).NeighborBorders[LowPoly.RefId];
-    public EntityRef<MapPolygon> LowPoly { get; protected set; }
-    public EntityRef<MapPolygon> HighPoly { get; protected set; }
+    public ERef<MapPolygon> LowPoly { get; protected set; }
+    public ERef<MapPolygon> HighPoly { get; protected set; }
     public Dictionary<byte, byte> HiToLoTriPaths { get; private set; }
     public Dictionary<byte, byte> LoToHiTriPaths { get; private set; }
-    public EntityRef<MapPolyNexus> HiNexus { get; private set; }
-    public EntityRef<MapPolyNexus> LoNexus { get; private set; }
+    public ERef<MapPolyNexus> HiNexus { get; private set; }
+    public ERef<MapPolyNexus> LoNexus { get; private set; }
     [SerializationConstructor] private MapPolygonEdge(int id, float moistureFlow, 
-        EntityRef<MapPolygon> lowPoly, EntityRef<MapPolygon> highPoly, Dictionary<byte, byte> hiToLoTriPaths,
-        Dictionary<byte, byte> loToHiTriPaths, EntityRef<MapPolyNexus> loNexus, EntityRef<MapPolyNexus> hiNexus) 
+        ERef<MapPolygon> lowPoly, ERef<MapPolygon> highPoly, Dictionary<byte, byte> hiToLoTriPaths,
+        Dictionary<byte, byte> loToHiTriPaths, ERef<MapPolyNexus> loNexus, ERef<MapPolyNexus> hiNexus) 
         : base(id)
     {
         HiToLoTriPaths = hiToLoTriPaths;
@@ -39,7 +39,7 @@ public class MapPolygonEdge : Entity
         var b = new MapPolygonEdge(
             key.Data.IdDispenser.TakeId(), 0f, lowId, highId,
             new Dictionary<byte, byte>(), new Dictionary<byte, byte>(),
-            null, null);
+            ERef<MapPolyNexus>.GetEmpty(), ERef<MapPolyNexus>.GetEmpty());
         key.Create(b);
         return b;
     }

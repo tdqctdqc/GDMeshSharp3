@@ -45,7 +45,7 @@ public class TacticalMode : UiMode
             return;
         }
         var cell = _mouseOverHandler.MouseOverCell;
-        if (cell.Controller.Empty()) return;
+        if (cell.Controller.IsEmpty()) return;
         var regime = cell.Controller.Entity(_client.Data);
         if (regime.IsPlayerRegime(_client.Data)) return;
         if (_client.Logic is HostLogic h == false) return;
@@ -53,9 +53,9 @@ public class TacticalMode : UiMode
         if (ready == false) return;
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var deployment = ai.Military.Deployment;
-        foreach (var theater in deployment.ForceAssignments.OfType<TheaterAssignment>())
+        foreach (var theater in deployment.Root.Assignments.OfType<Theater>())
         {
-            foreach (var front in theater.Assignments.OfType<FrontAssignment>())
+            foreach (var front in theater.Assignments.OfType<Front>())
             {
                 foreach (var seg in front.Assignments.OfType<FrontSegmentAssignment>())
                 {

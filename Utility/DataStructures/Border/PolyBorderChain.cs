@@ -7,14 +7,14 @@ using MessagePack;
 
 public class PolyBorderChain : Chain<LineSegment, Vector2>
 {
-    public EntityRef<MapPolygon> Native { get; private set; }
-    public EntityRef<MapPolygon> Foreign { get; private set; }
+    public ERef<MapPolygon> Native { get; private set; }
+    public ERef<MapPolygon> Foreign { get; private set; }
     public static PolyBorderChain Construct(MapPolygon native, MapPolygon foreign, List<LineSegment> segments)
     {
         return new PolyBorderChain(native.MakeRef(), foreign.MakeRef(), segments);
     }
     [SerializationConstructor] 
-    private PolyBorderChain(EntityRef<MapPolygon> native, EntityRef<MapPolygon> foreign, 
+    private PolyBorderChain(ERef<MapPolygon> native, ERef<MapPolygon> foreign, 
         List<LineSegment> segments) 
         : base(segments)
     {

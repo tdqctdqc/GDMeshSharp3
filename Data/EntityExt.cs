@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public static class EntityExt
 {
-    public static EntityRef<T> MakeRef<T>(this T t) where T : Entity
+    public static ERef<T> MakeRef<T>(this T t) where T : Entity
     {
-        return new EntityRef<T>(t);
+        return new ERef<T>(t);
     }
 }

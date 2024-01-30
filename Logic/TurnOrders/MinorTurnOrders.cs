@@ -14,7 +14,7 @@ public class MinorTurnOrders : RegimeTurnOrders
             DiplomacyMinTurnOrders.Construct());
     }
     [SerializationConstructor] private MinorTurnOrders(int tick, 
-        EntityRef<Regime> regime,
+        ERef<Regime> regime,
         MilitaryMinTurnOrders military,
         DiplomacyMinTurnOrders diplomacy) 
         : base(tick, regime)

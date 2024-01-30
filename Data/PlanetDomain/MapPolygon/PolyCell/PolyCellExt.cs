@@ -10,7 +10,7 @@ public static class PolyCellExt
 
     public static bool RivalControlled(this PolyCell p, Alliance a, Data d)
     {
-        if (p.Controller.Empty()) return false;
+        if (p.Controller.IsEmpty()) return false;
         var controllerAlliance = p.Controller.Entity(d).GetAlliance(d);
         return a.IsRivals(controllerAlliance, d);
     }

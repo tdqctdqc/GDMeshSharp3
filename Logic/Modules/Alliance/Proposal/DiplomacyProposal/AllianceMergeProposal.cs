@@ -13,7 +13,7 @@ public class AllianceMergeProposal : DiplomacyProposal
             -1, proposer.MakeRef(), new HashSet<int>(), new HashSet<int>());
         return p;
     }
-    [SerializationConstructor] private AllianceMergeProposal(int alliance0, int alliance1, int id, EntityRef<Regime> proposer, 
+    [SerializationConstructor] private AllianceMergeProposal(int alliance0, int alliance1, int id, ERef<Regime> proposer, 
         HashSet<int> inFavor, HashSet<int> against) 
         : base(alliance0, alliance1, id, proposer, inFavor, against)
     {

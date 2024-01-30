@@ -35,7 +35,7 @@ public class StrategicMode : UiMode
             return;
         }
         if (_mouseOverHandler.MouseOverPoly.OccupierRegime
-            .Empty())
+            .IsEmpty())
         {
             return;
         }
@@ -70,8 +70,8 @@ public class StrategicMode : UiMode
         var alliance = regime.GetAlliance(_client.Data);
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var relTo = regime.GetPolys(_client.Data).First().Center;
-        var theaters = ai.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>();
-        var fronts = theaters.SelectMany(t => t.Assignments.OfType<FrontAssignment>());
+        var theaters = ai.Military.Deployment.Root.Assignments.OfType<Theater>();
+        var fronts = theaters.SelectMany(t => t.Assignments.OfType<Front>());
         var segs = fronts.SelectMany(f => f.Assignments.OfType<FrontSegmentAssignment>());
         // foreach (var front in fronts)
         // {
@@ -132,7 +132,7 @@ public class StrategicMode : UiMode
             if (foreign.OccupierRegime.RefId == regime.Id) throw new Exception();
             
             Color color = Colors.Green;
-            if (foreign.OccupierRegime.Empty())
+            if (foreign.OccupierRegime.IsEmpty())
             {
                 color = Colors.Blue;
             }

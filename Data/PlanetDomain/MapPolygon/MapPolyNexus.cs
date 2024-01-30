@@ -7,26 +7,26 @@ using MessagePack;
 public class MapPolyNexus : Entity
 {
     public Vector2 Point { get; private set; }
-    public EntRefCol<MapPolygonEdge> IncidentEdges { get; private set; }
-    public EntRefCol<MapPolygon> IncidentPolys { get; private set; }
+    public ERefSet<MapPolygonEdge> IncidentEdges { get; private set; }
+    public ERefSet<MapPolygon> IncidentPolys { get; private set; }
     public static MapPolyNexus Create(Vector2 point, List<MapPolygonEdge> edges, List<MapPolygon> polys,
         GenWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
         var n = new MapPolyNexus(id, point, 
-            EntRefCol<MapPolygonEdge>.Construct(nameof(IncidentEdges), id,
+            ERefSet<MapPolygonEdge>.Construct(nameof(IncidentEdges), id,
                 edges.Select(e => e.Id).ToHashSet(), key.Data),
-            EntRefCol<MapPolygon>.Construct(nameof(IncidentPolys), id,
+            ERefSet<MapPolygon>.Construct(nameof(IncidentPolys), id,
                 polys.Select(p => p.Id).ToHashSet(), key.Data));
         key.Create(n);
         return n;
     }
-    [SerializationConstructor] private MapPolyNexus(int id, Vector2 point, EntRefCol<MapPolygonEdge> incidentEdges,
-        EntRefCol<MapPolygon> incidentPolys) : base(id)
+    [SerializationConstructor] private MapPolyNexus(int id, Vector2 point, ERefSet<MapPolygonEdge> incidentEdges,
+        ERefSet<MapPolygon> incidentPolys) : base(id)
     {
         Point = point;
-        IncidentEdges = EntRefCol<MapPolygonEdge>.Construct(incidentEdges);
-        IncidentPolys = EntRefCol<MapPolygon>.Construct(incidentPolys);
+        IncidentEdges = ERefSet<MapPolygonEdge>.Construct(incidentEdges);
+        IncidentPolys = ERefSet<MapPolygon>.Construct(incidentPolys);
     }
 
     public MapPolygonEdge GetEdgeWith(MapPolyNexus n, Data data)

@@ -8,11 +8,11 @@ public class RegimeMilitaryAi
     public ForceCompositionAi ForceComposition { get; private set; }
     public DeploymentAi Deployment { get; private set; }
 
-    public RegimeMilitaryAi(Regime regime)
+    public RegimeMilitaryAi(Regime regime, Data d)
     {
         _regime = regime;
         ForceComposition = new ForceCompositionAi(regime);
-        Deployment = new DeploymentAi();
+        Deployment = DeploymentAi.Construct(regime, d);
     }
 
     

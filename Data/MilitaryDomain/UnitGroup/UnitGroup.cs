@@ -7,8 +7,8 @@ using MessagePack;
 
 public class UnitGroup : Entity
 {
-    public EntityRef<Regime> Regime { get; private set; }
-    public EntRefCol<Unit> Units { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
+    public ERefSet<Unit> Units { get; private set; }
     public UnitGroupOrder GroupOrder { get; private set; }
     public Color Color { get; private set; }
     public MoveType MoveType(Data d) => Units.Items(d)
@@ -16,7 +16,7 @@ public class UnitGroup : Entity
     public static UnitGroup Create(Regime r, IEnumerable<int> unitIds, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
-        var units = EntRefCol<Unit>.Construct(nameof(Units), id, unitIds.ToHashSet(), key.Data);
+        var units = ERefSet<Unit>.Construct(nameof(Units), id, unitIds.ToHashSet(), key.Data);
         var u = new UnitGroup(id, r.MakeRef(), units,
             new DoNothingUnitGroupOrder(),
             ColorsExt.GetRandomColor());
@@ -24,8 +24,8 @@ public class UnitGroup : Entity
         return u;
     }
     [SerializationConstructor] private UnitGroup(int id,
-        EntityRef<Regime> regime, 
-        EntRefCol<Unit> units,
+        ERef<Regime> regime, 
+        ERefSet<Unit> units,
         UnitGroupOrder groupOrder,
         Color color) 
         : base(id)

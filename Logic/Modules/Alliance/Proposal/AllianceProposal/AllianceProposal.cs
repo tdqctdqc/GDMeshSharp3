@@ -7,7 +7,7 @@ using MessagePack;
 public abstract class AllianceProposal : Proposal
 {
     public int AllianceId { get; protected set; }   
-    [SerializationConstructor] protected AllianceProposal(int id, EntityRef<Regime> proposer, 
+    [SerializationConstructor] protected AllianceProposal(int id, ERef<Regime> proposer, 
         int allianceId, HashSet<int> inFavor, HashSet<int> against) 
         : base(id, proposer, new HashSet<int>{allianceId}, inFavor, 
             against)

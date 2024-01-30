@@ -4,8 +4,8 @@ using Godot;
 
 public class ChooseRegimeCommand : Command
 {
-    public EntityRef<Regime> Regime { get; private set; }
-    public ChooseRegimeCommand(EntityRef<Regime> regime, Guid commandingPlayerGuid) 
+    public ERef<Regime> Regime { get; private set; }
+    public ChooseRegimeCommand(ERef<Regime> regime, Guid commandingPlayerGuid) 
         : base(commandingPlayerGuid)
     {
         Regime = regime;

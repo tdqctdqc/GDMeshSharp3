@@ -11,7 +11,7 @@ public class RegimeAi
     public RegimeAi(Regime regime, Data data)
     {
         Regime = regime;
-        Military = new RegimeMilitaryAi(regime);
+        Military = new RegimeMilitaryAi(regime, data);
         Budget = new BudgetAi(Military, data, regime);
         Diplomacy = new DiplomacyAi(regime);
     }

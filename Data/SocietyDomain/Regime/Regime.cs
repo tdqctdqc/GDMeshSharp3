@@ -6,7 +6,7 @@ using MessagePack;
 
 public class Regime : Entity
 {
-    public EntityRef<MapPolygon> Capital { get; protected set; }
+    public ERef<MapPolygon> Capital { get; protected set; }
     public ModelRef<Culture> Culture { get; private set; }
     public ModelRef<RegimeTemplate> Template { get; private set; }
     public Color PrimaryColor { get; protected set; }
@@ -22,7 +22,7 @@ public class Regime : Entity
 
     [SerializationConstructor] private Regime(int id, string name, 
         Color primaryColor, Color secondaryColor, 
-        EntityRef<MapPolygon> capital,
+        ERef<MapPolygon> capital,
         IdCount<Item> items, RegimeHistory history, ModelRef<Culture> culture,
         ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, 
         RegimeFlows flows, ManufacturingQueue manufacturingQueue,
@@ -56,7 +56,7 @@ public class Regime : Entity
         var r = new Regime(id, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
-            new EntityRef<MapPolygon>(seed.Id),
+            new ERef<MapPolygon>(seed.Id),
             items,
             RegimeHistory.Construct(key.Data), 
             regimeTemplate.Culture.MakeRef(),

@@ -5,15 +5,15 @@ using MessagePack;
 
 public class Alliance : Entity
 {
-    public EntityRef<Regime> Leader { get; private set; }
-    public EntRefCol<Regime> Members { get; private set; }
+    public ERef<Regime> Leader { get; private set; }
+    public ERefSet<Regime> Members { get; private set; }
     public HashSet<int> ProposalIds { get; private set; }
     public IEnumerable<Proposal> Proposals(Data data) =>
         ProposalIds.Select(id => data.Society.Proposals.Proposals[id]);
     public static Alliance Create(Regime founder, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
-        var members = EntRefCol<Regime>.Construct(nameof(Members), id,
+        var members = ERefSet<Regime>.Construct(nameof(Members), id,
             new HashSet<int>{founder.Id}, key.Data);
         var proposals = new HashSet<int>();
         
@@ -24,8 +24,8 @@ public class Alliance : Entity
         key.Create(a);
         return a;
     }
-    [SerializationConstructor] private Alliance(EntityRef<Regime> leader,
-        EntRefCol<Regime> members, 
+    [SerializationConstructor] private Alliance(ERef<Regime> leader,
+        ERefSet<Regime> members, 
         HashSet<int> proposalIds,
         int id) : base(id)
     {

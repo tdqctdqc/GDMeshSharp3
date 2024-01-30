@@ -47,7 +47,6 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
                 (u, f) => 
                     u.Position.GetCell(d).GetCenter().GetOffsetTo(
                         PlanetDomainExt.GetPolyCell(f.Native, d).GetCenter(), d).Length(),
-                units.Sum(u => u.GetPowerPoints(d)),
                 f =>
                 {
                     return 1f;
@@ -56,9 +55,9 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
                     var foreignRegime = foreignCell.Controller.Entity(d);
                     var foreignAlliance = foreignRegime.GetAlliance(d);
                     var units = foreignCell.GetUnits(d);
-                    if (units == null || units.Count == 0) return FrontAssignment.PowerPointsPerCellFaceToCover;
+                    if (units == null || units.Count == 0) return Front.PowerPointsPerCellFaceToCover;
                     if (alliance.IsRivals(foreignAlliance, d) == false) return 0f;
-                    float mult = FrontAssignment.DesiredOpposingPpRatio;
+                    float mult = Front.DesiredOpposingPpRatio;
                     return units.Sum(u => u.GetPowerPoints(d)) * mult;
                 }
             );

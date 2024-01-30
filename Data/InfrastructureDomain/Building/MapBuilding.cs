@@ -5,7 +5,7 @@ public class MapBuilding : Entity
 {
     public int PolyCellId { get; protected set; }
     public ModelRef<BuildingModel> Model { get; protected set; }
-    public EntityRef<MapPolygon> Polygon { get; private set; }
+    public ERef<MapPolygon> Polygon { get; private set; }
     public static MapBuilding Create(PolyCell cell, 
         MapPolygon polygon,
         BuildingModel model, ICreateWriteKey key)
@@ -32,7 +32,7 @@ public class MapBuilding : Entity
         return b;
     }
     [SerializationConstructor] private MapBuilding(int id, int polyCellId, 
-        ModelRef<BuildingModel> model, EntityRef<MapPolygon> polygon) : base(id)
+        ModelRef<BuildingModel> model, ERef<MapPolygon> polygon) : base(id)
     {
         PolyCellId = polyCellId;
         Model = model;

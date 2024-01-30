@@ -8,21 +8,21 @@ using MessagePack;
 public class MapPolygon : Entity
 {
     public Vector2 Center { get; protected set; }
-    public EntRefCol<MapPolygon> Neighbors { get; protected set; }
+    public ERefSet<MapPolygon> Neighbors { get; protected set; }
     public Dictionary<int, PolyBorderChain> NeighborBorders { get; protected set; }
     public Color Color { get; protected set; }
     public float Altitude { get; protected set; }
     public float Roughness { get; protected set; }
     public float Moisture { get; protected set; }
-    public EntityRef<Regime> OwnerRegime { get; protected set; }
-    public EntityRef<Regime> OccupierRegime { get; private set; }
+    public ERef<Regime> OwnerRegime { get; protected set; }
+    public ERef<Regime> OccupierRegime { get; private set; }
     public bool IsLand { get; protected set; }
     public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
-    [SerializationConstructor] private MapPolygon(int id, Vector2 center, EntRefCol<MapPolygon> neighbors, 
+    [SerializationConstructor] private MapPolygon(int id, Vector2 center, ERefSet<MapPolygon> neighbors, 
         Dictionary<int, PolyBorderChain> neighborBorders, Color color, float altitude, float roughness, 
-        float moisture, EntityRef<Regime> ownerRegime, 
-        EntityRef<Regime> occupierRegime,
+        float moisture, ERef<Regime> ownerRegime, 
+        ERef<Regime> occupierRegime,
         bool isLand,
         PolyBuildingSlots polyBuildingSlots, PolyFoodProd polyFoodProd) 
             : base(id)
@@ -50,7 +50,7 @@ public class MapPolygon : Entity
 
         var id = key.Data.IdDispenser.TakeId();
         var p = new MapPolygon(id, mapCenter,
-            EntRefCol<MapPolygon>
+            ERefSet<MapPolygon>
                 .Construct(nameof(Neighbors), 
                     id, new HashSet<int>(), key.Data),
             new Dictionary<int, PolyBorderChain>(),
@@ -58,8 +58,8 @@ public class MapPolygon : Entity
             0f,
             0f,
             0f,
-            new EntityRef<Regime>(-1),
-            new EntityRef<Regime>(-1),
+            new ERef<Regime>(-1),
+            new ERef<Regime>(-1),
             true,
             PolyBuildingSlots.Construct(),
             PolyFoodProd.Construct()

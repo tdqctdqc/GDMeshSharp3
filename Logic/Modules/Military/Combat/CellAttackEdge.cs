@@ -114,7 +114,7 @@ public class CellAttackEdge : ICombatGraphEdge
                         .MoveType.Model(key.Data);
                     return moveType.Passable(c, defenderAlliance, key.Data);
                 });
-            if (retreatCell == null)
+            if (retreatCell != null)
             {
                 var proc = MoveUnitProcedure.Construct(defender,
                     new MapPos(retreatCell.Id, (-1, 0f)));

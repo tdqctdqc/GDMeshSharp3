@@ -4,5 +4,5 @@ using System.Linq;
 
 public abstract class TurnOrderModule
 {
-    public EntityRef<Regime> Regime { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
 }

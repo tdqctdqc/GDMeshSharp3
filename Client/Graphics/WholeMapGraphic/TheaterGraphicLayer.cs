@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using MessagePack;
 
-public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphic>
+public class TheaterGraphicLayer : GraphicLayer<Theater, TheaterGraphic>
 {
     [SerializationConstructor] private TheaterGraphicLayer(Data data, GraphicsSegmenter segmenter) 
         : base(LayerOrder.Theaters, "Theater", segmenter)
@@ -18,14 +18,14 @@ public class TheaterGraphicLayer : GraphicLayer<TheaterAssignment, TheaterGraphi
             Remove(theater, data);
         }
         var theaters = data.HostLogicData.RegimeAis.Dic.Values
-            .SelectMany(rAi => rAi.Military.Deployment.ForceAssignments.OfType<TheaterAssignment>());
+            .SelectMany(rAi => rAi.Military.Deployment.Root.Assignments.OfType<Theater>());
         
         foreach (var theater in theaters)
         {   
             Add(theater, data);
         }
     }
-    protected override TheaterGraphic GetGraphic(TheaterAssignment key, Data d)
+    protected override TheaterGraphic GetGraphic(Theater key, Data d)
     {
         return new TheaterGraphic(key, _segmenter, d);
     }

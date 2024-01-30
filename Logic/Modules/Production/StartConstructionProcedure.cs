@@ -7,18 +7,18 @@ using MessagePack;
 
 public class StartConstructionProcedure : Procedure
 {
-    public EntityRef<Regime> OrderingRegime { get; private set; }
+    public ERef<Regime> OrderingRegime { get; private set; }
     public Construction Construction { get; private set; }
 
     public static StartConstructionProcedure Construct(ModelRef<BuildingModel> building, 
         int polyCellId, 
-        EntityRef<Regime> orderingRegime, Data data)
+        ERef<Regime> orderingRegime, Data data)
     {
         var c = new Construction(building, polyCellId, building.Model(data).NumTicksToBuild);
         return new StartConstructionProcedure(c, orderingRegime);
     }
     [SerializationConstructor] private StartConstructionProcedure(Construction construction, 
-        EntityRef<Regime> orderingRegime)
+        ERef<Regime> orderingRegime)
     {
         OrderingRegime = orderingRegime;
         Construction = construction;

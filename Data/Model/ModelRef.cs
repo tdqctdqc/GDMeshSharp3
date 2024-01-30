@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class ModelRef<T> : IRef where T : class, IModel
+public class ModelRef<T> where T : class, IModel
 {
     public int ModelId { get; private set; }
     public ModelRef(T model, ICreateWriteKey key)
@@ -32,8 +32,4 @@ public class ModelRef<T> : IRef where T : class, IModel
         return new ModelRef<T>(ModelId);
     }
 
-    public void ClearRef()
-    {
-        ModelId = -1;
-    }
 }

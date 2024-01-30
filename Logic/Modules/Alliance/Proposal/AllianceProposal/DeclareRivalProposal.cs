@@ -14,7 +14,7 @@ public class DeclareRivalProposal : AllianceProposal
             new HashSet<int>(), new HashSet<int>());
         return p;
     }
-    [SerializationConstructor] private DeclareRivalProposal(int id, int targetAllianceId, EntityRef<Regime> proposer, int allianceId, 
+    [SerializationConstructor] private DeclareRivalProposal(int id, int targetAllianceId, ERef<Regime> proposer, int allianceId, 
         HashSet<int> inFavor, HashSet<int> against) 
         : base(id, proposer, allianceId, inFavor, against)
     {

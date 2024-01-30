@@ -1,5 +1,5 @@
 
 public interface IEdgeCell
 {
-    EntityRef<MapPolygonEdge> Edge { get; }
+    ERef<MapPolygonEdge> Edge { get; }
 }

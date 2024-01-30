@@ -5,21 +5,21 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class EntRefCol<TRef> 
-    : ROERefCol<TRef>, IRefCollection<TRef> where TRef : Entity
+public class ERefSet<TRef> 
+    : ROERefSet<TRef>, IRefCollection<TRef> where TRef : Entity
 {
-    public static EntRefCol<TRef> Construct(ROERefCol<TRef> c)
+    public static ERefSet<TRef> Construct(ROERefSet<TRef> c)
     {
-        return new EntRefCol<TRef>(c.Name, c.OwnerEntityId, c.RefIds.ToHashSet());
+        return new ERefSet<TRef>(c.Name, c.OwnerEntityId, c.RefIds.ToHashSet());
     }
-    public static EntRefCol<TRef> Construct(string name, 
+    public static ERefSet<TRef> Construct(string name, 
         int ownerId,
         HashSet<int> refIds, Data data)
     {
-        var col = new EntRefCol<TRef>(name, ownerId, refIds);
+        var col = new ERefSet<TRef>(name, ownerId, refIds);
         return col;
     }
-    [SerializationConstructor] private EntRefCol(string name, int ownerEntityId, HashSet<int> refIds) 
+    [SerializationConstructor] private ERefSet(string name, int ownerEntityId, HashSet<int> refIds) 
         : base(name, ownerEntityId, refIds)
     {
     }

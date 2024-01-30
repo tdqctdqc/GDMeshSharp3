@@ -10,11 +10,11 @@ using MessagePack;
 public abstract class Proposal : IPolymorph
 {
     public int Id { get; private set; }
-    public EntityRef<Regime> Proposer { get; protected set; }
+    public ERef<Regime> Proposer { get; protected set; }
     public HashSet<int> AllianceIds { get; private set; }
     public HashSet<int> InFavor { get; protected set; }
     public HashSet<int> Against { get; protected set; }
-    [SerializationConstructor] protected Proposal(int id, EntityRef<Regime> proposer, 
+    [SerializationConstructor] protected Proposal(int id, ERef<Regime> proposer, 
         HashSet<int> allianceIds, HashSet<int> inFavor, HashSet<int> against)
     {
         Id = id;

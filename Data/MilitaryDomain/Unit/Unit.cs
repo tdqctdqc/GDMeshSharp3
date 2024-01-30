@@ -5,8 +5,8 @@ using MessagePack;
 
 public class Unit : Entity, ICombatGraphNode
 {
-    public EntityRef<Regime> Regime { get; private set; }
-    public EntityRef<UnitTemplate> Template { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
+    public ERef<UnitTemplate> Template { get; private set; }
     public IdCount<Troop> Troops { get; private set; }
     public MapPos Position { get; private set; }
     public static Unit Create(UnitTemplate template, 
@@ -22,8 +22,8 @@ public class Unit : Entity, ICombatGraphNode
     }
 
     [SerializationConstructor] private Unit(int id, 
-        EntityRef<Regime> regime,
-        EntityRef<UnitTemplate> template,
+        ERef<Regime> regime,
+        ERef<UnitTemplate> template,
         IdCount<Troop> troops, MapPos position) 
         : base(id)
     {

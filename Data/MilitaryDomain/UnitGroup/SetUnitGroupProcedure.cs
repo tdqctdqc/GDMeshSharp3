@@ -1,10 +1,10 @@
 
 public class SetUnitGroupProcedure : Procedure
 {
-    public EntityRef<Unit> Unit { get; private set; }
-    public EntityRef<UnitGroup> NewGroup { get; private set; }
+    public ERef<Unit> Unit { get; private set; }
+    public ERef<UnitGroup> NewGroup { get; private set; }
 
-    public SetUnitGroupProcedure(EntityRef<Unit> unit, EntityRef<UnitGroup> newGroup)
+    public SetUnitGroupProcedure(ERef<Unit> unit, ERef<UnitGroup> newGroup)
     {
         Unit = unit;
         NewGroup = newGroup;

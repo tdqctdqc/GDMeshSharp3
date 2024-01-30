@@ -5,7 +5,7 @@ using Godot;
 
 public partial class TheaterGraphic : Node2D
 {
-    public TheaterGraphic(TheaterAssignment theater, 
+    public TheaterGraphic(Theater theater, 
         GraphicsSegmenter segmenter, Data d)
     {
         Draw(theater, d);
@@ -14,7 +14,7 @@ public partial class TheaterGraphic : Node2D
         segmenter.AddElement(this, relTo);
     }
 
-    public void Draw(TheaterAssignment theater, Data d)
+    public void Draw(Theater theater, Data d)
     {
         this.ClearChildren();
         if (theater.HeldCellIds.Count() == 0) return;
@@ -32,14 +32,14 @@ public partial class TheaterGraphic : Node2D
         mb.Return();
     }
 
-    private void DrawFronts(TheaterAssignment theater, 
+    private void DrawFronts(Theater theater, 
         Data d, MeshBuilder mb, Color theaterColor)
     {
         var relToId = theater.HeldCellIds.First();
         var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
-        foreach (var fa in theater.Assignments.OfType<FrontAssignment>())
+        foreach (var fa in theater.Assignments.OfType<Front>())
         {
             var iter = 0;
             var frontColor = ColorsExt.GetRandomColor();
@@ -66,7 +66,7 @@ public partial class TheaterGraphic : Node2D
         }
     }
 
-    private void DrawTheaterWps(TheaterAssignment theater, 
+    private void DrawTheaterWps(Theater theater, 
         MeshBuilder mb, Color theaterColor, Data d)
     {
         var relToId = theater.HeldCellIds.First();
@@ -83,7 +83,7 @@ public partial class TheaterGraphic : Node2D
         }
     }
 
-    private void DrawLinks(TheaterAssignment theater, MeshBuilder mb, Data d)
+    private void DrawLinks(Theater theater, MeshBuilder mb, Data d)
     {
         var relToId = theater.HeldCellIds.First();
         var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();

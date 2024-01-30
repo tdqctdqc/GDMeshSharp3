@@ -41,7 +41,6 @@ public class DiplomacyGraph : Entity
 
     public void MergeRelations(Alliance dissolve, Alliance into, StrongWriteKey key)
     {
-        var enemies = dissolve.GetRivals(key.Data).ToList();
         Graph.DoForEdges(dissolve, (n, r) =>
         {
             var other = key.Data.Get<Alliance>(n);

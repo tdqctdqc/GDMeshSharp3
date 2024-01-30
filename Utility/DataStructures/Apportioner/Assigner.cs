@@ -144,7 +144,6 @@ public class Assigner
         IEnumerable<TUnit> units,
         Func<TUnit, float> getStrength,
         Func<TUnit, TFace, float> rank,
-        float minStrengthToTake,
         Func<TFace, float> getFaceCost)
     {
         if (faces.Count == 0) return new Dictionary<TUnit, TFace>();
@@ -155,9 +154,12 @@ public class Assigner
         {
             totalCost += getFaceCost(faces[i]);
         }
-        if (units.Sum(getStrength) < minStrengthToTake) throw new Exception(); 
         if (totalCost == 0f) throw new Exception();
         if (float.IsNaN(totalCost)) throw new Exception();
+
+        var totalStrength = units.Sum(getStrength);
+        if (totalStrength == 0f) throw new Exception();
+        if (float.IsNaN(totalStrength)) throw new Exception();
 
         var res = new Dictionary<TUnit, TFace>();
         var faceProportions = new float[faces.Count];
@@ -172,9 +174,9 @@ public class Assigner
         var runningStrength = 0f;
         var unitsInOrder = new List<TUnit>();
         var pickFrom = units.ToHashSet();
-        while (runningStrength / minStrengthToTake < 1f && pickFrom.Count > 0)
+        while (pickFrom.Count > 0)
         {
-            var proportion = runningStrength / minStrengthToTake;
+            var proportion = runningStrength / totalStrength;
             var face = getFaceAtProportion(proportion);
             var picked = pickFrom.MaxBy(u => rank(u, face));
             pickFrom.Remove(picked);
@@ -219,7 +221,12 @@ public class Assigner
         if (totalCost <= 0f) throw new Exception();
         if (float.IsNaN(totalCost)) throw new Exception();
         var totalStrength = units.Sum(getStrength);
-        if (totalStrength <= 0f) throw new Exception();
+        if (totalStrength < 0f) throw new Exception();
+        if (totalStrength == 0f)
+        {
+            totalStrength = units.Count();
+            getStrength = u => 1f;
+        }
         if (float.IsNaN(totalStrength)) throw new Exception();
 
         var res = new Dictionary<TUnit, Vector2I>();

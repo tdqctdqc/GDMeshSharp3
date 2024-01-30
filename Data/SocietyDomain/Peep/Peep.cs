@@ -5,7 +5,7 @@ using MessagePack;
 
 public class Peep : Entity
 {
-    public EntityRef<MapPolygon> Poly { get; private set; }
+    public ERef<MapPolygon> Poly { get; private set; }
     public int Size { get; private set; }
     public PeepEmploymentReport Employment { get; private set; }
 
@@ -16,7 +16,7 @@ public class Peep : Entity
         key.Create(p);
         return p;
     }
-    [SerializationConstructor] private Peep(PeepEmploymentReport employment, EntityRef<MapPolygon> poly,
+    [SerializationConstructor] private Peep(PeepEmploymentReport employment, ERef<MapPolygon> poly,
         int size, int id) : base(id)
     {
         Employment = employment;

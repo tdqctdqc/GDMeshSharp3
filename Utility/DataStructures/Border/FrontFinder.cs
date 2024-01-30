@@ -55,7 +55,7 @@ public static class FrontFinder
 
         bool isForeign(PolyCell c)
         {
-            if (c.Controller.Empty()) return false;
+            if (c.Controller.IsEmpty()) return false;
             var controllerRegime = c.Controller.Entity(d);
             var controllerAlliance = controllerRegime.GetAlliance(d);
             return alliance.IsRivals(controllerAlliance, d);

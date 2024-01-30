@@ -8,7 +8,7 @@ public abstract class DiplomacyProposal : Proposal
     public int Alliance1 { get; protected set; }
 
     protected DiplomacyProposal(int alliance0, int alliance1, 
-        int id, EntityRef<Regime> proposer,
+        int id, ERef<Regime> proposer,
         HashSet<int> inFavor, HashSet<int> against) 
         : base(id, proposer, new HashSet<int>{alliance0, alliance1}, 
             inFavor, against)

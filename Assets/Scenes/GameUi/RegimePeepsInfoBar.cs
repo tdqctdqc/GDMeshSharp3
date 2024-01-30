@@ -28,7 +28,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
     private int GetPopulationCount(Data data)
     {
         var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
-        if (r.Empty() == false)
+        if (r.IsEmpty() == false)
         {
             return r.Entity(data).GetPopulation(data);
         }
@@ -39,7 +39,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
     private int GetPeepDelta(Data data)
     {
         var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
-        if (r.Empty() == false)
+        if (r.IsEmpty() == false)
         {
             var ordered = r.Entity(data).History.PeepHistory.GetOrdered();
             if (ordered.Count > 1)

@@ -32,7 +32,7 @@ public class EntityMeta<TEntity> : IEntityMeta where TEntity : Entity
     {
         var propType = typeof(TProperty);
         if (propType.IsGenericType 
-            && propType.GetGenericTypeDefinition().IsAssignableFrom(typeof(EntRefCol<>)))
+            && propType.GetGenericTypeDefinition().IsAssignableFrom(typeof(ERefSet<>)))
         {
             var genericParam = propType.GenericTypeArguments[0];
             this.InvokeGeneric(nameof(SetupColType),

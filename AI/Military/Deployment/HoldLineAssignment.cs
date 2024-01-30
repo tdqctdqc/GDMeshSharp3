@@ -6,25 +6,26 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class HoldLineSubAssignment
+public class HoldLineAssignment : DeploymentLeaf
 {
     public Dictionary<int, List<FrontFace<PolyCell>>> FacesByGroupId { get; private set; }
-    public static HoldLineSubAssignment Construct()
+    public static HoldLineAssignment Construct(int segId,
+        ERef<Regime> regime, 
+        LogicWriteKey key)
     {
-        return new HoldLineSubAssignment(
+        var id = key.Data.HostLogicData.DeploymentTreeIds.TakeId(key.Data);
+        return new HoldLineAssignment(
+            id, segId, regime, new UnitGroupManager(),
             new Dictionary<int, List<FrontFace<PolyCell>>>());
     }
-    [SerializationConstructor] private HoldLineSubAssignment(
+    [SerializationConstructor] private HoldLineAssignment(
+        int id, int parentId, ERef<Regime> regime, UnitGroupManager groups,
         Dictionary<int, List<FrontFace<PolyCell>>> facesByGroupId) 
+        : base(parentId, id, regime, groups)
     {
         FacesByGroupId = facesByGroupId;
     }
 
-    public void Handle(FrontSegmentAssignment seg, LogicWriteKey key)
-    {
-        AdjustFaceGroups(seg, key.Data);
-        GiveLineOrders(seg, key);
-    }
     public List<UnitGroup> GetGroupsInOrder(FrontSegmentAssignment seg, Data d)
     {
         var list = FacesByGroupId
@@ -46,9 +47,35 @@ public class HoldLineSubAssignment
         });
         return list;
     }
-    private void AdjustFaceGroups(FrontSegmentAssignment seg, 
-        Data d)
+
+    public override void ClearGroupFromData(UnitGroup g, LogicWriteKey key)
     {
+        FacesByGroupId.Remove(g.Id);
+    }
+
+    public override void AddGroupToData(UnitGroup g, LogicWriteKey key)
+    {
+        var cell = g.GetCell(key.Data);
+        var seg = (FrontSegmentAssignment)Parent(key.Data);
+        if (seg.Segment.Faces.Any(f => f.Native == cell.Id) == false)
+        {
+            throw new Exception();
+        }
+
+        var face = seg.Segment.Faces
+            .First(f => f.Native == cell.Id);
+        FacesByGroupId.Add(g.Id, new List<FrontFace<PolyCell>>{face});
+    }
+
+    public override float GetPowerPointNeed(Data d)
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void AdjustWithin(LogicWriteKey key)
+    {
+        var d = key.Data;
+        var seg = (FrontSegmentAssignment)Parent(key.Data);
         var lineGroups = GetGroupsInOrder(seg, d);
         if (lineGroups.Count() == 0) return;
         var alliance = seg.Regime.Entity(d).GetAlliance(d);
@@ -70,6 +97,32 @@ public class HoldLineSubAssignment
         }
     }
 
+    public override UnitGroup GetPossibleTransferGroup(LogicWriteKey key)
+    {
+        var seg = (FrontSegmentAssignment)Parent(key.Data);
+        var lineGroups = FacesByGroupId
+            .Select(kvp => key.Data.Get<UnitGroup>(kvp.Key));
+        var numUnits = lineGroups.Sum(g => g.Units.Count());
+        var smallest = lineGroups.MinBy(g => g.Units.Count());
+        UnitGroup de = null;
+        if (numUnits - smallest.Units.Count() >= seg.Segment.Faces.Count)
+        {
+            de = smallest;
+        }
+
+        return de;
+    }
+
+    public override PolyCell GetCharacteristicCell(Data d)
+    {
+        return FacesByGroupId.First().Value.First().GetNative(d);
+    }
+
+    public override void GiveOrders(LogicWriteKey key)
+    {
+        throw new NotImplementedException();
+    }
+
     private Dictionary<FrontFace<PolyCell>, float> GetFaceCosts(FrontSegmentAssignment seg, 
         Data d)
     {
@@ -77,8 +130,8 @@ public class HoldLineSubAssignment
         var totalEnemyCost = seg.Segment
             .Faces.Sum(f => GetFaceEnemyCost(alliance, f, d));
         var totalLengthCost = seg.Segment.Faces.Count;
-        var enemyCostWeight = FrontAssignment.CoverOpposingWeight;
-        var lengthCostWeight = FrontAssignment.CoverLengthWeight;
+        var enemyCostWeight = Front.CoverOpposingWeight;
+        var lengthCostWeight = Front.CoverLengthWeight;
         return seg.Segment.Faces
             .ToDictionary(f => f,
                 f =>
@@ -124,7 +177,7 @@ public class HoldLineSubAssignment
         if(seg.Segment.Faces.Contains(face) == false) throw new Exception();
         FacesByGroupId.Add(g.Id, new List<FrontFace<PolyCell>>{face});
     }
-    private void GiveLineOrders(FrontSegmentAssignment seg,
+    public void GiveOrders(FrontSegmentAssignment seg,
         LogicWriteKey key)
     {
         foreach (var kvp in FacesByGroupId)
@@ -139,46 +192,12 @@ public class HoldLineSubAssignment
         }
     }
 
-    public void ValidateGroupFaces(FrontSegmentAssignment seg,
-        LogicWriteKey key)
-    {
-        //make sure contiguous
-        //and all in seg faces
-        foreach (var kvp in FacesByGroupId.ToList())
-        {
-            var groupId = kvp.Key;
-            var faces = kvp.Value;
-            faces.RemoveAll(f => seg.Segment.Faces.Contains(f) == false);
-            if (faces.Count() == 0)
-            {
-                FacesByGroupId.Remove(groupId);
-                continue;
-            }
-            for (var i = 0; i < faces.Count - 1; i++)
-            {
-                var face = faces[i];
-                var nextFace = faces[i + 1];
-                if (face.Adjacent(nextFace) == false)
-                {
-                    throw new Exception();
-                }
-            }
-        }
-    }
-
-    public void ValidateGroups(LogicWriteKey key)
-    {
-        var badIds = FacesByGroupId.Keys.Where(id => key.Data.EntitiesById.ContainsKey(id) == false).ToArray();
-        foreach (var badId in badIds)
-        {
-            FacesByGroupId.Remove(badId);
-        }
-    }
     public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
     {
-        foreach (var kvp in FacesByGroupId)
+        foreach (var kvp in FacesByGroupId.ToArray())
         {
             var groupId = kvp.Key;
+            var group = key.Data.Get<UnitGroup>(groupId);
             var groupFaces = kvp.Value;
             var seg = segs
                 .FirstOrDefault(s => s.Segment.Faces.Intersect(groupFaces).Count() > 0);
@@ -195,8 +214,12 @@ public class HoldLineSubAssignment
             {
                 continue;
             }
-            
-            seg.GroupIds.Add(groupId);
+
+            if (seg.HoldLine == this)
+            {
+                throw new Exception();
+            }
+            Groups.Transfer(group, seg.HoldLine, key);
             seg.HoldLine.FacesByGroupId.Add(groupId, newFaces.MaxBy(l => l.Count()));
         }
         FacesByGroupId.Clear();
