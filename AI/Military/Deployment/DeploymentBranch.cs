@@ -7,75 +7,104 @@ using MessagePack;
 
 [MessagePack.Union(0, typeof(Front))]
 [MessagePack.Union(1, typeof(Theater))]
-[MessagePack.Union(2, typeof(FrontSegmentAssignment))]
+[MessagePack.Union(2, typeof(FrontSegment))]
+[MessagePack.Union(3, typeof(DeploymentRoot))]
 public abstract class DeploymentBranch 
-    : IPolymorph, 
-    IDeploymentNode
+    : IPolymorph, IDeploymentNode
 {
     public ERef<Regime> Regime { get; private set; }
     public int ParentId { get; private set; }
     public int Id { get; private set; }
     public ReserveAssignment Reserve { get; private set; }
     [SerializationConstructor] protected 
-        DeploymentBranch(ERef<Regime> regime, int id)
+        DeploymentBranch(ERef<Regime> regime, int id,
+            int parentId, ReserveAssignment reserve)
     {
         Regime = regime;
         Id = id;
+        ParentId = parentId;
+        Reserve = reserve;
     }
 
     public float GetPowerPointsAssigned(Data data)
     {
         return Children().Sum(c => c.GetPowerPointsAssigned(data));
     }
-    public DeploymentBranch Parent(Data d)
+    public DeploymentBranch Parent(DeploymentAi ai, Data d)
     {
-        return (DeploymentBranch)d.HostLogicData.RegimeAis.Dic[Regime.Entity(d)]
-            .Military.Deployment.GetNode(ParentId);
+        return (DeploymentBranch)ai.GetNode(ParentId);
     }
     public abstract float GetPowerPointNeed(Data d);
     public abstract PolyCell GetCharacteristicCell(Data d);
-    public abstract UnitGroup GetPossibleTransferGroup(LogicWriteKey key);
+    public abstract bool PullGroup(DeploymentAi ai, GroupAssignment transferTo, LogicWriteKey key);
+    public abstract bool PushGroup(DeploymentAi ai, GroupAssignment transferFrom, LogicWriteKey key);
     public abstract IEnumerable<IDeploymentNode> Children();
-    public abstract void DissolveInto(IEnumerable<DeploymentBranch> into, LogicWriteKey key);
-    public abstract void AdjustWithin(LogicWriteKey key);
+    public abstract void DissolveInto(DeploymentAi ai,
+        IEnumerable<DeploymentBranch> into, LogicWriteKey key);
 
-    public void GiveOrders(LogicWriteKey key)
+    public void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
+    {
+        foreach (var c in Children())
+        {
+            c.AdjustWithin(ai, key);
+        }
+    }
+    public void GiveOrders(DeploymentAi ai, LogicWriteKey key)
     {
         foreach (var d in Children())
         {
-            d.GiveOrders(key);
+            d.GiveOrders(ai, key);
         }
     }
-    public void Disband(LogicWriteKey key)
+    public void Disband(DeploymentAi ai, LogicWriteKey key)
     {
-        foreach (var n in Children())
-        {
-            n.Disband(key);
-        }
-        Orphan(key);
-        key.Data.HostLogicData.RegimeAis.Dic[Regime.Entity(key.Data)]
-            .Military.Deployment.RemoveNode(Id, key);
-    }
-
-    public void SetParent(CompoundDeploymentBranch newBranch,
-        LogicWriteKey key)
-    {
-        var oldBranch = Parent(key.Data);
-        if (oldBranch is not null)
-        {
-            throw new Exception();
-        }
-        newBranch.Assignments.Add(this);
-        ParentId = newBranch.Id;
-    }
-
-    public void Orphan(LogicWriteKey key)
-    {
-        var oldBranch = (CompoundDeploymentBranch)Parent(key.Data);
+        var oldBranch = (DeploymentTrunk)Parent(ai, key.Data);
         if (oldBranch is null)
         {
             throw new Exception();
         }
-        oldBranch.Assignments.Remove(this);
+        oldBranch.Branches.Remove(this);
+        ParentId = -1;
+        ai.RemoveNode(Id, key);
     }
+
+    public void SetParent(
+        DeploymentAi ai,
+        DeploymentTrunk newTrunk,
+        LogicWriteKey key)
+    {
+        if (ParentId != -1)
+        {
+            var oldTrunk = (DeploymentTrunk)ai.GetNode(ParentId);
+            oldTrunk.Branches.Remove(this);
+        }
+        newTrunk.Branches.Add(this);
+        ParentId = newTrunk.Id;
+    }
+
+    public IEnumerable<GroupAssignment> GetAssignments()
+    {
+        var cs = Children();
+        return cs.OfType<GroupAssignment>()
+            .Union(cs.OfType<DeploymentBranch>()
+                .SelectMany(c => c.GetAssignments()));
+    }
+
+    public Control GetGraphic(Data d)
+    {
+        var panel = new VBoxContainer();
+        panel.CreateLabelAsChild(GetType().Name);
+        foreach (var c in Children())
+        {
+            panel.CreateLabelAsChild($"\t{c.GetType().Name}");
+            if (c is GroupAssignment g)
+            {
+                panel.CreateLabelAsChild($"\t\tGroups: {g.Groups.Groups.Count}");
+            }
+        }
+
+        return panel;
+    }
+
+    public abstract Vector2 GetMapPosForDisplay(Data d);
 }

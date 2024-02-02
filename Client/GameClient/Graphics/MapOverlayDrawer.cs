@@ -48,7 +48,7 @@ public class MapOverlayDrawer
         AddNode(node, pos);
     }
 
-    private void AddNode(Node2D node, Vector2 pos)
+    public void AddNode(Node2D node, Vector2 pos)
     {
         node.ZIndex = _z;
         _nodes.Add(node);

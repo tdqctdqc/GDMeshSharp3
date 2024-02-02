@@ -37,6 +37,7 @@ public static class Blobber
 
     public static IEnumerable<Theater>
         Blob(this IEnumerable<Theater> theaters, 
+            DeploymentAi ai,
             Regime regime, LogicWriteKey key)
     {
         var d = key.Data;
@@ -47,19 +48,20 @@ public static class Blobber
             theaters,
             t => t.GetCells(d).OfType<LandCell>(),
             wp => wp.GetNeighbors(d).OfType<LandCell>(),
-            (t, ts) => t.DissolveInto(ts, key),
+            (t, ts) => t.DissolveInto(ai, ts, key),
             makeBlob
         );
 
         Theater makeBlob(IEnumerable<LandCell> wps)
         {
-            return new Theater(d.IdDispenser.TakeId(),
-                regime.MakeRef(), new HashSet<DeploymentBranch>(),
-                wps.Select(wp => wp.Id).ToHashSet());
+            var root = key.Data.HostLogicData.RegimeAis[regime]
+                .Military.Deployment.Root;
+            return Theater.Construct(ai, regime, wps, key);
         }
     }
     public static IEnumerable<Front>
         Blob(this IEnumerable<Front> fronts, 
+            DeploymentAi ai,
             Theater theater,
             LogicWriteKey key)
     {
@@ -73,18 +75,13 @@ public static class Blobber
             cells, fronts,
             t => t.GetCells(d),
             wp => wp.GetNeighbors(d),
-            (f,fs) => f.DissolveInto(fs, key),
+            (f,fs) => f.DissolveInto(ai, fs, key),
             makeBlob
         );
 
         Front makeBlob(IEnumerable<PolyCell> wps)
         {
-            return new Front(d.IdDispenser.TakeId(),
-                regime.MakeRef(), 
-                wps.Select(wp => wp.Id).ToHashSet(), 
-                new HashSet<int>(),
-                new HashSet<DeploymentBranch>(),
-                ColorsExt.GetRandomColor());
+            return Front.Construct(ai, regime, wps, key);
         }
     }
 }

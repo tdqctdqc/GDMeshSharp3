@@ -5,18 +5,20 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class InsertionAssignment : DeploymentLeaf
+public class InsertionAssignment : GroupAssignment
 {
-
     public Dictionary<ERef<UnitGroup>, FrontFace<PolyCell>> Insertions { get; private set; }
-
-    public static InsertionAssignment Construct(int parentId,
+    public static InsertionAssignment Construct(
+        DeploymentAi ai,
+        int parentId,
         ERef<Regime> regime, LogicWriteKey key)
     {
-        return new InsertionAssignment(
-            key.Data.HostLogicData.DeploymentTreeIds.TakeId(key.Data),
-            parentId, regime, new UnitGroupManager(),
+        var id = ai.DeploymentTreeIds.TakeId(key.Data);
+        var a = new InsertionAssignment(
+            id,
+            parentId, regime, UnitGroupManager.Construct(regime, id),
             new Dictionary<ERef<UnitGroup>, FrontFace<PolyCell>>());
+        return a;
     }
 
     [SerializationConstructor] private InsertionAssignment(
@@ -28,7 +30,7 @@ public class InsertionAssignment : DeploymentLeaf
     }
 
     private Dictionary<Vector2I, FrontFace<PolyCell>> 
-        GetInsertionCellsByGroupIds(FrontSegmentAssignment seg, 
+        GetInsertionCellsByGroupIds(FrontSegment seg, 
             Data d)
     {
         var lineGroupIds = seg.HoldLine
@@ -39,7 +41,7 @@ public class InsertionAssignment : DeploymentLeaf
         var insertionCellsByGroupIds = new Dictionary<Vector2I, FrontFace<PolyCell>>();
         insertionCellsByGroupIds.Add(new Vector2I(-1, 
                 lineGroupIds.First()),
-            seg.Segment.Faces.First());
+            seg.Frontline.Faces.First());
         for (var i = 0; i < lineGroupIds.Count - 1; i++)
         {
             var prevGroupId = lineGroupIds[i];
@@ -49,14 +51,14 @@ public class InsertionAssignment : DeploymentLeaf
                 lastFaceOfPrev);
         }
         insertionCellsByGroupIds.Add(new Vector2I(lineGroupIds.Last(), -1),
-            seg.Segment.Faces.Last());
+            seg.Frontline.Faces.Last());
         return insertionCellsByGroupIds;
     }
 
     
-    public override void GiveOrders(LogicWriteKey key)
+    public override void GiveOrders(DeploymentAi ai, LogicWriteKey key)
     {
-        var seg = (FrontSegmentAssignment)Parent(key.Data);
+        var seg = (FrontSegment)Parent(ai, key.Data);
         foreach (var kvp in Insertions)
         {
             var group = kvp.Key.Entity(key.Data);
@@ -68,14 +70,14 @@ public class InsertionAssignment : DeploymentLeaf
             key.SendMessage(new SetUnitOrderProcedure(group.MakeRef(), order));
         }
     }
-    public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
+    public void DissolveInto(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
     {
         foreach (var kvp in Insertions)
         {
             var group = kvp.Key.Entity(key.Data);
             var insertionFace = kvp.Value;
             var seg = segs
-                .FirstOrDefault(s => s.Segment.Faces.Contains(insertionFace));
+                .FirstOrDefault(s => s.Frontline.Faces.Contains(insertionFace));
             if (seg == null)
             {
                 var groupCell = group.GetCell(key.Data);
@@ -83,25 +85,25 @@ public class InsertionAssignment : DeploymentLeaf
                     s.GetCharacteristicCell(key.Data)
                         .GetCenter()
                         .GetOffsetTo(groupCell.GetCenter(), key.Data).Length());
-                insertionFace = seg.Segment.Faces.MinBy(f => 
+                insertionFace = seg.Frontline.Faces.MinBy(f => 
                     f.GetNative(key.Data).GetCenter()
                         .GetOffsetTo(groupCell.GetCenter(), key.Data).Length());
             }
-            Groups.Transfer(group, seg.Insert, key);
+            Groups.Transfer(ai, group, seg.Insert, key);
         }
         Insertions.Clear();
     }
     
     
-    public override void ClearGroupFromData(UnitGroup g, LogicWriteKey key)
+    public override void ClearGroupFromData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
     {
         Insertions.Remove(g.MakeRef());
     }
 
-    public override void AddGroupToData(UnitGroup g, LogicWriteKey key)
+    public override void AddGroupToData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
     {
-        var seg = (FrontSegmentAssignment)Parent(key.Data);
-        FrontFace<PolyCell> close = seg.Segment.Faces.MinBy(f => f.GetNative(key.Data).GetCenter()
+        var seg = (FrontSegment)Parent(ai, key.Data);
+        FrontFace<PolyCell> close = seg.Frontline.Faces.MinBy(f => f.GetNative(key.Data).GetCenter()
             .GetOffsetTo(g.GetCell(key.Data).GetCenter(), key.Data)
             .Length());
         Insertions[g.MakeRef()] = close;
@@ -112,20 +114,23 @@ public class InsertionAssignment : DeploymentLeaf
         return 0f;
     }
 
-    public override UnitGroup GetPossibleTransferGroup(LogicWriteKey key)
+    public override bool PullGroup(DeploymentAi ai, GroupAssignment transferTo,
+        LogicWriteKey key)
     {
-        if (Insertions.Count == 0) return null;
-        return Insertions.First().Key.Entity(key.Data);
-    }
+        if (Insertions.Count == 0) return false;
+        var g = Insertions.First().Key.Entity(key.Data);
+        Groups.Transfer(ai, g, transferTo, key);
+        return true;
 
+    }
     public override PolyCell GetCharacteristicCell(Data d)
     {
         return Insertions.FirstOrDefault().Value.GetNative(d);
     }
 
-    public override void AdjustWithin(LogicWriteKey key)
+    public override void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
     {
-        var seg = (FrontSegmentAssignment)Parent(key.Data);
+        var seg = (FrontSegment)Parent(ai, key.Data);
         ValidateInsertionPoints(seg, key);
         foreach (var kvp in 
                  Insertions.ToArray())
@@ -135,12 +140,12 @@ public class InsertionAssignment : DeploymentLeaf
             var destCell = destFace.GetNative(key.Data);
             if (group.GetCell(key.Data) == destCell)
             {
-                Groups.Transfer(group, seg.HoldLine, key);
+                Groups.Transfer(ai, group, seg.HoldLine, key);
                 Insertions.Remove(kvp.Key);
             }
         }
     }
-    private void ValidateInsertionPoints(FrontSegmentAssignment seg,
+    private void ValidateInsertionPoints(FrontSegment seg,
         LogicWriteKey key)
     {
         var insertionCellsByGroupIds = GetInsertionCellsByGroupIds(seg, key.Data);
@@ -151,13 +156,13 @@ public class InsertionAssignment : DeploymentLeaf
     }
     private void ValidateInsertionPoint(
         ERef<UnitGroup> groupRef,
-        FrontSegmentAssignment seg, 
+        FrontSegment seg, 
         Dictionary<Vector2I, FrontFace<PolyCell>> insertionCellsByGroupIds,
         Data d)
     {
         var group = groupRef.Entity(d);
         var old = Insertions[groupRef];
-        if (seg.Segment.Faces.Contains(old)) return;
+        if (seg.Frontline.Faces.Contains(old)) return;
 
         if (insertionCellsByGroupIds == null)
         {
@@ -167,7 +172,7 @@ public class InsertionAssignment : DeploymentLeaf
         }
         else
         {
-            var close = seg.Segment
+            var close = seg.Frontline
                 .Faces.MinBy(f => f.GetNative(d).GetCenter().GetOffsetTo(group.GetCell(d).GetCenter(), d).Length());
             Insertions[groupRef] = close;
         }

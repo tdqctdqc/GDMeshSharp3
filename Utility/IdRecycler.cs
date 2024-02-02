@@ -4,13 +4,13 @@ using System.Linq;
 public class IdRecycler
 {
     private HashSet<int> _pool, _available;
-
+    
     public IdRecycler()
     {
         _pool = new HashSet<int>();
         _available = new HashSet<int>();
     }
-
+    
     public void Reset()
     {
         _available.AddRange(_pool);

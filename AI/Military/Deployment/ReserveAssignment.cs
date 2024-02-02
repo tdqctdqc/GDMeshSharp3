@@ -4,32 +4,38 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class ReserveAssignment : DeploymentLeaf
+public class ReserveAssignment : GroupAssignment
 {
+    public float ReserveThreshold { get; private set; }
     public int CellId { get; private set; }
-    public static ReserveAssignment Construct(int parentId,
+    public static ReserveAssignment Construct(
+        DeploymentAi ai,
+        int parentId,
         ERef<Regime> regime, 
-        LogicWriteKey key)
+        Data d)
     {
-        return new ReserveAssignment(
-            key.Data.HostLogicData.DeploymentTreeIds.TakeId(key.Data),
+        var id = ai.DeploymentTreeIds.TakeId(d); 
+        var a = new ReserveAssignment(
+            id,
             parentId, regime,
-            new UnitGroupManager(),
-            -1);
+            UnitGroupManager.Construct(regime, id),
+            -1, 1.5f);
+        return a;
     }
     [SerializationConstructor] private ReserveAssignment(
         int id, int parentId, ERef<Regime> regime, 
-        UnitGroupManager groups, int cellId) 
+        UnitGroupManager groups, int cellId, float reserveThreshold) 
             : base(parentId, id, regime, groups)
     {
+        ReserveThreshold = reserveThreshold;
         CellId = cellId;
     }
-    public override void ClearGroupFromData(UnitGroup g, LogicWriteKey key)
+    public override void ClearGroupFromData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
     {
         
     }
 
-    public override void AddGroupToData(UnitGroup g, LogicWriteKey key)
+    public override void AddGroupToData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
     {
         
     }
@@ -39,8 +45,9 @@ public class ReserveAssignment : DeploymentLeaf
         return 0f;
     }
 
-    public override void GiveOrders(LogicWriteKey key)
+    public override void GiveOrders(DeploymentAi ai, LogicWriteKey key)
     {
+        if (CellId == -1) return;
         var cell = PlanetDomainExt.GetPolyCell(CellId, key.Data);
         foreach (var gRef in Groups.Groups)
         {
@@ -54,22 +61,26 @@ public class ReserveAssignment : DeploymentLeaf
             }
         }
     }
-    public override UnitGroup GetPossibleTransferGroup(LogicWriteKey key)
+    public override bool PullGroup(DeploymentAi ai, GroupAssignment transferTo,
+        LogicWriteKey key)
     {
-        if (Groups.Count() == 0) return null;
-        return Groups.Groups.First().Entity(key.Data);
+        if (Groups.Count() == 0) return false;
+        var g = Groups.Groups.First().Entity(key.Data);
+        Groups.Transfer(ai, g, transferTo, key);
+        return true;
     }
+
 
     public override PolyCell GetCharacteristicCell(Data d)
     {
         return PlanetDomainExt.GetPolyCell(CellId, d);
     }
 
-    public override void AdjustWithin(LogicWriteKey key)
+    public override void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
     {
         
     }
-    public void DistributeAmong(IEnumerable<FrontSegmentAssignment> segs, LogicWriteKey key)
+    public void DissolveInto(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
     {
         foreach (var gRef in Groups.Groups.ToArray())
         {
@@ -80,7 +91,7 @@ public class ReserveAssignment : DeploymentLeaf
                     s.GetCharacteristicCell(key.Data)
                         .GetCenter()
                         .GetOffsetTo(groupCell.GetCenter(), key.Data));
-            Groups.Transfer(group, close.Reserve, key);
+            Groups.Transfer(ai, group, close.Reserve, key);
         }
     }
 }

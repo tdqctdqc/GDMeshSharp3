@@ -39,18 +39,18 @@ public partial class TheaterGraphic : Node2D
         var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
-        foreach (var fa in theater.Assignments.OfType<Front>())
+        foreach (var fa in theater.Branches.OfType<Front>())
         {
             var iter = 0;
             var frontColor = ColorsExt.GetRandomColor();
             
-            foreach (var seg in fa.Assignments.OfType<FrontSegmentAssignment>())
+            foreach (var seg in fa.Branches.OfType<FrontSegment>())
             {
                 var segColor = ColorsExt.GetRandomColor();
-                for (var i = 0; i < seg.Segment.Faces.Count - 1; i++)
+                for (var i = 0; i < seg.Frontline.Faces.Count - 1; i++)
                 {
-                    var fromWp = seg.Segment.Faces[i].GetNative(d);
-                    var toWp = seg.Segment.Faces[i + 1].GetNative(d);
+                    var fromWp = seg.Frontline.Faces[i].GetNative(d);
+                    var toWp = seg.Frontline.Faces[i + 1].GetNative(d);
                     var from = relPos(fromWp.GetCenter());
                     var to = relPos(toWp.GetCenter());
                     mb.AddLine(from, to, regimeColor, 5f);

@@ -6,9 +6,10 @@ using System.Text.RegularExpressions;
 using GDMeshSharp3.Exception;
 using Godot;
 using MathNet.Numerics.Statistics;
+using MessagePack;
 using Microsoft.FSharp.Data.UnitSystems.SI.UnitNames;
 
-public class Front : CompoundDeploymentBranch
+public class Front : DeploymentTrunk
 {
     
     public static float CoverOpposingWeight {get; private set;} = .5f;
@@ -19,14 +20,35 @@ public class Front : CompoundDeploymentBranch
     public HashSet<int> TargetAreaCellIds { get; private set; }
     
     public Color Color { get; private set; }
-    public Front(
+
+    public static Front Construct(
+        DeploymentAi ai,
+        Regime r, 
+        IEnumerable<PolyCell> cells,
+        LogicWriteKey key)
+    {
+        var id = ai.DeploymentTreeIds.TakeId(key.Data);
+        var reserve = ReserveAssignment.Construct(ai, id, r.MakeRef(), key.Data);
+        var f = new Front(
+            id,
+            -1,
+            r.MakeRef(),
+            cells.Select(wp => wp.Id).ToHashSet(),
+            new HashSet<int>(),
+            new HashSet<DeploymentBranch>(),
+            ColorsExt.GetRandomColor(), reserve
+        );
+        return f;
+    }
+    [SerializationConstructor] private Front(
         int id,
+        int parentId,
         ERef<Regime> regime, 
         HashSet<int> heldCellIds,
         HashSet<int> targetAreaCellIds,
         HashSet<DeploymentBranch> assignments,
-        Color color) 
-        : base(assignments, regime, id)
+        Color color, ReserveAssignment reserve) 
+        : base(assignments, regime, id, parentId, reserve)
     {
         HeldCellIds = heldCellIds;
         TargetAreaCellIds = targetAreaCellIds;
@@ -52,7 +74,7 @@ public class Front : CompoundDeploymentBranch
     public override float GetPowerPointNeed(Data data)
     {
         var opposing = GetOpposingPowerPoints(data);
-        var length = Assignments.OfType<FrontSegmentAssignment>().Sum(s => s.GetLength(data));
+        var length = Branches.OfType<FrontSegment>().Sum(s => s.GetLength(data));
         var oppNeed = opposing * DesiredOpposingPpRatio;
         var lengthNeed = length * PowerPointsPerCellFaceToCover;
         return Mathf.Max(oppNeed, lengthNeed);
@@ -72,27 +94,29 @@ public class Front : CompoundDeploymentBranch
         return lines;
     }
 
-    public void MakeSegments(LogicWriteKey key)
+    public void MakeSegments(DeploymentAi ai, LogicWriteKey key)
     {
         var d = key.Data;
         var lines = GetLines(d);
         if (lines.Count == 0)
         {
-            Disband(key);
+            Disband(ai, key);
             return;
         }
+        var oldSegs = Branches
+            .OfType<FrontSegment>().ToArray();
         var newSegs = lines
-            .Select(l => FrontSegmentAssignment
-                .Construct(new ERef<Regime>(Regime.RefId), l, false, key)).ToList();
-        foreach (var oldSeg in Assignments
-                     .OfType<FrontSegmentAssignment>().ToArray())
-        {
-            oldSeg.DissolveInto(newSegs, key);
-            oldSeg.Disband(key);
-        }
+            .Select(l => FrontSegment
+                .Construct(ai, new ERef<Regime>(Regime.RefId), l, false, key)).ToList();
         foreach (var fsa in newSegs)
         {
-            fsa.SetParent(this, key);
+            fsa.SetParent(ai, this, key);
+            ai.AddNode(fsa);
+        }
+        foreach (var oldSeg in oldSegs)
+        {
+            oldSeg.DissolveInto(ai, newSegs, key);
+            oldSeg.Disband(ai, key);
         }
     }
 
@@ -107,12 +131,12 @@ public class Front : CompoundDeploymentBranch
         return HeldCellIds.Select(i => PlanetDomainExt.GetPolyCell(i, d))
             .FirstOrDefault(wp => wp.Controller.RefId == Regime.RefId);
     }
-    public override void DissolveInto(IEnumerable<DeploymentBranch> intos, LogicWriteKey key)
+    public override void DissolveInto(DeploymentAi ai, IEnumerable<DeploymentBranch> intos, LogicWriteKey key)
     {
         var d = key.Data;
         var fronts = intos.OfType<Front>();
         if (fronts.Count() == 0) throw new Exception();
-        foreach (var assgn in Assignments.ToArray())
+        foreach (var assgn in Branches.ToArray())
         {
             var wp = assgn.GetCharacteristicCell(d);
             var front = fronts.FirstOrDefault(t => t.HeldCellIds.Contains(wp.Id));
@@ -121,9 +145,22 @@ public class Front : CompoundDeploymentBranch
                 front = (Front)intos.MinBy(f => f.GetCharacteristicCell(d)
                     .GetCenter().GetOffsetTo(wp.GetCenter(), d).Length());
             }
-            assgn.SetParent(front, key);
+            assgn.SetParent(ai, front, key);
         }
     }
+
+    public override Vector2 GetMapPosForDisplay(Data d)
+    {
+        var frontSegs = Branches.OfType<FrontSegment>();
+        var axis = frontSegs
+           .SelectMany(fs => fs.Frontline.Faces)
+           .Select(f => f.GetAxis(d).Normalized())
+           .Sum()
+           .Normalized();
+        var avgPos = d.Planet.GetAveragePosition(GetCells(d).Select(c => c.GetCenter()));
+        return avgPos - axis * 100f;
+    }
+
     public IEnumerable<PolyCell> GetCells(Data d)
     {
         return HeldCellIds.Select(id => PlanetDomainExt.GetPolyCell(id, d));

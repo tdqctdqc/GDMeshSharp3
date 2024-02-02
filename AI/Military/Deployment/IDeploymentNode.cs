@@ -1,17 +1,19 @@
 
+using System;
 using System.Collections.Generic;
 using Godot;
 
 public interface IDeploymentNode : IIdentifiable
 {
-    DeploymentBranch Parent(Data d);
+    ERef<Regime> Regime { get; }
+    DeploymentBranch Parent(DeploymentAi ai, Data d);
     IEnumerable<IDeploymentNode> Children();
     float GetPowerPointsAssigned(Data data);
     float GetPowerPointNeed(Data data);
-    void GiveOrders(LogicWriteKey key);
-    void AdjustWithin(LogicWriteKey key);
-    void Disband(LogicWriteKey key);
-    UnitGroup GetPossibleTransferGroup(LogicWriteKey key);
+    void GiveOrders(DeploymentAi ai, LogicWriteKey key);
+    void AdjustWithin(DeploymentAi ai, LogicWriteKey key);
+    void Disband(DeploymentAi ai, LogicWriteKey key);
+    bool PullGroup(DeploymentAi ai, GroupAssignment transferTo, LogicWriteKey key);
     PolyCell GetCharacteristicCell(Data d);
 }
 

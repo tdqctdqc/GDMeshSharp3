@@ -29,22 +29,22 @@ public static class MeshBuilderExt
     }
     public static void DrawFrontSegment(this MeshBuilder mb,
         Vector2 relTo,
-        FrontSegmentAssignment seg, 
+        FrontSegment seg, 
         Data d)
     {
         var markerSize = 5f;
         var color = seg.Color;
-        if (seg.Segment.Faces.Count == 1)
+        if (seg.Frontline.Faces.Count == 1)
         {
-            var face = seg.Segment.Faces[0];
+            var face = seg.Frontline.Faces[0];
             var cell = face.GetNative(d);
             mb.AddPoint(relTo.GetOffsetTo(cell.GetCenter(), d),
                 markerSize, color);
         }
-        for (var i = 0; i < seg.Segment.Faces.Count - 1; i++)
+        for (var i = 0; i < seg.Frontline.Faces.Count - 1; i++)
         {
-            var face = seg.Segment.Faces[i];
-            var nextFace = seg.Segment.Faces[i + 1];
+            var face = seg.Frontline.Faces[i];
+            var nextFace = seg.Frontline.Faces[i + 1];
             var from = face.GetNative(d);
             var to = nextFace.GetNative(d);
             
@@ -54,7 +54,7 @@ public static class MeshBuilderExt
         }
         
         
-        for (var i = 0; i < seg.Segment.Faces.Count; i++)
+        for (var i = 0; i < seg.Frontline.Faces.Count; i++)
         {
             }
 
@@ -64,7 +64,7 @@ public static class MeshBuilderExt
             var group = d.Get<UnitGroup>(kvp.Key);
             for (var i = 0; i < line.Count; i++)
             {
-                var face = seg.Segment.Faces[i];
+                var face = seg.Frontline.Faces[i];
                 var native = face.GetNative(d);
                 var foreign = face.GetForeign(d);
                 mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),

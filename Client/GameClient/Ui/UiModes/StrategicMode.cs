@@ -70,9 +70,34 @@ public class StrategicMode : UiMode
         var alliance = regime.GetAlliance(_client.Data);
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var relTo = regime.GetPolys(_client.Data).First().Center;
-        var theaters = ai.Military.Deployment.Root.Assignments.OfType<Theater>();
-        var fronts = theaters.SelectMany(t => t.Assignments.OfType<Front>());
-        var segs = fronts.SelectMany(f => f.Assignments.OfType<FrontSegmentAssignment>());
+        var theaters = ai.Military.Deployment.Root.Branches.OfType<Theater>();
+        var fronts = theaters.SelectMany(t => t.Branches.OfType<Front>());
+        var segs = fronts.SelectMany(f => f.Branches.OfType<FrontSegment>());
+
+        foreach (var c in ai.Military
+                .Deployment.Root.Children().OfType<DeploymentBranch>())
+        {
+            drawBranch(c);
+        }
+        
+        Vector2 drawBranch(DeploymentBranch branch)
+        {
+            var graphic = branch.GetGraphic(_client.Data);
+            var node = new Node2D();
+            node.AddChild(graphic);
+            var pos = branch.GetMapPosForDisplay(_client.Data);
+            debug.AddNode(node, pos);
+            foreach (var child in branch.Children().OfType<DeploymentBranch>())
+            {
+                var childPos = drawBranch(child);
+                debug.Draw(mb => mb.AddLine(Vector2.Zero,
+                    pos.GetOffsetTo(childPos, _client.Data), regime.GetMapColor(),
+                    5f), 
+                    pos);
+            }
+
+            return pos;
+        }
         // foreach (var front in fronts)
         // {
         //     debug.Draw(mb => mb.DrawFront(relTo, front, _client.Data), relTo);

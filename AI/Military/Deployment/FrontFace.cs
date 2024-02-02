@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public struct FrontFace<T> where T : IIdentifiable
 {
@@ -47,6 +48,11 @@ public struct FrontFace<T> where T : IIdentifiable
 
 public static class FrontFaceExt
 {
+    public static Vector2 GetAxis(this FrontFace<PolyCell> f, Data d)
+    {
+        return f.GetNative(d).GetCenter().GetOffsetTo(f.GetForeign(d).GetCenter(), d);
+    }
+    
     public static PolyCell GetNative(this FrontFace<PolyCell> f, Data d)
     {
         return PlanetDomainExt.GetPolyCell(f.Native, d);

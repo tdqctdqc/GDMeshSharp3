@@ -53,11 +53,11 @@ public class TacticalMode : UiMode
         if (ready == false) return;
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var deployment = ai.Military.Deployment;
-        foreach (var theater in deployment.Root.Assignments.OfType<Theater>())
+        foreach (var theater in deployment.Root.Branches.OfType<Theater>())
         {
-            foreach (var front in theater.Assignments.OfType<Front>())
+            foreach (var front in theater.Branches.OfType<Front>())
             {
-                foreach (var seg in front.Assignments.OfType<FrontSegmentAssignment>())
+                foreach (var seg in front.Branches.OfType<FrontSegment>())
                 {
                     var center = seg.GetCells(_client.Data).First().GetCenter();
                     debugDrawer.Draw(mb => mb.DrawFrontSegment(
