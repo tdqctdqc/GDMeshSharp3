@@ -4,33 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/AI/Military/Deployment/Frontline.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="working on new deployment tree system">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/CompoundDeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentTrunk.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentLeaf.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/Front.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/Front.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontSegment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontSegment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontSegmentAssignment.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentTrunk.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentTrunk.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/InsertionAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/InsertionAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/ReserveAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/ReserveAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/Theater.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/Theater.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/UnitGroupManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/UnitGroupManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/StrategicMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/TacticalMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/TacticalMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphicLayer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/HostLogicData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogicData.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Blobber.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/IdRecycler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/IdRecycler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -98,6 +83,7 @@
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Blobber.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -508,7 +494,7 @@
       <workItem from="1706803697272" duration="8945000" />
       <workItem from="1706812904099" duration="1929000" />
       <workItem from="1706823985087" duration="4601000" />
-      <workItem from="1706834238033" duration="940000" />
+      <workItem from="1706834238033" duration="3387000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -720,14 +706,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00121" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1706142673775</created>
-      <option name="number" value="00121" />
-      <option name="presentableId" value="LOCAL-00121" />
-      <option name="project" value="LOCAL" />
-      <updated>1706142673775</updated>
-    </task>
     <task id="LOCAL-00122" summary="split frontSegment logic into subAssignments">
       <option name="closed" value="true" />
       <created>1706148323879</created>
@@ -872,7 +850,15 @@
       <option name="project" value="LOCAL" />
       <updated>1706651605442</updated>
     </task>
-    <option name="localTasksCounter" value="140" />
+    <task id="LOCAL-00140" summary="working on new deployment tree system">
+      <option name="closed" value="true" />
+      <created>1706835263625</created>
+      <option name="number" value="00140" />
+      <option name="presentableId" value="LOCAL-00140" />
+      <option name="project" value="LOCAL" />
+      <updated>1706835263625</updated>
+    </task>
+    <option name="localTasksCounter" value="141" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -894,7 +880,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="gettin there" />
     <MESSAGE value="before removing waypoints + polytris" />
     <MESSAGE value="replaced waypoints and polytris with polycells" />
     <MESSAGE value="working on front algorithm" />
@@ -919,6 +904,7 @@
     <MESSAGE value="starting implementing combat again" />
     <MESSAGE value="made diplo graph" />
     <MESSAGE value="redoing frontassignments etc as tree" />
-    <option name="LAST_COMMIT_MESSAGE" value="redoing frontassignments etc as tree" />
+    <MESSAGE value="working on new deployment tree system" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on new deployment tree system" />
   </component>
 </project>

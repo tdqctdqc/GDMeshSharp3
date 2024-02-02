@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using MessagePack;
 
 public class ReserveAssignment : GroupAssignment
@@ -35,9 +36,9 @@ public class ReserveAssignment : GroupAssignment
         
     }
 
-    public override void AddGroupToData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    public override void AddGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
     {
-        
+        Groups.Add(ai, g, key);
     }
 
     public override float GetPowerPointNeed(Data d)
@@ -78,7 +79,27 @@ public class ReserveAssignment : GroupAssignment
 
     public override void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
     {
-        
+        var parent = Parent(ai, key.Data);
+
+        var min = getMin();
+        while (min.sibling != null 
+               && Groups.Count() > 0
+               && min.ratio < ReserveThreshold)
+        {
+            var g = Groups.Groups.First().Entity(key.Data);
+            Groups.Transfer(ai, g, min.sibling, key);
+            min = getMin();
+        }
+
+        (GroupAssignment sibling, float ratio) getMin()
+        {
+            var siblings = parent.Children()
+                .OfType<GroupAssignment>()
+                .Where(s => s != this)
+                .Select(s => (s, s.GetSatisfiedRatio(key.Data)));
+            if (siblings.Count() == 0) return (null, 1f);
+            return siblings.MinBy(v => v.Item2);
+        }
     }
     public void DissolveInto(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
     {
@@ -90,7 +111,7 @@ public class ReserveAssignment : GroupAssignment
                 .MinBy(s =>
                     s.GetCharacteristicCell(key.Data)
                         .GetCenter()
-                        .GetOffsetTo(groupCell.GetCenter(), key.Data));
+                        .GetOffsetTo(groupCell.GetCenter(), key.Data).Length());
             Groups.Transfer(ai, group, close.Reserve, key);
         }
     }

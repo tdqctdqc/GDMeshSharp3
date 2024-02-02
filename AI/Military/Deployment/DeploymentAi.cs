@@ -30,7 +30,7 @@ public class DeploymentAi
     {
         Root.MakeTheaters(this, key);
         Root.GrabUnassignedGroups(key);
-        Root.ShiftGroups(key);
+        Root.ShiftGroups(this, key);
         Root.AdjustWithin(this, key);
         Root.GiveOrders(this, key);
     }

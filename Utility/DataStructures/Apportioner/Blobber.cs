@@ -54,9 +54,12 @@ public static class Blobber
 
         Theater makeBlob(IEnumerable<LandCell> wps)
         {
-            var root = key.Data.HostLogicData.RegimeAis[regime]
-                .Military.Deployment.Root;
-            return Theater.Construct(ai, regime, wps, key);
+            var ai = key.Data.HostLogicData.RegimeAis[regime]
+                .Military.Deployment;
+            var t = Theater.Construct(ai, regime, wps, key);
+            t.SetParent(ai, ai.Root, key);
+            ai.AddNode(t);
+            return t;
         }
     }
     public static IEnumerable<Front>
@@ -81,7 +84,10 @@ public static class Blobber
 
         Front makeBlob(IEnumerable<PolyCell> wps)
         {
-            return Front.Construct(ai, regime, wps, key);
+            var f = Front.Construct(ai, regime, wps, key);
+            ai.AddNode(f);
+            f.SetParent(ai, theater, key);
+            return f;
         }
     }
 }

@@ -56,16 +56,17 @@ public class HoldLineAssignment : GroupAssignment
         FacesByGroupId.Remove(g.Id);
     }
 
-    public override void AddGroupToData(DeploymentAi ai,
+    public override void AddGroup(DeploymentAi ai,
         UnitGroup g, LogicWriteKey key)
     {
         var cell = g.GetCell(key.Data);
         var seg = (FrontSegment)Parent(ai, key.Data);
         if (seg.Frontline.Faces.Any(f => f.Native == cell.Id) == false)
         {
-            throw new Exception();
+            seg.Insert.AddGroup(ai, g, key);
+            return;
         }
-
+        Groups.Add(ai, g, key);
         var face = seg.Frontline.Faces
             .First(f => f.Native == cell.Id);
         FacesByGroupId.Add(g.Id, new List<FrontFace<PolyCell>>{face});
@@ -73,7 +74,10 @@ public class HoldLineAssignment : GroupAssignment
 
     public override float GetPowerPointNeed(Data d)
     {
-        throw new NotImplementedException();
+        var ai = d.HostLogicData.RegimeAis[Regime.Entity(d)]
+            .Military.Deployment;
+        var seg = (FrontSegment)Parent(ai, d);
+        return seg.GetPowerPointNeed(d);
     }
 
     public override void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
@@ -220,7 +224,6 @@ public class HoldLineAssignment : GroupAssignment
                 throw new Exception();
             }
             Groups.Transfer(ai, group, seg.HoldLine, key);
-            seg.HoldLine.FacesByGroupId.Add(groupId, newFaces.MaxBy(l => l.Count()));
         }
         FacesByGroupId.Clear();
     }

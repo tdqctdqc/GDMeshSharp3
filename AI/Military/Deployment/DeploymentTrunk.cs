@@ -17,29 +17,25 @@ public abstract class DeploymentTrunk : DeploymentBranch
     public void ShiftGroups(DeploymentAi ai, LogicWriteKey key)
     {
         var data = key.Data;
+        if (Branches.Count == 0) return;
         var max = maxSatisfied();
         var min = minSatisfied();
-        
         var iter = 0;
         var maxIter = Branches.Count * 2 + Reserve.Groups.Count();
-        if (Branches.Count > 1)
+        while (iter < maxIter
+               && max.ratio > min.ratio * 1.5f)
         {
-            while (iter < maxIter
-                   && max.ratio > min.ratio * 1.5f)
+            max.fa.PullGroup(ai, Reserve, key);
+            if (Reserve.Groups.Count() > 0)
             {
-                max.fa.PullGroup(ai, Reserve, key);
-                if (Reserve.Groups.Count() > 0)
-                {
-                    min.fa.PushGroup(ai, Reserve, key);
-                }
-                
-                max = maxSatisfied();
-                min = minSatisfied();
-                iter++;
+                min.fa.PushGroup(ai, Reserve, key);
             }
-
-            if (iter == maxIter) throw new Exception();
+            
+            max = maxSatisfied();
+            min = minSatisfied();
+            iter++;
         }
+        // if (iter == maxIter) throw new Exception();
 
         iter = 0;
         while (iter < maxIter
@@ -49,13 +45,13 @@ public abstract class DeploymentTrunk : DeploymentBranch
             min.fa.PushGroup(ai, Reserve, key);
             min = minSatisfied();
             iter++;
-            if (iter == maxIter) throw new Exception();
         }
-        
+        // if (iter == maxIter) throw new Exception();
+
         
         foreach (var b in Branches.OfType<DeploymentTrunk>())
         {
-            b.ShiftGroups(key);
+            b.ShiftGroups(ai, key);
         }
         
         (float ratio, DeploymentBranch fa) maxSatisfied()
@@ -103,11 +99,11 @@ public abstract class DeploymentTrunk : DeploymentBranch
 
 public static class ICompoundForceAssignmentExt
 {
-    public static void ShiftGroups<T>(this T assgn, 
-        LogicWriteKey key)
-        where T : DeploymentTrunk
-    {
-        
-    }
+    // public static void ShiftGroups<T>(this T assgn, 
+    //     LogicWriteKey key)
+    //     where T : DeploymentTrunk
+    // {
+    //     
+    // }
 }
 

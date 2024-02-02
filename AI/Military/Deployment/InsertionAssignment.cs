@@ -100,18 +100,25 @@ public class InsertionAssignment : GroupAssignment
         Insertions.Remove(g.MakeRef());
     }
 
-    public override void AddGroupToData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    public override void AddGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
     {
         var seg = (FrontSegment)Parent(ai, key.Data);
         FrontFace<PolyCell> close = seg.Frontline.Faces.MinBy(f => f.GetNative(key.Data).GetCenter()
             .GetOffsetTo(g.GetCell(key.Data).GetCenter(), key.Data)
             .Length());
         Insertions[g.MakeRef()] = close;
+        Groups.Add(ai, g, key);
     }
 
     public override float GetPowerPointNeed(Data d)
     {
-        return 0f;
+        var ai = d.HostLogicData.RegimeAis[Regime.Entity(d)]
+            .Military.Deployment;
+        var seg = (FrontSegment)Parent(ai, d);
+        var holdLine = seg.HoldLine;
+        var need = holdLine.GetPowerPointNeed(d) - holdLine.GetPowerPointsAssigned(d);
+        need = Mathf.Max(0f, need);
+        return need;
     }
 
     public override bool PullGroup(DeploymentAi ai, GroupAssignment transferTo,

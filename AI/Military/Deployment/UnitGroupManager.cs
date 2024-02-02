@@ -38,10 +38,10 @@ public class UnitGroupManager
         var node = GetNode(ai, key.Data);
         node.ClearGroupFromData(ai, g, key);
         Remove(ai, g, key);
-        to.AddGroupToData(ai, g, key);
-        to.Groups.Add(ai, g, key);
+        to.AddGroup(ai, g, key);
+        // to.Groups.Add(ai, g, key);
     }
-    private void Add(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    public void Add(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
     {
         if (Groups.Contains(g.Id)) throw new Exception();
         Groups.Add(g.Id);

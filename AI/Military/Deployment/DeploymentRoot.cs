@@ -32,18 +32,14 @@ public class DeploymentRoot : DeploymentTrunk
     public void MakeTheaters(DeploymentAi ai, LogicWriteKey key)
     {
         var theaters = Branches.OfType<Theater>().ToArray();
+        var newTheaters = theaters.Blob(
+            ai, Regime.Entity(key.Data), key);
         foreach (var theater in theaters)
         {
             theater.Disband(ai, key);
-            // theater.DissolveInto(ai, theaters, key);
         } 
-        var newTheaters = theaters.Blob(
-            ai, Regime.Entity(key.Data), key);
-        
         foreach (var theater in newTheaters)
         {
-            theater.SetParent(ai, this, key);
-            ai.AddNode(theater);
             theater.MakeFronts(ai, key);
         }
     }

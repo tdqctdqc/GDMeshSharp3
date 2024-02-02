@@ -21,7 +21,7 @@ public abstract class GroupAssignment : IDeploymentNode
     }
     
     public abstract void ClearGroupFromData(DeploymentAi ai, UnitGroup g, LogicWriteKey key);
-    public abstract void AddGroupToData(DeploymentAi ai, UnitGroup g, LogicWriteKey key);
+    public abstract void AddGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key);
     public abstract float GetPowerPointNeed(Data d);
     public DeploymentBranch Parent(DeploymentAi ai, Data d)
     {

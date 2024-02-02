@@ -40,13 +40,7 @@ public class Theater : DeploymentTrunk
     public void MakeFronts(DeploymentAi ai, LogicWriteKey key)
     {
         var fronts = Branches.OfType<Front>().ToArray();
-        
         var newFronts = fronts.Blob(ai, this, key);
-        foreach (var newFront in newFronts)
-        {
-            newFront.SetParent(ai, this, key);
-            ai.AddNode(newFront);
-        }
         foreach (var front in fronts)
         {
             front.DissolveInto(ai, newFronts.AsEnumerable<DeploymentBranch>(), key);
