@@ -19,9 +19,20 @@ public abstract class GroupAssignment : IDeploymentNode
         Regime = regime;
         Groups = groups;
     }
-    
-    public abstract void ClearGroupFromData(DeploymentAi ai, UnitGroup g, LogicWriteKey key);
-    public abstract void AddGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key);
+
+    public void RemoveGroup(DeploymentAi ai, UnitGroup g)
+    {
+        Groups.Remove(ai, g);
+        RemoveGroupFromData(ai, g);
+    }
+    protected abstract void RemoveGroupFromData(DeploymentAi ai, UnitGroup g);
+
+    public void AddGroup(DeploymentAi ai, UnitGroup g, Data d)
+    {
+        AddGroupToData(ai, g, d);
+        Groups.Add(ai, g);
+    }
+    protected abstract void AddGroupToData(DeploymentAi ai, UnitGroup g, Data d);
     public abstract float GetPowerPointNeed(Data d);
     public DeploymentBranch Parent(DeploymentAi ai, Data d)
     {

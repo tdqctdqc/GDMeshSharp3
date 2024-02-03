@@ -95,19 +95,18 @@ public class InsertionAssignment : GroupAssignment
     }
     
     
-    public override void ClearGroupFromData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
     {
         Insertions.Remove(g.MakeRef());
     }
 
-    public override void AddGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    protected override void AddGroupToData(DeploymentAi ai, UnitGroup g, Data d)
     {
-        var seg = (FrontSegment)Parent(ai, key.Data);
-        FrontFace<PolyCell> close = seg.Frontline.Faces.MinBy(f => f.GetNative(key.Data).GetCenter()
-            .GetOffsetTo(g.GetCell(key.Data).GetCenter(), key.Data)
+        var seg = (FrontSegment)Parent(ai, d);
+        FrontFace<PolyCell> close = seg.Frontline.Faces.MinBy(f => f.GetNative(d).GetCenter()
+            .GetOffsetTo(g.GetCell(d).GetCenter(), d)
             .Length());
         Insertions[g.MakeRef()] = close;
-        Groups.Add(ai, g, key);
     }
 
     public override float GetPowerPointNeed(Data d)

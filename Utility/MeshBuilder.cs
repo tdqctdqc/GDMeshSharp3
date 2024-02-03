@@ -104,6 +104,81 @@ public class MeshBuilder
 
         }
     }
+    
+    public void DrawPolyCellEdge(PolyCell c1, PolyCell c2, 
+        Func<PolyCell, Color> color,
+        float thickness, Vector2 relTo, Data d)
+    {
+
+        return;
+        Vector2? lineP1 = null;
+        Vector2? lineP2 = null;
+        for (var i = 0; i < c1.RelBoundary.Length; i++)
+        {
+            var from1 = c1.RelBoundary[i];
+            var to1 = c1.RelBoundary.Modulo(i + 1);
+            for (var j = 0; j < c2.RelBoundary.Length; j++)
+            {
+                var from2 = c2.RelBoundary[j];
+                var from2rel = c1.RelTo.GetOffsetTo(from2 + c2.RelTo, d);
+                var to2 = c2.RelBoundary.Modulo(j + 1);
+                var to2rel = c1.RelTo.GetOffsetTo(to2 + c2.RelTo, d);
+                var close1 = Geometry2D
+                    .GetClosestPointToSegment(from1, from2rel, to2rel);
+                var dist1 = close1.DistanceTo(from1);
+                
+                var close2 = Geometry2D
+                    .GetClosestPointToSegment(from2rel, from1, to1);
+                var dist2 = close2.DistanceTo(from2rel);
+                
+                if ((dist1 < .1f || from1.DistanceTo(from2rel) < .1f || from1.DistanceTo(to2rel) < .1f)
+                    && alreadyFound(from1) == false)
+                {
+                    register(from1);
+                }
+
+                if (foundBoth()) break;
+                if ((dist2 < .1f || from2rel.DistanceTo(from1) < .1f || from2rel.DistanceTo(to1) < .1f)
+                    && alreadyFound(from2rel) == false)
+                {
+                    register(from2rel);
+                }
+                if (foundBoth()) break;
+            }
+            if (foundBoth()) break;
+        }
+
+        if (foundBoth() == false)
+        {
+            return;
+        }
+        var rel1 = relTo.GetOffsetTo(lineP1.Value + c1.RelTo, d);
+        var rel2 = relTo.GetOffsetTo(lineP2.Value + c1.RelTo, d);
+        AddLine(rel1, rel2, color(c1), thickness);
+        
+        void register(Vector2 p)
+        {
+            if (foundBoth()) throw new Exception();
+            if (lineP1 == null)
+            {
+                lineP1 = p;
+            }
+            else if (lineP2 == null)
+            {
+                lineP2 = p;
+            }
+        }
+
+        bool foundBoth()
+        {
+            return lineP1 is not null && lineP2 is not null;
+        }
+
+        bool alreadyFound(Vector2 p)
+        {
+            return lineP1 == p || lineP2 == p;
+        }
+    }
 
     public void AddLine(Vector2 from, Vector2 to, Color color, float thickness)
     {

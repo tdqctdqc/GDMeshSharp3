@@ -31,14 +31,12 @@ public class ReserveAssignment : GroupAssignment
         ReserveThreshold = reserveThreshold;
         CellId = cellId;
     }
-    public override void ClearGroupFromData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
     {
-        
     }
 
-    public override void AddGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    protected override void AddGroupToData(DeploymentAi ai, UnitGroup g, Data d)
     {
-        Groups.Add(ai, g, key);
     }
 
     public override float GetPowerPointNeed(Data d)

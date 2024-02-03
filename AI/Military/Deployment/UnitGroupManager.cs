@@ -24,9 +24,10 @@ public class UnitGroupManager
         return Groups.Contains(g.Id);
     }
 
-    public void AddUnassigned(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    public void AddUnassigned(DeploymentAi ai, UnitGroup g, Data d)
     {
-        Add(ai, g, key);
+        var node = GetNode(ai);
+        node.AddGroup(ai, g, d);
     }
     public void Transfer(
         DeploymentAi ai,
@@ -35,21 +36,20 @@ public class UnitGroupManager
         LogicWriteKey key)
     {
         if (Groups.Contains(g.Id) == false) throw new Exception();
-        var node = GetNode(ai, key.Data);
-        node.ClearGroupFromData(ai, g, key);
-        Remove(ai, g, key);
-        to.AddGroup(ai, g, key);
-        // to.Groups.Add(ai, g, key);
+        var node = GetNode(ai);
+        node.RemoveGroup(ai, g);
+        to.AddGroup(ai, g, key.Data);
     }
-    public void Add(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    public void Add(DeploymentAi ai, UnitGroup g)
     {
         if (Groups.Contains(g.Id)) throw new Exception();
         Groups.Add(g.Id);
-        ai.GroupAssignments.Add(g.MakeRef(), GetNode(ai, key.Data));
+        ai.GroupAssignments.Add(g.MakeRef(), GetNode(ai));
     }
-    private void Remove(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    public void Remove(DeploymentAi ai, UnitGroup g)
     {
         if (Groups.Contains(g.Id) == false) throw new Exception();
+        var node = GetNode(ai);
         Groups.Remove(g.Id);
         ai.GroupAssignments.Remove(g.MakeRef());
     }
@@ -64,7 +64,7 @@ public class UnitGroupManager
         return Groups.Count;
     }
 
-    private GroupAssignment GetNode(DeploymentAi ai, Data d)
+    private GroupAssignment GetNode(DeploymentAi ai)
     {
         return (GroupAssignment)ai.GetNode(NodeId);
     }

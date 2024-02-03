@@ -38,8 +38,8 @@ public class GraphicLayerHolder
     private ChunkGraphicSwitchLayer PolyFill(Client client,
         GraphicsSegmenter segmenter)
     {
-        var regime = OwnerRegimeChunkModule.GetLayer(client, segmenter);
-        var control = ControllerRegimePolyCellFill.GetLayer(client, segmenter);
+        var regime = OwnerRegimeGraphic.GetLayer(client, segmenter);
+        var control = ControllerRegimeGraphic.GetLayer(client, segmenter);
         var diplomacy = DiplomacyChunkModule.GetLayer(client, segmenter);
         var alliance = AllianceChunkModule.GetLayer(client, segmenter);
         

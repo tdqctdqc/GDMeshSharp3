@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class RegimeBordersNode : PolyBorderChunkNode
+public partial class RegimeBordersGraphic : PolyBorder
 {
     private static float _thickness = 5f;
-    public RegimeBordersNode(MapChunk chunk, Data data) 
-        : base(nameof(RegimeBordersNode), chunk, data)
+    public RegimeBordersGraphic(MapChunk chunk, Data data) 
+        : base(nameof(RegimeBordersGraphic), chunk, data)
     {
     }
     protected override bool InUnion(MapPolygon p1, MapPolygon p2, Data data)

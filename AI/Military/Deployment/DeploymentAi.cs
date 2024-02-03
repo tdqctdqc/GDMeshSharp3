@@ -18,6 +18,15 @@ public class DeploymentAi
         var root = DeploymentRoot.Construct(r, ai, d);
         ai.Root = root;
         ai.AddNode(root);
+        
+        d.SubscribeForDestruction<UnitGroup>(n =>
+        {
+            var group = (UnitGroup)n.Entity;
+            if (ai.GroupAssignments.TryGetValue(group.MakeRef(), out var assgn))
+            {
+                assgn.RemoveGroup(ai, group);
+            }
+        });
         return ai;
     }
     public DeploymentAi(IdRecycler deploymentTreeIds)

@@ -60,7 +60,7 @@ public class DeploymentRoot : DeploymentTrunk
         {
             if (taken.Contains(g.MakeRef()) == false)
             {
-                Reserve.Groups.AddUnassigned(ai, g, key);
+                Reserve.Groups.AddUnassigned(ai, g, key.Data);
             }
         }
     }

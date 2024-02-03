@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class AllianceBordersGraphic : PolyBorderChunkNode
+public partial class AllianceBordersGraphic : PolyBorder
 {
     public AllianceBordersGraphic(MapChunk chunk, Data data, bool primaryColor) : base(
             nameof(AllianceBordersGraphic), chunk, data)

@@ -51,22 +51,21 @@ public class HoldLineAssignment : GroupAssignment
         return list;
     }
 
-    public override void ClearGroupFromData(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
     {
         FacesByGroupId.Remove(g.Id);
     }
 
-    public override void AddGroup(DeploymentAi ai,
-        UnitGroup g, LogicWriteKey key)
+    protected override void AddGroupToData(DeploymentAi ai,
+        UnitGroup g, Data d)
     {
-        var cell = g.GetCell(key.Data);
-        var seg = (FrontSegment)Parent(ai, key.Data);
+        var cell = g.GetCell(d);
+        var seg = (FrontSegment)Parent(ai, d);
         if (seg.Frontline.Faces.Any(f => f.Native == cell.Id) == false)
         {
-            seg.Insert.AddGroup(ai, g, key);
+            seg.Insert.AddGroup(ai, g, d);
             return;
         }
-        Groups.Add(ai, g, key);
         var face = seg.Frontline.Faces
             .First(f => f.Native == cell.Id);
         FacesByGroupId.Add(g.Id, new List<FrontFace<PolyCell>>{face});
@@ -150,6 +149,7 @@ public class HoldLineAssignment : GroupAssignment
     private Dictionary<FrontFace<PolyCell>, float> GetFaceCosts(FrontSegment seg, 
         Data d)
     {
+        if (seg.Frontline.Faces.Count == 0) return new Dictionary<FrontFace<PolyCell>, float>();
         var alliance = seg.Regime.Entity(d).GetAlliance(d);
         var totalEnemyCost = seg.Frontline
             .Faces.Sum(f => GetFaceEnemyCost(alliance, f, d));
@@ -170,6 +170,10 @@ public class HoldLineAssignment : GroupAssignment
                         enemyCost = enemyCostWeight * GetFaceEnemyCost(alliance, f, d) / totalEnemyCost;
                     }
                     var lengthCost = lengthCostWeight / totalLengthCost;
+                    if (float.IsNaN(lengthCost))
+                    {
+                        throw new Exception($"length cost weight {lengthCostWeight} total length cost {totalLengthCost}");
+                    }
                     var totalCost = enemyCost + lengthCost;
                     if (float.IsNaN(totalCost)) throw new Exception();
                     return totalCost;
