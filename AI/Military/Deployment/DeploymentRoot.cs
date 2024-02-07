@@ -52,7 +52,7 @@ public class DeploymentRoot : DeploymentTrunk
         
         var groups = key.Data.Military.UnitAux.UnitGroupByRegime[Regime.Entity(key.Data)];
         var taken = GetAssignments()
-            .SelectMany(a => a.Groups.Groups)
+            .SelectMany(a => a.Groups)
             .ToHashSet();
         
        
@@ -60,7 +60,7 @@ public class DeploymentRoot : DeploymentTrunk
         {
             if (taken.Contains(g.MakeRef()) == false)
             {
-                Reserve.Groups.AddUnassigned(ai, g, key.Data);
+                Reserve.AddUnassigned(ai, g, key.Data);
             }
         }
     }
@@ -85,7 +85,7 @@ public class DeploymentRoot : DeploymentTrunk
     {
         return false;
     }
-    public override void DissolveInto(DeploymentAi ai, IEnumerable<DeploymentBranch> into, LogicWriteKey key)
+    public override void DissolveInto(DeploymentAi ai, DeploymentTrunk parent, IEnumerable<DeploymentBranch> into, LogicWriteKey key)
     {
         throw new Exception();
     }

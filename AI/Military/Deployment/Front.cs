@@ -46,9 +46,9 @@ public class Front : DeploymentTrunk
         ERef<Regime> regime, 
         HashSet<int> heldCellIds,
         HashSet<int> targetAreaCellIds,
-        HashSet<DeploymentBranch> assignments,
+        HashSet<DeploymentBranch> branches,
         Color color, ReserveAssignment reserve) 
-        : base(assignments, regime, id, parentId, reserve)
+        : base(branches, regime, id, parentId, reserve)
     {
         HeldCellIds = heldCellIds;
         TargetAreaCellIds = targetAreaCellIds;
@@ -115,7 +115,7 @@ public class Front : DeploymentTrunk
         }
         foreach (var oldSeg in oldSegs)
         {
-            oldSeg.DissolveInto(ai, newSegs, key);
+            oldSeg.DissolveInto(ai, this, newSegs, key);
             oldSeg.Disband(ai, key);
         }
     }
@@ -129,20 +129,25 @@ public class Front : DeploymentTrunk
     public override PolyCell GetCharacteristicCell(Data d)
     {
         return HeldCellIds.Select(i => PlanetDomainExt.GetPolyCell(i, d))
-            .FirstOrDefault(wp => wp.Controller.RefId == Regime.RefId);
+            .First();
     }
-    public override void DissolveInto(DeploymentAi ai, IEnumerable<DeploymentBranch> intos, LogicWriteKey key)
+    public override void DissolveInto(DeploymentAi ai, 
+        DeploymentTrunk parent,
+        IEnumerable<DeploymentBranch> intos, LogicWriteKey key)
     {
         var d = key.Data;
         var fronts = intos.OfType<Front>();
-        if (fronts.Count() == 0) throw new Exception();
+        if (fronts.Count() == 0)
+        {
+            throw new Exception();
+        }
         foreach (var assgn in Branches.ToArray())
         {
             var wp = assgn.GetCharacteristicCell(d);
             var front = fronts.FirstOrDefault(t => t.HeldCellIds.Contains(wp.Id));
             if (front == null)
             {
-                front = (Front)intos.MinBy(f => f.GetCharacteristicCell(d)
+                front = (Front)fronts.MinBy(f => f.GetCharacteristicCell(d)
                     .GetCenter().GetOffsetTo(wp.GetCenter(), d).Length());
             }
             assgn.SetParent(ai, front, key);

@@ -20,7 +20,8 @@ public class Theater : DeploymentTrunk
         var t = new Theater(
             id,
             -1,
-            r.MakeRef(), new HashSet<DeploymentBranch>(),
+            r.MakeRef(), 
+            new HashSet<DeploymentBranch>(),
             cells.Select(c => c.Id).ToHashSet(),
             reserve
         );
@@ -30,9 +31,9 @@ public class Theater : DeploymentTrunk
         int id, 
         int parentId,
         ERef<Regime> regime, 
-        HashSet<DeploymentBranch> assignments,
+        HashSet<DeploymentBranch> branches,
         HashSet<int> heldCellIds, ReserveAssignment reserve) 
-        : base(assignments, regime, id, parentId, reserve)
+        : base(branches, regime, id, parentId, reserve)
     {
         HeldCellIds = heldCellIds;
     }
@@ -43,7 +44,7 @@ public class Theater : DeploymentTrunk
         var newFronts = fronts.Blob(ai, this, key);
         foreach (var front in fronts)
         {
-            front.DissolveInto(ai, newFronts.AsEnumerable<DeploymentBranch>(), key);
+            front.DissolveInto(ai, this, newFronts.AsEnumerable<DeploymentBranch>(), key);
             front.Disband(ai, key);
         }
         foreach (var newFront in newFronts)
@@ -60,11 +61,11 @@ public class Theater : DeploymentTrunk
     
     public override PolyCell GetCharacteristicCell(Data d)
     {
-        return GetCells(d)
-            .FirstOrDefault(wp => wp.Controller.RefId == Regime.RefId);
+        return GetCells(d).First();
     }
 
-    public override void DissolveInto(DeploymentAi ai, IEnumerable<DeploymentBranch> intos, LogicWriteKey key)
+    public override void DissolveInto(DeploymentAi ai, 
+        DeploymentTrunk parent, IEnumerable<DeploymentBranch> intos, LogicWriteKey key)
     {
         if (intos == null) throw new Exception();
         if (intos.Any(t => t is null)) throw new Exception();
@@ -73,11 +74,40 @@ public class Theater : DeploymentTrunk
             throw new Exception();
         }
         var theaters = intos.OfType<Theater>();
-        foreach (var assgn in Branches)
+        var allTheaterCells = theaters.SelectMany(t => t.GetCells(key.Data)).ToHashSet();
+        
+        foreach (var assgn in Branches.ToArray())
         {
             var wp = assgn.GetCharacteristicCell(key.Data);
-            var theater = theaters.First(t => t.HeldCellIds.Contains(wp.Id));
-            assgn.SetParent(ai, theater, key);
+            if (wp == null)
+            {
+                throw new Exception("no characteristic cell for " + assgn.GetType().Name);
+            }
+            var theater = theaters.FirstOrDefault(t => t.HeldCellIds.Contains(wp.Id));
+            if (theater == null)
+            {
+                FloodFill<PolyCell>.FloodTilFirst(
+                    wp,
+                    c => c.Landform.Model(key.Data).IsLand,
+                    c => c.GetNeighbors(key.Data),
+                    c =>
+                    {
+                        if (allTheaterCells.Contains(c) == false) return false;
+                        var t = theaters.First(t => t.HeldCellIds.Contains(c.Id));
+                        theater = t;
+                        return true;
+                    });
+            }
+
+            if (theater != null)
+            {
+                assgn.SetParent(ai, theater, key);
+            }
+            else
+            {
+                // throw new Exception("theater destroyed");
+                assgn.Disband(ai, key);
+            }
         }
     }
 

@@ -144,7 +144,8 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
                 .Intersect(foreigns);
             if (targets.Count() == 0) continue;
             var target = targets.GetRandomElement();
-            var attackEdge = UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
+            
+            UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
         }
     }
 

@@ -12,6 +12,7 @@ public class CellAttackEdge : ICombatGraphEdge
     public PolyCell Target { get; private set; }
     public Dictionary<Unit, float> LossRatio { get; private set; }
     public bool DefendersForcedBack { get; private set; }
+    public bool NoDefenders { get; private set; }
     public static float LossRatioToForceBack { get; private set; } = .3f;
     
     public static CellAttackEdge ConstructAndAddToGraph(
@@ -33,17 +34,16 @@ public class CellAttackEdge : ICombatGraphEdge
         AttackNode = attackNode;
         LossRatio = new Dictionary<Unit, float>();
         DefendersForcedBack = false;
+        NoDefenders = false;
     }
 
     public void CalculateCombat(CombatCalculator combat, Data d)
     {
-        var attackers 
-            = combat.Graph.GetNodeEdges(AttackNode)
-            .OfType<UnitAttackEdge>();
-        
+        var attackers = GetAttackers(combat);
         var defenders = Target.GetUnits(d);
         if (defenders == null || defenders.Count == 0)
         {
+            NoDefenders = true;
             DefendersForcedBack = true;
             return;
         }
@@ -70,6 +70,11 @@ public class CellAttackEdge : ICombatGraphEdge
 
     public void DirectResults(CombatCalculator combat, LogicWriteKey key)
     {
+        if (NoDefenders)
+        {
+            DefendersForcedBack = true;
+            return;
+        }
         foreach (var (unit, ratio) in LossRatio)
         {
             if (ratio == 0f) continue;
@@ -132,10 +137,10 @@ public class CellAttackEdge : ICombatGraphEdge
     {
         if (DefendersForcedBack == false) return;
         
-        var nonSuppressedAttackers = LossRatio
-            .Where(kvp => key.Data.HasEntity(kvp.Key.Id))
-            .Select(kvp => kvp.Key)
-            .Where(u => combat.Suppressed.Contains(u) == false);
+        var nonSuppressedAttackers = GetAttackers(combat)
+        .Where(e => key.Data.HasEntity(e.Unit.Id))
+        .Select(e => e.Unit)
+        .Where(u => combat.Suppressed.Contains(u) == false);
         if (nonSuppressedAttackers.Count() == 0) return;
         var victoriousAllianceUnits = nonSuppressedAttackers
             .SortInto(u => u.Regime.Entity(key.Data).GetAlliance(key.Data))
@@ -146,15 +151,26 @@ public class CellAttackEdge : ICombatGraphEdge
         GD.Print($"Advance by {victoriousRegime.Name} at cell {Target.Id}");
         var changeController = ChangePolyCellControllerProcedure.Construct(Target, victoriousRegime);
         key.SendMessage(changeController);
+        if (NoDefenders)
+        {
+            GD.Print("flipped control of no defenders at " + Target.Id);
+        }
         foreach (var unit in victoriousAllianceUnits.Value)
         {
             var newPosProc = MoveUnitProcedure.Construct(unit, new MapPos(Target.Id, (-1, 0f)));
             key.SendMessage(newPosProc);
         }
     }
-
+    
+    
     public bool Suppressed(CombatCalculator combat, Data d)
     {
         return false;
+    }
+
+    private IEnumerable<UnitAttackEdge> GetAttackers(CombatCalculator combat)
+    {
+        return combat.Graph.GetNodeEdges(AttackNode)
+            .OfType<UnitAttackEdge>();
     }
 }

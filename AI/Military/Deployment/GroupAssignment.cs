@@ -10,9 +10,10 @@ public abstract class GroupAssignment : IDeploymentNode
     public int ParentId { get; }
     public int Id { get; }
     public ERef<Regime> Regime { get; private set; }
-    public UnitGroupManager Groups { get; }
+    public HashSet<ERef<UnitGroup>> Groups { get; }
     
-    protected GroupAssignment(int parentId, int id, ERef<Regime> regime, UnitGroupManager groups)
+    protected GroupAssignment(int parentId, int id, 
+        ERef<Regime> regime, HashSet<ERef<UnitGroup>> groups)
     {
         ParentId = parentId;
         Id = id;
@@ -22,17 +23,38 @@ public abstract class GroupAssignment : IDeploymentNode
 
     public void RemoveGroup(DeploymentAi ai, UnitGroup g)
     {
-        Groups.Remove(ai, g);
+        if (Groups.Contains(g.Id) == false) throw new Exception();
+        Groups.Remove(g.Id);
+        ai.GroupAssignments.Remove(g.MakeRef());
         RemoveGroupFromData(ai, g);
     }
     protected abstract void RemoveGroupFromData(DeploymentAi ai, UnitGroup g);
-
+    public void AddUnassigned(DeploymentAi ai, UnitGroup g, Data d)
+    {
+        AddGroup(ai, g, d);
+    }
     public void AddGroup(DeploymentAi ai, UnitGroup g, Data d)
     {
-        AddGroupToData(ai, g, d);
-        Groups.Add(ai, g);
+        var added = TryAddGroupToData(ai, g, d);
+        if (added == false) return;
+        if (Groups.Contains(g.Id)) throw new Exception();
+        Groups.Add(g.Id);
+        ai.GroupAssignments.Add(g.MakeRef(), this);
     }
-    protected abstract void AddGroupToData(DeploymentAi ai, UnitGroup g, Data d);
+    //returns false if redirected to another group
+    protected abstract bool TryAddGroupToData(DeploymentAi ai, UnitGroup g, Data d);
+    
+    public void Transfer(
+        DeploymentAi ai,
+        UnitGroup g, 
+        GroupAssignment to, 
+        LogicWriteKey key)
+    {
+        if (Groups.Contains(g.Id) == false) throw new Exception();
+        RemoveGroup(ai, g);
+        to.AddGroup(ai, g, key.Data);
+    }
+    
     public abstract float GetPowerPointNeed(Data d);
     public DeploymentBranch Parent(DeploymentAi ai, Data d)
     {
@@ -41,12 +63,11 @@ public abstract class GroupAssignment : IDeploymentNode
     IEnumerable<IDeploymentNode> IDeploymentNode.Children() => Enumerable.Empty<IDeploymentNode>();
     public float GetPowerPointsAssigned(Data data)
     {
-        return Groups.Get(data).Sum(g => g.GetPowerPoints(data));
+        return Groups.Select(g => g.Entity(data)).Sum(g => g.GetPowerPoints(data));
     }
 
     public void Disband(DeploymentAi ai, LogicWriteKey key)
     {
-        Groups.Disband(key);
         ai.RemoveNode(Id, key);
     }
     public abstract void AdjustWithin(DeploymentAi ai, LogicWriteKey key);

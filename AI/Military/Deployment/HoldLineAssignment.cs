@@ -17,12 +17,12 @@ public class HoldLineAssignment : GroupAssignment
     {
         var id = ai.DeploymentTreeIds.TakeId(key.Data);
         var a = new HoldLineAssignment(
-            id, segId, regime, UnitGroupManager.Construct(regime, id),
+            id, segId, regime, new HashSet<ERef<UnitGroup>>(),
             new Dictionary<int, List<FrontFace<PolyCell>>>());
         return a;
     }
     [SerializationConstructor] private HoldLineAssignment(
-        int id, int parentId, ERef<Regime> regime, UnitGroupManager groups,
+        int id, int parentId, ERef<Regime> regime, HashSet<ERef<UnitGroup>> groups,
         Dictionary<int, List<FrontFace<PolyCell>>> facesByGroupId) 
         : base(parentId, id, regime, groups)
     {
@@ -56,19 +56,21 @@ public class HoldLineAssignment : GroupAssignment
         FacesByGroupId.Remove(g.Id);
     }
 
-    protected override void AddGroupToData(DeploymentAi ai,
+    protected override bool TryAddGroupToData(DeploymentAi ai,
         UnitGroup g, Data d)
     {
         var cell = g.GetCell(d);
         var seg = (FrontSegment)Parent(ai, d);
+        
         if (seg.Frontline.Faces.Any(f => f.Native == cell.Id) == false)
         {
             seg.Insert.AddGroup(ai, g, d);
-            return;
+            return false;
         }
         var face = seg.Frontline.Faces
             .First(f => f.Native == cell.Id);
         FacesByGroupId.Add(g.Id, new List<FrontFace<PolyCell>>{face});
+        return true;
     }
 
     public override float GetPowerPointNeed(Data d)
@@ -121,7 +123,7 @@ public class HoldLineAssignment : GroupAssignment
 
         if (de != null)
         {
-            Groups.Transfer(ai, de, transferTo, key);
+            Transfer(ai, de, transferTo, key);
             return true;
         }
 
@@ -227,7 +229,7 @@ public class HoldLineAssignment : GroupAssignment
             {
                 throw new Exception();
             }
-            Groups.Transfer(ai, group, seg.HoldLine, key);
+            Transfer(ai, group, seg.HoldLine, key);
         }
         FacesByGroupId.Clear();
     }

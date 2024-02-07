@@ -16,13 +16,13 @@ public class InsertionAssignment : GroupAssignment
         var id = ai.DeploymentTreeIds.TakeId(key.Data);
         var a = new InsertionAssignment(
             id,
-            parentId, regime, UnitGroupManager.Construct(regime, id),
+            parentId, regime, new HashSet<ERef<UnitGroup>>(),
             new Dictionary<ERef<UnitGroup>, FrontFace<PolyCell>>());
         return a;
     }
 
     [SerializationConstructor] private InsertionAssignment(
-        int id, int parentId, ERef<Regime> regime, UnitGroupManager groups,
+        int id, int parentId, ERef<Regime> regime, HashSet<ERef<UnitGroup>> groups,
         Dictionary<ERef<UnitGroup>, FrontFace<PolyCell>> insertions) 
             : base(parentId, id, regime, groups)
     {
@@ -89,7 +89,7 @@ public class InsertionAssignment : GroupAssignment
                     f.GetNative(key.Data).GetCenter()
                         .GetOffsetTo(groupCell.GetCenter(), key.Data).Length());
             }
-            Groups.Transfer(ai, group, seg.Insert, key);
+            Transfer(ai, group, seg.Insert, key);
         }
         Insertions.Clear();
     }
@@ -100,13 +100,14 @@ public class InsertionAssignment : GroupAssignment
         Insertions.Remove(g.MakeRef());
     }
 
-    protected override void AddGroupToData(DeploymentAi ai, UnitGroup g, Data d)
+    protected override bool TryAddGroupToData(DeploymentAi ai, UnitGroup g, Data d)
     {
         var seg = (FrontSegment)Parent(ai, d);
         FrontFace<PolyCell> close = seg.Frontline.Faces.MinBy(f => f.GetNative(d).GetCenter()
             .GetOffsetTo(g.GetCell(d).GetCenter(), d)
             .Length());
         Insertions[g.MakeRef()] = close;
+        return true;
     }
 
     public override float GetPowerPointNeed(Data d)
@@ -125,7 +126,7 @@ public class InsertionAssignment : GroupAssignment
     {
         if (Insertions.Count == 0) return false;
         var g = Insertions.First().Key.Entity(key.Data);
-        Groups.Transfer(ai, g, transferTo, key);
+        Transfer(ai, g, transferTo, key);
         return true;
 
     }
@@ -146,7 +147,7 @@ public class InsertionAssignment : GroupAssignment
             var destCell = destFace.GetNative(key.Data);
             if (group.GetCell(key.Data) == destCell)
             {
-                Groups.Transfer(ai, group, seg.HoldLine, key);
+                Transfer(ai, group, seg.HoldLine, key);
                 Insertions.Remove(kvp.Key);
             }
         }

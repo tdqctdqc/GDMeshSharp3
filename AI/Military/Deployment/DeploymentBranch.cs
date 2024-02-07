@@ -40,6 +40,7 @@ public abstract class DeploymentBranch
     public abstract bool PushGroup(DeploymentAi ai, GroupAssignment transferFrom, LogicWriteKey key);
     public abstract IEnumerable<IDeploymentNode> Children();
     public abstract void DissolveInto(DeploymentAi ai,
+        DeploymentTrunk parent,
         IEnumerable<DeploymentBranch> into, LogicWriteKey key);
 
     public void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
@@ -99,7 +100,7 @@ public abstract class DeploymentBranch
             panel.CreateLabelAsChild($"\t{c.GetType().Name}");
             if (c is GroupAssignment g)
             {
-                panel.CreateLabelAsChild($"\t\tGroups: {g.Groups.Groups.Count}");
+                panel.CreateLabelAsChild($"\t\tGroups: {g.Groups.Count}");
             }
         }
 

@@ -48,7 +48,7 @@ public static class Blobber
             theaters,
             t => t.GetCells(d).OfType<LandCell>(),
             wp => wp.GetNeighbors(d).OfType<LandCell>(),
-            (t, ts) => t.DissolveInto(ai, ts, key),
+            (t, ts) => t.DissolveInto(ai, ai.Root, ts, key),
             makeBlob
         );
 
@@ -78,7 +78,7 @@ public static class Blobber
             cells, fronts,
             t => t.GetCells(d),
             wp => wp.GetNeighbors(d),
-            (f,fs) => f.DissolveInto(ai, fs, key),
+            (f,fs) => f.DissolveInto(ai, theater, fs, key),
             makeBlob
         );
 

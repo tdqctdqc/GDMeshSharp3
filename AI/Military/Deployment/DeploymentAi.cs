@@ -56,7 +56,7 @@ public class DeploymentAi
         _nodesById.Add(n.Id, n);
         if (n is GroupAssignment ga)
         {
-            foreach (var g in ga.Groups.Groups)
+            foreach (var g in ga.Groups)
             {
                 GroupAssignments.Add(g, ga);
             }
@@ -75,7 +75,7 @@ public class DeploymentAi
         }
         if (node is GroupAssignment ga)
         {
-            foreach (var g in ga.Groups.Groups)
+            foreach (var g in ga.Groups)
             {
                 GroupAssignments.Remove(g);
             }

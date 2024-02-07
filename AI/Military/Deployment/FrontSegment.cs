@@ -59,6 +59,7 @@ public class FrontSegment : DeploymentBranch
     }
 
     public override void DissolveInto(DeploymentAi ai,
+        DeploymentTrunk parent,
         IEnumerable<DeploymentBranch> into,
         LogicWriteKey key)
     {
