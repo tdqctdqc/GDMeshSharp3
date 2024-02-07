@@ -5,10 +5,9 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-[MessagePack.Union(0, typeof(Front))]
+[MessagePack.Union(0, typeof(DeploymentRoot))]
 [MessagePack.Union(1, typeof(Theater))]
 [MessagePack.Union(2, typeof(FrontSegment))]
-[MessagePack.Union(3, typeof(DeploymentRoot))]
 public abstract class DeploymentBranch 
     : IPolymorph, IDeploymentNode
 {
@@ -89,6 +88,15 @@ public abstract class DeploymentBranch
         return cs.OfType<GroupAssignment>()
             .Union(cs.OfType<DeploymentBranch>()
                 .SelectMany(c => c.GetAssignments()));
+    }
+
+    public IEnumerable<T> GetChildrenOfType<T>()
+        where T : IDeploymentNode
+    {
+        var cs = Children();
+        return cs.OfType<T>()
+            .Union(cs.OfType<DeploymentBranch>()
+                .SelectMany(c => c.GetChildrenOfType<T>()));
     }
 
     public Control GetGraphic(Data d)

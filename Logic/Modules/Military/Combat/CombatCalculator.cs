@@ -13,7 +13,6 @@ public class CombatCalculator
         Suppressed = new HashSet<Unit>();
         key.Data.HostLogicData.CombatGraphIds.Reset();
         SetupGraph(key);
-        
         Graph.CalculateCombat(key.Data);
         Graph.EnactDirectResults(key);
         Graph.EnactInvoluntaryResults(key);

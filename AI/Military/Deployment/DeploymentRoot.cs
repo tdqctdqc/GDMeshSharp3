@@ -31,15 +31,24 @@ public class DeploymentRoot : DeploymentTrunk
     
     public void MakeTheaters(DeploymentAi ai, LogicWriteKey key)
     {
-        var theaters = Branches.OfType<Theater>().ToArray();
-        var newTheaters = theaters.Blob(
-            ai, Regime.Entity(key.Data), key);
-        foreach (var theater in theaters)
-        {
-            theater.Disband(ai, key);
-        } 
+        var oldTheaters = Branches.OfType<Theater>().ToArray();
+        var oldTheaterCells = oldTheaters.SelectMany(t => t.GetCells(key.Data)).ToHashSet();
+        var unclaimedCells = key.Data.Planet.PolygonAux
+            .PolyCells.Cells.Values
+            .OfType<LandCell>()
+            .Where(c => c.Controller.RefId == Regime.RefId)
+            .Except(oldTheaterCells).ToArray();
+        var unions = UnionFind.Find(unclaimedCells,
+            (p, q) => true, p => p.GetNeighbors(key.Data));
+
+        var newTheaters = unions.Select(u =>
+            Theater.Construct(ai, Regime.Entity(key.Data),
+                u.ToHashSet(), key));
+            
         foreach (var theater in newTheaters)
         {
+            ai.AddNode(theater);
+            theater.SetParent(ai, ai.Root, key);
             theater.MakeFronts(ai, key);
         }
     }
@@ -54,13 +63,12 @@ public class DeploymentRoot : DeploymentTrunk
         var taken = GetAssignments()
             .SelectMany(a => a.Groups)
             .ToHashSet();
-        
        
         foreach (var g in groups)
         {
             if (taken.Contains(g.MakeRef()) == false)
             {
-                Reserve.AddUnassigned(ai, g, key.Data);
+                Reserve.AddGroup(ai, g, key.Data);
             }
         }
     }

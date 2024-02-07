@@ -444,4 +444,13 @@ public static class Vector2Ext
         }
         return (w, v);
     }
+
+    public static float SignedProjectionLength(this Vector2 v, Vector2 onto)
+    {
+        if (v == onto) return 0f;
+        var proj = v.Project(onto);
+        if (proj.Normalized() == onto.Normalized()) return proj.Length();
+        else if (proj.Normalized() == -onto.Normalized()) return -proj.Length();
+        throw new Exception();
+    }
 }

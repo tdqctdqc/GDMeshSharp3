@@ -8,6 +8,11 @@ using MessagePack;
 
 public class FrontSegment : DeploymentBranch
 {
+    public static float CoverOpposingWeight {get; private set;} = .5f;
+    public static float CoverLengthWeight {get; private set;} = 1f;
+    public static float DesiredOpposingPpRatio {get; private set;} = 2f;
+    public static float PowerPointsPerCellFaceToCover {get; private set;} = 100f;
+
     public static int IdealSegmentLength = 5;
     public Frontline Frontline { get; private set; }
     public HoldLineAssignment HoldLine { get; private set; }
@@ -83,8 +88,8 @@ public class FrontSegment : DeploymentBranch
         var opposing = GetOpposingPowerPoints(data);
         var length = GetLength(data);
 
-        var oppNeed = opposing * Front.DesiredOpposingPpRatio;
-        var lengthNeed = length * Front.PowerPointsPerCellFaceToCover;
+        var oppNeed = opposing * DesiredOpposingPpRatio;
+        var lengthNeed = length * PowerPointsPerCellFaceToCover;
 
         return Mathf.Max(oppNeed, lengthNeed);
     }

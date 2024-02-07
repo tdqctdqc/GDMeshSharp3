@@ -29,10 +29,7 @@ public abstract class GroupAssignment : IDeploymentNode
         RemoveGroupFromData(ai, g);
     }
     protected abstract void RemoveGroupFromData(DeploymentAi ai, UnitGroup g);
-    public void AddUnassigned(DeploymentAi ai, UnitGroup g, Data d)
-    {
-        AddGroup(ai, g, d);
-    }
+    
     public void AddGroup(DeploymentAi ai, UnitGroup g, Data d)
     {
         var added = TryAddGroupToData(ai, g, d);

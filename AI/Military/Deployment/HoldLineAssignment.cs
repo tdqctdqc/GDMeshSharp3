@@ -156,8 +156,8 @@ public class HoldLineAssignment : GroupAssignment
         var totalEnemyCost = seg.Frontline
             .Faces.Sum(f => GetFaceEnemyCost(alliance, f, d));
         var totalLengthCost = seg.Frontline.Faces.Count;
-        var enemyCostWeight = Front.CoverOpposingWeight;
-        var lengthCostWeight = Front.CoverLengthWeight;
+        var enemyCostWeight = FrontSegment.CoverOpposingWeight;
+        var lengthCostWeight = FrontSegment.CoverLengthWeight;
         return seg.Frontline.Faces
             .ToDictionary(f => f,
                 f =>

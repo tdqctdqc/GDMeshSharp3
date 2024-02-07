@@ -5,16 +5,6 @@ using Godot;
 
 public static class MeshBuilderExt
 {
-    public static void DrawFront(this MeshBuilder mb,
-        Vector2 relTo, Front front, Data d)
-    {
-        foreach (var c in front.GetCells(d))
-        {
-            mb.DrawPolygon(c.RelBoundary.Select(p => relTo.GetOffsetTo(p + c.RelTo, d)).ToArray(),
-                new Color(front.Color, .5f));
-        }
-    }
-
     public static void DrawCellPath(this MeshBuilder mb,
         Vector2 relTo, List<PolyCell> path,
         Color color, float thickness, Data d)

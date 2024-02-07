@@ -127,6 +127,14 @@ public struct FrontFace
         
         return res;
     }
+
+    public Vector2 GetMid(Data d)
+    {
+        var n = this.GetNative(d);
+        var f = this.GetForeign(d);
+        return (n.GetCenter() + n.GetCenter().GetOffsetTo(f.GetCenter(), d) / 2f).ClampPosition(d);
+
+    }
 }
 
 public static class FrontFaceExt

@@ -71,8 +71,7 @@ public class StrategicMode : UiMode
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var relTo = regime.GetPolys(_client.Data).First().Center;
         var theaters = ai.Military.Deployment.Root.Branches.OfType<Theater>();
-        var fronts = theaters.SelectMany(t => t.Branches.OfType<Front>());
-        var segs = fronts.SelectMany(f => f.Branches.OfType<FrontSegment>());
+        var segs = theaters.SelectMany(t => t.Branches.OfType<FrontSegment>());
 
         foreach (var c in ai.Military
                 .Deployment.Root.Children().OfType<DeploymentBranch>())

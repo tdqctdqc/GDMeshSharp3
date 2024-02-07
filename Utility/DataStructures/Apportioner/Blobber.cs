@@ -42,7 +42,8 @@ public static class Blobber
     {
         var d = key.Data;
         var cells = d.Planet.PolygonAux.PolyCells.Cells.Values
-            .OfType<LandCell>().Where(c => c.Controller.RefId == regime.Id);
+            .OfType<LandCell>()
+            .Where(c => c.Controller.RefId == regime.Id);
         return Blob(
             cells, 
             theaters,
@@ -60,34 +61,6 @@ public static class Blobber
             t.SetParent(ai, ai.Root, key);
             ai.AddNode(t);
             return t;
-        }
-    }
-    public static IEnumerable<Front>
-        Blob(this IEnumerable<Front> fronts, 
-            DeploymentAi ai,
-            Theater theater,
-            LogicWriteKey key)
-    {
-        var d = key.Data;
-        var regime = theater.Regime.Entity(d);
-        var alliance = regime.GetAlliance(d);
-
-        var cells = theater.GetCells(d)
-            .Where(c => c.GetNeighbors(d).Any(n => n.RivalControlled(alliance, d)));
-        return Blob(
-            cells, fronts,
-            t => t.GetCells(d),
-            wp => wp.GetNeighbors(d),
-            (f,fs) => f.DissolveInto(ai, theater, fs, key),
-            makeBlob
-        );
-
-        Front makeBlob(IEnumerable<PolyCell> wps)
-        {
-            var f = Front.Construct(ai, regime, wps, key);
-            ai.AddNode(f);
-            f.SetParent(ai, theater, key);
-            return f;
         }
     }
 }
