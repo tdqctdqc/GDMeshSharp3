@@ -103,6 +103,7 @@ public class DebugScratchMode : UiMode
         
         highlighter.Draw(mb =>
             mb.DrawPolygon(cell.RelBoundary, Colors.Red), cell.RelTo);
+        
         var cells = _client.Data.GetAll<PolyCells>()
             .First().Cells;
         
@@ -113,6 +114,14 @@ public class DebugScratchMode : UiMode
             highlighter.Draw(mb =>
                 mb.DrawPolygon(nCell.RelBoundary, 
                     col), nCell.RelTo);
+        }
+        highlighter.Label(cell.Id.ToString(),
+            Colors.White, cell.GetCenter(), .2f);
+        foreach (var nId in cell.Neighbors)
+        {
+            var nCell = cells[nId];
+            highlighter.Label(nCell.Id.ToString(),
+                Colors.White, nCell.GetCenter(), .2f);
         }
     }
     public override void Clear()

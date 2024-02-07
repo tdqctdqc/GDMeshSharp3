@@ -17,7 +17,7 @@ public class FrontSegment : DeploymentBranch
     public static FrontSegment Construct(
         DeploymentAi ai,
         ERef<Regime> r,
-        List<FrontFace<PolyCell>> frontLine,
+        List<FrontFace> frontLine,
         bool attack,
         LogicWriteKey key)
     {

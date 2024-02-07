@@ -39,10 +39,12 @@ public class MapOverlayDrawer
         mb.Return();
     }
 
-    public void Label(string text, Color color, Vector2 pos)
+    public void Label(string text, Color color, Vector2 pos,
+        float scale = 1f)
     {
         var label = NodeExt.CreateLabel(text);
         label.Modulate = color;
+        label.Scale = Vector2.One * scale;
         var node = new Node2D();
         node.AddChild(label);
         AddNode(node, pos);

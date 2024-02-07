@@ -3,22 +3,22 @@ using System.Linq;
 
 public class Frontline
 {
-    public List<FrontFace<PolyCell>> Faces { get; private set; }
-    public Frontline(List<FrontFace<PolyCell>> faces)
+    public List<FrontFace> Faces { get; private set; }
+    public Frontline(List<FrontFace> faces)
     {
         Faces = faces;
     }
 
     public bool CheckReunite(
-        List<List<FrontFace<PolyCell>>> frontLines,
-        HashSet<FrontFace<PolyCell>> frontFaces,
-        HashSet<FrontFace<PolyCell>> otherSegFaces,
+        List<List<FrontFace>> frontLines,
+        HashSet<FrontFace> frontFaces,
+        HashSet<FrontFace> otherSegFaces,
         LogicWriteKey key,
-        out List<List<FrontFace<PolyCell>>> res)
+        out List<List<FrontFace>> res)
     {
         var valid = Faces
             .Where(frontFaces.Contains).ToHashSet();
-        var resInner = new List<List<FrontFace<PolyCell>>>();
+        var resInner = new List<List<FrontFace>>();
         for (var i = 0; i < frontLines.Count; i++)
         {
             var line = frontLines[i];

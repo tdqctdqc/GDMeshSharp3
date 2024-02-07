@@ -79,13 +79,13 @@ public class Front : DeploymentTrunk
         var lengthNeed = length * PowerPointsPerCellFaceToCover;
         return Mathf.Max(oppNeed, lengthNeed);
     }
-    public List<List<FrontFace<PolyCell>>> 
+    public List<List<FrontFace>> 
         GetLines(Data d)
     {
         var alliance = Regime.Entity(d).GetAlliance(d);
-        var cells = GetCells(d);
-        var lines = FrontFinder.FindPolyCellFront(
-                cells, alliance, d);
+        var cells = GetCells(d).ToHashSet();
+        var lines = FrontFinder.FindFront(
+                cells, d);
         if (lines.Any(l => l.Count == 0))
         {
             throw new Exception();

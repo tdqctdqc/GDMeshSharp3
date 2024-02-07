@@ -8,7 +8,7 @@ using MessagePack;
 
 public class HoldLineAssignment : GroupAssignment
 {
-    public Dictionary<int, List<FrontFace<PolyCell>>> FacesByGroupId { get; private set; }
+    public Dictionary<int, List<FrontFace>> FacesByGroupId { get; private set; }
     public static HoldLineAssignment Construct(
         DeploymentAi ai,
         int segId,
@@ -18,12 +18,12 @@ public class HoldLineAssignment : GroupAssignment
         var id = ai.DeploymentTreeIds.TakeId(key.Data);
         var a = new HoldLineAssignment(
             id, segId, regime, new HashSet<ERef<UnitGroup>>(),
-            new Dictionary<int, List<FrontFace<PolyCell>>>());
+            new Dictionary<int, List<FrontFace>>());
         return a;
     }
     [SerializationConstructor] private HoldLineAssignment(
         int id, int parentId, ERef<Regime> regime, HashSet<ERef<UnitGroup>> groups,
-        Dictionary<int, List<FrontFace<PolyCell>>> facesByGroupId) 
+        Dictionary<int, List<FrontFace>> facesByGroupId) 
         : base(parentId, id, regime, groups)
     {
         FacesByGroupId = facesByGroupId;
@@ -69,7 +69,7 @@ public class HoldLineAssignment : GroupAssignment
         }
         var face = seg.Frontline.Faces
             .First(f => f.Native == cell.Id);
-        FacesByGroupId.Add(g.Id, new List<FrontFace<PolyCell>>{face});
+        FacesByGroupId.Add(g.Id, new List<FrontFace>{face});
         return true;
     }
 
@@ -91,7 +91,7 @@ public class HoldLineAssignment : GroupAssignment
         var faceCosts = GetFaceCosts(seg, d);
         
         var assgns =
-            Assigner.PickInOrderAndAssignAlongFaces<UnitGroup, FrontFace<PolyCell>>(
+            Assigner.PickInOrderAndAssignAlongFaces<UnitGroup, FrontFace>(
                 seg.Frontline.Faces,
                 lineGroups.ToList(),
                 g => g.GetPowerPoints(d),
@@ -148,10 +148,10 @@ public class HoldLineAssignment : GroupAssignment
         }
     }
 
-    private Dictionary<FrontFace<PolyCell>, float> GetFaceCosts(FrontSegment seg, 
+    private Dictionary<FrontFace, float> GetFaceCosts(FrontSegment seg, 
         Data d)
     {
-        if (seg.Frontline.Faces.Count == 0) return new Dictionary<FrontFace<PolyCell>, float>();
+        if (seg.Frontline.Faces.Count == 0) return new Dictionary<FrontFace, float>();
         var alliance = seg.Regime.Entity(d).GetAlliance(d);
         var totalEnemyCost = seg.Frontline
             .Faces.Sum(f => GetFaceEnemyCost(alliance, f, d));
@@ -182,7 +182,7 @@ public class HoldLineAssignment : GroupAssignment
                 });
     }
     private float GetFaceEnemyCost(Alliance alliance, 
-        FrontFace<PolyCell> f, Data d)
+        FrontFace f, Data d)
     {
         var foreignCell = PlanetDomainExt.GetPolyCell(f.Foreign, d);
         if (foreignCell.Controller.RefId == -1)
@@ -216,7 +216,7 @@ public class HoldLineAssignment : GroupAssignment
                 continue;
             }
             if (seg.HoldLine == this) throw new Exception();
-            var newFaces = new List<List<FrontFace<PolyCell>>>();
+            var newFaces = new List<List<FrontFace>>();
             seg.Frontline.Faces.DoForRuns(
                 groupFaces.Contains,
                 r => newFaces.Add(r));

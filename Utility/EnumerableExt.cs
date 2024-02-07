@@ -69,56 +69,8 @@ public static class EnumerableExt
         return res;
     }
 
-    public static HashSet<T> GetSingles<T>(this IEnumerable<T> ts)
-    {
-        var singles = new HashSet<T>();
-        foreach (var t in ts)
-        {
-            _ = singles.Contains(t) ? singles.Remove(t) : singles.Add(t);
-        }
-        return singles;
-    }
 
 
-    public static void DoForGridNeighbors<T>(this T[][] array, Func<T, T, bool> action,
-        bool skipCenter = true)
-    {
-        bool cont = true;
-        var width = array[0].Length;
-        var height = array.Length;
-
-        for (int h = 0; h < height; h++)
-        {
-            for (int g = 0; g < width; g++)
-            {
-                act(g, h);
-            }
-        }
-        
-        void act(int g, int h)
-        {
-            var el = array[h][g];
-            for (int i = -1; i < 2; i++)
-            {
-                for (int j = -1; j < 2; j++)
-                {
-                    if (g + i < 0 || h + j < 0 || g + i >= width || h + j >= height) continue;
-                    if (skipCenter && i == 0 && j == 0) continue;
-                    var el2 = array[h + j][g + i];
-                    cont = action(el, el2);
-                    if (cont == false)
-                    {
-                        break;
-                    }
-                }
-                if (cont == false)
-                {
-                    break;
-                }
-            }
-        }
-        
-    }
     public static void DoForGridAround(this Func<int, int, bool> action, int x, int y, 
         bool skipCenter = true)
     {
@@ -143,31 +95,6 @@ public static class EnumerableExt
     }
 
     
-
-    public static T FindNext<T>(this List<T> list, Func<T, bool> pred, int from)
-    {
-        for (var i = 1; i < list.Count; i++)
-        {
-            var t = list.Modulo(i + from);
-            if (pred(t)) return t;
-        }
-
-        throw new Exception();
-    }
-    public static T Next<T>(this List<T> list, int i)
-    {
-        return list[(i + 1) % list.Count];
-    }
-    public static T Prev<T>(this List<T> list, int i)
-    {
-        return list[(i - 1 + list.Count) % list.Count];
-    }
-
-    public static T FromEnd<T>(this IReadOnlyList<T> list, int i)
-    {
-        return list[(list.Count * 2 - 1 - i) % list.Count];
-    }
-
     public static T Modulo<T>(this IList<T> list, int i)
     {
         while (i < 0) i += list.Count;
@@ -189,15 +116,6 @@ public static class EnumerableExt
         }
     }
 
-    public static int IndexOf<T>(this IReadOnlyList<T> list, T el)
-    {
-        for (var i = 0; i < list.Count; i++)
-        {
-            if (list[i].Equals(el)) return i;
-        }
-
-        return -1;
-    }
 
     public static Dictionary<T, int> GetCounts<T>(this IEnumerable<T> elements)
     {
@@ -208,22 +126,7 @@ public static class EnumerableExt
         }
         return res;
     }
-
-    public static List<List<T>> Partition<T>(this List<T> en, int numChunks)
-    {
-        if (numChunks > en.Count) throw new Exception("too many chunks");
-        var chunkSize = Mathf.FloorToInt((float)en.Count / numChunks);
-        var res = new List<List<T>>();
-        int index = 0;
-        for (var i = 0; i < numChunks - 1; i++)
-        {
-            res.Add(en.GetRange(index, chunkSize));
-            index += chunkSize;
-        }
-        res.Add(en.GetRange(index, en.Count - chunkSize * (numChunks - 1)));
-        if (res.Sum(r => r.Count) != en.Count) throw new Exception();
-        return res;
-    }
+    
     public static void DoForRuns<T>(this List<T> list,
         Func<T, bool> valid,
         Action<List<T>> handleRun)
@@ -234,7 +137,7 @@ public static class EnumerableExt
             var val = list[i];
             if (valid(val) == false)
             {
-                handle(goodStartIndex, i);
+                handle(goodStartIndex, i - 1);
                 goodStartIndex = -1;
             }
             else
@@ -256,5 +159,89 @@ public static class EnumerableExt
             if (from == -1) return;
             handleRun(list.GetRange(from, to - from + 1));
         }
+    }
+    
+    public static void DoForRunIndices<T>(this List<T> list,
+        Func<T, bool> valid,
+        Action<Vector2I> handleRun)
+    {
+        var goodStartIndex = -1;
+        for (var i = 0; i < list.Count; i++)
+        {
+            var val = list[i];
+            if (valid(val) == false)
+            {
+                handle(goodStartIndex, i - 1);
+                goodStartIndex = -1;
+            }
+            else
+            {
+                if (goodStartIndex == -1)
+                {
+                    goodStartIndex = i;
+                }
+            }
+
+            if (i == list.Count - 1)
+            {
+                handle(goodStartIndex, i);
+            }
+        }
+
+        void handle(int from, int to)
+        {
+            if (from == -1) return;
+            handleRun(new Vector2I(from, to));
+        }
+    }
+
+    public static Vector2I GetProportionIndicesOfList<T>(this List<T> list, 
+        float startRatio, float endRatio)
+    {
+        if (list.Count == 0) return -Vector2I.One;
+        if (endRatio > 1f) throw new Exception();
+        var startIndex = startRatio * list.Count;
+        startIndex = Mathf.FloorToInt(startIndex);
+        var endIndex = endRatio * list.Count - 1;
+        endIndex = Mathf.FloorToInt(endIndex);
+        if (endIndex < startIndex) return -Vector2I.One;
+        if (startIndex < 0 || startIndex >= list.Count
+                           || endIndex < 0 || endIndex >= list.Count)
+        {
+            throw new Exception($"Bad split, count {list.Count}" +
+                                $"start {startIndex} end {endIndex}");
+        }
+
+        return new Vector2I((int)startIndex, (int)endIndex);
+    }
+    
+    
+    
+    public static List<T> GetFrontLeftToRight<T>(this T t, 
+        Func<T, bool> hasLeft, 
+        Func<T, T> getLeft,
+        Func<T, bool> hasRight, 
+        Func<T, T> getRight,
+        Func<T, bool> valid)
+    {
+        var res = new List<T>();
+        var furthestLeft = t;
+        while (hasLeft(furthestLeft))
+        {
+            var nextLeft = getLeft(furthestLeft);
+            if (nextLeft.Equals(t) || valid(nextLeft) == false) break;
+            furthestLeft = nextLeft;
+        }
+        res.Add(furthestLeft);
+        var curr = furthestLeft;
+        while (hasRight(curr))
+        {
+            var nextRight = getRight(curr);
+            if (nextRight.Equals(furthestLeft) || valid(nextRight) == false) break;
+            res.Add(nextRight);
+            curr = nextRight;
+        }
+        
+        return res;
     }
 }

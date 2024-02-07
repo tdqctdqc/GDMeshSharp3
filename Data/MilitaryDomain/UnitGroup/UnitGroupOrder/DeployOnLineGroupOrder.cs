@@ -6,9 +6,9 @@ using Godot;
 
 public class DeployOnLineGroupOrder : UnitGroupOrder
 {
-    public List<FrontFace<PolyCell>> Faces { get; private set; }
+    public List<FrontFace> Faces { get; private set; }
     public bool Attack { get; private set; }
-    public DeployOnLineGroupOrder(List<FrontFace<PolyCell>> faces,
+    public DeployOnLineGroupOrder(List<FrontFace> faces,
         bool attack)
     {
         Faces = faces;
@@ -34,12 +34,12 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         }
     }
 
-    private Dictionary<Unit, FrontFace<PolyCell>> GetAssignments(UnitGroup g, Data d)
+    private Dictionary<Unit, FrontFace> GetAssignments(UnitGroup g, Data d)
     {
         var units = g.Units.Items(d);
         var alliance = g.Regime.Entity(d).GetAlliance(d);
         return Assigner
-            .PickBestAndAssignAlongFacesSingle<Unit, FrontFace<PolyCell>>
+            .PickBestAndAssignAlongFacesSingle<Unit, FrontFace>
             (
                 Faces,
                 units,

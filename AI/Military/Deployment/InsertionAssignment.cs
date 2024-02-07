@@ -7,7 +7,7 @@ using MessagePack;
 
 public class InsertionAssignment : GroupAssignment
 {
-    public Dictionary<ERef<UnitGroup>, FrontFace<PolyCell>> Insertions { get; private set; }
+    public Dictionary<ERef<UnitGroup>, FrontFace> Insertions { get; private set; }
     public static InsertionAssignment Construct(
         DeploymentAi ai,
         int parentId,
@@ -17,19 +17,19 @@ public class InsertionAssignment : GroupAssignment
         var a = new InsertionAssignment(
             id,
             parentId, regime, new HashSet<ERef<UnitGroup>>(),
-            new Dictionary<ERef<UnitGroup>, FrontFace<PolyCell>>());
+            new Dictionary<ERef<UnitGroup>, FrontFace>());
         return a;
     }
 
     [SerializationConstructor] private InsertionAssignment(
         int id, int parentId, ERef<Regime> regime, HashSet<ERef<UnitGroup>> groups,
-        Dictionary<ERef<UnitGroup>, FrontFace<PolyCell>> insertions) 
+        Dictionary<ERef<UnitGroup>, FrontFace> insertions) 
             : base(parentId, id, regime, groups)
     {
         Insertions = insertions;
     }
 
-    private Dictionary<Vector2I, FrontFace<PolyCell>> 
+    private Dictionary<Vector2I, FrontFace> 
         GetInsertionCellsByGroupIds(FrontSegment seg, 
             Data d)
     {
@@ -38,7 +38,7 @@ public class InsertionAssignment : GroupAssignment
             .Select(g => g.Id)
             .ToList();
         if (lineGroupIds.Count == 0) return null;
-        var insertionCellsByGroupIds = new Dictionary<Vector2I, FrontFace<PolyCell>>();
+        var insertionCellsByGroupIds = new Dictionary<Vector2I, FrontFace>();
         insertionCellsByGroupIds.Add(new Vector2I(-1, 
                 lineGroupIds.First()),
             seg.Frontline.Faces.First());
@@ -103,7 +103,7 @@ public class InsertionAssignment : GroupAssignment
     protected override bool TryAddGroupToData(DeploymentAi ai, UnitGroup g, Data d)
     {
         var seg = (FrontSegment)Parent(ai, d);
-        FrontFace<PolyCell> close = seg.Frontline.Faces.MinBy(f => f.GetNative(d).GetCenter()
+        FrontFace close = seg.Frontline.Faces.MinBy(f => f.GetNative(d).GetCenter()
             .GetOffsetTo(g.GetCell(d).GetCenter(), d)
             .Length());
         Insertions[g.MakeRef()] = close;
@@ -164,7 +164,7 @@ public class InsertionAssignment : GroupAssignment
     private void ValidateInsertionPoint(
         ERef<UnitGroup> groupRef,
         FrontSegment seg, 
-        Dictionary<Vector2I, FrontFace<PolyCell>> insertionCellsByGroupIds,
+        Dictionary<Vector2I, FrontFace> insertionCellsByGroupIds,
         Data d)
     {
         var group = groupRef.Entity(d);
