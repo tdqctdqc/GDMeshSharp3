@@ -14,6 +14,8 @@ public interface IDeploymentNode : IIdentifiable
     void AdjustWithin(DeploymentAi ai, LogicWriteKey key);
     void Disband(DeploymentAi ai, LogicWriteKey key);
     bool PullGroup(DeploymentAi ai, GroupAssignment transferTo, LogicWriteKey key);
+    void DissolveInto(DeploymentAi ai, DeploymentBranch into,
+        LogicWriteKey key);
     PolyCell GetCharacteristicCell(Data d);
 }
 

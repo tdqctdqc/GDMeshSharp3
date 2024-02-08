@@ -40,10 +40,29 @@ public class Theater : DeploymentTrunk
 
     public void MakeFronts(DeploymentAi ai, LogicWriteKey key)
     {
-        var frontlines = FrontFinder.FindFront(GetCells(key.Data).ToHashSet(),
-            key.Data);
+        var alliance = Regime.Entity(key.Data).GetAlliance(key.Data);
+        var oldFrontSegs = GetChildrenOfType<FrontSegment>()
+            .ToArray();
+        foreach (var oldFrontSeg in oldFrontSegs)
+        {
+            oldFrontSeg.Correct(ai, this, key);
+        }
+        
+        var coveredFaces = GetChildrenOfType<FrontSegment>()
+            .SelectMany(f => f.Frontline.Faces)
+            .ToHashSet();
+
+        var frontlines = FrontFinder
+            .FindFront(GetCells(key.Data).ToHashSet(),
+                p =>
+                {
+                    if (p.Controller.IsEmpty()) return false;
+                    var pAlliance = p.Controller.Entity(key.Data).GetAlliance(key.Data);
+                    return alliance.IsRivals(pAlliance, key.Data);
+                }, key.Data);
         foreach (var front in frontlines)
         {
+            if (coveredFaces.Contains(front[0])) continue;
             var frontSegment = FrontSegment.Construct(ai, Regime,
                 front, false, key);
             ai.AddNode(frontSegment);
@@ -60,53 +79,6 @@ public class Theater : DeploymentTrunk
     public override PolyCell GetCharacteristicCell(Data d)
     {
         return GetCells(d).First();
-    }
-
-    public override void DissolveInto(DeploymentAi ai, 
-        DeploymentTrunk parent, IEnumerable<DeploymentBranch> intos, LogicWriteKey key)
-    {
-        if (intos == null) throw new Exception();
-        if (intos.Any(t => t is null)) throw new Exception();
-        if (intos.Count() == 0)
-        {
-            throw new Exception();
-        }
-        var theaters = intos.OfType<Theater>();
-        var allTheaterCells = theaters.SelectMany(t => t.GetCells(key.Data)).ToHashSet();
-        
-        foreach (var assgn in Branches.ToArray())
-        {
-            var wp = assgn.GetCharacteristicCell(key.Data);
-            if (wp == null)
-            {
-                throw new Exception("no characteristic cell for " + assgn.GetType().Name);
-            }
-            var theater = theaters.FirstOrDefault(t => t.HeldCellIds.Contains(wp.Id));
-            if (theater == null)
-            {
-                FloodFill<PolyCell>.FloodTilFirst(
-                    wp,
-                    c => c.Landform.Model(key.Data).IsLand,
-                    c => c.GetNeighbors(key.Data),
-                    c =>
-                    {
-                        if (allTheaterCells.Contains(c) == false) return false;
-                        var t = theaters.First(t => t.HeldCellIds.Contains(c.Id));
-                        theater = t;
-                        return true;
-                    });
-            }
-
-            if (theater != null)
-            {
-                assgn.SetParent(ai, theater, key);
-            }
-            else
-            {
-                // throw new Exception("theater destroyed");
-                assgn.Disband(ai, key);
-            }
-        }
     }
 
     public override Vector2 GetMapPosForDisplay(Data d)

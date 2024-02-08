@@ -20,7 +20,9 @@ public class ChangePolyCellControllerProcedure : Procedure
     {
         var cell = PlanetDomainExt.GetPolyCell(CellId, key.Data);
         var newController = key.Data.Get<Regime>(NewControllerRegimeId);
+        var oldController = cell.Controller.IsEmpty() ? null : cell.Controller.Entity(key.Data);
         cell.SetController(newController, key);
+        key.Data.Notices.CellChangedController.Invoke((cell, oldController, newController));
     }
 
     public override bool Valid(Data data)

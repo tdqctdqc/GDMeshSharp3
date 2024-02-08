@@ -70,5 +70,15 @@ public abstract class GroupAssignment : IDeploymentNode
     public abstract void AdjustWithin(DeploymentAi ai, LogicWriteKey key);
     public abstract void GiveOrders(DeploymentAi ai, LogicWriteKey key);
     public abstract bool PullGroup(DeploymentAi ai, GroupAssignment transferTo, LogicWriteKey key);
+    public void DissolveInto(DeploymentAi ai, DeploymentBranch into, LogicWriteKey key)
+    {
+        var groups = Groups.ToArray();
+        for (var i = 0; i < groups.Length; i++)
+        {
+            Transfer(ai, groups[i].Entity(key.Data), 
+                into.Reserve, key);
+        }
+    }
+
     public abstract PolyCell GetCharacteristicCell(Data d);
 }

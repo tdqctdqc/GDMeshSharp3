@@ -35,32 +35,5 @@ public static class Blobber
         return newBlobs.Values;
     }
 
-    public static IEnumerable<Theater>
-        Blob(this IEnumerable<Theater> theaters, 
-            DeploymentAi ai,
-            Regime regime, LogicWriteKey key)
-    {
-        var d = key.Data;
-        var cells = d.Planet.PolygonAux.PolyCells.Cells.Values
-            .OfType<LandCell>()
-            .Where(c => c.Controller.RefId == regime.Id);
-        return Blob(
-            cells, 
-            theaters,
-            t => t.GetCells(d).OfType<LandCell>(),
-            wp => wp.GetNeighbors(d).OfType<LandCell>(),
-            (t, ts) => t.DissolveInto(ai, ai.Root, ts, key),
-            makeBlob
-        );
-
-        Theater makeBlob(IEnumerable<LandCell> wps)
-        {
-            var ai = key.Data.HostLogicData.RegimeAis[regime]
-                .Military.Deployment;
-            var t = Theater.Construct(ai, regime, wps, key);
-            t.SetParent(ai, ai.Root, key);
-            ai.AddNode(t);
-            return t;
-        }
-    }
+    
 }

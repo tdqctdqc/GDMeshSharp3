@@ -63,16 +63,51 @@ public class FrontSegment : DeploymentBranch
         Insert = insert;
     }
 
-    public override void DissolveInto(DeploymentAi ai,
+    public void Correct(DeploymentAi ai,
         DeploymentTrunk parent,
-        IEnumerable<DeploymentBranch> into,
         LogicWriteKey key)
     {
-        var newSegs = into.OfType<FrontSegment>();
-        HoldLine.DissolveInto(ai, newSegs, key);
-        Insert.DissolveInto(ai, newSegs, key);
-        Reserve.DissolveInto(ai, newSegs, key);
+        var alliance = ai.Regime.GetAlliance(key.Data);
+        var good = Frontline.Faces
+            .Where(f => f.GetNative(key.Data).Controller.RefId == ai.Regime.Id
+                        && alliance.IsRivals(f.GetForeign(key.Data).Controller.Entity(key.Data).GetAlliance(key.Data),
+                            key.Data)).ToHashSet();
+        if (good.Count == 0)
+        {
+            DissolveInto(ai, parent, key);
+            return;
+        }
+
+        var newFrontlines = new List<List<FrontFace>>();
+        
+        while (good.Count > 0)
+        {
+            var start = good.First();
+            var newFront = start
+                .GetFrontLeftToRight(good.Contains,
+                key.Data);
+            good.ExceptWith(newFront);
+            newFrontlines.Add(newFront);
+        }
+
+        if (newFrontlines.Count == 1)
+        {
+            Frontline.Faces.Clear();
+            Frontline.Faces.AddRange(newFrontlines[0]);
+            return;
+        }
+
+        var newSegs = newFrontlines
+            .Select(f => FrontSegment.Construct(ai, Regime, f, false, key))
+            .ToArray();
+
+        HoldLine.Distribute(ai, newSegs, key);
+        Insert.Distribute(ai, newSegs, key);
+        Reserve.Distribute(ai, newSegs, key);
+        
+        ai.RemoveNode(Id, key);
     }
+    
 
     public override Vector2 GetMapPosForDisplay(Data d)
     {

@@ -7,14 +7,15 @@ using MessagePack;
 
 public class DeploymentAi
 {
+    public Regime Regime { get; private set; }
     private Dictionary<int, IDeploymentNode> _nodesById;
     public Dictionary<ERef<UnitGroup>, GroupAssignment> GroupAssignments { get; private set; }
     public DeploymentRoot Root { get; private set; }
     public IdRecycler DeploymentTreeIds { get; private set; }
-
+    private Data _data;
     public static DeploymentAi Construct(Regime r, Data d)
     {
-        var ai = new DeploymentAi(new IdRecycler());
+        var ai = new DeploymentAi(r, new IdRecycler(), d);
         var root = DeploymentRoot.Construct(r, ai, d);
         ai.Root = root;
         ai.AddNode(root);
@@ -29,8 +30,11 @@ public class DeploymentAi
         });
         return ai;
     }
-    public DeploymentAi(IdRecycler deploymentTreeIds)
+    private DeploymentAi(Regime r, IdRecycler deploymentTreeIds, 
+        Data d)
     {
+        _data = d;
+        Regime = r;
         DeploymentTreeIds = deploymentTreeIds;
         _nodesById = new Dictionary<int, IDeploymentNode>();
         GroupAssignments = new Dictionary<ERef<UnitGroup>, GroupAssignment>();
@@ -82,4 +86,5 @@ public class DeploymentAi
         }
         _nodesById.Remove(id);
     }
+
 }

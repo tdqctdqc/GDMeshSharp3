@@ -85,6 +85,14 @@ public class HoldLineAssignment : GroupAssignment
     {
         var d = key.Data;
         var seg = (FrontSegment)Parent(ai, key.Data);
+        foreach (var g in Groups.ToArray())
+        {
+            var group = g.Entity(key.Data);
+            if (seg.Frontline.Faces.Any(f => group.GetCell(key.Data).Id == f.Native) == false)
+            {
+                Transfer(ai, group, seg.Insert, key);
+            }
+        }
         var lineGroups = GetGroupsInOrder(seg, d);
         if (lineGroups.Count() == 0) return;
         var alliance = seg.Regime.Entity(d).GetAlliance(d);
@@ -202,7 +210,7 @@ public class HoldLineAssignment : GroupAssignment
         return units.Sum(u => u.GetPowerPoints(d)) * mult;
     }
 
-    public void DissolveInto(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
+    public void Distribute(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
     {
         foreach (var kvp in FacesByGroupId.ToArray())
         {

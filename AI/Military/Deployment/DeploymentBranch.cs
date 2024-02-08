@@ -38,10 +38,6 @@ public abstract class DeploymentBranch
     public abstract bool PullGroup(DeploymentAi ai, GroupAssignment transferTo, LogicWriteKey key);
     public abstract bool PushGroup(DeploymentAi ai, GroupAssignment transferFrom, LogicWriteKey key);
     public abstract IEnumerable<IDeploymentNode> Children();
-    public abstract void DissolveInto(DeploymentAi ai,
-        DeploymentTrunk parent,
-        IEnumerable<DeploymentBranch> into, LogicWriteKey key);
-
     public void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
     {
         foreach (var c in Children())
@@ -116,4 +112,20 @@ public abstract class DeploymentBranch
     }
 
     public abstract Vector2 GetMapPosForDisplay(Data d);
+
+    public void DissolveInto(DeploymentAi ai, DeploymentBranch into,
+        LogicWriteKey key)
+    {
+        foreach (var c in Children())
+        {
+            c.DissolveInto(ai, into, key);
+        }
+        var reserves = Reserve.Groups.ToArray();
+        for (var i = 0; i < reserves.Length; i++)
+        {
+            Reserve.Transfer(ai, reserves[i].Entity(key.Data), 
+                into.Reserve, key);
+        }
+        ai.RemoveNode(Id, key);
+    }
 }

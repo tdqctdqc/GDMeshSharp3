@@ -16,14 +16,15 @@ public class FrontlineMemo
         var first = frontSegment.Frontline.Faces.First();
         var last = frontSegment.Frontline.Faces.Last();
         var firstMid = first.GetMid(d);
-        var axis = firstMid.GetOffsetTo(last.GetMid(d), d);
+        var lastMid = last.GetMid(d);
+        var axis = firstMid.GetOffsetTo(lastMid, d);
         ReserveGroups = frontSegment.Reserve.Groups
             .Select(g => g.Entity(d))
-            .OrderBy(g => firstMid.GetOffsetTo(g.GetPosition(d), d).SignedProjectionLength(axis))
+            .OrderBy(g => firstMid.GetOffsetTo(g.GetPosition(d), d).Length() - lastMid.GetOffsetTo(g.GetPosition(d), d).Length())
             .ToList();
         InsertGroups = frontSegment.Insert.Groups
             .Select(g => g.Entity(d))
-            .OrderBy(g => firstMid.GetOffsetTo(g.GetPosition(d), d).SignedProjectionLength(axis))
+            .OrderBy(g => firstMid.GetOffsetTo(g.GetPosition(d), d).Length() - lastMid.GetOffsetTo(g.GetPosition(d), d).Length())
             .ToList();
         LineGroups = frontSegment.HoldLine.GetGroupsInOrder(frontSegment, d);
     }

@@ -70,7 +70,7 @@ public class InsertionAssignment : GroupAssignment
             key.SendMessage(new SetUnitOrderProcedure(group.MakeRef(), order));
         }
     }
-    public void DissolveInto(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
+    public void Distribute(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
     {
         foreach (var kvp in Insertions)
         {

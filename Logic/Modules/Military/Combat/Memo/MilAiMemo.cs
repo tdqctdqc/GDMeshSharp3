@@ -114,7 +114,7 @@ public class MilAiMemo
                 });
             if (thisFlFragments.Count == 0)
             {
-                //handle deletion 
+                Frontlines.Remove(frontline);
                 continue;
             }
             var totalFragsLength = thisFlFragments.Sum(fl => fl.GetLength());
@@ -168,10 +168,10 @@ public class MilAiMemo
         {
             var fragment = fragments.First();
             var newFront = fragment.GetFrontLeftToRight(
-                f => f.GetFirst().Left != null 
+                f => f.GetFirst().Left != -1 
                     && lasts.ContainsKey(f.GetFirst().GetLeftNeighbor(d)),
                 f => lasts[f.GetFirst().GetLeftNeighbor(d)],
-                f => f.GetLast().Right != null &&
+                f => f.GetLast().Right != -1 &&
                     firsts.ContainsKey(f.GetLast().GetRightNeighbor(d)),
                 f => firsts[f.GetLast().GetRightNeighbor(d)],
                 f => true);

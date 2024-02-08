@@ -49,6 +49,11 @@ public class DeploymentRoot : DeploymentTrunk
         {
             ai.AddNode(theater);
             theater.SetParent(ai, ai.Root, key);
+        }
+
+        var theaters = ai.Root.GetChildrenOfType<Theater>();
+        foreach (var theater in theaters)
+        {
             theater.MakeFronts(ai, key);
         }
     }
@@ -92,10 +97,6 @@ public class DeploymentRoot : DeploymentTrunk
     public override bool PushGroup(DeploymentAi ai, GroupAssignment transferFrom, LogicWriteKey key)
     {
         return false;
-    }
-    public override void DissolveInto(DeploymentAi ai, DeploymentTrunk parent, IEnumerable<DeploymentBranch> into, LogicWriteKey key)
-    {
-        throw new Exception();
     }
 
     public override Vector2 GetMapPosForDisplay(Data d)

@@ -7,15 +7,12 @@ using Godot;
 public static class FrontFinder
 {
     public static List<List<FrontFace>> FindFront(
-        HashSet<PolyCell> natives, Data d)
+        HashSet<PolyCell> natives, 
+        Func<PolyCell, bool> isForeign,
+        Data d)
     {
         var res = new List<List<FrontFace>>();
         var native = natives.First();
-        bool isForeign(PolyCell c)
-        {
-            return c.Controller.RefId != -1
-                && c.Controller.RefId != native.Controller.RefId;
-        }
         var oppositions = natives.SelectMany(e =>
         {
             return e.GetNeighbors(d)

@@ -100,7 +100,7 @@ public class ReserveAssignment : GroupAssignment
             return siblings.MinBy(v => v.Item2);
         }
     }
-    public void DissolveInto(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
+    public void Distribute(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
     {
         foreach (var gRef in Groups.ToArray())
         {
