@@ -75,21 +75,16 @@ public class StrategicMode : UiMode
         if (root != null)
         {
             var theaters = root.SubBranches.OfType<Theater>();
-            var segs = theaters.SelectMany(t => t.SubBranches.OfType<FrontSegment>());
+            var segs = theaters
+                .SelectMany(t => t.SubBranches.OfType<FrontSegment>());
 
-            foreach (var c in root.Children().OfType<DeploymentBranch>())
+            foreach (var c in root.SubBranches)
             {
                 drawBranch(c);
             }
             foreach (var seg in segs)
             {
                 debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
-                foreach (var (groupId, faces) in seg.HoldLine.FacesByGroupId)
-                {
-                    var group = _client.Data.Get<UnitGroup>(groupId);
-                    var centerFace = faces[faces.Count / 2];
-                    debug.Label(groupId.ToString(), group.Color, centerFace.GetNative(_client.Data).GetCenter());
-                }
             }
         }
         
@@ -101,7 +96,7 @@ public class StrategicMode : UiMode
             node.AddChild(graphic);
             var pos = branch.GetMapPosForDisplay(_client.Data);
             debug.AddNode(node, pos);
-            foreach (var child in branch.Children().OfType<DeploymentBranch>())
+            foreach (var child in branch.SubBranches)
             {
                 var childPos = drawBranch(child);
                 debug.Draw(mb => mb.AddLine(Vector2.Zero,

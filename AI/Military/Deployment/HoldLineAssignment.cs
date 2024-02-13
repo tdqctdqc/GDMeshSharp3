@@ -109,6 +109,19 @@ public class HoldLineAssignment : GroupAssignment
         }
     }
 
+    public Dictionary<UnitGroup, List<FrontFace>> 
+        GetLineAssignments(Data d)
+    {
+        var seg = (FrontSegment)Parent;
+
+        var inOrder = GetGroupsInOrder(seg, d);
+        var faceCosts = GetFaceCosts(seg, d);
+        var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
+            seg.Frontline.Faces, inOrder, u => u.GetPowerPoints(d),
+            f => faceCosts[f]);
+        return lineOrders.ToDictionary(kvp => kvp.Key,
+            kvp => seg.Frontline.Faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1));
+    }
     private Dictionary<FrontFace, float> GetFaceCosts(FrontSegment seg, 
         Data d)
     {

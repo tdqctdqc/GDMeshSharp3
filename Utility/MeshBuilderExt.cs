@@ -48,10 +48,10 @@ public static class MeshBuilderExt
         {
             }
 
-        foreach (var kvp in seg.HoldLine.FacesByGroupId)
+        foreach (var kvp in seg.HoldLine.GetLineAssignments(d))
         {
             var line = kvp.Value;
-            var group = d.Get<UnitGroup>(kvp.Key);
+            var group = kvp.Key;
             for (var i = 0; i < line.Count; i++)
             {
                 var face = seg.Frontline.Faces[i];
@@ -71,16 +71,6 @@ public static class MeshBuilderExt
                     relTo.GetOffsetTo(b.GetCenter(), d),
                     group.Color, markerSize / 2f);
             }
-        }
-        
-        foreach (var kvp in seg.Insert.Insertions)
-        {
-            var insertingGroup = kvp.Key.Entity(d);
-            var native = kvp.Value.GetNative(d);
-            var foreign = kvp.Value.GetForeign(d);
-            var offset = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);
-            var nativePos = relTo.GetOffsetTo(native.GetCenter(), d);
-            mb.AddArrow(nativePos - offset, nativePos, 10f, insertingGroup.Color);
         }
     }
 
