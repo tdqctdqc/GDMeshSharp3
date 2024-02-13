@@ -5,55 +5,26 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class DeploymentRoot : DeploymentTrunk
+public class DeploymentRoot : DeploymentBranch
 {
-    public static DeploymentRoot Construct(Regime r, DeploymentAi ai,
-        Data d)
-    {
-        var id = ai.DeploymentTreeIds.TakeId(d);
-        var reserve = ReserveAssignment.Construct(ai, id, 
-            r.MakeRef(), d);
-        var v = new DeploymentRoot(
-            new HashSet<DeploymentBranch>(),
-            r.MakeRef(), 
-            reserve,
-            id);
-        return v;
-    }
-    [SerializationConstructor] private DeploymentRoot(
-        HashSet<DeploymentBranch> branches,
-        ERef<Regime> regime, 
-        ReserveAssignment reserve, 
-        int id) 
-        : base(branches, regime, id, -1, reserve)
+    public DeploymentRoot(DeploymentAi ai,
+        LogicWriteKey key) : base(ai, key)
     {
     }
     
     public void MakeTheaters(DeploymentAi ai, LogicWriteKey key)
     {
-        var oldTheaters = Branches.OfType<Theater>().ToArray();
-        var oldTheaterCells = oldTheaters.SelectMany(t => t.GetCells(key.Data)).ToHashSet();
-        var unclaimedCells = key.Data.Planet.PolygonAux
+        var cells = key.Data.Planet.PolygonAux
             .PolyCells.Cells.Values
-            .OfType<LandCell>()
             .Where(c => c.Controller.RefId == Regime.RefId)
-            .Except(oldTheaterCells).ToArray();
-        var unions = UnionFind.Find(unclaimedCells,
+            .ToArray();
+        var unions = UnionFind.Find(cells,
             (p, q) => true, p => p.GetNeighbors(key.Data));
-
         var newTheaters = unions.Select(u =>
-            Theater.Construct(ai, Regime.Entity(key.Data),
-                u.ToHashSet(), key));
-            
+            new Theater(ai, u.ToHashSet(), key));
         foreach (var theater in newTheaters)
         {
-            ai.AddNode(theater);
-            theater.SetParent(ai, ai.Root, key);
-        }
-
-        var theaters = ai.Root.GetChildrenOfType<Theater>();
-        foreach (var theater in theaters)
-        {
+            SubBranches.Add(theater);
             theater.MakeFronts(ai, key);
         }
     }
@@ -62,7 +33,6 @@ public class DeploymentRoot : DeploymentTrunk
     {
         var ai = key.Data.HostLogicData.RegimeAis[Regime.Entity(key.Data)]
             .Military.Deployment;
-        
         
         var groups = key.Data.Military.UnitAux.UnitGroupByRegime[Regime.Entity(key.Data)];
         var taken = GetAssignments()
@@ -73,7 +43,7 @@ public class DeploymentRoot : DeploymentTrunk
         {
             if (taken.Contains(g.MakeRef()) == false)
             {
-                Reserve.AddGroup(ai, g, key.Data);
+                Shuffle.Groups.Add(g);
             }
         }
     }
@@ -88,16 +58,6 @@ public class DeploymentRoot : DeploymentTrunk
         throw new Exception();
     }
     
-    public override bool PullGroup(DeploymentAi ai, GroupAssignment transferTo,
-        LogicWriteKey key)
-    {
-        return false;
-    }
-
-    public override bool PushGroup(DeploymentAi ai, GroupAssignment transferFrom, LogicWriteKey key)
-    {
-        return false;
-    }
 
     public override Vector2 GetMapPosForDisplay(Data d)
     {

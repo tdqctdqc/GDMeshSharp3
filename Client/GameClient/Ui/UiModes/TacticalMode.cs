@@ -53,17 +53,22 @@ public class TacticalMode : UiMode
         if (ready == false) return;
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var deployment = ai.Military.Deployment;
-        foreach (var theater in deployment.Root.Branches.OfType<Theater>())
+        var root = deployment.GetRoot();
+        if (root != null)
         {
-            foreach (var seg in theater.Branches.OfType<FrontSegment>())
+            foreach (var theater in root.SubBranches.OfType<Theater>())
             {
-                var center = seg.GetCells(_client.Data).First().GetCenter();
-                debugDrawer.Draw(mb => mb.DrawFrontSegment(
-                    center,
-                    seg, _client.Data
+                foreach (var seg in theater.SubBranches.OfType<FrontSegment>())
+                {
+                    var center = seg.GetCells(_client.Data).First().GetCenter();
+                    debugDrawer.Draw(mb => mb.DrawFrontSegment(
+                        center,
+                        seg, _client.Data
                     ), center);
+                }
             }
         }
+        
     }
 
     private void Tooltip(Vector2 mapPos)

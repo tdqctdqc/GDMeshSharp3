@@ -5,53 +5,21 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class Theater : DeploymentTrunk
+public class Theater : DeploymentBranch
 {
     public HashSet<int> HeldCellIds { get; private set; }
 
-    public static Theater Construct(
+    public Theater (
         DeploymentAi ai,
-        Regime r, 
         IEnumerable<PolyCell> cells,
-        LogicWriteKey key)
+        LogicWriteKey key) : base(ai, key)
     {
-        var id = ai.DeploymentTreeIds.TakeId(key.Data);
-        var reserve = ReserveAssignment.Construct(ai, id, r.MakeRef(), key.Data);
-        var t = new Theater(
-            id,
-            -1,
-            r.MakeRef(), 
-            new HashSet<DeploymentBranch>(),
-            cells.Select(c => c.Id).ToHashSet(),
-            reserve
-        );
-        return t;
-    }
-    [SerializationConstructor] private Theater(
-        int id, 
-        int parentId,
-        ERef<Regime> regime, 
-        HashSet<DeploymentBranch> branches,
-        HashSet<int> heldCellIds, ReserveAssignment reserve) 
-        : base(branches, regime, id, parentId, reserve)
-    {
-        HeldCellIds = heldCellIds;
+        HeldCellIds = cells.Select(c => c.Id).ToHashSet();
     }
 
     public void MakeFronts(DeploymentAi ai, LogicWriteKey key)
     {
         var alliance = Regime.Entity(key.Data).GetAlliance(key.Data);
-        var oldFrontSegs = GetChildrenOfType<FrontSegment>()
-            .ToArray();
-        foreach (var oldFrontSeg in oldFrontSegs)
-        {
-            oldFrontSeg.Correct(ai, this, key);
-        }
-        
-        var coveredFaces = GetChildrenOfType<FrontSegment>()
-            .SelectMany(f => f.Frontline.Faces)
-            .ToHashSet();
-
         var frontlines = FrontFinder
             .FindFront(GetCells(key.Data).ToHashSet(),
                 p =>
@@ -62,11 +30,8 @@ public class Theater : DeploymentTrunk
                 }, key.Data);
         foreach (var front in frontlines)
         {
-            if (coveredFaces.Contains(front[0])) continue;
-            var frontSegment = FrontSegment.Construct(ai, Regime,
-                front, false, key);
-            ai.AddNode(frontSegment);
-            frontSegment.SetParent(ai, this, key);
+            var frontSegment = new FrontSegment(ai, front, false, key);
+            SubBranches.Add(frontSegment);
         }
     }
     
@@ -75,7 +40,13 @@ public class Theater : DeploymentTrunk
     {
         return HeldCellIds.Select(id => PlanetDomainExt.GetPolyCell(id, d));
     }
-    
+
+    public override float GetPowerPointNeed(Data d)
+    {
+        return SubBranches.Sum(s => s.GetPowerPointNeed(d))
+               + Assignments.Sum(s => s.GetPowerPointNeed(d));
+    }
+
     public override PolyCell GetCharacteristicCell(Data d)
     {
         return GetCells(d).First();

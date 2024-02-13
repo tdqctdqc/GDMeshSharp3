@@ -8,147 +8,100 @@ using MessagePack;
 
 public class HoldLineAssignment : GroupAssignment
 {
-    public Dictionary<int, List<FrontFace>> FacesByGroupId { get; private set; }
-    public static HoldLineAssignment Construct(
+    public HashSet<int> LineGroups { get; private set; }
+    public HashSet<int> InsertingGroups { get; private set; }
+    public HoldLineAssignment(
         DeploymentAi ai,
-        int segId,
-        ERef<Regime> regime, 
-        LogicWriteKey key)
+        FrontSegment parent,
+        LogicWriteKey key) : base(parent, ai, key)
     {
-        var id = ai.DeploymentTreeIds.TakeId(key.Data);
-        var a = new HoldLineAssignment(
-            id, segId, regime, new HashSet<ERef<UnitGroup>>(),
-            new Dictionary<int, List<FrontFace>>());
-        return a;
+        LineGroups = new HashSet<int>();
+        InsertingGroups = new HashSet<int>();
     }
-    [SerializationConstructor] private HoldLineAssignment(
-        int id, int parentId, ERef<Regime> regime, HashSet<ERef<UnitGroup>> groups,
-        Dictionary<int, List<FrontFace>> facesByGroupId) 
-        : base(parentId, id, regime, groups)
-    {
-        FacesByGroupId = facesByGroupId;
-    }
-
-    public List<UnitGroup> GetGroupsInOrder(FrontSegment seg, Data d)
-    {
-        var list = FacesByGroupId
-            .Select(v => d.Get<UnitGroup>(v.Key))
-            .ToList();
-        list.Sort((g, f) =>
-        {
-            var boundsG = FacesByGroupId[g.Id];
-            var gFirst = seg.Frontline.Faces.IndexOf(boundsG.First());
-            var gLast = seg.Frontline.Faces.IndexOf(boundsG.Last());
-            var boundsF = FacesByGroupId[f.Id];
-            var fFirst = seg.Frontline.Faces.IndexOf(boundsF.First());
-            var fLast = seg.Frontline.Faces.IndexOf(boundsF.Last());
-            if (gFirst < fFirst) return -1;
-            if (fFirst < gFirst) return 1;
-            if (gLast < fLast) return -1;
-            if (fLast < gLast) return 1;
-            return 0;
-        });
-        return list;
-    }
+    
 
     protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
     {
-        FacesByGroupId.Remove(g.Id);
+        LineGroups.Remove(g.Id);
+        InsertingGroups.Remove(g.Id);
     }
 
-    protected override bool TryAddGroupToData(DeploymentAi ai,
+    protected override void AddGroupToData(DeploymentAi ai,
         UnitGroup g, Data d)
     {
         var cell = g.GetCell(d);
-        var seg = (FrontSegment)Parent(ai, d);
+        var seg = (FrontSegment)Parent;
         
-        if (seg.Frontline.Faces.Any(f => f.Native == cell.Id) == false)
+        if (seg.Frontline.Faces.Any(f => f.Native == cell.Id)
+            == false)
         {
-            seg.Insert.AddGroup(ai, g, d);
-            return false;
+            InsertingGroups.Add(g.Id);
+            return;
         }
-        var face = seg.Frontline.Faces
-            .First(f => f.Native == cell.Id);
-        FacesByGroupId.Add(g.Id, new List<FrontFace>{face});
-        return true;
+        LineGroups.Add(g.Id);
     }
 
     public override float GetPowerPointNeed(Data d)
     {
         var ai = d.HostLogicData.RegimeAis[Regime.Entity(d)]
             .Military.Deployment;
-        var seg = (FrontSegment)Parent(ai, d);
+        var seg = (FrontSegment)Parent;
         return seg.GetPowerPointNeed(d);
     }
-
-    public override void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
-    {
-        var d = key.Data;
-        var seg = (FrontSegment)Parent(ai, key.Data);
-        foreach (var g in Groups.ToArray())
-        {
-            var group = g.Entity(key.Data);
-            if (seg.Frontline.Faces.Any(f => group.GetCell(key.Data).Id == f.Native) == false)
-            {
-                Transfer(ai, group, seg.Insert, key);
-            }
-        }
-        var lineGroups = GetGroupsInOrder(seg, d);
-        if (lineGroups.Count() == 0) return;
-        var alliance = seg.Regime.Entity(d).GetAlliance(d);
-        var faceCosts = GetFaceCosts(seg, d);
-        
-        var assgns =
-            Assigner.PickInOrderAndAssignAlongFaces<UnitGroup, FrontFace>(
-                seg.Frontline.Faces,
-                lineGroups.ToList(),
-                g => g.GetPowerPoints(d),
-                f => faceCosts[f]
-            );
-        foreach (var (unitGroup, faces) in assgns)
-        {
-            var first = faces.X;
-            var last = faces.Y;
-            if (first > last) throw new Exception();
-            FacesByGroupId[unitGroup.Id] = seg.Frontline.Faces.GetRange(first, last - first + 1);
-        }
-    }
-
-
-    public override bool PullGroup(DeploymentAi ai, GroupAssignment transferTo,
+    public override UnitGroup PullGroup(DeploymentAi ai, 
         LogicWriteKey key)
     {
-        var seg = (FrontSegment)Parent(ai, key.Data);
-        var lineGroups = FacesByGroupId
-            .Select(kvp => key.Data.Get<UnitGroup>(kvp.Key));
-        var numUnits = lineGroups.Sum(g => g.Units.Count());
-        var smallest = lineGroups.MinBy(g => g.Units.Count());
-        UnitGroup de = null;
-        if (numUnits - smallest.Units.Count() >= seg.Frontline.Faces.Count)
+        if (InsertingGroups.Count > 0)
         {
-            de = smallest;
+            var gId = InsertingGroups.First();
+            var group = key.Data.Get<UnitGroup>(gId);
+            Groups.Remove(group.MakeRef());
+            InsertingGroups.Remove(gId);
+            return group;
+        }
+        else if (LineGroups.Count > 0)
+        {
+            var gId = LineGroups.First();
+            var group = key.Data.Get<UnitGroup>(gId);
+            Groups.Remove(group.MakeRef());
+            LineGroups.Remove(gId);
+            return group;
         }
 
-        if (de != null)
-        {
-            Transfer(ai, de, transferTo, key);
-            return true;
-        }
-
-        return false;
+        return null;
     }
+
     public override PolyCell GetCharacteristicCell(Data d)
     {
-        return FacesByGroupId.First().Value.First().GetNative(d);
+        return ((FrontSegment)Parent).Frontline.Faces.First().GetNative(d);
     }
 
-    public override void GiveOrders(DeploymentAi ai, LogicWriteKey key)
+    public override void GiveOrders(DeploymentAi ai, 
+        LogicWriteKey key)
     {
-        foreach (var kvp in FacesByGroupId)
+        var seg = (FrontSegment)Parent;
+
+        foreach (var gId in InsertingGroups)
         {
-            var group = key.Data.Get<UnitGroup>(kvp.Key);
-            var bounds = kvp.Value;
-            var order = new DeployOnLineGroupOrder(bounds.ToList(), false);
+            var group = key.Data.Get<UnitGroup>(gId);
+            var cell = group.GetCell(key.Data);
+            var closest = seg.Frontline.Faces
+                .MinBy(f => f.GetNative(key.Data).GetCenter().GetOffsetTo(cell.GetCenter(), key.Data).Length());
+            var order = GoToCellGroupOrder.Construct(closest.GetNative(key.Data), Regime.Entity(key.Data),
+                group, key.Data);
+            key.SendMessage(new SetUnitOrderProcedure(group.MakeRef(), order));
+        }
+
+        var inOrder = GetGroupsInOrder(seg, key.Data);
+        var faceCosts = GetFaceCosts(seg, key.Data);
+        var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
+            seg.Frontline.Faces, inOrder, u => u.GetPowerPoints(key.Data),
+            f => faceCosts[f]);
+        
+        foreach (var (group, bounds) in lineOrders)
+        {
+            var groupFaces = seg.Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
+            var order = new DeployOnLineGroupOrder(groupFaces, false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
                 order);
@@ -210,35 +163,38 @@ public class HoldLineAssignment : GroupAssignment
         return units.Sum(u => u.GetPowerPoints(d)) * mult;
     }
 
-    public void Distribute(DeploymentAi ai, IEnumerable<FrontSegment> segs, LogicWriteKey key)
+    
+    public List<UnitGroup> GetGroupsInOrder(FrontSegment seg, Data d)
     {
-        foreach (var kvp in FacesByGroupId.ToArray())
+        var list = LineGroups
+            .Select(id => d.Get<UnitGroup>(id))
+            .ToList();
+        list.Sort((g, f) =>
         {
-            var groupId = kvp.Key;
-            var group = key.Data.Get<UnitGroup>(groupId);
-            var groupFaces = kvp.Value;
-            var seg = segs
-                .FirstOrDefault(s => s.Frontline.Faces.Intersect(groupFaces).Count() > 0);
-            if (seg == null)
-            {
-                continue;
-            }
-            if (seg.HoldLine == this) throw new Exception();
-            var newFaces = new List<List<FrontFace>>();
-            seg.Frontline.Faces.DoForRuns(
-                groupFaces.Contains,
-                r => newFaces.Add(r));
-            if (newFaces.Count == 0)
-            {
-                continue;
-            }
+            var boundsG = g.Units.Items(d)
+                .Select(u => u.Position.GetCell(d)).ToHashSet();
+            var gFirst = seg.Frontline.Faces
+                .FindIndex(f => boundsG.Contains(f.GetNative(d)));
+            var gLast = seg.Frontline.Faces
+                .FindLastIndex(f => boundsG.Contains(f.GetNative(d)));
 
-            if (seg.HoldLine == this)
+            var boundsF = f.Units.Items(d)
+                .Select(u => u.Position.GetCell(d));
+            var fFirst = seg.Frontline.Faces
+                .FindIndex(f => boundsF.Contains(f.GetNative(d)));
+            var fLast = seg.Frontline.Faces
+                .FindLastIndex(f => boundsF.Contains(f.GetNative(d)));
+
+            if (gFirst == -1 || gLast == -1 || fFirst == -1 || fLast == -1)
             {
                 throw new Exception();
             }
-            Transfer(ai, group, seg.HoldLine, key);
-        }
-        FacesByGroupId.Clear();
+            if (gFirst < fFirst) return -1;
+            if (fFirst < gFirst) return 1;
+            if (gLast < fLast) return -1;
+            if (fLast < gLast) return 1;
+            return 0;
+        });
+        return list;
     }
 }

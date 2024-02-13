@@ -17,13 +17,21 @@ public class TheaterGraphicLayer : GraphicLayer<Theater, TheaterGraphic>
         {
             Remove(theater, data);
         }
-        var theaters = data.HostLogicData.RegimeAis.Dic.Values
-            .SelectMany(rAi => rAi.Military.Deployment.Root.Branches.OfType<Theater>());
-        
-        foreach (var theater in theaters)
-        {   
-            Add(theater, data);
+        foreach (var ai in data.HostLogicData
+                     .RegimeAis.Dic.Values)
+        {
+            var root = ai.Military.Deployment.GetRoot();
+            if (root != null)
+            {
+                var theaters = root.SubBranches.OfType<Theater>();
+                foreach (var theater in theaters)
+                {   
+                    Add(theater, data);
+                }
+            }
         }
+        
+        
     }
     protected override TheaterGraphic GetGraphic(Theater key, Data d)
     {

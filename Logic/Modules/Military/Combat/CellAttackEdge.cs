@@ -148,13 +148,10 @@ public class CellAttackEdge : ICombatGraphEdge
         
         var victoriousRegime = victoriousAllianceUnits.Value.SortInto(u => u.Regime.Entity(key.Data))
             .MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data))).Key;
-        GD.Print($"Advance by {victoriousRegime.Name} at cell {Target.Id}");
-        var changeController = ChangePolyCellControllerProcedure.Construct(Target, victoriousRegime);
+        // GD.Print($"Advance by {victoriousRegime.Name} at cell {Target.Id}");
+        var changeController = ChangePolyCellControllerProcedure
+            .Construct(Target, victoriousRegime);
         key.SendMessage(changeController);
-        if (NoDefenders)
-        {
-            GD.Print("flipped control of no defenders at " + Target.Id);
-        }
         foreach (var unit in victoriousAllianceUnits.Value)
         {
             var newPosProc = MoveUnitProcedure.Construct(unit, new MapPos(Target.Id, (-1, 0f)));

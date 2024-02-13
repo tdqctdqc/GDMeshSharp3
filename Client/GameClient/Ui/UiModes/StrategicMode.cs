@@ -70,14 +70,29 @@ public class StrategicMode : UiMode
         var alliance = regime.GetAlliance(_client.Data);
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var relTo = regime.GetPolys(_client.Data).First().Center;
-        var theaters = ai.Military.Deployment.Root.Branches.OfType<Theater>();
-        var segs = theaters.SelectMany(t => t.Branches.OfType<FrontSegment>());
-
-        foreach (var c in ai.Military
-                .Deployment.Root.Children().OfType<DeploymentBranch>())
+        
+        var root = ai.Military.Deployment.GetRoot();
+        if (root != null)
         {
-            drawBranch(c);
+            var theaters = root.SubBranches.OfType<Theater>();
+            var segs = theaters.SelectMany(t => t.SubBranches.OfType<FrontSegment>());
+
+            foreach (var c in root.Children().OfType<DeploymentBranch>())
+            {
+                drawBranch(c);
+            }
+            foreach (var seg in segs)
+            {
+                debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
+                foreach (var (groupId, faces) in seg.HoldLine.FacesByGroupId)
+                {
+                    var group = _client.Data.Get<UnitGroup>(groupId);
+                    var centerFace = faces[faces.Count / 2];
+                    debug.Label(groupId.ToString(), group.Color, centerFace.GetNative(_client.Data).GetCenter());
+                }
+            }
         }
+        
         
         Vector2 drawBranch(DeploymentBranch branch)
         {
@@ -101,16 +116,7 @@ public class StrategicMode : UiMode
         // {
         //     debug.Draw(mb => mb.DrawFront(relTo, front, _client.Data), relTo);
         // }
-        foreach (var seg in segs)
-        {
-            debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
-            foreach (var (groupId, faces) in seg.HoldLine.FacesByGroupId)
-            {
-                var group = _client.Data.Get<UnitGroup>(groupId);
-                var centerFace = faces[faces.Count / 2];
-                debug.Label(groupId.ToString(), group.Color, centerFace.GetNative(_client.Data).GetCenter());
-            }
-        }
+        
     }
 
     private void DrawRegimeLineOrders(Regime regime)
