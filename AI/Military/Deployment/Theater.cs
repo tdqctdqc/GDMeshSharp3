@@ -31,7 +31,7 @@ public class Theater : DeploymentBranch
         foreach (var front in frontlines)
         {
             var frontSegment = new FrontSegment(ai, front, false, key);
-            SubBranches.Add(frontSegment);
+            SubBranches.Add(frontSegment);  
         }
     }
     
@@ -39,12 +39,6 @@ public class Theater : DeploymentBranch
     public IEnumerable<PolyCell> GetCells(Data d)
     {
         return HeldCellIds.Select(id => PlanetDomainExt.GetPolyCell(id, d));
-    }
-
-    public override float GetPowerPointNeed(Data d)
-    {
-        return SubBranches.Sum(s => s.GetPowerPointNeed(d))
-               + Assignments.Sum(s => s.GetPowerPointNeed(d));
     }
 
     public override PolyCell GetCharacteristicCell(Data d)

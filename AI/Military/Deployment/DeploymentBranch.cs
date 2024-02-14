@@ -28,7 +28,12 @@ public abstract class DeploymentBranch
         return Assignments.Sum(a => a.GetPowerPointsAssigned(data))
             + SubBranches.Sum(c => c.GetPowerPointsAssigned(data));
     }
-    public abstract float GetPowerPointNeed(Data d);
+
+    public float GetPowerPointNeed(Data d)
+    {
+        return SubBranches.Sum(s => s.GetPowerPointNeed(d))
+               + Assignments.Sum(a => a.GetPowerPointNeed(d));
+    }
     public abstract PolyCell GetCharacteristicCell(Data d);
 
     public UnitGroup PullGroup(DeploymentAi ai, LogicWriteKey key)
@@ -50,44 +55,63 @@ public abstract class DeploymentBranch
         var child = SubBranches
                     .Union<IDeploymentNode>(Assignments)
                     .MinBy(c => c.GetSatisfiedRatio(key.Data));
+        if (child == null)
+        {
+            throw new Exception("no children " + this.GetType());
+        }
         child.PushGroup(ai, g, key);
-    }
-    public void AdjustWithin(DeploymentAi ai, LogicWriteKey key)
-    {
-        
     }
     public void GiveOrders(DeploymentAi ai, LogicWriteKey key)
     {
-        
+        foreach (var ga in Assignments)
+        {
+            ga.GiveOrders(ai, key);
+        }
+
+        foreach (var d in SubBranches)
+        {
+            d.GiveOrders(ai, key);
+        }
     }
     public void ShiftGroups(DeploymentAi ai, LogicWriteKey key)
     {
         var data = key.Data;
-        var eligibleToTakeFrom = SubBranches
+        var children = SubBranches
             .Union<IDeploymentNode>(Assignments)
             .ToHashSet();
-        
-
+        var eligibleToTakeFrom = children.ToHashSet();
+        var eligibleToGiveTo = children
+            .Where(c => c.GetPowerPointNeed(data) > 0f).ToHashSet();
         var iter = 0;
-        var maxIter = SubBranches.Count * 2 + Assignments.Count();
-        var max = maxSatisfied();
-        var min = minSatisfied();
+        var shuffleCount = Assignments.OfType<UnoccupiedAssignment>()
+            .FirstOrDefault() is UnoccupiedAssignment uo
+            ? uo.Groups.Count
+            : 0;
+        var maxIter = (SubBranches.Count
+                       + Assignments.Count) * 2 + shuffleCount;
+        
         while (iter < maxIter
                && eligibleToTakeFrom.Count > 0
-               && max.ratio > min.ratio * 1.5f)
+               && eligibleToGiveTo.Count > 0)
         {
+            var max = maxSatisfied();
+            var min = minSatisfied();
+            if (max.node == null
+                || min.node == null
+                || max.ratio < min.ratio * 1.5f)
+            {
+                break;
+            }
             var g = max.node.PullGroup(ai, key);
             if (g != null)
             {
-                min.fa.PushGroup(ai, g, key);
+                min.node.PushGroup(ai, g, key);
             }
             else
             {
                 eligibleToTakeFrom.Remove(max.node);
             }
             
-            max = maxSatisfied();
-            min = minSatisfied();
             iter++;
         }
         
@@ -102,9 +126,10 @@ public abstract class DeploymentBranch
             return (max.GetSatisfiedRatio(data), max);
         }
         
-        (float ratio, IDeploymentNode fa) minSatisfied()
+        (float ratio, IDeploymentNode node) minSatisfied()
         {
-            var min = SubBranches.MinBy(fa => fa.GetSatisfiedRatio(data));
+            var min = eligibleToGiveTo
+                .MinBy(fa => fa.GetSatisfiedRatio(data));
             return (min.GetSatisfiedRatio(data), min);
         }
     }
@@ -134,6 +159,9 @@ public abstract class DeploymentBranch
             {
                 panel.CreateLabelAsChild($"\t\tGroups: {g.Groups.Count}");
             }
+            panel.CreateLabelAsChild($"\aAssigned {c.GetPowerPointsAssigned(d)}");
+            panel.CreateLabelAsChild($"\tNeeded {c.GetPowerPointNeed(d)}");
+
         }
 
         return panel;

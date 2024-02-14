@@ -46,7 +46,15 @@ public class HoldLineAssignment : GroupAssignment
         var ai = d.HostLogicData.RegimeAis[Regime.Entity(d)]
             .Military.Deployment;
         var seg = (FrontSegment)Parent;
-        return seg.GetPowerPointNeed(d);
+        
+        
+        var opposing = seg.GetOpposingPowerPoints(d);
+        var length = seg.GetLength(d);
+
+        var oppNeed = opposing * FrontSegment.DesiredOpposingPpRatio;
+        var lengthNeed = length * FrontSegment.PowerPointsPerCellFaceToCover;
+
+        return Mathf.Max(oppNeed, lengthNeed);
     }
     public override UnitGroup PullGroup(DeploymentAi ai, 
         LogicWriteKey key)
@@ -92,7 +100,7 @@ public class HoldLineAssignment : GroupAssignment
             key.SendMessage(new SetUnitOrderProcedure(group.MakeRef(), order));
         }
 
-        var inOrder = GetGroupsInOrder(seg, key.Data);
+        var inOrder = GetLineGroupsInOrder(seg, key.Data);
         var faceCosts = GetFaceCosts(seg, key.Data);
         var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
             seg.Frontline.Faces, inOrder, u => u.GetPowerPoints(key.Data),
@@ -114,7 +122,7 @@ public class HoldLineAssignment : GroupAssignment
     {
         var seg = (FrontSegment)Parent;
 
-        var inOrder = GetGroupsInOrder(seg, d);
+        var inOrder = GetLineGroupsInOrder(seg, d);
         var faceCosts = GetFaceCosts(seg, d);
         var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
             seg.Frontline.Faces, inOrder, u => u.GetPowerPoints(d),
@@ -177,7 +185,7 @@ public class HoldLineAssignment : GroupAssignment
     }
 
     
-    public List<UnitGroup> GetGroupsInOrder(FrontSegment seg, Data d)
+    public List<UnitGroup> GetLineGroupsInOrder(FrontSegment seg, Data d)
     {
         var list = LineGroups
             .Select(id => d.Get<UnitGroup>(id))

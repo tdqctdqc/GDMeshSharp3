@@ -72,8 +72,6 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         var alliance = group.Regime.Entity(d).GetAlliance(d);
         var assgns = GetAssignments(group, d);
 
-
-
         var natives = Faces.Select(f => f.GetNative(d)).Distinct();
         var foreigns = Faces.Select(f => f.GetForeign(d)).Distinct();
         foreach (var n in natives)
@@ -85,31 +83,6 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         {
             mb.DrawPolygon(n.RelBoundary.Select(p => relTo.GetOffsetTo(p + n.RelTo, d)).ToArray(),
                 new Color(Colors.Red, .5f));
-        }
-        
-        for (var i = 0; i < Faces.Count; i++)
-        {
-            var face = Faces[i];
-            var native = face.GetNative(d);
-            var foreign = face.GetForeign(d);
-            // var close = native.RelBoundary
-            //     .OrderBy(p =>
-            //     {
-            //         var minDist = Mathf.Inf;
-            //         for (var j = 0; j < foreign.RelBoundary.Length; j++)
-            //         {
-            //             var fFrom = native.RelTo.GetOffsetTo(foreign.RelBoundary[j] + foreign.RelTo, d);
-            //             var fTo = native.RelTo.GetOffsetTo(foreign.RelBoundary.Modulo(j + 1) + foreign.RelTo, d);;
-            //             var minP = Geometry2D.GetClosestPointToSegment(p, fFrom, fTo);
-            //             minDist = Mathf.Min(minDist, p.DistanceTo(minP));
-            //         }
-            //
-            //         return minDist;
-            //     }).Take(2);
-            // mb.AddLine(relTo.GetOffsetTo(close.First() + native.RelTo, d),
-            //     relTo.GetOffsetTo(close.ElementAt(1) + native.RelTo, d),
-            //     Colors.Red, // group.Color, 
-            //     3f);
         }
         
         foreach (var (unit, dest) in assgns)
@@ -131,7 +104,7 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         UnitGroup g, 
         CombatCalculator combat, LogicWriteKey key)
     {
-        // if (Attack == false) return;
+        if (Attack == false) return;
         var d = key.Data;
         var units = g.Units.Items(d);
         var natives = Faces.Select(f => f.GetNative(d)).ToHashSet();

@@ -39,7 +39,6 @@ public class DeploymentAi
         }
         _root.GrabUnassignedGroups(key);
         _root.ShiftGroups(this, key);
-        _root.AdjustWithin(this, key);
         _root.GiveOrders(this, key);
 
         Memo = new MilAiMemo(Regime, key.Data);

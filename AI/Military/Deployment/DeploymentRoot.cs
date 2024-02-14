@@ -10,6 +10,7 @@ public class DeploymentRoot : DeploymentBranch
     public DeploymentRoot(DeploymentAi ai,
         LogicWriteKey key) : base(ai, key)
     {
+        Assignments.Add(new UnoccupiedAssignment(this, ai, key));
     }
     
     public void MakeTheaters(DeploymentAi ai, LogicWriteKey key)
@@ -31,6 +32,8 @@ public class DeploymentRoot : DeploymentBranch
 
     public void GrabUnassignedGroups(LogicWriteKey key)
     {
+        var unoccupied = Assignments.OfType<UnoccupiedAssignment>().First();
+        
         var ai = key.Data.HostLogicData.RegimeAis[Regime.Entity(key.Data)]
             .Military.Deployment;
         
@@ -43,15 +46,11 @@ public class DeploymentRoot : DeploymentBranch
         {
             if (taken.Contains(g.MakeRef()) == false)
             {
-                Shuffle.Groups.Add(g);
+                unoccupied.PushGroup(ai, g, key);
             }
         }
     }
     
-    public override float GetPowerPointNeed(Data d)
-    {
-        return 0f;
-    }
 
     public override PolyCell GetCharacteristicCell(Data d)
     {

@@ -29,6 +29,7 @@ public class FrontSegment : DeploymentBranch
         Attack = attack;
         Frontline = new Frontline(frontLineFaces);
         HoldLine = new HoldLineAssignment(ai, this, key);
+        Assignments.Add(HoldLine);
     }
 
     public override Vector2 GetMapPosForDisplay(Data d)
@@ -40,16 +41,7 @@ public class FrontSegment : DeploymentBranch
         return Frontline.Faces
             .Select(face => PlanetDomainExt.GetPolyCell(face.Native, d)).Distinct();
     }
-    public override float GetPowerPointNeed(Data data)
-    {
-        var opposing = GetOpposingPowerPoints(data);
-        var length = GetLength(data);
-
-        var oppNeed = opposing * DesiredOpposingPpRatio;
-        var lengthNeed = length * PowerPointsPerCellFaceToCover;
-
-        return Mathf.Max(oppNeed, lengthNeed);
-    }
+    
     public float GetOpposingPowerPoints(Data data)
     {
         var alliance = Regime.Entity(data).GetAlliance(data);
