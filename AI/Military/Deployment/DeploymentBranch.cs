@@ -76,76 +76,88 @@ public abstract class DeploymentBranch
     public void ShiftGroups(DeploymentAi ai, LogicWriteKey key)
     {
         var data = key.Data;
-        var children = SubBranches
-            .Union<IDeploymentNode>(Assignments)
-            .ToHashSet();
-        var eligibleToTakeFrom = children.ToHashSet();
-        var eligibleToGiveTo = children
-            .Where(c => c.GetPowerPointNeed(data) > 0f).ToHashSet();
-        var iter = 0;
-        var shuffleCount = Assignments.OfType<UnoccupiedAssignment>()
-            .FirstOrDefault() is UnoccupiedAssignment uo
-            ? uo.Groups.Count
-            : 0;
-        var maxIter = (SubBranches.Count
-                       + Assignments.Count) * 2 + shuffleCount;
-        
-        while (iter < maxIter
-               && eligibleToTakeFrom.Count > 0
-               && eligibleToGiveTo.Count > 0)
+        var assignments =
+            GetDescendentAssignments().ToHashSet();
+        var stratMove = key.Data.Models.MoveTypes.StrategicMove;
+        var alliance = Regime.Entity(key.Data)
+            .GetAlliance(key.Data);
+        var graph = new Graph<GroupAssignment, float>();
+        foreach (var a in assignments)
         {
-            var max = maxSatisfied();
-            var min = minSatisfied();
-            if (max.node == null
-                || min.node == null
-                || max.ratio < min.ratio * 1.5f)
-            {
-                break;
-            }
-            var g = max.node.PullGroup(ai, key);
-            if (g != null)
-            {
-                min.node.PushGroup(ai, g, key);
-            }
-            else
-            {
-                eligibleToTakeFrom.Remove(max.node);
-            }
-            
-            iter++;
+            graph.AddNode(a);
         }
+        foreach (var a1 in assignments)
+        {
+            var cell1 = a1.GetCharacteristicCell(key.Data);
+            foreach (var a2 in assignments)
+            {
+                if (graph.HasEdge(a1, a2)) continue;
+                var cell2 = a2.GetCharacteristicCell(key.Data);
+                var path = PathFinder.FindPath(stratMove,
+                    alliance, cell1, cell2, key.Data);
+                var cost = 0f;
+                for (var i = 0; i < path.Count - 1; i++)
+                {
+                    cost += stratMove.EdgeCost(cell1, cell2, key.Data);
+                }
+                graph.AddEdge(a1, a2, cost);
+            }
+        }
+
+        var unoccupiedAssigns = assignments.OfType<UnoccupiedAssignment>();
+        var shuffleCount = unoccupiedAssigns.Any()
+            ? unoccupiedAssigns.Sum(u => u.Groups.Count)
+            : 0;
+        var maxIter = SubBranches.Count
+                       + Assignments.Count + shuffleCount;
+
+        var noGroupsToTake = new HashSet<GroupAssignment>();
+
+        var iter = 0;
+
+        while (iter < maxIter)
+        {
+            foreach (var a in assignments)
+            {
+                iter++;
+                var ratio = a.GetSatisfiedRatio(key.Data);
+                var neighborsToTakeFrom = graph
+                    .GetNeighbors(a)
+                    .Where(n => n.GetSatisfiedRatio(key.Data) > 1.5f * ratio
+                                && noGroupsToTake.Contains(n) == false)
+                    .OrderBy(n => graph.GetEdge(a, n));
+                foreach (var n in neighborsToTakeFrom)
+                {
+                    var take = n.PullGroup(ai, key);
+                    if (take == null)
+                    {
+                        noGroupsToTake.Add(n);
+                    }
+                    else
+                    {
+                        a.PushGroup(ai, take, key);
+                        break;
+                    }
+                }
+            }
+        }  
         
         foreach (var b in SubBranches)
         {
             b.ShiftGroups(ai, key);
         }
-        
-        (float ratio, IDeploymentNode node) maxSatisfied()
-        {
-            var max = eligibleToTakeFrom.MaxBy(fa => fa.GetSatisfiedRatio(data));
-            return (max.GetSatisfiedRatio(data), max);
-        }
-        
-        (float ratio, IDeploymentNode node) minSatisfied()
-        {
-            var min = eligibleToGiveTo
-                .MinBy(fa => fa.GetSatisfiedRatio(data));
-            return (min.GetSatisfiedRatio(data), min);
-        }
-    }
-    public IEnumerable<GroupAssignment> GetAssignments()
-    {
-        return Assignments
-            .Union(SubBranches
-                .SelectMany(c => c.GetAssignments()));
     }
 
-    public IEnumerable<T> GetDescendentsOfType<T>()
+    public IEnumerable<GroupAssignment> GetDescendentAssignments()
+    {
+        return Assignments.Union(SubBranches.SelectMany(s => s.GetDescendentAssignments()));
+    }
+    public IEnumerable<T> GetDescendentAssignmentsOfType<T>()
         where T : IDeploymentNode
     {
         return Assignments.OfType<T>()
-            .Union(SubBranches.OfType<DeploymentBranch>()
-                .SelectMany(c => c.GetDescendentsOfType<T>()));
+            .Union(SubBranches
+                .SelectMany(c => c.GetDescendentAssignmentsOfType<T>()));
     }
 
     public Control GetGraphic(Data d)

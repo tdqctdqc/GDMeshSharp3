@@ -5,18 +5,18 @@ using Godot;
 
 public class MilAiMemo
 {
-    public HashSet<ERef<UnitGroup>> FrontSegmentGroups { get; private set; }
+    public HashSet<UnitGroup> FrontSegmentGroups { get; private set; }
     public MilAiMemo(Regime owner, Data d)
     {
         var ai = d.HostLogicData.RegimeAis[owner];
-        FrontSegmentGroups = new HashSet<ERef<UnitGroup>>();
+        FrontSegmentGroups = new HashSet<UnitGroup>();
 
         var root = ai.Military.Deployment.GetRoot();
         if (root == null)
         {
             return;
         }
-        var segments = root.GetDescendentsOfType<FrontSegment>().ToArray();
+        var segments = root.GetDescendentAssignmentsOfType<FrontSegment>().ToArray();
         foreach (var seg in segments)
         {
             FrontSegmentGroups.AddRange(seg.HoldLine.Groups);
@@ -28,14 +28,13 @@ public class MilAiMemo
     {
         var d = key.Data;
         var theaterSegs = new Dictionary<Theater, FrontSegment[]>();
-        foreach (var theater in root.GetDescendentsOfType<Theater>())
+        foreach (var theater in root.GetDescendentAssignmentsOfType<Theater>())
         {
-            theaterSegs.Add(theater, theater.GetDescendentsOfType<FrontSegment>().ToArray());
+            theaterSegs.Add(theater, theater.GetDescendentAssignmentsOfType<FrontSegment>().ToArray());
         }
-        var validGroups = FrontSegmentGroups.Where(g => d.HasEntity(g.RefId)).ToArray();
-        foreach (var g in validGroups)
+        var validGroups = FrontSegmentGroups.Where(g => d.HasEntity(g.Id)).ToArray();
+        foreach (var group in validGroups)
         {
-            var group = g.Entity(key.Data);
             var groupCell = group.GetCell(d);
             if (groupCell.Controller.RefId != ai.Regime.Id)
             {

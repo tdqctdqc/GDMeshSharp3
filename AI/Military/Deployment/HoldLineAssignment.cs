@@ -8,22 +8,22 @@ using MessagePack;
 
 public class HoldLineAssignment : GroupAssignment
 {
-    public HashSet<int> LineGroups { get; private set; }
-    public HashSet<int> InsertingGroups { get; private set; }
+    public HashSet<UnitGroup> LineGroups { get; private set; }
+    public HashSet<UnitGroup> InsertingGroups { get; private set; }
     public HoldLineAssignment(
         DeploymentAi ai,
         FrontSegment parent,
         LogicWriteKey key) : base(parent, ai, key)
     {
-        LineGroups = new HashSet<int>();
-        InsertingGroups = new HashSet<int>();
+        LineGroups = new HashSet<UnitGroup>();
+        InsertingGroups = new HashSet<UnitGroup>();
     }
     
 
     protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
     {
-        LineGroups.Remove(g.Id);
-        InsertingGroups.Remove(g.Id);
+        LineGroups.Remove(g);
+        InsertingGroups.Remove(g);
     }
 
     protected override void AddGroupToData(DeploymentAi ai,
@@ -35,10 +35,10 @@ public class HoldLineAssignment : GroupAssignment
         if (seg.Frontline.Faces.Any(f => f.Native == cell.Id)
             == false)
         {
-            InsertingGroups.Add(g.Id);
+            InsertingGroups.Add(g);
             return;
         }
-        LineGroups.Add(g.Id);
+        LineGroups.Add(g);
     }
 
     public override float GetPowerPointNeed(Data d)
@@ -61,18 +61,16 @@ public class HoldLineAssignment : GroupAssignment
     {
         if (InsertingGroups.Count > 0)
         {
-            var gId = InsertingGroups.First();
-            var group = key.Data.Get<UnitGroup>(gId);
-            Groups.Remove(group.MakeRef());
-            InsertingGroups.Remove(gId);
+            var group = InsertingGroups.First();
+            Groups.Remove(group);
+            InsertingGroups.Remove(group);
             return group;
         }
         else if (LineGroups.Count > 0)
         {
-            var gId = LineGroups.First();
-            var group = key.Data.Get<UnitGroup>(gId);
-            Groups.Remove(group.MakeRef());
-            LineGroups.Remove(gId);
+            var group = LineGroups.First();
+            Groups.Remove(group);
+            LineGroups.Remove(group);
             return group;
         }
 
@@ -89,9 +87,8 @@ public class HoldLineAssignment : GroupAssignment
     {
         var seg = (FrontSegment)Parent;
 
-        foreach (var gId in InsertingGroups)
+        foreach (var group in InsertingGroups)
         {
-            var group = key.Data.Get<UnitGroup>(gId);
             var cell = group.GetCell(key.Data);
             var closest = seg.Frontline.Faces
                 .MinBy(f => f.GetNative(key.Data).GetCenter().GetOffsetTo(cell.GetCenter(), key.Data).Length());
@@ -188,7 +185,6 @@ public class HoldLineAssignment : GroupAssignment
     public List<UnitGroup> GetLineGroupsInOrder(FrontSegment seg, Data d)
     {
         var list = LineGroups
-            .Select(id => d.Get<UnitGroup>(id))
             .ToList();
         list.Sort((g, f) =>
         {

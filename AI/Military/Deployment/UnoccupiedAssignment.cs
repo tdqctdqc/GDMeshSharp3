@@ -3,8 +3,11 @@ using System.Linq;
 
 public class UnoccupiedAssignment : GroupAssignment
 {
-    public UnoccupiedAssignment(DeploymentBranch parent, DeploymentAi ai, LogicWriteKey key) : base(parent, ai, key)
+    public PolyCell Cell { get; private set; }
+    public UnoccupiedAssignment(PolyCell cell, DeploymentBranch parent, 
+        DeploymentAi ai, LogicWriteKey key) : base(parent, ai, key)
     {
+        Cell = cell;
     }
     protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
     {
@@ -24,14 +27,14 @@ public class UnoccupiedAssignment : GroupAssignment
     }
     public override PolyCell GetCharacteristicCell(Data d)
     {
-        return Parent.GetCharacteristicCell(d);
+        return Cell;
     }
 
     public override UnitGroup PullGroup(DeploymentAi ai, LogicWriteKey key)
     {
         if (Groups.Count == 0) return null;
-        var g = key.Data.Get<UnitGroup>(Groups.First().RefId);
-        Groups.Remove(g.Id);
+        var g = Groups.First();
+        Groups.Remove(g);
         return g;
     }
 }

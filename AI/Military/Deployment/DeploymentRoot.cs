@@ -10,7 +10,6 @@ public class DeploymentRoot : DeploymentBranch
     public DeploymentRoot(DeploymentAi ai,
         LogicWriteKey key) : base(ai, key)
     {
-        Assignments.Add(new UnoccupiedAssignment(this, ai, key));
     }
     
     public void MakeTheaters(DeploymentAi ai, LogicWriteKey key)
@@ -32,29 +31,28 @@ public class DeploymentRoot : DeploymentBranch
 
     public void GrabUnassignedGroups(LogicWriteKey key)
     {
-        var unoccupied = Assignments.OfType<UnoccupiedAssignment>().First();
-        
         var ai = key.Data.HostLogicData.RegimeAis[Regime.Entity(key.Data)]
             .Military.Deployment;
-        
-        var groups = key.Data.Military.UnitAux.UnitGroupByRegime[Regime.Entity(key.Data)];
-        var taken = GetAssignments()
-            .SelectMany(a => a.Groups)
-            .ToHashSet();
-       
-        foreach (var g in groups)
-        {
-            if (taken.Contains(g.MakeRef()) == false)
-            {
-                unoccupied.PushGroup(ai, g, key);
-            }
-        }
+        var freeGroups = key.Data.Military.UnitAux.UnitGroupByRegime[Regime.Entity(key.Data)];
+        var taken = GetDescendentAssignments()
+            .SelectMany(a => a.Groups);
+        freeGroups.ExceptWith(taken);
+        var byCell = freeGroups.SortInto(g => g.GetCell(key.Data));
+       foreach (var (cell, groups) in byCell)
+       {
+           var unassigned = new UnoccupiedAssignment(cell, this, ai, key);
+           Assignments.Add(unassigned);
+           foreach (var g in groups)
+           {
+               unassigned.PushGroup(ai, g, key);
+           }
+       }
     }
     
 
     public override PolyCell GetCharacteristicCell(Data d)
     {
-        throw new Exception();
+        return Regime.Entity(d).Capital.Entity(d).GetCells(d).First();
     }
     
 
