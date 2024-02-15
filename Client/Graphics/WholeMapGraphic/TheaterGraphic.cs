@@ -40,7 +40,7 @@ public partial class TheaterGraphic : Node2D
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
         var regimeColor = theater.Regime.Entity(d).PrimaryColor;
         
-        foreach (var seg in theater.SubBranches.OfType<FrontSegment>())
+        foreach (var seg in theater.Assignments.OfType<HoldLineAssignment>())
         {
             var segColor = seg.Color;
             for (var i = 0; i < seg.Frontline.Faces.Count - 1; i++)

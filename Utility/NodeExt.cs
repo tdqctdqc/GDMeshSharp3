@@ -11,6 +11,16 @@ public static class NodeExt
         return SubscribedNodeToken.Construct(node, update, triggers);
     }
 
+    public static Control GetTooltipTrigger<T>(string text,
+        TooltipTemplate<T> template, T t)
+    {
+        var panel = new Panel();
+        var label = CreateLabel(text);
+        panel.Size = new Vector2(50f, 25f);
+        panel.AddChild(label);
+        panel.RegisterTooltip(template, () => t);
+        return panel;
+    }
     public static TContainer GetLabeledIcon<TContainer>(
         this Icon icon, string text, float height)
         where TContainer : Node, new()
@@ -41,7 +51,7 @@ public static class NodeExt
             () => (flow, data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data)));
         return h;
     }
-
+    
     public static void RegisterTooltip<T>(this Control c, TooltipTemplate<T> template, Func<T> getObject)
     {
         var hash = c.GetHashCode();

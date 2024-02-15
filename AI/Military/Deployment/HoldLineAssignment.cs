@@ -8,15 +8,25 @@ using MessagePack;
 
 public class HoldLineAssignment : GroupAssignment
 {
+    public static float CoverOpposingWeight {get; private set;} = .5f;
+    public static float CoverLengthWeight {get; private set;} = 1f;
+    public static float DesiredOpposingPpRatio {get; private set;} = 2f;
+    public static float PowerPointsPerCellFaceToCover {get; private set;} = 100f;
+    public static int IdealSegmentLength = 5;
+    public Frontline Frontline { get; private set; }
+    public Color Color { get; private set; }
     public HashSet<UnitGroup> LineGroups { get; private set; }
     public HashSet<UnitGroup> InsertingGroups { get; private set; }
     public HoldLineAssignment(
         DeploymentAi ai,
-        FrontSegment parent,
+        DeploymentBranch parent,
+        Frontline frontline,
         LogicWriteKey key) : base(parent, ai, key)
     {
+        Frontline = frontline;
         LineGroups = new HashSet<UnitGroup>();
         InsertingGroups = new HashSet<UnitGroup>();
+        Color = ColorsExt.GetRandomColor();
     }
     
 
@@ -30,9 +40,8 @@ public class HoldLineAssignment : GroupAssignment
         UnitGroup g, Data d)
     {
         var cell = g.GetCell(d);
-        var seg = (FrontSegment)Parent;
         
-        if (seg.Frontline.Faces.Any(f => f.Native == cell.Id)
+        if (Frontline.Faces.Any(f => f.Native == cell.Id)
             == false)
         {
             InsertingGroups.Add(g);
@@ -45,30 +54,35 @@ public class HoldLineAssignment : GroupAssignment
     {
         var ai = d.HostLogicData.RegimeAis[Regime.Entity(d)]
             .Military.Deployment;
-        var seg = (FrontSegment)Parent;
         
         
-        var opposing = seg.GetOpposingPowerPoints(d);
-        var length = seg.GetLength(d);
+        var opposing = GetOpposingPowerPoints(d);
+        var length = GetLength(d);
 
-        var oppNeed = opposing * FrontSegment.DesiredOpposingPpRatio;
-        var lengthNeed = length * FrontSegment.PowerPointsPerCellFaceToCover;
+        var oppNeed = opposing * DesiredOpposingPpRatio;
+        var lengthNeed = length * PowerPointsPerCellFaceToCover;
 
         return Mathf.Max(oppNeed, lengthNeed);
     }
     public override UnitGroup PullGroup(DeploymentAi ai, 
+        Func<UnitGroup, float> suitability, 
         LogicWriteKey key)
     {
+        if (Groups.Count < 2) return null;
+        if (Groups.Sum(g => g.Units.Count()) < Frontline.Faces.Count * .75f)
+        {
+            return null;
+        }
         if (InsertingGroups.Count > 0)
         {
-            var group = InsertingGroups.First();
+            var group = InsertingGroups.MaxBy(suitability);
             Groups.Remove(group);
             InsertingGroups.Remove(group);
             return group;
         }
         else if (LineGroups.Count > 0)
         {
-            var group = LineGroups.First();
+            var group = LineGroups.MaxBy(suitability);
             Groups.Remove(group);
             LineGroups.Remove(group);
             return group;
@@ -77,35 +91,46 @@ public class HoldLineAssignment : GroupAssignment
         return null;
     }
 
+    public override float Suitability(UnitGroup g, Data d)
+    {
+        return g.GetPowerPoints(d) + g.Units.Items(d).Sum(u => u.GetHitPoints(d));
+    }
+
     public override PolyCell GetCharacteristicCell(Data d)
     {
-        return ((FrontSegment)Parent).Frontline.Faces.First().GetNative(d);
+        return Frontline.Faces.First().GetNative(d);
     }
 
     public override void GiveOrders(DeploymentAi ai, 
         LogicWriteKey key)
     {
-        var seg = (FrontSegment)Parent;
-
-        foreach (var group in InsertingGroups)
+        
+        var faceCosts = GetFaceCosts(key.Data);
+        
+        var subSegs = GetSubSegs(key, faceCosts);
+        var toPick = InsertingGroups.ToHashSet();
+        while (toPick.Count > 0)
         {
-            var cell = group.GetCell(key.Data);
-            var closest = seg.Frontline.Faces
-                .MinBy(f => f.GetNative(key.Data).GetCenter().GetOffsetTo(cell.GetCenter(), key.Data).Length());
-            var order = GoToCellGroupOrder.Construct(closest.GetNative(key.Data), Regime.Entity(key.Data),
-                group, key.Data);
-            key.SendMessage(new SetUnitOrderProcedure(group.MakeRef(), order));
+            var picker = subSegs.MinBy(s => s.Value.have / s.Value.need);
+            var values = picker.Value;
+            var cell = picker.Key.First().GetNative(key.Data);
+            var picked = toPick.MinBy(g =>
+                g.GetCell(key.Data).GetCenter().GetOffsetTo(cell.GetCenter(), key.Data).Length());
+            toPick.Remove(picked);
+            subSegs[picker.Key] = (values.need, values.have + picked.GetPowerPoints(key.Data));
+            var order = GoToCellGroupOrder.Construct(cell, Regime.Entity(key.Data),
+                picked, key.Data);
+            key.SendMessage(new SetUnitOrderProcedure(picked.MakeRef(), order));
         }
-
-        var inOrder = GetLineGroupsInOrder(seg, key.Data);
-        var faceCosts = GetFaceCosts(seg, key.Data);
+        
+        var inOrder = GetLineGroupsInOrder(key.Data);
         var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
-            seg.Frontline.Faces, inOrder, u => u.GetPowerPoints(key.Data),
+            Frontline.Faces, inOrder, u => u.GetPowerPoints(key.Data),
             f => faceCosts[f]);
         
         foreach (var (group, bounds) in lineOrders)
         {
-            var groupFaces = seg.Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
+            var groupFaces = Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
             var order = new DeployOnLineGroupOrder(groupFaces, false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
@@ -114,30 +139,54 @@ public class HoldLineAssignment : GroupAssignment
         }
     }
 
+    private Dictionary<List<FrontFace>, (float need, float have)>
+        GetSubSegs(LogicWriteKey key, Dictionary<FrontFace, float> faceCosts)
+    {
+        var subSegments = new Dictionary<List<FrontFace>, (float need, float have)>();
+        for (var i = 0; i < Frontline.Faces.Count; i += 5)
+        {
+            var from = i;
+            var to = Mathf.Min(Frontline.Faces.Count - 1, i + 5);
+            var subSeg = Frontline.Faces.GetRange(from, to - from + 1);
+            var need = subSeg.Sum(f => faceCosts[f]);
+            if (need == 0f) throw new Exception();
+            var have = 0f;
+            var natives = subSeg.Select(f => f.GetNative(key.Data)).Distinct();
+            foreach (var native in natives)
+            {
+                var units = native.GetUnits((key.Data));
+                if (units is null) continue;
+                have += units.Sum(u => u.GetPowerPoints(key.Data));
+            }
+
+            subSegments.Add(subSeg, (need, have));
+        }
+
+        return subSegments;
+    }
+
     public Dictionary<UnitGroup, List<FrontFace>> 
         GetLineAssignments(Data d)
     {
-        var seg = (FrontSegment)Parent;
 
-        var inOrder = GetLineGroupsInOrder(seg, d);
-        var faceCosts = GetFaceCosts(seg, d);
+        var inOrder = GetLineGroupsInOrder(d);
+        var faceCosts = GetFaceCosts(d);
         var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
-            seg.Frontline.Faces, inOrder, u => u.GetPowerPoints(d),
+            Frontline.Faces, inOrder, u => u.GetPowerPoints(d),
             f => faceCosts[f]);
         return lineOrders.ToDictionary(kvp => kvp.Key,
-            kvp => seg.Frontline.Faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1));
+            kvp => Frontline.Faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1));
     }
-    private Dictionary<FrontFace, float> GetFaceCosts(FrontSegment seg, 
-        Data d)
+    private Dictionary<FrontFace, float> GetFaceCosts(Data d)
     {
-        if (seg.Frontline.Faces.Count == 0) return new Dictionary<FrontFace, float>();
-        var alliance = seg.Regime.Entity(d).GetAlliance(d);
-        var totalEnemyCost = seg.Frontline
+        if (Frontline.Faces.Count == 0) return new Dictionary<FrontFace, float>();
+        var alliance = Regime.Entity(d).GetAlliance(d);
+        var totalEnemyCost = Frontline
             .Faces.Sum(f => GetFaceEnemyCost(alliance, f, d));
-        var totalLengthCost = seg.Frontline.Faces.Count;
-        var enemyCostWeight = FrontSegment.CoverOpposingWeight;
-        var lengthCostWeight = FrontSegment.CoverLengthWeight;
-        return seg.Frontline.Faces
+        var totalLengthCost = Frontline.Faces.Count;
+        var enemyCostWeight = CoverOpposingWeight;
+        var lengthCostWeight = CoverLengthWeight;
+        return Frontline.Faces
             .ToDictionary(f => f,
                 f =>
                 {
@@ -182,7 +231,7 @@ public class HoldLineAssignment : GroupAssignment
     }
 
     
-    public List<UnitGroup> GetLineGroupsInOrder(FrontSegment seg, Data d)
+    public List<UnitGroup> GetLineGroupsInOrder(Data d)
     {
         var list = LineGroups
             .ToList();
@@ -190,21 +239,21 @@ public class HoldLineAssignment : GroupAssignment
         {
             var boundsG = g.Units.Items(d)
                 .Select(u => u.Position.GetCell(d)).ToHashSet();
-            var gFirst = seg.Frontline.Faces
+            var gFirst = Frontline.Faces
                 .FindIndex(f => boundsG.Contains(f.GetNative(d)));
-            var gLast = seg.Frontline.Faces
+            var gLast = Frontline.Faces
                 .FindLastIndex(f => boundsG.Contains(f.GetNative(d)));
 
             var boundsF = f.Units.Items(d)
                 .Select(u => u.Position.GetCell(d));
-            var fFirst = seg.Frontline.Faces
+            var fFirst = Frontline.Faces
                 .FindIndex(f => boundsF.Contains(f.GetNative(d)));
-            var fLast = seg.Frontline.Faces
+            var fLast = Frontline.Faces
                 .FindLastIndex(f => boundsF.Contains(f.GetNative(d)));
 
             if (gFirst == -1 || gLast == -1 || fFirst == -1 || fLast == -1)
             {
-                throw new Exception();
+                return 0;
             }
             if (gFirst < fFirst) return -1;
             if (fFirst < gFirst) return 1;
@@ -213,5 +262,25 @@ public class HoldLineAssignment : GroupAssignment
             return 0;
         });
         return list;
+    }
+    public float GetOpposingPowerPoints(Data data)
+    {
+        var alliance = Regime.Entity(data).GetAlliance(data);
+        return Frontline.Faces.Select(f => f.GetNative(data))
+            .Distinct()
+            .SelectMany(c => c.GetNeighbors(data))
+            .Distinct()
+            .Where(n => n.RivalControlled(alliance, data))
+            .Sum(n =>
+            {
+                var us = n.GetUnits(data);
+                if (us == null) return 0f;
+                return us.Sum(u => u.GetPowerPoints(data));
+            });
+    }
+
+    public int GetLength(Data d)
+    {
+        return Frontline.Faces.Count;
     }
 }

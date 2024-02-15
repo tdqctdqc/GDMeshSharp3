@@ -17,9 +17,9 @@ public static class MeshBuilderExt
                 relTo.GetOffsetTo(to, d), thickness, color);
         }
     }
-    public static void DrawFrontSegment(this MeshBuilder mb,
+    public static void DrawFrontAssignment(this MeshBuilder mb,
         Vector2 relTo,
-        FrontSegment seg, 
+        HoldLineAssignment seg, 
         Data d)
     {
         var markerSize = 5f;
@@ -42,13 +42,8 @@ public static class MeshBuilderExt
                 relTo.GetOffsetTo(to.GetCenter(), d),
                 color, markerSize);
         }
-        
-        
-        for (var i = 0; i < seg.Frontline.Faces.Count; i++)
-        {
-            }
 
-        foreach (var kvp in seg.HoldLine.GetLineAssignments(d))
+        foreach (var kvp in seg.GetLineAssignments(d))
         {
             var line = kvp.Value;
             var group = kvp.Key;

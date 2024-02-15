@@ -76,44 +76,60 @@ public class StrategicMode : UiMode
         {
             var theaters = root.SubBranches.OfType<Theater>();
             var segs = theaters
-                .SelectMany(t => t.SubBranches.OfType<FrontSegment>());
-
-            foreach (var c in root.SubBranches)
-            {
-                drawBranch(c);
-            }
+                .SelectMany(t => t.Assignments.OfType<HoldLineAssignment>());
+            DrawDeploymentBranch(root);
             foreach (var seg in segs)
             {
-                debug.Draw(mb => mb.DrawFrontSegment(relTo, seg, _client.Data), relTo);
+                debug.Draw(mb => mb.DrawFrontAssignment(relTo, seg, _client.Data), relTo);
             }
         }
-        
-        
-        Vector2 drawBranch(DeploymentBranch branch)
-        {
-            var graphic = branch.GetGraphic(_client.Data);
-            var node = new Node2D();
-            node.AddChild(graphic);
-            var pos = branch.GetMapPosForDisplay(_client.Data);
-            debug.AddNode(node, pos);
-            foreach (var child in branch.SubBranches)
-            {
-                var childPos = drawBranch(child);
-                debug.Draw(mb => mb.AddLine(Vector2.Zero,
-                    pos.GetOffsetTo(childPos, _client.Data), regime.GetMapColor(),
-                    5f), 
-                    pos);
-            }
-
-            return pos;
-        }
-        // foreach (var front in fronts)
-        // {
-        //     debug.Draw(mb => mb.DrawFront(relTo, front, _client.Data), relTo);
-        // }
-        
     }
 
+    private Vector2 DrawDeploymentBranch(DeploymentBranch branch)
+    {
+        var regime = branch.Regime.Entity(_client.Data);
+        var mg = _client.GetComponent<MapGraphics>();
+        var debug = mg.DebugOverlay;
+        var template = new DeploymentBranchTooltipTemplate();
+
+        var graphic = NodeExt.GetTooltipTrigger(branch.GetType().Name,
+            template, branch);
+        var node = new Node2D();
+        node.AddChild(graphic);
+        var pos = branch.GetMapPosForDisplay(_client.Data);
+        debug.AddNode(node, pos);
+        foreach (var child in branch.SubBranches)
+        {
+            var childPos = DrawDeploymentBranch(child);
+            debug.Draw(mb => mb.AddLine(Vector2.Zero,
+                    pos.GetOffsetTo(childPos, _client.Data), regime.GetMapColor(),
+                    5f), 
+                pos);
+        }
+        foreach (var ga in branch.Assignments)
+        {
+            var childPos = DrawGroupAssignment(ga);
+            debug.Draw(mb => mb.AddLine(Vector2.Zero,
+                    pos.GetOffsetTo(childPos, _client.Data), regime.GetMapColor(),
+                    5f), 
+                pos);
+        }
+
+        return pos;
+    }
+
+    private Vector2 DrawGroupAssignment(GroupAssignment ga)
+    {
+        var mg = _client.GetComponent<MapGraphics>();
+        var debug = mg.DebugOverlay;
+        var template = new GroupAssignmentTooltipTemplate();
+        var graphic = NodeExt.GetTooltipTrigger(ga.GetType().Name, template, ga);
+        var node = new Node2D();
+        node.AddChild(graphic);
+        var pos = ga.GetCharacteristicCell(_client.Data).GetCenter();
+        debug.AddNode(node, pos);
+        return pos;
+    }
     private void DrawRegimeLineOrders(Regime regime)
     {
         var ai = _client.Data.HostLogicData.RegimeAis[regime];

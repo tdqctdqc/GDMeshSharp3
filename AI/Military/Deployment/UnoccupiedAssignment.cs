@@ -1,4 +1,5 @@
 
+using System;
 using System.Linq;
 
 public class UnoccupiedAssignment : GroupAssignment
@@ -25,15 +26,23 @@ public class UnoccupiedAssignment : GroupAssignment
     {
         
     }
+
+    public override float Suitability(UnitGroup g, Data d)
+    {
+        return 1f;
+    }
+
     public override PolyCell GetCharacteristicCell(Data d)
     {
         return Cell;
     }
 
-    public override UnitGroup PullGroup(DeploymentAi ai, LogicWriteKey key)
+    public override UnitGroup PullGroup(DeploymentAi ai, 
+        Func<UnitGroup, float> suitability, 
+        LogicWriteKey key)
     {
         if (Groups.Count == 0) return null;
-        var g = Groups.First();
+        var g = Groups.MaxBy(suitability);
         Groups.Remove(g);
         return g;
     }

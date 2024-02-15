@@ -10,7 +10,9 @@ public interface IDeploymentNode
     float GetPowerPointNeed(Data data);
     void GiveOrders(DeploymentAi ai, LogicWriteKey key);
     PolyCell GetCharacteristicCell(Data d);
-    UnitGroup PullGroup(DeploymentAi ai, LogicWriteKey key);
+    UnitGroup PullGroup(DeploymentAi ai, 
+        Func<UnitGroup, float> suitability,
+        LogicWriteKey key);
 
     void PushGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key);
 }

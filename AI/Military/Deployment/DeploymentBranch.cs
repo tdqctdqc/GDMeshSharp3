@@ -7,7 +7,6 @@ using MessagePack;
 
 [MessagePack.Union(0, typeof(DeploymentRoot))]
 [MessagePack.Union(1, typeof(Theater))]
-[MessagePack.Union(2, typeof(FrontSegment))]
 public abstract class DeploymentBranch 
     : IPolymorph, IDeploymentNode
 {
@@ -36,14 +35,16 @@ public abstract class DeploymentBranch
     }
     public abstract PolyCell GetCharacteristicCell(Data d);
 
-    public UnitGroup PullGroup(DeploymentAi ai, LogicWriteKey key)
+    public UnitGroup PullGroup(DeploymentAi ai, 
+        Func<UnitGroup, float> suitability, 
+        LogicWriteKey key)
     {
         var children = SubBranches
             .Union<IDeploymentNode>(Assignments)
             .OrderByDescending(c => c.GetSatisfiedRatio(key.Data));
         foreach (var c in children)
         {
-            var u = c.PullGroup(ai, key);
+            var u = c.PullGroup(ai, suitability, key);
             if(u != null) return u;
         }
         return null;
@@ -75,9 +76,13 @@ public abstract class DeploymentBranch
     }
     public void ShiftGroups(DeploymentAi ai, LogicWriteKey key)
     {
-        var data = key.Data;
+        var d = key.Data;
         var assignments =
-            GetDescendentAssignments().ToHashSet();
+            GetDescendentAssignments()
+                .ToHashSet();
+        var needs = assignments.ToDictionary(a => a,
+            a => a.GetPowerPointNeed(key.Data));
+        
         var stratMove = key.Data.Models.MoveTypes.StrategicMove;
         var alliance = Regime.Entity(key.Data)
             .GetAlliance(key.Data);
@@ -93,58 +98,97 @@ public abstract class DeploymentBranch
             {
                 if (graph.HasEdge(a1, a2)) continue;
                 var cell2 = a2.GetCharacteristicCell(key.Data);
-                var path = PathFinder.FindPath(stratMove,
-                    alliance, cell1, cell2, key.Data);
+                
                 var cost = 0f;
-                for (var i = 0; i < path.Count - 1; i++)
+                var path = d.Context.PathCache.GetOrAdd((stratMove,
+                    alliance, cell1, cell2));
+                if (path == null)
                 {
-                    cost += stratMove.EdgeCost(cell1, cell2, key.Data);
+                    cost = Mathf.Inf;
                 }
+                else
+                {
+                    for (var i = 0; i < path.Count - 1; i++)
+                    {
+                        cost += stratMove.EdgeCost(cell1, cell2, key.Data);
+                    }
+                }
+                
                 graph.AddEdge(a1, a2, cost);
             }
         }
-
-        var unoccupiedAssigns = assignments.OfType<UnoccupiedAssignment>();
-        var shuffleCount = unoccupiedAssigns.Any()
-            ? unoccupiedAssigns.Sum(u => u.Groups.Count)
-            : 0;
-        var maxIter = SubBranches.Count
-                       + Assignments.Count + shuffleCount;
-
+        
         var noGroupsToTake = new HashSet<GroupAssignment>();
-
+        var wantGroups = assignments
+            .Where(g => needs[g] > 0f)
+            .ToHashSet();
+        var noNeedAssignments = assignments
+            .Except(wantGroups).ToHashSet();
+        var maxIter = (wantGroups.Count 
+            + noNeedAssignments.Sum(g => g.Groups.Count));
+        
         var iter = 0;
-
-        while (iter < maxIter)
+        
+        while (wantGroups.Count > 0
+            && iter < maxIter)
         {
-            foreach (var a in assignments)
+
+            foreach (var a in wantGroups)
             {
                 iter++;
-                var ratio = a.GetSatisfiedRatio(key.Data);
-                var neighborsToTakeFrom = graph
-                    .GetNeighbors(a)
-                    .Where(n => n.GetSatisfiedRatio(key.Data) > 1.5f * ratio
-                                && noGroupsToTake.Contains(n) == false)
-                    .OrderBy(n => graph.GetEdge(a, n));
-                foreach (var n in neighborsToTakeFrom)
+                var need = needs[a];
+                var ratio = a.GetPowerPointsAssigned(key.Data) / need;
+
+                bool found = false;
+                foreach (var noNeed in noNeedAssignments.OrderBy(n => graph.GetEdge(a, n)))
                 {
-                    var take = n.PullGroup(ai, key);
-                    if (take == null)
+                    if (eligibleToTakeFrom(noNeed, ratio)
+                        && noNeed.PullGroup(ai, 
+                            g => a.Suitability(g, key.Data), key)
+                        is UnitGroup g)
                     {
-                        noGroupsToTake.Add(n);
+                        a.PushGroup(ai, g, key);
+                        found = true;
+                        break;
                     }
-                    else
+                }
+
+                if (found) break;
+                 
+                foreach (var ga in assignments.Except(noNeedAssignments)
+                             .OrderBy(n => graph.GetEdge(a, n)))
+                {
+                    if (eligibleToTakeFrom(ga, ratio)
+                        && ga.PullGroup(ai, 
+                                g => a.Suitability(g, key.Data), key)
+                            is UnitGroup g)
                     {
-                        a.PushGroup(ai, take, key);
+                        a.PushGroup(ai, g, key);
+                        found = true;
                         break;
                     }
                 }
             }
-        }  
+        }
+
+        Assignments.RemoveWhere(b => b.Groups.Count == 0);
         
         foreach (var b in SubBranches)
         {
             b.ShiftGroups(ai, key);
+        }
+
+        SubBranches.RemoveWhere(b => b.SubBranches.Count == 0 && b.Assignments.Count == 0);
+        
+        bool eligibleToTakeFrom(GroupAssignment assgn, float ratio)
+        {
+            if (noGroupsToTake.Contains(assgn)) return false;
+            if (assgn.Groups.Count == 0) return false;
+            var need = needs[assgn];
+            if (need == 0f) return true;
+            var assgnRatio = assgn.GetPowerPointsAssigned(key.Data) / need;
+            if (assgnRatio > 1.5f * ratio) return true;
+            return false;
         }
     }
 
@@ -158,25 +202,6 @@ public abstract class DeploymentBranch
         return Assignments.OfType<T>()
             .Union(SubBranches
                 .SelectMany(c => c.GetDescendentAssignmentsOfType<T>()));
-    }
-
-    public Control GetGraphic(Data d)
-    {
-        var panel = new VBoxContainer();
-        panel.CreateLabelAsChild(GetType().Name);
-        foreach (var c in Assignments)
-        {
-            panel.CreateLabelAsChild($"\t{c.GetType().Name}");
-            if (c is GroupAssignment g)
-            {
-                panel.CreateLabelAsChild($"\t\tGroups: {g.Groups.Count}");
-            }
-            panel.CreateLabelAsChild($"\aAssigned {c.GetPowerPointsAssigned(d)}");
-            panel.CreateLabelAsChild($"\tNeeded {c.GetPowerPointNeed(d)}");
-
-        }
-
-        return panel;
     }
 
     public abstract Vector2 GetMapPosForDisplay(Data d);

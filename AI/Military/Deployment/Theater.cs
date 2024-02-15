@@ -30,8 +30,9 @@ public class Theater : DeploymentBranch
                 }, key.Data);
         foreach (var front in frontlines)
         {
-            var frontSegment = new FrontSegment(ai, front, false, key);
-            SubBranches.Add(frontSegment);  
+            var frontline = new Frontline(front);
+            var frontSegment = new HoldLineAssignment(ai, this, frontline, key);
+            Assignments.Add(frontSegment);  
         }
     }
     

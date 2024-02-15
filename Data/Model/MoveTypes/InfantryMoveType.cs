@@ -6,7 +6,7 @@ public class InfantryMoveType : MoveType
 {
     public InfantryMoveType() 
         : base(true, 
-            200f, 
+            500f, 
             nameof(InfantryMoveType))
     {
         

@@ -42,7 +42,7 @@ public partial class IssueWindow : ClosableWindow
                 {
                     _client.UiController.ModeOption.Choose<BlankMode>();
                     issue.Draw(_client);
-                    _client.Cam().JumpTo(issue.UnitPos);
+                    _client.Cam().JumpTo(issue.Pos);
                 }
             );
         }

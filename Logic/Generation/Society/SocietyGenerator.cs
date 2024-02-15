@@ -26,7 +26,7 @@ public class SocietyGenerator : Generator
         NameSettlements();
         _data.Notices.PopulatedWorld.Invoke();
         Deforest();
-
+        CreateUnits(key);
         return report;
     }
     
@@ -414,6 +414,37 @@ public class SocietyGenerator : Generator
                 taken.Add(names[iter]);
                 settlement.SetName(names[iter], _key);
                 iter++;
+            }
+        }
+    }
+    
+    private static void CreateUnits(GenWriteKey key)
+    {
+        foreach (var regime in key.Data.GetAll<Regime>())
+        {
+            var template = regime.GetUnitTemplates(key.Data)
+                .First();
+
+            var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetPolys(key.Data).Count()));
+            var numUnits = score * 20;
+
+            var polys = regime
+                .GetPolys(key.Data)
+                .Where(p => p.HasPeep(key.Data));
+            
+            var numPolys = polys.Count();
+            var numToDistributeIn = numPolys / 3;
+            numPolys = Mathf.Max(numToDistributeIn, 1);
+            var distributeInPolys = regime
+                .GetPolys(key.Data)
+                .OrderByDescending(p => p.GetPeep(key.Data).Size)
+                .Take(numPolys).ToArray();
+            for (var i = 0; i < numUnits; i++)
+            {
+                var poly = distributeInPolys.Modulo(i);
+                var cell = poly.GetCells(key.Data).First(c => c is LandCell);
+                var unitPos = new MapPos(cell.Id, (-1, 0f));
+                Unit.Create(template, regime, unitPos.Copy(), key);
             }
         }
     }

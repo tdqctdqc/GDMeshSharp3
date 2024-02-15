@@ -16,10 +16,10 @@ public class MilAiMemo
         {
             return;
         }
-        var segments = root.GetDescendentAssignmentsOfType<FrontSegment>().ToArray();
+        var segments = root.GetDescendentAssignmentsOfType<HoldLineAssignment>().ToArray();
         foreach (var seg in segments)
         {
-            FrontSegmentGroups.AddRange(seg.HoldLine.Groups);
+            FrontSegmentGroups.AddRange(seg.Groups);
         }
     }
     
@@ -27,19 +27,15 @@ public class MilAiMemo
     public void Finish(DeploymentAi ai, DeploymentRoot root, LogicWriteKey key)
     {
         var d = key.Data;
-        var theaterSegs = new Dictionary<Theater, FrontSegment[]>();
-        foreach (var theater in root.GetDescendentAssignmentsOfType<Theater>())
+        var theaterSegs = new Dictionary<Theater, HoldLineAssignment[]>();
+        foreach (var theater in root.SubBranches.OfType<Theater>())
         {
-            theaterSegs.Add(theater, theater.GetDescendentAssignmentsOfType<FrontSegment>().ToArray());
+            theaterSegs.Add(theater, theater.GetDescendentAssignmentsOfType<HoldLineAssignment>().ToArray());
         }
         var validGroups = FrontSegmentGroups.Where(g => d.HasEntity(g.Id)).ToArray();
         foreach (var group in validGroups)
         {
             var groupCell = group.GetCell(d);
-            if (groupCell.Controller.RefId != ai.Regime.Id)
-            {
-                throw new Exception();
-            }
 
             if (groupCell is LandCell == false)
             {
@@ -54,9 +50,17 @@ public class MilAiMemo
             var frontSegment = segments
                 .FirstOrDefault(s => s.Frontline.Faces
                     .Any(f => f.Native == groupCell.Id));
+            if (frontSegment == null)
+            {
+                frontSegment = segments.MinBy(s =>
+                    s.Frontline.Faces.First().GetNative(d)
+                        .GetCenter()
+                        .GetOffsetTo(group.GetCell(d).GetCenter(), d)
+                        .Length());
+            }
             if (frontSegment != null)
             {
-                frontSegment.HoldLine.PushGroup(ai, group, key);
+                frontSegment.PushGroup(ai, group, key);
             }
         }
     }

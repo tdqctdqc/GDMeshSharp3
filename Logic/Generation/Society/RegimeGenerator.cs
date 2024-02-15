@@ -36,25 +36,11 @@ public class RegimeGenerator : Generator
         
         _data.Notices.GeneratedRegimes.Invoke();
         
-        foreach (var regime in key.Data.GetAll<Regime>())
-        {
-            var template = regime.GetUnitTemplates(key.Data)
-                .First();
-
-            var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetPolys(key.Data).Count()));
-            var numUnits = score * 20;
-
-            var capitalPoly = regime.Capital.Entity(key.Data);
-            var cell = capitalPoly.GetCells(key.Data).First(c => c is LandCell);
-            var unitPos = new MapPos(cell.Id, (-1, 0f));
-            for (var i = 0; i < numUnits; i++)
-            {
-                Unit.Create(template, regime, unitPos.Copy(), key);
-            }
-        }
         report.StopSection("all");
         return report;
     }
+
+    
 
     private void GenerateRegimes()
     {

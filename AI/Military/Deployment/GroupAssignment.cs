@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
+
 [MessagePack.Union(0, typeof(HoldLineAssignment))]
 public abstract class GroupAssignment : IDeploymentNode
 {
@@ -38,8 +40,10 @@ public abstract class GroupAssignment : IDeploymentNode
         return Groups.Sum(g => g.GetPowerPoints(data));
     }
 
+
     public abstract void GiveOrders(DeploymentAi ai, LogicWriteKey key);
-    public abstract UnitGroup PullGroup(DeploymentAi ai, LogicWriteKey key);
+    public abstract UnitGroup PullGroup(DeploymentAi ai, Func<UnitGroup, float> suitability, LogicWriteKey key);
+    public abstract float Suitability(UnitGroup g, Data d);
     public abstract PolyCell GetCharacteristicCell(Data d);
 
 }

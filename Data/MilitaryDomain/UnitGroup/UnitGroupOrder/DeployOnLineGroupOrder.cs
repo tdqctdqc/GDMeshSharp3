@@ -55,9 +55,9 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
                     var foreignRegime = foreignCell.Controller.Entity(d);
                     var foreignAlliance = foreignRegime.GetAlliance(d);
                     var units = foreignCell.GetUnits(d);
-                    if (units == null || units.Count == 0) return FrontSegment.PowerPointsPerCellFaceToCover;
+                    if (units == null || units.Count == 0) return HoldLineAssignment.PowerPointsPerCellFaceToCover;
                     if (alliance.IsRivals(foreignAlliance, d) == false) return 0f;
-                    float mult = FrontSegment.DesiredOpposingPpRatio;
+                    float mult = HoldLineAssignment.DesiredOpposingPpRatio;
                     return units.Sum(u => u.GetPowerPoints(d)) * mult;
                 }
             );
