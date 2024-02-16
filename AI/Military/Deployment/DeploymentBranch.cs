@@ -6,18 +6,18 @@ using Godot;
 using MessagePack;
 
 [MessagePack.Union(0, typeof(DeploymentRoot))]
-[MessagePack.Union(1, typeof(Theater))]
+[MessagePack.Union(1, typeof(TheaterBranch))]
 public abstract class DeploymentBranch 
     : IPolymorph, IDeploymentNode
 {
-    public ERef<Regime> Regime { get; private set; }
+    public Regime Regime { get; private set; }
     public int Id { get; private set; }
     public HashSet<DeploymentBranch> SubBranches { get; }
     public HashSet<GroupAssignment> Assignments { get; private set; }
     [SerializationConstructor] protected 
-        DeploymentBranch(DeploymentAi ai, LogicWriteKey key)
+        DeploymentBranch(Regime regime, LogicWriteKey key)
     {
-        Regime = ai.Regime.MakeRef();
+        Regime = regime;
         SubBranches = new HashSet<DeploymentBranch>();
         Assignments = new HashSet<GroupAssignment>();
     }
@@ -90,7 +90,7 @@ public abstract class DeploymentBranch
         
         
         var stratMove = key.Data.Models.MoveTypes.StrategicMove;
-        var alliance = Regime.Entity(key.Data)
+        var alliance = Regime
             .GetAlliance(key.Data);
         var distCosts = new Dictionary<Vector2I, float>();
         

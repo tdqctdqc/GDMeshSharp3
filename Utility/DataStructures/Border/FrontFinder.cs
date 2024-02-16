@@ -12,7 +12,6 @@ public static class FrontFinder
         Data d)
     {
         var res = new List<List<FrontFace>>();
-        var native = natives.First();
         var oppositions = natives.SelectMany(e =>
         {
             return e.GetNeighbors(d)
@@ -23,7 +22,9 @@ public static class FrontFinder
         while (oppositionsHash.Count > 0)
         {
             var first = oppositionsHash.First();
-            var front = first.GetFrontLeftToRight(oppositionsHash.Contains, d);
+            var front = first.GetFrontLeftToRight(
+                natives.Contains,
+                oppositionsHash.Contains, d);
             oppositionsHash.ExceptWith(front);
             res.Add(front);
         }

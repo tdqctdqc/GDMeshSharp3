@@ -25,8 +25,8 @@ public class MilAiMemo
     public void Finish(DeploymentAi ai, DeploymentRoot root, LogicWriteKey key)
     {
         var d = key.Data;
-        var theaterSegs = new Dictionary<Theater, HoldLineAssignment[]>();
-        foreach (var theater in root.SubBranches.OfType<Theater>())
+        var theaterSegs = new Dictionary<TheaterBranch, HoldLineAssignment[]>();
+        foreach (var theater in root.SubBranches.OfType<TheaterBranch>())
         {
             theaterSegs.Add(theater, theater.GetDescendentAssignmentsOfType<HoldLineAssignment>().ToArray());
         }
@@ -42,7 +42,7 @@ public class MilAiMemo
 
             var theater = 
                 theaterSegs.Keys.FirstOrDefault(
-                v => v.HeldCellIds.Contains(groupCell.Id));
+                v => v.Theater.Cells.Contains(groupCell));
             if (theater == null)
             {
                 theater = theaterSegs.Keys.MinBy(t => t.GetCharacteristicCell(d)

@@ -23,7 +23,8 @@ public partial class UiController : Node, IClientComponent
             // new TacticalMode(client),
             new DeploymentMode(client),
             // new HighlightCellsMode(client),
-            new PathFindMode(client)
+            new PathFindMode(client),
+            new MilPlanningMode(client)
         };
         var names = modes.Select(m => m.GetType().Name).ToList();
         ModeOption = new TypedSettingsOption<UiMode>("Ui Mode",

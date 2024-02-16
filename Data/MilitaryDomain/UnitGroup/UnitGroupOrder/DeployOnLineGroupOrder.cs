@@ -7,12 +7,15 @@ using Godot;
 public class DeployOnLineGroupOrder : UnitGroupOrder
 {
     public List<FrontFace> Faces { get; private set; }
-    public bool Attack { get; private set; }
-    public DeployOnLineGroupOrder(List<FrontFace> faces,
-        bool attack)
+    public HashSet<PolyCell> AdvanceInto { get; private set; }
+    public bool Advance { get; private set; }
+    public DeployOnLineGroupOrder(List<FrontFace> faces, 
+        HashSet<PolyCell> advanceInto, 
+        bool advance)
     {
+        AdvanceInto = advanceInto;
         Faces = faces;
-        Attack = attack;
+        Advance = advance;
     }
 
     public override void Handle(UnitGroup g, LogicWriteKey key,
@@ -104,20 +107,15 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         UnitGroup g, 
         CombatCalculator combat, LogicWriteKey key)
     {
-        if (Attack == false) return;
+        if(Advance == false) return;
+        if (AdvanceInto == null || AdvanceInto.Count == 0) return;
         var d = key.Data;
         var units = g.Units.Items(d);
-        var natives = Faces.Select(f => f.GetNative(d)).ToHashSet();
-        var foreigns = Faces.Select(f => f.GetForeign(d)).ToHashSet();
+        var assignments = GetAssignments(g, d);
         foreach (var unit in units)
         {
-            var cell = unit.Position.GetCell(d);
-            if (natives.Contains(cell) == false) continue;
-            var targets = cell.GetNeighbors(d)
-                .Intersect(foreigns);
-            if (targets.Count() == 0) continue;
-            var target = targets.GetRandomElement();
-            
+            var target = assignments[unit].GetForeign(d);
+            if (AdvanceInto.Contains(target) == false) continue;
             UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
         }
     }

@@ -5,42 +5,38 @@ using Godot;
 
 public partial class TheaterGraphic : Node2D
 {
-    public TheaterGraphic(Theater theater, 
+    public TheaterGraphic(TheaterBranch theaterBranch, 
         GraphicsSegmenter segmenter, Data d)
     {
-        Draw(theater, d);
-        var relToId = theater.HeldCellIds.First();
-        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
+        Draw(theaterBranch, d);
+        var relTo = theaterBranch.Theater.Cells.First().GetCenter();
         segmenter.AddElement(this, relTo);
     }
 
-    public void Draw(Theater theater, Data d)
+    public void Draw(TheaterBranch theaterBranch, Data d)
     {
         this.ClearChildren();
-        if (theater.HeldCellIds.Count() == 0) return;
-        var alliance = theater.Regime.Entity(d).GetAlliance(d);
-        var outer = theater.Regime.Entity(d).PrimaryColor;
+        if (theaterBranch.Theater.Cells.Count() == 0) return;
+        var alliance = theaterBranch.Regime.GetAlliance(d);
+        var outer = theaterBranch.Regime.PrimaryColor;
         var inner = ColorsExt.GetRandomColor();
         
-        var relToId = theater.HeldCellIds.First();
-        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
         var mb = MeshBuilder.GetFromPool();
         var color = ColorsExt.GetRandomColor();
-        DrawTheaterWps(theater, mb, color, d);
+        DrawTheaterWps(theaterBranch, mb, color, d);
         // DrawLinks(theater, mb, d);
-        DrawFronts(theater, d, mb, color);
+        DrawFronts(theaterBranch, d, mb, color);
         mb.Return();
     }
 
-    private void DrawFronts(Theater theater, 
+    private void DrawFronts(TheaterBranch theaterBranch, 
         Data d, MeshBuilder mb, Color theaterColor)
     {
-        var relToId = theater.HeldCellIds.First();
-        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
+        var relTo = theaterBranch.Theater.Cells.First().GetCenter();
         Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
-        var regimeColor = theater.Regime.Entity(d).PrimaryColor;
+        var regimeColor = theaterBranch.Regime.PrimaryColor;
         
-        foreach (var seg in theater.Assignments.OfType<HoldLineAssignment>())
+        foreach (var seg in theaterBranch.Assignments.OfType<HoldLineAssignment>())
         {
             var segColor = seg.Color;
             for (var i = 0; i < seg.Frontline.Faces.Count - 1; i++)
@@ -60,38 +56,34 @@ public partial class TheaterGraphic : Node2D
         }
     }
 
-    private void DrawTheaterWps(Theater theater, 
+    private void DrawTheaterWps(TheaterBranch theaterBranch, 
         MeshBuilder mb, Color theaterColor, Data d)
     {
-        var relToId = theater.HeldCellIds.First();
-        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
-        var regimeColor = theater.Regime.Entity(d).PrimaryColor;
+        var relTo = theaterBranch.Theater.Cells.First().GetCenter();
+        var regimeColor = theaterBranch.Regime.PrimaryColor;
         var size = 5f;
         
-        foreach (var tId in theater.HeldCellIds)
+        foreach (var wp in theaterBranch.Theater.Cells)
         {
-            var wp = PlanetDomainExt.GetPolyCell(tId, d);
             var relPos = relTo.GetOffsetTo(wp.GetCenter(), d);
             mb.AddPoint(relPos, size, regimeColor);
             mb.AddPoint(relPos, size * .6f, theaterColor);
         }
     }
 
-    private void DrawLinks(Theater theater, MeshBuilder mb, Data d)
+    private void DrawLinks(TheaterBranch theaterBranch, MeshBuilder mb, Data d)
     {
-        var relToId = theater.HeldCellIds.First();
-        var relTo = PlanetDomainExt.GetPolyCell(relToId, d).GetCenter();
-        var regimeColor = theater.Regime.Entity(d).PrimaryColor;
+        var relTo = theaterBranch.Theater.Cells.First().GetCenter();
+        var regimeColor = theaterBranch.Regime.PrimaryColor;
 
-        foreach (var tId in theater.HeldCellIds)
+        foreach (var wp in theaterBranch.Theater.Cells)
         {
-            var wp = PlanetDomainExt.GetPolyCell(tId, d);
             var relPos = relTo.GetOffsetTo(wp.GetCenter(), d);
             
             foreach (var nWp in wp.GetNeighbors(d))
             {
-                if (theater.HeldCellIds.Contains(nWp.Id) == false) continue;
-                if (nWp.Id > tId) continue;
+                if (theaterBranch.Theater.Cells.Contains(nWp) == false) continue;
+                if (nWp.Id > wp.Id) continue;
                 var nRelPos = relTo.GetOffsetTo(nWp.GetCenter(), d);
         
                 mb.AddLine(relPos, nRelPos, regimeColor, 2f);

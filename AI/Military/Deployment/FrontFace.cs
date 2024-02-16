@@ -64,12 +64,13 @@ public struct FrontFace
         Right = right;
     }
 
-    public FrontFace GetLeftNeighbor(Data d)
+    public FrontFace GetLeftNeighbor(Func<PolyCell, bool> isNative,
+        Data d)
     {
         if (Left == -1) throw new Exception();
         var left = PlanetDomainExt.GetPolyCell(Left, d);
         var native = PlanetDomainExt.GetPolyCell(Native, d);
-        if (left.Controller.RefId == native.Controller.RefId)
+        if (isNative(left))
         {
             var foreign = PlanetDomainExt.GetPolyCell(Foreign, d);
             return FrontFace.Construct(left, foreign, d);
@@ -77,12 +78,14 @@ public struct FrontFace
         return FrontFace.Construct(native, left, d);
     }
     
-    public FrontFace GetRightNeighbor(Data d)
+    public FrontFace GetRightNeighbor(
+        Func<PolyCell, bool> isNative,
+        Data d)
     {
         if (Right == -1) throw new Exception();
         var right = PlanetDomainExt.GetPolyCell(Right, d);
         var native = PlanetDomainExt.GetPolyCell(Native, d);
-        if (right.Controller.RefId == native.Controller.RefId)
+        if (isNative(right))
         {
             var foreign = PlanetDomainExt.GetPolyCell(Foreign, d);
             return FrontFace.Construct(right, foreign, d);
@@ -92,26 +95,34 @@ public struct FrontFace
     
     public void DoForNeighborsAlong(
         Func<FrontFace, bool> valid,
+        Func<PolyCell, bool> isNative,
         bool toLeft, Action<FrontFace> action, Data d)
     {
         var curr = this;
         while (toLeft ? curr.Left != null : curr.Right != null)
         {
-            curr = toLeft ? curr.GetLeftNeighbor(d) 
-                : curr.GetRightNeighbor(d);
+            curr = toLeft ? curr.GetLeftNeighbor(isNative, d) 
+                : curr.GetRightNeighbor(isNative, d);
             if (valid(curr) == false) return;
             action(curr);
         }
     }
 
+    public List<FrontFace> GetFrontLeftToRightByControl(
+        Regime r, Func<FrontFace, bool> valid, Data d)
+    {
+        return GetFrontLeftToRight(c => c.Controller.RefId == r.Id,
+            valid, d);
+    }
     public List<FrontFace> GetFrontLeftToRight(
+        Func<PolyCell, bool> isNative,
         Func<FrontFace, bool> valid, Data d)
     {
         var res = new List<FrontFace>();
         var furthestLeft = this;
         while (furthestLeft.Left != -1)
         {
-            var nextLeft = furthestLeft.GetLeftNeighbor(d);
+            var nextLeft = furthestLeft.GetLeftNeighbor(isNative, d);
             if (nextLeft.Equals(this) || valid(nextLeft) == false) break;
             furthestLeft = nextLeft;
         }
@@ -119,7 +130,7 @@ public struct FrontFace
         var curr = furthestLeft;
         while (curr.Right != -1)
         {
-            var nextRight = curr.GetRightNeighbor(d);
+            var nextRight = curr.GetRightNeighbor(isNative, d);
             if (nextRight.Equals(furthestLeft) || valid(nextRight) == false) break;
             res.Add(nextRight);
             curr = nextRight;

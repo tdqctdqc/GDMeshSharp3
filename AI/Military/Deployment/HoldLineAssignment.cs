@@ -52,7 +52,7 @@ public class HoldLineAssignment : GroupAssignment
 
     public override float GetPowerPointNeed(Data d)
     {
-        var ai = d.HostLogicData.RegimeAis[Regime.Entity(d)]
+        var ai = d.HostLogicData.RegimeAis[Regime]
             .Military.Deployment;
         
         
@@ -118,7 +118,7 @@ public class HoldLineAssignment : GroupAssignment
                 g.GetCell(key.Data).GetCenter().GetOffsetTo(cell.GetCenter(), key.Data).Length());
             toPick.Remove(picked);
             subSegs[picker.Key] = (values.need, values.have + picked.GetPowerPoints(key.Data));
-            var order = GoToCellGroupOrder.Construct(cell, Regime.Entity(key.Data),
+            var order = GoToCellGroupOrder.Construct(cell, Regime,
                 picked, key.Data);
             key.SendMessage(new SetUnitOrderProcedure(picked.MakeRef(), order));
         }
@@ -131,7 +131,8 @@ public class HoldLineAssignment : GroupAssignment
         foreach (var (group, bounds) in lineOrders)
         {
             var groupFaces = Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
-            var order = new DeployOnLineGroupOrder(groupFaces, false);
+            var order = new DeployOnLineGroupOrder(groupFaces, 
+                new HashSet<PolyCell>(), false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
                 order);
@@ -180,7 +181,7 @@ public class HoldLineAssignment : GroupAssignment
     private Dictionary<FrontFace, float> GetFaceCosts(Data d)
     {
         if (Frontline.Faces.Count == 0) return new Dictionary<FrontFace, float>();
-        var alliance = Regime.Entity(d).GetAlliance(d);
+        var alliance = Regime.GetAlliance(d);
         var totalEnemyCost = Frontline
             .Faces.Sum(f => GetFaceEnemyCost(alliance, f, d));
         var totalLengthCost = Frontline.Faces.Count;
@@ -265,7 +266,7 @@ public class HoldLineAssignment : GroupAssignment
     }
     public float GetOpposingPowerPoints(Data data)
     {
-        var alliance = Regime.Entity(data).GetAlliance(data);
+        var alliance = Regime.GetAlliance(data);
         return Frontline.Faces.Select(f => f.GetNative(data))
             .Distinct()
             .SelectMany(c => c.GetNeighbors(data))

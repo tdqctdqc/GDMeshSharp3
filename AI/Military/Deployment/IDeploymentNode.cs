@@ -5,7 +5,7 @@ using Godot;
 
 public interface IDeploymentNode 
 {
-    ERef<Regime> Regime { get; }
+    Regime Regime { get; }
     float GetPowerPointsAssigned(Data data);
     float GetPowerPointNeed(Data data);
     void GiveOrders(DeploymentAi ai, LogicWriteKey key);

@@ -30,11 +30,11 @@ public class DeploymentAi
     {
         IdDispenser = new IdDispenser(0);
     }
-    public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
+    public void Calculate(RegimeMilitaryAi ai, LogicWriteKey key, MinorTurnOrders orders)
     {
         Clear(key);
         _root = new DeploymentRoot(this, key);
-        _root.MakeTheaters(this, key);
+        _root.MakeTheaters(ai, key);
         if (Memo != null)
         {
             Memo.Finish(this, _root, key);

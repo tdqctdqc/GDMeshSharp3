@@ -4,7 +4,7 @@ using System.Collections.Concurrent;
 using System.Linq;
 using MessagePack;
 
-public class TheaterGraphicLayer : GraphicLayer<Theater, TheaterGraphic>
+public class TheaterGraphicLayer : GraphicLayer<TheaterBranch, TheaterGraphic>
 {
     [SerializationConstructor] private TheaterGraphicLayer(Data data, GraphicsSegmenter segmenter) 
         : base(LayerOrder.Theaters, "Theater", segmenter)
@@ -23,7 +23,7 @@ public class TheaterGraphicLayer : GraphicLayer<Theater, TheaterGraphic>
             var root = ai.Military.Deployment.GetRoot();
             if (root != null)
             {
-                var theaters = root.SubBranches.OfType<Theater>();
+                var theaters = root.SubBranches.OfType<TheaterBranch>();
                 foreach (var theater in theaters)
                 {   
                     Add(theater, data);
@@ -33,7 +33,7 @@ public class TheaterGraphicLayer : GraphicLayer<Theater, TheaterGraphic>
         
         
     }
-    protected override TheaterGraphic GetGraphic(Theater key, Data d)
+    protected override TheaterGraphic GetGraphic(TheaterBranch key, Data d)
     {
         return new TheaterGraphic(key, _segmenter, d);
     }

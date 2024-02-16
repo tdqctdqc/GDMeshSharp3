@@ -8,7 +8,6 @@ using Godot;
 public class DeploymentMode : UiMode
 {
     private MouseOverHandler _mouseOverHandler;
-    private Regime _regime;
     public DeploymentMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
@@ -58,36 +57,30 @@ public class DeploymentMode : UiMode
         {
             return;
         }
-        
-        DrawRegimeTheaters(regime);
-        // DrawRegimeLineOrders(regime);
-    }
-
-    private void DrawRegimeTheaters(Regime regime)
-    {
+        var ai = _client.Data.HostLogicData.RegimeAis[regime];
+        var root = ai.Military.Deployment.GetRoot();
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
-        var alliance = regime.GetAlliance(_client.Data);
-        var ai = _client.Data.HostLogicData.RegimeAis[regime];
-        var relTo = regime.GetPolys(_client.Data).First().Center;
-        
-        var root = ai.Military.Deployment.GetRoot();
         if (root != null)
         {
-            var theaters = root.SubBranches.OfType<Theater>();
+            DrawDeploymentBranch(root);
+            var theaters = root.SubBranches.OfType<TheaterBranch>();
             var segs = theaters
                 .SelectMany(t => t.Assignments.OfType<HoldLineAssignment>());
-            DrawDeploymentBranch(root);
             foreach (var seg in segs)
             {
-                debug.Draw(mb => mb.DrawFrontAssignment(relTo, seg, _client.Data), relTo);
+                var pos = seg.GetCharacteristicCell(_client.Data).GetCenter();
+                debug.Draw(mb => mb.DrawFrontAssignment(pos,
+                    seg, _client.Data), pos);
             }
         }
     }
 
+    
+
     private Vector2 DrawDeploymentBranch(DeploymentBranch branch)
     {
-        var regime = branch.Regime.Entity(_client.Data);
+        var regime = branch.Regime;
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
         var template = new DeploymentBranchTooltipTemplate();
@@ -130,23 +123,7 @@ public class DeploymentMode : UiMode
         debug.AddNode(node, pos);
         return pos;
     }
-    private void DrawRegimeLineOrders(Regime regime)
-    {
-        var ai = _client.Data.HostLogicData.RegimeAis[regime];
-        var groups = _client.Data.Military.UnitAux.UnitGroupByRegime[regime];
-        var lineOrders = groups
-            .Where(g => g.GroupOrder is DeployOnLineGroupOrder)
-            .Select(g => (g, (DeployOnLineGroupOrder)g.GroupOrder));
-        var debug = _client.GetComponent<MapGraphics>().DebugOverlay;
-        foreach (var pair in lineOrders)
-        {
-            var group = pair.g;
-            var order = pair.Item2;
-            var relTo = PlanetDomainExt.GetPolyCell(order.Faces.First().Native, _client.Data)
-                .GetCenter();
-            debug.Draw(mb => mb.DrawLineOrder(relTo, order, group, _client.Data), relTo);
-        }
-    }
+    
     private void DrawRegimeBorders(Regime regime)
     {
         var alliance = regime.GetAlliance(_client.Data);

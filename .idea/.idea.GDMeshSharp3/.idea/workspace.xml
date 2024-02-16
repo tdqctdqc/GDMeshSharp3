@@ -5,8 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/AI/Military/OperationalAi.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Military/Theater.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/BorderFinder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/Frontline.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Frontline.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilAiMemo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilAiMemo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/Theater.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/TheaterBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/UnitGroupManager.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DeploymentMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DeploymentMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphicLayer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/DeployOnLineGroupOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Border/FrontFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Border/FrontFinder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Graph/IGraphExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Graph/IGraphExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Graph/IStaticNode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -68,14 +93,13 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8b78e83a7fcb41b463a82a2c615d0eb9a82f63e6fe93ffd1fe6781e6349d9b/HashSet.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/DeploymentBranch.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/UnitGroupManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/BaseDomain/BaseDomain.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
@@ -511,6 +535,8 @@
       <workItem from="1707923220563" duration="3596000" />
       <workItem from="1707935519333" duration="6532000" />
       <workItem from="1707954211837" duration="5473000" />
+      <workItem from="1708044335861" duration="7341000" />
+      <workItem from="1708119103147" duration="5618000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -722,14 +748,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00133" summary="made terrain use resources">
-      <option name="closed" value="true" />
-      <created>1706405284938</created>
-      <option name="number" value="00133" />
-      <option name="presentableId" value="LOCAL-00133" />
-      <option name="project" value="LOCAL" />
-      <updated>1706405284974</updated>
-    </task>
     <task id="LOCAL-00134" summary="made ui modes, mouseoverhandler use actions instead of drawing every time">
       <option name="closed" value="true" />
       <created>1706461017416</created>
@@ -874,7 +892,15 @@
       <option name="project" value="LOCAL" />
       <updated>1707958744032</updated>
     </task>
-    <option name="localTasksCounter" value="152" />
+    <task id="LOCAL-00152" summary="optimized shiftGroups, fixed not using road bug">
+      <option name="closed" value="true" />
+      <created>1708049238055</created>
+      <option name="number" value="00152" />
+      <option name="presentableId" value="LOCAL-00152" />
+      <option name="project" value="LOCAL" />
+      <updated>1708049238055</updated>
+    </task>
+    <option name="localTasksCounter" value="153" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -896,7 +922,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="tweaked assigner, working on reassigning groups btwn assignments" />
     <MESSAGE value="added flag on unit graphics, made holdLine data not depend on order of faces in owning frontSegAssignment" />
     <MESSAGE value="working on frontSegment reunification" />
     <MESSAGE value="made icon graphics use multimesh" />
@@ -921,6 +946,7 @@
     <MESSAGE value="before making reinforce graph" />
     <MESSAGE value="made shift groups use graph" />
     <MESSAGE value="doot" />
-    <option name="LAST_COMMIT_MESSAGE" value="doot" />
+    <MESSAGE value="optimized shiftGroups, fixed not using road bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimized shiftGroups, fixed not using road bug" />
   </component>
 </project>

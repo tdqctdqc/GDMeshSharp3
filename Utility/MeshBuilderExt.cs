@@ -69,29 +69,6 @@ public static class MeshBuilderExt
         }
     }
 
-    public static void DrawLineOrder(this MeshBuilder mb,
-        Vector2 relTo, DeployOnLineGroupOrder order, UnitGroup group, Data d)
-    {
-        var markerSize = 2.5f;
-        var color = group.Color;
-        for (var i = 0; i < order.Faces.Count; i++)
-        {
-            var face = order.Faces[i];
-            var native = face.GetNative(d);
-            var foreign = face.GetForeign(d);
-            if (i < order.Faces.Count - 1)
-            {
-                var nextFace = order.Faces[i + 1];
-                var nextNative = nextFace.GetNative(d);
-                mb.AddLine(relTo.GetOffsetTo(native.GetCenter(),d),
-                    relTo.GetOffsetTo(nextNative.GetCenter(), d),
-                    color, markerSize);
-            }
-            mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
-                relTo.GetOffsetTo(foreign.GetCenter(), d),
-                markerSize / 5f, color);
-        }
-    }
     public static void DrawPolyBorders(this MeshBuilder mb,
         Vector2 relTo, MapPolygon poly, Data data)
     {
@@ -155,6 +132,23 @@ public static class MeshBuilderExt
             // mb.AddTri(p1, p2, p3, lf.Color);
             // mb.AddTri(p1, p2, p3, v.Color);
             mb.AddTri(p1, p2, p3, color);
+        }
+    }
+
+    public static void DrawFrontFaces(this MeshBuilder mb,
+        List<FrontFace> faces,
+        Color color, 
+        float thickness,
+        Vector2 relTo, Data d)
+    {
+        for (var i = 0; i < faces.Count; i++)
+        {
+            var face = faces[i];
+            var native = face.GetNative(d);
+            var foreign = face.GetForeign(d);
+            var nPos = relTo.GetOffsetTo(native.GetCenter(), d);
+            var fPos = relTo.GetOffsetTo(foreign.GetCenter(), d);
+            mb.AddArrow(nPos, fPos, thickness, color);
         }
     }
 }
