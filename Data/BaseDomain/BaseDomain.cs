@@ -9,8 +9,8 @@ public class BaseDomain
     private GameClockAux _gameClockAux;
     public RuleVars Rules => _ruleVarsAux.Value;
     private SingletonAux<RuleVars> _ruleVarsAux;
-    public IdDispenser IdDispenser => _idAux.Value;
-    private SingletonAux<IdDispenser> _idAux;
+    public EntityIds IdDispenser => _idAux.Value;
+    private SingletonAux<EntityIds> _idAux;
     public BaseDomain()
     {
         
@@ -21,6 +21,6 @@ public class BaseDomain
         PlayerAux = new PlayerAux(data);
         _gameClockAux = new GameClockAux(data);
         _ruleVarsAux = new SingletonAux<RuleVars>(data);
-        _idAux = new SingletonAux<IdDispenser>(data);
+        _idAux = new SingletonAux<EntityIds>(data);
     }
 }

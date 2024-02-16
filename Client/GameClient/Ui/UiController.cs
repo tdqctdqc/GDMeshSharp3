@@ -20,9 +20,10 @@ public partial class UiController : Node, IClientComponent
             new BlankMode(client),
             new UnitMode(client),
             new PolyMode(client),
-            new TacticalMode(client),
-            new StrategicMode(client),
-            new DebugScratchMode(client)
+            // new TacticalMode(client),
+            new DeploymentMode(client),
+            // new HighlightCellsMode(client),
+            new PathFindMode(client)
         };
         var names = modes.Select(m => m.GetType().Name).ToList();
         ModeOption = new TypedSettingsOption<UiMode>("Ui Mode",

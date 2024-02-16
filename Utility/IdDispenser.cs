@@ -1,21 +1,11 @@
-using Godot;
-using System;
-using System.Collections.Generic;
-using MessagePack;
 
-public class IdDispenser : Entity
+using System;
+
+public class IdDispenser
 {
     public int Index => _index;
     private int _index;
-    public static IdDispenser Create(GenWriteKey key)
-    {
-        var d = new IdDispenser(0, 0);
-        key.Create(d);
-        d.Id = d.TakeId();
-        return d;
-    }
-    [SerializationConstructor] private IdDispenser(int index, int id)
-        : base(id)
+    public IdDispenser(int index)
     {
         _index = index;
     }
@@ -29,10 +19,5 @@ public class IdDispenser : Entity
             System.Threading.Interlocked.Increment(ref _index);
             return _index;
         }
-    }
-
-    public override void CleanUp(StrongWriteKey key)
-    {
-        
     }
 }

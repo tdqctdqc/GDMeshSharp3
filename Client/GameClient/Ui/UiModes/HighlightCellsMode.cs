@@ -2,10 +2,10 @@
 using System.Linq;
 using Godot;
 
-public class DebugScratchMode : UiMode
+public class HighlightCellsMode : UiMode
 {
     private MouseOverHandler _mouseOverHandler;
-    public DebugScratchMode(Client client) : base(client)
+    public HighlightCellsMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
         _mouseOverHandler.ChangedPoly += p => Highlight();

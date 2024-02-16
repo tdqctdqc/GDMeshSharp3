@@ -5,14 +5,14 @@ using System.Linq;
 using Godot;
 
 
-public class StrategicMode : UiMode
+public class DeploymentMode : UiMode
 {
     private MouseOverHandler _mouseOverHandler;
     private Regime _regime;
-    public StrategicMode(Client client) : base(client)
+    public DeploymentMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
-        _mouseOverHandler.ChangedPoly += c => DrawRegime();
+        _mouseOverHandler.ChangedCell += c => DrawRegime();
         _mouseOverHandler.ChangedCell += c => Highlight();
         _mouseOverHandler.ChangedPoly += c => Highlight();
     }
@@ -29,17 +29,17 @@ public class StrategicMode : UiMode
     private void DrawRegime()
     {
         var mg = _client.GetComponent<MapGraphics>();
-        mg.DebugOverlay.Clear();
-        if (_mouseOverHandler.MouseOverPoly == null)
+        if (_mouseOverHandler.MouseOverCell == null)
         {
             return;
         }
-        if (_mouseOverHandler.MouseOverPoly.OccupierRegime
+        if (_mouseOverHandler.MouseOverCell.Controller
             .IsEmpty())
         {
             return;
         }
-        var regime = _mouseOverHandler.MouseOverPoly.OccupierRegime.Entity(_client.Data);
+        mg.DebugOverlay.Clear();
+        var regime = _mouseOverHandler.MouseOverCell.Controller.Entity(_client.Data);
         DrawRegimeBorders(regime);
         if (regime.IsPlayerRegime(_client.Data))
         {

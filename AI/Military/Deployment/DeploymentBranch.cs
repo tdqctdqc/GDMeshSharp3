@@ -79,26 +79,29 @@ public abstract class DeploymentBranch
         var d = key.Data;
         var assignments =
             GetDescendentAssignments()
-                .ToHashSet();
-        var needs = assignments.ToDictionary(a => a,
+                .OrderBy(a => a.GetSatisfiedRatio(key.Data)).ToList();
+        var needs = assignments
+            .ToDictionary(a => a,
             a => a.GetPowerPointNeed(key.Data));
+        var numWant = needs
+            .Where(kvp => kvp.Value > 0f)
+            .Count();
+        if (numWant == 0) return;
+        
         
         var stratMove = key.Data.Models.MoveTypes.StrategicMove;
         var alliance = Regime.Entity(key.Data)
             .GetAlliance(key.Data);
-        var graph = new Graph<GroupAssignment, float>();
-        foreach (var a in assignments)
-        {
-            graph.AddNode(a);
-        }
+        var distCosts = new Dictionary<Vector2I, float>();
+        
         foreach (var a1 in assignments)
         {
             var cell1 = a1.GetCharacteristicCell(key.Data);
             foreach (var a2 in assignments)
             {
-                if (graph.HasEdge(a1, a2)) continue;
+                if (a2.Id <= a1.Id) continue;
+                var idKey = a1.GetIdEdgeKey(a2);
                 var cell2 = a2.GetCharacteristicCell(key.Data);
-                
                 var cost = 0f;
                 var path = d.Context.PathCache.GetOrAdd((stratMove,
                     alliance, cell1, cell2));
@@ -113,58 +116,38 @@ public abstract class DeploymentBranch
                         cost += stratMove.EdgeCost(cell1, cell2, key.Data);
                     }
                 }
-                
-                graph.AddEdge(a1, a2, cost);
+                distCosts.Add(idKey, cost);
             }
         }
+
         
-        var noGroupsToTake = new HashSet<GroupAssignment>();
-        var wantGroups = assignments
-            .Where(g => needs[g] > 0f)
-            .ToHashSet();
-        var noNeedAssignments = assignments
-            .Except(wantGroups).ToHashSet();
-        var maxIter = (wantGroups.Count 
-            + noNeedAssignments.Sum(g => g.Groups.Count));
+        
+        var maxIter = assignments
+            .Sum(a => a.Groups.Count) 
+             / 2 + 1;
         
         var iter = 0;
         
-        while (wantGroups.Count > 0
-            && iter < maxIter)
+        while (iter < maxIter)
         {
-
-            foreach (var a in wantGroups)
+            for (var i = 0; i < assignments.Count; i++)
             {
+                var a = assignments[i];
                 iter++;
                 var need = needs[a];
+                if (need == 0) continue;
                 var ratio = a.GetPowerPointsAssigned(key.Data) / need;
-
-                bool found = false;
-                foreach (var noNeed in noNeedAssignments.OrderBy(n => graph.GetEdge(a, n)))
+                
+                for (var j = assignments.Count - 1; j >= 0; j--)
                 {
-                    if (eligibleToTakeFrom(noNeed, ratio)
-                        && noNeed.PullGroup(ai, 
-                            g => a.Suitability(g, key.Data), key)
-                        is UnitGroup g)
-                    {
-                        a.PushGroup(ai, g, key);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (found) break;
-                 
-                foreach (var ga in assignments.Except(noNeedAssignments)
-                             .OrderBy(n => graph.GetEdge(a, n)))
-                {
-                    if (eligibleToTakeFrom(ga, ratio)
-                        && ga.PullGroup(ai, 
+                    if (i == j) continue;
+                    var a2 = assignments[j];
+                    if (eligibleToTakeFrom(a2, ratio)
+                        && a2.PullGroup(ai, 
                                 g => a.Suitability(g, key.Data), key)
                             is UnitGroup g)
                     {
                         a.PushGroup(ai, g, key);
-                        found = true;
                         break;
                     }
                 }
@@ -182,7 +165,6 @@ public abstract class DeploymentBranch
         
         bool eligibleToTakeFrom(GroupAssignment assgn, float ratio)
         {
-            if (noGroupsToTake.Contains(assgn)) return false;
             if (assgn.Groups.Count == 0) return false;
             var need = needs[assgn];
             if (need == 0f) return true;

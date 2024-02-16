@@ -5,8 +5,9 @@ using System.Linq;
 using Godot;
 
 [MessagePack.Union(0, typeof(HoldLineAssignment))]
-public abstract class GroupAssignment : IDeploymentNode
+public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
 {
+    public int Id { get; private set; }
     public DeploymentBranch Parent { get; }
     public ERef<Regime> Regime { get; private set; }
     public HashSet<UnitGroup> Groups { get; }
@@ -14,6 +15,7 @@ public abstract class GroupAssignment : IDeploymentNode
     protected GroupAssignment(DeploymentBranch parent,
         DeploymentAi ai, LogicWriteKey key)
     {
+        Id = ai.IdDispenser.TakeId();
         Parent = parent;
         Regime = ai.Regime.MakeRef();
         Groups = new HashSet<UnitGroup>();

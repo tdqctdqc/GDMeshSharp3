@@ -6,7 +6,7 @@ public class StrategicMoveType : MoveType
     {
     }
 
-    public override float TerrainCostInstantaneous(PolyCell pt, Data d)
+    protected override float TerrainCostInstantaneous(PolyCell pt, Data d)
     {
         return 1f;
     }

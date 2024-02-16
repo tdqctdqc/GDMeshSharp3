@@ -3,7 +3,7 @@ using Godot;
 
 public abstract class MoveType : IModel
 {
-    public abstract float TerrainCostInstantaneous(PolyCell pt, Data d);
+    protected abstract float TerrainCostInstantaneous(PolyCell pt, Data d);
 
     public bool Passable(PolyCell cell, Alliance a, Data d)
     {
@@ -22,7 +22,10 @@ public abstract class MoveType : IModel
             if (r != null)
             {
                 var roadCostPerLength = RoadCostPerLength(r);
-                if (roadCostPerLength < terrCostPerLength) return l * roadCostPerLength;
+                if (roadCostPerLength < terrCostPerLength)
+                {
+                    return l * roadCostPerLength;
+                }
             }
         }
         return l * terrCostPerLength;
@@ -33,8 +36,8 @@ public abstract class MoveType : IModel
         var cost = r.CostOverride;
         if (r.UseSpeedOverride)
         {
-            var costRatio = cost / r.SpeedOverride;
-            return BaseSpeed * costRatio;
+            var speedRatio = BaseSpeed / r.SpeedOverride;
+            return cost * speedRatio;
         }
         return cost;
     }

@@ -6,13 +6,13 @@ public class InfantryMoveType : MoveType
 {
     public InfantryMoveType() 
         : base(true, 
-            500f, 
+            200f, 
             nameof(InfantryMoveType))
     {
         
     }
 
-    public override float TerrainCostInstantaneous(PolyCell pt, Data d)
+    protected override float TerrainCostInstantaneous(PolyCell pt, Data d)
     {
         if (pt is LandCell == false) return Mathf.Inf;
         var lf = pt.GetLandform(d);

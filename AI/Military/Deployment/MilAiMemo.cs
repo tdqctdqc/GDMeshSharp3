@@ -22,8 +22,6 @@ public class MilAiMemo
             FrontSegmentGroups.AddRange(seg.Groups);
         }
     }
-    
-
     public void Finish(DeploymentAi ai, DeploymentRoot root, LogicWriteKey key)
     {
         var d = key.Data;
@@ -41,8 +39,18 @@ public class MilAiMemo
             {
                 throw new Exception();
             }
-            var (theater, segments) = theaterSegs
-                .First(kvp => kvp.Key.HeldCellIds.Contains(groupCell.Id));
+
+            var theater = 
+                theaterSegs.Keys.FirstOrDefault(
+                v => v.HeldCellIds.Contains(groupCell.Id));
+            if (theater == null)
+            {
+                theater = theaterSegs.Keys.MinBy(t => t.GetCharacteristicCell(d)
+                    .GetCenter().GetOffsetTo(groupCell.GetCenter(), d).Length());
+            }
+
+            var segments = theaterSegs[theater];
+            
             if (segments.Length == 0)
             {
                 continue;

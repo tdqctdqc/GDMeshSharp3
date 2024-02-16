@@ -8,7 +8,7 @@ using System.Reflection;
 
 public class Data
 {
-    public IdDispenser IdDispenser => BaseDomain.IdDispenser;
+    public EntityIds IdDispenser => BaseDomain.IdDispenser;
     public ClientPlayerData ClientPlayerData { get; private set; }
     public HostLogicData HostLogicData { get; private set; }
     public DataNotices Notices { get; private set; }

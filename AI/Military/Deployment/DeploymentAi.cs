@@ -10,22 +10,25 @@ public class DeploymentAi
     public Regime Regime { get; private set; }
     private DeploymentRoot _root;
     private Data _data;
+    public IdDispenser IdDispenser { get; private set; }
     public MilAiMemo Memo { get; set; }
     public static DeploymentAi Construct(Regime r, Data d)
     {
-        var ai = new DeploymentAi(r, new IdRecycler(), d);
+        var ai = new DeploymentAi(r, d);
         
         return ai;
     }
-    private DeploymentAi(Regime r, IdRecycler deploymentTreeIds, 
+    private DeploymentAi(Regime r, 
         Data d)
     {
         _data = d;
         Regime = r;
+        IdDispenser = new IdDispenser(0);
     }
 
     public void Clear(LogicWriteKey key)
     {
+        IdDispenser = new IdDispenser(0);
     }
     public void Calculate(Regime regime, LogicWriteKey key, MinorTurnOrders orders)
     {

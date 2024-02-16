@@ -7,7 +7,7 @@ public class DirtRoad : RoadModel
 {
     public DirtRoad() 
         : base(nameof(DirtRoad), 
-            .5f, 
+            .25f, 
             false, 0f,
             Colors.SaddleBrown)
     {

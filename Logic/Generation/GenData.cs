@@ -20,7 +20,7 @@ public class GenData : Data
     }
     public void CreateFirstTime(GenWriteKey key)
     {
-        IdDispenser.Create(key);
+        EntityIds.Create(key);
         GameClock.Create(key);
         PlanetInfo.Create(GenMultiSettings.Dimensions, key);
         Market.Create(key);
