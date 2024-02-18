@@ -271,13 +271,6 @@ public class MeshBuilder
         }
     }
 
-    public void AddArrowsRainbow(IReadOnlyList<LineSegment> segs, float thickness)
-    {
-        for (var i = 0; i < segs.Count; i++)
-        {
-            AddArrow(segs[i].From, segs[i].To, thickness, ColorsExt.GetRainbowColor(i));
-        }
-    }
     public void AddArrows(IReadOnlyList<LineSegment> segs, float thickness, Color color)
     {
         foreach (var s in segs)
@@ -289,16 +282,17 @@ public class MeshBuilder
         float thickness, Color color)
     {
         var length = from.DistanceTo(to);
-        var arrowSize = Mathf.Min(length / 2f, thickness * 2f);
-        var mid = (from + to) / 2f;
-        
+        var arrowLength = Mathf.Min(length / 2f, thickness * 1.5f);
+        var stemLength = length - arrowLength;
+
         var axis = (to - from).Normalized();
-        var perpendicular = axis.Rotated(Mathf.Pi / 2f);
-        var arrowFrom = mid - axis * arrowSize;
-        var arrowTo = mid + axis * arrowSize;
-        JoinLinePoints(from, to, thickness, color);
-        AddTri(arrowTo, arrowFrom + perpendicular * arrowSize / 2f,
-            arrowFrom - perpendicular * arrowSize / 2f, color);
+        var orth = axis.Orthogonal();
+
+        var arrowBase = from + axis * stemLength;
+        
+        AddTri(to, arrowBase + orth * thickness,
+            arrowBase - orth * thickness, color);
+        AddLine(from, arrowBase, color, thickness);
     }
 
     public void AddNumMarkers(List<Vector2> points, float markerSize, Color color, Color textColor, Vector2 offset,

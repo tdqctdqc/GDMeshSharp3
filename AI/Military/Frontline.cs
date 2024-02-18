@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -6,7 +7,9 @@ public class Frontline
 {
     public Regime Regime { get; private set; }
     public List<FrontFace> Faces { get; private set; }
-    public List<List<FrontFace>> AdvanceLines { get; private set; }
+    public List<PolyCell[]> FaceAdvanceRoutes { get; private set; }
+    public List<FrontFace> AdvanceFront { get; private set; }
+    public List<List<FrontFace>> SalientFronts { get; private set; }
     public HashSet<PolyCell> AdvanceInto { get; private set; }
     public Frontline(List<FrontFace> faces, Regime regime)
     {
@@ -67,19 +70,41 @@ public class Frontline
         var natives = Faces
             .Select(f => f.GetNative(d)).ToHashSet();
 
-        AdvanceLines = FrontFinder
-            .FindFront(natives.Union(advanceInto).ToHashSet(),
+        SalientFronts = FrontFinder
+            .FindFront(advanceInto.Union(natives).ToHashSet(),
                 c =>
-                    c.Controller.RefId != Regime.Id 
-                    && c.Controller.IsEmpty() == false
-                    && advanceInto.Contains(c) == false,
-                d);
-        
+                {
+                    return c.Controller.RefId != Regime.Id
+                        // && c.Controller.IsEmpty() == false
+                        && advanceInto.Contains(c) == false;
+                },
+            d);
+        return;
 
-        // var boundaryCells = advanceInto
-        //     .Where(c => c.GetNeighbors(d)
-        //                     .Any(n => advanceInto.Contains(n) == false
-        //                 && natives.Contains(n) == false)).ToArray();
-        // var boundaryChains = boundaryCells
+        if (SalientFronts.Count == 1)
+        {
+            AdvanceFront = SalientFronts[0];
+            return;
+        }
+        var currIndex = 0;
+        AdvanceFront = new List<FrontFace>();
+        
+        while (currIndex < Faces.Count && currIndex != -1)
+        {
+            var curr = Faces[currIndex];
+            var salientIndex = SalientFronts.FindIndex(f => f[0].JoinsWith(curr));
+
+            if (salientIndex == -1)
+            {
+                AdvanceFront.Add(curr);
+                currIndex++;
+            }
+            else
+            {
+                var salient = SalientFronts[salientIndex];
+                AdvanceFront.AddRange(salient);
+                currIndex = Faces.FindLastIndex(f => f.JoinsWith(salient[^1]));
+            }
+        }
     }
 }

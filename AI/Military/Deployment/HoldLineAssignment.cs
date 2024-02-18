@@ -131,8 +131,9 @@ public class HoldLineAssignment : GroupAssignment
         foreach (var (group, bounds) in lineOrders)
         {
             var groupFaces = Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
-            var order = new DeployOnLineGroupOrder(groupFaces, 
-                new HashSet<PolyCell>(), false);
+            var order = new LineOrder(groupFaces, 
+                new List<PolyCell[]>(), 
+                false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
                 order);

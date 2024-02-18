@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Godot;
 
-[MessagePack.Union(0, typeof(DeployOnLineGroupOrder))]
+[MessagePack.Union(0, typeof(LineOrder))]
 [MessagePack.Union(1, typeof(DoNothingUnitGroupOrder))]
 [MessagePack.Union(2, typeof(GoToCellGroupOrder))]
 public abstract class UnitGroupOrder : IPolymorph

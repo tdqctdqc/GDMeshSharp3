@@ -146,6 +146,27 @@ public struct FrontFace
         return (n.GetCenter() + n.GetCenter().GetOffsetTo(f.GetCenter(), d) / 2f).ClampPosition(d);
 
     }
+
+    public bool JoinsWith(FrontFace n)
+    {
+        var score = 0;
+        score += Shared(n.Native);
+        
+        score += Shared(n.Foreign);
+        if (score == 2) return true;
+
+        score += Shared(n.Left);
+        if (score == 2) return true;
+
+        score += Shared(n.Right);
+        return (score == 2);
+    }
+    private int Shared(int id)
+    {
+        return Native == id || Foreign == id
+                            || Left == id || Right == id
+                            ? 1 : 0;
+    }
 }
 
 public static class FrontFaceExt

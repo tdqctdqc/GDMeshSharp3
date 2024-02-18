@@ -29,6 +29,7 @@ public class MilPlanningMode : UiMode
         if (cell == null) return;
         if (cell.Controller.IsEmpty()) return;
         var regime = cell.Controller.Entity(_client.Data);
+        if (regime.IsPlayerRegime(_client.Data)) return;
         var alliance = regime.GetAlliance(_client.Data);
         var ai = _client.Data.HostLogicData.RegimeAis[regime];
         var relTo = regime.GetPolys(_client.Data).First().Center;
@@ -42,7 +43,8 @@ public class MilPlanningMode : UiMode
                 {
                     foreach (var c in frontline.AdvanceInto)
                     {
-                        debug.Draw(mb => mb.DrawPolygon(c.RelBoundary, Colors.Orange),
+                        debug.Draw(mb => mb.DrawPolygon(c.RelBoundary,
+                                new Color(Colors.Black, .5f)),
                             c.RelTo);
                     }
                 }
@@ -50,14 +52,22 @@ public class MilPlanningMode : UiMode
                     Colors.Black, 3f, pos, _client.Data), pos);
 
 
-                if (frontline.AdvanceLines != null)
+                if (frontline.AdvanceFront != null)
                 {
-                    for (var i = 0; i < frontline.AdvanceLines.Count; i++)
+                    debug.Draw(mb => mb.DrawFrontFaces(
+                        frontline.AdvanceFront, 
+                        Colors.White, 2f, pos, _client.Data), pos);
+                }
+
+                if (frontline.SalientFronts != null)
+                {
+                    int iter = 0;
+                    foreach (var salient in frontline.SalientFronts)
                     {
-                        var color = ColorsExt.GetRainbowColor(i);
                         debug.Draw(mb => mb.DrawFrontFaces(
-                            frontline.AdvanceLines[i], 
-                            color, 1f, pos, _client.Data), pos);
+                            salient, 
+                            ColorsExt.GetRainbowColor(iter++),
+                            1f, pos, _client.Data), pos);
                     }
                 }
             }

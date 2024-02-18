@@ -4,16 +4,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class DeployOnLineGroupOrder : UnitGroupOrder
+public class LineOrder : UnitGroupOrder
 {
     public List<FrontFace> Faces { get; private set; }
-    public HashSet<PolyCell> AdvanceInto { get; private set; }
+    public List<PolyCell[]> FaceAdvanceRoutes { get; private set; }
+    
+    
+    
     public bool Advance { get; private set; }
-    public DeployOnLineGroupOrder(List<FrontFace> faces, 
-        HashSet<PolyCell> advanceInto, 
+    public LineOrder(List<FrontFace> faces, 
+        List<PolyCell[]> faceAdvanceRoutes,
         bool advance)
     {
-        AdvanceInto = advanceInto;
+        FaceAdvanceRoutes = faceAdvanceRoutes;
         Faces = faces;
         Advance = advance;
     }
@@ -107,15 +110,23 @@ public class DeployOnLineGroupOrder : UnitGroupOrder
         UnitGroup g, 
         CombatCalculator combat, LogicWriteKey key)
     {
-        if(Advance == false) return;
-        if (AdvanceInto == null || AdvanceInto.Count == 0) return;
+        // if(Advance == false) return;
+        if (FaceAdvanceRoutes == null || FaceAdvanceRoutes.Count == 0) return;
         var d = key.Data;
         var units = g.Units.Items(d);
         var assignments = GetAssignments(g, d);
         foreach (var unit in units)
         {
-            var target = assignments[unit].GetForeign(d);
-            if (AdvanceInto.Contains(target) == false) continue;
+            var face = assignments[unit];
+            var target = face.GetForeign(d);
+            var index = Faces.IndexOf(face);
+            var route = FaceAdvanceRoutes[index];
+            if (route == null || route.Length == 0)
+            {
+                continue;
+            }
+
+            if (route[0] != target) throw new Exception();
             UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
         }
     }
