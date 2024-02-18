@@ -6,8 +6,8 @@ public interface IReadOnlyGraph<TNode>
     bool HasNode(TNode value);
     IEnumerable<TNode> GetNeighbors(TNode value);
 }
-public interface IReadOnlyGraph<TNode, TEdge> : IReadOnlyGraph<TNode>
+public interface IReadOnlyGraph<TNode, TEdge> 
+    : IReadOnlyGraph<TNode>
 {
-    IEnumerable<TEdge> Edges { get; }
     TEdge GetEdge(TNode from, TNode to);
 }

@@ -220,7 +220,7 @@ public class InfrastructureGenerator : Generator
         var paved = _data.Models.RoadList.PavedRoad;
         var wpPaths = new Dictionary<Vector2I, List<PolyCell>>();
         var walk = _data.Models.MoveTypes.InfantryMove;
-        polyLevelGraph.RemoveEdges(e => getRoadFromTraffic(e.Traffic) == null);
+        polyLevelGraph.RemoveEdgesWhere(e => getRoadFromTraffic(e.Traffic) == null);
         
         var dic = polyLevelGraph.Elements
             .ToDictionary(n => n.Cell, n => n);

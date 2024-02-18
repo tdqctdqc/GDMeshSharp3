@@ -6,17 +6,7 @@ using System.Collections.Generic;
 
 public static class UnionFind
 {
-    public static List<List<T>> Find<T>(IReadOnlyGraph<T> graph, IEnumerable<T> elements, 
-        Func<T,T,bool> compare)
-    {
-        return Find(elements, compare, t => graph.GetNeighbors(t));
-    }
-    public static List<List<T>> Find<T>(IEnumerable<T> elements, 
-        Func<T,T,bool> compare)
-        where T : IGraphNode<T>
-    {
-        return Find(elements, compare, t => t.Neighbors);
-    }
+    
     public static List<List<T>> Find<T>(IEnumerable<T> elements, 
         Func<T,T,bool> compare, 
         Func<T, IEnumerable<T>> neighborFunc)
