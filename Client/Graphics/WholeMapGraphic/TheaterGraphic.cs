@@ -33,7 +33,7 @@ public partial class TheaterGraphic : Node2D
         Data d, MeshBuilder mb, Color theaterColor)
     {
         var relTo = theaterBranch.Theater.Cells.First().GetCenter();
-        Func<Vector2, Vector2> relPos = p => relTo.GetOffsetTo(p, d);
+        Func<Vector2, Vector2> relPos = p => relTo.Offset(p, d);
         var regimeColor = theaterBranch.Regime.PrimaryColor;
         
         foreach (var seg in theaterBranch.Assignments.OfType<HoldLineAssignment>())
@@ -65,7 +65,7 @@ public partial class TheaterGraphic : Node2D
         
         foreach (var wp in theaterBranch.Theater.Cells)
         {
-            var relPos = relTo.GetOffsetTo(wp.GetCenter(), d);
+            var relPos = relTo.Offset(wp.GetCenter(), d);
             mb.AddPoint(relPos, size, regimeColor);
             mb.AddPoint(relPos, size * .6f, theaterColor);
         }
@@ -78,13 +78,13 @@ public partial class TheaterGraphic : Node2D
 
         foreach (var wp in theaterBranch.Theater.Cells)
         {
-            var relPos = relTo.GetOffsetTo(wp.GetCenter(), d);
+            var relPos = relTo.Offset(wp.GetCenter(), d);
             
             foreach (var nWp in wp.GetNeighbors(d))
             {
                 if (theaterBranch.Theater.Cells.Contains(nWp) == false) continue;
                 if (nWp.Id > wp.Id) continue;
-                var nRelPos = relTo.GetOffsetTo(nWp.GetCenter(), d);
+                var nRelPos = relTo.Offset(nWp.GetCenter(), d);
         
                 mb.AddLine(relPos, nRelPos, regimeColor, 2f);
             }

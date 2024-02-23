@@ -48,39 +48,11 @@ public class WorldGenerator
                  Data.CreateFirstTime(_key);
              }
         );
-        
-        List<Vector2> points = null;
-        _key.Data.Logger.RunAndLogTime("Generating points", LogType.Generation, 
-            () =>
-            {
-                points = PointsGenerator
-                    .GenerateConstrainedSemiRegularPoints
-                        (Data.GenMultiSettings.Dimensions - edgePointMargin, polySize, polySize * .75f, false, true)
-                    .Select(v => v + edgePointMargin / 2f).ToList();
-            
-                foreach (var p in points)
-                {
-                    if (p != p.Intify()) throw new Exception("not int point");
-                    if (p.X < 0 || p.X > dim.X || p.Y < 0 || p.Y > dim.Y) throw new Exception("point out of bounds");
-                }
-            }
-        );
-        
-        RunGenerator(new PolygonGenerator(points, Data.GenMultiSettings.Dimensions, 
-            true, polySize));
+        RunGenerator(new PolygonGenerator(
+            Data.GenMultiSettings.Dimensions, 
+            true));
         RunGenerator(new GeologyGenerator());
         RunGenerator(new ResourceGenerator());
-
-        _key.Data.Logger.RunAndLogTime("Edge disturb", LogType.Generation,
-            () =>
-            {
-                var polys = Data.GetAll<MapPolygon>();
-                EdgeDisturber.SplitEdges(polys, _key,
-                    Data.GenMultiSettings.PlanetSettings.PreferredMinPolyEdgeLength.Value);
-                EdgeDisturber.DisturbEdges(polys, _key);
-            }
-        );
-        
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyCellGenerator());
         RunGenerator(new RegimeGenerator());

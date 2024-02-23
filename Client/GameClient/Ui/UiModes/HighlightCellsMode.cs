@@ -28,36 +28,7 @@ public class HighlightCellsMode : UiMode
         HighlightCellAndAdjacent();
         HighlightPolyBorder();
     }
-    private void HighlightBoundaryCells()
-    {
-        var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
-        
-        var mapPos = _client.Cam().GetMousePosInMapSpace();
-        var poly = _client.Data.Planet.PolygonAux.MapPolyGrid
-            .GetElementAtPoint(mapPos, _client.Data);
-        if (poly == null) return;
-        var bSegs = poly.GetEdges(_client.Data)
-            .SelectMany(e => e.GetSegsRel(poly, _client.Data).Segments);
-        var bCells = poly
-            .GetCells(_client.Data)
-            .Where(c => c.RelBoundary
-                .Any(p => bSegs.Any(s => s.DistanceTo(p) < .1f)));
-        foreach (var lineSegment in bSegs)
-        {
-            
-            highlighter.Draw(mb =>
-                mb.AddLine(lineSegment.From, lineSegment.To, 
-                    Colors.Blue, 10f), poly.Center);
-        }
-        foreach (var bCell in bCells)
-        {
-            highlighter.Draw(mb =>
-                mb.DrawPolygon(bCell.RelBoundary, 
-                    Colors.Red.GetPeriodicShade(bCell.Id)), bCell.RelTo);
-        }
-
-    }
-
+    
     private void HighlightPolyBorder()
     {
         var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
@@ -83,7 +54,7 @@ public class HighlightCellsMode : UiMode
         {
             highlighter.Draw(mb =>
             {
-                var ps = poly.GetOrderedBoundaryPoints(_client.Data);
+                var ps = poly.BoundaryPoints;
                 for (var i = 0; i < ps.Length; i++)
                 {
                     var from = ps[i];

@@ -30,7 +30,7 @@ public static class Vector2Ext
         if (v.X <= w.Y && w.Y <= v.Y) return true;
         return false;
     }
-    public static Vector2 GetOffsetTo(this Vector2 v1, Vector2 v2, Data data)
+    public static Vector2 Offset(this Vector2 v1, Vector2 v2, Data data)
     {
         return data.Planet.GetOffsetTo(v1, v2);
     }
@@ -443,5 +443,21 @@ public static class Vector2Ext
             return (v, w);
         }
         return (w, v);
+    }
+    
+    public static float GetArea(this Vector2[] boundaryPoints)
+    {
+        if (boundaryPoints.Length < 3) return 0f;
+        var tris = Geometry2D.TriangulatePolygon(boundaryPoints);
+        var area = 0f;
+        for (var i = 0; i < tris.Length; i+=3)
+        {
+            var a = boundaryPoints[tris[i]];
+            var b = boundaryPoints[tris[i+1]];
+            var c = boundaryPoints[tris[i+2]];
+            area += TriangleExt.GetApproxArea(a, b, c);
+        }
+
+        return area;
     }
 }

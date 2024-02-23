@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -13,8 +14,8 @@ public static class MeshBuilderExt
         {
             var from = path[j].GetCenter();
             var to = path[j + 1].GetCenter();
-            mb.AddArrow(relTo.GetOffsetTo(from, d),
-                relTo.GetOffsetTo(to, d), thickness, color);
+            mb.AddArrow(relTo.Offset(from, d),
+                relTo.Offset(to, d), thickness, color);
         }
     }
     public static void DrawFrontAssignment(this MeshBuilder mb,
@@ -28,7 +29,7 @@ public static class MeshBuilderExt
         {
             var face = seg.Frontline.Faces[0];
             var cell = face.GetNative(d);
-            mb.AddPoint(relTo.GetOffsetTo(cell.GetCenter(), d),
+            mb.AddPoint(relTo.Offset(cell.GetCenter(), d),
                 markerSize, color);
         }
         for (var i = 0; i < seg.Frontline.Faces.Count - 1; i++)
@@ -38,8 +39,8 @@ public static class MeshBuilderExt
             var from = face.GetNative(d);
             var to = nextFace.GetNative(d);
             
-            mb.AddLine(relTo.GetOffsetTo(from.GetCenter(),d),
-                relTo.GetOffsetTo(to.GetCenter(), d),
+            mb.AddLine(relTo.Offset(from.GetCenter(),d),
+                relTo.Offset(to.GetCenter(), d),
                 color, markerSize);
         }
 
@@ -52,8 +53,8 @@ public static class MeshBuilderExt
                 var face = seg.Frontline.Faces[i];
                 var native = face.GetNative(d);
                 var foreign = face.GetForeign(d);
-                mb.AddArrow(relTo.GetOffsetTo(native.GetCenter(),d),
-                    relTo.GetOffsetTo(foreign.GetCenter(), d),
+                mb.AddArrow(relTo.Offset(native.GetCenter(),d),
+                    relTo.Offset(foreign.GetCenter(), d),
                     markerSize / 5f, group.Color);
             }
             for (var i = 0; i < line.Count - 1; i++)
@@ -62,8 +63,8 @@ public static class MeshBuilderExt
                 var b = line[i + 1].GetNative(d);
                 if (a == b) continue;
                 
-                mb.AddLine(relTo.GetOffsetTo(a.GetCenter(), d),
-                    relTo.GetOffsetTo(b.GetCenter(), d),
+                mb.AddLine(relTo.Offset(a.GetCenter(), d),
+                    relTo.Offset(b.GetCenter(), d),
                     group.Color, markerSize / 2f);
             }
         }
@@ -72,10 +73,14 @@ public static class MeshBuilderExt
     public static void DrawPolyBorders(this MeshBuilder mb,
         Vector2 relTo, MapPolygon poly, Data data)
     {
-        var edgeBorders = poly
-            .GetOrderedBoundarySegs(data)
-            .Select(s => s.Translate(relTo.GetOffsetTo(poly.Center, data)));
-        mb.AddLines(edgeBorders.ToList(), 2f, Colors.Black);
+        throw new Exception();
+        // var edgeBorders = poly
+        //     .GetOrderedBoundarySegs(data)
+        //     .Select(s => s.Translate(relTo.GetOffsetTo(poly.Center, data)));
+        //
+        //
+        //
+        // mb.AddLines(edgeBorders.ToList(), 2f, Colors.Black);
     }
     public static void DrawCellBorders(this MeshBuilder mb,
         Vector2 relTo, PolyCell cell, Data data)
@@ -83,8 +88,8 @@ public static class MeshBuilderExt
         for (var i = 0; i < cell.RelBoundary.Length; i++)
         {
             mb.AddLine(
-                relTo.GetOffsetTo(cell.RelBoundary[i] + cell.RelTo, data), 
-                relTo.GetOffsetTo(cell.RelBoundary.Modulo(i + 1) + cell.RelTo, data),
+                relTo.Offset(cell.RelBoundary[i] + cell.RelTo, data), 
+                relTo.Offset(cell.RelBoundary.Modulo(i + 1) + cell.RelTo, data),
                 Colors.Black, 1f);
         }
     }
@@ -114,8 +119,8 @@ public static class MeshBuilderExt
                 }
 
                 var color = ColorsExt.GetRainbowColor(tickIter);
-                mb.AddArrow(relTo.GetOffsetTo(fromCell.GetCenter(), d), 
-                    relTo.GetOffsetTo(toCell.GetCenter(), d), 2f, color);
+                mb.AddArrow(relTo.Offset(fromCell.GetCenter(), d), 
+                    relTo.Offset(toCell.GetCenter(), d), 2f, color);
             }
         }
     }
@@ -146,8 +151,8 @@ public static class MeshBuilderExt
             var face = faces[i];
             var native = face.GetNative(d);
             var foreign = face.GetForeign(d);
-            var nPos = relTo.GetOffsetTo(native.GetCenter(), d);
-            var fPos = relTo.GetOffsetTo(foreign.GetCenter(), d);
+            var nPos = relTo.Offset(native.GetCenter(), d);
+            var fPos = relTo.Offset(foreign.GetCenter(), d);
             mb.AddArrow(nPos, fPos, thickness, color);
         }
     }

@@ -83,26 +83,26 @@ public class MeshBuilder
 
     public void DrawPolyEdge(MapPolygon poly, MapPolygon n, 
         Func<MapPolygon, Color> color,
-        float thickness, MapPolygon relTo, Data d)
+        float thickness, Vector2 relTo, Data d)
     {
-        var offset = relTo.GetOffsetTo(poly, d);
+        throw new Exception();
+        var offset = relTo.Offset(poly.Center, d);
         var edge = poly.GetEdge(n, d);
-        var segs = edge.GetSegsRel(poly, d).Segments;
-        for (var i = 0; i < segs.Count; i++)
-        {
-            var seg = segs[i];
-            var axis = seg.GetNormalizedAxis();
-            var perp = axis.Orthogonal() * thickness;
-            if (thickness > seg.From.Length()) continue;
-            if (thickness > seg.To.Length()) continue;
-
-            var toPerp = seg.To - perp;
-            var fromPerp = seg.From - perp;
-
-            AddTri(new Triangle(seg.From, seg.To, toPerp).Transpose(offset), color(poly));
-            AddTri(new Triangle(toPerp, seg.From, fromPerp).Transpose(offset), color(poly));
-
-        }
+        // var segs = edge.GetSegsRel(poly, d).Segments;
+        // for (var i = 0; i < segs.Count; i++)
+        // {
+        //     var seg = segs[i];
+        //     var axis = seg.GetNormalizedAxis();
+        //     var perp = axis.Orthogonal() * thickness;
+        //     if (thickness > seg.From.Length()) continue;
+        //     if (thickness > seg.To.Length()) continue;
+        //
+        //     var toPerp = seg.To - perp;
+        //     var fromPerp = seg.From - perp;
+        //
+        //     AddTri(new Triangle(seg.From, seg.To, toPerp).Transpose(offset), color(poly));
+        //     AddTri(new Triangle(toPerp, seg.From, fromPerp).Transpose(offset), color(poly));
+        // }
     }
     
     public void DrawPolyCellEdge(PolyCell c1, PolyCell c2, 
@@ -120,9 +120,9 @@ public class MeshBuilder
             for (var j = 0; j < c2.RelBoundary.Length; j++)
             {
                 var from2 = c2.RelBoundary[j];
-                var from2rel = c1.RelTo.GetOffsetTo(from2 + c2.RelTo, d);
+                var from2rel = c1.RelTo.Offset(from2 + c2.RelTo, d);
                 var to2 = c2.RelBoundary.Modulo(j + 1);
-                var to2rel = c1.RelTo.GetOffsetTo(to2 + c2.RelTo, d);
+                var to2rel = c1.RelTo.Offset(to2 + c2.RelTo, d);
                 var close1 = Geometry2D
                     .GetClosestPointToSegment(from1, from2rel, to2rel);
                 var dist1 = close1.DistanceTo(from1);
@@ -152,8 +152,8 @@ public class MeshBuilder
         {
             return;
         }
-        var rel1 = relTo.GetOffsetTo(lineP1.Value + c1.RelTo, d);
-        var rel2 = relTo.GetOffsetTo(lineP2.Value + c1.RelTo, d);
+        var rel1 = relTo.Offset(lineP1.Value + c1.RelTo, d);
+        var rel2 = relTo.Offset(lineP2.Value + c1.RelTo, d);
         AddLine(rel1, rel2, color(c1), thickness);
         
         void register(Vector2 p)

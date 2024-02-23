@@ -105,7 +105,7 @@ public class PolyGrid<TPoly>
     {
         var boundary = _getRelBoundary(poly);
         var center = _getCenter(poly);
-        var posRel = center.GetOffsetTo(p, d);
+        var posRel = center.Offset(p, d);
         return Geometry2D.IsPointInPolygon(posRel, boundary);
     }
     private (TPoly, NoPolyAtPointIssue<TPoly>) ForceGet(Vector2 point, Vector2I key, Data d)
@@ -177,7 +177,7 @@ public class PolyGrid<TPoly>
         foreach (var p in cell)
         {
             var center = _getCenter(p);
-            var rel = center.GetOffsetTo(point, d);
+            var rel = center.Offset(point, d);
             var bps = _getRelBoundary(p);
             var minDist = Mathf.Inf;
             for (var i = 0; i <= bps.Length; i++)

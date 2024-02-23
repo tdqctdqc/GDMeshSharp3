@@ -61,7 +61,7 @@ public class GeologyGenerator : Generator
         var polysPerCell = 3;
         var polys = Data.GetAll<MapPolygon>();
         var numCells = polys.Count / polysPerCell;
-        var polyCellDic = Data.GenAuxData.PolyCells;
+        var polyCellDic = Data.GenAuxData.PolyGenCells;
         var cellSeeds = Picker.PickSeeds(polys, new int[] {numCells})[0];
 
         var cells = cellSeeds.Select(p => new GenCell(p, _key, polyCellDic, Data)).ToList();
@@ -102,7 +102,7 @@ public class GeologyGenerator : Generator
         });
         foreach (var poly in Data.GetAll<MapPolygon>())
         {
-            var cell = Data.GenAuxData.PolyCells[poly];
+            var cell = Data.GenAuxData.PolyGenCells[poly];
             var plate = cell.Plate;
         }
     }
@@ -192,7 +192,7 @@ public class GeologyGenerator : Generator
             var polys = cont.Masses
                 .SelectMany(m => m.Plates)
                 .SelectMany(p => p.Cells)
-                .SelectMany(c => c.PolyGeos);
+                .SelectMany(c => c.Polys);
             foreach (var poly in polys)
             {
                 var altNoise = Data.GenAuxData.GetAltPerlin(poly.Center);
@@ -253,12 +253,26 @@ public class GeologyGenerator : Generator
                     var driftStr = (drift1 - drift2).Length() / 2f;
                     if (driftStr > .5f)
                     {
-                        var borders = Data.Planet.PolygonAux.BorderGraph
-                            .GetBorderEdges(hiPlate.Cells.SelectMany(c => c.PolyGeos),
-                                c => c.Native.Entity(Data), c => c.Foreign.Entity(Data))
-                            .ToList();
                         var friction = driftStr.ProjectToRange(1f, .5f, .5f);
-                        var fault = new FaultLine(driftStr, hiPlate, loPlate, borders, Data);
+                        var edges = new List<MapPolygonEdge>();
+                        foreach (var cell in hiPlate.Cells)
+                        {
+                            foreach (var poly in cell.Polys)
+                            {
+                                foreach (var nPoly in poly.Neighbors.Items(Data))
+                                {
+                                    var nCell = Data.GenAuxData.PolyGenCells[nPoly];
+                                    if (nCell.Plate == loPlate)
+                                    {
+                                        edges.Add(poly.GetEdge(nPoly, Data));
+                                    }
+                                }
+                            }
+                        }
+                        
+                        
+                        var fault = new FaultLine(driftStr, 
+                            hiPlate, loPlate, edges, Data);
                         faults.Add(fault);
                     }
                 }
@@ -269,8 +283,8 @@ public class GeologyGenerator : Generator
         IEnumerable<MapPolygon> getPolysInRangeOfFault(FaultLine fault)
         {
             var faultRange = fault.Friction * faultRangeSetting;
-            var polys = fault.HighId.Cells.SelectMany(c => c.PolyGeos)
-                .Union(fault.LowId.Cells.SelectMany(c => c.PolyGeos));
+            var polys = fault.HighId.Cells.SelectMany(c => c.Polys)
+                .Union(fault.LowId.Cells.SelectMany(c => c.Polys));
             
             var polysInRange = new List<MapPolygon>();
             foreach (var poly in polys)

@@ -41,7 +41,7 @@ public class MoistureGenerator : Generator
             var distFromEquator = Mathf.Abs(Data.Planet.Height / 2f - p.Center.Y);
             var altMult = (1f - equatorDistMultWeight) 
                           + equatorDistMultWeight * (1f - distFromEquator / (Data.Planet.Height / 2f));
-            var polyGeos = p.PolyGeos;
+            var polyGeos = p.Polys;
             var count = polyGeos.Count;
             var waterCount = polyGeos.Where(g => g.IsWater()).Count();
             var score = scale * altMult * waterCount / count;
@@ -59,7 +59,7 @@ public class MoistureGenerator : Generator
         Parallel.ForEach(Data.GenAuxData.Cells, setPlateMoistures);
         void setPlateMoistures(GenCell cell)
         {
-            foreach (var poly in cell.PolyGeos)
+            foreach (var poly in cell.Polys)
             {
                 if (poly.IsWater()) poly.SetMoisture(1f, _key);
                 else

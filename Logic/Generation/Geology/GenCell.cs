@@ -8,7 +8,7 @@ public sealed class GenCell : IGraphNode<GenCell>
     private GenCell _element;
     public MapPolygon Seed { get; private set; }
     public GenPlate Plate { get; private set; }
-    public HashSet<MapPolygon> PolyGeos { get; private set; }
+    public HashSet<MapPolygon> Polys { get; private set; }
     public HashSet<MapPolygon> NeighboringPolyGeos { get; private set; }
 
     GenCell IReadOnlyGraphNode<GenCell>.Element => _element;
@@ -24,7 +24,7 @@ public sealed class GenCell : IGraphNode<GenCell>
         _polyCells = polyCells;
         Center = Vector2.Zero;
         Seed = seed;
-        PolyGeos = new HashSet<MapPolygon>();
+        Polys = new HashSet<MapPolygon>();
         NeighboringPolyGeos = new HashSet<MapPolygon>();
         Neighbors = new HashSet<GenCell>();
         AddPolygon(seed, key);
@@ -36,13 +36,13 @@ public sealed class GenCell : IGraphNode<GenCell>
     }
     public void AddPolygon(MapPolygon p, GenWriteKey key)
     {
-        Center = (Center * PolyGeos.Count + p.Center) / (PolyGeos.Count + 1);
-        PolyGeos.Add(p);
+        Center = (Center * Polys.Count + p.Center) / (Polys.Count + 1);
+        Polys.Add(p);
         _polyCells[p] = this;
         NeighboringPolyGeos.Remove(p);
         foreach (var n in p.Neighbors.Items(key.Data))
         {
-            if(PolyGeos.Contains(n) == false) NeighboringPolyGeos.Add(n);
+            if(Polys.Contains(n) == false) NeighboringPolyGeos.Add(n);
         }
     }
 
@@ -51,12 +51,12 @@ public sealed class GenCell : IGraphNode<GenCell>
     {
         foreach (var p in NeighboringPolyGeos)
         {
-            if (key.GenData.GenAuxData.PolyCells.ContainsKey(p) == false)
+            if (key.GenData.GenAuxData.PolyGenCells.ContainsKey(p) == false)
             {
                 throw new Exception($"No aux data for cell at " + p.Center);
             }
         }
         Neighbors = NeighboringPolyGeos
-            .Select(t => key.GenData.GenAuxData.PolyCells[t]).ToHashSet();
+            .Select(t => key.GenData.GenAuxData.PolyGenCells[t]).ToHashSet();
     }
 }

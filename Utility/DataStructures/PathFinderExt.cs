@@ -18,7 +18,7 @@ public static partial class PathFinder
             p => p.GetNeighbors(d)
                 .Where(wp => moveType.Passable(wp, alliance, d)),
             (w, v) => moveType.EdgeCost(w, v, d), 
-            (p1, p2) => p1.GetCenter().GetOffsetTo(p2.GetCenter(), d).Length());
+            (p1, p2) => p1.GetCenter().Offset(p2.GetCenter(), d).Length());
     }
 
     
@@ -33,7 +33,7 @@ public static partial class PathFinder
         return PathFinder<TNode>.FindPath(s1, s2, 
             p => graph.GetNeighbors(p),
             (p, q) => getCost(graph.GetEdge(p, q)), 
-            (p1, p2) => getPos(p1).GetOffsetTo(getPos(p2), data).Length());
+            (p1, p2) => getPos(p1).Offset(getPos(p2), data).Length());
     }
     public static List<MapPolygon> FindPathFromPolyGraph(MapPolygon s1,
         MapPolygon s2, 
@@ -62,7 +62,7 @@ public static partial class PathFinder
         if (p1 is LandCell l1 == false) return Mathf.Inf;
         if (p2 is LandCell l2 == false) return Mathf.Inf;
         
-        var cost = p1.GetCenter().GetOffsetTo(p2.GetCenter(), data).Length();
+        var cost = p1.GetCenter().Offset(p2.GetCenter(), data).Length();
         cost *= 1f + l1.GetLandform(data).MinRoughness;
         cost *= 1f + l2.GetLandform(data).MinRoughness;
         
@@ -70,7 +70,7 @@ public static partial class PathFinder
     }
     public static float EdgeRoughnessCost(PolyCell p1, PolyCell p2, Data data)
     {
-        var cost = p1.GetCenter().GetOffsetTo(p2.GetCenter(), data).Length();
+        var cost = p1.GetCenter().Offset(p2.GetCenter(), data).Length();
         var roughCost = 0f;
         if (p1 is LandCell n1)
         {

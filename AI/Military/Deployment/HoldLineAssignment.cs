@@ -115,7 +115,7 @@ public class HoldLineAssignment : GroupAssignment
             var values = picker.Value;
             var cell = picker.Key.First().GetNative(key.Data);
             var picked = toPick.MinBy(g =>
-                g.GetCell(key.Data).GetCenter().GetOffsetTo(cell.GetCenter(), key.Data).Length());
+                g.GetCell(key.Data).GetCenter().Offset(cell.GetCenter(), key.Data).Length());
             toPick.Remove(picked);
             subSegs[picker.Key] = (values.need, values.have + picked.GetPowerPoints(key.Data));
             var order = GoToCellGroupOrder.Construct(cell, Regime,

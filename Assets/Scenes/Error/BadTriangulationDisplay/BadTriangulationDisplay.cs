@@ -13,7 +13,7 @@ public partial class BadTriangulationDisplay : Node2D
         
         var mb = MeshBuilder.GetFromPool();
         mb.AddPointMarkers(new List<Vector2>{Vector2.Zero}, 10f, Colors.Red);
-        mb.AddPointMarkers(new List<Vector2>{err.Poly.GetOrderedBoundarySegs(err.Data).Average()}, 10f, Colors.Green);
+        mb.AddPointMarkers(new List<Vector2>{err.Poly.BoundaryPoints.Avg()}, 10f, Colors.Green);
         for (var i = 0; i < err.Tris.Count; i++)
         {
             var inscribe = err.Tris[i].GetInscribed(1f);

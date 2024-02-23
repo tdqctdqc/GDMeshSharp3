@@ -8,130 +8,8 @@ using DelaunatorSharp;
 
 public static class GraphGenerator
 {
-    public static Graph<MapPolygon, LineSegment> GenerateMapPolyVoronoiGraph
-        (MapGenInfo info, GenWriteKey key)
-    {
-        var g = GenerateVoronoiGraph<MapPolygon, LineSegment>(
-            info.Polys,
-            mp => mp.Center,
-            (v1, v2, mp1, mp2) =>
-            {
-                v1 = v1.ClampToBox(Vector2.Zero, info.Dimensions);
-                v2 = v2.ClampToBox(Vector2.Zero, info.Dimensions);
-                return new LineSegment(v1, v2);
-            },
-            new Vector2(key.GenData.Planet.Width, key.GenData.Planet.Height)
-        );
-        return g;
-    }
 
-    public static void WrapMapPolygonGraph(Graph<MapPolygon, LineSegment> graph,
-        List<MapPolygon> keepMergePolys, List<MapPolygon> discardMergePolys, 
-        GenWriteKey key)
-    {
-        for (var i = 0; i < keepMergePolys.Count - 1; i++)
-        {
-            var keep = keepMergePolys[i];
-            var discard = discardMergePolys[i];
-            var nextKeep = keepMergePolys[i + 1];
-            var nextDiscard = discardMergePolys[i + 1];
-            var discardEdge = graph.GetEdge(discard, nextDiscard);
-            var keepEdge = graph.GetEdge(keep, nextKeep);
-            var newPoints = new List<Vector2> {keepEdge.From, keepEdge.To, discardEdge.From, discardEdge.To}
-                .Where(p => p.X != 0 
-                            && p.X < key.Data.Planet.Width
-                            && p.Y <= key.Data.Planet.Height).ToList();
-            if (newPoints.Count > 1 && newPoints[0] != newPoints[1])
-            {
-                graph.SetEdgeValue(keep, nextKeep, new LineSegment(newPoints[0], newPoints[1]));
-            }
-        }
-        WrapVoronoiGraph<MapPolygon, LineSegment>(
-            graph, keepMergePolys, discardMergePolys, 
-            new MapPolygonEdgeConverter(key)
-        );
-        var check = new List<MapPolygon>(keepMergePolys);
-        var discardHash = discardMergePolys.ToHashSet();
-        discardMergePolys.ForEach(discard =>
-        {
-            var ns = discard.Neighbors.Items(key.Data).ToList();
-            for (var i = ns.Count - 1; i >= 0; i--)
-            {
-                var discardN = ns[i];
-                check.Add(discardN);
-                var border = discard.GetEdge(discardN, key.Data);
-                discardN.RemoveNeighbor(discard, key);
-                discard.RemoveNeighbor(discardN, key);
-                key.Remove(border);
-            }
-            key.Remove(discard);
-        });
-        check.ForEach(n =>
-        {
-            var badNs = n.Neighbors.Items(key.Data).Intersect(discardHash).ToList();
-            foreach (var badN in badNs)
-            {
-                n.RemoveNeighbor(badN, key);
-            }
-        });
-    }
-
-    public static PolyCell[] GenerateAndConnectPolyCellsForInterior(
-        MapPolygon poly,
-        Vector2[] boundaryPoints,
-        GenWriteKey key
-    )
-    {
-        var interiorPoints = new List<Vector2>();
-        boundaryPoints.GenerateInteriorPoints(30f, 
-            .2f, 
-            v => interiorPoints.Add(v));
-        var minX = boundaryPoints.Min(v => v.X);
-        var maxX = boundaryPoints.Max(v => v.X);
-        var midX = (maxX + minX) / 2f;
-        var minY = boundaryPoints.Min(v => v.Y);
-        var maxY = boundaryPoints.Max(v => v.Y);
-        var midY = (maxY + minY) / 2f;
-        var xRange = maxX - minX;
-        var yRange = maxY - minY;
-        var mid = new Vector2(midX, midY);
-        var maxRange = Mathf.Max(yRange, xRange);
-        for (int i = 0; i < 12; i++)
-        {
-            var angle = Vector2.Up.Rotated(2f * Mathf.Pi
-                                              * (float)i / 12);
-            interiorPoints.Add(mid + angle * maxRange * 2f);
-        }
-        var graph = GenerateVoronoiGraph(
-            interiorPoints, 
-            v => v,
-            (v1, v2, n1, n2) => 
-                new LineSegment(v1, v2),
-            Vector2.Inf);
-        var res = new List<PolyCell>();
-        foreach (var cellCenter in graph.Elements)
-        {
-            var ns = graph
-                .GetNeighbors(cellCenter);
-            //todo can just order by clockwise here instead of chainifying?
-            
-            var cellBoundary = ns.Select(
-                    n => graph.GetEdge(cellCenter, n))
-                .ToList().FlipChainify();
-            
-            var cellBoundaryPs = cellBoundary.GetPoints().ToArray();
-            var intersections =
-                Geometry2D.IntersectPolygons(cellBoundaryPs, boundaryPoints);
-            foreach (var intersection in intersections)
-            {
-                var cell = LandCell.Construct(poly, intersection, key);
-                res.Add(cell);
-            }
-        }
-        PolyCell.ConnectCellsSharingPoints(res, key.Data); 
-        return res.ToArray();
-    }
-
+    
     public static Graph<TNode, TEdge> GenerateVoronoiGraph<TNode, TEdge>
     (List<TNode> elements, Func<TNode, Vector2> posFunc,
         Func<Vector2, Vector2, TNode, TNode, TEdge> getEdgeFunc, 
@@ -150,6 +28,20 @@ public static class GraphGenerator
         }
 
         var edges = new ConcurrentDictionary<Edge<TNode>, TEdge>();
+        Parallel.ForEach(d.GetEdges(), makeGraphEdgeFromTriEdge);
+        
+        foreach (var kvp in edges)
+        {
+            graph.AddEdge(kvp.Key.T1, kvp.Key.T2, kvp.Value);
+        }
+        
+        
+        
+        
+        return graph;
+        
+        
+        
         
         void makeGraphEdgeFromTriEdge(IEdge edge)
         {
@@ -193,14 +85,7 @@ public static class GraphGenerator
             }
         }
 
-        Parallel.ForEach(d.GetEdges(), makeGraphEdgeFromTriEdge);
         
-        foreach (var kvp in edges)
-        {
-            graph.AddEdge(kvp.Key.T1, kvp.Key.T2, kvp.Value);
-        }
-        
-        return graph;
     }
 
     private class MapPolygonEdgeConverter : EdgeConverter<MapPolygon, LineSegment>
@@ -230,29 +115,6 @@ public static class GraphGenerator
         {
             return _convertEdge(discard, discardNeighbor, keep, oldEdge);
         }
-    }
-    private static void WrapVoronoiGraph<TNode, TEdge>(Graph<TNode, TEdge> graph, 
-        List<TNode> wrapKeep, List<TNode> wrapDiscard,
-        EdgeConverter<TNode, TEdge> edgeConverter)
-    {
-        for (var i = 0; i < wrapKeep.Count; i++)
-        {
-            var keep = wrapKeep[i];
-            var discard = wrapDiscard[i];
-            var discardNeighbors = graph.GetNeighbors(discard);
-            for (var j = 0; j < discardNeighbors.Count; j++)
-            {
-                var discardNeighbor = discardNeighbors.ElementAt(j);
-                var oldEdge = graph.GetEdge(discard, discardNeighbor);
-                var newEdge = edgeConverter.Convert(discard, discardNeighbor, keep, oldEdge);
-                graph.AddEdge(keep, discardNeighbor, newEdge);
-            }
-        }
-        
-        wrapDiscard.ForEach(discard =>
-        {
-            graph.Remove(discard);
-        });
     }
     
     

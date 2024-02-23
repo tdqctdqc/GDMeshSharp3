@@ -14,7 +14,7 @@ public abstract class MoveType : IModel
 
     public float EdgeCost(PolyCell from, PolyCell to, Data d)
     {
-        var l = from.GetCenter().GetOffsetTo(to.GetCenter(), d).Length();
+        var l = from.GetCenter().Offset(to.GetCenter(), d).Length();
         var terrCostPerLength = TerrainCostPerLength(from, to, d);
         if (UseRoads)
         {

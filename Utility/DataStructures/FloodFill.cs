@@ -5,6 +5,40 @@ using System.Linq;
 
 public static class FloodFill<T>
 {
+    public static Dictionary<T, List<T>> FloodFillMultiple
+        (IEnumerable<T> seeds, Func<T, IEnumerable<T>> getNs,
+            Func<T, T, float> getHeuristic,
+            HashSet<T> free)
+    {
+        var seedsQueue = new PriorityQueue<T, int>();
+        foreach (var seed in seeds)
+        {
+            seedsQueue.Enqueue(seed, 1);
+        }
+        var res = seeds.ToDictionary(s => s, 
+            s => new List<T>{s});
+
+        while (seedsQueue.Count > 0)
+        {
+            var seed = seedsQueue.Dequeue();
+            var set = res[seed];
+            var freeNs = set.SelectMany(s => getNs(s))
+                .Where(free.Contains)
+                .OrderBy(t => getHeuristic(seed, t));
+            if (freeNs.Any() == false)
+            {
+                continue;
+            }
+
+            var take = freeNs.First();
+            free.Remove(take);
+            set.Add(take);
+            seedsQueue.Enqueue(seed, set.Count);
+        }
+
+        if (free.Count > 0) throw new Exception();
+        return res;
+    }
     public static HashSet<T> GetFloodFill(T start, 
         Func<T, bool> valid,
         Func<T, IEnumerable<T>> getNeighbors)

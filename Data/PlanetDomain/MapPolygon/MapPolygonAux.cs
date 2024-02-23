@@ -6,8 +6,6 @@ using Godot;
 
 public class MapPolygonAux
 {
-    public IReadOnlyGraph<MapPolygon, PolyBorderChain> BorderGraph { get; private set; }
-    public EntityValueCache<MapPolygon, PolyAuxData> AuxDatas { get; private set; }
     public PolyGrid<MapPolygon> MapPolyGrid { get; private set; }
     public PolyGrid<PolyCell> PolyCellGrid { get; private set; }
     public PolyCells PolyCells => _polyCells.Value;
@@ -24,16 +22,6 @@ public class MapPolygonAux
     public MapPolygonAux(Data data)
     {
         _polyCells = new SingletonAux<PolyCells>(data);
-        BorderGraph = ImplicitGraph.Get<MapPolygon, PolyBorderChain>(
-            n => n.Neighbors.Items(data),
-            (n, m) => n.GetEdge(m, data).GetSegsRel(n, data),
-            () => data.GetAll<MapPolygon>(), 
-            () => data.GetAll<MapPolygon>().SelectMany(e => e.GetPolyBorders()).ToHashSet()
-        );
-        AuxDatas = EntityValueCache<MapPolygon, PolyAuxData>.ConstructConstant(
-            data,
-            p => new PolyAuxData(p, data)
-        );
         
         ChangedOwnerRegime = new ValChangeAction<MapPolygon, Regime>();
         ChangedOccupierRegime = new ValChangeAction<MapPolygon, Regime>();
@@ -61,32 +49,16 @@ public class MapPolygonAux
         data.Notices.FinishedStateSync.Subscribe(() => BuildChunks(data));
         data.Notices.MadeCells.Subscribe(() => BuildChunks(data));
         
-        data.Notices.SetPolyShapes.Subscribe(() => UpdateAuxDatas(data));
-        data.Notices.FinishedStateSync.Subscribe(() => UpdateAuxDatas(data));
-        
         data.Notices.MadeCells.Subscribe(() => BuildCells(data));
         data.Notices.FinishedStateSync.Subscribe(() => BuildCells(data));
     }
 
-    private void UpdateAuxDatas(Data data)
-    {
-        foreach (var kvp in AuxDatas.Dic)
-        {
-            var aux = kvp.Value;
-            if (aux.Stale)
-            {
-                var poly = kvp.Key;
-                aux.Update(poly, data);
-                aux.MarkFresh();
-            }
-        }
-    }
     private void BuildPolyGrid(Data data)
     {
         MapPolyGrid = new PolyGrid<MapPolygon>(
             data.Planet.Info.Dimensions, 
             300f,
-            p => p.GetOrderedBoundaryPoints(data),
+            p => p.BoundaryPoints,
             p => p.Center);
         foreach (var element in data.GetAll<MapPolygon>())
         {

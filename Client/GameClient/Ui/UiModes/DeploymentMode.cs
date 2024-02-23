@@ -95,7 +95,7 @@ public class DeploymentMode : UiMode
         {
             var childPos = DrawDeploymentBranch(child);
             debug.Draw(mb => mb.AddLine(Vector2.Zero,
-                    pos.GetOffsetTo(childPos, _client.Data), regime.GetMapColor(),
+                    pos.Offset(childPos, _client.Data), regime.GetMapColor(),
                     5f), 
                 pos);
         }
@@ -103,7 +103,7 @@ public class DeploymentMode : UiMode
         {
             var childPos = DrawGroupAssignment(ga);
             debug.Draw(mb => mb.AddLine(Vector2.Zero,
-                    pos.GetOffsetTo(childPos, _client.Data), regime.GetMapColor(),
+                    pos.Offset(childPos, _client.Data), regime.GetMapColor(),
                     5f), 
                 pos);
         }
@@ -127,53 +127,38 @@ public class DeploymentMode : UiMode
     private void DrawRegimeBorders(Regime regime)
     {
         var alliance = regime.GetAlliance(_client.Data);
-        var edges = new HashSet<MapPolygonEdge>();
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
-        foreach (var p in regime.GetPolys(_client.Data))
-        {
-            foreach (var e in p.GetEdges(_client.Data))
-            {
-                if (edges.Contains(e)) edges.Remove(e);
-                else edges.Add(e);
-            }
-        }
+        var cells = _client.Data.Planet.PolygonAux.PolyCells.Cells.Values
+            .Where(c => c.Controller.RefId == regime.Id).ToArray();
+        
         var relTo = regime.GetPolys(_client.Data).First().Center;
-        foreach (var e in edges)
+        
+        foreach (var c in cells)
         {
-            var hi = e.HighPoly.Entity(_client.Data);
-            var lo = e.LowPoly.Entity(_client.Data);
-            var native = hi.OccupierRegime.RefId == regime.Id
-                ? hi
-                : lo;
-            var foreign = native == hi ? lo : hi;
-            if (foreign.OccupierRegime.RefId == regime.Id) throw new Exception();
-            
-            Color color = Colors.Green;
-            if (foreign.OccupierRegime.IsEmpty())
+            for (var i = 0; i < c.Neighbors.Count; i++)
             {
-                color = Colors.Blue;
-            }
-            else
-            {
-                var foreignAlliance = foreign.OccupierRegime.Entity(_client.Data).GetAlliance(_client.Data);
-                if (alliance.IsAtWar(foreignAlliance, _client.Data))
+                var n = PlanetDomainExt.GetPolyCell(c.Neighbors[i], _client.Data);
+                if (n.Controller.RefId == regime.Id) continue;
+                var edge = c.Edges[i];
+                Color color = Colors.Green;
+                if (n.Controller.IsEmpty())
                 {
-                    color = Colors.Red;
+                    color = Colors.Blue;
                 }
-                else if (alliance.IsRivals(foreignAlliance, _client.Data))
+                else
                 {
-                    color = Colors.Orange;
+                    var foreignAlliance = n.Controller.Entity(_client.Data).GetAlliance(_client.Data);
+                    if (alliance.IsAtWar(foreignAlliance, _client.Data))
+                    {
+                        color = Colors.Red;
+                    }
+                    else if (alliance.IsRivals(foreignAlliance, _client.Data))
+                    {
+                        color = Colors.Orange;
+                    }
                 }
-            }
-            
-            foreach (var s in e.GetSegsAbs(_client.Data))
-            {
-                debug.Draw(mb => mb.AddLine(
-                        relTo.GetOffsetTo(s.From, _client.Data),
-                        relTo.GetOffsetTo(s.To, _client.Data),
-                        color, 10f), 
-                    relTo);
+                debug.Draw(mb => mb.AddLine(edge.f, edge.t, color, 10f), c.RelTo);
             }
         }
     }

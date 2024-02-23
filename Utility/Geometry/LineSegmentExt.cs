@@ -254,40 +254,10 @@ public static class LineSegmentExt
         if(segs[segs.Count - 1].To != segs[0].From) segs.Add(new LineSegment(segs[segs.Count - 1].To, segs[0].From));
     }
     
-    public static void SplitToMinLength(this MapPolygonEdge edge, float minLength, GenWriteKey key)
-    {
-        var newSegsAbs = new List<LineSegment>();
-        var segs = edge.GetSegsAbs(key.Data);
-        var offset = edge.HighPoly.Entity(key.Data).GetOffsetTo(edge.LowPoly.Entity(key.Data), key.Data);
-        for (var i = 0; i < segs.Count; i++)
-        {
-            var seg = segs[i];
-            var axis = (seg.To - seg.From);
-            var l = seg.Length();
-            if (l > minLength * 2f)
-            {
-                var numSplits = Mathf.FloorToInt(l / minLength) - 1;
-                var prev = seg.From;
-                for (int j = 1; j <= numSplits; j++)
-                {
-                    var interp = j / (numSplits + 1f);
-                    var splitP = (seg.From + axis * interp).Intify();
-
-                    newSegsAbs.Add(new LineSegment(prev, splitP));
-                    prev = splitP;
-                }
-
-                newSegsAbs.Add(new LineSegment(prev, seg.To));
-            }
-            else
-            {
-                newSegsAbs.Add(seg);
-            }
-        }
-        edge.ReplaceMiddlePoints(newSegsAbs, key);
-    }
     
-    public static IEnumerable<LineSegment> GetLineSegments(this List<Vector2> points, bool close = false)
+    
+    public static IEnumerable<LineSegment> GetLineSegments(
+        this List<Vector2> points, bool close = false)
     {
         return Enumerable.Range(0, points.Count() - (close ? 0 : 1))
             .Select(i =>

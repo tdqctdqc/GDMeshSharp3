@@ -40,7 +40,7 @@ public abstract partial class PolyBorder
             foreach (var n in element.Neighbors.Items(data))
             {
                 if (InUnion(n, element, data)) continue;
-                mb.DrawPolyEdge(element, n, p => GetColor(p, data), GetThickness(element, n, data), Chunk.RelTo, data);
+                mb.DrawPolyEdge(element, n, p => GetColor(p, data), GetThickness(element, n, data), Chunk.RelTo.Center, data);
             }
         }
         

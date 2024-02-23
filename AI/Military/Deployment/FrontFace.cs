@@ -20,7 +20,7 @@ public struct FrontFace
         PolyCell left = null;
         PolyCell right = null;
         
-        var nfAxis = native.GetCenter().GetOffsetTo(foreign.GetCenter(), d);
+        var nfAxis = native.GetCenter().Offset(foreign.GetCenter(), d);
         var sharedNs = native.Neighbors
             .Intersect(foreign.Neighbors)
             .Distinct()
@@ -37,7 +37,7 @@ public struct FrontFace
         for (var i = 0; i < sharedNs.Length; i++)
         {
             var sharedN = sharedNs[i];
-            var nAxis = native.GetCenter().GetOffsetTo(sharedN.GetCenter(), d);
+            var nAxis = native.GetCenter().Offset(sharedN.GetCenter(), d);
             var onLeft = nfAxis.GetCCWAngleTo(nAxis) < Mathf.Pi;
             if (onLeft)
             {
@@ -143,7 +143,7 @@ public struct FrontFace
     {
         var n = this.GetNative(d);
         var f = this.GetForeign(d);
-        return (n.GetCenter() + n.GetCenter().GetOffsetTo(f.GetCenter(), d) / 2f).ClampPosition(d);
+        return (n.GetCenter() + n.GetCenter().Offset(f.GetCenter(), d) / 2f).ClampPosition(d);
 
     }
 
@@ -173,7 +173,7 @@ public static class FrontFaceExt
 {
     public static Vector2 GetAxis(this FrontFace f, Data d)
     {
-        return f.GetNative(d).GetCenter().GetOffsetTo(f.GetForeign(d).GetCenter(), d);
+        return f.GetNative(d).GetCenter().Offset(f.GetForeign(d).GetCenter(), d);
     }
     
     public static PolyCell GetNative(this FrontFace f, Data d)

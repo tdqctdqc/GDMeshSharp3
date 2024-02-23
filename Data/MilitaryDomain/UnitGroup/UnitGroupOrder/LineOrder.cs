@@ -51,7 +51,7 @@ public class LineOrder : UnitGroupOrder
                 units,
                 u => u.GetPowerPoints(d),
                 (u, f) => 
-                    u.Position.GetCell(d).GetCenter().GetOffsetTo(
+                    u.Position.GetCell(d).GetCenter().Offset(
                         PlanetDomainExt.GetPolyCell(f.Native, d).GetCenter(), d).Length(),
                 f =>
                 {
@@ -82,12 +82,12 @@ public class LineOrder : UnitGroupOrder
         var foreigns = Faces.Select(f => f.GetForeign(d)).Distinct();
         foreach (var n in natives)
         {
-            mb.DrawPolygon(n.RelBoundary.Select(p => relTo.GetOffsetTo(p + n.RelTo, d)).ToArray(),
+            mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
                 new Color(Colors.Blue, .5f));
         }
         foreach (var n in foreigns)
         {
-            mb.DrawPolygon(n.RelBoundary.Select(p => relTo.GetOffsetTo(p + n.RelTo, d)).ToArray(),
+            mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
                 new Color(Colors.Red, .5f));
         }
         

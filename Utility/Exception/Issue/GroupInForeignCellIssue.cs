@@ -19,8 +19,8 @@ public class GroupInForeignCellIssue : Issue
         debug.Clear();
         debug.Draw(mb =>
         {
-            var groupP = Pos.GetOffsetTo(_group.GetCell(c.Data).GetCenter(), c.Data);
-            var cellP = Pos.GetOffsetTo(_cell.GetCenter(), c.Data);
+            var groupP = Pos.Offset(_group.GetCell(c.Data).GetCenter(), c.Data);
+            var cellP = Pos.Offset(_cell.GetCenter(), c.Data);
             mb.AddPoint(cellP, 20f, Colors.Black);
             mb.AddPoint(groupP, 10f, _group.Color);
         }, Pos);

@@ -8,9 +8,9 @@ using MessagePack;
 public class MapPolygon : Entity
 {
     public Vector2 Center { get; protected set; }
+    public Vector2 GraphicalCenter() => BoundaryPoints.Avg() + Center; 
+    public Vector2[] BoundaryPoints { get; private set; }
     public ERefSet<MapPolygon> Neighbors { get; protected set; }
-    public Dictionary<int, PolyBorderChain> NeighborBorders { get; protected set; }
-    public Color Color { get; protected set; }
     public float Altitude { get; protected set; }
     public float Roughness { get; protected set; }
     public float Moisture { get; protected set; }
@@ -20,7 +20,7 @@ public class MapPolygon : Entity
     public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
     [SerializationConstructor] private MapPolygon(int id, Vector2 center, ERefSet<MapPolygon> neighbors, 
-        Dictionary<int, PolyBorderChain> neighborBorders, Color color, float altitude, float roughness, 
+        float altitude, float roughness, 
         float moisture, ERef<Regime> ownerRegime, 
         ERef<Regime> occupierRegime,
         bool isLand,
@@ -29,8 +29,6 @@ public class MapPolygon : Entity
     {
         Center = center;
         Neighbors = neighbors;
-        NeighborBorders = neighborBorders;
-        Color = color;
         Altitude = altitude;
         Roughness = roughness;
         Moisture = moisture;
@@ -41,20 +39,18 @@ public class MapPolygon : Entity
         PolyFoodProd = polyFoodProd;
     }
 
-    public static MapPolygon Create(Vector2 center, 
+    public static MapPolygon Create(PrePoly pre, 
         float mapWidth, GenWriteKey key)
     {
-        var mapCenter = center;
-        if (mapCenter.X > mapWidth) mapCenter = new Vector2(mapCenter.X - mapWidth, center.Y);
-        if (mapCenter.X < 0f) mapCenter = new Vector2(mapCenter.X + mapWidth, center.Y);
+        var mapCenter = pre.RelTo;
+        if (mapCenter.X > mapWidth) mapCenter = new Vector2(mapCenter.X - mapWidth, mapCenter.Y);
+        if (mapCenter.X < 0f) mapCenter = new Vector2(mapCenter.X + mapWidth, mapCenter.Y);
 
-        var id = key.Data.IdDispenser.TakeId();
+        var id = pre.Id;
         var p = new MapPolygon(id, mapCenter,
             ERefSet<MapPolygon>
                 .Construct(nameof(Neighbors), 
                     id, new HashSet<int>(), key.Data),
-            new Dictionary<int, PolyBorderChain>(),
-            ColorsExt.GetRandomColor(),
             0f,
             0f,
             0f,
@@ -68,17 +64,11 @@ public class MapPolygon : Entity
         return p;
     }
     
-    public void AddNeighbor(MapPolygon n, PolyBorderChain border, 
+    public void AddNeighbor(MapPolygon n, 
         GenWriteKey key)
     {
         if (Neighbors.Contains(n)) return;
         Neighbors.Add(n, key);
-        NeighborBorders.Add(n.Id, border);
-    }
-    public void SetNeighborBorder(MapPolygon n, PolyBorderChain border, StrongWriteKey key)
-    {
-        if (Neighbors.Contains(n) == false) throw new Exception();
-        NeighborBorders[n.Id] = border;
     }
     public void RemoveNeighbor(MapPolygon poly, GenWriteKey key)
     {

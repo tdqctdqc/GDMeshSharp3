@@ -10,7 +10,8 @@ public class GenerationMultiSettings : MultiSettings
     public GeologySettings GeologySettings { get; private set; }
     public MoistureSettings MoistureSettings { get; private set; }
     public SocietySettings SocietySettings { get; private set; }
-    public Vector2 Dimensions => new Vector2(PlanetSettings.MapWidth.Value, PlanetSettings.MapHeight.Value);
+    //todo make proper int settings option
+    public Vector2I Dimensions => new Vector2I((int)PlanetSettings.MapWidth.Value, (int)PlanetSettings.MapHeight.Value);
     
     public static GenerationMultiSettings Construct()
     {

@@ -18,7 +18,7 @@ public class DoNothingUnitGroupOrder : UnitGroupOrder
         var crossSize = 10f;
         foreach (var c in cells)
         {
-            var relPos = relTo.GetOffsetTo(c.GetCenter(), d);
+            var relPos = relTo.Offset(c.GetCenter(), d);
             mb.AddLine(relPos - Vector2.One * crossSize,
                 relPos + Vector2.One * crossSize,
                 group.Color, 3f);

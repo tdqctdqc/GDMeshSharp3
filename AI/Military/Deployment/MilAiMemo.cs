@@ -46,7 +46,7 @@ public class MilAiMemo
             if (theater == null)
             {
                 theater = theaterSegs.Keys.MinBy(t => t.GetCharacteristicCell(d)
-                    .GetCenter().GetOffsetTo(groupCell.GetCenter(), d).Length());
+                    .GetCenter().Offset(groupCell.GetCenter(), d).Length());
             }
 
             var segments = theaterSegs[theater];
@@ -63,7 +63,7 @@ public class MilAiMemo
                 frontSegment = segments.MinBy(s =>
                     s.Frontline.Faces.First().GetNative(d)
                         .GetCenter()
-                        .GetOffsetTo(group.GetCell(d).GetCenter(), d)
+                        .Offset(group.GetCell(d).GetCenter(), d)
                         .Length());
             }
             if (frontSegment != null)

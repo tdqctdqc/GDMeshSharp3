@@ -11,18 +11,14 @@ public static class MapPolygonExt
         var mapHeight = data.Planet.Height;
         return Mathf.Abs((.5f * mapHeight - p.Center.Y) / mapHeight);
     }
-    public static PolyAuxData GetAuxData(this MapPolygon poly, Data data)
-    {
-        return data.Planet.PolygonAux.AuxDatas[poly];
-    }
     public static bool PointInPolyAbs(this MapPolygon poly, Vector2 posAbs, Data data)
     {
         var posRel = poly.GetOffsetTo(posAbs, data);
-        return data.Planet.PolygonAux.AuxDatas[poly].PointInPoly(poly, posRel, data);
+        return Geometry2D.IsPointInPolygon(posRel, poly.BoundaryPoints);
     }
     public static bool PointInPolyRel(this MapPolygon poly, Vector2 posRel, Data data)
     {
-        return data.Planet.PolygonAux.AuxDatas[poly].PointInPoly(poly, posRel, data);
+        return Geometry2D.IsPointInPolygon(posRel, poly.BoundaryPoints);
     }
     public static Vector2 GetOffsetTo(this MapPolygon poly, MapPolygon p, Data data)
     {
@@ -66,20 +62,7 @@ public static class MapPolygonExt
     public static bool IsCoast(this MapPolygon poly, Data data) => poly.IsLand && poly.Neighbors.Items(data).Any(n => n.IsWater());
     public static MapPolygonEdge GetEdge(this MapPolygon poly, MapPolygon neighbor, Data data) 
         => data.Planet.PolyEdgeAux.GetEdge(poly, neighbor);
-    public static PolyBorderChain GetBorder(this MapPolygon poly, int nId) => poly.NeighborBorders[nId];
-    public static IEnumerable<PolyBorderChain> GetPolyBorders(this MapPolygon poly) => poly.Neighbors.RefIds
-        .Select(n => poly.GetBorder(n));
-    public static List<LineSegment> GetOrderedBoundarySegs(this MapPolygon poly, Data data)
-    {
-        return data.Planet
-            .PolygonAux
-            .AuxDatas[poly]
-            .OrderedBoundarySegs;
-    }
-    public static Vector2[] GetOrderedBoundaryPoints(this MapPolygon poly, Data data)
-    {
-        return data.Planet.PolygonAux.AuxDatas[poly].OrderedBoundaryPoints;
-    }
+    
     public static ReadOnlyHash<ResourceDeposit> GetResourceDeposits(this MapPolygon p, Data data)
     {
         var rd = data.Planet.ResourceDepositAux.ByPoly[p];
@@ -99,10 +82,6 @@ public static class MapPolygonExt
             .Select(b => b.Model.Model(data))
             .Where(b => b.HasComponent<Workplace>())
             .Sum(wb => poly.GetPeep(data).Size - wb.GetComponent<Workplace>().TotalLaborReq());
-    }
-    public static Vector2 GetGraphicalCenterOffset(this MapPolygon poly, Data data)
-    {
-        return data.Planet.PolygonAux.AuxDatas[poly].GraphicalCenter;
     }
 
     public static bool HasSettlement(this MapPolygon p, Data data)
@@ -152,14 +131,13 @@ public static class MapPolygonExt
 
     public static float GetArea(this MapPolygon p, Data d)
     {
-        var ps = p.GetOrderedBoundaryPoints(d);
-        var tris = Geometry2D.TriangulatePolygon(ps);
+        var tris = Geometry2D.TriangulatePolygon(p.BoundaryPoints);
         var area = 0f;
         for (var i = 0; i < tris.Length; i+=3)
         {
-            var a = ps[tris[i]];
-            var b = ps[tris[i+1]];
-            var c = ps[tris[i+2]];
+            var a = p.BoundaryPoints[tris[i]];
+            var b = p.BoundaryPoints[tris[i+1]];
+            var c = p.BoundaryPoints[tris[i+2]];
             area += TriangleExt.GetApproxArea(a, b, c);
         }
         
@@ -168,15 +146,15 @@ public static class MapPolygonExt
 
     public static Triangle[] GetTriangles(this MapPolygon p, Vector2 relTo, Data d)
     {
-        var RelBoundary = p.GetOrderedBoundaryPoints(d);
-        var tris = Geometry2D.TriangulatePolygon(RelBoundary);
+        var relBoundary = p.BoundaryPoints;
+        var tris = Geometry2D.TriangulatePolygon(relBoundary);
         var res = new Triangle[tris.Length / 3];
         for (var i = 0; i < tris.Length; i+=3)
         {
             res[i / 3] = new Triangle(
-                relTo.GetOffsetTo(RelBoundary[tris[i]] + p.Center, d) ,
-                relTo.GetOffsetTo(RelBoundary[tris[i + 1]] + p.Center, d) ,
-                relTo.GetOffsetTo(RelBoundary[tris[i + 2]] + p.Center, d));
+                relTo.Offset(relBoundary[tris[i]] + p.Center, d) ,
+                relTo.Offset(relBoundary[tris[i + 1]] + p.Center, d) ,
+                relTo.Offset(relBoundary[tris[i + 2]] + p.Center, d));
         }
 
         return res;

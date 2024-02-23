@@ -98,7 +98,7 @@ public class InfrastructureGenerator : Generator
                         t => t.GetLandform(_data) == urban);
                     if (centerCell == null)
                     {
-                        centerCell = landCells.MinBy(l => p.Center.GetOffsetTo(l.GetCenter(), _data).Length());
+                        centerCell = landCells.MinBy(l => p.Center.Offset(l.GetCenter(), _data).Length());
                     }
                     var iNode = new InfrastructureNode(centerCell, 0f);
                     return iNode;
@@ -156,7 +156,7 @@ public class InfrastructureGenerator : Generator
                 var traffic = aNode.Size + nearNode.Size;
                 
                 
-                var dist = aNode.Cell.GetCenter().GetOffsetTo(nearNode.Cell.GetCenter(), _data).Length();
+                var dist = aNode.Cell.GetCenter().Offset(nearNode.Cell.GetCenter(), _data).Length();
 
                 var distMult = (10_000f - dist) / 10_000f;
                 distMult = Mathf.Clamp(distMult, 0f, 1f);
@@ -274,7 +274,7 @@ public class InfrastructureGenerator : Generator
             var paths = 
                 PathFinder<PolyCell>.FindMultiplePaths(
                 w, ns, wp => wp.GetNeighbors(_data).Where(x => x is LandCell),
-                getEdgeCost, (w, v) => w.GetCenter().GetOffsetTo(v.GetCenter(), _data).Length());
+                getEdgeCost, (w, v) => w.GetCenter().Offset(v.GetCenter(), _data).Length());
             foreach (var kvp in paths)
             {
                 var key = kvp.Key.GetIdEdgeKey(w);
@@ -297,7 +297,7 @@ public class InfrastructureGenerator : Generator
                 var road = getRoadFromTraffic(traffic);
                 if (road != null)
                 {
-                    var length = w.GetCenter().GetOffsetTo(v.GetCenter(), _data).Length();
+                    var length = w.GetCenter().Offset(v.GetCenter(), _data).Length();
                     return length / road.CostOverride;
                 }
             }

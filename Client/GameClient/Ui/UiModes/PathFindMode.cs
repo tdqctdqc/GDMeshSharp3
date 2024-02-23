@@ -78,7 +78,7 @@ public class PathFindMode : UiMode
         {
             var from = path[i];
             var to = path[i + 1];
-            var offset = from.GetCenter().GetOffsetTo(to.GetCenter(), _client.Data);
+            var offset = from.GetCenter().Offset(to.GetCenter(), _client.Data);
             debug.Draw(mb => mb.AddArrow(Vector2.Zero, offset, 5f, Colors.Yellow),
                 from.GetCenter());
         }
