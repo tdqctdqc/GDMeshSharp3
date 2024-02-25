@@ -19,12 +19,15 @@ public class MapPolygon : Entity
     public bool IsLand { get; protected set; }
     public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
-    [SerializationConstructor] private MapPolygon(int id, Vector2 center, ERefSet<MapPolygon> neighbors, 
+    [SerializationConstructor] private MapPolygon(int id, 
+        Vector2 center, ERefSet<MapPolygon> neighbors, 
         float altitude, float roughness, 
         float moisture, ERef<Regime> ownerRegime, 
         ERef<Regime> occupierRegime,
         bool isLand,
-        PolyBuildingSlots polyBuildingSlots, PolyFoodProd polyFoodProd) 
+        PolyBuildingSlots polyBuildingSlots, 
+        PolyFoodProd polyFoodProd,
+        Vector2[] boundaryPoints) 
             : base(id)
     {
         Center = center;
@@ -37,6 +40,7 @@ public class MapPolygon : Entity
         IsLand = isLand;
         PolyBuildingSlots = polyBuildingSlots;
         PolyFoodProd = polyFoodProd;
+        BoundaryPoints = boundaryPoints;
     }
 
     public static MapPolygon Create(PrePoly pre, 
@@ -47,6 +51,11 @@ public class MapPolygon : Entity
         if (mapCenter.X < 0f) mapCenter = new Vector2(mapCenter.X + mapWidth, mapCenter.Y);
 
         var id = pre.Id;
+
+        var preCells = pre.Cells;
+
+        var boundaryPoints = ConstructBoundaryPoints(mapCenter, preCells, key.Data);
+        
         var p = new MapPolygon(id, mapCenter,
             ERefSet<MapPolygon>
                 .Construct(nameof(Neighbors), 
@@ -58,12 +67,43 @@ public class MapPolygon : Entity
             new ERef<Regime>(-1),
             true,
             PolyBuildingSlots.Construct(),
-            PolyFoodProd.Construct()
+            PolyFoodProd.Construct(),
+            boundaryPoints
         );
         key.Create(p);
         return p;
     }
-    
+
+    private static Vector2[] ConstructBoundaryPoints(
+        Vector2 center,
+        List<PreCell> preCells, Data d)
+    {
+        var counts = new Dictionary<Vector2, int>();
+        for (var i = 0; i < preCells.Count; i++)
+        {
+            var c = preCells[i];
+            foreach (var p in c.GetPointsAbs(d))
+            {
+                if (counts.ContainsKey(p))
+                {
+                    counts[p]++;
+                }
+                else
+                {
+                    counts.Add(p, 1);
+                }
+            }
+        }
+        // foreach (var (p, count) in counts)
+        // {
+        //     if (count > 3) throw new Exception(count.ToString());
+        // }
+
+        return counts.Where(kvp => kvp.Value < 3)
+            .Select(kvp => kvp.Key)
+            .Select(p => center.Offset(p, d))
+            .OrderBy(p => Vector2.Up.AngleTo(p)).ToArray();
+    }
     public void AddNeighbor(MapPolygon n, 
         GenWriteKey key)
     {

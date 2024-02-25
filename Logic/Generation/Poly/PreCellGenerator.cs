@@ -87,7 +87,7 @@ public static class PreCellGenerator
         
         
         sw.Start();
-        var nexi = MakeNexi(cells, dim, key);
+        var nexi = MakeNexiNew(polys, edges, key);
         sw.Stop();
         GD.Print($"make nexi {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
@@ -386,47 +386,108 @@ public static class PreCellGenerator
             foreach (var nPoly in poly.Neighbors)
             {
                 if (nPoly.Id > poly.Id) continue;
-                edges.Add(new Vector2I(poly.Id, nPoly.Id), new PreEdge(key, poly, nPoly));
+                edges.Add(poly.GetIdEdgeKey(nPoly), new PreEdge(key, poly, nPoly));
             }
         }
         return edges;
     }
-    
-    private static Dictionary<Vector3I, PreNexus> MakeNexi(List<PreCell> cells, 
-        Vector2I dim, GenWriteKey key)
-    {
-        var res = new Dictionary<Vector3I, PreNexus>();
-        foreach (var cell1 in cells)
-        {
-            foreach (var cell2 in cell1.Neighbors)
-            {
-                if (cell2.PrePoly.Id >= cell1.PrePoly.Id) continue;
-                foreach (var cell3 in cell2.Neighbors)
-                {
-                    if (cell3.PrePoly.Id >= cell1.PrePoly.Id) continue;
-                    if (cell3.PrePoly.Id >= cell2.PrePoly.Id) continue;
-                    if (cell3.Neighbors.Contains(cell1) == false) continue;
-                    var (p11, p12) = cell1.EdgeWith(cell2);
-                    var (p21, p22) = cell1.EdgeWith(cell3);
-                    Vector2 pointRel;
-                    if (p11 == p21) pointRel = p11;
-                    else if (p11 == p22) pointRel = p11;
-                    else if (p12 == p21) pointRel = p12;
-                    else if (p12 == p22) pointRel = p12;
-                    else throw new Exception();
-                    var pointAbs = (cell1.RelTo + pointRel).ClampPosition(key.Data);
 
-                    var idKey = new Vector3I(cell1.PrePoly.Id, cell2.PrePoly.Id, cell3.PrePoly.Id);
-                    if (res.ContainsKey(idKey))
-                    {
-                        throw new Exception("duplicate nexus at " + pointAbs);
-                    }
-                    res.Add(idKey,
-                        new PreNexus(key, pointAbs, cell1.PrePoly, cell2.PrePoly, cell3.PrePoly));
+    private static List<PreNexus> MakeNexiNew(List<PrePoly> polys,
+        Dictionary<Vector2I, PreEdge> edges, GenWriteKey key)
+    {
+        var res = new List<PreNexus>();
+        var dic = new Dictionary<Vector2, List<PrePoly>>();
+        foreach (var poly in polys)
+        {
+            var counts = new Dictionary<Vector2, int>();
+            foreach (var cell in poly.Cells)
+            {
+                foreach (var p in cell.GetPointsAbs(key.Data))
+                {
+                    counts.AddOrSum(p.ClampPosition(key.Data), 1);
                 }
+            }
+
+            var singles = counts.Where(kvp => kvp.Value == 1);
+            foreach (var (p, count) in singles)
+            {
+                dic.AddOrUpdate(p, poly);
+            }
+        }
+        
+        
+        foreach (var (point, incidentPolys) in dic)
+        {
+            if (incidentPolys.Count == 2)
+            {
+                var p1 = incidentPolys[0];
+                var p2 = incidentPolys[1];
+                var edge = edges[p1.GetIdEdgeKey(p2)];
+                var nexus = new PreNexus(key, point, p1, p2, null, edge, null, null);
+                edge.SetNexus(nexus);
+                res.Add(nexus);
+            }
+            else if (incidentPolys.Count == 3)
+            {
+                var p1 = incidentPolys[0];
+                var p2 = incidentPolys[1];
+                var p3 = incidentPolys[2];
+                var e1 = edges[p1.GetIdEdgeKey(p2)];
+                var e2 = edges[p2.GetIdEdgeKey(p3)];
+                var e3 = edges[p3.GetIdEdgeKey(p1)];
+                var nexus = new PreNexus(key, point, 
+                    p1, p2, p3, 
+                    e1, e2, e3);
+                e1.SetNexus(nexus);
+                e2.SetNexus(nexus);
+                e3.SetNexus(nexus);
+                res.Add(nexus);
+            }
+            else if(incidentPolys.Count != 1)
+            {
+                throw new Exception(incidentPolys.Count.ToString());
             }
         }
 
         return res;
     }
+    
+    
+    // private static Dictionary<Vector3I, PreNexus> MakeNexiOld(List<PreCell> cells, 
+    //     Vector2I dim, GenWriteKey key)
+    // {
+    //     var res = new Dictionary<Vector3I, PreNexus>();
+    //     foreach (var cell1 in cells)
+    //     {
+    //         foreach (var cell2 in cell1.Neighbors)
+    //         {
+    //             if (cell2.PrePoly.Id >= cell1.PrePoly.Id) continue;
+    //             foreach (var cell3 in cell2.Neighbors)
+    //             {
+    //                 if (cell3.PrePoly.Id >= cell1.PrePoly.Id) continue;
+    //                 if (cell3.PrePoly.Id >= cell2.PrePoly.Id) continue;
+    //                 if (cell3.Neighbors.Contains(cell1) == false) continue;
+    //                 var (p11, p12) = cell1.EdgeWith(cell2);
+    //                 var (p21, p22) = cell1.EdgeWith(cell3);
+    //                 Vector2 pointRel;
+    //                 if (p11 == p21) pointRel = p11;
+    //                 else if (p11 == p22) pointRel = p11;
+    //                 else if (p12 == p21) pointRel = p12;
+    //                 else if (p12 == p22) pointRel = p12;
+    //                 else throw new Exception();
+    //                 var pointAbs = (cell1.RelTo + pointRel).ClampPosition(key.Data);
+    //
+    //                 var idKey = new Vector3I(cell1.PrePoly.Id, cell2.PrePoly.Id, cell3.PrePoly.Id);
+    //                 if (res.ContainsKey(idKey))
+    //                 {
+    //                     throw new Exception("duplicate nexus at " + pointAbs);
+    //                 }
+    //                 res.Add(idKey,
+    //                     new PreNexus(key, pointAbs, cell1.PrePoly, cell2.PrePoly, cell3.PrePoly));
+    //             }
+    //         }
+    //     }
+    //
+    //     return res;
+    // }
 }

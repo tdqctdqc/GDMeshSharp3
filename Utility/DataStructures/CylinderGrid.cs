@@ -6,7 +6,7 @@ using Godot;
 
 public class CylinderGrid<T> 
 {
-    public Dictionary<Vector2I, HashSet<T>> Cells { get; private set; }
+    public Dictionary<Vector2I, List<T>> Cells { get; private set; }
     public (Vector2I, float)[] SearchSpiralKeyOffsets { get; private set; }
     public float CellWidth { get; }
     public float CellHeight { get; }
@@ -23,37 +23,40 @@ public class CylinderGrid<T>
         CellWidth = dim.X / NumXPartitions;
         NumYPartitions = Mathf.CeilToInt(dim.Y / maxCellSideLength);
         CellHeight = dim.Y / NumYPartitions;
-        Cells = new Dictionary<Vector2I, HashSet<T>>();
+        Cells = new Dictionary<Vector2I, List<T>>();
         Dimension = dim;
         for (var i = 0; i < NumXPartitions; i++)
         {
             for (var j = 0; j < NumYPartitions; j++)
             {
                 var key = new Vector2I(i, j);
-                Cells.Add(key, new HashSet<T>());
+                Cells.Add(key, new List<T>());
             }
         }
 
         SearchSpiralKeyOffsets = GetSearchSpiral();
     }
 
-    public List<T> GetWithin(Vector2 p, float radius, Func<T, bool> pred)
+    public List<T> GetWithin(Vector2 p, 
+        float radius, Func<T, bool> pred)
     {
         var res = new List<T>();
         var startKey = GetKey(p);
+        var radiusSquared = radius * radius;
+        var criterionSquared = MaxCellDim * 1.5f * MaxCellDim * 1.5f;
         for (var i = 0; i < SearchSpiralKeyOffsets.Length; i++)
         {
             var v = SearchSpiralKeyOffsets[i];
             var keyOffset = v.Item1;
-            var keyDist = v.Item2;
-            if (keyDist > radius + MaxCellDim * 1.5f)
+            var keyDistSquared = v.Item2 * v.Item2;
+            if (keyDistSquared > radiusSquared + criterionSquared)
             {
                 break;
             }
             var key = startKey + keyOffset;
             key = ClampKey(key);
             var set = Cells[key];
-            foreach (var t in set.Where(t => pred(t) && GetDist(_getPos(t), p) <= radius))
+            foreach (var t in set.Where(t => pred(t) && GetDistSquared(_getPos(t), p) <= radiusSquared))
             {
                 res.Add(t);
             }
@@ -66,42 +69,45 @@ public class CylinderGrid<T>
         if (p.Y > Dimension.Y || p.Y < 0) return false;
         var startKey = GetKey(p);
         bool found = false;
-        float dist = Mathf.Inf;
+        float distSquared = Mathf.Inf;
+        float criterionSquared = MaxCellDim * 1.5f * MaxCellDim * 1.5f;
         for (var i = 0; i < SearchSpiralKeyOffsets.Length; i++)
         {
             var v = SearchSpiralKeyOffsets[i];
             var keyOffset = v.Item1;
             var keyDist = v.Item2;
-            if (found && keyDist > dist + MaxCellDim * 1.5f)
+            var keyDistSquared = keyDist * keyDist;
+            if (found && keyDistSquared > distSquared + criterionSquared)
             {
                 break;
             }
             var key = startKey + keyOffset;
             key = ClampKey(key);
-            var set = Cells[key].Where(valid);
-            if (set.Count() > 0)
+            var set = Cells[key];
+            
+            for (var j = 0; j < set.Count; j++)
             {
-                var closeInCell = set.MinBy(t => GetDist(_getPos(t), p));
-                var closeInCellDist = GetDist(_getPos(closeInCell), p);
-                if (closeInCellDist < dist)
+                var t = set[j];
+                if (valid(t) == false) continue;
+                var thisDistSquared = GetDistSquared(_getPos(t), p);
+                if (thisDistSquared < distSquared)
                 {
                     found = true;
-                    dist = closeInCellDist;
-                    close = closeInCell;
+                    distSquared = thisDistSquared;
+                    close = t;
                 }
             }
         }
         return found;
     }
-
-    private float GetDist(Vector2 p1, Vector2 p2)
+    private float GetDistSquared(Vector2 p1, Vector2 p2)
     {
         var yDist = Mathf.Abs(p1.Y - p2.Y);
         var xDist = Mathf.Abs(p1.X - p2.X);
         while (xDist > Dimension.X / 2f) xDist -= Dimension.X;
         while (xDist < -Dimension.X / 2f) xDist += Dimension.X;
         if (yDist > Dimension.Y) throw new Exception();
-        return Mathf.Sqrt(yDist * yDist + xDist * xDist);
+        return yDist * yDist + xDist * xDist;
     }
     private int GetXModulo(int x)
     {

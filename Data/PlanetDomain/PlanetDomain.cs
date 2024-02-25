@@ -46,7 +46,7 @@ public class PlanetDomain
         if (pos.Y < 0 ) pos.Y = 0;
         if (pos.Y > Height) pos.Y = Height;
         while (pos.X < 0) pos += Vector2.Right * Width;
-        while (pos.X > Width) pos += Vector2.Left * Width;
+        while (pos.X >= Width) pos += Vector2.Left * Width;
         return pos;
     }
 

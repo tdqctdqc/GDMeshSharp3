@@ -42,45 +42,16 @@ public class PolygonGenerator : Generator
                 .Create(prePoly, _dimensions.X, key);
             key.GenData.GenAuxData.PreCellPolys.Add(poly, prePoly.Cells);
         }
+        foreach (var pre in res.Nexi)
+        {
+            var nexus = MapPolyNexus.Create(pre, key);
+        }
         foreach (var (vector2I, pre) in res.Edges)
         {
             var p1 = key.Data.Get<MapPolygon>(vector2I.X);
             var p2 = key.Data.Get<MapPolygon>(vector2I.Y);
             var edge = MapPolygonEdge.Create(pre, key);
         }
-
-        var nexiByEdgeId = new Dictionary<int, MapPolyNexus>();
-        
-        foreach (var (vector3I, pre) in res.Nexi)
-        {
-            var p1 = key.Data.Get<MapPolygon>(vector3I.X);
-            var p2 = key.Data.Get<MapPolygon>(vector3I.Y);
-            var p3 = key.Data.Get<MapPolygon>(vector3I.Z);
-            var nexus = MapPolyNexus.Create(pre, key);
-            
-            void add(MapPolygon poly1, MapPolygon poly2)
-            {
-                var edge = poly1.GetEdge(poly2, key.Data);
-                if (nexiByEdgeId.TryGetValue(edge.Id, out var otherNexus))
-                {
-                    edge.SetNexi(nexus, otherNexus, key);
-                }
-                else
-                {
-                    nexiByEdgeId.Add(edge.Id, nexus);
-                }
-            }
-        }
-        
-        foreach (var (edgeId, nexus) in nexiByEdgeId)
-        {
-            var edge = key.Data.Get<MapPolygonEdge>(edgeId);
-            if (edge.HighPoly.IsEmpty())
-            {
-                
-            }
-        }
-        
         return report;
     }
 }

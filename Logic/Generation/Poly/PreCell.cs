@@ -51,7 +51,7 @@ public class PreCell : IIdentifiable
         return EdgesRel[index];
     }
 
-    public HashSet<Vector2> GetPointsAbs(Vector2I dim, Data d)
+    public HashSet<Vector2> GetPointsAbs(Data d)
     {
         var res = new HashSet<Vector2>();
         foreach (var (p1, p2) in EdgesRel)

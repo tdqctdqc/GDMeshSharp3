@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Godot;
 
 
-public class PrePoly
+public class PrePoly : IIdentifiable
 {
     public int Id { get; private set; }
     public Vector2 RelTo { get; private set; }

@@ -13,26 +13,56 @@ public class MapPolyNexus : Entity
         GenWriteKey key)
     {
         var id = pre.Id;
-        var p1 = key.Data.Get<MapPolygon>(pre.P1.Id);
-        var p2 = key.Data.Get<MapPolygon>(pre.P2.Id);
-        var p3 = key.Data.Get<MapPolygon>(pre.P3.Id);
+        var ps = new HashSet<int>();
+        if (pre.P1 != null) ps.Add(pre.P1.Id);
+        if (pre.P2 != null) ps.Add(pre.P2.Id);
+        if (pre.P3 != null) ps.Add(pre.P3.Id);
 
+        var es = new HashSet<int>();
+        if (pre.E1 != null) es.Add(pre.E1.Id);
+        if (pre.E2 != null) es.Add(pre.E2.Id);
+        if (pre.E3 != null) es.Add(pre.E3.Id);
+        
+        var n = new MapPolyNexus(id, pre.Pos, 
+            ERefSet<MapPolygonEdge>.Construct(
+                nameof(IncidentEdges), id,
+                es, key.Data),
+            ERefSet<MapPolygon>.Construct(nameof(IncidentPolys), id,
+                ps, key.Data)
+            );
+        
+        key.Create(n);
+        return n;
+    }
+    
+    
+    public static MapPolyNexus Create(Vector2 pos, MapPolygon p1, MapPolygon p2,
+        GenWriteKey key)
+    {
+
+        var mutual = p1.Neighbors.Items(key.Data)
+            .Intersect(p2.Neighbors.Items(key.Data)).ToArray();
+        if (mutual.Length != 1) throw new Exception();
+        var p3 = mutual[0];
         var e1 = p1.GetEdge(p2, key.Data);
         var e2 = p2.GetEdge(p3, key.Data);
         var e3 = p3.GetEdge(p1, key.Data);
-        
-        var n = new MapPolyNexus(id, pre.Pos, 
+        var id = key.Data.IdDispenser.TakeId();
+        var n = new MapPolyNexus(id,
+            pos, 
             ERefSet<MapPolygonEdge>.Construct(
                 nameof(IncidentEdges), id,
                 new HashSet<int>{e1.Id, e2.Id, e3.Id}, key.Data),
             
             ERefSet<MapPolygon>.Construct(nameof(IncidentPolys), id,
                 new HashSet<int>{p1.Id, p2.Id, p3.Id}, key.Data)
-            );
+        );
         
         key.Create(n);
         return n;
     }
+    
+    
     [SerializationConstructor] private MapPolyNexus(int id, Vector2 point, ERefSet<MapPolygonEdge> incidentEdges,
         ERefSet<MapPolygon> incidentPolys) : base(id)
     {
