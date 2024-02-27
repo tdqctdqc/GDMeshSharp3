@@ -24,23 +24,6 @@ public class Saver
         {
             GD.Print($"{data.EntitiesById.Count()} entities became {loaded.Count()}");
         }
-
-        var loadedIds = loaded.Select(l => l.Id).Distinct();
-        if (loadedIds.Count() != loaded.Count())
-        {
-            GD.Print($"{loaded.Count()} with {loadedIds.Count()} distinct ids");
-        }
-        
-        foreach (var loadedEntity in loaded)
-        {
-            var entity = data[loadedEntity.Id];
-            if (entity.GetType() != loadedEntity.GetType())
-            {
-                GD.Print($"{entity.GetType()} {entity.Id} became {loadedEntity.GetType()}");
-            }
-        }
-        
-        
         
         GodotFileExt.SaveFile(file, "", "save", ".sv", data);
     }

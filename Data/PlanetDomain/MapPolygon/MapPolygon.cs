@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
+using VoronoiSandbox;
 
 public class MapPolygon : Entity
 {
@@ -44,11 +45,11 @@ public class MapPolygon : Entity
     }
 
     public static MapPolygon Create(PrePoly pre, 
-        float mapWidth, GenWriteKey key)
+        int mapWidth, GenWriteKey key)
     {
         var mapCenter = pre.RelTo;
-        if (mapCenter.X > mapWidth) mapCenter = new Vector2(mapCenter.X - mapWidth, mapCenter.Y);
-        if (mapCenter.X < 0f) mapCenter = new Vector2(mapCenter.X + mapWidth, mapCenter.Y);
+        if (mapCenter.X > mapWidth) mapCenter = new Vector2I(mapCenter.X - mapWidth, mapCenter.Y);
+        if (mapCenter.X < 0f) mapCenter = new Vector2I(mapCenter.X + mapWidth, mapCenter.Y);
 
         var id = pre.Id;
 
@@ -82,7 +83,7 @@ public class MapPolygon : Entity
         for (var i = 0; i < preCells.Count; i++)
         {
             var c = preCells[i];
-            foreach (var p in c.GetPointsAbs(d))
+            foreach (var p in c.PointsAbs)
             {
                 if (counts.ContainsKey(p))
                 {
@@ -94,10 +95,6 @@ public class MapPolygon : Entity
                 }
             }
         }
-        // foreach (var (p, count) in counts)
-        // {
-        //     if (count > 3) throw new Exception(count.ToString());
-        // }
 
         return counts.Where(kvp => kvp.Value < 3)
             .Select(kvp => kvp.Key)

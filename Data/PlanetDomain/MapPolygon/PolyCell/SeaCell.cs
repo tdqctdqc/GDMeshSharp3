@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using MessagePack;
+using VoronoiSandbox;
 
 public class SeaCell : PolyCell, ISinglePolyCell
 {
@@ -13,11 +14,11 @@ public class SeaCell : PolyCell, ISinglePolyCell
         var relTo = pre.RelTo;
         var lf = key.Data.Models.Landforms.Sea;
         var v = key.Data.Models.Vegetations.Barren;
-        var c = new SeaCell(poly.MakeRef(), poly.Center, 
+        var c = new SeaCell(poly.MakeRef(), relTo, 
             GetBoundaryPoints(pre.EdgesRel),
             v.MakeRef(), lf.MakeRef(), 
             pre.Neighbors.Select(n => n.Id).ToList(),
-            pre.EdgesRel.ToList(), pre.Id);
+            pre.EdgesRel.Select(e => ((Vector2)e.Item1, (Vector2)e.Item2)).ToList(), pre.Id);
         return c;
     }
     [SerializationConstructor] private SeaCell(

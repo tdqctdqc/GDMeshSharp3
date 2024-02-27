@@ -69,6 +69,16 @@ public class MeshBuilder
         Tris.Add(tri);
         Colors.Add(color);
     }
+    public void AddTriRel(Vector2 a, Vector2 b, Vector2 c, Color color,
+        Vector2 relTo, Data d)
+    {
+        var tri = new Triangle(
+            relTo.Offset(a, d), 
+            relTo.Offset(b, d), 
+            relTo.Offset(c, d));
+        Tris.Add(tri);
+        Colors.Add(color);
+    }
     
     private void JoinLinePoints(Vector2 from, Vector2 to, float thickness, Color color)
     {
@@ -82,101 +92,118 @@ public class MeshBuilder
     }
 
     public void DrawPolyEdge(MapPolygon poly, MapPolygon n, 
-        Func<MapPolygon, Color> color,
+        Func<MapPolygon, Color> getColor,
         float thickness, Vector2 relTo, Data d)
     {
-        throw new Exception();
         var offset = relTo.Offset(poly.Center, d);
         var edge = poly.GetEdge(n, d);
-        // var segs = edge.GetSegsRel(poly, d).Segments;
-        // for (var i = 0; i < segs.Count; i++)
-        // {
-        //     var seg = segs[i];
-        //     var axis = seg.GetNormalizedAxis();
-        //     var perp = axis.Orthogonal() * thickness;
-        //     if (thickness > seg.From.Length()) continue;
-        //     if (thickness > seg.To.Length()) continue;
-        //
-        //     var toPerp = seg.To - perp;
-        //     var fromPerp = seg.From - perp;
-        //
-        //     AddTri(new Triangle(seg.From, seg.To, toPerp).Transpose(offset), color(poly));
-        //     AddTri(new Triangle(toPerp, seg.From, fromPerp).Transpose(offset), color(poly));
-        // }
-    }
-    
-    public void DrawPolyCellEdge(PolyCell c1, PolyCell c2, 
-        Func<PolyCell, Color> color,
-        float thickness, Vector2 relTo, Data d)
-    {
-
-        return;
-        Vector2? lineP1 = null;
-        Vector2? lineP2 = null;
-        for (var i = 0; i < c1.RelBoundary.Length; i++)
-        {
-            var from1 = c1.RelBoundary[i];
-            var to1 = c1.RelBoundary.Modulo(i + 1);
-            for (var j = 0; j < c2.RelBoundary.Length; j++)
-            {
-                var from2 = c2.RelBoundary[j];
-                var from2rel = c1.RelTo.Offset(from2 + c2.RelTo, d);
-                var to2 = c2.RelBoundary.Modulo(j + 1);
-                var to2rel = c1.RelTo.Offset(to2 + c2.RelTo, d);
-                var close1 = Geometry2D
-                    .GetClosestPointToSegment(from1, from2rel, to2rel);
-                var dist1 = close1.DistanceTo(from1);
-                
-                var close2 = Geometry2D
-                    .GetClosestPointToSegment(from2rel, from1, to1);
-                var dist2 = close2.DistanceTo(from2rel);
-                
-                if ((dist1 < .1f || from1.DistanceTo(from2rel) < .1f || from1.DistanceTo(to2rel) < .1f)
-                    && alreadyFound(from1) == false)
-                {
-                    register(from1);
-                }
-
-                if (foundBoth()) break;
-                if ((dist2 < .1f || from2rel.DistanceTo(from1) < .1f || from2rel.DistanceTo(to1) < .1f)
-                    && alreadyFound(from2rel) == false)
-                {
-                    register(from2rel);
-                }
-                if (foundBoth()) break;
-            }
-            if (foundBoth()) break;
-        }
-
-        if (foundBoth() == false)
-        {
-            return;
-        }
-        var rel1 = relTo.Offset(lineP1.Value + c1.RelTo, d);
-        var rel2 = relTo.Offset(lineP2.Value + c1.RelTo, d);
-        AddLine(rel1, rel2, color(c1), thickness);
         
-        void register(Vector2 p)
+        var edges = poly.GetCells(d)
+            .OfType<LandCell>()
+            .SelectMany(c => c.GetNeighbors(d)
+                .OfType<LandCell>()
+                .Where(n => n.Polygon.RefId == n.Id)
+                .Select(n => (c, n))
+            );
+        var color = getColor(poly);
+        foreach (var v in edges)
         {
-            if (foundBoth()) throw new Exception();
-            if (lineP1 == null)
+            DrawPolyCellEdge(v.c, v.n, 
+                c => color, 
+                thickness, relTo, d);
+        }
+    }
+
+    public void DrawPolyCellEdge(PolyCell c, PolyCell n,
+        Func<PolyCell, Color> getColor,
+        float thickness, Vector2 relTo, Data d,
+        bool debug = false)
+    {
+        var color = getColor(c);
+        var edge = c.GetEdgeRelWith(n);
+        var offsetToCenter = relTo.Offset(c.GetCenter(), d);
+        var perp = Clockwise
+            .GetPerpTowards(edge.Item1, edge.Item2, 
+                Vector2.Zero).Normalized() * thickness;
+        var innerSeg = (edge.Item1 + perp, edge.Item2 + perp);
+        var mid = (edge.Item1 + edge.Item2) / 2f;
+        var innerMid = mid + perp;
+        var mutuals = c.Neighbors.Intersect(n.Neighbors)
+            .Select(i => PlanetDomainExt.GetPolyCell(i, d)).ToArray();
+        if (mutuals.Length > 2) throw new Exception();
+        
+        for (var i = 0; i < mutuals.Length; i++)
+        {
+            var mutual = mutuals[i];
+            var mEdge = c.GetEdgeRelWith(mutual);
+            var shared = getShared(edge, mEdge);
+            if (Vector2Ext.LineSegIntersect(innerSeg.Item1, 
+                    innerSeg.Item2,
+                    mEdge.Item1, mEdge.Item2, true,
+                    out var intersectPoint))
             {
-                lineP1 = p;
+                //acute
+                AddTriRel(mid + c.RelTo, 
+                    innerMid + c.RelTo, intersectPoint + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(mid + c.RelTo, shared + c.RelTo, 
+                    intersectPoint + c.RelTo, color,
+                    relTo, d);
+                
             }
-            else if (lineP2 == null)
+            else
             {
-                lineP2 = p;
+                var axis = mid - shared;
+                var mExclusive = getExclusive(mEdge, shared);
+                var mAxis = mExclusive - shared;
+                var mLength = Mathf.Min(thickness, mEdge.Item1.DistanceTo(mEdge.Item2));
+                var mPoint = shared + mAxis.Normalized() * mLength;
+                AddTriRel(mid + c.RelTo, shared + c.RelTo, 
+                    shared + perp + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(innerMid + c.RelTo, mid + c.RelTo, 
+                    shared + perp + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(shared + perp + c.RelTo, 
+                    shared + c.RelTo, mPoint + c.RelTo, color, 
+                     relTo, d);
+            }
+            
+            
+            if (mutuals.Length == 1)
+            {
+                var exclusive = getExclusive(edge, shared);
+                AddTriRel(innerMid + c.RelTo, mid + c.RelTo, 
+                    exclusive + perp + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(exclusive + c.RelTo, mid + c.RelTo, 
+                    exclusive + perp + c.RelTo, color,
+                    relTo, d);
             }
         }
 
-        bool foundBoth()
+        
+
+        Vector2 getShared((Vector2, Vector2) e1, (Vector2, Vector2) e2)
         {
-            return lineP1 is not null && lineP2 is not null;
+            if (e1.Item1 == e2.Item1 || e1.Item1 == e2.Item2)
+            {
+                return e1.Item1;
+            }
+
+            if (e1.Item2 == e2.Item1 || e1.Item2 == e2.Item2)
+            {
+                return e1.Item2;
+            }
+
+            throw new Exception();
         }
 
-        bool alreadyFound(Vector2 p)
+        Vector2 getExclusive((Vector2, Vector2) e, Vector2 shared)
         {
-            return lineP1 == p || lineP2 == p;
+            if (e.Item1 != shared) return e.Item1;
+            if (e.Item2 != shared) return e.Item2;
+            throw new Exception();
         }
     }
 

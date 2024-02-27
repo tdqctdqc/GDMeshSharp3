@@ -40,7 +40,8 @@ public class PolygonGenerator : Generator
         {
             var poly = MapPolygon
                 .Create(prePoly, _dimensions.X, key);
-            key.GenData.GenAuxData.PreCellPolys.Add(poly, prePoly.Cells);
+            key.GenData.GenAuxData.PreCellPolys.Add(poly, 
+                prePoly.Cells);
         }
         foreach (var pre in res.Nexi)
         {

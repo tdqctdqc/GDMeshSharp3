@@ -37,6 +37,7 @@ public abstract class PolyCell : IPolymorph,
         Vegetation = vegetation;
         Neighbors = neighbors;
         Controller = controller;
+        Edges = edges;
         if (RelBoundary.Length < 3) throw new Exception();
     }
 
@@ -116,14 +117,19 @@ public abstract class PolyCell : IPolymorph,
         
         return res;
     }
-    
-    
-    
-    protected static Vector2[] GetBoundaryPoints(List<(Vector2, Vector2)> edges)
+
+    public (Vector2, Vector2) GetEdgeRelWith(PolyCell n)
     {
-        var start = edges[0].Item1;
-        return edges.Select(e => e.Item1)
-            .Union(edges.Select(e => e.Item2))
+        var index = Neighbors.IndexOf(n.Id);
+        if (index == -1) throw new Exception();
+        return Edges[index];
+    }
+    
+    protected static Vector2[] GetBoundaryPoints(List<(Vector2I, Vector2I)> edges)
+    {
+        var start = (Vector2)edges[0].Item1;
+        return edges.Select(e => (Vector2)e.Item1)
+            .Union(edges.Select(e => (Vector2)e.Item2))
             .Distinct()
             .OrderBy(p => start.AngleTo(p))
             .ToArray();

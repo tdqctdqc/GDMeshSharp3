@@ -48,8 +48,8 @@ public class UnitMode : UiMode
     {
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
         highlight.Clear();
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
+        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
         OverlayForUnit();
     }
 
@@ -83,8 +83,8 @@ public class UnitMode : UiMode
         {
             return;
         }
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
+        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
         var unitGraphics = _client.GetComponent<MapGraphics>()
             .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
         var unit = unitGraphics

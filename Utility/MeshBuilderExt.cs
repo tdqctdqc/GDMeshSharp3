@@ -71,26 +71,29 @@ public static class MeshBuilderExt
     }
 
     public static void DrawPolyBorders(this MeshBuilder mb,
-        Vector2 relTo, MapPolygon poly, Data data)
+        Vector2 relTo, MapPolygon poly, float thickness, Data data)
     {
-        throw new Exception();
-        // var edgeBorders = poly
-        //     .GetOrderedBoundarySegs(data)
-        //     .Select(s => s.Translate(relTo.GetOffsetTo(poly.Center, data)));
-        //
-        //
-        //
-        // mb.AddLines(edgeBorders.ToList(), 2f, Colors.Black);
+        var edgeBorders = poly
+            .GetCells(data)
+            .OfType<ISinglePolyCell>()
+            .SelectMany(c => ((PolyCell)c).GetNeighbors(data)
+                .OfType<ISinglePolyCell>()
+                .Where(n => n.Polygon.RefId != poly.Id)
+                .Select(n => (c, n)));
+        foreach (var (c, n) in edgeBorders)
+        {
+            mb.DrawPolyCellEdge((PolyCell)c, (PolyCell)n, c => Colors.Black, 
+                thickness, relTo, data);
+        }
     }
     public static void DrawCellBorders(this MeshBuilder mb,
-        Vector2 relTo, PolyCell cell, Data data)
+        Vector2 relTo, PolyCell cell, Data data, float thickness, 
+        bool debug = false)
     {
-        for (var i = 0; i < cell.RelBoundary.Length; i++)
+        foreach (var n in cell.GetNeighbors(data))
         {
-            mb.AddLine(
-                relTo.Offset(cell.RelBoundary[i] + cell.RelTo, data), 
-                relTo.Offset(cell.RelBoundary.Modulo(i + 1) + cell.RelTo, data),
-                Colors.Black, 1f);
+            mb.DrawPolyCellEdge(cell, n, c => Colors.Black, 
+                thickness, relTo, data, debug);
         }
     }
     

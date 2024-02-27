@@ -168,8 +168,8 @@ public class DeploymentMode : UiMode
         highlight.Clear();
         if (_mouseOverHandler.MouseOverPoly == null
             || _mouseOverHandler.MouseOverCell == null) return;
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
+        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
     }
     public override void Clear()
     {

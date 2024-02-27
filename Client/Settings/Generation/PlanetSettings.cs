@@ -18,9 +18,9 @@ public class PlanetSettings : Settings
     public static PlanetSettings Construct()
     {
         return new PlanetSettings("Planet",
-            new BoolSettingsOption("Retry Gen", false),
-            new FloatSettingsOption("Map Width", 16000f, 4000f, 32000f, 1000f, true),
-            new FloatSettingsOption("Map Height", 8000f, 2000f, 16000f, 1000f, true),
+            new BoolSettingsOption("Retry Gen", false), 
+            new FloatSettingsOption("Map Width", 8000f, 4000f, 32000f, 1000f, true),
+            new FloatSettingsOption("Map Height", 4000f, 2000f, 16000f, 1000f, true),
             new FloatSettingsOption("Seed", 0f, 0f, 1000f, 1f, true),
             new FloatSettingsOption("Preferred Min Poly Edge Length", 50f, 10f, 100f, 1f, false)
         );

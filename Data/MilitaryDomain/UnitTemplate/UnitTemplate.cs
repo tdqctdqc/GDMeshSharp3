@@ -38,7 +38,7 @@ public class UnitTemplate : Entity, IMakeable
         key.Create(u);
         return u;
     }
-    [SerializationConstructor] protected UnitTemplate(string name,
+    [SerializationConstructor] private UnitTemplate(string name,
         IdCount<Troop> troopCounts, ModelRef<MoveType> moveType,
         ERef<Regime> regime, int id, 
         MakeableAttribute makeable,

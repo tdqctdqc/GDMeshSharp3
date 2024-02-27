@@ -1,6 +1,7 @@
-
 using System;
+using Godot;
 
+namespace VoronoiSandbox;
 public class PreEdge
 {
     public int Id { get; private set; }
@@ -9,9 +10,9 @@ public class PreEdge
     public PreNexus N1 { get; private set; }
     public PreNexus N2 { get; private set; }
 
-    public PreEdge(GenWriteKey key, PrePoly p1, PrePoly p2)
+    public PreEdge(int id, PrePoly p1, PrePoly p2)
     {
-        Id = key.Data.IdDispenser.TakeId();
+        Id = id;
         P1 = p1;
         P2 = p2;
         N1 = null;
@@ -28,6 +29,10 @@ public class PreEdge
         {
             N2 = pre;
         }
-        else throw new Exception();
+        else
+        {
+            // GD.Print($"more than 2 nexi for edge {P1.RelTo} {P2.RelTo}");
+            // throw new Exception();
+        }
     }
 }

@@ -32,8 +32,8 @@ public class PolyMode : UiMode
     {
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
         highlight.Clear();
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell);
+        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
+        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
     }
     private void Tooltip(Vector2 mapPos)
     {

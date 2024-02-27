@@ -18,24 +18,24 @@ public class PolyCellGenerator : Generator
         var polys = _data.GetAll<MapPolygon>();
         var polyEdges = _data.GetAll<MapPolygonEdge>();
         
-        report.StartSection();
-        var riverData = new RiverPolyTriGen().DoRivers(key);
-        report.StopSection("Finding rivers");
         
         report.StartSection();
 
         var cellsByPoly = polys.AsParallel()
             .Select(p =>
             {
-                var cells = BuildCells(p, riverData, key);
+                var cells = BuildCells(p, key);
                 return (p, cells);
             })
             .ToDictionary(v => v.p, v => v.cells);
+        
         var cells = cellsByPoly.SelectMany(kvp => kvp.Value).ToArray();
         
         report.StopSection("Building poly terrain tris and cells");
         
         PolyCells.Create(cells, key);
+        BuildRiverCells(cellsByPoly, key);
+
         
         _data.Notices.SetPolyShapes.Invoke();
 
@@ -51,7 +51,10 @@ public class PolyCellGenerator : Generator
         report.StopSection("setting terrain stats");
         return report;
     }
-    private PolyCell[] BuildCells(MapPolygon poly, TempRiverData rd, GenWriteKey key)
+
+    
+
+    private PolyCell[] BuildCells(MapPolygon poly, GenWriteKey key)
     {
         PolyCell[] cells;
         var preCells = key.GenData.GenAuxData.PreCellPolys[poly];
@@ -60,21 +63,64 @@ public class PolyCellGenerator : Generator
             cells = preCells.Select(p =>
                 SeaCell.Construct(p, key)).ToArray();
         }
-        // else if (poly.GetNexi(key.Data).Any(n => n.IsRiverNexus(key.Data)))
-        // {
-        //     cells = RiverTriGen.DoPoly(poly, key.Data, rd, key);
-        // }
         else
         {
             cells = preCells
                 .Select(p => LandCell.Construct(p, key))
                 .ToArray();
+            
         }
         
         return cells;
     }
     
-    
+    private void BuildRiverCells(Dictionary<MapPolygon, PolyCell[]> cellsByPoly, GenWriteKey key)
+    {
+        var nexi = key.Data.GetAll<MapPolyNexus>();
+        var edges = key.Data.GetAll<MapPolygonEdge>();
+
+        var nexusRiverWidths = nexi
+            .Where(n => n.IsRiverNexus(key.Data))
+            .ToDictionary(
+                n => n,
+                n => n.IncidentEdges.Items(key.Data)
+                    .Where(e => e.IsRiver())
+                    .Average(e => River.GetWidthFromFlow(e.MoistureFlow)));
+
+        //rel to hi
+        //first do river edges, then clip to get fraction of non river but adjacent edge
+
+        // var riverBounds = new ConcurrentDictionary<MapPolygonEdge, Vector2[]>();
+        // Parallel.ForEach(edges, edge =>
+        // {
+        //     if (edge.IsRiver() == false) return;
+        //     var hiNexus = edge.HiNexus.Entity(key.Data);
+        //     var loNexus = edge.LoNexus.Entity(key.Data);
+        //     if (hiNexus.IsRiverNexus(key.Data) == false 
+        //         && loNexus.IsRiverNexus(key.Data) == false)
+        //     {
+        //         return;
+        //     }
+        //     
+        // })
+        //
+        //
+        // Parallel.ForEach(nexi, nexus =>
+        // {
+        //     if (nexus.IsRiverNexus(key.Data) == false) return;
+        //     foreach (var edge in nexus.IncidentEdges.Items(key.Data))
+        //     {
+        //         if (edge.IsRiver())
+        //         {
+        //             
+        //         }
+        //         else
+        //         {
+        //             
+        //         }
+        //     }
+        // });
+    }
 
     private void Postprocess(GenWriteKey key)
     {

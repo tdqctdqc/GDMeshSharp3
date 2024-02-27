@@ -34,7 +34,7 @@ public static class Vector2Ext
     {
         return data.Planet.GetOffsetTo(v1, v2);
     }
-    public static Vector2 GetOffsetTo(this Vector2I v1, Vector2 v2, Data data)
+    public static Vector2 Offset(this Vector2I v1, Vector2 v2, Data data)
     {
         return data.Planet.GetOffsetTo(v1, v2);
     }
@@ -444,7 +444,23 @@ public static class Vector2Ext
         }
         return (w, v);
     }
-    
+
+    public static Vector2[]? ClipPolygonByLine(this Vector2[] polygon, 
+        Vector2 clipPoint, Vector2 clipLineDir, Vector2 keepDirection,
+        out Vector2[] keepBox,
+        float keepDist = 1000f)
+    {
+        keepBox = new Vector2[]
+        {
+            clipPoint + clipLineDir.Normalized() * keepDist,
+            clipPoint - clipLineDir.Normalized() * keepDist,
+            clipPoint - clipLineDir.Normalized() * keepDist + keepDirection.Normalized() * keepDist,
+            clipPoint + clipLineDir.Normalized() * keepDist + keepDirection.Normalized() * keepDist,
+        };
+        var newPolys = Geometry2D.IntersectPolygons(polygon, keepBox);
+        if (newPolys.Count != 1) throw new Exception();
+        return newPolys[0];
+    }
     public static float GetArea(this Vector2[] boundaryPoints)
     {
         if (boundaryPoints.Length < 3) return 0f;

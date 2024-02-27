@@ -18,20 +18,21 @@ public static class UiActions
         }
     }
     
-    public static void HighlightPoly(this Client client, MapPolygon poly)
+    public static void HighlightPoly(this Client client, MapPolygon poly, float thickness)
     {
         var highlighter = client.GetComponent<MapGraphics>().Highlighter;
         if (poly != null)
         {
-            highlighter.Draw(mb => mb.DrawPolyBorders(poly.Center, poly, client.Data), poly.Center);
+            highlighter.Draw(mb => mb.DrawPolyBorders(poly.Center, poly, thickness, client.Data), poly.Center);
         }
     }
-    public static void HighlightCell(this Client client, PolyCell cell)
+    public static void HighlightCell(this Client client, PolyCell cell,
+        float thickness)
     {
         var highlighter = client.GetComponent<MapGraphics>().Highlighter;
         if (cell != null)
         {
-            highlighter.Draw(mb => mb.DrawCellBorders(cell.GetCenter(), cell, client.Data), cell.GetCenter());
+            highlighter.Draw(mb => mb.DrawCellBorders(cell.GetCenter(), cell, client.Data, thickness, true), cell.GetCenter());
         }
     }
 }

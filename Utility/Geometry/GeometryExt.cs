@@ -28,4 +28,19 @@ public static class GeometryExt
                &&
                ((seg1.Y <= point.Y && point.Y <= seg2.Y) || (seg2.Y <= point.Y && point.Y <= seg1.Y));
     }
+
+
+    public static Vector2[] UnifyPolygons(params Vector2[][] polys)
+    {
+        Vector2[] union = polys[0];
+        for (var i = 1; i < polys.Length; i++)
+        {
+            var intersects = Geometry2D.IntersectPolygons(union,
+                polys[i]);
+            if (intersects.Count != 1) return null;
+            union = intersects[0];
+        }
+
+        return union;
+    }
 }

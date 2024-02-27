@@ -1,28 +1,25 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
+namespace VoronoiSandbox;
 
 public class PreNexus
 {
-    public int Id { get; private set; }
-    public Vector2 Pos { get; private set; }
-    public PrePoly P1 { get; private set; }
-    public PrePoly P2 { get; private set; }
-    public PrePoly P3 { get; private set; }
-    public PreEdge E1 { get; private set; }
-    public PreEdge E2 { get; private set; }
-    public PreEdge E3 { get; private set; }
+    public int Id { get; set; }
+    public Vector2I Pos { get; set; }
+    public PrePoly P1 { get; set; }
+    public PrePoly P2 { get; set; }
+    public PrePoly P3 { get; set; }
+    public PreEdge E1 { get; set; }
+    public PreEdge E2 { get; set; }
+    public PreEdge E3 { get; set; }
 
-    public PreNexus(GenWriteKey key,
-        Vector2 pos, PrePoly p1, PrePoly p2, PrePoly p3,
-        PreEdge e1, PreEdge e2, PreEdge e3)
+    public PreNexus(int id,
+        Vector2I pos)
     {
-        Id = key.Data.IdDispenser.TakeId();
+        Id = id;
         Pos = pos;
-        P1 = p1;
-        P2 = p2;
-        P3 = p3;
-        E1 = e1;
-        E2 = e2;
-        E3 = e3;
     }
 }

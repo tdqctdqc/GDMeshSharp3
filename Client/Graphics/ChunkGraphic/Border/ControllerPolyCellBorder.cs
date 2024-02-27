@@ -15,7 +15,7 @@ public partial class ControllerPolyCellBorder : PolyCellBorder
 
     protected override float GetThickness(PolyCell p1, PolyCell p2, Data data)
     {
-        return 5f;
+        return 2f;
     }
 
     protected override Color GetColor(PolyCell p1, Data data)

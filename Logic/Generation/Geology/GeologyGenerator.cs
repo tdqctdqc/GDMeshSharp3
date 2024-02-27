@@ -316,7 +316,7 @@ public class GeologyGenerator : Generator
                 = poly.Altitude * roughnessErosionMult;
             
             var frictionEffect = fault.Friction * frictionRoughnessEffectSetting * distFactor;
-            var rand = Game.I.Random.RandfRange(-.2f, .2f);
+            var rand = Game.I.Random.RandfRange(-.4f, .4f);
             var newRoughness = Mathf.Clamp(frictionEffect - roughnessErosion + rand, 0f, 1f);
             poly.SetRoughness(newRoughness, _key);
         }

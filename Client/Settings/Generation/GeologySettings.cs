@@ -25,14 +25,14 @@ public class GeologySettings : Settings
     {
         return new GeologySettings("Geology",
             new FloatSettingsOption("Roughness Scale", 1f, 0f, 2f, .1f, false),
-            new FloatSettingsOption("Fault Altitude Scale", 1f, 0f, 2f, .1f, false),
+            new FloatSettingsOption("Fault Altitude Scale", 1.5f, 0f, 2f, .1f, false),
             new FloatSettingsOption("Land Ratio", .3f, .05f, 1f, .05f, false),
             new FloatSettingsOption("Num Continents", 5, 2, 10, 1, true),
             new FloatSettingsOption("Num Seas", 10, 0, 20, 1, true),
             new FloatSettingsOption("Sea Level", .5f, 0f, 1f, .05f, false),
             new FloatSettingsOption("Fault Line Range", 75f, 0f, 1000f, 1f, false),
-            new FloatSettingsOption("Friction Alt Effect", .05f, 0f, 1f, .01f, false),
-            new FloatSettingsOption("Friction Roughness Effect", 1f, 0f, 2f, .1f, false),
+            new FloatSettingsOption("Friction Alt Effect", .1f, 0f, 1f, .01f, false),
+            new FloatSettingsOption("Friction Roughness Effect", 1.5f, 0f, 2f, .1f, false),
             new FloatSettingsOption("Roughness Erosion Multiplier", 1f, 0f, 2f, .1f, false)
         );
     }

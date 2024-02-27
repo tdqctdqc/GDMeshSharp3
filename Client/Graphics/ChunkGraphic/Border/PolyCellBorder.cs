@@ -1,4 +1,5 @@
 
+using System;
 using System.Linq;
 using Godot;
 
@@ -19,7 +20,6 @@ public abstract partial class PolyCellBorder
     private PolyCellBorder() : base()
     {
     }
-
     protected abstract bool InUnion(PolyCell p1, PolyCell p2, Data data);
     protected abstract float GetThickness(PolyCell p1, PolyCell p2, Data data);
     protected abstract Color GetColor(PolyCell p1, Data data);
@@ -28,15 +28,19 @@ public abstract partial class PolyCellBorder
     {
         this.ClearChildren();
         var mb = MeshBuilder.GetFromPool();
-        var cells = Chunk.Polys.SelectMany(p => p.GetCells(data)).ToHashSet();
-        foreach (var element in cells)
+        var cells = Chunk.Polys
+            .SelectMany(p => p.GetCells(data)).ToHashSet();
+        foreach (var cell in cells)
         {
-            var color = GetColor(element, data);
-            var offset = Chunk.RelTo.GetOffsetTo(element.RelTo, data);
-            foreach (var n in element.GetNeighbors(data))
+            var cellColor = GetColor(cell, data);
+            foreach (var nCell in cell.GetNeighbors(data))
             {
-                if (InUnion(n, element, data)) continue;
-                mb.DrawPolyCellEdge(element, n, p => GetColor(p, data), GetThickness(element, n, data), Chunk.RelTo.Center, data);
+                if (InUnion(cell, nCell, data)) continue;
+                if (InUnion(nCell, cell, data)) continue;
+                mb.DrawPolyCellEdge(cell, nCell, 
+                    p => cellColor, 
+                    GetThickness(cell, nCell, data), 
+                    Chunk.RelTo.Center, data);
             }
         }
         

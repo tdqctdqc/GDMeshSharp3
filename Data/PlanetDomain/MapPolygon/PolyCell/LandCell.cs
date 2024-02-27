@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using VoronoiSandbox;
 
 public class LandCell : PolyCell, ISinglePolyCell
 {
@@ -15,20 +16,21 @@ public class LandCell : PolyCell, ISinglePolyCell
         var v = key.Data.Models.Vegetations.GetAtPoint(poly, relTo, lf, key.Data);
         var id = pre.Id;
         var c = new LandCell(poly.MakeRef(), relTo,
+            GetBoundaryPoints(pre.EdgesRel),
             v.MakeRef(), lf.MakeRef(), 
             pre.Neighbors.Select(n => n.Id).ToList(),
-            pre.EdgesRel.ToList(), id);
+            pre.EdgesRel.Select(e => ((Vector2)e.Item1, (Vector2)e.Item2)).ToList(), pre.Id);
         return c;
     }
 
     public LandCell(ERef<MapPolygon> polygon,
-        Vector2 relTo, 
+        Vector2 relTo, Vector2[] relBoundary, 
         ModelRef<Vegetation> vegetation, 
         ModelRef<Landform> landform, 
         List<int> neighbors, 
         List<(Vector2, Vector2)> edges,
         int id) 
-            : base(relTo, GetBoundaryPoints(edges),
+            : base(relTo, relBoundary,
                 vegetation, landform, 
                 neighbors, edges, new ERef<Regime>(-1), id)
     {

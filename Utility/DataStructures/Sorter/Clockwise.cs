@@ -7,10 +7,33 @@ using Godot;
 public static class Clockwise
 {
     //SOURCES OF TRUTH
-    public static bool IsCCW(Vector2 a, Vector2 b, Vector2 c)
+    public static bool IsLeftOfLine(this Vector2 p,
+        Vector2 l1, Vector2 l2)
     {
-        var cross = (a - b).Cross(c - b);
-        return (a - b).Cross(c - b) > 0f;
+        var cross = (l2 - l1).Cross(p - l1);
+        return (l2 - l1).Cross(p - l1) > 0f;
+    }
+    public static bool IsRightOfLine(this Vector2 p,
+        Vector2 l1, Vector2 l2)
+    {
+        return IsLeftOfLine(p, l1, l2) == false;
+    }
+
+    public static Vector2 GetPerpTowards(Vector2 l1, Vector2 l2,
+        Vector2 towards)
+    {
+        var axis = l2 - l1;
+        if (IsCCW(towards, l1, l2))
+        {
+            return axis.Orthogonal();
+        }
+
+        return -axis.Orthogonal();
+    }
+    public static bool IsCCW(Vector2 p, Vector2 l1, Vector2 l2)
+    {
+        var cross = (p - l1).Cross(l2 - l1);
+        return (p - l1).Cross(l2 - l1) > 0f;
     }
     public static float GetCCWAngleTo(this Vector2 v, Vector2 to)
     {

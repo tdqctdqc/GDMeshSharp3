@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 using DelaunatorSharp;
 using Godot;
 using System.Collections.Generic;
+using VoronoiSandbox;
 
 public static class PreCellGenerator
 {
     
-    public static PreCellResult Make
-        (Vector2I dim, GenWriteKey key)
+    public static PreCellResult Make(Vector2I dim, GenWriteKey key)
     {
+        var result = new PreCellResult();
+        
         var bounds = new Vector2[]
         {
             Vector2.Zero,
@@ -39,16 +41,19 @@ public static class PreCellGenerator
         sw.Reset();
 
         sw.Start();
-        var graph = delaunator.GetVoronoiGraphNew();
+        var graph = delaunator.GetVoronoiGraphNew(result, dim, key);
         sw.Stop();
         GD.Print($"make graph {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
-        var cells = MakeCells(dim, points, graph, bounds, dummyPoints, key);
+        var cells = MakeCells(dim, points, graph, bounds, 
+            dummyPoints, key);
         sw.Stop();
         GD.Print($"make cells {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
+        
+        
         
         sw.Start();
         MergeLeftRight(cells, dim);
@@ -56,7 +61,11 @@ public static class PreCellGenerator
         GD.Print($"merge left right {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
-        
+        sw.Start();
+        Parallel.ForEach(cells, c => c.MakePointsAbs(dim));
+        sw.Stop();
+        GD.Print($"making cell abs points {sw.Elapsed.TotalMilliseconds}");
+        sw.Reset();
         
         sw.Start();
         var polys = MakePolys(cells, dim, key);
@@ -64,20 +73,26 @@ public static class PreCellGenerator
         GD.Print($"make polys {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
-        
-        
         sw.Start();
-        CheckPolysContiguous(polys, dim, key.Data);
+        CheckPolysContiguous(polys, dim, key);
         sw.Stop();
         GD.Print($"check polys contiguous {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
 
+        foreach (var poly in polys)
+        {
+            foreach (var cell in poly.Cells)
+            {
+                if (cell.PrePoly != poly) throw new Exception();
+            }
+        }
+        
+        
         sw.Start();
         MakePolyNeighbors(polys);
         sw.Stop();
         GD.Print($"make poly neighbors {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
-        
         
         sw.Start();
         var edges = MakeEdges(polys, key);
@@ -85,29 +100,32 @@ public static class PreCellGenerator
         GD.Print($"make edges {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
-        
         sw.Start();
-        var nexi = MakeNexiNew(polys, edges, key);
+        var nexi = MakeNexi(polys, cells, 
+            edges, dim, result, key);
         sw.Stop();
         GD.Print($"make nexi {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
-        
+
+        result.Nexi = nexi;
+        result.Cells = cells;
+        result.Polys = polys;
+        result.Edges = edges;
         
         total.Stop();
         GD.Print("total " + total.Elapsed.TotalMilliseconds);
-        var result = new PreCellResult(cells, polys, edges, nexi);
         return result;
     }
 
     
 
 
-    private static (List<Vector2> cellPoints,
-        HashSet<Vector2> dummyPoints) MakeCellPoints(
+    private static (List<Vector2I> cellPoints,
+        HashSet<Vector2I> dummyPoints) MakeCellPoints(
         int pointDist,
         Vector2I dim)
     {
-        var points = new List<Vector2>();
+        var points = new List<Vector2I>();
         var xCells = Mathf.FloorToInt((float)dim.X / pointDist);
         var yCells = Mathf.FloorToInt((float)dim.Y / pointDist);
         for (int i = 0; i <= xCells; i++)
@@ -133,39 +151,39 @@ public static class PreCellGenerator
                 if (i == xCells) relTo.X = dim.X;
                 if (j == yCells) relTo.Y = dim.Y;
                 
-                points.Add((Vector2I)relTo);
+                points.Add((Vector2I)relTo.Intify());
             }
         }
 
-        var dummyPoints = new HashSet<Vector2>();
+        var dummyPoints = new HashSet<Vector2I>();
         for (var i = 0; i <= xCells; i++)
         {
             var x = i * pointDist;
             var yUp = -pointDist * 5;
             var yDown = dim.Y + pointDist * 5;
-            points.Add(new Vector2(x, yUp));
-            points.Add(new Vector2(x, yDown));
-            dummyPoints.Add(new Vector2(x, yUp));
-            dummyPoints.Add(new Vector2(x, yDown));
+            points.Add(new Vector2I(x, yUp));
+            points.Add(new Vector2I(x, yDown));
+            dummyPoints.Add(new Vector2I(x, yUp));
+            dummyPoints.Add(new Vector2I(x, yDown));
         }
         for (var i = 0; i <= yCells; i++)
         {
             var y = i * pointDist;
             var xRight = pointDist * 5 + dim.X;
             var xLeft = -pointDist * 5;
-            points.Add(new Vector2(xLeft, y));
-            points.Add(new Vector2(xRight, y));
-            dummyPoints.Add(new Vector2(xLeft, y));
-            dummyPoints.Add(new Vector2(xRight, y));
+            points.Add(new Vector2I(xLeft, y));
+            points.Add(new Vector2I(xRight, y));
+            dummyPoints.Add(new Vector2I(xLeft, y));
+            dummyPoints.Add(new Vector2I(xRight, y));
         }
         return (points, dummyPoints);
     }
-    private static List<Vector2> MakePolyPoints(
+    private static List<Vector2I> MakePolyPoints(
         float pointDist,
         Vector2I dim,
-        Data d)
+        GenWriteKey key)
     {
-        var points = new List<Vector2>();
+        var points = new List<Vector2I>();
         var xCells = Mathf.CeilToInt(dim.X / pointDist);
         var yCells = Mathf.CeilToInt(dim.Y / pointDist);
 
@@ -179,9 +197,9 @@ public static class PreCellGenerator
                 
                 var offset = new Vector2(Random.Shared.NextSingle() * offsetRadius,
                     Random.Shared.NextSingle() * offsetRadius);
-                if (i % 2 == 0) offset += Vector2.Left * pointDist / 2;
-                var point = (center + offset).ClampPosition(d);
-                points.Add(center + offset);
+                if (i % 2 == 0) offset += Vector2.Left * pointDist / 2f;
+                var point = (center + offset).ClampPosition(key.Data);
+                points.Add((Vector2I)(center + offset).Intify());
             }
         }
         
@@ -190,20 +208,19 @@ public static class PreCellGenerator
     
     
     private static List<PreCell> MakeCells(Vector2I dim, 
-        List<Vector2> points,
-        (Vector2, Vector2, (Vector2, Vector2))[] newGraph, 
-        Vector2[] bounds, HashSet<Vector2> dummyPoints,
+        List<Vector2I> points,
+        (Vector2I, Vector2I, (Vector2I, Vector2I))[] graph, 
+        Vector2[] bounds, HashSet<Vector2I> dummyPoints,
         GenWriteKey key)
     {
         var cellDic = points
-            .AsParallel()
             .Where(p => dummyPoints.Contains(p) == false)
-            .Select((p, i) => (p, new PreCell(key, p)))
+            .Select(p => (p, new PreCell(key.Data.IdDispenser.TakeId(), p)))
             .ToDictionary(p => p.p,
                 p => p.Item2);
         
         foreach (var (v1, v2, edge)
-                 in newGraph)
+                 in graph)
         {
             if (dummyPoints.Contains(v1) 
                 || dummyPoints.Contains(v2))
@@ -213,7 +230,7 @@ public static class PreCellGenerator
             var c1 = cellDic[v1];
             var c2 = cellDic[v2];
             
-            var e = (edge.Item1.Clamp(Vector2.Zero, dim), edge.Item2.Clamp(Vector2.Zero, dim));
+            var e = (edge.Item1.Clamp(Vector2I.Zero, dim), edge.Item2.Clamp(Vector2I.Zero, dim));
             c1.AddNeighborAbs(c2, e, dim);
             c2.AddNeighborAbs(c1, e, dim);
         }
@@ -222,7 +239,8 @@ public static class PreCellGenerator
         return cellDic.Values.ToList();
     }
 
-    private static void MergeLeftRight(List<PreCell> cells, Vector2 dim)
+    private static void MergeLeftRight(List<PreCell> cells, 
+        Vector2I dim)
     {
         var lefts = cells.Where(c => c.RelTo.X == 0f)
             .OrderBy(c => c.RelTo.Y)
@@ -271,8 +289,8 @@ public static class PreCellGenerator
             var newRightEdge = (leftP, rightP);
             var rightOffset = right.RelTo - nextRight.RelTo;
             var newNextRightEdge = (leftP + rightOffset, rightP + rightOffset);
-            right.ReplaceEdge(nextRight, newRightEdge);
-            nextRight.ReplaceEdge(right, newNextRightEdge);
+            right.ReplaceEdgeRel(nextRight, newRightEdge);
+            nextRight.ReplaceEdgeRel(right, newNextRightEdge);
         }
 
         cells.RemoveAll(c => c.RelTo.X == 0f);
@@ -282,28 +300,33 @@ public static class PreCellGenerator
     private static List<PrePoly> MakePolys(List<PreCell> cells, 
         Vector2I dim, GenWriteKey key)
     {
-        var points = MakePolyPoints(150f, dim, key.Data);
+        var points = MakePolyPoints(150f, dim, key);
+        int idIndex = 0;
         
         var polyGrid = new CylinderGrid<PrePoly>(
-            dim, 100f, p => p.RelTo);
+            dim, 100f, 
+            p => p.RelTo);
         
         foreach (var p in points)
         {
-            var poly = new PrePoly(key, p.ClampPosition(key.Data));
+            var poly = new PrePoly(key.Data.IdDispenser.TakeId(), 
+                p.ClampPosition(dim));
             polyGrid.Add(poly);
         }
-
-        var polyCells = cells.AsParallel()
+        var polyCells = cells
+            .AsParallel()
             .Select(cell =>
             {
                 var found = polyGrid.TryGetClosest(cell.RelTo,
                     out var poly, p => true);
                 if (found == false) throw new Exception();
-                cell.PrePoly = poly;
+                // cell.PrePoly = poly;
                 return (cell, poly);
-            });
+            }).ToDictionary(kvp => kvp.cell, kvp => kvp.poly);
         foreach (var (cell, poly) in polyCells)
         {
+            if (cell.PrePoly != null) throw new Exception();
+            cell.PrePoly = poly;
             poly.Cells.Add(cell);
         }
 
@@ -312,8 +335,8 @@ public static class PreCellGenerator
             .Where(p => p.Cells.Count > 0).ToList();
     }
 
-    private static void CheckPolysContiguous(
-        List<PrePoly> polys, Vector2I dim, Data d)
+    private static void CheckPolysContiguous(List<PrePoly> polys, 
+        Vector2I dim, GenWriteKey key)
     {
 
         var queue = new Queue<PreCell>();
@@ -340,6 +363,7 @@ public static class PreCellGenerator
 
             if (hash.Count != poly.Cells.Count)
             {
+                // throw new Exception();
                 nonContiguous.Add(poly);
             }
         }
@@ -357,7 +381,14 @@ public static class PreCellGenerator
                 {
                     var newPoly = cell.Neighbors.Select(n => n.PrePoly)
                         .Where(n => nonContiguous.Contains(n) == false)
-                        .MinBy(n => n.RelTo.Offset(cell.RelTo, d).Length());
+                        .MinBy(n => n.RelTo.Offset(cell.RelTo, key.Data).Length());
+                    if (newPoly == null)
+                    {
+                        GD.Print("no new poly found at " + cell.RelTo);
+                        continue;
+                    }
+
+                    poly.Cells.Remove(cell);
                     newPoly.Cells.Add(cell);
                     cell.PrePoly = newPoly;
                 }
@@ -378,116 +409,114 @@ public static class PreCellGenerator
         });
     }
     
-    private static Dictionary<Vector2I, PreEdge> MakeEdges(List<PrePoly> polys, GenWriteKey key)
+    private static Dictionary<Vector2I, PreEdge> MakeEdges(
+        List<PrePoly> polys, GenWriteKey key)
     {
+        int idIndex = 0;
         var edges = new Dictionary<Vector2I, PreEdge>();
         foreach (var poly in polys)
         {
             foreach (var nPoly in poly.Neighbors)
             {
-                if (nPoly.Id > poly.Id) continue;
-                edges.Add(poly.GetIdEdgeKey(nPoly), new PreEdge(key, poly, nPoly));
+                var edgeKey = poly.Id.GetIdEdgeKey(nPoly.Id);
+                if (edges.ContainsKey(edgeKey))
+                {
+                    continue;
+                }
+                edges.Add(edgeKey, 
+                    new PreEdge(key.Data.IdDispenser.TakeId(), poly, nPoly));
             }
         }
         return edges;
     }
 
-    private static List<PreNexus> MakeNexiNew(List<PrePoly> polys,
-        Dictionary<Vector2I, PreEdge> edges, GenWriteKey key)
+    private static List<PreNexus> MakeNexi(List<PrePoly> polys,
+        List<PreCell> cells, 
+        Dictionary<Vector2I, PreEdge> edges, Vector2I dim,
+        PreCellResult preCellResult, GenWriteKey key)
     {
-        var res = new List<PreNexus>();
-        var dic = new Dictionary<Vector2, List<PrePoly>>();
-        foreach (var poly in polys)
+        var pointAbsDic = new Dictionary<Vector2I, (PreCell X, PreCell Y, PreCell Z)>();
+        var borderCells = cells
+            .Where(c => c.Neighbors.Any(n => n.PrePoly != c.PrePoly));
+        
+        foreach (var cell in borderCells)
         {
-            var counts = new Dictionary<Vector2, int>();
-            foreach (var cell in poly.Cells)
+            foreach (var pAbs in cell.PointsAbs)
             {
-                foreach (var p in cell.GetPointsAbs(key.Data))
+                pointAbsDic.TryAdd(pAbs, default);
+                if (pointAbsDic[pAbs].X == null)
                 {
-                    counts.AddOrSum(p.ClampPosition(key.Data), 1);
+                    pointAbsDic[pAbs] = (cell, pointAbsDic[pAbs].Y, pointAbsDic[pAbs].Z);
+                }
+                else if (pointAbsDic[pAbs].Y == null)
+                {
+                    pointAbsDic[pAbs] = (pointAbsDic[pAbs].X, cell, pointAbsDic[pAbs].Z);
+                }
+                else if (pointAbsDic[pAbs].Z == null)
+                {
+                    pointAbsDic[pAbs] = (pointAbsDic[pAbs].X, pointAbsDic[pAbs].Y, cell);
+                }
+                else
+                {
+                    throw new Exception();
                 }
             }
-
-            var singles = counts.Where(kvp => kvp.Value == 1);
-            foreach (var (p, count) in singles)
-            {
-                dic.AddOrUpdate(p, poly);
-            }
         }
+
+        int idIter = 0;
+
+        var nexi = pointAbsDic
+            .AsParallel()
+            .Select(v =>
+            {
+                var (pAbs, (ci1, ci2, ci3)) = v;
+                
+                if (ci1 == null) return null;
+                if (ci2 == null) return null;
+                var c1 = ci1;
+                var c2 = ci2;
+                if (c1.PrePoly == c2.PrePoly) return null;
+                var nexus = new PreNexus(key.Data.IdDispenser.TakeId(), pAbs);
+                if (ci3 == null)
+                {
+                    nexus.E1 = edges[c1.PrePoly.Id.GetIdEdgeKey(c2.PrePoly.Id)];
+                    nexus.P1 = c1.PrePoly;
+                    nexus.P2 = c2.PrePoly;
+                }
+                else
+                {
+                    var c3 = ci3;
+                    if (c3.PrePoly == c1.PrePoly || c3.PrePoly == c2.PrePoly)
+                        return null;
+                    nexus.P1 = c1.PrePoly;
+                    nexus.P2 = c2.PrePoly;
+                    nexus.P3 = c3.PrePoly;
+                    var ek1 = c1.PrePoly.Id.GetIdEdgeKey(c2.PrePoly.Id);
+                    var ek2 = c2.PrePoly.Id.GetIdEdgeKey(c3.PrePoly.Id);
+                    var ek3 = c3.PrePoly.Id.GetIdEdgeKey(c1.PrePoly.Id);
+                    nexus.E1 = edges[ek1];
+                    nexus.E2 = edges[ek2];
+                    nexus.E3 = edges[ek3];
+                }
+                return nexus;
+            })
+            .Where(n => n is not null)
+            .ToList();
         
-        
-        foreach (var (point, incidentPolys) in dic)
+        foreach (var nexus in nexi)
         {
-            if (incidentPolys.Count == 2)
-            {
-                var p1 = incidentPolys[0];
-                var p2 = incidentPolys[1];
-                var edge = edges[p1.GetIdEdgeKey(p2)];
-                var nexus = new PreNexus(key, point, p1, p2, null, edge, null, null);
-                edge.SetNexus(nexus);
-                res.Add(nexus);
-            }
-            else if (incidentPolys.Count == 3)
-            {
-                var p1 = incidentPolys[0];
-                var p2 = incidentPolys[1];
-                var p3 = incidentPolys[2];
-                var e1 = edges[p1.GetIdEdgeKey(p2)];
-                var e2 = edges[p2.GetIdEdgeKey(p3)];
-                var e3 = edges[p3.GetIdEdgeKey(p1)];
-                var nexus = new PreNexus(key, point, 
-                    p1, p2, p3, 
-                    e1, e2, e3);
-                e1.SetNexus(nexus);
-                e2.SetNexus(nexus);
-                e3.SetNexus(nexus);
-                res.Add(nexus);
-            }
-            else if(incidentPolys.Count != 1)
-            {
-                throw new Exception(incidentPolys.Count.ToString());
-            }
+            nexus.E1?.SetNexus(nexus);
+            nexus.E2?.SetNexus(nexus);
+            nexus.E3?.SetNexus(nexus);
         }
-
-        return res;
+        
+        foreach (var kvp in edges)
+        {
+            var edge = kvp.Value;
+            if (edge.N1 == null) throw new Exception();
+            if (edge.N2 == null) throw new Exception();
+        }
+        
+        return nexi;
     }
-    
-    
-    // private static Dictionary<Vector3I, PreNexus> MakeNexiOld(List<PreCell> cells, 
-    //     Vector2I dim, GenWriteKey key)
-    // {
-    //     var res = new Dictionary<Vector3I, PreNexus>();
-    //     foreach (var cell1 in cells)
-    //     {
-    //         foreach (var cell2 in cell1.Neighbors)
-    //         {
-    //             if (cell2.PrePoly.Id >= cell1.PrePoly.Id) continue;
-    //             foreach (var cell3 in cell2.Neighbors)
-    //             {
-    //                 if (cell3.PrePoly.Id >= cell1.PrePoly.Id) continue;
-    //                 if (cell3.PrePoly.Id >= cell2.PrePoly.Id) continue;
-    //                 if (cell3.Neighbors.Contains(cell1) == false) continue;
-    //                 var (p11, p12) = cell1.EdgeWith(cell2);
-    //                 var (p21, p22) = cell1.EdgeWith(cell3);
-    //                 Vector2 pointRel;
-    //                 if (p11 == p21) pointRel = p11;
-    //                 else if (p11 == p22) pointRel = p11;
-    //                 else if (p12 == p21) pointRel = p12;
-    //                 else if (p12 == p22) pointRel = p12;
-    //                 else throw new Exception();
-    //                 var pointAbs = (cell1.RelTo + pointRel).ClampPosition(key.Data);
-    //
-    //                 var idKey = new Vector3I(cell1.PrePoly.Id, cell2.PrePoly.Id, cell3.PrePoly.Id);
-    //                 if (res.ContainsKey(idKey))
-    //                 {
-    //                     throw new Exception("duplicate nexus at " + pointAbs);
-    //                 }
-    //                 res.Add(idKey,
-    //                     new PreNexus(key, pointAbs, cell1.PrePoly, cell2.PrePoly, cell3.PrePoly));
-    //             }
-    //         }
-    //     }
-    //
-    //     return res;
-    // }
 }

@@ -30,7 +30,7 @@ public abstract partial class PolyBorder
     
     public void Draw(Data data)
     {
-        this.ClearChildren();
+        // this.ClearChildren();
         var mb = MeshBuilder.GetFromPool();
         var polys = Chunk.Polys;
         foreach (var element in polys)
