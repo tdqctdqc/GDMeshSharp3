@@ -211,6 +211,11 @@ public class MeshBuilder
     {
         JoinLinePoints(from, to, thickness, color);
     }
+    public void AddLineRel(Vector2 from, Vector2 to, Color color,
+        float thickness, Vector2 relTo, Data d)
+    {
+        JoinLinePoints(relTo.Offset(from, d), relTo.Offset(to, d), thickness, color);
+    }
 
     public void AddParallelLines(Vector2 from, Vector2 to, Color color, float thickness, float offset)
     {
@@ -320,6 +325,24 @@ public class MeshBuilder
         AddTri(to, arrowBase + orth * thickness,
             arrowBase - orth * thickness, color);
         AddLine(from, arrowBase, color, thickness);
+    }
+    
+    public void AddArrowRel(Vector2 from, Vector2 to, 
+        float thickness, Color color, Vector2 relTo, Data d)
+    {
+        var length = from.DistanceTo(to);
+        var arrowLength = Mathf.Min(length / 2f, thickness * 1.5f);
+        var stemLength = length - arrowLength;
+
+        var axis = (to - from).Normalized();
+        var orth = axis.Orthogonal();
+
+        var arrowBase = relTo.Offset(from + axis * stemLength, d);
+        var relT = relTo.Offset(to, d);
+        var relF = relTo.Offset(from, d);
+        AddTri(relT, arrowBase + orth * thickness,
+            arrowBase - orth * thickness, color);
+        AddLine(relF, arrowBase, color, thickness);
     }
 
     public void AddNumMarkers(List<Vector2> points, float markerSize, Color color, Color textColor, Vector2 offset,

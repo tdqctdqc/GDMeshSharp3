@@ -5,8 +5,8 @@ using Godot;
 
 public class River : Landform
 {
-    public static readonly float WidthFloor = 5f, 
-        WidthCeil = 40f,
+    public static readonly float WidthFloor = 1f, 
+        WidthCeil = 20f,
         FlowFloor = 10f,
         FlowCeil = 200f;
     public River() : base(nameof(River))
@@ -18,6 +18,7 @@ public class River : Landform
         if (flow < FlowFloor) return 0f;
         flow = Mathf.Min(flow, FlowCeil);
         var ratio = (flow - FlowFloor) / (FlowCeil - FlowFloor);
+        if (ratio > 1f || ratio < 0f) throw new Exception();
         var width = ratio * (WidthCeil - WidthFloor) + WidthFloor;
         return width;
         

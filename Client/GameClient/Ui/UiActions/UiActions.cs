@@ -33,6 +33,17 @@ public static class UiActions
         if (cell != null)
         {
             highlighter.Draw(mb => mb.DrawCellBorders(cell.GetCenter(), cell, client.Data, thickness, true), cell.GetCenter());
+            if (Input.IsKeyPressed(Key.Space))
+            {
+                highlighter.Draw(mb => mb.DrawRiverTestAll(
+                    client.Data, cell.GetCenter()), cell.GetCenter());
+
+            }
+            else
+            {
+                highlighter.Draw(mb => mb.DrawRiverTest(
+                    cell, client.Data, cell.GetCenter()), cell.GetCenter());
+            }
         }
     }
 }
