@@ -5,20 +5,22 @@ using Godot;
 public class RiverCell : PolyCell, IEdgeCell
 {
     public ERef<MapPolygonEdge> Edge { get; private set; }
-    // public static RiverCell Construct(MapPolygonEdge edge,
-    //     Vector2 relTo,
-    //     Vector2[] relBoundary, GenWriteKey key)
-    // {
-    //     var lf = key.Data.Models.Landforms.Sea;
-    //     var v = key.Data.Models.Vegetations.Barren;
-    //     var id = key.Data.IdDispenser.TakeId();
-    //     var c = new RiverCell(
-    //         edge.MakeRef(), 
-    //         relTo, relBoundary,
-    //         v.MakeRef(), lf.MakeRef(), 
-    //         new HashSet<int>(), id);
-    //     return c;
-    // }
+    public static RiverCell Construct(MapPolygonEdge edge,
+        Vector2 relTo,
+        Vector2[] relBoundary, GenWriteKey key)
+    {
+        var lf = key.Data.Models.Landforms.Sea;
+        var v = key.Data.Models.Vegetations.Barren;
+        var id = key.Data.IdDispenser.TakeId();
+        var c = new RiverCell(
+            edge.MakeRef(), 
+            relTo, relBoundary,
+            v.MakeRef(), lf.MakeRef(), 
+            new List<int>(),
+            new List<(Vector2, Vector2)>(),
+            id);
+        return c;
+    }
     
     
     public RiverCell(ERef<MapPolygonEdge> edge,
@@ -33,5 +35,11 @@ public class RiverCell : PolyCell, IEdgeCell
                 new ERef<Regime>(-1), id)
     {
         Edge = edge;
+    }
+
+
+    public void MakeNeighbors(GenWriteKey key)
+    {
+        
     }
 }

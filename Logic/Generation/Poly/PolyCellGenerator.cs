@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Godot;
@@ -34,7 +35,8 @@ public class PolyCellGenerator : Generator
         report.StopSection("Building poly terrain tris and cells");
         
         PolyCells.Create(cells, key);
-        BuildRiverCells(cellsByPoly, key);
+
+        RiverCellGenerator.BuildRiverCells(cellsByPoly, key);
 
         
         _data.Notices.SetPolyShapes.Invoke();
@@ -74,54 +76,9 @@ public class PolyCellGenerator : Generator
         return cells;
     }
     
-    private void BuildRiverCells(Dictionary<MapPolygon, PolyCell[]> cellsByPoly, GenWriteKey key)
-    {
-        var nexi = key.Data.GetAll<MapPolyNexus>();
-        var edges = key.Data.GetAll<MapPolygonEdge>();
+    
 
-        var nexusRiverWidths = nexi
-            .Where(n => n.IsRiverNexus(key.Data))
-            .ToDictionary(
-                n => n,
-                n => n.IncidentEdges.Items(key.Data)
-                    .Where(e => e.IsRiver())
-                    .Average(e => River.GetWidthFromFlow(e.MoistureFlow)));
-
-        //rel to hi
-        //first do river edges, then clip to get fraction of non river but adjacent edge
-
-        // var riverBounds = new ConcurrentDictionary<MapPolygonEdge, Vector2[]>();
-        // Parallel.ForEach(edges, edge =>
-        // {
-        //     if (edge.IsRiver() == false) return;
-        //     var hiNexus = edge.HiNexus.Entity(key.Data);
-        //     var loNexus = edge.LoNexus.Entity(key.Data);
-        //     if (hiNexus.IsRiverNexus(key.Data) == false 
-        //         && loNexus.IsRiverNexus(key.Data) == false)
-        //     {
-        //         return;
-        //     }
-        //     
-        // })
-        //
-        //
-        // Parallel.ForEach(nexi, nexus =>
-        // {
-        //     if (nexus.IsRiverNexus(key.Data) == false) return;
-        //     foreach (var edge in nexus.IncidentEdges.Items(key.Data))
-        //     {
-        //         if (edge.IsRiver())
-        //         {
-        //             
-        //         }
-        //         else
-        //         {
-        //             
-        //         }
-        //     }
-        // });
-    }
-
+    
     private void Postprocess(GenWriteKey key)
     {
         var polys = key.Data.GetAll<MapPolygon>();

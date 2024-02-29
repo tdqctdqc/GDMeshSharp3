@@ -29,7 +29,21 @@ public static class GeometryExt
                ((seg1.Y <= point.Y && point.Y <= seg2.Y) || (seg2.Y <= point.Y && point.Y <= seg1.Y));
     }
 
-
+    public static Vector2[] UnifyPolygons(this Vector2[] poly1, Vector2[] poly2)
+    {
+        var unions = Geometry2D.MergePolygons(poly1, poly2);
+        if (unions.Count != 1) throw new Exception();
+        return unions[0];
+    }
+    public static bool TryUnifyPolygons(this Vector2[] poly1, 
+        Vector2[] poly2, out Vector2[] newBounds)
+    {
+        newBounds = null;
+        var unions = Geometry2D.MergePolygons(poly1, poly2);
+        if (unions.Count != 1) return false;
+        newBounds = unions[0];
+        return true;
+    }
     public static Vector2[] UnifyPolygons(params Vector2[][] polys)
     {
         Vector2[] union = polys[0];

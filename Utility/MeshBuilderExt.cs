@@ -172,11 +172,18 @@ public static class MeshBuilderExt
     public static void DrawRiverTestAll(this MeshBuilder mb,
         Data d, Vector2 relTo)
     {
-        
+        var cells = d.ClientPlayerData.RiverCells;
         foreach (var cell in d.Planet.PolygonAux
                      .PolyCells.Cells.Values)
         {
-            mb.DrawRiverTest(cell, d, relTo);
+            if (cells.TryGetValue(cell, out var bounds) == false) continue;
+            foreach (var bound in bounds)
+            {
+                mb.DrawPolygon(bound.Select(v => relTo.Offset(v + cell.RelTo, d)).ToArray(),
+                    Colors.Blue);
+            }
+            
+            // mb.DrawRiverTest(cell, d, relTo);
         }
     }
     public static void DrawRiverTestAround(this MeshBuilder mb,
@@ -218,7 +225,8 @@ public static class MeshBuilderExt
             var edgeRiverWidth = River.GetWidthFromFlow(edgeFlow);
             
             var axis = edge.t - edge.f;
-            var perp = Clockwise.GetPerpTowards(edge.f, edge.t, Vector2.Zero)
+            var perp = Clockwise
+                .GetPerpTowards(edge.f, edge.t, Vector2.Zero)
                 .Normalized();
             
             var mutuals = c.Neighbors.Intersect(n.Neighbors)
@@ -249,7 +257,7 @@ public static class MeshBuilderExt
                     ?  trapezoidFrom : trapezoidTo;
                 var mExclusive = getExclusive(mEdge, shared);
                 var mAxis = mExclusive - shared;
-                var thickness = getRiverWidth(shared);
+                var thickness = getRiverWidth(shared) / 2f;
                 var mLength = Mathf.Min(
                     mEdge.Item1.DistanceTo(mEdge.Item2) / 3f, 
                     thickness);
@@ -281,7 +289,7 @@ public static class MeshBuilderExt
                 //else will be average of c-n, m-n
                 var mEdge = c.GetEdgeRelWith(mutual);
                 var shared = getShared(edge, mEdge);
-                var thickness = getRiverWidth(shared);
+                var thickness = getRiverWidth(shared) / 2f;
                 var mPerp = Clockwise.GetPerpTowards(mEdge.Item1,
                     mEdge.Item2, Vector2.Zero).Normalized();
                 var mAxis = mEdge.Item2 - mEdge.Item1;
