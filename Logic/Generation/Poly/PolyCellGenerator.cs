@@ -17,8 +17,6 @@ public class PolyCellGenerator : Generator
         _data = key.GenData;
         var report = new GenReport(GetType().Name);
         var polys = _data.GetAll<MapPolygon>();
-        var polyEdges = _data.GetAll<MapPolygonEdge>();
-        
         
         report.StartSection();
 
@@ -31,12 +29,13 @@ public class PolyCellGenerator : Generator
             .ToDictionary(v => v.p, v => v.cells);
         
         var cells = cellsByPoly.SelectMany(kvp => kvp.Value).ToArray();
-        
-        report.StopSection("Building poly terrain tris and cells");
-        
         PolyCells.Create(cells, key);
 
+        report.StopSection("Building poly cells");
+        
+        report.StartSection();
         RiverCellGenerator.BuildRiverCells(cellsByPoly, key);
+        report.StopSection("creating river cells");
 
         
         _data.Notices.SetPolyShapes.Invoke();

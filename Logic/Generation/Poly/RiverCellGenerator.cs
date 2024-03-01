@@ -15,9 +15,9 @@ public class RiverCellGenerator
         var sw = new Stopwatch();
         sw.Start();
         var nexi = key.Data.GetAll<MapPolyNexus>();
-        var edges = key.Data.GetAll<MapPolygonEdge>();
         var cells = key.Data.Planet.PolygonAux.PolyCells.Cells;
         var nexusRiverWidths = nexi
+            .AsParallel()
             .Where(n => n.IsRiverNexus(key.Data))
             .ToDictionary(
                 n => n,
@@ -26,30 +26,52 @@ public class RiverCellGenerator
                     .Average(e => River.GetWidthFromFlow(e.MoistureFlow)));
         
         var riverPolyEdges = key.Data.GetAll<MapPolygonEdge>()
-            .Where(e => e.IsRiver()).ToArray();
-        var cellEdgeRiverWidthsEnum = riverPolyEdges
+            .Where(e => e.IsRiver());
+        var cellEdgeRiverWidthsEnum 
+            = riverPolyEdges
             .AsParallel()
             .SelectMany(e => GetRiverCellEdgeWidths(e, cellsByPoly, nexusRiverWidths, key));
         var cellEdgeRiverWidths = new Dictionary<Vector2I, float>(
             cellEdgeRiverWidthsEnum);
-        var bankCells = cells.Values
-            .AsParallel()
-            .OfType<LandCell>()
-            .Where(c => c.Neighbors.Any(n => cellEdgeRiverWidths.ContainsKey(c.GetIdEdgeKey(n))))
-            .ToArray();
-        
         sw.Stop();
         GD.Print("river setup " + sw.Elapsed.TotalMilliseconds);
         sw.Reset();
         sw.Start();
         
         
-                
+        
         //grab remaining boundary of bank cells here too 
-        var halfRiverCellBounds = bankCells
+        var hiCellBounds = cellEdgeRiverWidths
+            .Keys
             .AsParallel()
-            .SelectMany(c => GetCellRiverBounds(c, key));
-        var halfCellDic = new Dictionary<Vector2I, Vector2[]>(halfRiverCellBounds);
+            .Select(k =>
+            {
+                var c = PlanetDomainExt.GetPolyCell(k.X, key.Data);
+                var n = PlanetDomainExt.GetPolyCell(k.Y, key.Data);
+                var bounds = GetCellEdgeRiverBounds(c, cellEdgeRiverWidths, n, key.Data);
+                return new KeyValuePair<Vector2I,Vector2[]>(new Vector2I(c.Id, n.Id), bounds);
+            });
+        var loCellBounds = cellEdgeRiverWidths
+            .Keys
+            .AsParallel()
+            .Select(k =>
+            {
+                var c = PlanetDomainExt.GetPolyCell(k.Y, key.Data);
+                var n = PlanetDomainExt.GetPolyCell(k.X, key.Data);
+                var bounds = GetCellEdgeRiverBounds(c, cellEdgeRiverWidths, n, key.Data);
+                return new KeyValuePair<Vector2I,Vector2[]>(new Vector2I(c.Id, n.Id), bounds);
+            });
+        var els = hiCellBounds.Concat(loCellBounds);
+        var halfCellDic = new Dictionary<Vector2I, Vector2[]>
+            (els);
+        
+        sw.Stop();
+        GD.Print("make half bounds " + sw.Elapsed.TotalMilliseconds);
+        sw.Reset();
+        
+        sw.Start();
+        
+        
         var riverCells = halfCellDic
             .AsParallel()
             .Where(kvp =>
@@ -72,24 +94,19 @@ public class RiverCellGenerator
                 var united = kvp.Value.UnifyPolygons(oppositeBounds);
                 return RiverCell.Construct(polyEdge, cell.RelTo,
                     united, key);
-            }).ToArray();
-        
-        
+            });
         
         
         foreach (var riverCell in riverCells)
         {
             cells.Add(riverCell.Id, riverCell);
-            
-            key.Data.ClientPlayerData.RiverCells.Add(riverCell, new List<Vector2[]> { riverCell.RelBoundary });
-
         }
         // foreach (var (edgeKey, edgeCell) in wholeRiverCells)
         // {
         //     edgeCell.MakeNeighbors(key);
         // }
         sw.Stop();
-        GD.Print("river make cells time " + sw.Elapsed.TotalMilliseconds);
+        GD.Print("combine halves and make cells time " + sw.Elapsed.TotalMilliseconds);
     }
     
     private static IEnumerable<KeyValuePair<Vector2I, float>> 
@@ -131,43 +148,35 @@ public class RiverCellGenerator
     }
 
 
-    private static IEnumerable<KeyValuePair<Vector2I, Vector2[]>>
-        GetCellRiverBounds(PolyCell c, GenWriteKey key)
-    {
-        var cellBounds = c.RelBoundary;
-        foreach (var n in c.GetNeighbors(key.Data))
-        {
-            if (IsRiverEdge(c, n, key.Data))
-            {
-                var edgeKey = new Vector2I(c.Id, n.Id);
-                var riverEdgeBounds = GetCellEdgeRiverBounds(c, n, key.Data);
-                yield return new KeyValuePair<Vector2I, Vector2[]>(edgeKey,
-                    riverEdgeBounds);
-            }
-        }
-        // c.SetBoundaryPoints(cellBounds, key);
-    }
+    // private static IEnumerable<KeyValuePair<Vector2I, Vector2[]>>
+    //     GetCellRiverBounds(PolyCell c, 
+    //         Dictionary<Vector2I, float> riverCellEdgeDic,
+    //         GenWriteKey key)
+    // {
+    //     for (var i = 0; i < c.Neighbors.Count; i++)
+    //     {
+    //         var nId = c.Neighbors[i];
+    //         if (riverCellEdgeDic.ContainsKey(c.GetIdEdgeKey(nId)))
+    //         {
+    //             var halfEdgeKey = new Vector2I(c.Id, nId);
+    //             var n = PlanetDomainExt.GetPolyCell(nId, key.Data);
+    //             var riverEdgeBounds = GetCellEdgeRiverBounds(c, riverCellEdgeDic,
+    //                 n, i, key.Data);
+    //             yield return new KeyValuePair<Vector2I, Vector2[]>(halfEdgeKey,
+    //                 riverEdgeBounds);
+    //         }
+    //     }
+    // }
     private static Vector2[] GetCellEdgeRiverBounds(PolyCell c, 
+        Dictionary<Vector2I, float> riverCellEdgeWidths,
         PolyCell n, Data d)
     {
-        if (c is LandCell l == false) throw new Exception();
-        var poly = l.Polygon.Entity(d);
-        if (n is LandCell lN == false) throw new Exception();
-        var nPoly = lN.Polygon.Entity(d);
         var edge = c.GetEdgeRelWith(n);
-        var edgeFlow = poly.GetEdge(nPoly, d)
-            .MoistureFlow;
-        var edgeRiverWidth = River.GetWidthFromFlow(edgeFlow);
-        
+        var edgeRiverWidth = riverCellEdgeWidths[c.GetIdEdgeKey(n)];
         var axis = edge.Item2 - edge.Item1;
         var perp = Clockwise
             .GetPerpTowards(edge.Item1, edge.Item2, Vector2.Zero)
             .Normalized();
-        
-        var mutuals = c.Neighbors.Intersect(n.Neighbors)
-            .Select(i => PlanetDomainExt.GetPolyCell(i, d)).ToArray();
-        if (mutuals.Length > 2 || mutuals.Length == 0) throw new Exception();
-
         var fromMutual = getMutual(edge.Item1);
         var trapezoidFrom = fromMutual is PolyCell m1
             ? getTrapezoidPoint(m1)
@@ -178,8 +187,8 @@ public class RiverCellGenerator
             ? getTrapezoidPoint(m2)
             : getDanglingPoint();
         
-        if (IsRiverEdge(c, fromMutual, d)) fromMutual = null;
-        if (IsRiverEdge(c, toMutual, d)) toMutual = null;
+        if (riverCellEdgeWidths.ContainsKey(c.GetIdEdgeKey(fromMutual))) fromMutual = null;
+        if (riverCellEdgeWidths.ContainsKey(c.GetIdEdgeKey(toMutual))) toMutual = null;
         
         if (Vector2Ext.LineSegIntersect(edge.Item1, trapezoidFrom,
                 edge.Item2, trapezoidTo, true, out var intersect))
@@ -227,7 +236,7 @@ public class RiverCellGenerator
         {
             var mEdge = c.GetEdgeRelWith(mutual);
             var shared = getShared(edge, mEdge);
-            if (IsRiverEdge(c, mutual, d)) return shared;
+            if (riverCellEdgeWidths.ContainsKey(c.GetIdEdgeKey(mutual))) return shared;
             var mExclusive = getExclusive(mEdge, shared);
             var mAxis = mExclusive - shared;
             var thickness = getEdgeSideRiverWidth(shared) / 2f;
@@ -242,12 +251,14 @@ public class RiverCellGenerator
 
         PolyCell getMutual(Vector2 edgePoint)
         {
-            for (var j = 0; j < mutuals.Length; j++)
+            for (var i = 0; i < c.Neighbors.Count; i++)
             {
-                var mEdge = c.GetEdgeRelWith(mutuals[j]);
+                var mId = c.Neighbors[i];
+                if (n.Neighbors.Contains(mId) == false) continue;
+                var mEdge = c.Edges[i];
                 if (mEdge.Item1 == edgePoint || mEdge.Item2 == edgePoint)
                 {
-                    return mutuals[j];
+                    return PlanetDomainExt.GetPolyCell(mId, d);
                 }
             }
 
@@ -256,8 +267,6 @@ public class RiverCellGenerator
         
         Vector2 getTrapezoidPoint(PolyCell mutual)
         {
-            //thickness will be just c-ns edge thickness if m-n is not river
-            //else will be average of c-n, m-n
             var mEdge = c.GetEdgeRelWith(mutual);
             var shared = getShared(edge, mEdge);
             var thickness = getEdgeSideRiverWidth(shared) / 2f;
@@ -276,9 +285,21 @@ public class RiverCellGenerator
 
         Vector2 getDanglingPoint()
         {
-            var shared = getShared(edge, c.GetEdgeRelWith(mutuals[0]));
-            var dangling = shared == edge.Item2 ? edge.Item1 : edge.Item2;
-            return dangling + perp;
+            if (edge.Item1.Y == 0f)
+            {
+                return edge.Item1 + perp;
+            }
+
+            if (edge.Item2.Y == 0f)
+            {
+                return edge.Item2 + perp;
+            }
+
+            if (edge.Item1.Y > edge.Item2.Y)
+            {
+                return edge.Item1 + perp;
+            }
+            return edge.Item2 + perp;
         }
 
         float getEdgeSideRiverWidth(Vector2 p)
@@ -287,13 +308,13 @@ public class RiverCellGenerator
             if (mutual == null) return edgeRiverWidth;
             var width = getEdgeRiverWidth(c, n);
             var iter = 1f;
-            if (IsRiverEdge(c, mutual, d))
+            if (riverCellEdgeWidths.ContainsKey(c.GetIdEdgeKey(mutual)))
             {
                 width += getEdgeRiverWidth(c, mutual);
                 iter++;
             }
 
-            if (IsRiverEdge(mutual, n, d))
+            if (riverCellEdgeWidths.ContainsKey(mutual.GetIdEdgeKey(n)))
             {
                 width += getEdgeRiverWidth(mutual, n);
                 iter++;
@@ -302,12 +323,7 @@ public class RiverCellGenerator
         }
         float getEdgeRiverWidth(PolyCell c1, PolyCell c2)
         {
-            var p1 = ((LandCell)c1).Polygon.Entity(d);
-            var p2 = ((LandCell)c2).Polygon.Entity(d);
-            
-            var edgeFlow = p1.GetEdge(p2, d)
-                .MoistureFlow;
-            return River.GetWidthFromFlow(edgeFlow);
+            return riverCellEdgeWidths[c1.GetIdEdgeKey(c2)];
         }
         
         
@@ -333,17 +349,5 @@ public class RiverCellGenerator
             if (e.Item2 != shared) return e.Item2;
             throw new Exception();
         }
-    }
-    
-    private static bool IsRiverEdge(PolyCell p1, PolyCell p2,
-        Data d)
-    {
-        if (p1 is LandCell l1 == false) return false;
-        if (p2 is LandCell l2 == false) return false;
-        if (l1.Polygon.RefId == l2.Polygon.RefId) return false;
-        var edge = l1.Polygon.Entity(d)
-            .GetEdge(l2.Polygon.Entity(d), d);
-        if (edge.IsRiver() == false) return false;
-        return true;
     }
 }

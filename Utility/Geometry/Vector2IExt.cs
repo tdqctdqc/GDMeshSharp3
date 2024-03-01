@@ -1,4 +1,6 @@
 
+using System.Collections;
+using System.Collections.Generic;
 using DelaunatorSharp;
 using Godot;
 
@@ -7,6 +9,12 @@ public static class Vector2IExt
     public static IPoint GetIPoint(this Vector2I v)
     {
         return new Triangulator.DelaunatorPoint(v);
+    }
+
+    public static IEnumerable<int> Yield(this Vector2I v)
+    {
+        yield return v.X;
+        yield return v.Y;
     }
     public static Vector2I ClampPosition(this Vector2I pos, Vector2I dim)
     {
