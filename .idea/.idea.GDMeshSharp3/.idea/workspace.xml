@@ -5,13 +5,23 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/ClientData/ClientPlayerData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/ClientData/ClientPlayerData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyCellFillChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyCellFillChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/TerrainChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Modules/TerrainChunkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/RiverCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/RiverCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/EnumerableExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/EnumerableExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/Geometry/GeometryExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/GeometryExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -545,6 +555,7 @@
       <workItem from="1709060337576" duration="5471000" />
       <workItem from="1709068351308" duration="6299000" />
       <workItem from="1709146240268" duration="9043000" />
+      <workItem from="1709255628232" duration="3704000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>

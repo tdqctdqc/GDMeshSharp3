@@ -47,7 +47,6 @@ public class PolyCellGenerator : Generator
         
         _data.Notices.MadeCells.Invoke();
 
-
         report.StartSection();
         Parallel.ForEach(polys, p => p.SetTerrainStats(key)); 
         report.StopSection("setting terrain stats");

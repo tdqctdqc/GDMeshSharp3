@@ -113,7 +113,6 @@ public class MeshBuilder
                 thickness, relTo, d);
         }
     }
-
     public void DrawPolyCellEdge(PolyCell c, PolyCell n,
         Func<PolyCell, Color> getColor,
         float thickness, Vector2 relTo, Data d,

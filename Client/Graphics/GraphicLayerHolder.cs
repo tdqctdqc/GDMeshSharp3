@@ -6,7 +6,7 @@ using System.Linq;
 using Godot;
 public enum LayerOrder
 {
-    Terrain, PolyFill, 
+    Terrain, Rivers, PolyFill, 
     Roads, Icons, Resources,
     NavWaypoints, TacWaypoints,
     UnitOrders, Units, Theaters
@@ -20,6 +20,7 @@ public class GraphicLayerHolder
     {
         Layers = new List<IGraphicLayer>();
         AddLayer(Terrain(segmenter, data), true);
+        AddLayer(Rivers(segmenter, data), true);
         AddLayer(PolyFill(client, segmenter), true);
         AddLayer(Roads(segmenter, data), true);
         AddLayer(IconsChunkModule.GetLayer(client, segmenter), true);
@@ -56,10 +57,19 @@ public class GraphicLayerHolder
     private ChunkGraphicLayer<TerrainChunkModule> Terrain(GraphicsSegmenter segmenter, Data d)
     {
         var l = new ChunkGraphicLayer<TerrainChunkModule>(LayerOrder.Terrain, "Terrain", segmenter,
-            c => new TerrainChunkModule(c, d),
+            c => TerrainChunkModule.GetBase(c, d),
             d);
         return l;
     }
+    private ChunkGraphicLayer<TerrainChunkModule> Rivers(GraphicsSegmenter segmenter, Data d)
+    {
+        var l = new ChunkGraphicLayer<TerrainChunkModule>(
+            LayerOrder.Rivers, "Rivers", segmenter,
+            c => TerrainChunkModule.GetRiver(c, d),
+            d);
+        return l;
+    }
+    
     private ChunkGraphicLayer<PolyFillChunkGraphic> ResourceDepositPolyFill(int z, GraphicsSegmenter segmenter, 
         Data data, MapGraphics mg)
     {

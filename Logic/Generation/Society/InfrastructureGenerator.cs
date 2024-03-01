@@ -81,7 +81,7 @@ public class InfrastructureGenerator : Generator
             p => p,
             p =>
             {
-                var landCells = p.GetCells(_data);
+                var landCells = p.GetCells(_data).OfType<LandCell>();
                 if (p.HasSettlement(_data)
                     && p.GetSettlement(_data).Tier.Model(_data).MinSize 
                         >= _minSettlementSizeForInfraNode

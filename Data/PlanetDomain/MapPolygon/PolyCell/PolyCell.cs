@@ -124,7 +124,11 @@ public abstract class PolyCell : IPolymorph,
         if (index == -1) throw new Exception();
         return Edges[index];
     }
-    
+
+    public void SetBoundaryPoints(Vector2[] boundary, GenWriteKey key)
+    {
+        RelBoundary = boundary;
+    }
     protected static Vector2[] GetBoundaryPoints(List<(Vector2I, Vector2I)> edges)
     {
         var start = (Vector2)edges[0].Item1;

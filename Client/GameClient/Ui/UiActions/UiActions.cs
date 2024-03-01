@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using Godot;
 
 public static class UiActions
@@ -23,7 +24,9 @@ public static class UiActions
         var highlighter = client.GetComponent<MapGraphics>().Highlighter;
         if (poly != null)
         {
-            highlighter.Draw(mb => mb.DrawPolyBorders(poly.Center, poly, thickness, client.Data), poly.Center);
+            highlighter.Draw(mb => 
+                mb.DrawPolyBorders(poly.Center, poly, thickness, client.Data), 
+                poly.Center);
         }
     }
     public static void HighlightCell(this Client client, PolyCell cell,
@@ -32,18 +35,9 @@ public static class UiActions
         var highlighter = client.GetComponent<MapGraphics>().Highlighter;
         if (cell != null)
         {
-            highlighter.Draw(mb => mb.DrawCellBorders(cell.GetCenter(), cell, client.Data, thickness, true), cell.GetCenter());
-            if (Input.IsKeyPressed(Key.Space))
-            {
-                highlighter.Draw(mb => mb.DrawRiverTestAll(
-                    client.Data, cell.GetCenter()), cell.GetCenter());
-
-            }
-            else
-            {
-                highlighter.Draw(mb => mb.DrawRiverTest(
-                    cell, client.Data, cell.GetCenter()), cell.GetCenter());
-            }
+            highlighter.Draw(mb => mb.DrawPolygon(
+                cell.RelBoundary, 
+                new Color(Colors.White, .25f)), cell.RelTo);
         }
     }
 }

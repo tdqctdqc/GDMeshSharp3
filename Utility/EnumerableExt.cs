@@ -98,14 +98,7 @@ public static class EnumerableExt
     public static T Modulo<T>(this IList<T> list, int i)
     {
         while (i < 0) i += list.Count;
-        try
-        {
-            return list[i % list.Count];
-        }
-        catch (Exception e)
-        {
-            throw;
-        }
+        return list[i % list.Count];
     }
 
     public static void AddRange<T>(this ICollection<T> hash, IEnumerable<T> en)
@@ -158,6 +151,53 @@ public static class EnumerableExt
         {
             if (from == -1) return;
             handleRun(list.GetRange(from, to - from + 1));
+        }
+    }
+    public static void DoForRunsCircular<T>(this List<T> list,
+        Func<T, bool> valid,
+        Action<List<T>> handleRun)
+    {
+        var firstGood = list.FindIndex(t => valid(t));
+        if (firstGood == -1) return;
+        var goodStartIndex = -1;
+        
+        
+        for (var i = 0; i < list.Count; i++)
+        {
+            var val = list.Modulo(firstGood + i);
+            if (valid(val) == false)
+            {
+                handle(goodStartIndex, i + firstGood - 1);
+                goodStartIndex = -1;
+            }
+            else
+            {
+                if (goodStartIndex == -1)
+                {
+                    goodStartIndex = firstGood + i;
+                }
+            }
+
+            if (i == list.Count - 1)
+            {
+                handle(goodStartIndex, i + firstGood);
+            }
+        }
+
+        void handle(int from, int to)
+        {
+            if (from == -1) return;
+            if (from <= to)
+            {
+                handleRun(list.GetRange(from, to - from + 1));
+            }
+            else
+            {
+                var run1 = list.GetRange(from, list.Count - 1);
+                var run2 = list.GetRange(0, to + 1);
+                run2.AddRange(run1);
+                handleRun(run2);
+            }
         }
     }
     

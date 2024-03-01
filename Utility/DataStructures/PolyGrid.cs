@@ -85,6 +85,19 @@ public class PolyGrid<TPoly>
     {
         return true;
     }
+    public TPoly GetElementAtPointWhere(Vector2 point, 
+        Func<TPoly, bool> valid,
+        Data d)
+    {
+        var key = ClampKey(GetKey(point));
+        if (Cells.ContainsKey(key) == false)
+        {
+            throw new Exception($"no key {key}, x partitions {NumXPartitions} y partitions {NumYPartitions}");
+        }
+        var found = Cells[key]
+            .FirstOrDefault(p => PointInPolyAbs(p, point, d) && valid(p));
+        return found;  
+    }
     public TPoly GetElementAtPoint(Vector2 point, Data d)
     {
         var key = ClampKey(GetKey(point));

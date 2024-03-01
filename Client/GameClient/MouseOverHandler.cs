@@ -16,8 +16,7 @@ public class MouseOverHandler
             () =>
             {
                 var mousePos = Game.I.Client.Cam().GetMousePosInMapSpace();
-                FindPoly(data, mousePos);
-                FindCell(MouseOverPoly, data, mousePos);
+                Find(data, mousePos);
             });
     }
     
@@ -28,45 +27,42 @@ public class MouseOverHandler
 
     private void FindPoly(Data data, Vector2 mousePosMapSpace)
     {
-        if (mousePosMapSpace.Y <= 0f || mousePosMapSpace.Y >= data.Planet.Height)
+        if (mousePosMapSpace.Y <= 0f 
+            || mousePosMapSpace.Y >= data.Planet.Height)
         {
             SetPoly(null);
             SetCell(null);
             return;
         }
-        else if (MouseOverPoly != null && MouseOverPoly.PointInPolyAbs(mousePosMapSpace, data))
-        {
-            if (MouseOverCell != null && MouseOverCell.ContainsPoint(mousePosMapSpace, data))
-            {
-                return;
-            }
-        }
-        else if (MouseOverPoly != null && 
-                 MouseOverPoly.Neighbors.Items(data)
-                         .FirstOrDefault(n => n.PointInPolyAbs(mousePosMapSpace, data))
-                     is MapPolygon neighbor)
-        {
-            SetPoly(neighbor);
-        }
-        else
-        {
-            var p = data.Planet.PolygonAux.MapPolyGrid
-                .GetElementAtPoint(mousePosMapSpace, data);
-            SetPoly(p);
-        }
+
+        Find(data, mousePosMapSpace);
     }
 
     
-    private void FindCell(MapPolygon p, Data data, Vector2 mousePosMapSpace)
+    private void Find(Data data, Vector2 mousePosMapSpace)
     {
-        if (MouseOverPoly == null)
-        {
-            SetCell(null);
-            return;
-        }
-
-        var c = data.Planet.PolygonAux.PolyCellGrid.GetElementAtPoint(mousePosMapSpace, data);
+        var c = data.Planet.PolygonAux
+            .PolyCellGrid.GetElementAtPointWhere(mousePosMapSpace, 
+                c => c is RiverCell,
+                data);
+        if(c == null) c = data.Planet.PolygonAux
+            .PolyCellGrid.GetElementAtPoint(mousePosMapSpace, data);
         SetCell(c);
+
+        if (c is ISinglePolyCell single)
+        {
+            SetPoly(single.Polygon.Entity(data));
+        }
+        else if (c is RiverCell r)
+        {
+            var edge = r.Edge.Entity(data);
+            var p1 = edge.HighPoly.Entity(data);
+            var p2 = edge.LowPoly.Entity(data);
+            var close =mousePosMapSpace.Offset(p1.Center, data)
+                < mousePosMapSpace.Offset(p2.Center, data)
+                ? p1 : p2;
+            SetPoly(close);
+        }
     }
     private void SetPoly(MapPolygon p)
     {

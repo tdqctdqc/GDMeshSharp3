@@ -67,7 +67,8 @@ public static class DelaunayExt
             
             if (c1 == c2)
             {
-                var newPs = SplitPoint(c1I, v1, v2, dim, key);
+                var newPs = SplitPoint(c1I, v1, v2, 
+                    dim, 10f, key);
                 splitBag.TryAdd(c1I, (v1, v2, newPs.Item1, newPs.Item2));
                 return (v1, v2, newPs);
             }
@@ -106,16 +107,17 @@ public static class DelaunayExt
             }
         });
     }
-
+    
     private static (Vector2I, Vector2I) SplitPoint(Vector2I point,
         Vector2I cellPoint1, Vector2I cellPoint2, Vector2I dim,
+        float zeroEdgeCorrectionLength,
         GenWriteKey key)
     {
         var axis = (Vector2)cellPoint1.Offset(cellPoint2, key.Data);
 
         var mid = cellPoint1 + axis / 2;
         
-        var perp = axis.Orthogonal().Normalized() * 5f;
+        var perp = axis.Orthogonal().Normalized() * zeroEdgeCorrectionLength / 2f;
         var arm1 = perp;
         var arm2 = -perp;
 

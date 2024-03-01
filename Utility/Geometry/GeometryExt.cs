@@ -42,19 +42,34 @@ public static class GeometryExt
         var unions = Geometry2D.MergePolygons(poly1, poly2);
         if (unions.Count != 1) return false;
         newBounds = unions[0];
+        
         return true;
     }
-    public static Vector2[] UnifyPolygons(params Vector2[][] polys)
-    {
-        Vector2[] union = polys[0];
-        for (var i = 1; i < polys.Length; i++)
-        {
-            var intersects = Geometry2D.IntersectPolygons(union,
-                polys[i]);
-            if (intersects.Count != 1) return null;
-            union = intersects[0];
-        }
 
-        return union;
+    public static Vector2[] ClipPolygons(this Vector2[] polygon,
+        Vector2[] clip)
+    {
+        var differences = Geometry2D.ClipPolygons(polygon, clip);
+        if (differences.Count != 1) throw new Exception();
+        return differences[0];
     }
+    public static bool TryClipPolygons(this Vector2[] polygon,
+        Vector2[] clip, out Vector2[] newBounds)
+    {
+        newBounds = null;
+        var differences = Geometry2D.ClipPolygons(polygon, clip);
+        if (differences.Count != 1) return false;
+        newBounds = differences[0];
+        return true;
+    }
+
+    public static Vector2[] GetBiggestClip(this Vector2[] polygon,
+        Vector2[] clip)
+    {
+        var differences = Geometry2D.ClipPolygons(polygon, clip);
+        if (differences.Count == 0) throw new Exception();
+        if (differences[0].Length == 0) throw new Exception();
+        return differences.MaxBy(p => p.GetArea());
+    }
+    
 }
