@@ -108,6 +108,20 @@ public static class Vector2Ext
     {
         return Sum(v) / v.Count();
     }
+    public static Vector2 Avg(this IEnumerable<Vector2I> v)
+    {
+        return Sum(v) / v.Count();
+    }
+    public static Vector2I Sum(this IEnumerable<Vector2I> v)
+    {
+        var r = Vector2I.Zero;
+        foreach (var vector2 in v)
+        {
+            r += vector2;
+        }
+
+        return r;
+    }
     public static Vector2 Sum(this IEnumerable<Vector2> v)
     {
         var r = Vector2.Zero;

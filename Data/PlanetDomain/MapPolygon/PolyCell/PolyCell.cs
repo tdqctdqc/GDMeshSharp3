@@ -20,7 +20,7 @@ public abstract class PolyCell : IPolymorph,
     public ModelRef<Vegetation> Vegetation { get; private set; }
     public Landform GetLandform(Data d) => Landform.Model(d);
     public ModelRef<Landform> Landform { get; private set; }
-    
+        
     protected PolyCell(Vector2 relTo, 
         Vector2[] relBoundary,
         ModelRef<Vegetation> vegetation,

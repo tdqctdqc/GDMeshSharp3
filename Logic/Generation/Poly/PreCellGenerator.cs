@@ -441,8 +441,9 @@ public static class PreCellGenerator
         
         foreach (var cell in borderCells)
         {
-            foreach (var pAbs in cell.PointsAbs)
+            foreach (var pRel in cell.PointsAbs)
             {
+                var pAbs = (Vector2I)pRel;
                 pointAbsDic.TryAdd(pAbs, default);
                 if (pointAbsDic[pAbs].X == null)
                 {
