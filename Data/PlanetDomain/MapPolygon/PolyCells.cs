@@ -7,7 +7,7 @@ public class PolyCells : Entity
 {
     public Dictionary<int, PolyCell> Cells { get; private set; }
 
-    public static PolyCells Create(PolyCell[] cells, GenWriteKey key)
+    public static PolyCells Create(IEnumerable<PolyCell> cells, GenWriteKey key)
     {
         var dic = cells.ToDictionary(v => v.Id, v => v);
         var e = new PolyCells(dic, key.Data.IdDispenser.TakeId());

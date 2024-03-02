@@ -69,24 +69,6 @@ public static class MeshBuilderExt
             }
         }
     }
-
-    public static void DrawPolyBorders(this MeshBuilder mb,
-        Vector2 relTo, MapPolygon poly, float thickness, Data data)
-    {
-        var edgeBorders = poly
-            .GetCells(data)
-            .OfType<ISinglePolyCell>()
-            .SelectMany(c => ((PolyCell)c).GetNeighbors(data)
-                .OfType<ISinglePolyCell>()
-                .Where(n => n.Polygon.RefId != poly.Id)
-                .Select(n => (c, n)));
-        foreach (var (c, n) in edgeBorders)
-        {
-            mb.DrawPolyCellEdge((PolyCell)c, (PolyCell)n, c => Colors.Black, 
-                thickness, relTo, data);
-        }
-    }
-    
     public static void DrawMovementRecord(this MeshBuilder mb,
         int id, int howFarBack, Vector2 relTo, Data d)
     {
@@ -117,7 +99,16 @@ public static class MeshBuilderExt
             }
         }
     }
-
+    public static void DrawPolygonOutline(this MeshBuilder mb,
+        Vector2[] boundaryPoints, float thickness, Color color)
+    {
+        for (var i = 0; i < boundaryPoints.Length; i++)
+        {
+            var from = boundaryPoints[i];
+            var to = boundaryPoints.Modulo(i + 1);
+            mb.AddLine(from, to, color, thickness);
+        }
+    }
     public static void DrawPolygon(this MeshBuilder mb,
         Vector2[] boundaryPoints, Color color)
     {

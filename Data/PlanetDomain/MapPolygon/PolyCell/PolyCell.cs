@@ -52,7 +52,8 @@ public abstract class PolyCell : IPolymorph,
 
     public bool AnyNeighbor(Func<PolyCell, bool> pred, Data d)
     {
-        return Neighbors.Select(n => PlanetDomainExt.GetPolyCell(n, d))
+        return Neighbors
+            .Select(n => PlanetDomainExt.GetPolyCell(n, d))
             .Any(pred);
     }
 

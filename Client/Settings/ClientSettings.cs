@@ -16,8 +16,8 @@ public class ClientSettings : Settings
         : base(name)
     {
         MedIconSize = new FloatSettingsOption("Medium Icon Size",
-            50f, 25f, 100f, 1f, true);
+            30f, 25f, 100f, 1f, true);
         SmallIconSize = new FloatSettingsOption("Small Icon Size",
-            20f, 10f, 40f, 1f, true);
+            15f, 10f, 40f, 1f, true);
     }
 }

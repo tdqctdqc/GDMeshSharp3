@@ -26,7 +26,8 @@ public class DeploymentRoot : DeploymentBranch
     {
         var ai = key.Data.HostLogicData.RegimeAis[Regime]
             .Military.Deployment;
-        var freeGroups = key.Data.Military.UnitAux.UnitGroupByRegime[Regime];
+        var freeGroups = key.Data.Military
+            .UnitAux.UnitGroupByRegime[Regime];
         var taken = GetDescendentAssignments()
             .SelectMany(a => a.Groups);
         freeGroups.ExceptWith(taken);

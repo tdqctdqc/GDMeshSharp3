@@ -4,11 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="river cells done, going to optimize">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/PolyCellBorder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/PolyCellBorder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/PolyCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/RiverCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/RiverCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/SeaCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/SeaCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCells.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCells.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Vector2IExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Vector2IExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genSettings.stng" beforeDir="false" afterPath="$PROJECT_DIR$/genSettings.stng" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -542,7 +553,8 @@
       <workItem from="1709060337576" duration="5471000" />
       <workItem from="1709068351308" duration="6299000" />
       <workItem from="1709146240268" duration="9043000" />
-      <workItem from="1709255628232" duration="7167000" />
+      <workItem from="1709255628232" duration="7353000" />
+      <workItem from="1709326774864" duration="6607000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -754,14 +766,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00141" summary="got it somewhat working">
-      <option name="closed" value="true" />
-      <created>1706838151496</created>
-      <option name="number" value="00141" />
-      <option name="presentableId" value="LOCAL-00141" />
-      <option name="project" value="LOCAL" />
-      <updated>1706838151496</updated>
-    </task>
     <task id="LOCAL-00142" summary="doot">
       <option name="closed" value="true" />
       <created>1706920093004</created>
@@ -906,7 +910,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709259443080</updated>
     </task>
-    <option name="localTasksCounter" value="160" />
+    <task id="LOCAL-00160" summary="optimizing, still need to connect river cells">
+      <option name="closed" value="true" />
+      <created>1709263077616</created>
+      <option name="number" value="00160" />
+      <option name="presentableId" value="LOCAL-00160" />
+      <option name="project" value="LOCAL" />
+      <updated>1709263077617</updated>
+    </task>
+    <option name="localTasksCounter" value="161" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -928,7 +940,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="made ui modes, mouseoverhandler use actions instead of drawing every time" />
     <MESSAGE value="resources" />
     <MESSAGE value="reimplemented unit order drawing" />
     <MESSAGE value="starting implementing combat again" />
@@ -953,6 +964,7 @@
     <MESSAGE value="fixed cell border drawing" />
     <MESSAGE value="reimplementing rivers" />
     <MESSAGE value="river cells done, going to optimize" />
-    <option name="LAST_COMMIT_MESSAGE" value="river cells done, going to optimize" />
+    <MESSAGE value="optimizing, still need to connect river cells" />
+    <option name="LAST_COMMIT_MESSAGE" value="optimizing, still need to connect river cells" />
   </component>
 </project>

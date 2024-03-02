@@ -129,12 +129,13 @@ public class MeshBuilder
         var innerMid = mid + perp;
         var mutuals = c.Neighbors.Intersect(n.Neighbors)
             .Select(i => PlanetDomainExt.GetPolyCell(i, d)).ToArray();
-        if (mutuals.Length > 2) throw new Exception();
+        // if (mutuals.Length > 2) throw new Exception();
         
         for (var i = 0; i < mutuals.Length; i++)
         {
             var mutual = mutuals[i];
             var mEdge = c.GetEdgeRelWith(mutual);
+            if (mEdge == default) continue;
             var shared = getShared(edge, mEdge);
             if (Vector2Ext.LineSegIntersect(innerSeg.Item1, 
                     innerSeg.Item2,

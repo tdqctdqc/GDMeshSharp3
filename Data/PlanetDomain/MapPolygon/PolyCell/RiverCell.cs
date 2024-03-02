@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public class RiverCell : PolyCell, IEdgeCell
@@ -38,8 +39,40 @@ public class RiverCell : PolyCell, IEdgeCell
     }
 
 
-    public void MakeNeighbors(GenWriteKey key)
+    public void MakeNeighbors(Vector2I edgeKey,
+        Dictionary<Vector2I, RiverCell> dic,
+        GenWriteKey key)
     {
+        var bank1 = PlanetDomainExt.GetPolyCell(edgeKey.X, key.Data);
+        var bank2 = PlanetDomainExt.GetPolyCell(edgeKey.Y, key.Data);
+        Neighbors.Add(bank1.Id);
+        bank1.Neighbors.Add(Id);
+        Edges.Add(default);
+        bank1.Edges.Add(default);
         
+        Neighbors.Add(bank2.Id);
+        bank2.Neighbors.Add(Id);
+        Edges.Add(default);
+        bank2.Edges.Add(default);
+        
+        var mutuals = bank1.Neighbors
+            .Where(i => bank2.Neighbors.Contains(i));
+        foreach (var mutual in mutuals)
+        {
+            var mutualCell = PlanetDomainExt.GetPolyCell(mutual, key.Data);
+            if (mutualCell is RiverCell) continue;
+            var mutualKey1 = edgeKey.X.GetIdEdgeKey(mutual);
+            if (dic.TryGetValue(mutualKey1, out var rSeg1))
+            {
+                Neighbors.Add(rSeg1.Id);
+                Edges.Add(default);
+            }
+            var mutualKey2 = edgeKey.Y.GetIdEdgeKey(mutual);
+            if (dic.TryGetValue(mutualKey2, out var rSeg2))
+            {
+                Neighbors.Add(rSeg2.Id);
+                Edges.Add(default);
+            }
+        }
     }
 }

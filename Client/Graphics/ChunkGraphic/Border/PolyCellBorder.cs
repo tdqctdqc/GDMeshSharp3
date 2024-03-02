@@ -32,12 +32,14 @@ public abstract partial class PolyCellBorder
             .SelectMany(p => p.GetCells(data)).ToHashSet();
         foreach (var cell in cells)
         {
+            if (cell is LandCell l == false) continue;
             var cellColor = GetColor(cell, data);
             foreach (var nCell in cell.GetNeighbors(data))
             {
+                if (nCell is LandCell lN == false) continue;
                 if (InUnion(cell, nCell, data)) continue;
                 if (InUnion(nCell, cell, data)) continue;
-                mb.DrawPolyCellEdge(cell, nCell, 
+                mb.DrawPolyCellEdge(l, lN, 
                     p => cellColor, 
                     GetThickness(cell, nCell, data), 
                     Chunk.RelTo.Center, data);

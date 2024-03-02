@@ -55,7 +55,8 @@ public class MapPolygon : Entity
 
         var preCells = pre.Cells;
 
-        var boundaryPoints = ConstructBoundaryPoints(mapCenter, preCells, key.Data);
+        var boundaryPoints = ConstructBoundaryPoints(
+            id, mapCenter, preCells, key.Data);
         
         var p = new MapPolygon(id, mapCenter,
             ERefSet<MapPolygon>
@@ -76,30 +77,30 @@ public class MapPolygon : Entity
     }
 
     private static Vector2[] ConstructBoundaryPoints(
+        int id,
         Vector2 center,
         List<PreCell> preCells, Data d)
     {
-        var counts = new Dictionary<Vector2, int>();
+        var edges = new List<(Vector2, Vector2)>();
+        var nIds = new List<int>();
         for (var i = 0; i < preCells.Count; i++)
         {
             var c = preCells[i];
-            foreach (var p in c.PointsAbs)
+            for (var j = 0; j < c.Neighbors.Count; j++)
             {
-                if (counts.ContainsKey(p))
-                {
-                    counts[p]++;
-                }
-                else
-                {
-                    counts.Add(p, 1);
-                }
+                var n = c.Neighbors[j];
+                if (n.PrePoly.Id == id) continue;
+                var edge = c.EdgesRel[j];
+                edges.Add((
+                    center.Offset(edge.Item1 + c.RelTo, d),
+                    center.Offset(edge.Item2 + c.RelTo, d)
+                ));
+                nIds.Add(n.Id);
             }
         }
 
-        return counts.Where(kvp => kvp.Value < 3)
-            .Select(kvp => kvp.Key)
-            .Select(p => center.Offset(p, d))
-            .OrderBy(p => Vector2.Up.AngleTo(p)).ToArray();
+        return edges.Select(e => new LineSegment(e.Item1, e.Item2))
+            .ToList().FlipChainify().GetPoints().ToArray();
     }
     public void AddNeighbor(MapPolygon n, 
         GenWriteKey key)

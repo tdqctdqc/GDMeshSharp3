@@ -15,7 +15,9 @@ public class RiverCellGenerator
         var sw = new Stopwatch();
         sw.Start();
         var nexi = key.Data.GetAll<MapPolyNexus>();
-        var cells = key.Data.Planet.PolygonAux.PolyCells.Cells;
+        var cells = key.Data.Planet.PolygonAux
+            .PolyCells.Cells;
+        
         var nexusRiverWidths = nexi
             .AsParallel()
             .Where(n => n.IsRiverNexus(key.Data))
@@ -30,7 +32,8 @@ public class RiverCellGenerator
         var cellEdgeRiverWidthsEnum 
             = riverPolyEdges
             .AsParallel()
-            .SelectMany(e => GetRiverCellEdgeWidths(e, cellsByPoly, nexusRiverWidths, key));
+            .SelectMany(e => GetRiverCellEdgeWidths(e, 
+                cellsByPoly, nexusRiverWidths, key));
         var cellEdgeRiverWidths = new Dictionary<Vector2I, float>(
             cellEdgeRiverWidthsEnum);
         sw.Stop();
@@ -38,16 +41,13 @@ public class RiverCellGenerator
         sw.Reset();
         sw.Start();
         
-        
-        
-        //grab remaining boundary of bank cells here too 
         var hiCellBounds = cellEdgeRiverWidths
             .Keys
             .AsParallel()
             .Select(k =>
             {
-                var c = PlanetDomainExt.GetPolyCell(k.X, key.Data);
-                var n = PlanetDomainExt.GetPolyCell(k.Y, key.Data);
+                var c = cells[k.X];
+                var n = cells[k.Y];
                 var bounds = GetCellEdgeRiverBounds(c, cellEdgeRiverWidths, n, key.Data);
                 return new KeyValuePair<Vector2I,Vector2[]>(new Vector2I(c.Id, n.Id), bounds);
             });
@@ -56,8 +56,8 @@ public class RiverCellGenerator
             .AsParallel()
             .Select(k =>
             {
-                var c = PlanetDomainExt.GetPolyCell(k.Y, key.Data);
-                var n = PlanetDomainExt.GetPolyCell(k.X, key.Data);
+                var c = cells[k.Y]; 
+                var n = cells[k.X]; 
                 var bounds = GetCellEdgeRiverBounds(c, cellEdgeRiverWidths, n, key.Data);
                 return new KeyValuePair<Vector2I,Vector2[]>(new Vector2I(c.Id, n.Id), bounds);
             });
@@ -68,9 +68,7 @@ public class RiverCellGenerator
         sw.Stop();
         GD.Print("make half bounds " + sw.Elapsed.TotalMilliseconds);
         sw.Reset();
-        
         sw.Start();
-        
         
         var riverCells = halfCellDic
             .AsParallel()
@@ -79,11 +77,12 @@ public class RiverCellGenerator
                 var edgeKey = kvp.Key;
                 return edgeKey.X > edgeKey.Y;
             })
-            .Select(kvp =>
+            .ToDictionary(kvp => kvp.Key,
+                kvp =>
             {
                 var edgeKey = kvp.Key;
-                var cell = (LandCell)PlanetDomainExt.GetPolyCell(edgeKey.X, key.Data);
-                var oppositeCell = (LandCell)PlanetDomainExt.GetPolyCell(edgeKey.Y, key.Data);
+                var cell = (LandCell)cells[edgeKey.X];
+                var oppositeCell = (LandCell)cells[edgeKey.Y];
                 var poly = cell.Polygon.Entity(key.Data);
                 var oPoly = oppositeCell.Polygon.Entity(key.Data);
                 var polyEdge = poly.GetEdge(oPoly, key.Data);
@@ -97,14 +96,15 @@ public class RiverCellGenerator
             });
         
         
-        foreach (var riverCell in riverCells)
+        foreach (var (edgeKey, riverCell) in riverCells)
         {
             cells.Add(riverCell.Id, riverCell);
         }
-        // foreach (var (edgeKey, edgeCell) in wholeRiverCells)
-        // {
-        //     edgeCell.MakeNeighbors(key);
-        // }
+        foreach (var (edgeKey, riverCell) in riverCells)
+        {
+            riverCell.MakeNeighbors(edgeKey, riverCells, key);
+        }
+        
         sw.Stop();
         GD.Print("combine halves and make cells time " + sw.Elapsed.TotalMilliseconds);
     }
@@ -146,27 +146,6 @@ public class RiverCellGenerator
             }
         }
     }
-
-
-    // private static IEnumerable<KeyValuePair<Vector2I, Vector2[]>>
-    //     GetCellRiverBounds(PolyCell c, 
-    //         Dictionary<Vector2I, float> riverCellEdgeDic,
-    //         GenWriteKey key)
-    // {
-    //     for (var i = 0; i < c.Neighbors.Count; i++)
-    //     {
-    //         var nId = c.Neighbors[i];
-    //         if (riverCellEdgeDic.ContainsKey(c.GetIdEdgeKey(nId)))
-    //         {
-    //             var halfEdgeKey = new Vector2I(c.Id, nId);
-    //             var n = PlanetDomainExt.GetPolyCell(nId, key.Data);
-    //             var riverEdgeBounds = GetCellEdgeRiverBounds(c, riverCellEdgeDic,
-    //                 n, i, key.Data);
-    //             yield return new KeyValuePair<Vector2I, Vector2[]>(halfEdgeKey,
-    //                 riverEdgeBounds);
-    //         }
-    //     }
-    // }
     private static Vector2[] GetCellEdgeRiverBounds(PolyCell c, 
         Dictionary<Vector2I, float> riverCellEdgeWidths,
         PolyCell n, Data d)

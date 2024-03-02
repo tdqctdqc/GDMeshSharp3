@@ -148,7 +148,7 @@ public class MoistureGenerator : Generator
                 while (node != null)
                 {
                     node.Element.IncrementFlow(m, _key);
-                    if (node.DrainsTo != null)
+                    if (node.DrainsTo != null && nodes.ContainsKey(node.DrainsTo))
                     {
                         node = nodes[node.DrainsTo];
                     }
