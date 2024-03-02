@@ -24,9 +24,9 @@ public class PolyCellGenerator : Generator
             .Select(p =>
             {
                 var cells = BuildCells(p, key);
-                return (p, cells);
+                return (p, cells.ToArray());
             })
-            .ToDictionary(v => v.p, v => v.cells);
+            .ToDictionary(v => v.p, v => v.Item2);
 
         PolyCells.Create(cellsByPoly.Values
             .SelectMany(v => v), key);
@@ -37,6 +37,7 @@ public class PolyCellGenerator : Generator
         RiverCellGenerator.BuildRiverCells(cellsByPoly, key);
         report.StopSection("creating river cells");
 
+        
         _data.Notices.SetPolyShapes.Invoke();
 
         report.StartSection();
@@ -53,23 +54,20 @@ public class PolyCellGenerator : Generator
 
     
 
-    private PolyCell[] BuildCells(MapPolygon poly, 
+    private IEnumerable<PolyCell> BuildCells(MapPolygon poly, 
         GenWriteKey key)
     {
-        PolyCell[] cells;
         var preCells = key.GenData.GenAuxData.PreCellPolys[poly];
         if (poly.IsWater())
         {
-            cells = preCells.Select(c => SeaCell.Construct(c, key)).ToArray();
+            return preCells
+                .Select(c => SeaCell.Construct(c, key));
         }
         else
         {
-            cells = preCells
-                .Select(p => LandCell.Construct(p, key))
-                .ToArray();
+            return preCells
+                .Select(p => LandCell.Construct(p, key));
         }
-        
-        return cells;
     }
     
     

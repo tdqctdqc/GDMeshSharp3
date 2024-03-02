@@ -12,34 +12,28 @@ public abstract class PolyCell : IPolymorph,
 {
     public int Id { get; private set; }
     public ERef<Regime> Controller { get; private set; }
-    public List<int> Neighbors { get; private set; }
-    public List<(Vector2 f, Vector2 t)> Edges { get; private set; }
-    public Vector2 RelTo { get; private set; }
-    public Vector2[] RelBoundary { get; private set; }
+    public List<int> Neighbors => Geometry.Neighbors;
+    public List<(Vector2 f, Vector2 t)> Edges => Geometry.EdgesRel;
+    public Vector2 RelTo => Geometry.RelTo;
+    public Vector2[] RelBoundary => Geometry.PointsRel;
     public Vegetation GetVegetation(Data d) => Vegetation.Model(d);
     public ModelRef<Vegetation> Vegetation { get; private set; }
     public Landform GetLandform(Data d) => Landform.Model(d);
     public ModelRef<Landform> Landform { get; private set; }
-    
+    public CellGeometry Geometry { get; private set; }
         
-    protected PolyCell(Vector2 relTo, 
-        Vector2[] relBoundary,
+    protected PolyCell(
         ModelRef<Vegetation> vegetation,
         ModelRef<Landform> landform,
-        List<int> neighbors,
-        List<(Vector2, Vector2)> edges,
         ERef<Regime> controller,
+        CellGeometry geometry,
         int id)
     {
+        Geometry = geometry;
         Id = id;
-        RelTo = relTo;
-        RelBoundary = relBoundary;
         Landform = landform;
         Vegetation = vegetation;
-        Neighbors = neighbors;
         Controller = controller;
-        Edges = edges;
-        if (RelBoundary.Length < 3) throw new Exception();
     }
 
     public void SetVegetation(Vegetation v, GenWriteKey key)
@@ -50,7 +44,6 @@ public abstract class PolyCell : IPolymorph,
     {
         Landform = lf.MakeRef();
     }
-
     public bool AnyNeighbor(Func<PolyCell, bool> pred, Data d)
     {
         return Neighbors
@@ -78,12 +71,6 @@ public abstract class PolyCell : IPolymorph,
         }
 
         return area;
-    }
-
-    public bool ContainsPoint(Vector2 p, Data d)
-    {
-        var offset = RelTo.Offset(p, d);
-        return Geometry2D.IsPointInPolygon(offset, RelBoundary);
     }
 
     public Vector2 GetCenter()
@@ -125,19 +112,5 @@ public abstract class PolyCell : IPolymorph,
         var index = Neighbors.IndexOf(n.Id);
         if (index == -1) throw new Exception();
         return Edges[index];
-    }
-
-    public void SetBoundaryPoints(Vector2[] boundary, GenWriteKey key)
-    {
-        RelBoundary = boundary;
-    }
-    protected static Vector2[] GetBoundaryPoints(List<(Vector2, Vector2)> edges)
-    {
-        var start = (Vector2)edges[0].Item1;
-        return edges.Select(e => (Vector2)e.Item1)
-            .Union(edges.Select(e => (Vector2)e.Item2))
-            .Distinct()
-            .OrderBy(p => start.AngleTo(p))
-            .ToArray();
     }
 }

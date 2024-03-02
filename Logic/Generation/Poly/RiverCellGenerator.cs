@@ -122,6 +122,12 @@ public class RiverCellGenerator
         var loNexus = e.LoNexus.Entity(key.Data);
         var hiWidth = nexusRiverWidths[hiNexus];
         var loWidth = nexusRiverWidths[loNexus];
+
+        // var hiPres = key.GenData.GenAuxData
+        //     .PreCellPolys[hiPoly].Select();
+        
+        
+        
         var hiCells = cellsByPoly[hiPoly]
             .Where(c => c.GetNeighbors(key.Data)
                 .OfType<LandCell>()

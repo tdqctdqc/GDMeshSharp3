@@ -62,7 +62,7 @@ public static class PreCellGenerator
         sw.Reset();
         
         sw.Start();
-        Parallel.ForEach(cells, c => c.MakePointsAbs(dim));
+        Parallel.ForEach(cells, c => c.MakePointsRel(dim));
         sw.Stop();
         GD.Print($"making cell abs points {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
@@ -441,9 +441,9 @@ public static class PreCellGenerator
         
         foreach (var cell in borderCells)
         {
-            foreach (var pRel in cell.PointsAbs)
+            foreach (var pRel in cell.PointsRel)
             {
-                var pAbs = (Vector2I)pRel;
+                var pAbs = (pRel + cell.RelTo).ClampPosition(dim);
                 pointAbsDic.TryAdd(pAbs, default);
                 if (pointAbsDic[pAbs].X == null)
                 {

@@ -6,31 +6,33 @@ using Godot;
 public class CellGeometry
 {
     public Vector2I RelTo { get; private set; }
-    public Vector2[] PointsAbs { get; private set; }
+    public Vector2[] PointsRel { get; private set; }
     public List<int> Neighbors { get; private set; }
     public List<(Vector2, Vector2)> EdgesRel { get; private set; }
 
-    public CellGeometry(Vector2I relTo, Vector2[] pointsAbs,
+    public CellGeometry(Vector2I relTo, Vector2[] pointsRel,
         List<int> neighbors, List<(Vector2, Vector2)> edgesRel)
     {
         RelTo = relTo;
-        PointsAbs = pointsAbs;
+        PointsRel = pointsRel;
         Neighbors = neighbors;
         EdgesRel = edgesRel;
     }
-    public void MakePointsAbs(Vector2I dim)
+    public void MakePointsRel(Vector2I dim)
     {
-        var res = new HashSet<Vector2>();
-        foreach (var (p1, p2) in EdgesRel)
+        var start = (Vector2)EdgesRel[0].Item1;
+        var res = GetEdgePoints().Distinct()
+            .OrderBy(p => start.GetCWAngleTo(p));
+        PointsRel = res.ToArray();
+    }
+
+    private IEnumerable<Vector2> GetEdgePoints()
+    {
+        for (var i = 0; i < EdgesRel.Count; i++)
         {
-            var abs1 = p1 + RelTo;
-            abs1 = ((Vector2I)abs1).ClampPosition(dim);
-            var abs2 = p2 + RelTo;
-            abs2 = abs2.ClampPosition(dim);
-            res.Add(abs1);
-            res.Add(abs2);
+            var e = EdgesRel[i];
+            yield return e.Item1;
+            yield return e.Item2;
         }
-        
-        PointsAbs = res.ToArray();
     }
 }

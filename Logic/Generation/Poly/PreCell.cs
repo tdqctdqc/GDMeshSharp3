@@ -10,7 +10,7 @@ public class PreCell : IIdentifiable
     public int Id { get; private set; }
     public PrePoly PrePoly { get; set; }
     public Vector2I RelTo => Geometry.RelTo;
-    public Vector2[] PointsAbs => Geometry.PointsAbs;
+    public Vector2[] PointsRel => Geometry.PointsRel;
     public List<PreCell> Neighbors { get; private set; }
     public List<(Vector2, Vector2)> EdgesRel => Geometry.EdgesRel;
     public CellGeometry Geometry { get; private set; }
@@ -46,7 +46,7 @@ public class PreCell : IIdentifiable
         var index = Neighbors.IndexOf(removing);
         if (index == -1) throw new Exception();
         Neighbors[index] = replacement;
-        Geometry.Neighbors[index] = index;
+        Geometry.Neighbors[index] = replacement.Id;
     }
     public void ReplaceEdgeRel(PreCell neighbor, 
         (Vector2, Vector2) newEdge)
@@ -62,8 +62,8 @@ public class PreCell : IIdentifiable
         return EdgesRel[index];
     }
 
-    public void MakePointsAbs(Vector2I dim)
+    public void MakePointsRel(Vector2I dim)
     {
-        Geometry.MakePointsAbs(dim);
+        Geometry.MakePointsRel(dim);
     }
 }
