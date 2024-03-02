@@ -26,4 +26,14 @@ public static class Vector2IExt
         while (pos.X > width) pos += Vector2I.Left * width;
         return pos;
     }
+    public static Vector2I ClampPosition(this Vector2 pos, Vector2I dim)
+    {
+        var width = dim.X;
+        var height = dim.Y;
+        if (pos.Y < 0 ) pos.Y = 0;
+        if (pos.Y > height) pos.Y = height;
+        while (pos.X < 0) pos += Vector2I.Right * width;
+        while (pos.X > width) pos += Vector2I.Left * width;
+        return (Vector2I)pos;
+    }
 }

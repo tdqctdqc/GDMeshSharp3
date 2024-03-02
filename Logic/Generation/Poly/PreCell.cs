@@ -12,7 +12,7 @@ public class PreCell : IIdentifiable
     public Vector2I RelTo => Geometry.RelTo;
     public Vector2[] PointsAbs => Geometry.PointsAbs;
     public List<PreCell> Neighbors { get; private set; }
-    public List<(Vector2I, Vector2I)> EdgesRel => Geometry.EdgesRel;
+    public List<(Vector2, Vector2)> EdgesRel => Geometry.EdgesRel;
     public CellGeometry Geometry { get; private set; }
     
     public PreCell(int id, Vector2I relTo)
@@ -21,7 +21,7 @@ public class PreCell : IIdentifiable
         Neighbors = new List<PreCell>();
         Geometry = new CellGeometry(relTo, null,
             new List<int>(), 
-            new List<(Vector2I, Vector2I)>());
+            new List<(Vector2, Vector2)>());
     }
 
     public void AddNeighborAbs(PreCell n, 
@@ -35,7 +35,7 @@ public class PreCell : IIdentifiable
         EdgesRel.Add(edgeRel);
     }
     public void AddNeighborRel(PreCell n, 
-        (Vector2I, Vector2I) edgeRel)
+        (Vector2, Vector2) edgeRel)
     {
         Neighbors.Add(n);
         Geometry.Neighbors.Add(n.Id);
@@ -49,13 +49,13 @@ public class PreCell : IIdentifiable
         Geometry.Neighbors[index] = index;
     }
     public void ReplaceEdgeRel(PreCell neighbor, 
-        (Vector2I, Vector2I) newEdge)
+        (Vector2, Vector2) newEdge)
     {
         var index = Neighbors.IndexOf(neighbor);
         if (index == -1) throw new Exception();
         EdgesRel[index] = newEdge;
     }
-    public (Vector2I, Vector2I) EdgeWith(PreCell n)
+    public (Vector2, Vector2) EdgeWith(PreCell n)
     {
         var index = Neighbors.IndexOf(n);
         if (index == -1) throw new Exception();

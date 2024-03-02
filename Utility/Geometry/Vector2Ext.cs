@@ -43,6 +43,7 @@ public static class Vector2Ext
     {
         return d.Planet.ClampPosition(v);
     }
+    
     public static bool HasNaN(this Vector2 v)
     {
         return float.IsNaN(v.X) || float.IsNaN(v.Y);

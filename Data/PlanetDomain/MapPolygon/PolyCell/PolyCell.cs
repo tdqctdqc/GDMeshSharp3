@@ -20,6 +20,7 @@ public abstract class PolyCell : IPolymorph,
     public ModelRef<Vegetation> Vegetation { get; private set; }
     public Landform GetLandform(Data d) => Landform.Model(d);
     public ModelRef<Landform> Landform { get; private set; }
+    
         
     protected PolyCell(Vector2 relTo, 
         Vector2[] relBoundary,
@@ -130,7 +131,7 @@ public abstract class PolyCell : IPolymorph,
     {
         RelBoundary = boundary;
     }
-    protected static Vector2[] GetBoundaryPoints(List<(Vector2I, Vector2I)> edges)
+    protected static Vector2[] GetBoundaryPoints(List<(Vector2, Vector2)> edges)
     {
         var start = (Vector2)edges[0].Item1;
         return edges.Select(e => (Vector2)e.Item1)
