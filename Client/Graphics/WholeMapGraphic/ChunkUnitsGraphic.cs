@@ -9,12 +9,12 @@ public partial class ChunkUnitsGraphic : Node2D
 {
     public MapChunk Chunk { get; private set; }
     public MeshInstance2D Child { get; private set; }
-    public Dictionary<PolyCell, List<Unit>> UnitsInOrder { get; private set; }
+    public Dictionary<Cell, List<Unit>> UnitsInOrder { get; private set; }
     private ChunkUnitsGraphic() { }
     public ChunkUnitsGraphic(MapChunk chunk, 
         GraphicsSegmenter segmenter, Data d)
     {
-        UnitsInOrder = new Dictionary<PolyCell, List<Unit>>();
+        UnitsInOrder = new Dictionary<Cell, List<Unit>>();
         Chunk = chunk;
         segmenter.AddElement(this, Chunk.RelTo.Center);
     }
@@ -82,7 +82,7 @@ public partial class ChunkUnitsGraphic : Node2D
         }
     }
 
-    public void CycleUnits(PolyCell cell, 
+    public void CycleUnits(Cell cell, 
         GraphicsSegmenter segmenter,
         UnitGraphicLayer layer, 
         Data d)

@@ -7,13 +7,13 @@ using Godot;
 public class LineOrder : UnitGroupOrder
 {
     public List<FrontFace> Faces { get; private set; }
-    public List<PolyCell[]> FaceAdvanceRoutes { get; private set; }
+    public List<Cell[]> FaceAdvanceRoutes { get; private set; }
     
     
     
     public bool Advance { get; private set; }
     public LineOrder(List<FrontFace> faces, 
-        List<PolyCell[]> faceAdvanceRoutes,
+        List<Cell[]> faceAdvanceRoutes,
         bool advance)
     {
         FaceAdvanceRoutes = faceAdvanceRoutes;

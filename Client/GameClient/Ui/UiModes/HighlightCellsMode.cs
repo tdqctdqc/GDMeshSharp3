@@ -35,7 +35,7 @@ public class HighlightCellsMode : UiMode
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell == null) return;
 
-        if (cell is ISinglePolyCell s)
+        if (cell is IPolyCell s)
         {
             var poly = s.Polygon.Entity(_client.Data);
             drawPoly(poly);
@@ -68,7 +68,7 @@ public class HighlightCellsMode : UiMode
     {
         var highlighter = _client.GetComponent<MapGraphics>().Highlighter;
         var mapPos = _client.Cam().GetMousePosInMapSpace();
-        var cell = _client.Data.Planet.PolygonAux.PolyCellGrid
+        var cell = _client.Data.Planet.PolygonAux.CellGrid
             .GetElementAtPoint(mapPos, _client.Data);
 
         

@@ -96,7 +96,7 @@ public class HoldLineAssignment : GroupAssignment
         return g.GetPowerPoints(d) + g.Units.Items(d).Sum(u => u.GetHitPoints(d));
     }
 
-    public override PolyCell GetCharacteristicCell(Data d)
+    public override Cell GetCharacteristicCell(Data d)
     {
         return Frontline.Faces.First().GetNative(d);
     }
@@ -132,7 +132,7 @@ public class HoldLineAssignment : GroupAssignment
         {
             var groupFaces = Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
             var order = new LineOrder(groupFaces, 
-                new List<PolyCell[]>(), 
+                new List<Cell[]>(), 
                 false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),

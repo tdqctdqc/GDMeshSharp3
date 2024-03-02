@@ -80,11 +80,6 @@ public class PolyGrid<TPoly>
         if (y == NumYPartitions) y--;
         return new Vector2I(x,y);
     }
-
-    public bool CheckIfElementAtPoint()
-    {
-        return true;
-    }
     public TPoly GetElementAtPointWhere(Vector2 point, 
         Func<TPoly, bool> valid,
         Data d)

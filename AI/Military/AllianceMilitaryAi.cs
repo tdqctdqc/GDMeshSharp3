@@ -6,10 +6,10 @@ using Godot;
 
 public class AllianceMilitaryAi
 {
-    public Dictionary<Regime, HashSet<PolyCell>> AreasOfResponsibility { get; private set; }
+    public Dictionary<Regime, HashSet<Cell>> AreasOfResponsibility { get; private set; }
     public AllianceMilitaryAi()
     {
-        AreasOfResponsibility = new Dictionary<Regime, HashSet<PolyCell>>();
+        AreasOfResponsibility = new Dictionary<Regime, HashSet<Cell>>();
     }
     public void Calculate(LogicWriteKey key, Alliance alliance)
     {

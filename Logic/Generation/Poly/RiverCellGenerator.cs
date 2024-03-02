@@ -9,7 +9,6 @@ using Godot;
 public class RiverCellGenerator
 {
     public static void BuildRiverCells(
-        Dictionary<MapPolygon, PolyCell[]> cellsByPoly, 
         GenWriteKey key)
     {
         var sw = new Stopwatch();
@@ -32,8 +31,7 @@ public class RiverCellGenerator
         var cellEdgeRiverWidthsEnum 
             = riverPolyEdges
             .AsParallel()
-            .SelectMany(e => GetRiverCellEdgeWidths(e, 
-                cellsByPoly, nexusRiverWidths, key));
+            .SelectMany(e => GetRiverCellEdgeWidths(e,nexusRiverWidths, key));
         var cellEdgeRiverWidths = new Dictionary<Vector2I, float>(
             cellEdgeRiverWidthsEnum);
         sw.Stop();
@@ -41,60 +39,51 @@ public class RiverCellGenerator
         sw.Reset();
         sw.Start();
         
-        var hiCellBounds = cellEdgeRiverWidths
-            .Keys
-            .AsParallel()
-            .Select(k =>
-            {
-                var c = cells[k.X];
-                var n = cells[k.Y];
-                var bounds = GetCellEdgeRiverBounds(c, cellEdgeRiverWidths, n, key.Data);
-                return new KeyValuePair<Vector2I,Vector2[]>(new Vector2I(c.Id, n.Id), bounds);
-            });
-        var loCellBounds = cellEdgeRiverWidths
-            .Keys
-            .AsParallel()
-            .Select(k =>
-            {
-                var c = cells[k.Y]; 
-                var n = cells[k.X]; 
-                var bounds = GetCellEdgeRiverBounds(c, cellEdgeRiverWidths, n, key.Data);
-                return new KeyValuePair<Vector2I,Vector2[]>(new Vector2I(c.Id, n.Id), bounds);
-            });
-        var els = hiCellBounds.Concat(loCellBounds);
-        var halfCellDic = new Dictionary<Vector2I, Vector2[]>
-            (els);
         
-        sw.Stop();
-        GD.Print("make half bounds " + sw.Elapsed.TotalMilliseconds);
-        sw.Reset();
-        sw.Start();
-        
-        var riverCells = halfCellDic
-            .AsParallel()
-            .Where(kvp =>
+        var riverCellsEnum = cellEdgeRiverWidths
+            .Keys
+            .AsParallel().Select(k =>
             {
-                var edgeKey = kvp.Key;
-                return edgeKey.X > edgeKey.Y;
-            })
-            .ToDictionary(kvp => kvp.Key,
-                kvp =>
-            {
-                var edgeKey = kvp.Key;
-                var cell = (LandCell)cells[edgeKey.X];
-                var oppositeCell = (LandCell)cells[edgeKey.Y];
-                var poly = cell.Polygon.Entity(key.Data);
-                var oPoly = oppositeCell.Polygon.Entity(key.Data);
+                var c = (LandCell)cells[k.X];
+                var n = (LandCell)cells[k.Y];
+                
+                var poly = c.Polygon.Entity(key.Data);
+                var oPoly = n.Polygon.Entity(key.Data);
                 var polyEdge = poly.GetEdge(oPoly, key.Data);
-                var oppositeBounds = halfCellDic[new Vector2I(edgeKey.Y, edgeKey.X)];
-                oppositeBounds = oppositeBounds
-                    .Select(v => cell.RelTo.Offset(v + oppositeCell.RelTo, key.Data)).ToArray();
+                
+                var edge = c.GetEdgeRelWith(n);
+                var edgeN = n.GetEdgeRelWith(c);
+                if ((edgeN.Item1 + n.RelTo).ClampPosition(key.Data)
+                     == (edge.Item1 + c.RelTo).ClampPosition(key.Data))
+                {
+                    
+                }
+                else if ((edgeN.Item2 + n.RelTo).ClampPosition(key.Data)
+                         == (edge.Item1 + c.RelTo).ClampPosition(key.Data))
+                {
+                    edgeN = (edgeN.Item2, edgeN.Item1);
+                }
+                else throw new Exception();
+                
+                var bounds1 = GetCellEdgeRiverBounds(
+                    c, 
+                    edge.Item1, edge.Item2,
+                    cellEdgeRiverWidths, n, key.Data);
+                
+                var bounds2 = GetCellEdgeRiverBounds(
+                    n, 
+                    edgeN.Item2, edgeN.Item1,
+                    cellEdgeRiverWidths, c, key.Data)
+                    .Select(v => c.RelTo.Offset(v + n.RelTo, key.Data));
 
-                var united = kvp.Value.UnifyPolygons(oppositeBounds);
-                return RiverCell.Construct(polyEdge, cell.RelTo,
-                    united, key);
+                var united = bounds1.Concat(bounds2).ToArray();
+                var rCell = RiverCell.Construct(polyEdge,
+                    c.RelTo, united, key);
+                return new KeyValuePair<Vector2I,RiverCell>
+                    (new Vector2I(c.Id, n.Id), rCell);
             });
-        
+
+        var riverCells = new Dictionary<Vector2I, RiverCell>(riverCellsEnum);
         
         foreach (var (edgeKey, riverCell) in riverCells)
         {
@@ -112,7 +101,6 @@ public class RiverCellGenerator
     private static IEnumerable<KeyValuePair<Vector2I, float>> 
         GetRiverCellEdgeWidths(
         MapPolygonEdge e, 
-        Dictionary<MapPolygon, PolyCell[]> cellsByPoly, 
         Dictionary<MapPolyNexus, float> nexusRiverWidths,
         GenWriteKey key)
     {
@@ -123,15 +111,14 @@ public class RiverCellGenerator
         var hiWidth = nexusRiverWidths[hiNexus];
         var loWidth = nexusRiverWidths[loNexus];
 
-        // var hiPres = key.GenData.GenAuxData
-        //     .PreCellPolys[hiPoly].Select();
-        
-        
-        
-        var hiCells = cellsByPoly[hiPoly]
+        var hiPres = key.GenData.GenAuxData
+            .PreCellPolys[hiPoly];
+        var hiCells = hiPres
+            .Select(p => PlanetDomainExt.GetPolyCell(p.Id, key.Data))
             .Where(c => c.GetNeighbors(key.Data)
                 .OfType<LandCell>()
                 .Any(n => n.Polygon.RefId == loPoly.Id));
+        
         foreach (var c in hiCells)
         {
             foreach (var n in c.GetNeighbors(key.Data))
@@ -152,31 +139,32 @@ public class RiverCellGenerator
             }
         }
     }
-    private static Vector2[] GetCellEdgeRiverBounds(PolyCell c, 
+    private static IEnumerable<Vector2> GetCellEdgeRiverBounds(Cell c, 
+        Vector2 from, Vector2 to,
         Dictionary<Vector2I, float> riverCellEdgeWidths,
-        PolyCell n, Data d)
+        Cell n, Data d)
     {
         var edge = c.GetEdgeRelWith(n);
         var edgeRiverWidth = riverCellEdgeWidths[c.GetIdEdgeKey(n)];
-        var axis = edge.Item2 - edge.Item1;
+        var axis = to - from;
         var perp = Clockwise
-            .GetPerpTowards(edge.Item1, edge.Item2, Vector2.Zero)
+            .GetPerpTowards(from, to, Vector2.Zero)
             .Normalized();
-        var fromMutual = getMutual(edge.Item1);
-        var trapezoidFrom = fromMutual is PolyCell m1
+        var fromMutual = getMutual(from);
+        var trapezoidFrom = fromMutual is Cell m1
             ? getTrapezoidPoint(m1)
             : getDanglingPoint();
         
-        var toMutual = getMutual(edge.Item2);
-        var trapezoidTo = toMutual is PolyCell m2
+        var toMutual = getMutual(to);
+        var trapezoidTo = toMutual is Cell m2
             ? getTrapezoidPoint(m2)
             : getDanglingPoint();
         
         if (riverCellEdgeWidths.ContainsKey(c.GetIdEdgeKey(fromMutual))) fromMutual = null;
         if (riverCellEdgeWidths.ContainsKey(c.GetIdEdgeKey(toMutual))) toMutual = null;
         
-        if (Vector2Ext.LineSegIntersect(edge.Item1, trapezoidFrom,
-                edge.Item2, trapezoidTo, true, out var intersect))
+        if (Vector2Ext.LineSegIntersect(from, trapezoidFrom,
+                to, trapezoidTo, true, out var intersect))
         {
             var temp = trapezoidTo;
             trapezoidTo = trapezoidFrom;
@@ -185,39 +173,35 @@ public class RiverCellGenerator
 
         if (fromMutual is not null && toMutual is not null)
         {
-            return new Vector2[]
-            {
-                edge.Item1, edge.Item2, getMutualEarPoint(toMutual),
-                trapezoidTo, trapezoidFrom, getMutualEarPoint(fromMutual)
-            };
+            yield return from; 
+            yield return getMutualEarPoint(fromMutual);
+            yield return trapezoidFrom;           
+            yield return trapezoidTo;
+            yield return getMutualEarPoint(toMutual);
+        }
+        else if (fromMutual is not null)
+        {
+            yield return from; 
+            yield return getMutualEarPoint(fromMutual);
+            yield return trapezoidFrom;           
+            yield return trapezoidTo;
+        }
+        else if (toMutual is not null)
+        {
+            yield return from; 
+            yield return trapezoidFrom;           
+            yield return trapezoidTo;
+            yield return getMutualEarPoint(toMutual);
+        }
+        else
+        {
+            yield return from; 
+            yield return trapezoidFrom;           
+            yield return trapezoidTo;
         }
 
-        if (fromMutual is not null)
-        {
-            return new Vector2[]
-            {
-                edge.Item1, edge.Item2,
-                trapezoidTo, trapezoidFrom, getMutualEarPoint(fromMutual)
-            };
-        }
-        
-        if (toMutual is not null)
-        {
-            return new Vector2[]
-            {
-                edge.Item1, edge.Item2, getMutualEarPoint(toMutual),
-                trapezoidTo, trapezoidFrom
-            };
-        }
-        
-        return new Vector2[]
-        {
-            edge.Item1, edge.Item2,
-            trapezoidTo, trapezoidFrom
-        };
-        
 
-        Vector2 getMutualEarPoint(PolyCell mutual)
+        Vector2 getMutualEarPoint(Cell mutual)
         {
             var mEdge = c.GetEdgeRelWith(mutual);
             var shared = getShared(edge, mEdge);
@@ -234,7 +218,7 @@ public class RiverCellGenerator
             return mPoint;
         }
 
-        PolyCell getMutual(Vector2 edgePoint)
+        Cell getMutual(Vector2 edgePoint)
         {
             for (var i = 0; i < c.Neighbors.Count; i++)
             {
@@ -250,7 +234,7 @@ public class RiverCellGenerator
             return null;
         }
         
-        Vector2 getTrapezoidPoint(PolyCell mutual)
+        Vector2 getTrapezoidPoint(Cell mutual)
         {
             var mEdge = c.GetEdgeRelWith(mutual);
             var shared = getShared(edge, mEdge);
@@ -259,8 +243,8 @@ public class RiverCellGenerator
                 mEdge.Item2, Vector2.Zero).Normalized();
             var mAxis = mEdge.Item2 - mEdge.Item1;
             var foundIntersect = Vector2Ext.LineSegIntersect(
-                edge.Item1 + perp * thickness + axis * 10000f,
-                edge.Item1 + perp * thickness - axis * 10000f,
+                from + perp * thickness + axis * 10000f,
+                from + perp * thickness - axis * 10000f,
                 mEdge.Item1 + mPerp * thickness + mAxis * 10000f,
                 mEdge.Item1 + mPerp * thickness - mAxis * 10000f,
                 false, out var intersect);
@@ -270,21 +254,19 @@ public class RiverCellGenerator
 
         Vector2 getDanglingPoint()
         {
-            if (edge.Item1.Y == 0f)
+            if (from.Y == 0f)
             {
-                return edge.Item1 + perp;
+                return from + perp;
             }
-
-            if (edge.Item2.Y == 0f)
+            if (to.Y == 0f)
             {
-                return edge.Item2 + perp;
+                return to + perp;
             }
-
-            if (edge.Item1.Y > edge.Item2.Y)
+            if (from.Y > to.Y)
             {
-                return edge.Item1 + perp;
+                return from + perp;
             }
-            return edge.Item2 + perp;
+            return to + perp;
         }
 
         float getEdgeSideRiverWidth(Vector2 p)
@@ -306,12 +288,10 @@ public class RiverCellGenerator
             }
             return width / iter;
         }
-        float getEdgeRiverWidth(PolyCell c1, PolyCell c2)
+        float getEdgeRiverWidth(Cell c1, Cell c2)
         {
             return riverCellEdgeWidths[c1.GetIdEdgeKey(c2)];
         }
-        
-        
 
         Vector2 getShared((Vector2, Vector2) e1, (Vector2, Vector2) e2)
         {

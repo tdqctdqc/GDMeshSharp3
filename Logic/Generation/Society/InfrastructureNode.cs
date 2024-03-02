@@ -1,9 +1,9 @@
 public class InfrastructureNode
 {
-    public PolyCell Cell { get; private set; }
+    public Cell Cell { get; private set; }
     public float Size { get; private set; }
 
-    public InfrastructureNode(PolyCell cell, float size)
+    public InfrastructureNode(Cell cell, float size)
     {
         Cell = cell;
         Size = size;

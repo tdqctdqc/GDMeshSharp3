@@ -6,7 +6,7 @@ public class MapBuilding : Entity
     public int PolyCellId { get; protected set; }
     public ModelRef<BuildingModel> Model { get; protected set; }
     public ERef<MapPolygon> Polygon { get; private set; }
-    public static MapBuilding Create(PolyCell cell, 
+    public static MapBuilding Create(Cell cell, 
         MapPolygon polygon,
         BuildingModel model, ICreateWriteKey key)
     {

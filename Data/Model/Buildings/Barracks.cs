@@ -20,7 +20,7 @@ public class Barracks : BuildingModel
     {
     }
 
-    protected override bool CanBuildInCell(PolyCell t, Data data)
+    protected override bool CanBuildInCell(Cell t, Data data)
     {
         return t is LandCell;
     }

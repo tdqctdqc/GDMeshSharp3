@@ -5,15 +5,15 @@ using Godot;
 
 public class CantFindPathIssue : Issue
 {
-    public PolyCell Start { get; private set; }
-    public PolyCell Dest { get; private set; }
+    public Cell Start { get; private set; }
+    public Cell Dest { get; private set; }
     public MoveType MoveType { get; private set; }
     public Alliance Alliance { get; private set; }
     public CantFindPathIssue(
         Alliance alliance,
         string message, 
-        PolyCell start, 
-        PolyCell dest, 
+        Cell start, 
+        Cell dest, 
         MoveType moveType) 
         : base(start.GetCenter(), message)
     {
@@ -25,8 +25,8 @@ public class CantFindPathIssue : Issue
 
     public override void Draw(Client c)
     {
-        var startNeighborhood = new HashSet<PolyCell>();
-        var destNeighborhood = new HashSet<PolyCell>();
+        var startNeighborhood = new HashSet<Cell>();
+        var destNeighborhood = new HashSet<Cell>();
         startNeighborhood.Add(Start);
         destNeighborhood.Add(Dest);
         int iter = 0;
@@ -40,8 +40,8 @@ public class CantFindPathIssue : Issue
             moreNeighbors = check(destNeighborhood, startNeighborhood);
             if (moreNeighbors == false) break;
 
-            bool check(HashSet<PolyCell> oldWps, 
-                HashSet<PolyCell> otherWps)
+            bool check(HashSet<Cell> oldWps, 
+                HashSet<Cell> otherWps)
             {
                 var newWps = oldWps
                     .SelectMany(wp => wp.GetNeighbors(c.Data))

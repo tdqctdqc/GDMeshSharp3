@@ -36,7 +36,7 @@ public class PolyBuildingSlots
         
         AvailableSlots.Clear();
         var cells = poly.GetCells(key.Data)
-            .Where(c => c is ISinglePolyCell)
+            .Where(c => c is IPolyCell)
             .OrderBy(t => Game.I.Random.Randi())
             .Select(c => c.Id)
             .ToHashSet();

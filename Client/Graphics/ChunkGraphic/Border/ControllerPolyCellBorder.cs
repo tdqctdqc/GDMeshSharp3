@@ -8,17 +8,17 @@ public partial class ControllerPolyCellBorder : PolyCellBorder
     {
     }
 
-    protected override bool InUnion(PolyCell p1, PolyCell p2, Data data)
+    protected override bool InUnion(Cell p1, Cell p2, Data data)
     {
         return p1.Controller.RefId == p2.Controller.RefId;
     }
 
-    protected override float GetThickness(PolyCell p1, PolyCell p2, Data data)
+    protected override float GetThickness(Cell p1, Cell p2, Data data)
     {
         return 2f;
     }
 
-    protected override Color GetColor(PolyCell p1, Data data)
+    protected override Color GetColor(Cell p1, Data data)
     {
         return p1.Controller.IsEmpty() ? Colors.Transparent : p1.Controller.Entity(data).SecondaryColor;
     }

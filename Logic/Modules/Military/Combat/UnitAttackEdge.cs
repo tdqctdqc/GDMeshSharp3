@@ -8,13 +8,13 @@ public class UnitAttackEdge : UnitCombatEdge
     public override ICombatGraphNode Node2 => AttackNode;
 
     public static UnitAttackEdge ConstuctAndAddToGraph
-        (PolyCell target, Unit u, CombatCalculator combat, Data d)
+        (Cell target, Unit u, CombatCalculator combat, Data d)
     {
         var e = new UnitAttackEdge(target, u, combat, d);
         combat.Graph.AddEdge(e, d);
         return e;
     }
-    protected UnitAttackEdge(PolyCell target, Unit u, 
+    protected UnitAttackEdge(Cell target, Unit u, 
         CombatCalculator combat, Data d)
         : base(u)
     {

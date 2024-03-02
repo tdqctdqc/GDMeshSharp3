@@ -3,16 +3,16 @@ using Godot;
 
 public abstract class MoveType : IModel
 {
-    protected abstract float TerrainCostInstantaneous(PolyCell pt, Data d);
+    protected abstract float TerrainCostInstantaneous(Cell pt, Data d);
 
-    public bool Passable(PolyCell cell, Alliance a, Data d)
+    public bool Passable(Cell cell, Alliance a, Data d)
     {
         return TerrainPassable(cell, d) && 
             AllianceCanPass(a, cell, d);
     }
-    public abstract bool TerrainPassable(PolyCell p, Data d);
+    public abstract bool TerrainPassable(Cell p, Data d);
 
-    public float EdgeCost(PolyCell from, PolyCell to, Data d)
+    public float EdgeCost(Cell from, Cell to, Data d)
     {
         var l = from.GetCenter().Offset(to.GetCenter(), d).Length();
         var terrCostPerLength = TerrainCostPerLength(from, to, d);
@@ -41,7 +41,7 @@ public abstract class MoveType : IModel
         }
         return cost;
     }
-    public float TerrainCostPerLength(PolyCell cell1, PolyCell cell2, Data d)
+    public float TerrainCostPerLength(Cell cell1, Cell cell2, Data d)
     {
         return (TerrainCostInstantaneous(cell1, d) 
                 + TerrainCostInstantaneous(cell2, d)) / 2f;
@@ -57,7 +57,7 @@ public abstract class MoveType : IModel
         Name = name;
     }
     protected static bool AllianceCanPass(Alliance moverAlliance, 
-        PolyCell cell, Data d)
+        Cell cell, Data d)
     {
         if (cell is LandCell l == false) return true;
         var controllerAlliance = cell.Controller.Entity(d).GetAlliance(d);

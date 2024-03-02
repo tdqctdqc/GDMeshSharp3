@@ -9,14 +9,14 @@ public class CellAttackEdge : ICombatGraphEdge
     ICombatGraphNode ICombatGraphEdge.Node1 => AttackNode;
     ICombatGraphNode ICombatGraphEdge.Node2 => Target;
     public CellAttackNode AttackNode { get; private set; }
-    public PolyCell Target { get; private set; }
+    public Cell Target { get; private set; }
     public Dictionary<Unit, float> LossRatio { get; private set; }
     public bool DefendersForcedBack { get; private set; }
     public bool NoDefenders { get; private set; }
     public static float LossRatioToForceBack { get; private set; } = .3f;
     
     public static CellAttackEdge ConstructAndAddToGraph(
-        PolyCell target,
+        Cell target,
         CombatCalculator combat, Data d)
     {
         var already = combat.Graph.GetNodeEdges(target)
@@ -28,7 +28,7 @@ public class CellAttackEdge : ICombatGraphEdge
         return e;
     }
 
-    protected CellAttackEdge(PolyCell target, CellAttackNode attackNode)
+    protected CellAttackEdge(Cell target, CellAttackNode attackNode)
     {
         Target = target;
         AttackNode = attackNode;

@@ -44,7 +44,7 @@ public class DeploymentRoot : DeploymentBranch
     }
     
 
-    public override PolyCell GetCharacteristicCell(Data d)
+    public override Cell GetCharacteristicCell(Data d)
     {
         return Regime.Capital.Entity(d).GetCells(d).First();
     }

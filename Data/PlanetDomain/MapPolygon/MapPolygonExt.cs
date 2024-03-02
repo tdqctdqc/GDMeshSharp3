@@ -124,7 +124,7 @@ public static class MapPolygonExt
             .Union(p.Neighbors.Items(d).Select(n => n.GetChunk(d))).Distinct();
     }
 
-    public static List<PolyCell> GetCells(this MapPolygon p, Data d)
+    public static List<Cell> GetCells(this MapPolygon p, Data d)
     {
         return d.Planet.PolygonAux.CellsByPoly[p];
     }

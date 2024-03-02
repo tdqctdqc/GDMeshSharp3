@@ -5,7 +5,7 @@ using Godot;
 using MessagePack;
 using VoronoiSandbox;
 
-public class SeaCell : PolyCell, ISinglePolyCell
+public class SeaCell : Cell, IPolyCell
 {
     public ERef<MapPolygon> Polygon { get; private set; }
     

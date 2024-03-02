@@ -3,9 +3,9 @@ using Godot;
 
 public class GroupInForeignCellIssue : Issue
 {
-    private PolyCell _cell;
+    private Cell _cell;
     private UnitGroup _group;
-    public GroupInForeignCellIssue(UnitGroup g, PolyCell cell) 
+    public GroupInForeignCellIssue(UnitGroup g, Cell cell) 
         : base(cell.GetCenter(), "")
     {
         _cell = cell;

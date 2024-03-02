@@ -7,14 +7,14 @@ using Godot;
 public static partial class PathFinder
 {
     
-    public static List<PolyCell> FindPath(
+    public static List<Cell> FindPath(
         MoveType moveType, 
         Alliance alliance,
-        PolyCell start,
-        PolyCell dest, 
+        Cell start,
+        Cell dest, 
         Data d)
     {
-        return PathFinder<PolyCell>.FindPath(start, dest, 
+        return PathFinder<Cell>.FindPath(start, dest, 
             p => p.GetNeighbors(d)
                 .Where(wp => moveType.Passable(wp, alliance, d)),
             (w, v) => moveType.EdgeCost(w, v, d), 
@@ -57,7 +57,7 @@ public static partial class PathFinder
         if (p.IsWater()) return Mathf.Inf;
         return p.Roughness;
     }
-    public static float RoadBuildEdgeCost(PolyCell p1, PolyCell p2, Data data)
+    public static float RoadBuildEdgeCost(Cell p1, Cell p2, Data data)
     {
         if (p1 is LandCell l1 == false) return Mathf.Inf;
         if (p2 is LandCell l2 == false) return Mathf.Inf;
@@ -68,7 +68,7 @@ public static partial class PathFinder
         
         return cost * 3f;
     }
-    public static float EdgeRoughnessCost(PolyCell p1, PolyCell p2, Data data)
+    public static float EdgeRoughnessCost(Cell p1, Cell p2, Data data)
     {
         var cost = p1.GetCenter().Offset(p2.GetCenter(), data).Length();
         var roughCost = 0f;

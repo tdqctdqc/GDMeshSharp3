@@ -9,11 +9,11 @@ public class ClientPlayerData
     public MajorTurnOrders MajorOrders { get; private set; }
     public MinorTurnOrders MinorOrders { get; private set; }
     public List<Issue> Issues { get; private set; }
-    public Dictionary<PolyCell, List<Vector2[]>> RiverCells { get; private set; }
+    public Dictionary<Cell, List<Vector2[]>> RiverCells { get; private set; }
     public ClientPlayerData(Data data)
     {
         Issues = new List<Issue>();
-        RiverCells = new Dictionary<PolyCell, List<Vector2[]>>();
+        RiverCells = new Dictionary<Cell, List<Vector2[]>>();
         data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>
         {
             var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;

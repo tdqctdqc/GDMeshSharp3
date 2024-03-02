@@ -4,8 +4,8 @@ using System.Linq;
 
 public class UnoccupiedAssignment : GroupAssignment
 {
-    public PolyCell Cell { get; private set; }
-    public UnoccupiedAssignment(PolyCell cell, DeploymentBranch parent, 
+    public Cell Cell { get; private set; }
+    public UnoccupiedAssignment(Cell cell, DeploymentBranch parent, 
         DeploymentAi ai, LogicWriteKey key) : base(parent, ai, key)
     {
         Cell = cell;
@@ -32,7 +32,7 @@ public class UnoccupiedAssignment : GroupAssignment
         return 1f;
     }
 
-    public override PolyCell GetCharacteristicCell(Data d)
+    public override Cell GetCharacteristicCell(Data d)
     {
         return Cell;
     }

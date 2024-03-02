@@ -29,7 +29,7 @@ public static class UiActions
                 .25f, Colors.White), poly.Center);
         }
     }
-    public static void HighlightCell(this Client client, PolyCell cell,
+    public static void HighlightCell(this Client client, Cell cell,
         float thickness)
     {
         var highlighter = client.GetComponent<MapGraphics>().Highlighter;

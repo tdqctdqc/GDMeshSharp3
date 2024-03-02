@@ -20,9 +20,9 @@ public abstract partial class PolyCellBorder
     private PolyCellBorder() : base()
     {
     }
-    protected abstract bool InUnion(PolyCell p1, PolyCell p2, Data data);
-    protected abstract float GetThickness(PolyCell p1, PolyCell p2, Data data);
-    protected abstract Color GetColor(PolyCell p1, Data data);
+    protected abstract bool InUnion(Cell p1, Cell p2, Data data);
+    protected abstract float GetThickness(Cell p1, Cell p2, Data data);
+    protected abstract Color GetColor(Cell p1, Data data);
     
     public void Draw(Data data)
     {

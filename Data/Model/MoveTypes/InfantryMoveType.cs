@@ -12,7 +12,7 @@ public class InfantryMoveType : MoveType
         
     }
 
-    protected override float TerrainCostInstantaneous(PolyCell pt, Data d)
+    protected override float TerrainCostInstantaneous(Cell pt, Data d)
     {
         if (pt is LandCell == false) return Mathf.Inf;
         var lf = pt.GetLandform(d);
@@ -21,7 +21,7 @@ public class InfantryMoveType : MoveType
         return lfMod * vMod;
     }
 
-    public override bool TerrainPassable(PolyCell pt, Data d)
+    public override bool TerrainPassable(Cell pt, Data d)
     {
         return pt is LandCell;
     }

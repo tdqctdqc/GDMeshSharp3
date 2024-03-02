@@ -7,7 +7,7 @@ public class StrategicAi
     public Regime Regime { get; private set; }
     private Data _data;
     public HashSet<Theater> Theaters { get; private set; }
-    public Dictionary<PolyCell, float> Targets { get; private set; }
+    public Dictionary<Cell, float> Targets { get; private set; }
 
     public StrategicAi(Data data, Regime regime)
     {

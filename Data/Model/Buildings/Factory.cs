@@ -27,7 +27,7 @@ public class Factory : BuildingModel
         
     }
 
-    protected override bool CanBuildInCell(PolyCell t, Data data)
+    protected override bool CanBuildInCell(Cell t, Data data)
     {
         return t is LandCell && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness;
     }

@@ -19,7 +19,7 @@ public class DataNotices
     public RefAction FinishedGen { get; private set; }
     public RefAction ExitedGen { get; private set; }
     public RefAction FinishedAiCalc { get; set; }
-    public RefAction<(PolyCell c, Regime oldRegime, Regime newRegime)> 
+    public RefAction<(Cell c, Regime oldRegime, Regime newRegime)> 
         CellChangedController { get; private set; }
     public DataNotices()
     {
@@ -36,7 +36,7 @@ public class DataNotices
         MadeCells = new RefAction();
         FinishedAiCalc = new RefAction();
         FinishedGen = new RefAction();
-        CellChangedController = new RefAction<(PolyCell, Regime, Regime)>();
+        CellChangedController = new RefAction<(Cell, Regime, Regime)>();
         
     }
 }

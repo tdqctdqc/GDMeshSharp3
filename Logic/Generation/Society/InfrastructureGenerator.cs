@@ -218,7 +218,7 @@ public class InfrastructureGenerator : Generator
         var dirt = _data.Models.RoadList.DirtRoad;
         var stone = _data.Models.RoadList.StoneRoad;
         var paved = _data.Models.RoadList.PavedRoad;
-        var wpPaths = new Dictionary<Vector2I, List<PolyCell>>();
+        var wpPaths = new Dictionary<Vector2I, List<Cell>>();
         var walk = _data.Models.MoveTypes.InfantryMove;
         polyLevelGraph.RemoveEdgesWhere(e => getRoadFromTraffic(e.Traffic) == null);
         
@@ -253,7 +253,7 @@ public class InfrastructureGenerator : Generator
         
 
         return roadWpSegs;
-        List<PolyCell> getWpPath(PolyCell i1, PolyCell i2)
+        List<Cell> getWpPath(Cell i1, Cell i2)
         {
             var key = i1.GetIdEdgeKey(i2);
             if (wpPaths.ContainsKey(key) == false)
@@ -263,7 +263,7 @@ public class InfrastructureGenerator : Generator
             return wpPaths[key];
         }
 
-        void addPaths(PolyCell w)
+        void addPaths(Cell w)
         {
             var node = dic[w];
             var ns = polyLevelGraph.GetNeighbors(node)
@@ -272,7 +272,7 @@ public class InfrastructureGenerator : Generator
                 .ToHashSet();
 
             var paths = 
-                PathFinder<PolyCell>.FindMultiplePaths(
+                PathFinder<Cell>.FindMultiplePaths(
                 w, ns, wp => wp.GetNeighbors(_data).Where(x => x is LandCell),
                 getEdgeCost, (w, v) => w.GetCenter().Offset(v.GetCenter(), _data).Length());
             foreach (var kvp in paths)
@@ -289,7 +289,7 @@ public class InfrastructureGenerator : Generator
             return null;
         }
 
-        float getEdgeCost(PolyCell w, PolyCell v)
+        float getEdgeCost(Cell w, Cell v)
         {
             var key = w.GetIdEdgeKey(v);
             if (edgeTraffic.TryGetValue(key, out var traffic))

@@ -45,7 +45,7 @@ public class UnitGroup : Entity
         key.Data.Military.UnitAux.UnitChangedGroup.Invoke(u, newG, oldG);
     }
 
-    public PolyCell GetCell(Data d)
+    public Cell GetCell(Data d)
     {
         var unit = Units.Items(d).First();
         return unit.Position.GetCell(d);

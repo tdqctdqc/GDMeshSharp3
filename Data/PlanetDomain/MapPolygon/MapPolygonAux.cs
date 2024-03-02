@@ -7,17 +7,17 @@ using Godot;
 public class MapPolygonAux
 {
     public PolyGrid<MapPolygon> MapPolyGrid { get; private set; }
-    public PolyGrid<PolyCell> PolyCellGrid { get; private set; }
+    public PolyGrid<Cell> CellGrid { get; private set; }
     public PolyCells PolyCells => _polyCells.Value;
     private SingletonAux<PolyCells> _polyCells;
     public HashSet<MapChunk> Chunks { get; private set; }
     public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
-    public Dictionary<PolyCell, MapChunk> ChunksByCell { get; private set; }
+    public Dictionary<Cell, MapChunk> ChunksByCell { get; private set; }
     public LandSeaManager LandSea { get; private set; }
     public ValChangeAction<MapPolygon, Regime> ChangedOwnerRegime { get; private set; }
     public ValChangeAction<MapPolygon, Regime> ChangedOccupierRegime { get; private set; }
     public EntityMultiIndexer<Regime, MapPolygon> PolysByRegime { get; private set; }
-    public Dictionary<MapPolygon, List<PolyCell>> CellsByPoly { get; private set; }
+    public Dictionary<MapPolygon, List<Cell>> CellsByPoly { get; private set; }
     
     public MapPolygonAux(Data data)
     {
@@ -68,27 +68,27 @@ public class MapPolygonAux
 
     private void BuildCells(Data data)
     {
-        PolyCellGrid = new PolyGrid<PolyCell>(
+        CellGrid = new PolyGrid<Cell>(
             data.Planet.Info.Dimensions, 
             100f,
             p => p.RelBoundary,
             p => p.RelTo);
-        CellsByPoly = new Dictionary<MapPolygon, List<PolyCell>>();
+        CellsByPoly = new Dictionary<MapPolygon, List<Cell>>();
         foreach (var element in 
                  data.GetAll<PolyCells>().First().Cells.Values)
         {
-            PolyCellGrid.AddElement(element);
+            CellGrid.AddElement(element);
             
-            if (element is ISinglePolyCell l)
+            if (element is IPolyCell l)
             {
-                CellsByPoly.GetOrAdd(l.Polygon.Entity(data), p => new List<PolyCell>())
+                CellsByPoly.GetOrAdd(l.Polygon.Entity(data), p => new List<Cell>())
                     .Add(element);
             }
             else if (element is IEdgeCell e)
             {
-                CellsByPoly.GetOrAdd(e.Edge.Entity(data).HighPoly.Entity(data), p => new List<PolyCell>())
+                CellsByPoly.GetOrAdd(e.Edge.Entity(data).HighPoly.Entity(data), p => new List<Cell>())
                     .Add(element);
-                CellsByPoly.GetOrAdd(e.Edge.Entity(data).LowPoly.Entity(data), p => new List<PolyCell>())
+                CellsByPoly.GetOrAdd(e.Edge.Entity(data).LowPoly.Entity(data), p => new List<Cell>())
                     .Add(element);
             }
         }
@@ -100,7 +100,7 @@ public class MapPolygonAux
             polygon => polygon.Center,
             data.Planet.Width / 10f
         );
-        var cellGrid = new RegularGrid<PolyCell>
+        var cellGrid = new RegularGrid<Cell>
         (
             c => c.GetCenter().ClampPosition(data),
             data.Planet.Width / 10f
@@ -121,7 +121,7 @@ public class MapPolygonAux
         
         
         ChunksByPoly = new Dictionary<MapPolygon, MapChunk>();
-        ChunksByCell = new Dictionary<PolyCell, MapChunk>();
+        ChunksByCell = new Dictionary<Cell, MapChunk>();
         Chunks = new HashSet<MapChunk>();
         var keys = cellGrid.Cells.Keys
             .Union(polyGrid.Cells.Keys)
@@ -131,7 +131,7 @@ public class MapPolygonAux
         {
             var cells = cellGrid.Cells.ContainsKey(key)
                 ? cellGrid.Cells[key]
-                : new List<PolyCell>();
+                : new List<Cell>();
             var polys = polyGrid.Cells.ContainsKey(key)
                 ? polyGrid.Cells[key]
                 : new List<MapPolygon>();

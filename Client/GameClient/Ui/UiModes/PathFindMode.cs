@@ -4,8 +4,8 @@ using Godot;
 public class PathFindMode : UiMode
 {
     private MouseOverHandler _mouseOverHandler;
-    private PolyCell _from;
-    private PolyCell _to;
+    private Cell _from;
+    private Cell _to;
     public PathFindMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);

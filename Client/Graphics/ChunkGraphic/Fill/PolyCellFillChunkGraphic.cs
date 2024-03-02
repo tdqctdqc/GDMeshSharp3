@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PolyCellFillChunkGraphic : TriColorMesh<PolyCell>
+public partial class PolyCellFillChunkGraphic : TriColorMesh<Cell>
 {
     public PolyCellFillChunkGraphic(string name, MapChunk chunk, 
-        Func<PolyCell, Data, Color> getColor, Data data) 
+        Func<Cell, Data, Color> getColor, Data data) 
         : base(name, getColor,
             (pt, d) =>
             {
@@ -18,8 +18,8 @@ public partial class PolyCellFillChunkGraphic : TriColorMesh<PolyCell>
     {
     }
     public PolyCellFillChunkGraphic(string name, MapChunk chunk, 
-        Func<PolyCell, bool> isValid,
-        Func<PolyCell, Data, Color> getColor, 
+        Func<Cell, bool> isValid,
+        Func<Cell, Data, Color> getColor, 
         Data data) 
         : base(name, getColor,
             (pt, d) =>

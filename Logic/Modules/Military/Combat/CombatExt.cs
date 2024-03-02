@@ -6,7 +6,7 @@ public static class CombatExt
 {
     public static CellAttackNode GetOrAddCellAttackNode(
         this CombatCalculator combat,
-        PolyCell target, Data d)
+        Cell target, Data d)
     {
         var cellAttackEdges = combat.Graph
             .GetNodeEdges(target)

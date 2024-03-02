@@ -7,7 +7,7 @@ using Godot;
 public static class MeshBuilderExt
 {
     public static void DrawCellPath(this MeshBuilder mb,
-        Vector2 relTo, List<PolyCell> path,
+        Vector2 relTo, List<Cell> path,
         Color color, float thickness, Data d)
     {
         for (var j = 0; j < path.Count - 1; j++)

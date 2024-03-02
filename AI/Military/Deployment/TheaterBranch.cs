@@ -29,7 +29,7 @@ public class TheaterBranch : DeploymentBranch
     
 
 
-    public override PolyCell GetCharacteristicCell(Data d)
+    public override Cell GetCharacteristicCell(Data d)
     {
         return Theater.Cells.First();
     }

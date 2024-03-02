@@ -7,7 +7,7 @@ public class MapPos
     public int PolyCell { get; private set; }
     public (int DestCellId, float Proportion) Destination { get; private set; }
 
-    public static MapPos Construct(PolyCell cell)
+    public static MapPos Construct(Cell cell)
     {
         var mp = new MapPos(cell.Id, (-1, 0f));
         return mp;
@@ -39,7 +39,7 @@ public class MapPos
         key.Data.Context.AddToMovementRecord(moveDat.Id, this, key.Data);
     }
 
-    public PolyCell GetCell(Data d)
+    public Cell GetCell(Data d)
     {
         return PlanetDomainExt.GetPolyCell(PolyCell, d);
     }

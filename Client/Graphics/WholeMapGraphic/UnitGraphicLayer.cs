@@ -53,7 +53,7 @@ public class UnitGraphicLayer : GraphicLayer<MapChunk, ChunkUnitsGraphic>
         });
     }
 
-    public void CycleCell(PolyCell cell, Data d)
+    public void CycleCell(Cell cell, Data d)
     {
         var chunk = cell.GetChunk(d);
         var graphic = Graphics[chunk];

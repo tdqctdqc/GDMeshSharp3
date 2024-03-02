@@ -7,8 +7,8 @@ using Godot;
 public static class FrontFinder
 {
     public static List<List<FrontFace>> FindFront(
-        HashSet<PolyCell> natives, 
-        Func<PolyCell, bool> isForeign,
+        HashSet<Cell> natives, 
+        Func<Cell, bool> isForeign,
         Data d)
     {
         var res = new List<List<FrontFace>>();

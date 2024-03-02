@@ -7,10 +7,10 @@ public class Frontline
 {
     public Regime Regime { get; private set; }
     public List<FrontFace> Faces { get; private set; }
-    public List<PolyCell[]> FaceAdvanceRoutes { get; private set; }
+    public List<Cell[]> FaceAdvanceRoutes { get; private set; }
     public List<FrontFace> AdvanceFront { get; private set; }
     public List<List<FrontFace>> SalientFronts { get; private set; }
-    public HashSet<PolyCell> AdvanceInto { get; private set; }
+    public HashSet<Cell> AdvanceInto { get; private set; }
     public Frontline(List<FrontFace> faces, Regime regime)
     {
         Faces = faces;
@@ -63,7 +63,7 @@ public class Frontline
     }
 
     public void SetAdvanceInto(
-        HashSet<PolyCell> advanceInto, 
+        HashSet<Cell> advanceInto, 
         Data d)
     {
         AdvanceInto = advanceInto;

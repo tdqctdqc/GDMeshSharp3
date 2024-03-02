@@ -7,7 +7,7 @@ using Godot;
 public static class Mover
 {
     public static void MoveToCell(this MapPos pos,
-        MoveData moveDat, PolyCell dest, 
+        MoveData moveDat, Cell dest, 
         LogicWriteKey key)
     {
         var path = key.Data.Context.PathCache.GetOrAdd(
@@ -26,7 +26,7 @@ public static class Mover
         pos.MoveAlongPath(moveDat, path, key);
     }
     private static void MoveAlongPath(this MapPos pos, 
-        MoveData moveDat, List<PolyCell> path, 
+        MoveData moveDat, List<Cell> path, 
         LogicWriteKey key)
     {
         var d = key.Data;

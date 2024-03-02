@@ -6,7 +6,7 @@ public class ChangePolyCellControllerProcedure : Procedure
     public int CellId { get; private set; }
     public int NewControllerRegimeId { get; private set; }
 
-    public static ChangePolyCellControllerProcedure Construct(PolyCell cell, Regime newControllerRegime)
+    public static ChangePolyCellControllerProcedure Construct(Cell cell, Regime newControllerRegime)
     {
         return new ChangePolyCellControllerProcedure(cell.Id, newControllerRegime.Id);
     }

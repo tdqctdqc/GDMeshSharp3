@@ -7,13 +7,13 @@ public class MapChunk
 {
     public Vector2 Coords { get; private set; }
     public HashSet<MapPolygon> Polys { get; private set; }
-    public HashSet<PolyCell> Cells { get; private set; }
+    public HashSet<Cell> Cells { get; private set; }
     public HashSet<MapPolygon> Bordering { get; private set; }
     public MapPolygon RelTo { get; private set; }
     public Color Color { get; private set; }
     
     public MapChunk(IEnumerable<MapPolygon> polys, 
-        IEnumerable<PolyCell> cells,
+        IEnumerable<Cell> cells,
         Vector2 coords, Data d)
     {
         Coords = coords;

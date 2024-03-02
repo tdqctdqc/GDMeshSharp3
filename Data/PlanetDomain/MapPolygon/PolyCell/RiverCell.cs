@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class RiverCell : PolyCell, IEdgeCell
+public class RiverCell : Cell, IEdgeCell
 {
     public ERef<MapPolygonEdge> Edge { get; private set; }
     

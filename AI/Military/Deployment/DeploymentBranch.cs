@@ -33,7 +33,7 @@ public abstract class DeploymentBranch
         return SubBranches.Sum(s => s.GetPowerPointNeed(d))
                + Assignments.Sum(a => a.GetPowerPointNeed(d));
     }
-    public abstract PolyCell GetCharacteristicCell(Data d);
+    public abstract Cell GetCharacteristicCell(Data d);
 
     public UnitGroup PullGroup(DeploymentAi ai, 
         Func<UnitGroup, float> suitability, 

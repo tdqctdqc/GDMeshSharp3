@@ -46,6 +46,6 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
     public abstract void GiveOrders(DeploymentAi ai, LogicWriteKey key);
     public abstract UnitGroup PullGroup(DeploymentAi ai, Func<UnitGroup, float> suitability, LogicWriteKey key);
     public abstract float Suitability(UnitGroup g, Data d);
-    public abstract PolyCell GetCharacteristicCell(Data d);
+    public abstract Cell GetCharacteristicCell(Data d);
 
 }

@@ -11,14 +11,14 @@ public struct FrontFace
     public int Left { get; private set; }
     public int Right { get; private set; }
     public static FrontFace
-        Construct(PolyCell native, PolyCell foreign, Data d)
+        Construct(Cell native, Cell foreign, Data d)
     {
         if (native is not LandCell || foreign is not LandCell)
         {
             return new FrontFace(native.Id, foreign.Id, -1, -1);
         }
-        PolyCell left = null;
-        PolyCell right = null;
+        Cell left = null;
+        Cell right = null;
         
         var nfAxis = native.GetCenter().Offset(foreign.GetCenter(), d);
         var sharedNs = native.Neighbors
@@ -64,7 +64,7 @@ public struct FrontFace
         Right = right;
     }
 
-    public FrontFace GetLeftNeighbor(Func<PolyCell, bool> isNative,
+    public FrontFace GetLeftNeighbor(Func<Cell, bool> isNative,
         Data d)
     {
         if (Left == -1) throw new Exception();
@@ -79,7 +79,7 @@ public struct FrontFace
     }
     
     public FrontFace GetRightNeighbor(
-        Func<PolyCell, bool> isNative,
+        Func<Cell, bool> isNative,
         Data d)
     {
         if (Right == -1) throw new Exception();
@@ -95,7 +95,7 @@ public struct FrontFace
     
     public void DoForNeighborsAlong(
         Func<FrontFace, bool> valid,
-        Func<PolyCell, bool> isNative,
+        Func<Cell, bool> isNative,
         bool toLeft, Action<FrontFace> action, Data d)
     {
         var curr = this;
@@ -115,7 +115,7 @@ public struct FrontFace
             valid, d);
     }
     public List<FrontFace> GetFrontLeftToRight(
-        Func<PolyCell, bool> isNative,
+        Func<Cell, bool> isNative,
         Func<FrontFace, bool> valid, Data d)
     {
         var res = new List<FrontFace>();
@@ -176,11 +176,11 @@ public static class FrontFaceExt
         return f.GetNative(d).GetCenter().Offset(f.GetForeign(d).GetCenter(), d);
     }
     
-    public static PolyCell GetNative(this FrontFace f, Data d)
+    public static Cell GetNative(this FrontFace f, Data d)
     {
         return PlanetDomainExt.GetPolyCell(f.Native, d);
     }
-    public static PolyCell GetForeign(this FrontFace f, Data d)
+    public static Cell GetForeign(this FrontFace f, Data d)
     {
         return PlanetDomainExt.GetPolyCell(f.Foreign, d);
     }

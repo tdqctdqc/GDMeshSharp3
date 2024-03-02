@@ -44,7 +44,7 @@ public class CurrentConstruction : Entity
         ByPolyCell.Add(construction.PolyCellId, construction);
         key.Data.Infrastructure.ConstructionAux.StartedConstruction.Invoke(construction);
     }
-    public void FinishConstruction(MapPolygon poly, PolyCell cell, ProcedureWriteKey key)
+    public void FinishConstruction(MapPolygon poly, Cell cell, ProcedureWriteKey key)
     {
         var construction = ByPolyCell[cell.Id];
         key.Data.Infrastructure.ConstructionAux.EndedConstruction.Invoke(construction);

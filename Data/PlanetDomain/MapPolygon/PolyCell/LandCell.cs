@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using VoronoiSandbox;
 
-public class LandCell : PolyCell, ISinglePolyCell
+public class LandCell : Cell, IPolyCell
 {
     public ERef<MapPolygon> Polygon { get; private set; }
     public static LandCell Construct(PreCell pre,

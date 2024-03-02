@@ -71,7 +71,7 @@ public class PlanetDomain
 
 public static class PlanetDomainExt
 {
-    public static PolyCell GetPolyCell(int id, Data d)
+    public static Cell GetPolyCell(int id, Data d)
     {
         return d.Planet.PolygonAux.PolyCells.Cells[id];
     }

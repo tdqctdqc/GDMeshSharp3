@@ -64,7 +64,7 @@ public class OperationalAi
     }
 
     private void GeneralAdvance(Frontline f, 
-        HashSet<PolyCell> enemy)
+        HashSet<Cell> enemy)
     {
         f.SetAdvanceInto(enemy, _data);
     }

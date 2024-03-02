@@ -11,7 +11,7 @@ public class UnitAux
     public ValChangeAction<Unit, UnitGroup> UnitChangedGroup { get; private set; }
     public ValChangeAction<Unit, MapPos> UnitChangedPos { get; private set; }
 
-    public PropertyMultiIndexer<PolyCell, Unit> UnitsByCell { get; private set; }
+    public PropertyMultiIndexer<Cell, Unit> UnitsByCell { get; private set; }
     
     private Data _data;
     public UnitAux(Data d)
@@ -34,10 +34,10 @@ public class UnitAux
         UnitChangedGroup = new ValChangeAction<Unit, UnitGroup>();
         
        
-       var unitChangedCell = new ValChangeAction<Unit, PolyCell>();
+       var unitChangedCell = new ValChangeAction<Unit, Cell>();
        UnitChangedPos.Subscribe(n => unitChangedCell.Invoke(n.Entity, n.NewVal.GetCell(d), n.OldVal.GetCell(d)));
 
-        UnitsByCell = new PropertyMultiIndexer<PolyCell, Unit>(
+        UnitsByCell = new PropertyMultiIndexer<Cell, Unit>(
             d, u => u.Position.GetCell(d),
             new RefAction[]
             {

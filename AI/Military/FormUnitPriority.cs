@@ -44,7 +44,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
             .First(p => p.GetCells(key.Data).Any(goodDeployCell))
             .GetCells(key.Data).Where(goodDeployCell).First();
 
-        bool goodDeployCell(PolyCell c)
+        bool goodDeployCell(Cell c)
         {
             return c.Controller.RefId == regime.Id;
         }

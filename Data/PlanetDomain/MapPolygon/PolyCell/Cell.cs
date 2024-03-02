@@ -3,26 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MessagePack;
 
 [MessagePack.Union(0, typeof(LandCell))]
 [MessagePack.Union(1, typeof(RiverCell))]
 [MessagePack.Union(2, typeof(SeaCell))]
-public abstract class PolyCell : IPolymorph,
+public abstract class Cell : IPolymorph,
     IIdentifiable, ICombatGraphNode
 {
     public int Id { get; private set; }
     public ERef<Regime> Controller { get; private set; }
-    public List<int> Neighbors => Geometry.Neighbors;
-    public List<(Vector2 f, Vector2 t)> Edges => Geometry.EdgesRel;
-    public Vector2 RelTo => Geometry.RelTo;
-    public Vector2[] RelBoundary => Geometry.PointsRel;
+    
+    [MessagePack.IgnoreMember] public List<int> Neighbors => Geometry.Neighbors;
+    [MessagePack.IgnoreMember] public List<(Vector2 f, Vector2 t)> Edges => Geometry.EdgesRel;
+    [MessagePack.IgnoreMember] public Vector2 RelTo => Geometry.RelTo;
+    [MessagePack.IgnoreMember] public Vector2[] RelBoundary => Geometry.PointsRel;
+    
     public Vegetation GetVegetation(Data d) => Vegetation.Model(d);
     public ModelRef<Vegetation> Vegetation { get; private set; }
     public Landform GetLandform(Data d) => Landform.Model(d);
     public ModelRef<Landform> Landform { get; private set; }
     public CellGeometry Geometry { get; private set; }
         
-    protected PolyCell(
+    protected Cell(
         ModelRef<Vegetation> vegetation,
         ModelRef<Landform> landform,
         ERef<Regime> controller,
@@ -44,14 +47,14 @@ public abstract class PolyCell : IPolymorph,
     {
         Landform = lf.MakeRef();
     }
-    public bool AnyNeighbor(Func<PolyCell, bool> pred, Data d)
+    public bool AnyNeighbor(Func<Cell, bool> pred, Data d)
     {
         return Neighbors
             .Select(n => PlanetDomainExt.GetPolyCell(n, d))
             .Any(pred);
     }
 
-    public void ForEachNeighbor(Action<PolyCell> act, Data d)
+    public void ForEachNeighbor(Action<Cell> act, Data d)
     {
         foreach (var nCell in Neighbors.Select(n => PlanetDomainExt.GetPolyCell(n, d)))
         {
@@ -78,7 +81,7 @@ public abstract class PolyCell : IPolymorph,
         return RelBoundary.Avg() + RelTo;
     }
 
-    public IEnumerable<PolyCell> GetNeighbors(Data d)
+    public IEnumerable<Cell> GetNeighbors(Data d)
     {
         return Neighbors.Select(i => PlanetDomainExt.GetPolyCell(i, d));
     }
@@ -107,7 +110,7 @@ public abstract class PolyCell : IPolymorph,
         return res;
     }
 
-    public (Vector2, Vector2) GetEdgeRelWith(PolyCell n)
+    public (Vector2, Vector2) GetEdgeRelWith(Cell n)
     {
         var index = Neighbors.IndexOf(n.Id);
         if (index == -1) throw new Exception();

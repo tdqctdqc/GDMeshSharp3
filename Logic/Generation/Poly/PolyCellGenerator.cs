@@ -19,42 +19,40 @@ public class PolyCellGenerator : Generator
         var polys = _data.GetAll<MapPolygon>();
         
         report.StartSection();
-        var cellsByPoly = polys
+        var cells = polys
             .AsParallel()
-            .Select(p =>
-            {
-                var cells = BuildCells(p, key);
-                return (p, cells.ToArray());
-            })
-            .ToDictionary(v => v.p, v => v.Item2);
-
-        PolyCells.Create(cellsByPoly.Values
-            .SelectMany(v => v), key);
-
+            .SelectMany(p => BuildCells(p, key))
+            .ToDictionary(c => c.Id, c => c);
+        PolyCells.Create(cells, key);
         report.StopSection("Building poly cells");
         
         report.StartSection();
-        RiverCellGenerator.BuildRiverCells(cellsByPoly, key);
+        RiverCellGenerator.BuildRiverCells(key);
         report.StopSection("creating river cells");
 
-        
+        report.StartSection();
         _data.Notices.SetPolyShapes.Invoke();
+        report.StopSection("set poly shapes");
+
 
         report.StartSection();
         Postprocess(key);
         report.StopSection("postprocessing polytris");
         
+        report.StartSection();
         _data.Notices.MadeCells.Invoke();
+        report.StopSection("constructing cell grid");
 
         report.StartSection();
         Parallel.ForEach(polys, p => p.SetTerrainStats(key)); 
         report.StopSection("setting terrain stats");
+        
         return report;
     }
 
     
 
-    private IEnumerable<PolyCell> BuildCells(MapPolygon poly, 
+    private IEnumerable<Cell> BuildCells(MapPolygon poly, 
         GenWriteKey key)
     {
         var preCells = key.GenData.GenAuxData.PreCellPolys[poly];
@@ -108,7 +106,7 @@ public class PolyCellGenerator : Generator
             }
         });
 
-        void erode(MapPolygon poly, PolyCell cell)
+        void erode(MapPolygon poly, Cell cell)
         {
             if (
                 (cell.GetLandform(_data) == _data.Models.Landforms.Mountain || cell.GetLandform(_data) == _data.Models.Landforms.Peak)
@@ -124,7 +122,7 @@ public class PolyCellGenerator : Generator
             }
         }
 
-        void irrigate(MapPolygon poly, PolyCell cell)
+        void irrigate(MapPolygon poly, Cell cell)
         {
             if (poly.DistFromEquatorRatio(_data) >= tundra.MinDistFromEquatorRatio) return;
             if (cell.GetLandform(_data).IsLand
@@ -145,7 +143,7 @@ public class PolyCellGenerator : Generator
             }
         }
 
-        void swampRidging(PolyCell cell)
+        void swampRidging(Cell cell)
         {
             if (cell.Vegetation.Model(_data) == _data.Models.Vegetations.Swamp)
             {
@@ -164,7 +162,7 @@ public class PolyCellGenerator : Generator
             }
         }
 
-        void mountainRidging(MapPolygon poly, PolyCell cell)
+        void mountainRidging(MapPolygon poly, Cell cell)
         {
             if (cell.GetLandform(_data).IsLand && cell.GetLandform(_data).MinRoughness >= _data.Models.Landforms.Peak.MinRoughness)
             {

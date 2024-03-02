@@ -8,7 +8,7 @@ using MessagePack;
 public class GoToCellGroupOrder : UnitGroupOrder
 {
     public int DestId { get; private set; }
-    public static GoToCellGroupOrder Construct(PolyCell destWp,
+    public static GoToCellGroupOrder Construct(Cell destWp,
         Regime r, UnitGroup g, Data d)
     {
         var alliance = r.GetAlliance(d);

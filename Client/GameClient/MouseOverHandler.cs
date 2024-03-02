@@ -6,8 +6,8 @@ using Godot;
 public class MouseOverHandler
 {
     public MapPolygon MouseOverPoly { get; private set; }
-    public PolyCell MouseOverCell { get; private set; }
-    public Action<PolyCell> ChangedCell { get; set; }
+    public Cell MouseOverCell { get; private set; }
+    public Action<Cell> ChangedCell { get; set; }
     public Action<MapPolygon> ChangedPoly { get; set; }
     private TimerAction _timerAction;
     public MouseOverHandler(Data data)
@@ -42,14 +42,14 @@ public class MouseOverHandler
     private void Find(Data data, Vector2 mousePosMapSpace)
     {
         var c = data.Planet.PolygonAux
-            .PolyCellGrid.GetElementAtPointWhere(mousePosMapSpace, 
+            .CellGrid.GetElementAtPointWhere(mousePosMapSpace, 
                 c => c is RiverCell,
                 data);
         if(c == null) c = data.Planet.PolygonAux
-            .PolyCellGrid.GetElementAtPoint(mousePosMapSpace, data);
+            .CellGrid.GetElementAtPoint(mousePosMapSpace, data);
         SetCell(c);
 
-        if (c is ISinglePolyCell single)
+        if (c is IPolyCell single)
         {
             SetPoly(single.Polygon.Entity(data));
         }
@@ -73,7 +73,7 @@ public class MouseOverHandler
         }
     }
 
-    private void SetCell(PolyCell c)
+    private void SetCell(Cell c)
     {
         if (c != MouseOverCell)
         {

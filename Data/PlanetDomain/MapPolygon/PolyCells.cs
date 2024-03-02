@@ -5,17 +5,16 @@ using MessagePack;
 
 public class PolyCells : Entity
 {
-    public Dictionary<int, PolyCell> Cells { get; private set; }
+    public Dictionary<int, Cell> Cells { get; private set; }
 
-    public static PolyCells Create(IEnumerable<PolyCell> cells, GenWriteKey key)
+    public static PolyCells Create(Dictionary<int, Cell> cells, GenWriteKey key)
     {
-        var dic = cells.ToDictionary(v => v.Id, v => v);
-        var e = new PolyCells(dic, key.Data.IdDispenser.TakeId());
+        var e = new PolyCells(cells, key.Data.IdDispenser.TakeId());
         key.Create(e);
         return e;
     }
     [SerializationConstructor] private PolyCells(
-        Dictionary<int, PolyCell> cells, int id) : base(id)
+        Dictionary<int, Cell> cells, int id) : base(id)
     {
         Cells = cells;
     }
