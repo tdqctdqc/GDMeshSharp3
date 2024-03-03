@@ -4,17 +4,19 @@ using System.Linq;
 using Godot;
 
 public abstract partial class PolyCellBorder
-    : Node2D, IMapChunkGraphicNode
+    : Node2D, IChunkGraphicModule
 {
     public MapChunk Chunk { get; private set; }
     public string Name { get; private set; }
-    Node2D IMapChunkGraphicNode.Node => this;
-
+    public Node2D Node => this;
     public PolyCellBorder(string name, MapChunk chunk, 
-        Data data)
+        GraphicsSegmenter segmenter, 
+        LayerOrder layerOrder, Data data)
     {
         Chunk = chunk;
         Name = name;
+        ZAsRelative = false;
+        ZIndex = (int)layerOrder;
         Draw(data);
     }
     private PolyCellBorder() : base()

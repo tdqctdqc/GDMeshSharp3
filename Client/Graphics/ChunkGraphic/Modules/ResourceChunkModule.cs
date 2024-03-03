@@ -2,29 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class ResourceChunkModule : MapChunkGraphicModule
+public partial class ResourceChunkModule : ChunkGraphicMultiModule
 {
     private ResourcePolyFill _fill;
     private ResourceIcons _icons;
-    public ResourceChunkModule(MapChunk chunk, Data data) 
-        : base(chunk, nameof(ResourceChunkModule))
+    public ResourceChunkModule(MapChunk chunk, 
+        GraphicsSegmenter segmenter,
+        Data data) 
     {
-        _fill = new ResourcePolyFill(chunk, data);
-        AddNode(_fill);
+        _fill = new ResourcePolyFill(chunk, segmenter, data);
         _icons = new ResourceIcons(chunk, data);
-        AddNode(_icons);
+        foreach (var m in GetModules())
+        {
+            AddChild(m.Node);
+        }
     }
-    
-    public static ChunkGraphicLayer<ResourceChunkModule> GetLayer(
-        Data d, GraphicsSegmenter segmenter)
+
+    protected override IEnumerable<IChunkGraphicModule> GetModules()
     {
-        var l = new ChunkGraphicLayer<ResourceChunkModule>(
-            LayerOrder.Resources,
-            "Resources",
-            segmenter, 
-            c => new ResourceChunkModule(c, d), 
-            d);
-        l.AddTransparencySetting(m => m._fill, "Transparency");
-        return l;
+        yield return _fill;
+        yield return _icons;
     }
 }

@@ -5,12 +5,18 @@ using Godot;
 
 public partial class RegimePolyFill : PolyFillChunkGraphic
 {
-    public RegimePolyFill(MapChunk chunk, Data data) 
+    public RegimePolyFill(MapChunk chunk, 
+        GraphicsSegmenter segmenter,
+        Data data) 
         : base("Owner", chunk, 
-            (p, d) => p.OwnerRegime.Fulfilled() 
-                ? p.OwnerRegime.Entity(d).GetMapColor()
-                : Colors.Transparent, 
-            data)
+            LayerOrder.PolyFill, segmenter, data)
     {
+    }
+    
+    public override Color GetColor(MapPolygon poly, Data d)
+    {
+        return poly.OwnerRegime.Fulfilled()
+            ? poly.OwnerRegime.Entity(d).GetMapColor()
+            : Colors.Transparent;
     }
 }

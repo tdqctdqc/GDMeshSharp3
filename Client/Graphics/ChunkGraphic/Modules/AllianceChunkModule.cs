@@ -2,46 +2,25 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public partial class AllianceChunkModule : MapChunkGraphicModule
+public partial class AllianceChunkModule : ChunkGraphicMultiModule
 {
     private AlliancePolyFill _fill;
     private AllianceBordersGraphic _borders;
 
-    public AllianceChunkModule(MapChunk chunk, Data data) : base(chunk, nameof(AllianceChunkModule))
+    public AllianceChunkModule(MapChunk chunk, GraphicsSegmenter segmenter, Data data) 
+        : base()
     {
-        _fill = new AlliancePolyFill(chunk, data);
-        AddNode(_fill);
+        _fill = new AlliancePolyFill(chunk, segmenter, data);
         _borders = new AllianceBordersGraphic(chunk, data, false);
-        AddNode(_borders);
-    }
-    
-    public static ChunkGraphicLayer<AllianceChunkModule> GetLayer(
-        Client client, 
-        GraphicsSegmenter segmenter)
-    {
-        var l = new ChunkGraphicLayer<AllianceChunkModule>(
-            LayerOrder.PolyFill,
-            "Alliances",
-            segmenter, 
-            c => new AllianceChunkModule(c, client.Data), 
-            client.Data);
-        l.AddTransparencySetting(m => m._fill, "Fill Transparency");
-        l.AddTransparencySetting(m => m._borders, "Border Transparency");
-        
-        client.Data.Notices.Ticked.Blank.Subscribe(() =>
+        foreach (var m in GetModules())
         {
-            client.QueuedUpdates.Enqueue(() =>
-            {
-                foreach (var kvp in l.ByChunkCoords)
-                {
-                    var v = kvp.Value;
-                    v._fill.Update(client.Data);
-                    v._borders.Draw(client.Data);
-                }
-            });
-        });
-        l.EnforceSettings();
-        return l;
+            AddChild(m.Node);
+        }
     }
-    
+
+    protected override IEnumerable<IChunkGraphicModule> GetModules()
+    {
+        yield return _fill;
+        yield return _borders;
+    }
 }

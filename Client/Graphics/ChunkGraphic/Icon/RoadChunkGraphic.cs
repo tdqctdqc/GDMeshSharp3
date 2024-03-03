@@ -4,24 +4,25 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class RoadChunkGraphicNode : MapChunkGraphicModule
+public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
 {
     private static float _drawWidth = 5f;
-    
-    public RoadChunkGraphicNode(MapChunk chunk, Data d) 
-        : base(chunk, nameof(RoadChunkGraphicNode))
+    public Node2D Node => this;
+    public MapChunk Chunk { get; private set; }
+    public RoadChunkGraphicNode(MapChunk chunk, 
+        Data d)
     {
-        var mb = MeshBuilder.GetFromPool();
-        DrawRoads(chunk, d, mb);
-        if (mb.Tris.Count == 0) return;
-        mb.Return();
+        Chunk = chunk;
+        ZIndex = (int)LayerOrder.Roads;
+        ZAsRelative = false;
     }
 
-    public void DrawRoads(MapChunk chunk, Data d, 
-        MeshBuilder mb)
+    public void Draw(Data d)
     {
         this.ClearChildren();
-        var wps = chunk.Polys
+        var mb = MeshBuilder.GetFromPool();
+
+        var wps = Chunk.Polys
             .Where(p => p.IsLand)
             .SelectMany(p => 
                 p.GetCells(d))
@@ -34,34 +35,13 @@ public partial class RoadChunkGraphicNode : MapChunkGraphicModule
                 var nCell = PlanetDomainExt.GetPolyCell(n, d);
                 if (d.Infrastructure.RoadNetwork.Get(cell, nCell, d) is RoadModel r)
                 {
-                    r.Draw(mb, chunk.RelTo.GetOffsetTo(cell.GetCenter(), d), 
-                        chunk.RelTo.GetOffsetTo(nCell.GetCenter(), d), _drawWidth);
+                    r.Draw(mb, Chunk.RelTo.GetOffsetTo(cell.GetCenter(), d), 
+                        Chunk.RelTo.GetOffsetTo(nCell.GetCenter(), d), _drawWidth);
                 }
             }
         }
+        if (mb.Tris.Count == 0) return;
+        mb.Return();
         AddChild(mb.GetMeshInstance());
-    }
-    public static ChunkGraphicLayer<RoadChunkGraphicNode> 
-        GetLayer(Client client, GraphicsSegmenter segmenter)
-    {
-        
-        var l = new ChunkGraphicLayer<RoadChunkGraphicNode>(LayerOrder.Roads,
-            "Roads", segmenter, 
-            c => new RoadChunkGraphicNode(c, client.Data), client.Data);
-        
-        client.Data.Notices.Ticked.Blank.Subscribe(() =>
-        {
-            client.QueuedUpdates.Enqueue(() =>
-            {
-                var mb = MeshBuilder.GetFromPool();
-                foreach (var kvp in l.ByChunkCoords)
-                {
-                    kvp.Value.DrawRoads(kvp.Value.Chunk, client.Data, mb);
-                }
-                mb.Return();
-            });
-        });
-        
-        return l;
     }
 }

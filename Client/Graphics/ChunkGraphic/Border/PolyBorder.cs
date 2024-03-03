@@ -7,17 +7,19 @@ using System.Linq;
 using Godot;
 
 public abstract partial class PolyBorder 
-    : Node2D, IMapChunkGraphicNode
+    : Node2D, IChunkGraphicModule
 {
     public MapChunk Chunk { get; private set; }
     public string Name { get; private set; }
-    Node2D IMapChunkGraphicNode.Node => this;
-
+    public Node2D Node => this;
     public PolyBorder(string name, MapChunk chunk, 
+        LayerOrder layerOrder,
         Data data)
     {
         Chunk = chunk;
         Name = name;
+        ZIndex = (int)layerOrder;
+        ZAsRelative = false;
         Draw(data);
     }
     private PolyBorder() : base()

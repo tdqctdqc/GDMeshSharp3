@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using Godot;
 
 public abstract partial class ChunkIconsMultiMesh<TModel, TInstance> 
-    : Node2D, IMapChunkGraphicNode
+    : Node2D, IChunkGraphicModule
 {
     public string Name { get; private set; }
     public MapChunk Chunk { get; private set; }
+    public Node2D Node => this;
     private Mesh _mesh;
-    Node2D IMapChunkGraphicNode.Node => this;
     public Dictionary<TModel, MultiMeshInstance2D> MultiMeshes { get; private set; }
     
     public ChunkIconsMultiMesh(string name, 

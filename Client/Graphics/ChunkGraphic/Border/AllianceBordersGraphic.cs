@@ -5,8 +5,10 @@ using Godot;
 
 public partial class AllianceBordersGraphic : PolyBorder
 {
-    public AllianceBordersGraphic(MapChunk chunk, Data data, bool primaryColor) : base(
-            nameof(AllianceBordersGraphic), chunk, data)
+    public AllianceBordersGraphic(MapChunk chunk, 
+        Data data, bool primaryColor) : base(
+            nameof(AllianceBordersGraphic), chunk, 
+            LayerOrder.PolyFill, data)
     {
     }
 

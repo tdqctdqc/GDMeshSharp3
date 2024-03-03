@@ -5,22 +5,26 @@ using Godot;
 
 public partial class DiplomacyPolyFill : PolyFillChunkGraphic
 {
-    public DiplomacyPolyFill(MapChunk chunk, Data data) 
-        : base(nameof(DiplomacyPolyFill), chunk, GetColor, data)
+    public DiplomacyPolyFill(MapChunk chunk, 
+        GraphicsSegmenter segmenter, 
+        Data data) 
+        : base(nameof(DiplomacyPolyFill), chunk, 
+            LayerOrder.PolyFill,
+            segmenter, data)
     {
         
     }
 
-    private static Color GetColor(MapPolygon p, Data d)
+    public override Color GetColor(MapPolygon poly, Data d)
     {
-        if (p.OwnerRegime.Fulfilled() == false) return Colors.Transparent;
+        if (poly.OwnerRegime.Fulfilled() == false) return Colors.Transparent;
         if (d.BaseDomain.PlayerAux.LocalPlayer == null) return Colors.Gray;
         if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.IsEmpty()) return Colors.Gray;
         var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(d);
-        if (p.OwnerRegime.RefId == playerRegime.Id) return Colors.Green;
+        if (poly.OwnerRegime.RefId == playerRegime.Id) return Colors.Green;
         var playerAlliance = playerRegime.GetAlliance(d);
-        var polyAlliance = p.OwnerRegime.Entity(d).GetAlliance(d);
-        if (playerAlliance.Members.RefIds.Contains(p.OwnerRegime.RefId)) 
+        var polyAlliance = poly.OwnerRegime.Entity(d).GetAlliance(d);
+        if (playerAlliance.Members.RefIds.Contains(poly.OwnerRegime.RefId)) 
             return Colors.SkyBlue;
         if (playerAlliance.IsAtWar(polyAlliance, d)) 
             return Colors.Red;

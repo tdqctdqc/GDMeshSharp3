@@ -3,14 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PolyFillChunkGraphic : TriColorMesh<MapPolygon>
+public abstract partial class PolyFillChunkGraphic : TriColorMesh<MapPolygon>
 {
-    public PolyFillChunkGraphic(string name, MapChunk chunk, Func<MapPolygon, Data, Color> getColor, Data data) 
-            : base(name, getColor,
-                (p, d) =>
-                {
-                    return p.GetTriangles(chunk.RelTo.Center, d);
-                }, d => chunk.Polys, data)
+    public MapChunk Chunk { get; private set; }
+    public PolyFillChunkGraphic(string name, MapChunk chunk, 
+        LayerOrder layerOrder, GraphicsSegmenter segmenter, 
+        Data data) 
+            : base(name, chunk.RelTo.Center, layerOrder, segmenter, data)
     {
+        Chunk = chunk;
+        DrawFirst(data);
+    }
+    public override IEnumerable<Triangle> GetTris(MapPolygon e, Data d)
+    {
+        return e.GetTriangles(Chunk.RelTo.Center, d);
+    }
+    public override IEnumerable<MapPolygon> GetElements(Data d)
+    {
+        return Chunk.Polys;
     }
 }

@@ -1,43 +1,25 @@
 
-public partial class ControllerRegimeGraphic : MapChunkGraphicModule
+using System.Collections.Generic;
+
+public partial class ControllerRegimeGraphic : ChunkGraphicMultiModule
 {
     private ControllerRegimePolyCellFill _fill;
     private ControllerPolyCellBorder _borders;
-    public ControllerRegimeGraphic(MapChunk chunk, Data data) : base(chunk, nameof(OwnerRegimeGraphic))
+    public ControllerRegimeGraphic(MapChunk chunk, 
+        GraphicsSegmenter segmenter, Data data) 
+        : base()
     {
-        _fill = new ControllerRegimePolyCellFill(chunk, data);
-        AddNode(_fill);
-
-        _borders = new ControllerPolyCellBorder(chunk, data);
-        AddNode(_borders);
+        _fill = new ControllerRegimePolyCellFill(chunk, segmenter, data);
+        _borders = new ControllerPolyCellBorder(chunk, segmenter, data);
+        foreach (var m in GetModules())
+        {
+            AddChild(m.Node);
+        }
     }
 
-    public static ChunkGraphicLayer<ControllerRegimeGraphic> GetLayer(Client client, GraphicsSegmenter segmenter)
+    protected override IEnumerable<IChunkGraphicModule> GetModules()
     {
-        var l = new ChunkGraphicLayer<ControllerRegimeGraphic>(
-            LayerOrder.PolyFill,
-            "Owner",
-            segmenter, 
-            c => new ControllerRegimeGraphic(c, client.Data), 
-            client.Data);
-        l.AddTransparencySetting(m => m._fill, "Fill Transparency", .25f);
-        l.AddTransparencySetting(m => m._borders, "Border Transparency", 1f);
-        
-        
-        client.Data.Notices.Ticked.Blank.Subscribe(() =>
-        {
-            client.QueuedUpdates.Enqueue(() =>
-            {
-                foreach (var kvp in l.ByChunkCoords)
-                {
-                    var v = kvp.Value;
-                    v._fill.Update(client.Data);
-                    v._borders.Draw(client.Data);
-                }
-            });
-        });
-        
-        l.EnforceSettings();
-        return l;
+        yield return _fill;
+        yield return _borders;
     }
 }

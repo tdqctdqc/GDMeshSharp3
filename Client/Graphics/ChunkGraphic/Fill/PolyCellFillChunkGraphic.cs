@@ -3,32 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PolyCellFillChunkGraphic : TriColorMesh<Cell>
+public abstract partial class PolyCellFillChunkGraphic : TriColorMesh<Cell>
 {
-    public PolyCellFillChunkGraphic(string name, MapChunk chunk, 
-        Func<Cell, Data, Color> getColor, Data data) 
-        : base(name, getColor,
-            (pt, d) =>
-            {
-                var offset = chunk.RelTo.GetOffsetTo(pt.RelTo, d);
-                return pt.GetTriangles(chunk.RelTo.Center, d);
-            }, 
-            data => chunk.Cells,
-            data)
-    {
-    }
-    public PolyCellFillChunkGraphic(string name, MapChunk chunk, 
-        Func<Cell, bool> isValid,
-        Func<Cell, Data, Color> getColor, 
+    public MapChunk Chunk { get; private set; }
+    public PolyCellFillChunkGraphic(string name, 
+        MapChunk chunk, 
+        GraphicsSegmenter segmenter, 
+        LayerOrder layerOrder,
         Data data) 
-        : base(name, getColor,
-            (pt, d) =>
-            {
-                var offset = chunk.RelTo.GetOffsetTo(pt.RelTo, d);
-                return pt.GetTriangles(chunk.RelTo.Center, d);
-            }, 
-            data => chunk.Cells.Where(isValid),
-            data)
+        : base(name, chunk.RelTo.Center,
+            layerOrder, segmenter, data)
     {
+        Chunk = chunk;
+        DrawFirst(data);
     }
+
+    public override IEnumerable<Triangle> GetTris(Cell e, Data d)
+    {
+        var offset = Chunk.RelTo.GetOffsetTo(e.RelTo, d);
+        return e.GetTriangles(Chunk.RelTo.Center, d);
+    }
+
+    public override IEnumerable<Cell> GetElements(Data d)
+    {
+        return Chunk.Cells.Where(c => IsValid(c, d));
+    }
+
+    public abstract bool IsValid(Cell c, Data d);
 }

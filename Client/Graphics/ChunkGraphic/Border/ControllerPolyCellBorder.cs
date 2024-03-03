@@ -4,7 +4,9 @@ using Godot;
 public partial class ControllerPolyCellBorder : PolyCellBorder
 {
     public ControllerPolyCellBorder(MapChunk chunk, 
-        Data data) : base("Controller border", chunk, data)
+        GraphicsSegmenter segmenter,
+        Data data) : base("Controller border", chunk,
+        segmenter, LayerOrder.PolyFill, data)
     {
     }
 
