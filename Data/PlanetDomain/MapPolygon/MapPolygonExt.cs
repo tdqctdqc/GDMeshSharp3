@@ -31,10 +31,6 @@ public static class MapPolygonExt
         return off3;
     }
 
-    public static MapChunk GetChunk(this MapPolygon poly, Data data)
-    {
-        return data.Planet.PolygonAux.ChunksByPoly[poly];
-    }
     public static Vector2 GetOffsetTo(this MapPolygon poly, Vector2 p, Data data)
     {
         var w = data.Planet.Width;
@@ -118,11 +114,6 @@ public static class MapPolygonExt
         return null;
     }
 
-    public static IEnumerable<MapChunk> GetChunkAndNeighboringChunks(this MapPolygon p, Data d)
-    {
-        return p.GetChunk(d).Yield()
-            .Union(p.Neighbors.Items(d).Select(n => n.GetChunk(d))).Distinct();
-    }
 
     public static List<Cell> GetCells(this MapPolygon p, Data d)
     {

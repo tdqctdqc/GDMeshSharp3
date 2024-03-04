@@ -11,12 +11,15 @@ public partial class TerrainChunkModule : ChunkGraphicMultiModule
     private VegetationFillChunkGraphic _v;
     private RiverFillChunkGraphic _r;
     
-    public TerrainChunkModule(MapChunk chunk, 
-        GraphicsSegmenter segmenter, Data data)
+    public TerrainChunkModule(MapChunk chunk, Data data)
     {
-        _lf = new LandformFillChunkGraphic(chunk, segmenter, data);
-        _v = new VegetationFillChunkGraphic(chunk, segmenter, data);
-        _r = new RiverFillChunkGraphic(chunk, segmenter, data);
+        _lf = new LandformFillChunkGraphic(chunk, data);
+        _v = new VegetationFillChunkGraphic(chunk, data);
+        _r = new RiverFillChunkGraphic(chunk, data);
+        foreach (var m in GetModules())
+        {
+            AddChild(m.Node);
+        }
     }
 
     protected override IEnumerable<IChunkGraphicModule> GetModules()

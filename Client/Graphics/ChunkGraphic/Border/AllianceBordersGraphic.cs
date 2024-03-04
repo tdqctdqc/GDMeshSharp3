@@ -19,6 +19,11 @@ public partial class AllianceBordersGraphic : PolyBorder
         return allianceLeader.PrimaryColor;
     }
 
+    public override void RegisterForRedraws(Data d)
+    {
+        this.RegisterDrawOnTick(d);
+    }
+
     protected override float GetThickness(MapPolygon m, MapPolygon n, Data data)
     {
         if (m.OwnerRegime.RefId == -1 || n.OwnerRegime.RefId == -1) 

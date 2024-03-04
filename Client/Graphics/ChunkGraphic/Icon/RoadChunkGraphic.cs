@@ -8,6 +8,11 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
 {
     private static float _drawWidth = 5f;
     public Node2D Node => this;
+    public void RegisterForRedraws(Data d)
+    {
+        this.RegisterDrawOnTick(d);
+    }
+
     public MapChunk Chunk { get; private set; }
     public RoadChunkGraphicNode(MapChunk chunk, 
         Data d)
@@ -40,8 +45,8 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
                 }
             }
         }
-        if (mb.Tris.Count == 0) return;
-        mb.Return();
+        if (mb.TriVertices.Count == 0) return;
         AddChild(mb.GetMeshInstance());
+        mb.Return();
     }
 }

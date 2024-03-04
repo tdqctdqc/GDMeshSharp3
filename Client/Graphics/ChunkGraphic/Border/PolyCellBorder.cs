@@ -10,22 +10,21 @@ public abstract partial class PolyCellBorder
     public string Name { get; private set; }
     public Node2D Node => this;
     public PolyCellBorder(string name, MapChunk chunk, 
-        GraphicsSegmenter segmenter, 
         LayerOrder layerOrder, Data data)
     {
         Chunk = chunk;
         Name = name;
         ZAsRelative = false;
         ZIndex = (int)layerOrder;
-        Draw(data);
     }
     private PolyCellBorder() : base()
     {
     }
     protected abstract bool InUnion(Cell p1, Cell p2, Data data);
-    protected abstract float GetThickness(Cell p1, Cell p2, Data data);
+    protected abstract float GetThickness(Cell m, Cell n, Data data);
     protected abstract Color GetColor(Cell p1, Data data);
-    
+    public abstract void RegisterForRedraws(Data d);
+
     public void Draw(Data data)
     {
         this.ClearChildren();
@@ -48,7 +47,7 @@ public abstract partial class PolyCellBorder
             }
         }
         
-        if (mb.Tris.Count == 0) return;
+        if (mb.TriVertices.Count == 0) return;
         AddChild(mb.GetMeshInstance());
         mb.Return();
     }

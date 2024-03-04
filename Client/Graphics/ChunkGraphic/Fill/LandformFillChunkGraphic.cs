@@ -4,22 +4,22 @@ using Godot;
 public partial class LandformFillChunkGraphic : PolyCellFillChunkGraphic
 {
     public LandformFillChunkGraphic(MapChunk chunk, 
-        GraphicsSegmenter segmenter, Data data) 
+        Data data) 
         : base("Landform", chunk, 
-            segmenter, LayerOrder.Terrain,
+            LayerOrder.Terrain,
             data)
     {
     }
 
-    public override Color GetColor(Cell poly, Data d)
+    public override Color GetColor(Cell cell, Data d)
     {
-        return poly.GetLandform(d)
+        return cell.GetLandform(d)
             .Color
             .Darkened(Game.I.Random.RandfRange(-TerrainChunkModule.ColorWobble, TerrainChunkModule.ColorWobble));
     }
 
-    public override bool IsValid(Cell c, Data d)
+    public override void RegisterForRedraws(Data d)
     {
-        return true;
+        
     }
 }

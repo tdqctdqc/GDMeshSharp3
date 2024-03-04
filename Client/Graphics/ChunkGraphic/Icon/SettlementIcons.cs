@@ -9,7 +9,6 @@ public partial class SettlementIcons
     public SettlementIcons(MapChunk chunk, Data d) 
         : base("Settlements", chunk, MeshExt.GetQuadMesh(Vector2.One * 50f))
     {
-        Draw(d);
     }
     protected override IEnumerable<Cell> GetElements(Data data)
     {
@@ -31,6 +30,11 @@ public partial class SettlementIcons
     protected override Vector2 GetWorldPos(Cell t, Data d)
     {
         return t.GetCenter();
+    }
+
+    public override void RegisterForRedraws(Data d)
+    {
+        this.RegisterDrawOnTick(d);
     }
 }
 

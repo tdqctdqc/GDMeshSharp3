@@ -17,7 +17,7 @@ public partial class BadTriangulationDisplay : Node2D
         for (var i = 0; i < err.Tris.Count; i++)
         {
             var inscribe = err.Tris[i].GetInscribed(1f);
-            mb.AddTri(inscribe, err.Colors[i]);
+            mb.AddTri(inscribe.A, inscribe.B, inscribe.C, err.Colors[i]);
         }
         for (var i = 0; i < err.Outlines.Count; i++)
         {

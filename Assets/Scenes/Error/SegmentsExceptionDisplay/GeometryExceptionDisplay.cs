@@ -110,7 +110,7 @@ public partial class GeometryExceptionDisplay : Node2D
 
             var tris = e.TriSets[i];
             if (tris.Count == 0) continue;
-            tris.ForEach(t => mb.AddTri(t, t.Color));
+            tris.ForEach(t => mb.AddTri(t.A, t.B, t.C, t.Color));
             var width = GetRange(tris.SelectMany(t => new List<float>(){t.A.X, t.B.X, t.C.X}));
             var height = GetRange(tris.SelectMany(t => new List<float>(){t.A.Y, t.B.Y, t.C.Y}));
 

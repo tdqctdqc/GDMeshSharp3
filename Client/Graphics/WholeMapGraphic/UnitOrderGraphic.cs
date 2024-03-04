@@ -39,7 +39,7 @@ public partial class UnitOrderGraphic : Node2D
         var mb = MeshBuilder.GetFromPool();
         var order = Group.GroupOrder;
         order.Draw(Group, Group.GetPosition(d), mb, d);
-        if (mb.Tris.Count > 0)
+        if (mb.TriVertices.Count > 0)
         {
             Mesh = mb.GetMeshInstance();
             AddChild(Mesh);

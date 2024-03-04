@@ -20,7 +20,6 @@ public abstract partial class PolyBorder
         Name = name;
         ZIndex = (int)layerOrder;
         ZAsRelative = false;
-        Draw(data);
     }
     private PolyBorder() : base()
     {
@@ -29,7 +28,8 @@ public abstract partial class PolyBorder
     protected abstract bool InUnion(MapPolygon p1, MapPolygon p2, Data data);
     protected abstract float GetThickness(MapPolygon p1, MapPolygon p2, Data data);
     protected abstract Color GetColor(MapPolygon p1, Data data);
-    
+    public abstract void RegisterForRedraws(Data d);
+
     public void Draw(Data data)
     {
         // this.ClearChildren();
@@ -46,7 +46,7 @@ public abstract partial class PolyBorder
             }
         }
         
-        if (mb.Tris.Count == 0) return;
+        if (mb.TriVertices.Count == 0) return;
         AddChild(mb.GetMeshInstance());
         mb.Return();
     }

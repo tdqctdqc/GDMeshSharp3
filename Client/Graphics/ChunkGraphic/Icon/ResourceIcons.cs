@@ -9,7 +9,6 @@ public partial class ResourceIcons
     public ResourceIcons(MapChunk chunk, Data d) 
         : base("Resources", chunk, MeshExt.GetQuadMesh(Vector2.One * 25f))
     {
-        Draw(d);
     }
 
     protected override Texture2D GetTexture(Item t)
@@ -33,5 +32,10 @@ public partial class ResourceIcons
     protected override Vector2 GetWorldPos(ResourceDeposit t, Data d)
     {
         return t.Poly.Entity(d).Center;
+    }
+
+    public override void RegisterForRedraws(Data d)
+    {
+        this.RegisterDrawOnTick(d);
     }
 }

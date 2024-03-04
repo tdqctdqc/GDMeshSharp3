@@ -19,4 +19,12 @@ public abstract partial class ChunkGraphicMultiModule :
         }
     }
     protected abstract IEnumerable<IChunkGraphicModule> GetModules();
+
+    public void RegisterForRedraws(Data d)
+    {
+        foreach (var g in GetModules())
+        {
+            g.RegisterForRedraws(d);
+        }
+    }
 }

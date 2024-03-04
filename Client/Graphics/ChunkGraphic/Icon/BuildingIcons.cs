@@ -9,7 +9,6 @@ public partial class BuildingIcons
     public BuildingIcons(MapChunk chunk, Data d) 
         : base("Buildings", chunk, MeshExt.GetQuadMesh(Vector2.One * 25f)) 
     {
-        Draw(d);
     }
 
     protected override Texture2D GetTexture(BuildingModel t)
@@ -33,5 +32,10 @@ public partial class BuildingIcons
     protected override Vector2 GetWorldPos(MapBuilding t, Data d)
     {
         return PlanetDomainExt.GetPolyCell(t.PolyCellId, d).GetCenter();
+    }
+
+    public override void RegisterForRedraws(Data d)
+    {
+        this.RegisterDrawOnTick(d);
     }
 }

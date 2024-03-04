@@ -5,32 +5,46 @@ public partial class ChunkGraphicHolder : Node2D
 {
     public MapChunk Chunk { get; private set; }
     public List<IChunkGraphicModule> Graphics { get; private set; }
-    private GraphicsSegmenter _segmenter;
-
-    public ChunkGraphicHolder(MapChunk chunk, 
-        GraphicsSegmenter segmenter, Data d)
+    public ChunkGraphicHolder(MapChunk chunk, Data d)
     {
         Chunk = chunk;
-        _segmenter = segmenter;
-        Graphics = GetModules(segmenter, d);
+        Graphics = GetModules(d);
         Graphics.ForEach(g =>
         {
+            g.RegisterForRedraws(d);
             AddChild(g.Node);
-            g.Draw(d);
         });
-        _segmenter.AddElement(this, chunk.RelTo.Center);
     }
 
-    private List<IChunkGraphicModule> GetModules(GraphicsSegmenter segmenter, 
-        Data d)
+    public override void _Process(double delta)
+    {
+        var cam = Game.I.Client.Cam();
+        if (cam.InViewport(Chunk.RelTo.Center) == false)
+        {
+            Visible = false;
+        }
+        else
+        {
+            Visible = true;
+        }
+    }
+
+    public void Draw(Data d)
+    {
+        foreach (var g in Graphics)
+        {
+            g.Draw(d);
+        }
+    }
+    private List<IChunkGraphicModule> GetModules(Data d)
     {
         return new List<IChunkGraphicModule>()
         {
-            new TerrainChunkModule(Chunk, segmenter, d),
-            new PoliticalFillChunkModule(Chunk, segmenter, d),
+            new TerrainChunkModule(Chunk, d),
+            new PoliticalChunkModule(Chunk, d),
             new RoadChunkGraphicNode(Chunk, d),
             new IconsChunkModule(Chunk, d),
-            new ResourceChunkModule(Chunk, segmenter, d),
+            new ResourceIcons(Chunk, d),
         };
     }
 }

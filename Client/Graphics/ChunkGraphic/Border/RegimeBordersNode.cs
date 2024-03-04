@@ -25,4 +25,9 @@ public partial class RegimeBordersGraphic : PolyBorder
     {
         return p.OwnerRegime.Fulfilled() ? p.OwnerRegime.Entity(data).PrimaryColor : Colors.Transparent;
     }
+
+    public override void RegisterForRedraws(Data d)
+    {
+        this.RegisterDrawOnTick(d);
+    }
 }

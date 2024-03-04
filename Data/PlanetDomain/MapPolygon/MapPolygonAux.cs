@@ -11,7 +11,6 @@ public class MapPolygonAux
     public PolyCells PolyCells => _polyCells.Value;
     private SingletonAux<PolyCells> _polyCells;
     public HashSet<MapChunk> Chunks { get; private set; }
-    public Dictionary<MapPolygon, MapChunk> ChunksByPoly { get; private set; }
     public Dictionary<Cell, MapChunk> ChunksByCell { get; private set; }
     public LandSeaManager LandSea { get; private set; }
     public ValChangeAction<MapPolygon, Regime> ChangedOwnerRegime { get; private set; }
@@ -44,8 +43,6 @@ public class MapPolygonAux
         data.Notices.SetPolyShapes.Subscribe(() => BuildPolyGrid(data));
         data.Notices.FinishedStateSync.Subscribe(() => BuildPolyGrid(data));
         
-        // data.Notices.SetPolyShapes.Subscribe(() => BuildChunks(data));
-        data.Notices.FinishedGen.Subscribe(() => BuildChunks(data));
         data.Notices.FinishedStateSync.Subscribe(() => BuildChunks(data));
         data.Notices.MadeCells.Subscribe(() => BuildChunks(data));
         
@@ -98,12 +95,12 @@ public class MapPolygonAux
         var polyGrid = new RegularGrid<MapPolygon>
         (
             polygon => polygon.Center,
-            data.Planet.Width / 10f
+            MapChunk.ChunkDim
         );
         var cellGrid = new RegularGrid<Cell>
         (
             c => c.GetCenter().ClampPosition(data),
-            data.Planet.Width / 10f
+            MapChunk.ChunkDim
         );
             
         foreach (var p in data.GetAll<MapPolygon>())
@@ -120,7 +117,6 @@ public class MapPolygonAux
         cellGrid.Update();
         
         
-        ChunksByPoly = new Dictionary<MapPolygon, MapChunk>();
         ChunksByCell = new Dictionary<Cell, MapChunk>();
         Chunks = new HashSet<MapChunk>();
         var keys = cellGrid.Cells.Keys
@@ -137,7 +133,6 @@ public class MapPolygonAux
                 : new List<MapPolygon>();
             var chunk = new MapChunk(polys, cells, key, data);
             Chunks.Add(chunk);
-            polys.ForEach(p => ChunksByPoly.Add(p, chunk));
             cells.ForEach(c => ChunksByCell.Add(c, chunk));
         }
     }

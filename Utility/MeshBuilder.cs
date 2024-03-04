@@ -7,7 +7,7 @@ using LightObjectPool;
 public class MeshBuilder
 {
     private static Pool<MeshBuilder> _pool;
-    public List<Triangle> Tris { get; private set; }
+    public List<Vector2> TriVertices { get; private set; }
     public List<Color> Colors { get; private set; }
     public List<Label> Labels { get; private set; }
     static MeshBuilder()
@@ -27,7 +27,7 @@ public class MeshBuilder
 
     public MeshBuilder()
     {
-        Tris = new List<Triangle>();
+        TriVertices = new List<Vector2>();
         Colors = new List<Color>();
         Labels = new List<Label>();
     }
@@ -37,46 +37,25 @@ public class MeshBuilder
     }
     public void Clear()
     {
-        Tris.Clear();
+        TriVertices.Clear();
         Colors.Clear();
     }
 
-    public void AddTriOutline(Triangle tri, float thickness, Color color)
+   
+    public void AddTri(Vector2 a, Vector2 b, Vector2 c, Color color)
     {
-        var center = tri.GetCentroid();
-        var aIn = center + (tri.A - center).Normalized() * ((tri.A - center).Length() - thickness);
-        var bIn = center + (tri.B - center).Normalized() * ((tri.B - center).Length() - thickness);
-        var cIn = center + (tri.C - center).Normalized() * ((tri.C - center).Length() - thickness);
-        
-        AddTri(tri.A, aIn, tri.B, color);
-        AddTri(tri.B, bIn, tri.A, color);
-        
-        AddTri(tri.A, aIn, tri.C, color);
-        AddTri(tri.C, cIn, tri.A, color);
-        
-        AddTri(tri.B, bIn, tri.C, color);
-        AddTri(tri.C, cIn, tri.B, color);
-    }
-    public void AddTri(Triangle tri, Color color)
-    {
-        Tris.Add(tri);
+        TriVertices.Add(a);
+        TriVertices.Add(b);
+        TriVertices.Add(c);
         Colors.Add(color);
     }
     
-    public void AddTri(Vector2 a, Vector2 b, Vector2 c, Color color)
-    {
-        var tri = new Triangle(a, b, c);
-        Tris.Add(tri);
-        Colors.Add(color);
-    }
     public void AddTriRel(Vector2 a, Vector2 b, Vector2 c, Color color,
         Vector2 relTo, Data d)
     {
-        var tri = new Triangle(
-            relTo.Offset(a, d), 
-            relTo.Offset(b, d), 
-            relTo.Offset(c, d));
-        Tris.Add(tri);
+        TriVertices.Add(relTo.Offset(a, d));
+        TriVertices.Add(relTo.Offset(b, d));
+        TriVertices.Add(relTo.Offset(c, d));
         Colors.Add(color);
     }
     
@@ -381,8 +360,8 @@ public class MeshBuilder
     }
     public MeshInstance2D GetMeshInstance()
     {
-        if (Tris.Count == 0) return new MeshInstance2D();
-        var mesh = MeshGenerator.GetArrayMesh(Tris.GetTriPoints().ToArray(), Colors.ToArray());
+        if (TriVertices.Count == 0) return new MeshInstance2D();
+        var mesh = MeshGenerator.GetArrayMesh(TriVertices.ToArray(), Colors.ToArray());
         var meshInstance = new MeshInstance2D();
         meshInstance.Mesh = mesh;
         Labels.ForEach(l => meshInstance.AddChild(l));

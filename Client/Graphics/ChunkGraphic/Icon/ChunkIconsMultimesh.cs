@@ -61,4 +61,5 @@ public abstract partial class ChunkIconsMultiMesh<TModel, TInstance>
     protected abstract IEnumerable<TInstance> GetElements(Data d);
     protected abstract TModel GetModel(TInstance t, Data d);
     protected abstract Vector2 GetWorldPos(TInstance t, Data d);
+    public abstract void RegisterForRedraws(Data d);
 }

@@ -50,7 +50,7 @@ public partial class TheaterGraphic : Node2D
             }
         }
 
-        if (mb.Tris.Count > 0)
+        if (mb.TriVertices.Count > 0)
         {
             AddChild(mb.GetMeshInstance());
         }

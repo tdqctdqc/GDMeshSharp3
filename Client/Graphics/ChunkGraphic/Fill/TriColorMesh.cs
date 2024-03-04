@@ -10,73 +10,45 @@ public abstract partial class TriColorMesh<TElement>
 {
     public string Name { get; private set; }
     public Node2D Node => this;
-    private Dictionary<TElement, List<int>> _triIndicesByElement;
-    private List<Vector2> _vertices;
+    private Dictionary<TElement, int> _elementTriCounts;
+    private Vector2[] _vertices;
+    private IReadOnlyList<TElement> _elements;
     private List<Color> _colors;
-    
     private ArrayMesh _arrayMesh;
     public TriColorMesh(string name, 
         Vector2 mapPos,
         LayerOrder layerOrder,
-        GraphicsSegmenter segmenter,
+        Dictionary<TElement, int> elementTriCounts,
+        IReadOnlyList<TElement> elements,
+        Vector2[] vertices,
         Data data)
     {
         ZAsRelative = false;
         ZIndex = (int)layerOrder;
         Name = name;
-        _triIndicesByElement = new Dictionary<TElement, List<int>>();
-        _vertices = new List<Vector2>();
+        _vertices = vertices;
+        _elementTriCounts = elementTriCounts;
+        _elements = elements;
         _colors = new List<Color>();
     }
-
-    public abstract Color GetColor(TElement poly, Data d);
-    public abstract IEnumerable<Triangle> GetTris(TElement e, Data d);
-    public abstract IEnumerable<TElement> GetElements(Data d);
-
-    protected void DrawFirst(Data d)
-    {
-        int iter = 0;
-        var elements = GetElements(d);
-        foreach (var element in elements)
-        {
-            var tris = GetTris(element, d);
-            var triIndices = new List<int>();
-            _triIndicesByElement.Add(element, triIndices);
-            var color = GetColor(element, d);
-            
-            foreach (var tri in tris)
-            {
-                triIndices.Add(iter);
-                _colors.Add(color);
-                _vertices.Add(tri.A);
-                _vertices.Add(tri.B);
-                _vertices.Add(tri.C);
-                iter++;
-            }
-        }
-
-        if (_vertices.Count < 3) _arrayMesh = new ArrayMesh();
-        else _arrayMesh = MeshGenerator.GetArrayMesh(_vertices.ToArray(), _colors.ToArray());
-        Mesh = _arrayMesh;
-    }
+    public abstract Color GetColor(TElement cell, Data d);
+    public abstract void RegisterForRedraws(Data d);
     public void Draw(Data d)
     {
-        if (_vertices.Count < 3) return;
-        var mdt = new MeshDataTool();
-        mdt.CreateFromSurface(_arrayMesh, 0);
-        _arrayMesh.ClearSurfaces();
-        foreach (var key in _triIndicesByElement.Keys)
+        _colors.Clear();
+        for (var i = 0; i < _elements.Count; i++)
         {
-            var tris = _triIndicesByElement[key];
-            var color = GetColor(key, d);
-            foreach (var tri in tris)
+            var e = _elements[i];
+            var color = GetColor(e, d);
+            var triCount = _elementTriCounts[e];
+            for (var j = 0; j < triCount; j++)
             {
-                mdt.SetVertexColor(tri*3, color);
-                mdt.SetVertexColor(tri*3 + 1, color);
-                mdt.SetVertexColor(tri*3 + 2, color);
+                _colors.Add(color);
             }
-        }
-    
-        mdt.CommitToSurface(_arrayMesh);
+        }        
+        if (_vertices.Length < 3) _arrayMesh = new ArrayMesh();
+        else _arrayMesh = MeshGenerator.GetArrayMesh(_vertices, 
+            _colors.ToArray());
+        Mesh = _arrayMesh;
     }
 }

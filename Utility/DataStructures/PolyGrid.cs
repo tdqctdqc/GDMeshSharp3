@@ -7,7 +7,7 @@ using Godot;
 public class PolyGrid<TPoly>
     where TPoly : class
 {
-    public Dictionary<Vector2I, HashSet<TPoly>> Cells { get; private set; }
+    public Dictionary<Vector2I, List<TPoly>> Cells { get; private set; }
     public (Vector2I, float)[] SearchSpiralKeyOffsets { get; private set; }
     public float CellWidth { get; }
     public float CellHeight { get; }
@@ -28,14 +28,14 @@ public class PolyGrid<TPoly>
         CellWidth = dim.X / NumXPartitions;
         NumYPartitions = Mathf.CeilToInt(dim.Y / maxCellSideLength);
         CellHeight = dim.Y / NumYPartitions;
-        Cells = new Dictionary<Vector2I, HashSet<TPoly>>();
+        Cells = new Dictionary<Vector2I, List<TPoly>>();
         Dimension = dim;
         for (var i = 0; i < NumXPartitions; i++)
         {
             for (var j = 0; j < NumYPartitions; j++)
             {
                 var key = new Vector2I(i, j);
-                Cells.Add(key, new HashSet<TPoly>());
+                Cells.Add(key, new List<TPoly>());
             }
         }
 
@@ -67,7 +67,7 @@ public class PolyGrid<TPoly>
                 var key = ClampKey(new Vector2I(i, j));
                 if (Cells.ContainsKey(key) == false)
                 {
-                    Cells.Add(key, new HashSet<TPoly>());
+                    Cells.Add(key, new List<TPoly>());
                 }
                 Cells[key].Add(poly);
             }

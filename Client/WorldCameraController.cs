@@ -10,7 +10,6 @@ public partial class WorldCameraController : Camera2D, ICameraController
     public float MaxZoomOut => _maxZoom;
     public Action Disconnect { get; set; }
     public float XScrollRatio { get; private set; }
-
     public void Process(float delta)
     {
         var mult = 1f;
@@ -87,6 +86,7 @@ public partial class WorldCameraController : Camera2D, ICameraController
         _data = data;
     }
 
+    
     public Vector2 GetMousePosInMapSpace()
     {
         if(_data.Planet == null) return Vector2.Inf;
@@ -137,5 +137,26 @@ public partial class WorldCameraController : Camera2D, ICameraController
         var zoomFactor = ShapingFunctions.EaseInCubic(_zoomLevel, _maxZoom, _minZoom);
         zoomFactor = Mathf.Clamp(zoomFactor, _minZoom, _maxZoom);
         Zoom = Vector2.One / zoomFactor;
+    }
+
+    public bool InViewport(Vector2 mapPos)
+    {
+        var global = GetMapPosInGlobalSpace(mapPos);
+        var screen = GetScreenCenterPosition();
+        if (global.DistanceTo(screen) < MapChunk.ChunkDim * 3f) return true;
+        var rect = GetViewportRect();
+        var toMouse = global - screen;
+        
+        var col = Colors.Red;
+        var xDist = Mathf.Abs(toMouse.X);
+        var yDist = Mathf.Abs(toMouse.Y);
+        
+        if (xDist * .75f < rect.Size.X / Zoom.X
+            && yDist * .75f < rect.Size.Y / Zoom.Y)
+        {
+            return true;
+        }
+
+        return false;
     }
 }
