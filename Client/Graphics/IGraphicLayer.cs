@@ -6,8 +6,6 @@ using Godot;
 public interface IGraphicLayer
 {
     int Z { get; }
-    List<ISettingsOption> Settings { get; }
-    Control GetControl();
+    MultiSettings GetSettings();
     string Name { get; }
-    bool Visible { get; set; }
 }

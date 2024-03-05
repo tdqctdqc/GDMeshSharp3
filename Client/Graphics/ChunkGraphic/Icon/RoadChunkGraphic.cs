@@ -7,6 +7,7 @@ using Godot;
 public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
 {
     private static float _drawWidth = 5f;
+    private Vector2 _zoomVisibilityRange;
     public Node2D Node => this;
     public void RegisterForRedraws(Data d)
     {
@@ -15,11 +16,12 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
 
     public MapChunk Chunk { get; private set; }
     public RoadChunkGraphicNode(MapChunk chunk, 
+        Vector2 zoomVisibilityRange,
         Data d)
     {
+        _zoomVisibilityRange = zoomVisibilityRange;
         Chunk = chunk;
         ZIndex = (int)LayerOrder.Roads;
-        ZAsRelative = false;
     }
 
     public void Draw(Data d)
@@ -48,5 +50,17 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
         if (mb.TriVertices.Count == 0) return;
         AddChild(mb.GetMeshInstance());
         mb.Return();
+    }
+    public void DoUiTick(UiTickContext context, Data d)
+    {
+        var zoom = context.ZoomLevel;
+        if (_zoomVisibilityRange.X > zoom || _zoomVisibilityRange.Y < zoom)
+        {
+            Visible = false;
+        }
+        else
+        {
+            Visible = true;
+        }
     }
 }

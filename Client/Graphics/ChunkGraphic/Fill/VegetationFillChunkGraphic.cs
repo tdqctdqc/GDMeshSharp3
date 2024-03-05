@@ -24,4 +24,9 @@ public partial class VegetationFillChunkGraphic
     {
         
     }
+
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        
+    }
 }

@@ -64,11 +64,11 @@ public class UnitMode : UiMode
             tooltip.Clear();
             return;
         }
-        var unitGraphics = _client.GetComponent<MapGraphics>()
-            .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
-        var close = unitGraphics
-            .Graphics[cell.GetChunk(_client.Data)]
-            .UnitsInOrder[cell].First();
+        var layerHolder = _client.GetComponent<MapGraphics>()
+            .GraphicLayerHolder;
+        var chunkGraphic = layerHolder.Chunks[cell.GetChunk(_client.Data)];
+        var close = chunkGraphic.Units.UnitsInOrder[cell]
+            .First();
         tooltip.PromptTooltip(new UnitTooltipTemplate(), close);
     }
 
@@ -85,11 +85,11 @@ public class UnitMode : UiMode
         }
         _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
         _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
-        var unitGraphics = _client.GetComponent<MapGraphics>()
-            .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
-        var unit = unitGraphics
-            .Graphics[cell.GetChunk(_client.Data)]
-            .UnitsInOrder[cell].First();
+        var layerHolder = _client.GetComponent<MapGraphics>()
+            .GraphicLayerHolder;
+        var chunkGraphic = layerHolder.Chunks[cell.GetChunk(_client.Data)];
+        var unit = chunkGraphic.Units.UnitsInOrder[cell]
+            .First();
         var group = unit.GetGroup(_client.Data);
         highlight.Draw(mb => mb.DrawMovementRecord(unit.Id, 4, cell.GetCenter(), _client.Data),
             cell.GetCenter());
@@ -105,9 +105,12 @@ public class UnitMode : UiMode
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell != null)
         {
-            var unitGraphics = _client.GetComponent<MapGraphics>()
-                .GraphicLayerHolder.Layers.OfType<UnitGraphicLayer>().First();
-            unitGraphics.CycleCell(_mouseOverHandler.MouseOverCell, _client.Data);
+            var layerHolder = _client.GetComponent<MapGraphics>()
+                .GraphicLayerHolder;
+            var chunkGraphic = layerHolder
+                .Chunks[cell.GetChunk(_client.Data)].Units;
+            chunkGraphic.CycleUnits(_mouseOverHandler.MouseOverCell, 
+                _client.Data);
         }
     }
     

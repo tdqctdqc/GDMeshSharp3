@@ -22,4 +22,9 @@ public partial class LandformFillChunkGraphic : PolyCellFillChunkGraphic
     {
         
     }
+
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        
+    }
 }

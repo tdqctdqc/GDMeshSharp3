@@ -24,6 +24,7 @@ public abstract partial class PolyCellBorder
     protected abstract float GetThickness(Cell m, Cell n, Data data);
     protected abstract Color GetColor(Cell p1, Data data);
     public abstract void RegisterForRedraws(Data d);
+    public abstract void DoUiTick(UiTickContext context, Data d);
 
     public void Draw(Data data)
     {

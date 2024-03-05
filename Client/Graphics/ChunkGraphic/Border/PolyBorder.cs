@@ -29,6 +29,7 @@ public abstract partial class PolyBorder
     protected abstract float GetThickness(MapPolygon p1, MapPolygon p2, Data data);
     protected abstract Color GetColor(MapPolygon p1, Data data);
     public abstract void RegisterForRedraws(Data d);
+    public abstract void DoUiTick(UiTickContext context, Data d);
 
     public void Draw(Data data)
     {

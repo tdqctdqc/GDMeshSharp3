@@ -27,4 +27,12 @@ public abstract partial class ChunkGraphicMultiModule :
             g.RegisterForRedraws(d);
         }
     }
+
+    public void DoUiTick(UiTickContext context, Data d)
+    {
+        foreach (var module in GetModules())
+        {
+            module.DoUiTick(context, d);
+        }
+    }
 }

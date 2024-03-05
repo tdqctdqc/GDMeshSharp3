@@ -28,4 +28,9 @@ public partial class ControllerPolyCellBorder : PolyCellBorder
     {
         this.RegisterDrawOnTick(d);
     }
+
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        
+    }
 }

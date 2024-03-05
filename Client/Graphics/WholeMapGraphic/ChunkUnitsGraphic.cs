@@ -5,31 +5,32 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class ChunkUnitsGraphic : Node2D
+public partial class ChunkUnitsGraphic : Node2D, IChunkGraphicModule
 {
     public MapChunk Chunk { get; private set; }
     public MeshInstance2D Child { get; private set; }
     public Dictionary<Cell, List<Unit>> UnitsInOrder { get; private set; }
+    public Node2D Node => this;
+    private Vector2 _zoomVisibilityRange;
+    private EntityGraphicReservoir<Unit, UnitGraphic> _graphics;
     private ChunkUnitsGraphic() { }
     public ChunkUnitsGraphic(MapChunk chunk, 
-        GraphicsSegmenter segmenter, Data d)
+        Vector2 zoomVisibilityRange,
+        EntityGraphicReservoir<Unit, UnitGraphic> graphics,
+        Data d)
     {
+        _graphics = graphics;
+        _zoomVisibilityRange = zoomVisibilityRange;
         UnitsInOrder = new Dictionary<Cell, List<Unit>>();
+        ZIndex = (int)LayerOrder.Units;
         Chunk = chunk;
-        segmenter.AddElement(this, Chunk.RelTo.Center);
     }
 
-    public void Draw(Data data, 
-        UnitGraphicLayer layer,
-        GraphicsSegmenter segmenter)
+    public void Draw(Data data)
     {
-        if (Child != null)
-        {
-            Child.QueueFree();
-            Child = null;
-        }
         PutUnitsInOrder(data);
-        DrawUnitsInOrder(data, layer, segmenter);
+        PutUnitGraphicsInOrder(data);
+        RedrawUnitGraphics(data);
     }
 
     private void PutUnitsInOrder(Data data)
@@ -49,13 +50,8 @@ public partial class ChunkUnitsGraphic : Node2D
             UnitsInOrder.Add(cell, units);
         }
     }
-    private void DrawUnitsInOrder(Data data, 
-        UnitGraphicLayer layer, GraphicsSegmenter segmenter)
+    private void PutUnitGraphicsInOrder(Data data)
     {
-        if (GetParent() == null)
-        {
-            segmenter.AddElement(this, Chunk.RelTo.Center);
-        }
         var cells = Chunk.Cells.OrderBy(c => c.GetCenter().Y);
 
         foreach (var cell in cells)
@@ -70,7 +66,7 @@ public partial class ChunkUnitsGraphic : Node2D
             for (var i = 0; i < units.Count; i++)
             {
                 var unit = units[i];
-                var graphic = layer.GetUnitGraphic(unit, data);
+                var graphic = _graphics.Graphics[unit];
                 graphic.GetParent()?.RemoveChild(graphic);
                 var proportion = (float)i / units.Count;
                 var relPos = from.Lerp(to, proportion);
@@ -82,9 +78,19 @@ public partial class ChunkUnitsGraphic : Node2D
         }
     }
 
+    private void RedrawUnitGraphics(Data d)
+    {
+        foreach (var (cell, units) in UnitsInOrder)
+        {
+            foreach (var unit in units)
+            {
+                var graphic = _graphics.Graphics[unit];
+                graphic.Draw(unit, d);
+            }
+        }
+    }
+
     public void CycleUnits(Cell cell, 
-        GraphicsSegmenter segmenter,
-        UnitGraphicLayer layer, 
         Data d)
     {
         if (UnitsInOrder.ContainsKey(cell) == false) return;
@@ -92,25 +98,26 @@ public partial class ChunkUnitsGraphic : Node2D
         var first = list.First();
         list.Remove(first);
         list.Add(first);
-        DrawUnitsInOrder(d, layer, segmenter);
+        PutUnitGraphicsInOrder(d);
     }
-    public void Update(Data data, 
-        UnitGraphicLayer layer, GraphicsSegmenter segmenter,
-        ConcurrentQueue<Action> queue)
+
+
+    public void RegisterForRedraws(Data d)
     {
-        queue.Enqueue(() =>
-        {
-            Draw(data, layer, segmenter);
-        });
+        this.RegisterDrawOnTick(d);
+        
     }
-    
-    public override void _Process(double delta)
+
+    public void DoUiTick(UiTickContext context, Data d)
     {
-        var zoom = Game.I.Client.Cam().ScaledZoomOut;
-        if (zoom > .5f)
+        var zoom = context.ZoomLevel;
+        if (_zoomVisibilityRange.X > zoom || _zoomVisibilityRange.Y < zoom)
         {
             Visible = false;
         }
-        else Visible = true;
+        else
+        {
+            Visible = true;
+        }
     }
 }

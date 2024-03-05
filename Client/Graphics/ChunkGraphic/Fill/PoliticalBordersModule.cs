@@ -59,4 +59,9 @@ public partial class PoliticalBordersModule : PolyCellBorder
     {
         this.RegisterDrawOnTick(d);
     }
+
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        
+    }
 }

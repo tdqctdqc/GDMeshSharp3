@@ -23,4 +23,9 @@ public partial class ControllerRegimePolyCellFill
     {
         this.RegisterDrawOnTick(d);
     }
+
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        
+    }
 }

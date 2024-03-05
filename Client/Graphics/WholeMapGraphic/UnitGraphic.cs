@@ -10,12 +10,10 @@ public partial class UnitGraphic : Node2D
         _regimeColor,
         _healthMesh;
 
-    // private Label _powerPoints;
     private TextureRect _troopRect, _flagRect;
     private static LabelSettings _labelSettings;
     private static QuadMesh _border, _group, _regime, 
         _health;
-
     private static float _iconSize = 15f;
     static UnitGraphic()
     {

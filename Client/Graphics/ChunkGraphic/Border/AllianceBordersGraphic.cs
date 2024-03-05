@@ -24,6 +24,11 @@ public partial class AllianceBordersGraphic : PolyBorder
         this.RegisterDrawOnTick(d);
     }
 
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        
+    }
+
     protected override float GetThickness(MapPolygon m, MapPolygon n, Data data)
     {
         if (m.OwnerRegime.RefId == -1 || n.OwnerRegime.RefId == -1) 

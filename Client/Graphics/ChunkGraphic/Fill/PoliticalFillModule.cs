@@ -49,4 +49,9 @@ public partial class PoliticalFillModule : PolyCellFillChunkGraphic
     {
         this.RegisterDrawOnTick(d);
     }
+
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        
+    }
 }

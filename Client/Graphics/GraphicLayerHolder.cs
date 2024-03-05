@@ -7,24 +7,26 @@ using System.Threading.Tasks;
 using Godot;
 public enum LayerOrder
 {
-    Terrain, Rivers, PolyFill, 
+    Terrain, PolyFill, Rivers, 
     Roads, Icons, Resources,
     UnitOrders, Units, Theaters
 }
 public class GraphicLayerHolder
 {
-    public Dictionary<MapChunk, ChunkGraphicHolder> Chunks { get; private set; }
-    public List<IGraphicLayer> Layers { get; private set; }
+    public Dictionary<MapChunk, ChunkGraphic> Chunks { get; private set; }
+    public EntityGraphicReservoir<Unit, UnitGraphic> UnitGraphics { get; private set; }
+    private Client _client;
     public GraphicLayerHolder(Client client, GraphicsSegmenter segmenter, 
         Node2D hook, Data data)
     {
-        var sw = new Stopwatch();
-        sw.Start();
+        _client = client;
+        UnitGraphics = new EntityGraphicReservoir<Unit, UnitGraphic>(
+            u => new UnitGraphic(u, data), 
+            data);
         Chunks = data.Planet.PolygonAux.Chunks
-            // .AsParallel()
             .Select(c =>
             {
-                var graphic = new ChunkGraphicHolder(c, data);
+                var graphic = new ChunkGraphic(c, this, data);
                 graphic.Draw(data);
                 return (c, graphic);
             })
@@ -35,18 +37,16 @@ public class GraphicLayerHolder
         {
             segmenter.AddElement(kvp.Value, kvp.Key.RelTo.Center);
         }
-        sw.Stop();
-        GD.Print("Make graphic chunks " + sw.Elapsed.TotalMilliseconds);
-        Layers = new List<IGraphicLayer>();
-        
-        // AddLayer(UnitOrdersGraphicLayer.GetLayer(segmenter, client), true);
-        AddLayer(new UnitGraphicLayer(client, segmenter, data), true);
-        AddLayer(TheaterGraphicLayer.GetLayer(segmenter, client), false);
+        client.UiTick.Subscribe(DoUiTick);
     }
-    private void AddLayer(IGraphicLayer layer, bool startVisible)
+
+    private void DoUiTick()
     {
-        layer.Visible = startVisible;
-        Layers.Add(layer);
+        var context = new UiTickContext(_client);
+        foreach (var (chunk, graphic) in Chunks)
+        {
+            graphic.DoUiTick(context, _client.Data);
+        }
     }
 }
 

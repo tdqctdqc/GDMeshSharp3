@@ -6,9 +6,13 @@ using Godot;
 public partial class SettlementIcons 
     : ChunkIconsMultiMesh<SettlementTier, Cell>
 {
-    public SettlementIcons(MapChunk chunk, Data d) 
+    private Vector2 _zoomVisibilityRange;
+    public SettlementIcons(MapChunk chunk, 
+        Vector2 zoomVisibilityRange,
+        Data d) 
         : base("Settlements", chunk, MeshExt.GetQuadMesh(Vector2.One * 50f))
     {
+        _zoomVisibilityRange = zoomVisibilityRange;
     }
     protected override IEnumerable<Cell> GetElements(Data data)
     {
@@ -35,6 +39,18 @@ public partial class SettlementIcons
     public override void RegisterForRedraws(Data d)
     {
         this.RegisterDrawOnTick(d);
+    }
+    public override void DoUiTick(UiTickContext context, Data d)
+    {
+        var zoom = context.ZoomLevel;
+        if (_zoomVisibilityRange.X > zoom || _zoomVisibilityRange.Y < zoom)
+        {
+            Visible = false;
+        }
+        else
+        {
+            Visible = true;
+        }
     }
 }
 

@@ -16,12 +16,22 @@ public partial class RiverFillChunkGraphic
 
     public override Color GetColor(Cell cell, Data d)
     {
-        return _riverColor
-            .Darkened(Game.I.Random.RandfRange(-TerrainChunkModule.ColorWobble, TerrainChunkModule.ColorWobble))
-            ;
+        if(cell is RiverCell)
+        {
+            return _riverColor
+                .Darkened(Game.I.Random
+                    .RandfRange(-TerrainChunkModule.ColorWobble,
+                        TerrainChunkModule.ColorWobble));
+        }
+        return Colors.Transparent;
     }
 
     public override void RegisterForRedraws(Data d)
+    {
+        
+    }
+
+    public override void DoUiTick(UiTickContext context, Data d)
     {
         
     }

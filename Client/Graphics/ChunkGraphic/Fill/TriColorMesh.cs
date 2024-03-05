@@ -23,7 +23,7 @@ public abstract partial class TriColorMesh<TElement>
         Vector2[] vertices,
         Data data)
     {
-        ZAsRelative = false;
+        // ZAsRelative = false;
         ZIndex = (int)layerOrder;
         Name = name;
         _vertices = vertices;
@@ -33,6 +33,8 @@ public abstract partial class TriColorMesh<TElement>
     }
     public abstract Color GetColor(TElement cell, Data d);
     public abstract void RegisterForRedraws(Data d);
+    public abstract void DoUiTick(UiTickContext context, Data d);
+
     public void Draw(Data d)
     {
         _colors.Clear();
