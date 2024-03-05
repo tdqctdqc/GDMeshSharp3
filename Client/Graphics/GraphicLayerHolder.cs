@@ -9,7 +9,8 @@ public enum LayerOrder
 {
     Terrain, PolyFill, Rivers, 
     Roads, Icons, Resources,
-    UnitOrders, Units, Theaters
+    UnitOrders, Units, Theaters,
+    Labels
 }
 public class GraphicLayerHolder
 {
