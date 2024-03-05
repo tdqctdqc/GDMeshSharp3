@@ -48,6 +48,8 @@ public class MeshBuilder
         TriVertices.Add(b);
         TriVertices.Add(c);
         Colors.Add(color);
+        Colors.Add(color);
+        Colors.Add(color);
     }
     
     public void AddTriRel(Vector2 a, Vector2 b, Vector2 c, Color color,
@@ -56,6 +58,8 @@ public class MeshBuilder
         TriVertices.Add(relTo.Offset(a, d));
         TriVertices.Add(relTo.Offset(b, d));
         TriVertices.Add(relTo.Offset(c, d));
+        Colors.Add(color);
+        Colors.Add(color);
         Colors.Add(color);
     }
     
@@ -361,7 +365,9 @@ public class MeshBuilder
     public MeshInstance2D GetMeshInstance()
     {
         if (TriVertices.Count == 0) return new MeshInstance2D();
-        var mesh = MeshGenerator.GetArrayMesh(TriVertices.ToArray(), Colors.ToArray());
+        var mesh = MeshGenerator.GetArrayMesh(
+            TriVertices.ToArray(), 
+            Colors.ToArray());
         var meshInstance = new MeshInstance2D();
         meshInstance.Mesh = mesh;
         Labels.ForEach(l => meshInstance.AddChild(l));

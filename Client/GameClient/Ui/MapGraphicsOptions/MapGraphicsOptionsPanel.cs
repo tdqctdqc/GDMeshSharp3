@@ -27,14 +27,18 @@ public partial class MapGraphicsOptionsPanel : Panel, IClientComponent
         vbox.AnchorsPreset = (int)LayoutPreset.FullRect;
         _scroll.AddChild(vbox);
         client.GetComponent<UiFrame>().LeftSidebar.AddChild(this);
-        // foreach (var graphicLayer in client.GetComponent<MapGraphics>().GraphicLayerHolder.Layers)
-        // {
-        //     vbox.AddChild(graphicLayer.GetControl());
-        //     foreach (var setting in graphicLayer.Settings)
-        //     {
-        //         vbox.AddChild(setting.GetControlInterface());
-        //     }
-        // }
+        var first = client.GetComponent<MapGraphics>()
+            .GraphicLayerHolder.Chunks.First().Value;
+        foreach (var module in first.GetModules())
+        {
+            var settings = module.GetSettings(client.Data);
+            
+            vbox.AddChild(NodeExt.CreateLabel(module.Name));
+            foreach (var setting in settings.SettingsOptions)
+            {
+                vbox.AddChild(setting.GetControlInterface());
+            }
+        }
     }
 
     public override void _GuiInput(InputEvent @event)

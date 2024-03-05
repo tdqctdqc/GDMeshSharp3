@@ -7,6 +7,7 @@ public partial class ChunkGraphic : Node2D
     public static Vector2 IconZoomVisRange { get; private set; }
         = new Vector2(0f, .5f);
     public TerrainChunkModule Terrain {get; private set; }
+    public PoliticalChunkModule Political { get; private set; }
     public RoadChunkGraphicNode Roads {get; private set; }
     public IconsChunkModule Icons {get; private set; }
     public ResourceIcons ResourceIcons {get; private set; }
@@ -42,7 +43,8 @@ public partial class ChunkGraphic : Node2D
     {
         foreach (var g in GetModules())
         {
-            g.DoUiTick(context, d);
+            g.Visibility.CheckVisibleTick(context, d);
+            g.Node.Visible = g.Visibility.Visible();
         }
     }
     public void Draw(Data d)
@@ -56,6 +58,7 @@ public partial class ChunkGraphic : Node2D
     private void MakeModules(GraphicLayerHolder holder, Data d)
     {
         Terrain = new TerrainChunkModule(Chunk, d);
+        Political = new PoliticalChunkModule(Chunk, d);
         Roads = new RoadChunkGraphicNode(Chunk, ChunkGraphic.IconZoomVisRange, d);
         Icons = new IconsChunkModule(Chunk, d);
         ResourceIcons = new ResourceIcons(Chunk, ChunkGraphic.IconZoomVisRange, d);
@@ -63,9 +66,10 @@ public partial class ChunkGraphic : Node2D
             holder.UnitGraphics,
             d);
     }
-    private IEnumerable<IChunkGraphicModule> GetModules()
+    public IEnumerable<IChunkGraphicModule> GetModules()
     {
         yield return Terrain;
+        yield return Political;
         yield return Roads;
         yield return Icons;
         yield return ResourceIcons;

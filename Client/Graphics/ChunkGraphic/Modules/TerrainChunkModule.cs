@@ -12,6 +12,7 @@ public partial class TerrainChunkModule : ChunkGraphicMultiModule
     private RiverFillChunkGraphic _r;
     
     public TerrainChunkModule(MapChunk chunk, Data data)
+        : base("Terrain", new Vector2(0f, 1f))
     {
         _lf = new LandformFillChunkGraphic(chunk, data);
         _v = new VegetationFillChunkGraphic(chunk, data);
@@ -27,5 +28,13 @@ public partial class TerrainChunkModule : ChunkGraphicMultiModule
         yield return _lf;
         yield return _v;
         yield return _r;
+    }
+
+    public override Settings GetSettings(Data d)
+    {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        return settings;
     }
 }

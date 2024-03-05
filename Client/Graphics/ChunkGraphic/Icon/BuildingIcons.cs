@@ -6,13 +6,12 @@ using Godot;
 public partial class BuildingIcons 
     : ChunkIconsMultiMesh<BuildingModel, MapBuilding>
 {
-    private Vector2 _zoomVisibilityRange;
     public BuildingIcons(MapChunk chunk, 
         Vector2 zoomVisibilityRange,
         Data d) 
-        : base("Buildings", chunk, MeshExt.GetQuadMesh(Vector2.One * 25f))
+        : base("Buildings", zoomVisibilityRange, chunk, 
+            MeshExt.GetQuadMesh(Vector2.One * 25f))
     {
-        _zoomVisibilityRange = zoomVisibilityRange;
     }
 
     protected override Texture2D GetTexture(BuildingModel t)
@@ -43,16 +42,13 @@ public partial class BuildingIcons
         this.RegisterDrawOnTick(d);
     }
 
-    public override void DoUiTick(UiTickContext context, Data d)
+
+    public override Settings GetSettings(Data d)
     {
-        var zoom = context.ZoomLevel;
-        if (_zoomVisibilityRange.X > zoom || _zoomVisibilityRange.Y < zoom)
-        {
-            Visible = false;
-        }
-        else
-        {
-            Visible = true;
-        }
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        
+        return settings;
     }
 }

@@ -6,8 +6,11 @@ using Godot;
 
 public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
 {
+    public string Name => "Roads";
     private static float _drawWidth = 5f;
-    private Vector2 _zoomVisibilityRange;
+    private bool _visibleByZoom;
+    public ChunkGraphicModuleVisibility Visibility { get; }
+
     public Node2D Node => this;
     public void RegisterForRedraws(Data d)
     {
@@ -19,7 +22,7 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
         Vector2 zoomVisibilityRange,
         Data d)
     {
-        _zoomVisibilityRange = zoomVisibilityRange;
+        Visibility = new ChunkGraphicModuleVisibility(zoomVisibilityRange);
         Chunk = chunk;
         ZIndex = (int)LayerOrder.Roads;
     }
@@ -53,14 +56,14 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
     }
     public void DoUiTick(UiTickContext context, Data d)
     {
-        var zoom = context.ZoomLevel;
-        if (_zoomVisibilityRange.X > zoom || _zoomVisibilityRange.Y < zoom)
-        {
-            Visible = false;
-        }
-        else
-        {
-            Visible = true;
-        }
+        Visibility.CheckVisibleTick(context, d);
     }
+    public Settings GetSettings(Data d)
+    {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        return settings;
+    }
+
 }

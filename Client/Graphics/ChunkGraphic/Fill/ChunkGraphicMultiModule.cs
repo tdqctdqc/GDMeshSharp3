@@ -5,11 +5,14 @@ using Godot;
 public abstract partial class ChunkGraphicMultiModule : 
     Node2D, IChunkGraphicModule
 {
+    public string Name { get; private set; }
     public Node2D Node => this;
+    public ChunkGraphicModuleVisibility Visibility { get; }
 
-    public ChunkGraphicMultiModule()
+    public ChunkGraphicMultiModule(string name, Vector2 zoomVisRange)
     {
-        
+        Name = name;
+        Visibility = new ChunkGraphicModuleVisibility(zoomVisRange);
     }
     public void Draw(Data d)
     {
@@ -28,11 +31,5 @@ public abstract partial class ChunkGraphicMultiModule :
         }
     }
 
-    public void DoUiTick(UiTickContext context, Data d)
-    {
-        foreach (var module in GetModules())
-        {
-            module.DoUiTick(context, d);
-        }
-    }
+    public abstract Settings GetSettings(Data d);
 }

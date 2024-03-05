@@ -6,11 +6,11 @@ public class Settings : ISettings
 {
     public string Name { get; private set; }
 
-    public List<ISettingsOption> Options() =>
-        this.GetPropertiesOfType<ISettingsOption>().ToList();
+    public List<ISettingsOption> SettingsOptions { get; }
 
-    protected Settings(string name)
+    public Settings(string name)
     {
         Name = name;
+        SettingsOptions = new List<ISettingsOption>();
     }
 }

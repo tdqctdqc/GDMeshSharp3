@@ -20,16 +20,24 @@ public class EntityGraphicReservoir<TEntity, TGraphic>
         }
         d.SubscribeForCreation<TEntity>(n =>
         {
-            var entity = (TEntity)n.Entity;
-            var graphic = makeGraphic(entity);
-            Graphics.Add(entity, graphic);
+            Game.I.Client.QueuedUpdates
+                .Enqueue(() =>
+                {
+                    var entity = (TEntity)n.Entity;
+                    var graphic = makeGraphic(entity);
+                    Graphics.Add(entity, graphic);
+                });
         });
         d.SubscribeForDestruction<TEntity>(n =>
         {
-            var entity = (TEntity)n.Entity;
-            var graphic = Graphics[entity];
-            graphic.QueueFree();
-            Graphics.Remove(entity);
+            Game.I.Client.QueuedUpdates
+                .Enqueue(() =>
+                {
+                    var entity = (TEntity)n.Entity;
+                    var graphic = Graphics[entity];
+                    graphic.QueueFree();
+                    Graphics.Remove(entity);
+                });
         });
     }
     

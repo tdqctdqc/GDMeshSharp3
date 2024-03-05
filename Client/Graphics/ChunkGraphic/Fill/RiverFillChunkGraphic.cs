@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using Godot;
 
 public partial class RiverFillChunkGraphic 
@@ -8,7 +9,8 @@ public partial class RiverFillChunkGraphic
     public RiverFillChunkGraphic(MapChunk chunk,
         Data data) 
         : base("River", chunk, 
-            LayerOrder.Rivers, data)
+            LayerOrder.Rivers, 
+            new Vector2(0f, 1f), data)
     {
         _riverColor = data.Models.Landforms.River
             .Color;
@@ -31,8 +33,13 @@ public partial class RiverFillChunkGraphic
         
     }
 
-    public override void DoUiTick(UiTickContext context, Data d)
+    public override Settings GetSettings(Data d)
     {
-        
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
+        return settings;
     }
 }

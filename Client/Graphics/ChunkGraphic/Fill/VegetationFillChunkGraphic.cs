@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using Godot;
 
 public partial class VegetationFillChunkGraphic 
@@ -8,6 +9,7 @@ public partial class VegetationFillChunkGraphic
         Data data) 
         : base("Vegetation", chunk, 
             LayerOrder.Terrain,
+            new Vector2(0f, 1f),
             data)
     {
     }
@@ -25,8 +27,13 @@ public partial class VegetationFillChunkGraphic
         
     }
 
-    public override void DoUiTick(UiTickContext context, Data d)
+    public override Settings GetSettings(Data d)
     {
-        
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
+        return settings;
     }
 }

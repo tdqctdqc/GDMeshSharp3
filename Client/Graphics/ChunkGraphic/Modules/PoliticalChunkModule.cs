@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using Godot;
 
 public partial class PoliticalChunkModule 
     : ChunkGraphicMultiModule
@@ -12,7 +13,7 @@ public partial class PoliticalChunkModule
     }
     public Mode SelectedMode { get; private set; }
     public PoliticalChunkModule(MapChunk chunk, 
-        Data d)
+        Data d) : base("Political", new Vector2(0f, 1f))
     {
         SelectedMode = Mode.Regime;
         _fill = new PoliticalFillModule(this, chunk, d);
@@ -27,5 +28,16 @@ public partial class PoliticalChunkModule
     {
         yield return _fill;
         yield return _border;
+    }
+
+    public override Settings GetSettings(Data d)
+    {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
+        
+        return settings;
     }
 }

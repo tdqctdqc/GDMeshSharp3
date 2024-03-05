@@ -8,6 +8,7 @@ public partial class IconsChunkModule : ChunkGraphicMultiModule
     public BuildingIcons BuildingIcons { get; private set; }
     public SettlementIcons SettlementIcons { get; private set; }
     public IconsChunkModule(MapChunk chunk, Data data)
+        : base("Icons", ChunkGraphic.IconZoomVisRange)
     {
         ZIndex = (int)LayerOrder.Icons;
         SettlementIcons = new SettlementIcons(chunk,
@@ -24,5 +25,12 @@ public partial class IconsChunkModule : ChunkGraphicMultiModule
     {
         yield return SettlementIcons;
         yield return BuildingIcons;
+    }
+    public override Settings GetSettings(Data d)
+    {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        return settings;
     }
 }

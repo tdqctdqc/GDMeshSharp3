@@ -11,11 +11,15 @@ public abstract partial class PolyBorder
 {
     public MapChunk Chunk { get; private set; }
     public string Name { get; private set; }
+    public ChunkGraphicModuleVisibility Visibility { get; }
+
     public Node2D Node => this;
     public PolyBorder(string name, MapChunk chunk, 
         LayerOrder layerOrder,
+        Vector2 zoomVisRange,
         Data data)
     {
+        Visibility = new ChunkGraphicModuleVisibility(zoomVisRange);
         Chunk = chunk;
         Name = name;
         ZIndex = (int)layerOrder;
@@ -29,7 +33,16 @@ public abstract partial class PolyBorder
     protected abstract float GetThickness(MapPolygon p1, MapPolygon p2, Data data);
     protected abstract Color GetColor(MapPolygon p1, Data data);
     public abstract void RegisterForRedraws(Data d);
-    public abstract void DoUiTick(UiTickContext context, Data d);
+    public Settings GetSettings(Data d)
+    {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
+        return settings;
+    }
+
 
     public void Draw(Data data)
     {

@@ -8,7 +8,8 @@ public partial class RegimeBordersGraphic : PolyBorder
     private static float _thickness = 5f;
     public RegimeBordersGraphic(MapChunk chunk, Data data) 
         : base(nameof(RegimeBordersGraphic), 
-            chunk, LayerOrder.PolyFill, data)
+            chunk, LayerOrder.PolyFill, 
+            new Vector2(0f, 1f), data)
     {
     }
     protected override bool InUnion(MapPolygon p1, MapPolygon p2, Data data)
@@ -29,10 +30,5 @@ public partial class RegimeBordersGraphic : PolyBorder
     public override void RegisterForRedraws(Data d)
     {
         this.RegisterDrawOnTick(d);
-    }
-
-    public override void DoUiTick(UiTickContext context, Data d)
-    {
-        
     }
 }

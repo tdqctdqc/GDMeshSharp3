@@ -8,7 +8,7 @@ public partial class AllianceBordersGraphic : PolyBorder
     public AllianceBordersGraphic(MapChunk chunk, 
         Data data, bool primaryColor) : base(
             nameof(AllianceBordersGraphic), chunk, 
-            LayerOrder.PolyFill, data)
+            LayerOrder.PolyFill, new Vector2(0f, 1f), data)
     {
     }
 
@@ -22,11 +22,6 @@ public partial class AllianceBordersGraphic : PolyBorder
     public override void RegisterForRedraws(Data d)
     {
         this.RegisterDrawOnTick(d);
-    }
-
-    public override void DoUiTick(UiTickContext context, Data d)
-    {
-        
     }
 
     protected override float GetThickness(MapPolygon m, MapPolygon n, Data data)

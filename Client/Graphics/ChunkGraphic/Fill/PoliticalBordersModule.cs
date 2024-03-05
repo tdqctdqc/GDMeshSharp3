@@ -8,7 +8,9 @@ public partial class PoliticalBordersModule : PolyCellBorder
     public PoliticalBordersModule(PoliticalChunkModule parent,
         MapChunk chunk, 
         Data data)
-        : base("Political Border", chunk, LayerOrder.PolyFill, data)
+        : base("Political Border", 
+            chunk, new Vector2(0f, 1f),
+            LayerOrder.PolyFill, data)
     {
         Parent = parent;
     }
@@ -58,10 +60,5 @@ public partial class PoliticalBordersModule : PolyCellBorder
     public override void RegisterForRedraws(Data d)
     {
         this.RegisterDrawOnTick(d);
-    }
-
-    public override void DoUiTick(UiTickContext context, Data d)
-    {
-        
     }
 }

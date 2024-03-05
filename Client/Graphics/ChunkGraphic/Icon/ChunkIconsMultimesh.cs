@@ -7,13 +7,17 @@ public abstract partial class ChunkIconsMultiMesh<TModel, TInstance>
 {
     public string Name { get; private set; }
     public MapChunk Chunk { get; private set; }
+    public ChunkGraphicModuleVisibility Visibility { get; }
+
     public Node2D Node => this;
     private Mesh _mesh;
     public Dictionary<TModel, MultiMeshInstance2D> MultiMeshes { get; private set; }
     
     public ChunkIconsMultiMesh(string name, 
+        Vector2 zoomVisRange,
         MapChunk chunk, Mesh mesh)
     {
+        Visibility = new ChunkGraphicModuleVisibility(zoomVisRange);
         _mesh = mesh;
         Name = name;
         Chunk = chunk;
@@ -62,5 +66,5 @@ public abstract partial class ChunkIconsMultiMesh<TModel, TInstance>
     protected abstract TModel GetModel(TInstance t, Data d);
     protected abstract Vector2 GetWorldPos(TInstance t, Data d);
     public abstract void RegisterForRedraws(Data d);
-    public abstract void DoUiTick(UiTickContext context, Data d);
+    public abstract Settings GetSettings(Data d);
 }

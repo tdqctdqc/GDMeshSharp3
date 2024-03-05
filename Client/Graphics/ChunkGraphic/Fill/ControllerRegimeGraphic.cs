@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using Godot;
 
 public partial class ControllerRegimeGraphic : ChunkGraphicMultiModule
 {
@@ -7,7 +8,7 @@ public partial class ControllerRegimeGraphic : ChunkGraphicMultiModule
     private ControllerPolyCellBorder _borders;
     public ControllerRegimeGraphic(MapChunk chunk, 
         GraphicsSegmenter segmenter, Data data) 
-        : base()
+        : base("Controller", new Vector2(0f, 1f))
     {
         _fill = new ControllerRegimePolyCellFill(chunk, data);
         _borders = new ControllerPolyCellBorder(chunk, data);
@@ -21,5 +22,16 @@ public partial class ControllerRegimeGraphic : ChunkGraphicMultiModule
     {
         yield return _fill;
         yield return _borders;
+    }
+
+    public override Settings GetSettings(Data d)
+    {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
+        
+        return settings;
     }
 }

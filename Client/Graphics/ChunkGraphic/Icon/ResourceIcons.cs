@@ -6,14 +6,13 @@ using Godot;
 public partial class ResourceIcons 
     : ChunkIconsMultiMesh<Item, ResourceDeposit>
 {
-    private Vector2 _zoomVisibilityRange;
 
     public ResourceIcons(MapChunk chunk, Vector2 zoomVisibilityRange,
         Data d) 
-        : base("Resources", chunk, MeshExt.GetQuadMesh(Vector2.One * 25f))
+        : base("Resources", zoomVisibilityRange, chunk, 
+            MeshExt.GetQuadMesh(Vector2.One * 25f))
     {
         ZIndex = (int)LayerOrder.Icons;
-        _zoomVisibilityRange = zoomVisibilityRange;
     }
 
     protected override Texture2D GetTexture(Item t)
@@ -43,16 +42,13 @@ public partial class ResourceIcons
     {
         this.RegisterDrawOnTick(d);
     }
-    public override void DoUiTick(UiTickContext context, Data d)
+
+    public override Settings GetSettings(Data d)
     {
-        var zoom = context.ZoomLevel;
-        if (_zoomVisibilityRange.X > zoom || _zoomVisibilityRange.Y < zoom)
-        {
-            Visible = false;
-        }
-        else
-        {
-            Visible = true;
-        }
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        
+        return settings;
     }
 }

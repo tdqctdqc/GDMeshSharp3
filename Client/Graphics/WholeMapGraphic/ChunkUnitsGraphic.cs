@@ -7,11 +7,12 @@ using Godot;
 
 public partial class ChunkUnitsGraphic : Node2D, IChunkGraphicModule
 {
+    public string Name => "Units";
     public MapChunk Chunk { get; private set; }
+    public ChunkGraphicModuleVisibility Visibility { get; }
     public MeshInstance2D Child { get; private set; }
     public Dictionary<Cell, List<Unit>> UnitsInOrder { get; private set; }
     public Node2D Node => this;
-    private Vector2 _zoomVisibilityRange;
     private EntityGraphicReservoir<Unit, UnitGraphic> _graphics;
     private ChunkUnitsGraphic() { }
     public ChunkUnitsGraphic(MapChunk chunk, 
@@ -20,7 +21,7 @@ public partial class ChunkUnitsGraphic : Node2D, IChunkGraphicModule
         Data d)
     {
         _graphics = graphics;
-        _zoomVisibilityRange = zoomVisibilityRange;
+        Visibility = new ChunkGraphicModuleVisibility(zoomVisibilityRange);
         UnitsInOrder = new Dictionary<Cell, List<Unit>>();
         ZIndex = (int)LayerOrder.Units;
         Chunk = chunk;
@@ -108,16 +109,13 @@ public partial class ChunkUnitsGraphic : Node2D, IChunkGraphicModule
         
     }
 
-    public void DoUiTick(UiTickContext context, Data d)
+    public Settings GetSettings(Data d)
     {
-        var zoom = context.ZoomLevel;
-        if (_zoomVisibilityRange.X > zoom || _zoomVisibilityRange.Y < zoom)
-        {
-            Visible = false;
-        }
-        else
-        {
-            Visible = true;
-        }
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        
+        return settings;
     }
+
 }

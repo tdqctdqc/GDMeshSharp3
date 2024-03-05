@@ -4,7 +4,9 @@ using Godot;
 public partial class ControllerPolyCellBorder : PolyCellBorder
 {
     public ControllerPolyCellBorder(MapChunk chunk, 
-        Data data) : base("Controller border", chunk,
+        Data data) : base("Controller border",
+        chunk,
+        new Vector2(0f, 1f),
         LayerOrder.PolyFill, data)
     {
     }
@@ -27,10 +29,5 @@ public partial class ControllerPolyCellBorder : PolyCellBorder
     public override void RegisterForRedraws(Data d)
     {
         this.RegisterDrawOnTick(d);
-    }
-
-    public override void DoUiTick(UiTickContext context, Data d)
-    {
-        
     }
 }

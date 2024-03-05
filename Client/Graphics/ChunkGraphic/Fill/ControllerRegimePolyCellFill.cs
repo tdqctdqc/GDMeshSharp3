@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public partial class ControllerRegimePolyCellFill 
@@ -8,7 +9,8 @@ public partial class ControllerRegimePolyCellFill
     public ControllerRegimePolyCellFill(MapChunk chunk,
         Data data) 
         : base("Controller", chunk,
-            LayerOrder.PolyFill, data)
+            LayerOrder.PolyFill,
+            new Vector2(0f, 1f), data)
     {
     }
 
@@ -24,8 +26,14 @@ public partial class ControllerRegimePolyCellFill
         this.RegisterDrawOnTick(d);
     }
 
-    public override void DoUiTick(UiTickContext context, Data d)
+    public override Settings GetSettings(Data d)
     {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
         
+        return settings;
     }
 }

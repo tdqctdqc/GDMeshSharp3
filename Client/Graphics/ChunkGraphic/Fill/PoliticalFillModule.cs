@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public partial class PoliticalFillModule : PolyCellFillChunkGraphic
@@ -8,7 +9,9 @@ public partial class PoliticalFillModule : PolyCellFillChunkGraphic
     public PoliticalFillModule(PoliticalChunkModule parent,
         MapChunk chunk, 
         Data data)
-        : base("Political", chunk, LayerOrder.PolyFill, data)
+        : base("Political", chunk, 
+            LayerOrder.PolyFill, new Vector2(0f, 1f),
+            data)
     {
         Parent = parent;
     }
@@ -50,8 +53,14 @@ public partial class PoliticalFillModule : PolyCellFillChunkGraphic
         this.RegisterDrawOnTick(d);
     }
 
-    public override void DoUiTick(UiTickContext context, Data d)
+    public override Settings GetSettings(Data d)
     {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
         
+        return settings;
     }
 }

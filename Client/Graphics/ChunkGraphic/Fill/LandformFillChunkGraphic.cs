@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using Godot;
 
 public partial class LandformFillChunkGraphic : PolyCellFillChunkGraphic
@@ -7,6 +8,7 @@ public partial class LandformFillChunkGraphic : PolyCellFillChunkGraphic
         Data data) 
         : base("Landform", chunk, 
             LayerOrder.Terrain,
+            new Vector2(0f, 1f),
             data)
     {
     }
@@ -23,8 +25,17 @@ public partial class LandformFillChunkGraphic : PolyCellFillChunkGraphic
         
     }
 
-    public override void DoUiTick(UiTickContext context, Data d)
+    public override Settings GetSettings(Data d)
     {
-        
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        var multiSettings = new MultiSettings(Name,
+            new List<ISettings>
+            {
+                new Settings(Name)
+            }
+        );
+        return settings;
     }
 }

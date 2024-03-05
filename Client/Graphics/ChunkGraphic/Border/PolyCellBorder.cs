@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
@@ -9,9 +10,12 @@ public abstract partial class PolyCellBorder
     public MapChunk Chunk { get; private set; }
     public string Name { get; private set; }
     public Node2D Node => this;
-    public PolyCellBorder(string name, MapChunk chunk, 
+    public ChunkGraphicModuleVisibility Visibility { get; }
+    public PolyCellBorder(string name, MapChunk chunk,
+        Vector2 zoomVisibilityRange,
         LayerOrder layerOrder, Data data)
     {
+        Visibility = new ChunkGraphicModuleVisibility(zoomVisibilityRange);
         Chunk = chunk;
         Name = name;
         ZAsRelative = false;
@@ -24,7 +28,6 @@ public abstract partial class PolyCellBorder
     protected abstract float GetThickness(Cell m, Cell n, Data data);
     protected abstract Color GetColor(Cell p1, Data data);
     public abstract void RegisterForRedraws(Data d);
-    public abstract void DoUiTick(UiTickContext context, Data d);
 
     public void Draw(Data data)
     {
@@ -52,4 +55,15 @@ public abstract partial class PolyCellBorder
         AddChild(mb.GetMeshInstance());
         mb.Return();
     }
+    public Settings GetSettings(Data d)
+    {
+        var settings = new Settings(Name);
+        settings.SettingsOptions.Add(
+            this.MakeVisibilitySetting(true));
+        settings.SettingsOptions.Add(
+            this.MakeTransparencySetting());
+       
+        return settings;
+    }
+
 }
