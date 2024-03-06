@@ -8,6 +8,7 @@ using Godot;
 public partial class Client : Node, IClient
 {
     public Data Data => Session.Data;
+    public ClientNotices Notices { get; private set; }
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiController UiController { get; private set; }
@@ -21,8 +22,10 @@ public partial class Client : Node, IClient
     public ISession Session { get; private set; }
     public WindowManager WindowManager => GetComponent<WindowManager>();
     public Dictionary<Type, IClientComponent> Components { get; private set; }
+    
     public Client(ISession session)
     {
+        Notices = new ClientNotices();
         Session = session;
         Key = new ClientWriteKey(Session);
         QueuedUpdates = new ConcurrentQueue<Action>();
@@ -53,11 +56,10 @@ public partial class Client : Node, IClient
         AddComponent(new WindowManager(this));
         GetComponent<WindowManager>().AddWindow(ClientSettingsWindow.Get(Settings));
         
-        
         AddComponent(new PromptManager(this));
         AddComponent(new ClientTopBar(this));
         AddComponent(new TooltipManager(Data, this));
-
+        
         UiController = new UiController(this); 
         AddComponent(UiController);
     }

@@ -55,7 +55,6 @@ public class HoldLineAssignment : GroupAssignment
         var ai = d.HostLogicData.RegimeAis[Regime]
             .Military.Deployment;
         
-        
         var opposing = GetOpposingPowerPoints(d);
         var length = GetLength(d);
 

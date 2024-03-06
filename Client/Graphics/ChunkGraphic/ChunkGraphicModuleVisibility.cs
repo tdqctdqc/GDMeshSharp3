@@ -1,3 +1,4 @@
+using System;
 using Godot;
 
 public class ChunkGraphicModuleVisibility
@@ -5,6 +6,7 @@ public class ChunkGraphicModuleVisibility
     public Vector2 VisibleZoomRange { get; private set; }
     public bool VisibleByZoom { get; private set; }
     public bool VisibleOverride { get; set; }
+    public Action<bool> SetZoomVisibility { get; set; }
 
     public ChunkGraphicModuleVisibility(Vector2 visibleZoomRange)
     {
@@ -21,13 +23,20 @@ public class ChunkGraphicModuleVisibility
     public void CheckVisibleTick(UiTickContext context, Data d)
     {
         var zoom = context.ZoomLevel;
+        bool newVal;
         if (VisibleZoomRange.X > zoom || VisibleZoomRange.Y < zoom)
         {
-            VisibleByZoom = false;
+            newVal = false;
         }
         else
         {
-            VisibleByZoom = true;
+            newVal = true;
+        }
+
+        if (newVal != VisibleByZoom)
+        {
+            VisibleByZoom = newVal;
+            SetZoomVisibility?.Invoke(VisibleByZoom);
         }
     }
 }

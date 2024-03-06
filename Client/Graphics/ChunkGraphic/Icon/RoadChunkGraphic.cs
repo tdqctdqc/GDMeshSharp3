@@ -54,10 +54,6 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
         AddChild(mb.GetMeshInstance());
         mb.Return();
     }
-    public void DoUiTick(UiTickContext context, Data d)
-    {
-        Visibility.CheckVisibleTick(context, d);
-    }
     public Settings GetSettings(Data d)
     {
         var settings = new Settings(Name);

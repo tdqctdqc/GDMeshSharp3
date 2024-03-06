@@ -17,6 +17,10 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
         Chunk = chunk;
         ZIndex = (int)LayerOrder.Labels;
         Visibility = new ChunkGraphicModuleVisibility(zoomVisRange);
+        Visibility.SetZoomVisibility += v =>
+        {
+            if (v == true) _drawn = false;
+        };
     }
 
     public override void _Draw()
@@ -65,8 +69,12 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
     public Settings GetSettings(Data d)
     {
         var settings = new Settings(Name);
-        settings.SettingsOptions.Add(this.MakeVisibilitySetting(true));
+        var visSetting = this.MakeVisibilitySetting(true);
+        this.AddSettingEnforcement(visSetting, (v, g) =>
+        {
+            g._drawn = false;
+        });
+        settings.SettingsOptions.Add(visSetting);
         return settings;
     }
-
 }

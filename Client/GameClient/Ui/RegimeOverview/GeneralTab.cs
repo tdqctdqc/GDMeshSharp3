@@ -36,6 +36,22 @@ public partial class GeneralTab : ScrollContainer
         });
         seeAlliance.Text = "See Alliance";
         _container.AddChild(seeAlliance);
+
+        if (regime != client.GetComponent<MapGraphics>()
+                .SpectatingRegime)
+        {
+            
+        }
+
+        if (regime != client.GetComponent<MapGraphics>().SpectatingRegime)
+        {
+            var spectateRegime = ButtonExt.GetButton(() =>
+            {
+                client.GetComponent<MapGraphics>().SpectateRegime(regime);
+            });
+            spectateRegime.Text = "Spectate Regime";
+            _container.AddChild(spectateRegime);
+        }
         
         
         if (regime.IsPlayerRegime(client.Data) == false)

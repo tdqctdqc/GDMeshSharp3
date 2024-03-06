@@ -18,7 +18,7 @@ public class GraphicLayerHolder
     public EntityGraphicReservoir<Unit, UnitGraphic> UnitGraphics { get; private set; }
     private Client _client;
     public GraphicLayerHolder(Client client, GraphicsSegmenter segmenter, 
-        Node2D hook, Data data)
+        Data data)
     {
         _client = client;
         UnitGraphics = new EntityGraphicReservoir<Unit, UnitGraphic>(

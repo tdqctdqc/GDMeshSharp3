@@ -40,7 +40,7 @@ public static class NodeExt
         var h = flow.Icon.MakeIconStatDisplay(client, data,
             () =>
             {
-                var regime = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
+                var regime = client.GetComponent<MapGraphics>().SpectatingRegime;
                 var f = regime.Flows.Get(flow);
                 // return $"In: {f.FlowIn} \n Out: {f.FlowOut} \n Net: {f.Net()}";
                 return $"{f.Net()}";
@@ -48,7 +48,7 @@ public static class NodeExt
             height, triggers);
         var tooltipTemplate = new FlowTooltipTemplate();
         h.RegisterTooltip(tooltipTemplate, 
-            () => (flow, data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data)));
+            () => (flow, client.GetComponent<MapGraphics>().SpectatingRegime));
         return h;
     }
     

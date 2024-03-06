@@ -12,13 +12,15 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         var deltaLabel = new Label();
         var popSize = StatLabel.Construct<int>(client, "Pop Size", sizeLabel,
             () => GetPopulationCount(data));
-        popSize.AddTrigger(data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
+        var notices = client.Notices;
+        popSize.AddTrigger(notices.ChangedSpectatingRegime.Blank);
         popSize.AddTrigger(data.Notices.Ticked.Blank);
         popSize.AddTrigger(data.Notices.FinishedTurnStartCalc);
         AddChild(sizeLabel);
-        var popGrowth = StatLabel.Construct<int>(client, "Pop Growth", deltaLabel,
+        var popGrowth = StatLabel.Construct<int>(client, 
+            "Pop Growth", deltaLabel,
             () => GetPeepDelta(data));
-        popGrowth.AddTrigger(data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank);
+        popGrowth.AddTrigger(notices.ChangedSpectatingRegime.Blank);
         popGrowth.AddTrigger(data.Notices.Ticked.Blank);
         popGrowth.AddTrigger(data.Notices.FinishedTurnStartCalc);
 
@@ -27,27 +29,19 @@ public partial class RegimePeepsInfoBar : HBoxContainer
 
     private int GetPopulationCount(Data data)
     {
-        var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
-        if (r.IsEmpty() == false)
-        {
-            return r.Entity(data).GetPopulation(data);
-        }
-
-        return 0;
+        var r = Game.I.Client.GetComponent<MapGraphics>().SpectatingRegime;
+        return r.GetPopulation(data);
     }
 
     private int GetPeepDelta(Data data)
     {
-        var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime;
-        if (r.IsEmpty() == false)
+        var r = Game.I.Client.GetComponent<MapGraphics>().SpectatingRegime;
+        var ordered = r.History.PeepHistory.GetOrdered();
+        if (ordered.Count > 1)
         {
-            var ordered = r.Entity(data).History.PeepHistory.GetOrdered();
-            if (ordered.Count > 1)
-            {
-                var last = ordered[ordered.Count - 1].TotalPop;
-                var penult = ordered[ordered.Count - 2].TotalPop;
-                return Mathf.FloorToInt(last - penult);
-            }
+            var last = ordered[ordered.Count - 1].TotalPop;
+            var penult = ordered[ordered.Count - 2].TotalPop;
+            return Mathf.FloorToInt(last - penult);
         }
 
         return 0;

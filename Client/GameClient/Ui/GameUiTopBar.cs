@@ -15,7 +15,7 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         var frame = client.GetComponent<UiFrame>();
         frame.AddTopBar(this);
         
-        var regimeInfoBar = new RegimeInfoBar(client, data, host);
+        var regimeInfoBar = new SpectatingRegimeInfoBar(client, data, host);
         
         
         var general = new HBoxContainer();

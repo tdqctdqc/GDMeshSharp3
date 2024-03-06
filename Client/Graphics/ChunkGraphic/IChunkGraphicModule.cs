@@ -29,7 +29,7 @@ public static class IChunkGraphicExt
         where TGraphic : IChunkGraphicModule
     {
         var setting = new BoolSettingsOption("Visibility", startVisible);
-        MakeSetting<bool, TGraphic>(setting,
+        AddSettingEnforcement<bool, TGraphic>(graphic, setting,
             (v, g) => g.Visibility.VisibleOverride = v);
         return setting;
     }
@@ -40,11 +40,11 @@ public static class IChunkGraphicExt
     {
         var setting = new FloatSettingsOption("Transparency",
             1f, .1f, 1f, .1f, false);
-        MakeSetting<float, TGraphic>(setting,
+        AddSettingEnforcement<float, TGraphic>(graphic, setting,
             (a, g) => g.Node.Modulate = new Color(Colors.White, a));
         return setting;
     }
-    public static void MakeSetting<T, TGraphic>(
+    public static void AddSettingEnforcement<T, TGraphic>(this TGraphic graphic,
         SettingsOption<T> setting,
         Action<T, TGraphic> enforce) where TGraphic : IChunkGraphicModule
     {

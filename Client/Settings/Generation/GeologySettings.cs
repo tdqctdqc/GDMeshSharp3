@@ -25,8 +25,8 @@ public class GeologySettings : Settings
         RoughnessScale = new FloatSettingsOption("Roughness Scale", 1f, 0f, 2f, .1f, false);
         FaultLineAltitudeScale = new FloatSettingsOption("Fault Altitude Scale", 1.5f, 0f, 2f, .1f, false);
         LandRatio = new FloatSettingsOption("Land Ratio", .3f, .05f, 1f, .05f, false);
-        NumContinents = new FloatSettingsOption("Num Continents", 5, 2, 10, 1, true);
-        NumSeas = new FloatSettingsOption("Num Seas", 10, 0, 20, 1, true);
+        NumContinents = new FloatSettingsOption("Num Continents", 10, 2, 15, 1, true);
+        NumSeas = new FloatSettingsOption("Num Seas", 20, 0, 30, 1, true);
         SeaLevel = new FloatSettingsOption("Sea Level", .5f, 0f, 1f, .05f, false);
         FaultLineRange = new FloatSettingsOption("Fault Line Range", 75f, 0f, 1000f, 1f, false);
         FrictionAltEffect = new FloatSettingsOption("Friction Alt Effect", .1f, 0f, 1f, .01f, false);

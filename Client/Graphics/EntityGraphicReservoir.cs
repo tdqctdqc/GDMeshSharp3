@@ -7,7 +7,6 @@ public class EntityGraphicReservoir<TEntity, TGraphic>
     where TGraphic : Node2D
 {
     public Dictionary<TEntity, TGraphic> Graphics { get; private set; }
-
     public EntityGraphicReservoir(
         Func<TEntity, TGraphic> makeGraphic,
         Data d)

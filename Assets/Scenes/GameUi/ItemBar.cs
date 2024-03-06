@@ -28,11 +28,11 @@ public partial class ItemBar : HBoxContainer
             data, 
             () =>
             {
-                var r = data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data);
+                var r = client.GetComponent<MapGraphics>().SpectatingRegime;
                 return r != null ? r.Items.Get(sr).ToString() : 0.ToString();
             }, 
             10f,
-            data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank,
+            Game.I.Client.Notices.ChangedSpectatingRegime.Blank,
             data.Notices.Ticked.Blank,
             data.Notices.FinishedTurnStartCalc
         );
@@ -45,7 +45,7 @@ public partial class ItemBar : HBoxContainer
             data, 
             10f,
             data.Notices.Ticked.Blank,
-            data.BaseDomain.PlayerAux.PlayerChangedRegime.Blank
+            Game.I.Client.Notices.ChangedSpectatingRegime.Blank
         );
         this.AddChildWithVSeparator(conCap);
     }

@@ -25,6 +25,5 @@
                 }
             });
         }
-
         public Player LocalPlayer => ByGuid[_data.ClientPlayerData.LocalPlayerGuid];
     }

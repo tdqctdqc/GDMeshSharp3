@@ -9,7 +9,7 @@ using Godot;
 public partial class MapGraphics : Node2D, IClientComponent
 {
     protected GraphicsSegmenter _segmenter;
-    protected Node2D _graphicLayersParent;
+    public Regime SpectatingRegime { get; private set; }
     public MapOverlayDrawer Highlighter { get; private set; }
     public MapOverlayDrawer DebugOverlay { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
@@ -23,13 +23,31 @@ public partial class MapGraphics : Node2D, IClientComponent
         var sw = new Stopwatch();
         sw.Start();
 
+        var localPlayerRegime = client.Data.BaseDomain.PlayerAux
+            .LocalPlayer.Regime;
+        if (localPlayerRegime.Fulfilled())
+        {
+            SpectateRegime(localPlayerRegime.Entity(client.Data));
+        }
+        else
+        {
+            SpectatingRegime = null;
+        }
+        
+        client.Data.BaseDomain.PlayerAux
+            .PlayerChangedRegime.SubscribeForNode(n =>
+            {
+                if (n.Entity == client.Data.BaseDomain.PlayerAux.LocalPlayer)
+                {
+                    SpectateRegime(n.Entity.Regime.Entity(client.Data));
+                }
+            }, this);
+
         UpdateQueue = new ConcurrentQueue<Action>();
         
         _segmenter = new GraphicsSegmenter(10, client.Data);
         AddChild(_segmenter);
-        _graphicLayersParent = new Node2D();
-        AddChild(_graphicLayersParent);
-        GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, _graphicLayersParent, client.Data);
+        GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, client.Data);
         DebugOverlay = new MapOverlayDrawer(_segmenter, 98);
         Highlighter = new MapOverlayDrawer(_segmenter, 99);
         
@@ -52,5 +70,11 @@ public partial class MapGraphics : Node2D, IClientComponent
         {
             _segmenter.Update(c.XScrollRatio);
         }
+    }
+
+    public void SpectateRegime(Regime r)
+    {
+        SpectatingRegime = r;
+        Game.I.Client.Notices.ChangedSpectatingRegime.Invoke(r);
     }
 }
