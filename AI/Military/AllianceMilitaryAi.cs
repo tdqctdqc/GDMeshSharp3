@@ -6,16 +6,23 @@ using Godot;
 
 public class AllianceMilitaryAi
 {
-    public Dictionary<Regime, HashSet<Cell>> AreasOfResponsibility { get; private set; }
-    public AllianceMilitaryAi()
+    public DeploymentAi Deployment { get; private set; }
+    public OperationalAi Operational { get; private set; }
+    public StrategicAi Strategic { get; private set; }
+    public AllianceMilitaryAi(Alliance a, Data d)
     {
-        AreasOfResponsibility = new Dictionary<Regime, HashSet<Cell>>();
+        Deployment = DeploymentAi.Construct(a, d);
+        Operational = new OperationalAi(d, a);
+        Strategic = new StrategicAi(d, a);
     }
     public void Calculate(LogicWriteKey key, Alliance alliance)
     {
-        if (key.Data.Get<Alliance>(alliance.Id) == null)
-        {
-            throw new Exception();
-        }
+    }
+
+    public void CalculateMinor(LogicWriteKey key, Alliance alliance)
+    {
+        Strategic.Calculate();
+        Operational.Calculate(this);
+        Deployment.Calculate(this, key);
     }
 }

@@ -19,8 +19,4 @@ public class LogicWriteKey : StrongWriteKey, ICreateWriteKey
     {
         _sendMessage(m);
     }
-    public void Remove<TEntity>(TEntity t) where TEntity : Entity
-    {
-        var update = EntityDeletionUpdate.Create(t.Id, this);
-    }
 }

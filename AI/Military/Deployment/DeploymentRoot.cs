@@ -8,15 +8,15 @@ using MessagePack;
 public class DeploymentRoot : DeploymentBranch
 {
     public DeploymentRoot(DeploymentAi ai,
-        LogicWriteKey key) : base(ai.Regime, key)
+        LogicWriteKey key) : base(ai.Alliance, key)
     {
     }
     
-    public void MakeTheaters(RegimeMilitaryAi ai, LogicWriteKey key)
+    public void MakeTheaters(AllianceMilitaryAi ai, LogicWriteKey key)
     {
         foreach (var theater in ai.Strategic.Theaters)
         {
-            var theaterBranch = new TheaterBranch(Regime, theater, key);
+            var theaterBranch = new TheaterBranch(Alliance, theater, key);
             SubBranches.Add(theaterBranch);
             theaterBranch.MakeFronts(ai, key);
         }
@@ -24,10 +24,13 @@ public class DeploymentRoot : DeploymentBranch
 
     public void GrabUnassignedGroups(LogicWriteKey key)
     {
-        var ai = key.Data.HostLogicData.RegimeAis[Regime]
+        var ai = key.Data.HostLogicData.AllianceAis[Alliance]
             .Military.Deployment;
-        var freeGroups = key.Data.Military
-            .UnitAux.UnitGroupByRegime[Regime];
+        var freeGroups =
+            Alliance.Members.Items(key.Data)
+                .SelectMany(r => key.Data.Military
+                    .UnitAux.UnitGroupByRegime[r]).ToHashSet();
+            
         var taken = GetDescendentAssignments()
             .SelectMany(a => a.Groups);
         freeGroups.ExceptWith(taken);
@@ -43,16 +46,16 @@ public class DeploymentRoot : DeploymentBranch
         }
     }
     
-
     public override Cell GetCharacteristicCell(Data d)
     {
-        return Regime.Capital.Entity(d).GetCells(d).First();
+        return Alliance.Leader.Entity(d).Capital.Entity(d).GetCells(d).First();
     }
     
 
     public override Vector2 GetMapPosForDisplay(Data d)
     {
-        var polys = Regime.GetPolys(d);
+        var polys = Alliance.Members.Items(d)
+            .SelectMany(r => r.GetPolys(d));
         return d.Planet.GetAveragePosition(polys.Select(p => p.Center));
     }
 }

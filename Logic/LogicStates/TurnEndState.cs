@@ -8,10 +8,10 @@ public class TurnEndState : TurnState
     {
         _majorModules = new LogicModule[]
         {
+            new DoTurnOrderProceduresModule(),
             new ProduceConstructModule(),
             new CleanUpFinishedConstructionsModule(),
             new FoodAndPopGrowthModule(),
-            new ReceiveProposalsModule(),
             new FinanceModule(),
             new TradeModule(),
             new AllianceOrdersModule(),
@@ -20,6 +20,7 @@ public class TurnEndState : TurnState
         };
         _minorModules = new LogicModule[]
         {
+            new DoTurnOrderProceduresModule(),
             new HandleUnitOrdersModule(),
             new CombatModule(),
             new DefaultLogicModule(() => new TickProcedure()),

@@ -6,9 +6,9 @@ using Godot;
 public class MilAiMemo
 {
     public HashSet<UnitGroup> FrontSegmentGroups { get; private set; }
-    public MilAiMemo(Regime owner, Data d)
+    public MilAiMemo(Alliance owner, Data d)
     {
-        var ai = d.HostLogicData.RegimeAis[owner];
+        var ai = d.HostLogicData.AllianceAis[owner];
         FrontSegmentGroups = new HashSet<UnitGroup>();
 
         var root = ai.Military.Deployment.GetRoot();

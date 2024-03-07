@@ -4,15 +4,16 @@ using System.Linq;
 
 public class StrategicAi
 {
-    public Regime Regime { get; private set; }
+    public Alliance Alliance { get; private set; }
     private Data _data;
     public HashSet<Theater> Theaters { get; private set; }
     public Dictionary<Cell, float> Targets { get; private set; }
 
-    public StrategicAi(Data data, Regime regime)
+    public StrategicAi(Data data, Alliance alliance)
     {
         _data = data;
-        Regime = regime;
+        Alliance = alliance;
+        
     }
     public void Calculate()
     {
@@ -21,10 +22,10 @@ public class StrategicAi
 
     private void MakeTheaters()
     {
-        var alliance = Regime.GetAlliance(_data);
+        var alliance = Alliance;
         var cells = _data.Planet.PolygonAux
             .PolyCells.Cells.Values
-            .Where(c => c.Controller.RefId == Regime.Id)
+            .Where(c => alliance.Members.RefIds.Contains(c.Controller.RefId))
             .ToArray();
         var unions = UnionFind.Find(cells,
             (p, q) => true,
@@ -41,7 +42,7 @@ public class StrategicAi
                         var pAlliance = p.Controller.Entity(_data).GetAlliance(_data);
                         return alliance.IsRivals(pAlliance, _data);
                     }, _data)
-                .Select(fs => new Frontline(fs, Regime))
+                .Select(fs => new Frontline(fs, Alliance))
                 .ToHashSet();
             var theater = new Theater(theaterCells, frontlines);
             Theaters.Add(theater);

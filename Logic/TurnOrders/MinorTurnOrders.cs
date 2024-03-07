@@ -5,21 +5,13 @@ using MessagePack;
 
 public class MinorTurnOrders : RegimeTurnOrders
 {
-    public MilitaryMinTurnOrders Military { get; private set; }
-    public DiplomacyMinTurnOrders Diplomacy { get; private set; }
     public static MinorTurnOrders Construct(int tick, Regime regime)
     {
-        return new MinorTurnOrders(tick, regime.MakeRef(), 
-            MilitaryMinTurnOrders.Construct(),
-            DiplomacyMinTurnOrders.Construct());
+        return new MinorTurnOrders(tick, regime.MakeRef());
     }
     [SerializationConstructor] private MinorTurnOrders(int tick, 
-        ERef<Regime> regime,
-        MilitaryMinTurnOrders military,
-        DiplomacyMinTurnOrders diplomacy) 
+        ERef<Regime> regime) 
         : base(tick, regime)
     {
-        Military = military;
-        Diplomacy = diplomacy;
     }
 }

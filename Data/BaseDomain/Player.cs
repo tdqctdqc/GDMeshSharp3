@@ -24,6 +24,7 @@ public class Player : Entity
 
     public void SetRegime(Regime regime, ProcedureWriteKey key)
     {
+        if (regime.IsMajor == false) throw new Exception("player must be major regime");
         var old = Regime.Entity(key.Data);
         Regime = regime.MakeRef();
         key.Data.BaseDomain.PlayerAux.PlayerChangedRegime.Invoke(this, regime, old);

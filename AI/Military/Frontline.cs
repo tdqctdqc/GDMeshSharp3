@@ -5,16 +5,16 @@ using Godot;
 
 public class Frontline
 {
-    public Regime Regime { get; private set; }
+    public Alliance Alliance { get; private set; }
     public List<FrontFace> Faces { get; private set; }
     public List<Cell[]> FaceAdvanceRoutes { get; private set; }
     public List<FrontFace> AdvanceFront { get; private set; }
     public List<List<FrontFace>> SalientFronts { get; private set; }
     public HashSet<Cell> AdvanceInto { get; private set; }
-    public Frontline(List<FrontFace> faces, Regime regime)
+    public Frontline(List<FrontFace> faces, Alliance alliance)
     {
         Faces = faces;
-        Regime = regime;
+        Alliance = alliance;
     }
 
     public bool CheckReunite(
@@ -74,7 +74,7 @@ public class Frontline
             .FindFront(advanceInto.Union(natives).ToHashSet(),
                 c =>
                 {
-                    return c.Controller.RefId != Regime.Id
+                    return Alliance.Members.RefIds.Contains(c.Controller.RefId) == false
                         // && c.Controller.IsEmpty() == false
                         && advanceInto.Contains(c) == false;
                 },

@@ -5,21 +5,24 @@ using System.Text;
 using Godot;
 using MessagePack;
 
-public class AllianceMergeProposal : DiplomacyProposal
+public class AllianceMergeProposal : Proposal
 {
-    public static AllianceMergeProposal Construct(Regime proposer, Alliance target, Data data)
+    public static AllianceMergeProposal Construct(Alliance proposer, Alliance target, Data data)
     {
-        var p = new AllianceMergeProposal(proposer.GetAlliance(data).Id, target.Id, 
-            -1, proposer.MakeRef(), new HashSet<int>(), new HashSet<int>());
+        var p = new AllianceMergeProposal(
+            -1, 
+            proposer.MakeRef(),
+            target.MakeRef());
         return p;
     }
-    [SerializationConstructor] private AllianceMergeProposal(int alliance0, int alliance1, int id, ERef<Regime> proposer, 
-        HashSet<int> inFavor, HashSet<int> against) 
-        : base(alliance0, alliance1, id, proposer, inFavor, against)
+    [SerializationConstructor] private AllianceMergeProposal(int id, 
+        ERef<Alliance> proposer, 
+        ERef<Alliance> target) 
+        : base(id, proposer, target)
     {
     }
 
-    public override bool GetDecisionForAi(Regime r, Data d)
+    public override bool GetDecisionForAi(Data d)
     {
         return true;
     }
@@ -27,21 +30,7 @@ public class AllianceMergeProposal : DiplomacyProposal
     public override Control GetDisplay(Data d)
     {
         var c = new VBoxContainer();
-        var a0 = d.Get<Alliance>(Alliance0);
-        var a1 = d.Get<Alliance>(Alliance1);
-        var sb = new StringBuilder();
-        sb.Append($"Merge Alliances {a0.Id} and {a1.Id}");
-        sb.Append($"In Favor: ");
-        foreach (var regime in InFavor.Select(id => d.Get<Regime>(id)))
-        {
-            sb.Append(regime.Name);
-        }
-        sb.Append($"Against: ");
-        foreach (var regime in Against.Select(id => d.Get<Regime>(id)))
-        {
-            sb.Append(regime.Name);
-        }
-        NodeExt.CreateLabelAsChild(c, sb.ToString());
+        NodeExt.CreateLabelAsChild(c, $"Merge Alliance {Target.RefId} into {Proposer.RefId}");
         return c;
     }
 
@@ -49,28 +38,32 @@ public class AllianceMergeProposal : DiplomacyProposal
     {
         if (accepted)
         {
-            var alliance0 = key.Data.Get<Alliance>(Alliance0);
-            var alliance1 = key.Data.Get<Alliance>(Alliance1);
-            var members0 = alliance0.Members.Items(key.Data).ToList();
+            var target = Target.Entity(key.Data);
+            var proposer = Proposer.Entity(key.Data);
+            var targetMembers = target.Members.Items(key.Data).ToList();
             
-            for (var i = 0; i < members0.Count; i++)
+            for (var i = 0; i < targetMembers.Count; i++)
             {
-                var r = members0[i];
-                alliance0.Members.Remove(r, key);
-                alliance1.Members.Add(r, key);
+                var r = targetMembers[i];
+                target.Members.Remove(r, key);
+                proposer.Members.Add(r, key);
             }
             
-            key.Data.Society.DiploGraph.MergeRelations(alliance0, alliance1, key);
-            key.Data.RemoveEntity(alliance0.Id, key);
+            key.Data.Society.DiploGraph.MergeRelations(target, proposer, key);
+            key.Data.RemoveEntity(target.Id, key);
         }
     }
 
     public override bool Valid(Data data)
     {
-        if (data.HasEntity(Alliance0) == false) return false;
-        if (data.HasEntity(Alliance1) == false) return false;
-        var a0 = (Alliance) data.EntitiesById[Alliance0];
-        var a1 = (Alliance) data.EntitiesById[Alliance1];
-        return a0.IsRivals(a1, data) == false;
+        if (data.HasEntity(Target.RefId) == false) return false;
+        if (data.HasEntity(Proposer.RefId) == false) return false;
+        var target = (Alliance) data.EntitiesById[Target.RefId];
+        var targetLeader = target.Leader.Entity(data);
+        if (targetLeader.IsMajor == false) return false;
+        var proposer = (Alliance) data.EntitiesById[Proposer.RefId];
+        var proposerLeader = proposer.Leader.Entity(data);
+        if(target.IsRivals(proposer, data)) return false;
+        return true;
     }
 }

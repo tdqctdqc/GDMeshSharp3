@@ -10,14 +10,14 @@ using MessagePack;
 public abstract class DeploymentBranch 
     : IPolymorph, IDeploymentNode
 {
-    public Regime Regime { get; private set; }
+    public Alliance Alliance { get; private set; }
     public int Id { get; private set; }
     public HashSet<DeploymentBranch> SubBranches { get; }
     public HashSet<GroupAssignment> Assignments { get; private set; }
     [SerializationConstructor] protected 
-        DeploymentBranch(Regime regime, LogicWriteKey key)
+        DeploymentBranch(Alliance alliance, LogicWriteKey key)
     {
-        Regime = regime;
+        Alliance = alliance;
         SubBranches = new HashSet<DeploymentBranch>();
         Assignments = new HashSet<GroupAssignment>();
     }
@@ -90,8 +90,7 @@ public abstract class DeploymentBranch
         
         
         var stratMove = key.Data.Models.MoveTypes.StrategicMove;
-        var alliance = Regime
-            .GetAlliance(key.Data);
+        var alliance = Alliance;
         var distCosts = new Dictionary<Vector2I, float>();
         
         foreach (var a1 in assignments)

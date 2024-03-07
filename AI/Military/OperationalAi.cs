@@ -4,15 +4,15 @@ using System.Linq;
 
 public class OperationalAi
 {
-    public Regime Regime { get; private set; }
+    public Alliance Alliance { get; private set; }
     private Data _data;
-    public OperationalAi(Data data, Regime regime)
+    public OperationalAi(Data data, Alliance alliance)
     {
         _data = data;
-        Regime = regime;
+        Alliance = alliance;
     }
 
-    public void Calculate(RegimeMilitaryAi ai)
+    public void Calculate(AllianceMilitaryAi ai)
     {
         foreach (var theater in ai.Strategic.Theaters)
         {
@@ -22,19 +22,18 @@ public class OperationalAi
 
     private void CalculateTheater(Theater theater)
     {
-        var alliance = Regime.GetAlliance(_data);
         foreach (var frontline in theater.Frontlines)
         {
             var rival = frontline.Faces
                 .Select(f => f.GetForeign(_data))
                 .Distinct()
                 .Where(f => f.Controller.Entity(_data)
-                        .GetAlliance(_data).IsRivals(alliance, _data))
+                        .GetAlliance(_data).IsRivals(Alliance, _data))
                 .ToHashSet();
             rival = rival.Union(rival.SelectMany(r => 
                 r.GetNeighbors(_data)
                     .Where(f => f.Controller.Fulfilled()
-                        && f.Controller.Entity(_data).GetAlliance(_data).IsRivals(alliance, _data))))
+                        && f.Controller.Entity(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
                 .ToHashSet();
             if (rival.Count == 0)
             {
@@ -50,7 +49,7 @@ public class OperationalAi
                 .Select(f => f.GetNative(_data)).Distinct().ToArray();
             var friendlyPowerPoints = friendly
                 .Where(c => c.GetUnits(_data) is not null)
-                .SelectMany(c => c.GetUnits(_data).Where(u => u.Regime.RefId == Regime.Id))
+                .SelectMany(c => c.GetUnits(_data).Where(u => Alliance.Members.RefIds.Contains(u.Regime.RefId)))
                 .Sum(u => u.GetPowerPoints(_data));
 
             if (

@@ -7,5 +7,4 @@ public interface ICreateWriteKey
 {
     Data Data { get; }
     void Create<TEntity>(TEntity t) where TEntity : Entity;
-    void Remove<TEntity>(TEntity t) where TEntity : Entity;
 }

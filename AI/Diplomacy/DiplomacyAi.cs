@@ -5,12 +5,12 @@ using Godot;
 
 public class DiplomacyAi
 {
-    private Regime _regime;
+    private Alliance _alliance;
     public static float DesiredFriendToRivalPowerRatio = 1.5f;
     public static float DesiredFriendToEnemyPowerRatio = 2f;
-    public DiplomacyAi(Regime regime)
+    public DiplomacyAi(Alliance alliance)
     {
-        _regime = regime;
+        _alliance = alliance;
     }
 
     public void CalculateMinor(LogicWriteKey key, MinorTurnOrders orders)
@@ -18,62 +18,59 @@ public class DiplomacyAi
         DecideOnProposals(key, orders);
     }
 
-    public void CalculateMajor(LogicWriteKey key, MajorTurnOrders orders)
+    public void Calculate(RegimeTurnOrders orders, LogicWriteKey key)
     {
-        var alliance = _regime.GetAlliance(key.Data);
-        var alliancePower = alliance.GetPowerScore(key.Data);
-        var rivalPower = alliance.GetRivals(key.Data)
+        var alliancePower = _alliance.GetPowerScore(key.Data);
+        var rivalPower = _alliance.GetRivals(key.Data)
             .Sum(a => a.GetPowerScore(key.Data));
         if (alliancePower > rivalPower * DesiredFriendToRivalPowerRatio)
         {
-            ProposeRivals(key.Data, orders, alliancePower, rivalPower);
+            ChooseRivals(key.Data, orders, alliancePower, rivalPower);
         }
         if (rivalPower / DesiredFriendToRivalPowerRatio > alliancePower)
         {
-            ProposeInvitations(key.Data, orders, alliancePower, rivalPower);
+            ProposeInvitations(orders, alliancePower, rivalPower, key);
         }
         ProposeWars(key.Data, orders, alliancePower, rivalPower);
     }
 
     private void DecideOnProposals(LogicWriteKey key, MinorTurnOrders orders)
     {
-        var proposals = _regime.GetAlliance(key.Data).Proposals(key.Data);
+        var proposals = _alliance.PendingProposals(key.Data);
         foreach (var proposal in proposals)
         {
-            if (proposal.Against.Contains(_regime.Id)
-                || proposal.InFavor.Contains(_regime.Id)) continue;
-            var decision = proposal.GetDecisionForAi(_regime, key.Data);
-            var decisionProc = new DecideOnProposalProcedure(_regime.Id, decision, proposal.Id);
+            var decision = proposal.GetDecisionForAi(key.Data);
+            var decisionProc = new DecideOnProposalProcedure(decision, proposal.Id);
             key.SendMessage(decisionProc);
         }
     }
-    private void ProposeRivals(Data data, MajorTurnOrders orders, float friendPower,
+    private void ChooseRivals(Data data, RegimeTurnOrders orders, float friendPower,
         float rivalPower)
     {
         var rivalPowerToFill = (friendPower - rivalPower) / DesiredFriendToRivalPowerRatio;
-        var regimeAlliance = _regime.GetAlliance(data);
-        var neutralNeighbors = _regime.GetNeighborAlliances(data)
+        var neutralNeighbors = _alliance.GetNeighborAlliances(data)
             .Where(a =>
             {
-                if (a == regimeAlliance) return false;
+                if (a == _alliance) return false;
                 var power = a.GetPowerScore(data);
                 if (power > rivalPowerToFill) return false;
-                return regimeAlliance.IsRivals(a, data) == false;
+                return _alliance.IsRivals(a, data) == false;
             })
             .ToHashSet();
         if (neutralNeighbors.Count == 0) return;
         var newRival = neutralNeighbors
-            .OrderBy(e => GetRivalScore(regimeAlliance, e, data))
+            .OrderBy(e => GetRivalScore(_alliance, e, data))
             .FirstOrDefault();
         if (newRival != null && Game.I.Random.Randf() < .5f)
         {
-            var proposal = DeclareRivalProposal.Construct(_regime, newRival, data);
-            proposal.InFavor.Add(_regime.Id);
-            orders.Diplomacy.ProposalsMade.Add(proposal);
+            var proc = new DeclareRivalProcedure(_alliance.Id,
+                newRival.Id);
+            orders.Procedures.Add(proc);
         }
     }
 
-    private float GetRivalScore(Alliance alliance, Alliance target, Data data)
+    private float GetRivalScore(Alliance alliance, Alliance target,
+        Data data)
     {
         var targetPolys = target.Members.Items(data).SelectMany(r => r.GetPolys(data));
         var targetNeighborPolys = targetPolys
@@ -84,28 +81,33 @@ public class DiplomacyAi
         if (pCount == 0) return 0f;
         return targetNeighborPolys / pCount;
     }
-    private void ProposeInvitations(Data data, MajorTurnOrders orders, float friendPower,
-        float rivalPower)
+    private void ProposeInvitations( 
+        RegimeTurnOrders orders, float friendPower,
+        float rivalPower, LogicWriteKey key)
     {
+        var regime = orders.Regime.Entity(key.Data);
+        if (regime.IsMajor == false) return;
+        
         var friendPowerToFill = rivalPower * DesiredFriendToRivalPowerRatio - friendPower;
         if (friendPowerToFill < 0f) return;
-        var regimeAlliance = _regime.GetAlliance(data);
-        var neutralNeighbors = _regime.GetNeighborAlliances(data)
+        var neutralNeighbors = _alliance
+            .GetNeighborAlliances(key.Data)
             .Where(a =>
             {
-                if (a == regimeAlliance) return false;
-                return regimeAlliance.IsRivals(a, data) == false;
+                if (a == _alliance) return false;
+                if (a.Leader.Entity(key.Data).IsMajor) return false;
+                return _alliance.IsRivals(a, key.Data) == false;
             })
             .ToHashSet();
         if (neutralNeighbors.Count == 0) return;
         var newFriend = neutralNeighbors
-            .OrderBy(e => GetFriendScore(regimeAlliance, e, data))
+            .OrderBy(e => GetFriendScore(_alliance, e, key.Data))
             .FirstOrDefault();
         if (newFriend != null && Game.I.Random.Randf() < .5f)
         {
-            var proposal = AllianceMergeProposal.Construct(_regime, newFriend, data);
-            proposal.InFavor.Add(_regime.Id);
-            orders.Diplomacy.ProposalsMade.Add(proposal);
+            var proposal = AllianceMergeProposal.Construct(_alliance, newFriend, key.Data);
+            var proc = MakeProposalProcedure.Construct(proposal, key);
+            orders.Procedures.Add(proc);
         }
     }
     private float GetFriendScore(Alliance alliance, Alliance target, Data data)
@@ -123,21 +125,20 @@ public class DiplomacyAi
         return res;
     }
 
-    private void ProposeWars(Data data, MajorTurnOrders orders, float friendPower,
+    private void ProposeWars(Data data, RegimeTurnOrders orders, float friendPower,
         float rivalPower)
     {
         if (friendPower < rivalPower * DesiredFriendToRivalPowerRatio) return;
-        var regimeAlliance = _regime.GetAlliance(data);
-        var enemyPower = regimeAlliance.GetAtWar(data).Sum(a => a.GetPowerScore(data));
+        var enemyPower = _alliance.GetAtWar(data).Sum(a => a.GetPowerScore(data));
         if (enemyPower * DesiredFriendToEnemyPowerRatio > friendPower) return;
-        var nonEnemyRivals = regimeAlliance.GetRivals(data)
-            .Except(regimeAlliance.GetAtWar(data)).ToList();
+        var nonEnemyRivals = _alliance.GetRivals(data)
+            .Except(_alliance.GetAtWar(data)).ToList();
         if (nonEnemyRivals.Count == 0) return;
         if (Game.I.Random.Randf() < .1f)
         {
             var target = nonEnemyRivals.OrderBy(r => r.GetPowerScore(data)).First();
-            var proposal = DeclareWarProposal.Construct(_regime, target, data);
-            orders.Diplomacy.ProposalsMade.Add(proposal);
+            var proc = new DeclareWarProcedure(target.Id, _alliance.Id);
+            orders.Procedures.Add(proc);
         }
     }
 }

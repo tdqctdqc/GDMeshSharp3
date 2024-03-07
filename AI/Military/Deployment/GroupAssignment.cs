@@ -9,7 +9,7 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
 {
     public int Id { get; private set; }
     public DeploymentBranch Parent { get; }
-    public Regime Regime { get; private set; }
+    public Alliance Alliance { get; private set; }
     public HashSet<UnitGroup> Groups { get; }
     
     protected GroupAssignment(DeploymentBranch parent,
@@ -17,7 +17,7 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
     {
         Id = ai.IdDispenser.TakeId();
         Parent = parent;
-        Regime = ai.Regime;
+        Alliance = ai.Alliance;
         Groups = new HashSet<UnitGroup>();
     }
 

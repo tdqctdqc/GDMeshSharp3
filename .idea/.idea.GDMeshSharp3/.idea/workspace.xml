@@ -5,12 +5,75 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/IChunkGraphicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/IChunkGraphicModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/EntityGraphicReservoir.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/EntityGraphicReservoir.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/SetPlayerRegimeProcedure.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/DeclareWarProcedure.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DoProcedureCommand.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/DoTurnOrderProceduresModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/AllianceAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/AllianceAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/AllianceMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/AllianceMilitaryAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilAiMemo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilAiMemo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/TheaterBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/TheaterBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Frontline.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Frontline.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/OperationalAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/OperationalAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/AllianceOverview/ProposalsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/AllianceOverview/ProposalsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/ChooseRegimePrompt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Prompt/ChooseRegimePrompt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DeploymentMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DeploymentMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/Player.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/EntitiesCreationUpdate.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/Alliance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ChooseRegimeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ChooseRegimeCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Command/Command.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Command/Command.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Message.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Message.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/SampleProc1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/SampleProc2.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Update.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Update.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/AllianceProposal.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareRivalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/DeclareRivalProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareRivalProposal.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/AllianceProposal/DeclareWarProposal.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/CancelProposalProcedure.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DecideOnProposalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DecideOnProposalProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/DiplomacyProposal.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/Proposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/Proposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/ResolveProposalProcedure.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/ReceiveProposalsModule.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/ResolveProposalsModule.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/MajorTurnOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/MajorTurnOrders.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/MinorTurnOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/MinorTurnOrders.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/RegimeTurnOrders.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/RegimeTurnOrders.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/SubmitTurnCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/SubmitTurnCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/DiplomacyMajTurnOrders.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/DiplomacyMinTurnOrders.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/MilitaryMinTurnOrders.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/GenWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/GenWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/HostWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/HostWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/HostSyncer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostSyncer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/RemoteSyncer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/RemoteSyncer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/TriBool.cs" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,13 +142,11 @@
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/ChunkGraphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
@@ -560,6 +621,9 @@
       <workItem from="1709651357562" duration="3918000" />
       <workItem from="1709656133560" duration="4771000" />
       <workItem from="1709679487178" duration="4163000" />
+      <workItem from="1709739681614" duration="6739000" />
+      <workItem from="1709760093276" duration="4735000" />
+      <workItem from="1709845742510" duration="2317000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -771,14 +835,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00152" summary="optimized shiftGroups, fixed not using road bug">
-      <option name="closed" value="true" />
-      <created>1708049238055</created>
-      <option name="number" value="00152" />
-      <option name="presentableId" value="LOCAL-00152" />
-      <option name="project" value="LOCAL" />
-      <updated>1708049238055</updated>
-    </task>
     <task id="LOCAL-00153" summary="working on ai mil advance planning">
       <option name="closed" value="true" />
       <created>1708124944701</created>
@@ -923,7 +979,15 @@
       <option name="project" value="LOCAL" />
       <updated>1709682684529</updated>
     </task>
-    <option name="localTasksCounter" value="171" />
+    <task id="LOCAL-00171" summary="added spectating regime">
+      <option name="closed" value="true" />
+      <created>1709742804643</created>
+      <option name="number" value="00171" />
+      <option name="presentableId" value="LOCAL-00171" />
+      <option name="project" value="LOCAL" />
+      <updated>1709742804643</updated>
+    </task>
+    <option name="localTasksCounter" value="172" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -945,7 +1009,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="got it somewhat working" />
     <MESSAGE value="before merging new mid-turn mil ai system" />
     <MESSAGE value="gave front edges left and right, new front finding method" />
     <MESSAGE value="removed front, integrating mil ai memo" />
@@ -970,6 +1033,7 @@
     <MESSAGE value="reworking unit graphics" />
     <MESSAGE value="more graphics stuff" />
     <MESSAGE value="made label chunk graphic" />
-    <option name="LAST_COMMIT_MESSAGE" value="made label chunk graphic" />
+    <MESSAGE value="added spectating regime" />
+    <option name="LAST_COMMIT_MESSAGE" value="added spectating regime" />
   </component>
 </project>

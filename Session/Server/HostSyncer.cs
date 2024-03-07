@@ -13,7 +13,7 @@ public class HostSyncer : Syncer
             {
                 if (m is Command c)
                 {
-                    c.Enact(logic.PKey);
+                    logic.CommandQueue.Enqueue(c);
                 }
                 else throw new Exception();
             }, logic.PKey.Data)

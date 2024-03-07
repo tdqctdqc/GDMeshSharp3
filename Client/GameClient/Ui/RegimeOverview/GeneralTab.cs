@@ -36,14 +36,10 @@ public partial class GeneralTab : ScrollContainer
         });
         seeAlliance.Text = "See Alliance";
         _container.AddChild(seeAlliance);
-
-        if (regime != client.GetComponent<MapGraphics>()
-                .SpectatingRegime)
-        {
-            
-        }
-
-        if (regime != client.GetComponent<MapGraphics>().SpectatingRegime)
+        var spectating = client.GetComponent<MapGraphics>()
+            .SpectatingRegime;
+        var localPlayerRegime = client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(client.Data);
+        if (regime != spectating)
         {
             var spectateRegime = ButtonExt.GetButton(() =>
             {
@@ -54,30 +50,42 @@ public partial class GeneralTab : ScrollContainer
         }
         
         
-        if (regime.IsPlayerRegime(client.Data) == false)
+        if (regime != spectating)
         {
-            var chooseRegime = ButtonExt.GetButton(() =>
+            if (regime.IsMajor && localPlayerRegime != regime)
             {
-                var com = new ChooseRegimeCommand(regime.MakeRef(),
-                    client.Data.ClientPlayerData.LocalPlayerGuid);
-                client.HandleCommand(com);
-            });
-            chooseRegime.Text = "Choose Regime";
-            _container.AddChild(chooseRegime);
-
-            if (client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(client.Data)
-                is Regime playerRegime)
-            {
-                var target = regime.GetAlliance(client.Data);
-                var proposeRival = ButtonExt.GetButton(() =>
+                var chooseRegime = ButtonExt.GetButton(() =>
                 {
-                    var prop = DeclareRivalProposal.Construct(playerRegime, target, client.Data);
-                    var com = new MakeProposalCommand(default, prop);
-                    client.Server.QueueCommandLocal(com);
+                    var com = new ChooseRegimeCommand(regime.MakeRef(),
+                        client.Data.ClientPlayerData.LocalPlayerGuid);
+                    client.HandleCommand(com);
                 });
-                proposeRival.Text = "Propose Rival";
-                _container.AddChild(proposeRival);
+                chooseRegime.Text = "Choose Regime";
+                _container.AddChild(chooseRegime);
             }
+        }
+
+        var spectatingAlliance = spectating.GetAlliance(client.Data);
+        var spectatingAllianceLeader = spectatingAlliance.Leader.Entity(client.Data);
+        
+        var regimeAlliance = regime.GetAlliance(client.Data);
+        var regimeAllianceLeader = regimeAlliance.Leader.Entity(client.Data);
+        
+        if (regime != spectating
+            && spectatingAllianceLeader == spectating)
+        {
+            var target = regime.GetAlliance(client.Data);
+            var declareRival = ButtonExt.GetButton(() =>
+            {
+                var proc = new DeclareRivalProcedure(
+                    spectatingAlliance.Id,
+                    target.Id);
+                var com = new DoProcedureCommand(proc, 
+                    client.Data.ClientPlayerData.LocalPlayerGuid);
+                client.Server.QueueCommandLocal(com);
+            });
+            declareRival.Text = "Declare Rival";
+            _container.AddChild(declareRival);
         }
 
         _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(client.Data).Id);

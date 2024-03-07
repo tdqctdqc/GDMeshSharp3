@@ -18,21 +18,22 @@ public class HostLogic : ILogic
     private HostServer _server; 
     private HostWriteKey _hKey;
     public ProcedureWriteKey PKey { get; private set; }
+    private LogicWriteKey _logicKey;
     private Data _data => _session.Data;
     private readonly object _lock = new object();
     public HostLogic(ISession session)
     {
         _session = session;
         CommandQueue = new ConcurrentQueue<Command>();
-        var syncKey = new LogicWriteKey(HandleMessage, session);
+        _logicKey = new LogicWriteKey(HandleMessage, session);
         _hKey = new HostWriteKey(this, session);
         PKey = new ProcedureWriteKey(_session);
         
-        OrderHolder = new OrderHolder(syncKey);
+        OrderHolder = new OrderHolder(_logicKey);
         
-        _start = new TurnStartState(syncKey, OrderHolder);
-        _middle = new TurnMiddleState(syncKey, OrderHolder);
-        _end = new TurnEndState(syncKey, OrderHolder);
+        _start = new TurnStartState(_logicKey, OrderHolder);
+        _middle = new TurnMiddleState(_logicKey, OrderHolder);
+        _end = new TurnEndState(_logicKey, OrderHolder);
         _start.SetNextState(_middle);
         _middle.SetNextState(_end);
         _end.SetNextState(_start);
@@ -66,21 +67,25 @@ public class HostLogic : ILogic
         foreach (var regime in regimes)
         {
             if (Random.Shared.NextSingle() < .75f) continue;
-            var neighbors = regime.GetNeighborAlliances(_data);
+            var alliance = regime.GetAlliance(_data);
+            var neighbors = alliance.GetNeighborAlliances(_data);
             if (neighbors.Count() == 0) continue;
-            HandleMessage(new DeclareRivalProcedure(regime.GetAlliance(_data).Id, neighbors.First().Id));
+            HandleMessage(new DeclareRivalProcedure(regime.GetAlliance(_data).Id, 
+                neighbors.First().Id));
         }
     }
 
     private void SetPlayerRegimes()
     {
-        var regimes = _data.GetAll<Regime>().ToList();
+        var regimes = _data.GetAll<Regime>()
+            .Where(r => r.IsMajor)
+            .ToList();
         var players = _data.GetAll<Player>().ToList();
         if (players.Count == 0) throw new Exception();
         if (players.Count > regimes.Count) throw new Exception();
         for (var i = 0; i < players.Count; i++)
         {
-            var m = new ChooseRegimeCommand(regimes[i].MakeRef(),
+            var m = new SetPlayerRegimeProcedure(regimes[i].MakeRef(),
                 players[i].PlayerGuid);
             HandleMessage(m);
         }
@@ -90,9 +95,28 @@ public class HostLogic : ILogic
     {
         lock (_lock)
         {
-            m.Enact(PKey);
+            if (m is Update u)
+            {
+                u.Enact(PKey);
+                _server.ReceiveMessage(m, _hKey);
+                return;
+            }
+
+            if (m is Procedure p)
+            {
+                p.Enact(PKey);
+                _server.ReceiveMessage(m, _hKey);
+                return;
+            }
+
+            if (m is Command c)
+            {
+                CommandQueue.Enqueue(c);
+                return;
+            }
+
+            throw new Exception($"message of type {m.GetType()} not handled");
         }
-        _server.ReceiveMessage(m, _hKey);
     }
     private void DoCommands()
     {
@@ -100,7 +124,7 @@ public class HostLogic : ILogic
         {
             while (CommandQueue.TryDequeue(out var command))
             {
-                if(command.Valid(_data)) command.Enact(PKey);
+                if(command.Valid(_data)) command.Enact(_logicKey);
             }
         }
         _server.PushPackets(_hKey);

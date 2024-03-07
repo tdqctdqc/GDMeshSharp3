@@ -7,22 +7,22 @@ using MessagePack;
 
 public class DeploymentAi
 {
-    public Regime Regime { get; private set; }
+    public Alliance Alliance { get; private set; }
     private DeploymentRoot _root;
     private Data _data;
     public IdDispenser IdDispenser { get; private set; }
     public MilAiMemo Memo { get; set; }
-    public static DeploymentAi Construct(Regime r, Data d)
+    public static DeploymentAi Construct(Alliance a, Data d)
     {
-        var ai = new DeploymentAi(r, d);
+        var ai = new DeploymentAi(a, d);
         
         return ai;
     }
-    private DeploymentAi(Regime r, 
+    private DeploymentAi(Alliance a, 
         Data d)
     {
         _data = d;
-        Regime = r;
+        Alliance = a;
         IdDispenser = new IdDispenser(0);
     }
 
@@ -30,7 +30,7 @@ public class DeploymentAi
     {
         IdDispenser = new IdDispenser(0);
     }
-    public void Calculate(RegimeMilitaryAi ai, LogicWriteKey key, MinorTurnOrders orders)
+    public void Calculate(AllianceMilitaryAi ai, LogicWriteKey key)
     {
         Clear(key);
         _root = new DeploymentRoot(this, key);
@@ -44,7 +44,7 @@ public class DeploymentAi
         _root.ShiftGroups(this, key);
         _root.GiveOrders(this, key);
 
-        Memo = new MilAiMemo(Regime, key.Data);
+        Memo = new MilAiMemo(Alliance, key.Data);
     }
     
 

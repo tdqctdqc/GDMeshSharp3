@@ -7,8 +7,10 @@ using MessagePack;
 public class MakeProposalProcedure : Procedure
 {
     public Proposal Proposal { get; private set; }
-    public static MakeProposalProcedure Construct(Proposal p, Data d)
+    public static MakeProposalProcedure Construct(Proposal p,
+        LogicWriteKey key)
     {
+        p.SetId(key.Data.IdDispenser.TakeId());
         return new MakeProposalProcedure(p);
     }
     [SerializationConstructor] 
@@ -22,12 +24,11 @@ public class MakeProposalProcedure : Procedure
         {
             var already = key.Data.Society.Proposals.Proposals[Proposal.Id];
             throw new Exception($"Can't add {Proposal.GetType()}" +
-                                $" already proposal " + already.GetType());
+                                $" already proposal " + Proposal.Id);
         }
         else
         {
             key.Data.Society.Proposals.Proposals.Add(Proposal.Id, Proposal);
-            Proposal.Propose(key);
         }
     }
 

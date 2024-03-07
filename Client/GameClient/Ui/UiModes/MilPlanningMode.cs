@@ -9,7 +9,7 @@ public class MilPlanningMode : UiMode
     public MilPlanningMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
-        _mouseOverHandler.ChangedCell += c => DrawRegimeTheaters();
+        _mouseOverHandler.ChangedCell += c => DrawAllianceTheaters();
     }
 
     public override void Process(float delta)
@@ -20,7 +20,7 @@ public class MilPlanningMode : UiMode
     public override void HandleInput(InputEvent e)
     {
     }
-    private void DrawRegimeTheaters()
+    private void DrawAllianceTheaters()
     {
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
@@ -31,7 +31,7 @@ public class MilPlanningMode : UiMode
         var regime = cell.Controller.Entity(_client.Data);
         if (regime.IsPlayerRegime(_client.Data)) return;
         var alliance = regime.GetAlliance(_client.Data);
-        var ai = _client.Data.HostLogicData.RegimeAis[regime];
+        var ai = _client.Data.HostLogicData.AllianceAis[alliance];
         var relTo = regime.GetPolys(_client.Data).First().Center;
         
         foreach (var theater in ai.Military.Strategic.Theaters)

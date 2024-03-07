@@ -11,7 +11,7 @@ public class DeploymentMode : UiMode
     public DeploymentMode(Client client) : base(client)
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
-        _mouseOverHandler.ChangedCell += c => DrawRegime();
+        _mouseOverHandler.ChangedCell += c => DrawAlliance();
         _mouseOverHandler.ChangedCell += c => Highlight();
         _mouseOverHandler.ChangedPoly += c => Highlight();
     }
@@ -25,7 +25,7 @@ public class DeploymentMode : UiMode
     {
     }
 
-    private void DrawRegime()
+    private void DrawAlliance()
     {
         var mg = _client.GetComponent<MapGraphics>();
         if (_mouseOverHandler.MouseOverCell == null)
@@ -38,15 +38,16 @@ public class DeploymentMode : UiMode
             return;
         }
         mg.DebugOverlay.Clear();
-        var regime = _mouseOverHandler.MouseOverCell.Controller.Entity(_client.Data);
-        DrawRegimeBorders(regime);
-        if (regime.IsPlayerRegime(_client.Data))
+        var alliance = _mouseOverHandler.MouseOverCell.Controller
+            .Entity(_client.Data).GetAlliance(_client.Data);
+        DrawAllianceBorders(alliance);
+        if (alliance.Leader.Entity(_client.Data).IsPlayerRegime(_client.Data))
         {
             return;
         }
-        DrawRegimeAi(regime);
+        DrawAllianceAi(alliance);
     }
-    private void DrawRegimeAi(Regime regime)
+    private void DrawAllianceAi(Alliance alliance)
     {
         if (_client.Logic is HostLogic h == false)
         {
@@ -57,7 +58,7 @@ public class DeploymentMode : UiMode
         {
             return;
         }
-        var ai = _client.Data.HostLogicData.RegimeAis[regime];
+        var ai = _client.Data.HostLogicData.AllianceAis[alliance];
         var root = ai.Military.Deployment.GetRoot();
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
@@ -80,7 +81,8 @@ public class DeploymentMode : UiMode
 
     private Vector2 DrawDeploymentBranch(DeploymentBranch branch)
     {
-        var regime = branch.Regime;
+        var alliance = branch.Alliance;
+        var leader = alliance.Leader.Entity(_client.Data);
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
         var template = new DeploymentBranchTooltipTemplate();
@@ -95,7 +97,7 @@ public class DeploymentMode : UiMode
         {
             var childPos = DrawDeploymentBranch(child);
             debug.Draw(mb => mb.AddLine(Vector2.Zero,
-                    pos.Offset(childPos, _client.Data), regime.GetMapColor(),
+                    pos.Offset(childPos, _client.Data), leader.GetMapColor(),
                     5f), 
                 pos);
         }
@@ -103,7 +105,7 @@ public class DeploymentMode : UiMode
         {
             var childPos = DrawGroupAssignment(ga);
             debug.Draw(mb => mb.AddLine(Vector2.Zero,
-                    pos.Offset(childPos, _client.Data), regime.GetMapColor(),
+                    pos.Offset(childPos, _client.Data), leader.GetMapColor(),
                     5f), 
                 pos);
         }
@@ -124,22 +126,21 @@ public class DeploymentMode : UiMode
         return pos;
     }
     
-    private void DrawRegimeBorders(Regime regime)
+    private void DrawAllianceBorders(Alliance alliance)
     {
-        var alliance = regime.GetAlliance(_client.Data);
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
         var cells = _client.Data.Planet.PolygonAux.PolyCells.Cells.Values
-            .Where(c => c.Controller.RefId == regime.Id).ToArray();
+            .Where(c => alliance.Members.RefIds.Contains(c.Controller.RefId)).ToArray();
         
-        var relTo = regime.GetPolys(_client.Data).First().Center;
+        var relTo = alliance.Leader.Entity(_client.Data).GetPolys(_client.Data).First().Center;
         
         foreach (var c in cells)
         {
             for (var i = 0; i < c.Neighbors.Count; i++)
             {
                 var n = PlanetDomainExt.GetPolyCell(c.Neighbors[i], _client.Data);
-                if (n.Controller.RefId == regime.Id) continue;
+                if (alliance.Members.RefIds.Contains(n.Controller.RefId)) continue;
                 var edge = c.Edges[i];
                 Color color = Colors.Green;
                 if (n.Controller.IsEmpty())

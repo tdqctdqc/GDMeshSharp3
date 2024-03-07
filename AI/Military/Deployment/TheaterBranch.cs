@@ -10,14 +10,14 @@ public class TheaterBranch : DeploymentBranch
     public Theater Theater { get; private set; }
 
     public TheaterBranch (
-        Regime regime,
+        Alliance alliance,
         Theater theater,
-        LogicWriteKey key) : base(regime, key)
+        LogicWriteKey key) : base(alliance, key)
     {
         Theater = theater;
     }
 
-    public void MakeFronts(RegimeMilitaryAi ai, LogicWriteKey key)
+    public void MakeFronts(AllianceMilitaryAi ai, LogicWriteKey key)
     {
         foreach (var frontline in Theater.Frontlines)
         {

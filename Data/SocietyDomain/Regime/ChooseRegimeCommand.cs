@@ -11,10 +11,10 @@ public class ChooseRegimeCommand : Command
         Regime = regime;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(LogicWriteKey key)
     {
-        var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
-        player.SetRegime(Regime.Entity(key.Data), key);
+        var proc = new SetPlayerRegimeProcedure(Regime, CommandingPlayerGuid);
+        key.SendMessage(proc);
     }
 
     public override bool Valid(Data data)

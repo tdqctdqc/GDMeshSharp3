@@ -8,7 +8,8 @@ public class ChooseRegimePrompt : Prompt
         : base("Choose Regime", new List<Action>(), new List<string>())
     {
         var availRegimes = client.Data.GetAll<Regime>()
-            .Where(r => r.IsPlayerRegime(client.Data) == false);
+            .Where(r => r.IsPlayerRegime(client.Data) == false
+                && r.IsMajor);
         Action<Regime> action = r =>
         {
             var com = new ChooseRegimeCommand(r.MakeRef(), 

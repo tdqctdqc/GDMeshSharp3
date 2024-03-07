@@ -7,4 +7,6 @@ public abstract class Update : Message
     {
         
     }
+
+    public abstract void Enact(ProcedureWriteKey key);
 }

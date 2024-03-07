@@ -4,8 +4,8 @@ using System;
 public class MakeProposalCommand : Command
 {
     public Proposal Proposal { get; private set; }
-
-    public MakeProposalCommand(Guid commandingPlayerGuid, Proposal proposal) : base(commandingPlayerGuid)
+    public MakeProposalCommand(Guid commandingPlayerGuid, Proposal proposal) 
+        : base(commandingPlayerGuid)
     {
         Proposal = proposal;
     }
@@ -15,8 +15,8 @@ public class MakeProposalCommand : Command
         return true;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(LogicWriteKey key)
     {
-        MakeProposalProcedure.Construct(Proposal, key.Data).Enact(key);
+        key.SendMessage(MakeProposalProcedure.Construct(Proposal, key));
     }
 }

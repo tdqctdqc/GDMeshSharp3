@@ -19,7 +19,7 @@ public class SubmitTurnCommand : Command
         Orders = orders;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(LogicWriteKey key)
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         key.Session.Logic.SubmitPlayerOrders(player, Orders);

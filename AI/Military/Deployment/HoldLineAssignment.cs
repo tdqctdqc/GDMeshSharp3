@@ -52,7 +52,7 @@ public class HoldLineAssignment : GroupAssignment
 
     public override float GetPowerPointNeed(Data d)
     {
-        var ai = d.HostLogicData.RegimeAis[Regime]
+        var ai = d.HostLogicData.AllianceAis[Alliance]
             .Military.Deployment;
         
         var opposing = GetOpposingPowerPoints(d);
@@ -103,9 +103,7 @@ public class HoldLineAssignment : GroupAssignment
     public override void GiveOrders(DeploymentAi ai, 
         LogicWriteKey key)
     {
-        
         var faceCosts = GetFaceCosts(key.Data);
-        
         var subSegs = GetSubSegs(key, faceCosts);
         var toPick = InsertingGroups.ToHashSet();
         while (toPick.Count > 0)
@@ -117,7 +115,7 @@ public class HoldLineAssignment : GroupAssignment
                 g.GetCell(key.Data).GetCenter().Offset(cell.GetCenter(), key.Data).Length());
             toPick.Remove(picked);
             subSegs[picker.Key] = (values.need, values.have + picked.GetPowerPoints(key.Data));
-            var order = GoToCellGroupOrder.Construct(cell, Regime,
+            var order = GoToCellGroupOrder.Construct(cell, Alliance,
                 picked, key.Data);
             key.SendMessage(new SetUnitOrderProcedure(picked.MakeRef(), order));
         }
@@ -181,9 +179,8 @@ public class HoldLineAssignment : GroupAssignment
     private Dictionary<FrontFace, float> GetFaceCosts(Data d)
     {
         if (Frontline.Faces.Count == 0) return new Dictionary<FrontFace, float>();
-        var alliance = Regime.GetAlliance(d);
         var totalEnemyCost = Frontline
-            .Faces.Sum(f => GetFaceEnemyCost(alliance, f, d));
+            .Faces.Sum(f => GetFaceEnemyCost(Alliance, f, d));
         var totalLengthCost = Frontline.Faces.Count;
         var enemyCostWeight = CoverOpposingWeight;
         var lengthCostWeight = CoverLengthWeight;
@@ -198,7 +195,7 @@ public class HoldLineAssignment : GroupAssignment
                     }
                     else
                     {
-                        enemyCost = enemyCostWeight * GetFaceEnemyCost(alliance, f, d) / totalEnemyCost;
+                        enemyCost = enemyCostWeight * GetFaceEnemyCost(Alliance, f, d) / totalEnemyCost;
                     }
                     var lengthCost = lengthCostWeight / totalLengthCost;
                     if (float.IsNaN(lengthCost))
@@ -266,12 +263,11 @@ public class HoldLineAssignment : GroupAssignment
     }
     public float GetOpposingPowerPoints(Data data)
     {
-        var alliance = Regime.GetAlliance(data);
         return Frontline.Faces.Select(f => f.GetNative(data))
             .Distinct()
             .SelectMany(c => c.GetNeighbors(data))
             .Distinct()
-            .Where(n => n.RivalControlled(alliance, data))
+            .Where(n => n.RivalControlled(Alliance, data))
             .Sum(n =>
             {
                 var us = n.GetUnits(data);

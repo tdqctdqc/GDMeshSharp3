@@ -9,9 +9,8 @@ public class GoToCellGroupOrder : UnitGroupOrder
 {
     public int DestId { get; private set; }
     public static GoToCellGroupOrder Construct(Cell destWp,
-        Regime r, UnitGroup g, Data d)
+        Alliance alliance, UnitGroup g, Data d)
     {
-        var alliance = r.GetAlliance(d);
         var currWp = g.GetCell(d);
         var moveType = g.MoveType(d);
         

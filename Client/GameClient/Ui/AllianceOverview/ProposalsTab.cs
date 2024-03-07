@@ -18,7 +18,7 @@ public partial class ProposalsTab : ScrollContainer
     public void Setup(Alliance alliance, Client client)
     {
         _container.ClearChildren();
-        var proposals = alliance.GetProposals(client.Data);
+        var proposals = alliance.PendingProposals(client.Data);
         foreach (var proposal in proposals)
         {
             _container.AddChild(proposal.GetDisplay(client.Data));

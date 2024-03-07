@@ -6,14 +6,12 @@ public class RegimeAi
 {
     public Regime Regime { get; private set; }
     public BudgetAi Budget { get; private set; }
-    public DiplomacyAi Diplomacy { get; private set; }
     public RegimeMilitaryAi Military { get; private set; }
     public RegimeAi(Regime regime, Data data)
     {
         Regime = regime;
         Military = new RegimeMilitaryAi(regime, data);
         Budget = new BudgetAi(Military, data, regime);
-        Diplomacy = new DiplomacyAi(regime);
     }
 
     public RegimeTurnOrders CalculateAndSendOrders(LogicWriteKey key)
@@ -29,11 +27,10 @@ public class RegimeAi
         if (allianceLeader == Regime)
         {
             var ai = key.Data.HostLogicData.AllianceAis[alliance];
-            ai.Calculate(alliance, key);
+            ai.CalculateMajor(orders, alliance, key);
         }
         
         Budget.Calculate(key, orders);
-        Diplomacy.CalculateMajor(key, orders);
         Military.CalculateMajor(key, orders);
         
         return orders; 
@@ -47,10 +44,9 @@ public class RegimeAi
         if (allianceLeader == Regime)
         {
             var ai = key.Data.HostLogicData.AllianceAis[alliance];
-            ai.Calculate(alliance, key);
+            ai.CalculateMinor(key);
         }
         
-        Diplomacy.CalculateMinor(key, orders);
         Military.CalculateMinor(key, orders);
         
         return orders; 

@@ -7,18 +7,16 @@ public class Alliance : Entity
 {
     public ERef<Regime> Leader { get; private set; }
     public ERefSet<Regime> Members { get; private set; }
-    public HashSet<int> ProposalIds { get; private set; }
-    public IEnumerable<Proposal> Proposals(Data data) =>
-        ProposalIds.Select(id => data.Society.Proposals.Proposals[id]);
+    public IEnumerable<Proposal> PendingProposals(Data data) =>
+        data.Society.Proposals
+            .Proposals.Values.Where(p => p.Target.RefId == Id);
     public static Alliance Create(Regime founder, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
         var members = ERefSet<Regime>.Construct(nameof(Members), id,
             new HashSet<int>{founder.Id}, key.Data);
-        var proposals = new HashSet<int>();
         
         var a = new Alliance(founder.MakeRef(), members,
-            proposals,
             id);
         
         key.Create(a);
@@ -26,12 +24,10 @@ public class Alliance : Entity
     }
     [SerializationConstructor] private Alliance(ERef<Regime> leader,
         ERefSet<Regime> members, 
-        HashSet<int> proposalIds,
         int id) : base(id)
     {
         Leader = leader;
         Members = members;
-        ProposalIds = proposalIds;
     }
 
     public override void CleanUp(StrongWriteKey key)
