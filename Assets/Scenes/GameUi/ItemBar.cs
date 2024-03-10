@@ -10,6 +10,7 @@ public partial class ItemBar : HBoxContainer
         AddFlow(client, data.Models.Flows.ConstructionCap, data);
         AddFlow(client, data.Models.Flows.IndustrialPower, data);
         AddFlow(client, data.Models.Flows.Income, data);
+        AddFlow(client, data.Models.Flows.MilitaryCap, data);
 
         foreach (var kvp in data.Models.GetModels<Item>())
         {

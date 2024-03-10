@@ -7,7 +7,6 @@ public class BudgetAi
 {
     private Regime _regime;
     public List<IBudgetPriority> Priorities { get; private set; }
-    public IncomeBudget IncomeBudget { get; private set; }
     public BudgetAi(RegimeMilitaryAi milAi, Data data, Regime regime)
     {
         _regime = regime;
@@ -26,6 +25,9 @@ public class BudgetAi
             new ReinforcementTroopBuildPriority("Troops for reinforcement",
                 (d,r) => 1f),
             new FoodReservePriority(),
+            new FormUnitPriority("Form unit",
+                d => regime.GetUnitTemplates(d),
+                (d,r) => 1f)
         };
     }
 
@@ -182,21 +184,21 @@ public class BudgetAi
 
              plausibleCosts.Add(kvp.Key, plausibleCost);
          }
-        
+
          var totalCost = plausibleCosts.Sum(kvp => kvp.Value);
          var buyRatio = Mathf.Clamp(credits / totalCost, 0f, 1f);
-         
+
          if (float.IsNaN(buyRatio)) buyRatio = 0;
-         
+ 
          foreach (var kvp in wishlist)
          {
              if (kvp.Key is TradeableItem == false) continue;
              var buyQ = Mathf.FloorToInt(kvp.Value * buyRatio);
              if (buyQ < 0) throw new Exception();
              orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, 
-                 buyQ));
+              buyQ));
          }
-         
+ 
          foreach (var kvp in pool.AvailItems.Contents)
          {
              var item = data.Models.GetModel<Item>(kvp.Key);
@@ -208,7 +210,7 @@ public class BudgetAi
                  q -= wishlist[item];
              }
              orders.TradeOrders.SellOrders
-                 .Add(new SellOrder(kvp.Key, _regime.Id, q));
+                .Add(new SellOrder(kvp.Key, _regime.Id, q));
          }
      }
 }

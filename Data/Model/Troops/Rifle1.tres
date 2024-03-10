@@ -10,3 +10,4 @@ SoftAttack = 5.0
 Hitpoints = 100.0
 Hardness = 0.0
 Echelon = 0
+MilitaryCapCost = 1.0

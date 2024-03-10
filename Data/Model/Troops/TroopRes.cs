@@ -9,4 +9,5 @@ public partial class TroopRes : Resource
     [Export] public float Hitpoints { get; set; }
     [Export] public float Hardness { get; set; }
     [Export] public int Echelon { get; set; }
+    [Export] public float MilitaryCapCost { get; set; }
 }

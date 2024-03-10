@@ -28,7 +28,7 @@ using System;
 [MessagePack.Union(23, typeof(TradeProcedure))]
 [MessagePack.Union(24, typeof(TroopLossesProcedure))]
 [MessagePack.Union(25, typeof(SetPlayerRegimeProcedure))]
-[MessagePack.Union(25, typeof(ReinforceUnitProcedure))]
+[MessagePack.Union(26, typeof(ReinforceUnitProcedure))]
 public abstract class Procedure : Message, IPolymorph
 {
     protected Procedure()

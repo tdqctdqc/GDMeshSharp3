@@ -11,7 +11,7 @@ public class Rifle1 : Troop
                 IdCount<Item>.Construct(
                     new Dictionary<Item, float>
                     {
-                        {items.Recruits, 10}
+                        {items.Recruits, 1}
                     }), 
                 1f
             )

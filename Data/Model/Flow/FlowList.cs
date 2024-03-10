@@ -9,4 +9,6 @@ public class FlowList : ModelList<Flow>
         = new ();
     public ConstructionCap ConstructionCap { get; private set; } 
         = new ();
+    public MilitaryCap MilitaryCap { get; private set; }
+        = new ();
 }

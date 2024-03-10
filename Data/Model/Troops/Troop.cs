@@ -11,6 +11,7 @@ public class Troop : IModel, IMakeable
     public float Hitpoints { get; private set; }
     public float Hardness { get; private set; }
     public int Echelon { get; private set; }
+    public float MilitaryCapCost { get; private set; }
     public Icon Icon { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public TroopDomain Domain { get; private set; }
@@ -26,6 +27,7 @@ public class Troop : IModel, IMakeable
         Hitpoints = res.Hitpoints;
         Hardness = res.Hardness;
         Echelon = res.Echelon;
+        MilitaryCapCost = res.MilitaryCapCost;
         Domain = domain;
         Makeable = makeable;
         Icon = Icon.Create(name.ToLower(), Vector2I.One);
