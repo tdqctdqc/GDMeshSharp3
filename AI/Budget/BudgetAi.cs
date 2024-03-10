@@ -20,8 +20,11 @@ public class BudgetAi
             new ItemProdBuildingConstructionPriority(
                 data.Models.Items.Recruits, (d, r) => .1f),
             new TroopBuildForTemplatePriority("Troops for templates", regime, 
-                (d,r) => 1f,
-                u => true, u => 1f),
+                (d,r) => 1f),
+            new ReserveTroopBuildPriority("Troops for reserve",
+                (d, r) => .25f),
+            new ReinforcementTroopBuildPriority("Troops for reinforcement",
+                (d,r) => 1f),
             new FoodReservePriority(),
         };
     }
@@ -83,12 +86,12 @@ public class BudgetAi
             priority.Wipe();
             var proportion = priority.Weight / totalPriority;
             priority.SetWishlist(_regime, key.Data, pool, proportion);
-            priority.FirstRound(orders, _regime, proportion, pool, key);
+            priority.FirstRound(_regime, proportion, pool, key);
         }
         foreach (var priority in Priorities)
         {
             var proportion = priority.Weight / totalPriority;
-            priority.SecondRound(orders, _regime, proportion, pool, key, 3f);
+            priority.SecondRound(_regime, proportion, pool, key, 3f);
         }
         var allWishlists = new Dictionary<Item, int>();
         foreach (var priority in Priorities)

@@ -17,8 +17,15 @@ public class DoProcedureCommand : Command
         key.SendMessage(Procedure);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return Procedure.Valid(data);
+        if (Procedure.Valid(data, out var procError) == false)
+        {
+            error = procError;
+            return false;
+        }
+
+        error = "";
+        return true;
     }
 }

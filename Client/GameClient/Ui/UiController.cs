@@ -8,7 +8,7 @@ public partial class UiController : Node, IClientComponent
 {
     private Client _client;
     public UiMode Mode => ModeOption.Value;
-    public TypedSettingsOption<UiMode> ModeOption { get; private set; }
+    public ListSettingsOption<UiMode> ModeOption { get; private set; }
     public Node Node => this;
 
     public UiController(Client client)
@@ -24,14 +24,17 @@ public partial class UiController : Node, IClientComponent
             new DeploymentMode(client),
             // new HighlightCellsMode(client),
             new PathFindMode(client),
-            new MilPlanningMode(client)
+            new MilPlanningMode(client),
+            new ConstructionMode(client)
         };
         var names = modes.Select(m => m.GetType().Name).ToList();
-        ModeOption = new TypedSettingsOption<UiMode>("Ui Mode",
+        ModeOption = new ListSettingsOption<UiMode>("Ui Mode",
             modes, names);
         ModeOption.SettingChanged.Subscribe(v =>
         {
             v.oldVal?.Clear();
+            v.newVal.Enter();
+            _client.GetComponent<UiFrame>().LeftBar.SetLabel(v.newVal.Name);
         });
     }
 

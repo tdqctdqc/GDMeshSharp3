@@ -4,14 +4,29 @@ using System.Linq;
 using Godot;
 using Google.OrTools.LinearSolver;
 
-public class TroopBuildForTemplatePriority : SolverPriority<UnitTemplate>
+public class TroopBuildForTemplatePriority 
+    : SolverPriority<UnitTemplate>
 {
-    public TroopBuildForTemplatePriority(string name, Regime regime, Func<Data, Regime, float> getWeight, 
-        Func<UnitTemplate, bool> relevant, Func<UnitTemplate, float> utility) 
+    public TroopBuildForTemplatePriority(string name, Regime regime, Func<Data, Regime, float> getWeight) 
         : base(name, 
             d => regime.GetUnitTemplates(d),
-            getWeight, relevant, utility)
+            getWeight)
     {
+    }
+
+    protected override float Utility(UnitTemplate t)
+    {
+        return 1f;
+    }
+
+    protected override bool Relevant(UnitTemplate t, Data d)
+    {
+        return true;
+    }
+
+    protected override void SetCalcData(Regime r, Data d)
+    {
+        
     }
 
     protected override void SetConstraints(Solver solver, Regime r, 
@@ -26,7 +41,7 @@ public class TroopBuildForTemplatePriority : SolverPriority<UnitTemplate>
         solver.SetItemConstraint(data.Models.Items.Recruits, data, Account.Items, projVars);
     }
 
-    protected override void Complete(Regime r, MajorTurnOrders orders, 
+    protected override void Complete(Regime r, 
         Dictionary<UnitTemplate, int> toBuild, LogicWriteKey key)
     {
         var allTroops = IdCount<Troop>.Construct(new Dictionary<Troop, float>());

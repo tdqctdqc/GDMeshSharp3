@@ -26,7 +26,7 @@ public static class UiActions
         {
             highlighter.Draw(mb => mb.DrawPolygonOutline(
                 poly.BoundaryPoints, 
-                .25f, Colors.White), poly.Center);
+                thickness, Colors.White), poly.Center);
         }
     }
     public static void HighlightCell(this Client client, Cell cell,
@@ -36,13 +36,13 @@ public static class UiActions
         if (cell != null)
         {
             highlighter.Draw(mb => mb.DrawPolygonOutline(
-                cell.RelBoundary, 1f,
+                cell.RelBoundary, thickness,
                 Colors.White), cell.RelTo);
 
             foreach (var n in cell.GetNeighbors(client.Data))
             {
                 highlighter.Draw(mb => mb.DrawPolygonOutline(
-                    n.RelBoundary, .25f,
+                    n.RelBoundary, thickness / 2f,
                     Colors.Red), n.RelTo);
             }
         }

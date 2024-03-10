@@ -6,14 +6,14 @@ using Godot;
 
 public class RemoteLogic : ILogic
 {
+    public bool Calculating => false;
     public ProcedureWriteKey PKey { get; private set; }
-    private bool _inited;
     public RemoteLogic(Data data, GameSession session)
     {
         PKey = new ProcedureWriteKey(session);
-        _inited = false;
     }
-    
+
+
     public void Process(float delta)
     {
         

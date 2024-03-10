@@ -16,28 +16,23 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     public BudgetAccount Account { get; private set; }
     
     
-    private Func<TBuild, bool> _relevant;
-    private Func<TBuild, float> _utility;
     public SolverPriority(string name, 
         Func<Data, IEnumerable<TBuild>> getAll,
-        Func<Data, Regime, float> getWeight,
-        Func<TBuild, bool> relevant,
-        Func<TBuild, float> utility) 
+        Func<Data, Regime, float> getWeight) 
     {
         Name = name;
         _getWeight = getWeight;
         _getAll = getAll;
         Account = new BudgetAccount();
         Wishlist = new Dictionary<Item, int>();
-        _relevant = relevant;
-        _utility = utility;
     }
     public void SetWeight(Data data, Regime regime)
     {
         Weight = _getWeight(data, regime);
     }
-    public void Calculate(Regime regime, LogicWriteKey key, MajorTurnOrders orders)
+    public void Calculate(Regime regime, LogicWriteKey key)
     {
+        SetCalcData(regime, key.Data);
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, key.Data);
         SetConstraints(solver, regime, projVars, key.Data);
@@ -53,18 +48,22 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         }
         
         var toBuild = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        Complete(regime, orders, toBuild, key);
+        Complete(regime, toBuild, key);
     }
 
+    protected abstract float Utility(TBuild t);
+    protected abstract bool Relevant(TBuild t, Data d);
+    protected abstract void SetCalcData(Regime r, Data d);
     protected abstract void SetConstraints(Solver solver, Regime r,
         Dictionary<TBuild, Variable> projVars, 
         Data data);
     protected abstract void SetWishlistConstraints(Solver solver, Regime r,
         Dictionary<TBuild, Variable> projVars, 
         Data data, BudgetPool pool, float proportion);
-    protected abstract void Complete(Regime r, MajorTurnOrders orders,
+    protected abstract void Complete(Regime r,
         Dictionary<TBuild, int> toBuild, LogicWriteKey key);
-    private bool Solve(Solver solver, Dictionary<TBuild, Variable> projVars)
+    private bool Solve(Solver solver, 
+        Dictionary<TBuild, Variable> projVars)
     {
         var objective = solver.Objective();
         objective.SetMaximization();
@@ -73,7 +72,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         {
             var b = kvp.Key;
             var projVar = projVars[b];
-            var benefit = _utility(b);
+            var benefit = Utility(b);
             objective.SetCoefficient(projVar, benefit);
         }
         var status = solver.Solve();
@@ -102,9 +101,12 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
             (kvp, i) => Mathf.CeilToInt(i * kvp.Value.SolutionValue()));
     }
     
-    protected Dictionary<TBuild, Variable> MakeProjVars(Solver solver, Data data)
+    protected Dictionary<TBuild, Variable> MakeProjVars(
+        Solver solver, 
+        Data data)
     {
-        var models = _getAll(data).Where(_relevant);
+        var models = _getAll(data)
+            .Where(t => Relevant(t, data));
         return models.Select(b =>
         {
             var projVar = solver.MakeIntVar(0, 1000, b.Id.ToString());
@@ -122,20 +124,20 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     {
         Wishlist = CalculateWishlist(r, d, pool, proportion);
     }
-    public void FirstRound(MajorTurnOrders orders, Regime regime, float proportion, 
+    public void FirstRound(Regime regime, float proportion, 
         BudgetPool pool, LogicWriteKey key)
     {
         var taken = new BudgetAccount();
         taken.TakeShare(proportion, pool, key.Data);
         Account.Add(taken);
-        Calculate(regime, key, orders);
+        Calculate(regime, key);
     }
 
-    public void SecondRound(MajorTurnOrders orders, Regime regime, float proportion, 
+    public void SecondRound(Regime regime, float proportion, 
         BudgetPool pool, LogicWriteKey key, float multiplier)
     {
         proportion = Mathf.Min(1f, multiplier * proportion);
-        FirstRound(orders, regime, proportion, pool, key);
+        FirstRound(regime, proportion, pool, key);
         ReturnUnused(pool, key.Data);
     }
 

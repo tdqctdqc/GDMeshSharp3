@@ -1,17 +1,36 @@
+
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Google.OrTools.LinearSolver;
 
-
-public class ReserveTroopBuildPriority : SolverPriority<Troop>
+public class ReinforcementTroopBuildPriority : SolverPriority<Troop>
 {
-    public ReserveTroopBuildPriority(string name, 
+    private Dictionary<Troop, float> _needed;
+    public ReinforcementTroopBuildPriority(string name, 
         Func<Data, Regime, float> getWeight) 
-        : base(name, d => d.Models.GetModels<Troop>().Values, getWeight)
+        : base(name, 
+            d => d.Models.GetModels<Troop>().Values, 
+            getWeight)
     {
+        _needed = new Dictionary<Troop, float>();
     }
 
+    protected override void SetCalcData(Regime r, Data d)
+    {
+        _needed.Clear();
+        foreach (var unit in r.GetUnits(d))
+        {
+            var template = unit.Template.Entity(d);
+            foreach (var (troop, count) in unit.Troops.GetEnumerableModel(d))
+            {
+                var shouldHave = template.TroopCounts.Get(troop);
+                if (shouldHave > count)
+                {
+                    _needed.AddOrSum(troop, shouldHave - count);
+                }
+            }
+        }
+    }
     protected override float Utility(Troop t)
     {
         return t.GetPowerPoints();
@@ -19,19 +38,14 @@ public class ReserveTroopBuildPriority : SolverPriority<Troop>
 
     protected override bool Relevant(Troop t, Data d)
     {
-        return true;
+        return _needed.ContainsKey(t);
     }
-
-    protected override void SetCalcData(Regime r, Data d)
-    {
-        
-    }
-
     protected override void SetConstraints(Solver solver, Regime r, 
         Dictionary<Troop, Variable> projVars, Data data)
     {
         solver.SetIndustrialPointConstraints(r, data, 3f, projVars);
         solver.SetItemsConstraints(data, Account.Items, projVars);
+        solver.SetMaxVariableConstraint(projVars, _needed, data);
     }
 
     protected override void SetWishlistConstraints(Solver solver, Regime r, Dictionary<Troop, Variable> projVars, Data data, BudgetPool pool, float proportion)

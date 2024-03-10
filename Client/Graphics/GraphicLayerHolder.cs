@@ -10,7 +10,7 @@ public enum LayerOrder
     Terrain, PolyFill, Rivers, 
     Roads, Icons, Resources,
     UnitOrders, Units, Theaters,
-    Labels
+    Labels, Debug, Highlighter, Ui
 }
 public class GraphicLayerHolder
 {

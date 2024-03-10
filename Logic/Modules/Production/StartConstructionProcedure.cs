@@ -24,20 +24,42 @@ public class StartConstructionProcedure : Procedure
         Construction = construction;
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
         var cell = PlanetDomainExt.GetPolyCell(Construction.PolyCellId, data);
-
-        var poly = ((LandCell)cell).Polygon.Entity(data);
-        var regime = OrderingRegime.Entity(data);
-        var noOngoing = data.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(poly.Id) == false;
-        if (noOngoing == false)
+        if (cell is LandCell == false)
         {
+            error = "Cell is not land";
             return false;
         }
-        var polyHasRegime = poly.OwnerRegime.Fulfilled();
-        if (polyHasRegime == false)
+        var model = Construction.Model.Model(data);
+        var poly = ((LandCell)cell)
+            .Polygon.Entity(data);
+        if (model.CanBuildInPoly(poly, data) == false)
         {
+            error = "Cannot build in poly";
+            return false;
+        }
+
+        var regime = OrderingRegime.Entity(data);
+        if (cell.Controller.RefId != OrderingRegime.RefId)
+        {
+            error = "Controller is not same as ordering regime";
+            return false;
+        }
+        var ongoing = data.Infrastructure
+            .CurrentConstruction.ByPolyCell
+            .ContainsKey(cell.Id);
+        if (ongoing)
+        {
+            error = "Ongoing construction in cell";
+            return false;
+        }
+        var buildingInCell = data.Infrastructure
+            .BuildingAux.ByCell.ContainsKey(cell);
+        if (buildingInCell)
+        {
+            error = "Building in cell";
             return false;
         }
 
@@ -45,8 +67,11 @@ public class StartConstructionProcedure : Procedure
             .Makeable.ItemCosts.GetEnumerableModel(data);
         if (itemCosts.Any(kvp => regime.Items.Get(kvp.Key) < kvp.Value))
         {
+            error = "Cannot meet item cost";
             return false;
         }
+
+        error = "";
         return true;
     }
 
@@ -57,7 +82,6 @@ public class StartConstructionProcedure : Procedure
         poly.PolyBuildingSlots
             .RemoveSlot(Construction.Model.Model(key.Data).BuildingType, Construction.PolyCellId);
         var regime = poly.OwnerRegime.Entity(key.Data);
-
         var itemCosts = Construction.Model.Model(key.Data)
             .Makeable.ItemCosts.GetEnumerableModel(key.Data);
         foreach (var kvp in itemCosts)
@@ -65,6 +89,7 @@ public class StartConstructionProcedure : Procedure
             regime.Items.Remove(kvp.Key, kvp.Value);
             regime.History.ItemHistory.GetLatest(kvp.Key).Consumed += kvp.Value;
         }
-        key.Data.Infrastructure.CurrentConstruction.StartConstruction(Construction, key);
+        key.Data.Infrastructure
+            .CurrentConstruction.StartConstruction(Construction, key);
     }
 }

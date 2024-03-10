@@ -5,7 +5,7 @@ using Godot;
 
 public class WorldGenLogic : ILogic
 {
-    public bool Generating { get; private set; }
+    public bool Calculating { get; private set; }
     private bool _justGenned = false;
     private int _tries = 0;
     private GameSession _session;
@@ -37,7 +37,7 @@ public class WorldGenLogic : ILogic
     {
         _tries = 0;
         Succeeded = false;
-        Generating = true;
+        Calculating = true;
         var genData = (GenData)_session.Data;
         var w = new WorldGenerator(genData, _session,
             () => _justGenned = true);
@@ -56,7 +56,7 @@ public class WorldGenLogic : ILogic
             else throw;
         }
         
-        Generating = false;
+        Calculating = false;
     }
 
     private void RetryGen()
@@ -81,6 +81,6 @@ public class WorldGenLogic : ILogic
             }
             else throw;
         }
-        Generating = false;
+        Calculating = false;
     }
 }

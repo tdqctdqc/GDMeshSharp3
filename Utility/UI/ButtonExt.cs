@@ -12,6 +12,26 @@ public static class ButtonExt
         b.ButtonUp += action;
         return b;
     }
+    
+    public static Button GetToggleButton(Action pressed,
+        Action unpressed)
+    {
+        var b = new Button();
+        b.ToggleMode = true;
+        b.FocusMode = Control.FocusModeEnum.None;
+        b.ButtonUp += () =>
+        {
+            if (b.ButtonPressed)
+            {
+                pressed();
+            }
+            else
+            {
+                unpressed();
+            }
+        };
+        return b;
+    }
     public static Button GetButton(params Action[] action)
     {
         var b = new Button();

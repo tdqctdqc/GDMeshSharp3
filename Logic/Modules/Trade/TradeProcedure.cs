@@ -27,8 +27,9 @@ public class TradeProcedure : Procedure
         ItemTradeInfos = itemTradeInfos;
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 

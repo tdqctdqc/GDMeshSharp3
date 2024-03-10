@@ -15,8 +15,9 @@ public class SetUnitOrderProcedure : Procedure
         Group.Entity(key.Data).SetOrder(GroupOrder, key);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 }

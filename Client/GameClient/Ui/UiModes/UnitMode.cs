@@ -6,12 +6,16 @@ using Godot;
 
 public class UnitMode : UiMode
 {
+    public DefaultSettingsOption<Unit> Unit { get; private set; }
+    private MeshInstance2D _selectedUnitHighlight;
     private MouseOverHandler _mouseOverHandler;
-    public UnitMode(Client client) : base(client)
+    public UnitMode(Client client) : base(client, "Unit")
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
-        _mouseOverHandler.ChangedCell += c => Highlight();
-        _mouseOverHandler.ChangedPoly += c => Highlight();
+        _mouseOverHandler.ChangedCell += c => Draw();
+        Unit = new DefaultSettingsOption<Unit>("Unit",
+            null);
+        Unit.SettingChanged.Subscribe(n => Draw());
     }
     public override void Process(float delta)
     {
@@ -20,19 +24,20 @@ public class UnitMode : UiMode
     
     public override void HandleInput(InputEvent e)
     {
-        var mapPos = _client.Cam().GetMousePosInMapSpace();
-        mapPos = mapPos.ClampPosition(_client.Data);
+        if (e is InputEventMouseButton m 
+            && m.ButtonIndex == MouseButton.Left 
+            && m.Pressed == false)
+        {
+            SelectAndCycleUnits();
+        }
+    }
 
-        if(e.IsAction("Open Regime Overview"))
-        {
-            _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverPoly);
-        }
-        if (e is InputEventMouseButton m && m.ButtonIndex == MouseButton.Left && m.Pressed == false)
-        {
-            CycleUnits();
-            Highlight();
-        }
-        UnitTooltip();
+    public override void Enter()
+    {
+        var mb = new MeshBuilder();
+        mb.AddCircle(Vector2.Zero, 20f, 20, new Color(Colors.Yellow, .5f));
+        _selectedUnitHighlight = mb.GetMeshInstance();
+        _selectedUnitHighlight.ZIndex = 99;
     }
 
     public override void Clear()
@@ -42,17 +47,17 @@ public class UnitMode : UiMode
         mg.DebugOverlay.Clear();
         var tooltip = _client.GetComponent<TooltipManager>();
         tooltip.Clear();
+        _selectedUnitHighlight.QueueFree();
     }
 
-    private void Highlight()
+    private void Draw()
     {
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
         highlight.Clear();
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
+        _mouseOverHandler.Highlight();
         OverlayForUnit();
+        UnitTooltip();
     }
-
     private void UnitTooltip()
     {
         var tooltip = _client.GetComponent<TooltipManager>();
@@ -62,6 +67,7 @@ public class UnitMode : UiMode
             || units.Count == 0)
         {
             tooltip.Clear();
+            
             return;
         }
         var layerHolder = _client.GetComponent<MapGraphics>()
@@ -75,23 +81,31 @@ public class UnitMode : UiMode
     private void OverlayForUnit()
     {
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
-        highlight.Clear();
-        var cell = _mouseOverHandler.MouseOverCell;
-        if (cell == null
-            || cell.GetUnits(_client.Data) is HashSet<Unit> units == false
-            || units.Count == 0)
+        
+        if (Unit.Value == null)
         {
             return;
         }
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
+        var cell = _mouseOverHandler.MouseOverCell;
+        if (cell == null)
+        {
+            _selectedUnitHighlight.Visible = false;
+            return;
+        }
+        
+        var unitCell = Unit.Value.Position.GetCell(_client.Data);
+        _selectedUnitHighlight.Visible = true;
+        _client.GetComponent<MapGraphics>().Segmenter
+            .AddElement(_selectedUnitHighlight, unitCell.GetCenter());
+        
         var layerHolder = _client.GetComponent<MapGraphics>()
             .GraphicLayerHolder;
         var chunkGraphic = layerHolder.Chunks[cell.GetChunk(_client.Data)];
-        var unit = chunkGraphic.Units.UnitsInOrder[cell]
-            .First();
-        var group = unit.GetGroup(_client.Data);
-        highlight.Draw(mb => mb.DrawMovementRecord(unit.Id, 4, cell.GetCenter(), _client.Data),
+        
+        var group = Unit.Value.GetGroup(_client.Data);
+        highlight.Draw(mb => mb
+                .DrawMovementRecord(Unit.Value.Id,
+            4, cell.GetCenter(), _client.Data),
             cell.GetCenter());
         if (group != null && group.GroupOrder != null)
         {
@@ -100,7 +114,7 @@ public class UnitMode : UiMode
         }
     }
 
-    private void CycleUnits()
+    private void SelectAndCycleUnits()
     {
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell != null)
@@ -111,7 +125,21 @@ public class UnitMode : UiMode
                 .Chunks[cell.GetChunk(_client.Data)].Units;
             chunkGraphic.CycleUnits(_mouseOverHandler.MouseOverCell, 
                 _client.Data);
+            if (chunkGraphic.UnitsInOrder.ContainsKey(cell) == false)
+            {
+                Unit.Set(null);
+                _selectedUnitHighlight.Visible = false;
+                return;
+            }
+            var unitsInCell = chunkGraphic.UnitsInOrder[cell];
+            if (unitsInCell == null 
+                || unitsInCell.Count == 0)
+            {
+                Unit.Set(null);
+                _selectedUnitHighlight.Visible = false;
+                return;
+            }
+            Unit.Set(unitsInCell.First());
         }
     }
-    
 }

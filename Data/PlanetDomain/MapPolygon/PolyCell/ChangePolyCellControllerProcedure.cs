@@ -25,8 +25,9 @@ public class ChangePolyCellControllerProcedure : Procedure
         key.Data.Notices.CellChangedController.Invoke((cell, oldController, newController));
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 }

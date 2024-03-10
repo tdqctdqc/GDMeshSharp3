@@ -16,8 +16,15 @@ public class DecideOnProposalProcedure : Procedure
         var p = key.Data.Society.Proposals.Proposals[ProposalId];
         p.Resolve(Decision, key);
     }
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return data.Society.Proposals.Proposals.ContainsKey(ProposalId);
+        if (data.Society.Proposals.Proposals.ContainsKey(ProposalId) == false)
+        {
+            error = $"No proposal with id found";
+            return false;
+        }
+
+        error = "";
+        return true;
     }
 }

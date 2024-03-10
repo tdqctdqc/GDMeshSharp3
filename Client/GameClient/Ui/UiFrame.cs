@@ -6,7 +6,7 @@ using Godot;
 public partial class UiFrame : VBoxContainer, IClientComponent
 {
     public VBoxContainer TopBars { get; private set; }
-    public VBoxContainer LeftSidebar { get; private set; }
+    public MultiBar LeftBar { get; private set; }
     public VBoxContainer RightSidebar { get; private set; }
     public Action Disconnect { get; set; }
     public void Process(float delta)
@@ -33,9 +33,9 @@ public partial class UiFrame : VBoxContainer, IClientComponent
         sidebars.SetAnchorsPreset(LayoutPreset.HcenterWide);
         sidebars.AnchorsPreset = (int)(LayoutPreset.HcenterWide);
             
-        LeftSidebar = new VBoxContainer();
-        LeftSidebar.SetAnchorsPreset(LayoutPreset.LeftWide);
-        sidebars.AddChild(LeftSidebar);
+        LeftBar = MultiBar.MakeVertical();
+        LeftBar.SetAnchorsPreset(LayoutPreset.LeftWide);
+        sidebars.AddChild(LeftBar);
         var filler = new Control();
         filler.GrowHorizontal = GrowDirection.Both;
         filler.SizeFlagsHorizontal = SizeFlags.ExpandFill;

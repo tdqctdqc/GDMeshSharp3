@@ -1,4 +1,6 @@
 
+using Godot;
+
 public class DeclareRivalProcedure : Procedure
 {
     public int AllianceId { get; private set; }
@@ -17,10 +19,26 @@ public class DeclareRivalProcedure : Procedure
         key.Data.Society.DiploGraph.AddEdge(a, t, DiploRelation.Rivals, key);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return AllianceId != TargetAllianceId 
-               && data.HasEntity(TargetAllianceId)
-               && data.HasEntity(AllianceId);
+        if (AllianceId == TargetAllianceId)
+        {
+            error = "Proposer and target are same alliance";
+            return false;
+        }
+
+        if (data.HasEntity(TargetAllianceId) == false)
+        {
+            error = "Target alliance not found";
+            return false;
+        }
+        if (data.HasEntity(AllianceId) == false)
+        {
+            error = "Proposer alliance not found";
+            return false;
+        }
+
+        error = "";
+        return true;
     }
 }

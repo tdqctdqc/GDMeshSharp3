@@ -149,12 +149,52 @@ public partial class Client : Node, IClient
     {
         var mapGraphics = new MapGraphics(this);
         AddComponent(mapGraphics);
-        
-        var mapGraphicsOptions = new MapGraphicsOptionsPanel(this);
-        AddComponent(mapGraphicsOptions);
 
-        var uiControlPanel = new UiControlPanel(this);
-        AddComponent(uiControlPanel);
+        var uiFrame = GetComponent<UiFrame>();
+        uiFrame.LeftBar.Add(() => new MapGraphicsOptionsPanel(this),
+            "Map Graphics Options");
+        
+        uiFrame.LeftBar.Add(() =>
+            {
+                UiController.ModeOption.Choose<ConstructionMode>();
+                return new ConstructBuildingsPanel(this);
+            },
+            "Construct");
+        
+        uiFrame.LeftBar.Add(() =>
+            {
+                UiController.ModeOption.Choose<UnitMode>();
+                return new UnitPanel(this);
+            },
+            "Units");
+        
+        uiFrame.LeftBar.Add(() =>
+            {
+                UiController.ModeOption.Choose<PolyMode>();
+                return new PolyPanel(this);
+            },
+            "Poly");
+        
+        uiFrame.LeftBar.Add(() =>
+            {
+                UiController.ModeOption.Choose<DeploymentMode>();
+                return new Control();
+            },
+            "Deployment");
+        
+        uiFrame.LeftBar.Add(() =>
+            {
+                UiController.ModeOption.Choose<PathFindMode>();
+                return new Control();
+            },
+            "Pathfind");
+        
+        uiFrame.LeftBar.Add(() =>
+            {
+                UiController.ModeOption.Choose<MilPlanningMode>();
+                return new Control();
+            },
+            "Military Planning");
         
         GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow());

@@ -13,7 +13,6 @@ public partial class GeneratorUi : Node, IClientComponent
     }
 
     private WorldGenLogic _logic;
-    private Label _progress;
     
     public GeneratorSettingsWindow GenSettingsWindow { get; private set; }
     public static GeneratorUi Construct(Client client, WorldGenLogic wrapper)
@@ -49,15 +48,11 @@ public partial class GeneratorUi : Node, IClientComponent
         var windows = client.GetComponent<WindowManager>();
         windows.AddWindow(genSettingsWindow);
 
-        _progress = new Label();
-        _progress.Text = "Progress";
-        uiFrame.LeftSidebar.AddChild(_progress);
         
         Disconnect += () =>
         {
             windows.RemoveWindow(genSettingsWindow);
             topBar.QueueFree();
-            _progress.QueueFree();
         };
     }
     
@@ -66,7 +61,7 @@ public partial class GeneratorUi : Node, IClientComponent
     }
     private void PressedGenerate()
     {
-        if (_logic.Generating) return;
+        if (_logic.Calculating) return;
         // _logic.TryGenerate();
         try
         {

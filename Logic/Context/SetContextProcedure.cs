@@ -6,8 +6,9 @@ public class SetContextProcedure : Procedure
         key.Data.Context.Calculate(key.Data);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 }

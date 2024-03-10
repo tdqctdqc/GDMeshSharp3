@@ -35,6 +35,6 @@ public abstract class Procedure : Message, IPolymorph
         
     }
     public abstract void Enact(ProcedureWriteKey key);
-    public abstract bool Valid(Data data);
+    public abstract bool Valid(Data data, out string error);
 }
 

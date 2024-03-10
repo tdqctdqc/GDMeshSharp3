@@ -17,8 +17,15 @@ public class ChooseRegimeCommand : Command
         key.SendMessage(proc);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return Regime.Entity(data).IsPlayerRegime(data) == false;
+        if (Regime.Entity(data).IsPlayerRegime(data))
+        {
+            error = "Regime already has player";
+            return false;
+        }
+
+        error = "";
+        return true;
     }
 }

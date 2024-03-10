@@ -2,10 +2,25 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using Google.OrTools.LinearSolver;
 
 public static class BudgetConstrainer
 {
+    public static void SetMaxVariableConstraint<T>(
+        this Solver solver,
+        Dictionary<T, Variable> vars, Dictionary<T, float> maxes, Data data)
+    {
+        foreach (var (key, variable) in vars)
+        {
+            if (maxes.ContainsKey(key))
+            {
+                var constraint = Mathf.Min(variable.Ub(), maxes[key]);
+                variable.SetUb(constraint);
+            }
+        }
+    }
+    
     public static void SetItemsConstraints<T>(this Solver solver, Data data, 
         IdCount<Item> budget, Dictionary<T, Variable> vars)
         where T : IMakeable
@@ -15,26 +30,6 @@ public static class BudgetConstrainer
             t => t.Makeable.ItemCosts.GetEnumerableModel(data)
                 .ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
             data, budget, vars);
-        // var items = data.Models.GetModels<Item>().Select(kvp => kvp.Value.Id).ToList();
-        // var itemNumConstraints = new Dictionary<int, Constraint>();
-        // items.ForEach(i =>
-        // {
-        //     var itemConstraint = solver.MakeConstraint(0f, budget.Get(i));
-        //     itemNumConstraints.Add(i, itemConstraint);
-        // });
-        // foreach (var kvp in vars)
-        // {
-        //     var b = kvp.Key;
-        //     var projVar = kvp.Value;
-        //     var buildCosts = b.Makeable.ItemCosts.GetEnumerableModel(data);
-        //     foreach (var kvp2 in buildCosts)
-        //     {
-        //         var item = kvp2.Key;
-        //         var num = kvp2.Value;
-        //         var itemConstraint = itemNumConstraints[item.Id];
-        //         itemConstraint.SetCoefficient(projVar, num);
-        //     }
-        // }
     }
     
     public static void SetNumConstraints<T, TConstrained>(this Solver solver, 

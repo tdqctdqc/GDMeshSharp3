@@ -14,6 +14,7 @@ public class HostLogic : ILogic
     private ISession _session;
     private StateMachine _stateMachine;
     private TurnState _start, _middle, _end;
+    public bool Calculating => _stateMachine.Current != _middle;
     public OrderHolder OrderHolder { get; private set; }
     private HostServer _server; 
     private HostWriteKey _hKey;
@@ -102,7 +103,8 @@ public class HostLogic : ILogic
                 return;
             }
 
-            if (m is Procedure p)
+            if (m is Procedure p
+                && p.Valid(_data, out string error))
             {
                 p.Enact(PKey);
                 _server.ReceiveMessage(m, _hKey);
@@ -124,7 +126,7 @@ public class HostLogic : ILogic
         {
             while (CommandQueue.TryDequeue(out var command))
             {
-                if(command.Valid(_data)) command.Enact(_logicKey);
+                if(command.Valid(_data, out string error)) command.Enact(_logicKey);
             }
         }
         _server.PushPackets(_hKey);

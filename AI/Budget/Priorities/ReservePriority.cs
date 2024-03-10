@@ -34,12 +34,12 @@ public abstract class ReservePriority : IBudgetPriority
         Wishlist = CalculateWishlist(r, d, pool, proportion);
     }
 
-    public void FirstRound(MajorTurnOrders orders, Regime regime, float proportion, BudgetPool pool, LogicWriteKey key)
+    public void FirstRound(Regime regime, float proportion, BudgetPool pool, LogicWriteKey key)
     {
         return;
     }
 
-    public void SecondRound(MajorTurnOrders orders, Regime regime, float proportion, BudgetPool pool, LogicWriteKey key, float multiplier)
+    public void SecondRound(Regime regime, float proportion, BudgetPool pool, LogicWriteKey key, float multiplier)
     {
         return;
     }

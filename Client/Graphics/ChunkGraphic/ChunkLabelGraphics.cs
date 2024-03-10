@@ -17,7 +17,7 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
         Chunk = chunk;
         ZIndex = (int)LayerOrder.Labels;
         Visibility = new ChunkGraphicModuleVisibility(zoomVisRange);
-        Visibility.SetZoomVisibility += v =>
+        Visibility.SetVisibility += v =>
         {
             if (v == true) _drawn = false;
         };

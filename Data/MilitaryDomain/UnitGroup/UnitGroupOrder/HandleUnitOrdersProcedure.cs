@@ -27,8 +27,9 @@ public class HandleUnitOrdersProcedure : Procedure
         }
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 }

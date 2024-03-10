@@ -81,4 +81,13 @@ public class MouseOverHandler
             ChangedCell?.Invoke(MouseOverCell);
         }
     }
+
+
+    public void Highlight()
+    {
+        var client = Game.I.Client;
+        var highlight = client.GetComponent<MapGraphics>().Highlighter;
+        client.HighlightPoly(MouseOverPoly, 3f);
+        client.HighlightCell(MouseOverCell, 5f);
+    }
 }

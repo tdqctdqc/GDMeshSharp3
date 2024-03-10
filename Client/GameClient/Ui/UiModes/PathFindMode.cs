@@ -6,7 +6,8 @@ public class PathFindMode : UiMode
     private MouseOverHandler _mouseOverHandler;
     private Cell _from;
     private Cell _to;
-    public PathFindMode(Client client) : base(client)
+    public PathFindMode(Client client) 
+        : base(client, "Path Find")
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
     }
@@ -30,16 +31,23 @@ public class PathFindMode : UiMode
             {
                 _to = cell;
             }
-            DrawPath();
+            Draw();
         }
     }
 
-    private void DrawPath()
+    public override void Enter()
     {
-        var debug = _client.GetComponent<MapGraphics>()
-            .DebugOverlay;
+        
+    }
+
+    private void Draw()
+    {
+        var mg = _client.GetComponent<MapGraphics>();
+        var debug = mg.DebugOverlay;
         debug.Clear();
 
+        mg.Highlighter.Clear();
+        _mouseOverHandler.Highlight();
         if (_from != null)
         {
             debug.Draw(mb => mb.AddPoint(Vector2.Zero, 

@@ -5,16 +5,22 @@ using System.Linq;
 using Godot;
 using Google.OrTools.LinearSolver;
 
-public class ConstructionPriority : SolverPriority<BuildingModel>
+public abstract class ConstructionPriority : SolverPriority<BuildingModel>
 {
     public ConstructionPriority(string name, 
-        Func<Data, Regime, float> getWeight, 
-        Func<BuildingModel, bool> relevant, Func<BuildingModel, float> utility) 
-        : base(name, d => d.Models.GetModels<BuildingModel>().Values, 
-            getWeight, relevant, utility)
+        Func<Data, Regime, float> getWeight) 
+        : base(name, 
+            d => d.Models.GetModels<BuildingModel>().Values, 
+            getWeight)
     {
     }
 
+
+
+    protected override void SetCalcData(Regime r, Data d)
+    {
+        
+    }
 
     protected override void SetConstraints(Solver solver, Regime r,
         Dictionary<BuildingModel, Variable> projVars, Data data)
@@ -37,7 +43,7 @@ public class ConstructionPriority : SolverPriority<BuildingModel>
         solver.SetBuildingSlotConstraints(r, projVars, data);
     }
 
-    protected override void Complete(Regime r, MajorTurnOrders orders, 
+    protected override void Complete(Regime r, 
         Dictionary<BuildingModel, int> toBuild, LogicWriteKey key)
     {
         var currConstruction = key.Data.Infrastructure.CurrentConstruction;

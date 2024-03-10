@@ -17,9 +17,7 @@ public class ForceCompositionAi
         {
             new FormUnitPriority("Form unit",
                 d => regime.GetUnitTemplates(d),
-                (d,r) => 1f,
-                t => true,
-                t => 1f)
+                (d,r) => 1f)
         };
     }
 
@@ -28,11 +26,11 @@ public class ForceCompositionAi
     {
         SetBuildTroopWeight(regime, key.Data);
         ReinforceUnits(reserve);
-        BuildUnits(reserve, key, regime, orders);
-        AssignFreeUnitsToGroups(regime, key, orders);
+        BuildUnits(reserve, key, regime);
+        AssignFreeUnitsToGroups(regime, key);
     }
     private void AssignFreeUnitsToGroups(Regime regime, 
-        LogicWriteKey key, MajorTurnOrders orders)
+        LogicWriteKey key)
     {
         var freeUnits = key.Data.Military.UnitAux.UnitByRegime[regime]
             ?.Where(u => u != null)
@@ -79,7 +77,7 @@ public class ForceCompositionAi
         {
             if (newGroup.Count() == 0) continue;
             key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-            UnitGroup.Create(orders.Regime.Entity(key.Data),
+            UnitGroup.Create(regime,
                 newGroup, key);
         }
     }
@@ -92,17 +90,16 @@ public class ForceCompositionAi
         
     }
 
-    private void BuildUnits(IdCount<Troop> reserve, LogicWriteKey key, Regime regime, 
-        MajorTurnOrders orders)
+    private void BuildUnits(IdCount<Troop> reserve, LogicWriteKey key, Regime regime)
     {
         var pool = new BudgetPool(
             IdCount<Item>.Construct(),
             IdCount<IModel>.Construct<IModel, Troop>(regime.Military.TroopReserve), 
             0f);
-        DoPriorities(orders, pool, key, regime);
+        DoPriorities(pool, key, regime);
     }
     
-    private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, LogicWriteKey key,
+    private void DoPriorities(BudgetPool pool, LogicWriteKey key,
          Regime regime)
     {
         foreach (var bp in Priorities)
@@ -116,12 +113,12 @@ public class ForceCompositionAi
             priority.Wipe();
             var proportion = priority.Weight / totalPriority;
             priority.SetWishlist(regime, key.Data, pool, proportion);
-            priority.FirstRound(orders, regime, proportion, pool, key);
+            priority.FirstRound(regime, proportion, pool, key);
         }
         foreach (var priority in Priorities)
         {
             var proportion = priority.Weight / totalPriority;
-            priority.SecondRound(orders, regime, proportion, pool, key, 3f);
+            priority.SecondRound(regime, proportion, pool, key, 3f);
         }
     }
 }

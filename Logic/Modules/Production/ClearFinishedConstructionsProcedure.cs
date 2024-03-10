@@ -18,8 +18,9 @@ public class
         PolyCellIds = polyCellIds;
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 

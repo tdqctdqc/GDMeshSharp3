@@ -6,8 +6,26 @@ using Google.OrTools.LinearSolver;
 
 public class FormUnitPriority : SolverPriority<UnitTemplate>
 {
-    public FormUnitPriority(string name, Func<Data, IEnumerable<UnitTemplate>> getAll, Func<Data, Regime, float> getWeight, Func<UnitTemplate, bool> relevant, Func<UnitTemplate, float> utility) : base(name, getAll, getWeight, relevant, utility)
+    public FormUnitPriority(string name, 
+        Func<Data, IEnumerable<UnitTemplate>> getAll, 
+        Func<Data, Regime, float> getWeight) 
+        : base(name, getAll, getWeight)
     {
+    }
+
+    protected override float Utility(UnitTemplate t)
+    {
+        return 1f;
+    }
+
+    protected override bool Relevant(UnitTemplate t, Data d)
+    {
+        return true;
+    }
+
+    protected override void SetCalcData(Regime r, Data d)
+    {
+        
     }
 
     protected override void SetConstraints(Solver solver, Regime r, 
@@ -31,10 +49,9 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
             data, r.Military.TroopReserve, projVars);
     }
 
-    protected override void Complete(Regime r, MajorTurnOrders orders, 
+    protected override void Complete(Regime regime, 
         Dictionary<UnitTemplate, int> toBuild, LogicWriteKey key)
     {
-        var regime = orders.Regime.Entity(key.Data);
         var useTroops = RegimeUseTroopsProcedure.Construct(regime);
         var capitalPoly = regime.Capital.Entity(key.Data);
         var pos = (Vector2I)capitalPoly.Center;

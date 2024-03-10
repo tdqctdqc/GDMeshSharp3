@@ -54,16 +54,39 @@ public class AllianceMergeProposal : Proposal
         }
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        if (data.HasEntity(Target.RefId) == false) return false;
-        if (data.HasEntity(Proposer.RefId) == false) return false;
+        if (data.HasEntity(Target.RefId) == false)
+        {
+            error = "Target alliance not found";
+            return false;
+        }
+        if (data.HasEntity(Proposer.RefId) == false)
+        {
+            error = "Proposer alliance not found";
+            return false;
+        }
         var target = (Alliance) data.EntitiesById[Target.RefId];
         var targetLeader = target.Leader.Entity(data);
-        if (targetLeader.IsMajor == false) return false;
+        if (targetLeader.IsMajor)
+        {
+            error = "Target leader is major regime";
+            return false;
+        }
         var proposer = (Alliance) data.EntitiesById[Proposer.RefId];
         var proposerLeader = proposer.Leader.Entity(data);
-        if(target.IsRivals(proposer, data)) return false;
+        if (proposerLeader.IsMajor == false)
+        {
+            error = "Proposer leader is not major regime";
+        }
+        
+        if(target.IsRivals(proposer, data))
+        {
+            error = "Target and proposer are rivals";
+            return false;
+        }
+
+        error = "";
         return true;
     }
 }

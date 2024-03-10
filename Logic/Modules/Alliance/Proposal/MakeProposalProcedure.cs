@@ -32,8 +32,15 @@ public class MakeProposalProcedure : Procedure
         }
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return Proposal.Valid(data);
+        if (Proposal.Valid(data, out var propError) == false)
+        {
+            error = propError;
+            return false;
+        }
+
+        error = "";
+        return true;
     }
 }

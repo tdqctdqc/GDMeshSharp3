@@ -10,8 +10,15 @@ public class MakeProposalCommand : Command
         Proposal = proposal;
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        if (Proposal.Valid(data, out var propError))
+        {
+            error = propError;
+            return false;
+        }
+
+        error = "";
         return true;
     }
 

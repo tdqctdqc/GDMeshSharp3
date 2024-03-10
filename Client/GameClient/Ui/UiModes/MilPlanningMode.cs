@@ -6,10 +6,11 @@ public class MilPlanningMode : UiMode
 {
     private MouseOverHandler _mouseOverHandler;
 
-    public MilPlanningMode(Client client) : base(client)
+    public MilPlanningMode(Client client) : base(client,
+        "MilitaryPlanning")
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
-        _mouseOverHandler.ChangedCell += c => DrawAllianceTheaters();
+        _mouseOverHandler.ChangedCell += c => Draw();
     }
 
     public override void Process(float delta)
@@ -20,9 +21,17 @@ public class MilPlanningMode : UiMode
     public override void HandleInput(InputEvent e)
     {
     }
-    private void DrawAllianceTheaters()
+
+    public override void Enter()
+    {
+        
+    }
+
+    private void Draw()
     {
         var mg = _client.GetComponent<MapGraphics>();
+        mg.Highlighter.Clear();
+        _mouseOverHandler.Highlight();
         var debug = mg.DebugOverlay;
         debug.Clear();
         var cell = _mouseOverHandler.MouseOverCell;
@@ -33,7 +42,7 @@ public class MilPlanningMode : UiMode
         var alliance = regime.GetAlliance(_client.Data);
         var ai = _client.Data.HostLogicData.AllianceAis[alliance];
         var relTo = regime.GetPolys(_client.Data).First().Center;
-        
+        if (ai.Military.Strategic.Theaters == null) return;
         foreach (var theater in ai.Military.Strategic.Theaters)
         {
             foreach (var frontline in theater.Frontlines)

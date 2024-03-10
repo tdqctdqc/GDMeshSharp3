@@ -36,8 +36,9 @@ public class RegimeUseTroopsProcedure : Procedure
             UsageByTroopId.AddOrSum(troop.Id, numTroop * num);
         }
     }
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 }

@@ -6,7 +6,7 @@ public class ChunkGraphicModuleVisibility
     public Vector2 VisibleZoomRange { get; private set; }
     public bool VisibleByZoom { get; private set; }
     public bool VisibleOverride { get; set; }
-    public Action<bool> SetZoomVisibility { get; set; }
+    public Action<bool> SetVisibility { get; set; }
 
     public ChunkGraphicModuleVisibility(Vector2 visibleZoomRange)
     {
@@ -22,21 +22,27 @@ public class ChunkGraphicModuleVisibility
     
     public void CheckVisibleTick(UiTickContext context, Data d)
     {
+        var oldVisibility = Visible();
         var zoom = context.ZoomLevel;
-        bool newVal;
+        bool newZoomVisibility;
         if (VisibleZoomRange.X > zoom || VisibleZoomRange.Y < zoom)
         {
-            newVal = false;
+            newZoomVisibility = false;
         }
         else
         {
-            newVal = true;
+            newZoomVisibility = true;
         }
 
-        if (newVal != VisibleByZoom)
+        if (newZoomVisibility != VisibleByZoom)
         {
-            VisibleByZoom = newVal;
-            SetZoomVisibility?.Invoke(VisibleByZoom);
+            VisibleByZoom = newZoomVisibility;
+        }
+
+        var newVisibility = Visible();
+        if (newVisibility != oldVisibility)
+        {
+            SetVisibility?.Invoke(newVisibility);
         }
     }
 }

@@ -18,8 +18,15 @@ public class SetPlayerRegimeProcedure : Procedure
         player.SetRegime(Regime.Entity(key.Data), key);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return Regime.Entity(data).IsPlayerRegime(data) == false;
+        if (Regime.Entity(data).IsPlayerRegime(data))
+        {
+            error = "Regime already has player";
+            return false;
+        }
+
+        error = "";
+        return true;
     }
 }

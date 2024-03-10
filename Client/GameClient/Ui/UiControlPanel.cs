@@ -2,10 +2,8 @@
 using System;
 using Godot;
 
-public partial class UiControlPanel : Panel, IClientComponent
+public partial class UiControlPanel : Panel
 {
-    Node IClientComponent.Node => this;
-    public Action Disconnect { get; set; }
     private ScrollContainer _scroll;
     private UiControlPanel()
     {
@@ -25,10 +23,9 @@ public partial class UiControlPanel : Panel, IClientComponent
         vbox.AnchorsPreset = (int)LayoutPreset.FullRect;
         vbox.CustomMinimumSize = new Vector2(300f, 600f);
         _scroll.AddChild(vbox);
-        var options = client.UiController.ModeOption.GetControlInterface();
+        var options = client.UiController.ModeOption
+            .GetControlInterface();
         vbox.AddChild(options);
-        
-        client.GetComponent<UiFrame>().RightSidebar.AddChild(this);
     }
 
     public void Process(float delta)

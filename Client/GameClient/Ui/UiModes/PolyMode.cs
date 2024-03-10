@@ -3,13 +3,18 @@ using Godot;
 
 public class PolyMode : UiMode
 {
+    public DefaultSettingsOption<MapPolygon> Poly { get; private set; }
+    public DefaultSettingsOption<Cell> Cell { get; private set; }
     private MouseOverHandler _mouseOverHandler;
 
-    public PolyMode(Client client) : base(client)
+    public PolyMode(Client client) : base(client, "Poly")
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
-        _mouseOverHandler.ChangedPoly += p => Highlight();
-        _mouseOverHandler.ChangedCell += p => Highlight();
+        Poly = new DefaultSettingsOption<MapPolygon>("Poly", null);
+        Cell = new DefaultSettingsOption<Cell>("Cell", null);
+        _mouseOverHandler.ChangedCell += Cell.Set;
+        _mouseOverHandler.ChangedPoly += Poly.Set;
+        _mouseOverHandler.ChangedCell += c => Highlight();
     }
 
     public override void Process(float delta)
@@ -28,12 +33,16 @@ public class PolyMode : UiMode
         Tooltip(mapPos);
     }
 
+    public override void Enter()
+    {
+        
+    }
+
     private void Highlight()
     {
-        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
-        highlight.Clear();
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
+        var mg = _client.GetComponent<MapGraphics>();
+        mg.Highlighter.Clear();
+        _mouseOverHandler.Highlight();
     }
     private void Tooltip(Vector2 mapPos)
     {

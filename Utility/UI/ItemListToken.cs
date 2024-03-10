@@ -17,16 +17,24 @@ public partial class ItemListToken : Node
         return token;
     }
     public void Setup<T>(IReadOnlyList<T> items, 
-        Func<T, string> getLabelText, Func<T, Action> getAction)
+        Func<T, string> getLabelText, Func<T, Action> getAction,
+        Func<T, Texture2D> getTexture = null)
     {
         _node.Clear();
         _items = items.Select(i => (object) i).ToList();
         _actions = items.Select(i => getAction(i)).ToList();
-
         var labelTexts = items.Select(i => getLabelText(i)).ToList();
         for (var i = 0; i < items.Count; i++)
         {
-            _node.AddItem(getLabelText(items[i]));
+            if (getTexture is not null)
+            {
+                _node.AddItem(getLabelText(items[i]),
+                    getTexture(items[i]));
+            }
+            else
+            {
+                _node.AddItem(getLabelText(items[i]));
+            }
         }
     }
     private ItemListToken(ItemList node)

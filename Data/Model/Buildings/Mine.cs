@@ -28,14 +28,14 @@ public class Mine : BuildingModel
         MinedItem = prodItem;
         if (prodItem is IMineable == false) throw new Exception();
     }
-
-    protected override bool CanBuildInCell(Cell t, Data data)
+    public override bool CanBuildInCell(Cell t, Data data)
     {
         return t is LandCell;
     }
     public override bool CanBuildInPoly(MapPolygon p, Data data)
     {
         var ds = p.GetResourceDeposits(data);
-        return ds != null && ds.Any(d => d.Item.Model(data) == MinedItem);
+        return ds != null 
+               && ds.Any(d => d.Item.Model(data) == MinedItem);
     }
 }

@@ -26,7 +26,7 @@ public abstract class BuildingModel : IModel, IMakeable
         Makeable = makeable;
     }
     
-    protected abstract bool CanBuildInCell(Cell t, Data data);
+    public abstract bool CanBuildInCell(Cell t, Data data);
     public abstract bool CanBuildInPoly(MapPolygon p, Data data);
     
     public T GetComponent<T>(Func<T, bool> good) where T : BuildingModelComponent

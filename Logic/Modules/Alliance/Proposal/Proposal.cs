@@ -21,7 +21,7 @@ public abstract class Proposal : IPolymorph
     public abstract Control GetDisplay(Data d);
     public void Resolve(bool accepted, ProcedureWriteKey key)
     {
-        if (Valid(key.Data))
+        if (Valid(key.Data, out _))
         {
             ResolveInner(accepted, key);
         }
@@ -38,5 +38,5 @@ public abstract class Proposal : IPolymorph
     {
         key.Data.Society.Proposals.Proposals.Remove(Id);
     }
-    public abstract bool Valid(Data data);
+    public abstract bool Valid(Data data, out string error);
 }

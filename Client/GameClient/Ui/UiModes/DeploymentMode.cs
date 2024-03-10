@@ -8,12 +8,11 @@ using Godot;
 public class DeploymentMode : UiMode
 {
     private MouseOverHandler _mouseOverHandler;
-    public DeploymentMode(Client client) : base(client)
+    public DeploymentMode(Client client) 
+        : base(client, "Deployment")
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
-        _mouseOverHandler.ChangedCell += c => DrawAlliance();
-        _mouseOverHandler.ChangedCell += c => Highlight();
-        _mouseOverHandler.ChangedPoly += c => Highlight();
+        _mouseOverHandler.ChangedCell += c => Draw();
     }
 
     public override void Process(float delta)
@@ -25,13 +24,21 @@ public class DeploymentMode : UiMode
     {
     }
 
-    private void DrawAlliance()
+    public override void Enter()
+    {
+        
+    }
+
+    private void Draw()
     {
         var mg = _client.GetComponent<MapGraphics>();
+        mg.Highlighter.Clear();
+        
         if (_mouseOverHandler.MouseOverCell == null)
         {
             return;
         }
+        _mouseOverHandler.Highlight();
         if (_mouseOverHandler.MouseOverCell.Controller
             .IsEmpty())
         {
@@ -162,15 +169,6 @@ public class DeploymentMode : UiMode
                 debug.Draw(mb => mb.AddLine(edge.f, edge.t, color, 10f), c.RelTo);
             }
         }
-    }
-    private void Highlight()
-    {
-        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
-        highlight.Clear();
-        if (_mouseOverHandler.MouseOverPoly == null
-            || _mouseOverHandler.MouseOverCell == null) return;
-        _client.HighlightPoly(_mouseOverHandler.MouseOverPoly, 1f);
-        _client.HighlightCell(_mouseOverHandler.MouseOverCell, 2f);
     }
     public override void Clear()
     {

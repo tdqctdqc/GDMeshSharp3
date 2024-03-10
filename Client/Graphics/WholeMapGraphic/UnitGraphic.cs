@@ -19,14 +19,10 @@ public partial class UnitGraphic : Node2D
     {
         _labelSettings = new LabelSettings();
         _labelSettings.FontSize = 25;
-        _border = new QuadMesh();
-        _border.Size = Vector2.One * _iconSize;
-        _group = new QuadMesh();
-        _group.Size = Vector2.One * (_iconSize - .2f);
-        _regime = new QuadMesh();
-        _regime.Size = Vector2.One * _iconSize * .8f;
-        _health = new QuadMesh();
-        _health.Size = Vector2.One * _iconSize * .15f;
+        _border = MeshExt.GetQuadMesh(Vector2.One * _iconSize);
+        _group = MeshExt.GetQuadMesh(Vector2.One * (_iconSize - .2f));
+        _regime = MeshExt.GetQuadMesh(Vector2.One * _iconSize * .8f);
+        _health = MeshExt.GetQuadMesh(Vector2.One * _iconSize * .15f);
     }
     private UnitGraphic() {}
     
@@ -65,24 +61,13 @@ public partial class UnitGraphic : Node2D
         _healthMesh.Position = new Vector2(_iconSize * .3f, -_iconSize * .3f);
         _healthMesh.Mesh = _health;
         AddChild(_healthMesh);
-
-        // _powerPoints = new Label();
-        // _powerPoints.LabelSettings = _labelSettings;
-        // _powerPoints.Scale = .1f * Vector2.One;
-        // _powerPoints.HorizontalAlignment = HorizontalAlignment.Center;
-        // _powerPoints.AnchorsPreset = (int)Control.LayoutPreset.CenterTop;
-        // _powerPoints.Position = new Vector2(-_iconSize * .25f, -_iconSize * .4f);
-        // AddChild(_powerPoints);
         
         Draw(unit, data);
     }
     public void Draw(Unit unit, Data data)
     {
-        var totalPp = unit.Troops.GetEnumerableModel(data)
-            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-        var templatePp = unit.Template.Entity(data).TroopCounts.GetEnumerableModel(data)
-            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-        var healthRatio = Mathf.Clamp(totalPp / templatePp, 0f, 1f);
+        var health = unit.GetHealth(data);
+        var healthRatio = Mathf.Clamp(health.X / health.Y, 0f, 1f);
         _healthMesh.Modulate = Colors.Red.Lerp(Colors.Green, healthRatio);
 
         _regimeColor.Modulate = unit.Regime.Entity(data).GetUnitColor();
@@ -96,15 +81,7 @@ public partial class UnitGraphic : Node2D
             _groupColor.Modulate = Colors.White;
         }
         
-        
-        var maxPowerId = unit.Troops.Contents
-            .MaxBy(kvp =>
-            {
-                var unit = data.Models.GetModel<Troop>(kvp.Key);
-                var power = kvp.Value * unit.GetPowerPoints();
-                return power;
-            }).Key;
-        var maxPowerTroop = data.Models.GetModel<Troop>(maxPowerId);
+        var maxPowerTroop = unit.GetMaxPowerTroop(data);
 
         _troopRect.Texture = maxPowerTroop.Icon.Texture;
         // _powerPoints.Text = Mathf.RoundToInt(totalPp).ToString();

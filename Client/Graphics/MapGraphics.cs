@@ -8,7 +8,7 @@ using Godot;
 
 public partial class MapGraphics : Node2D, IClientComponent
 {
-    protected GraphicsSegmenter _segmenter;
+    public GraphicsSegmenter Segmenter { get; private set; }
     public Regime SpectatingRegime { get; private set; }
     public MapOverlayDrawer Highlighter { get; private set; }
     public MapOverlayDrawer DebugOverlay { get; private set; }
@@ -45,11 +45,11 @@ public partial class MapGraphics : Node2D, IClientComponent
 
         UpdateQueue = new ConcurrentQueue<Action>();
         
-        _segmenter = new GraphicsSegmenter(10, client.Data);
-        AddChild(_segmenter);
-        GraphicLayerHolder = new GraphicLayerHolder(client, _segmenter, client.Data);
-        DebugOverlay = new MapOverlayDrawer(_segmenter, 98);
-        Highlighter = new MapOverlayDrawer(_segmenter, 99);
+        Segmenter = new GraphicsSegmenter(10, client.Data);
+        AddChild(Segmenter);
+        GraphicLayerHolder = new GraphicLayerHolder(client, Segmenter, client.Data);
+        DebugOverlay = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Debug);
+        Highlighter = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Highlighter);
         
         client.GraphicsLayer.AddChild(this);
         
@@ -68,7 +68,7 @@ public partial class MapGraphics : Node2D, IClientComponent
         }
         if(Game.I.Client?.Cam() is ICameraController c)
         {
-            _segmenter.Update(c.XScrollRatio);
+            Segmenter.Update(c.XScrollRatio);
         }
     }
 

@@ -29,8 +29,9 @@ public class TroopLossesProcedure : Procedure
         }
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return data.Get<Unit>(UnitId) is Unit u;
+        error = "";
+        return true;
     }
 }

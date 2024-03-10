@@ -22,8 +22,15 @@ public class MoveUnitProcedure : Procedure
         unit.SetPosition(NewPos, key);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
-        return data.Get<Unit>(UnitId) != null;
+        if (data.HasEntity(UnitId) == false)
+        {
+            error = "Unit not found";
+            return false;
+        }
+
+        error = "";
+        return true;
     }
 }

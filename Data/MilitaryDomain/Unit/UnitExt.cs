@@ -1,4 +1,5 @@
 using System.Linq;
+using Godot;
 
 public static class UnitExt
 {
@@ -25,5 +26,26 @@ public static class UnitExt
     public static bool Hostile(this Unit u, Alliance a, Data d)
     {
         return u.Regime.Entity(d).GetAlliance(d).IsRivals(a, d);
+    }
+
+    public static Troop GetMaxPowerTroop(this Unit unit, Data data)
+    {
+        var maxPowerId = unit.Troops.Contents
+            .MaxBy(kvp =>
+            {
+                var unit = data.Models.GetModel<Troop>(kvp.Key);
+                var power = kvp.Value * unit.GetPowerPoints();
+                return power;
+            }).Key;
+        return data.Models.GetModel<Troop>(maxPowerId);
+    }
+
+    public static Vector2 GetHealth(this Unit unit, Data data)
+    {
+        var totalPp = unit.Troops.GetEnumerableModel(data)
+            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
+        var templatePp = unit.Template.Entity(data).TroopCounts.GetEnumerableModel(data)
+            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
+        return new Vector2(totalPp, templatePp);
     }
 }

@@ -25,8 +25,9 @@ public class SubmitTurnCommand : Command
         key.Session.Logic.SubmitPlayerOrders(player, Orders);
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 }

@@ -5,8 +5,9 @@ using Godot;
 
 public class FinishedTurnStartCalcProc : Procedure
 {
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 

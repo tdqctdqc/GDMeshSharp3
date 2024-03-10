@@ -42,7 +42,8 @@ public class CurrentConstruction : Entity
                                 $"but already constructing {ByPolyCell[construction.PolyCellId].Model.Model(key.Data).Name} in tri");
         }
         ByPolyCell.Add(construction.PolyCellId, construction);
-        key.Data.Infrastructure.ConstructionAux.StartedConstruction.Invoke(construction);
+        key.Data.Infrastructure.ConstructionAux
+            .StartedConstruction.Invoke(construction);
     }
     public void FinishConstruction(MapPolygon poly, Cell cell, ProcedureWriteKey key)
     {

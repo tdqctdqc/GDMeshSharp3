@@ -25,7 +25,7 @@ public class Bank : BuildingModel
         )
     {
     }
-    protected override bool CanBuildInCell(Cell t, Data data)
+    public override bool CanBuildInCell(Cell t, Data data)
     {
         return t is LandCell;
     }

@@ -34,8 +34,9 @@ public class ProduceConstructProcedure : Procedure
         RegimeFlows = regimeFlows;
     }
 
-    public override bool Valid(Data data)
+    public override bool Valid(Data data, out string error)
     {
+        error = "";
         return true;
     }
 
