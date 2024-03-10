@@ -167,7 +167,6 @@ public class HoldLineAssignment : GroupAssignment
     public Dictionary<UnitGroup, List<FrontFace>> 
         GetLineAssignments(Data d)
     {
-
         var inOrder = GetLineGroupsInOrder(d);
         var faceCosts = GetFaceCosts(d);
         var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(

@@ -21,12 +21,11 @@ public class ForceCompositionAi
         };
     }
 
-    public void Calculate(Regime regime, LogicWriteKey key, MajorTurnOrders orders,
-         IdCount<Troop> reserve)
+    public void Calculate(Regime regime, LogicWriteKey key)
     {
         SetBuildTroopWeight(regime, key.Data);
-        ReinforceUnits(reserve);
-        BuildUnits(reserve, key, regime);
+        ReinforceUnits(regime, key);
+        BuildUnits(key, regime);
         AssignFreeUnitsToGroups(regime, key);
     }
     private void AssignFreeUnitsToGroups(Regime regime, 
@@ -85,12 +84,46 @@ public class ForceCompositionAi
     {
         BuildTroopWeight = 1f;
     }
-    private void ReinforceUnits(IdCount<Troop> reserve)
+    private void ReinforceUnits(Regime regime,
+        LogicWriteKey key)
     {
+        var needCounts = new Dictionary<Troop, float>();
+        foreach (var unit in regime.GetUnits(key.Data))
+        {
+            var template = unit.Template.Entity(key.Data);
+            foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
+            {
+                var shouldHave = template.TroopCounts.Get(troop);
+                if (value < shouldHave)
+                {
+                    needCounts.AddOrSum(troop, shouldHave - value);
+                }
+            }
+        }
         
+        var proc = ReinforceUnitProcedure.Construct(regime);
+        var reserve = regime.Military.TroopReserve;
+        foreach (var unit in regime.GetUnits(key.Data))
+        {
+            var template = unit.Template.Entity(key.Data);
+            foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
+            {
+                if (needCounts.ContainsKey(troop) == false) continue;
+                if (reserve.Contents.ContainsKey(troop.Id) == false) continue;
+                var shouldHave = template.TroopCounts.Get(troop);
+                if (value < shouldHave)
+                {
+                    var need = shouldHave - value;
+                    var receiveRatio = reserve.Get(troop) / needCounts[troop];
+                    receiveRatio = Mathf.Clamp(receiveRatio, 0f, 1f);
+                    proc.ReinforceCounts.Add((unit.Id, troop.Id, need * receiveRatio));
+                }
+            }
+        }
+        key.SendMessage(proc);
     }
 
-    private void BuildUnits(IdCount<Troop> reserve, LogicWriteKey key, Regime regime)
+    private void BuildUnits(LogicWriteKey key, Regime regime)
     {
         var pool = new BudgetPool(
             IdCount<Item>.Construct(),

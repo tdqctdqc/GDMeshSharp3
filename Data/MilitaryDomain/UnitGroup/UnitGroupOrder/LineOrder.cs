@@ -9,8 +9,6 @@ public class LineOrder : UnitGroupOrder
     public List<FrontFace> Faces { get; private set; }
     public List<Cell[]> FaceAdvanceRoutes { get; private set; }
     
-    
-    
     public bool Advance { get; private set; }
     public LineOrder(List<FrontFace> faces, 
         List<Cell[]> faceAdvanceRoutes,
@@ -111,7 +109,8 @@ public class LineOrder : UnitGroupOrder
         CombatCalculator combat, LogicWriteKey key)
     {
         // if(Advance == false) return;
-        if (FaceAdvanceRoutes == null || FaceAdvanceRoutes.Count == 0) return;
+        if (FaceAdvanceRoutes == null 
+            || FaceAdvanceRoutes.Count == 0) return;
         var d = key.Data;
         var units = g.Units.Items(d);
         var assignments = GetAssignments(g, d);
