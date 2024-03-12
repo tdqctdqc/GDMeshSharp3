@@ -18,13 +18,13 @@ public class UnitAux
     {
         _data = d;
         UnitByRegime = new EntityMultiIndexer<Regime, Unit>(d,
-            u => u.Regime.Entity(d), new RefAction[] { },
+            u => u.Regime.Get(d), new RefAction[] { },
             new ValChangeAction<Unit, Regime>[] { });
         UnitGroupByRegime = new EntityMultiIndexer<Regime, UnitGroup>(d,
-            g => g.Regime.Entity(d), new RefAction[] { },
+            g => g.Regime.Get(d), new RefAction[] { },
             new ValChangeAction<UnitGroup, Regime>[] { });
         UnitTemplates = new EntityMultiIndexer<Regime, UnitTemplate>(
-            d, t => t.Regime.Entity(d), new RefAction[] { },
+            d, t => t.Regime.Get(d), new RefAction[] { },
             new ValChangeAction<UnitTemplate, Regime>[] { });
         UnitByGroup = new EntityRefColIndexer<UnitGroup, Unit>(
             g => g.Units.Items(d),  

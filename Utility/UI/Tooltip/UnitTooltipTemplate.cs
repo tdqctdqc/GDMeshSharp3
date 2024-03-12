@@ -20,7 +20,7 @@ public class UnitTooltipTemplate : TooltipTemplate<Unit>
 
     private static Control GetRegimeEtc(Unit u, Data d)
     {
-        var r = u.Regime.Entity(d);
+        var r = u.Regime.Get(d);
         return NodeExt.CreateLabel($"{r.Name} \n{u.Id}");
     }
     private static Control GetTroopCounts(Unit u, Data d)

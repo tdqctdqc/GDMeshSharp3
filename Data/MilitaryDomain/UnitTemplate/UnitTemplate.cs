@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using MessagePack;
 
-public class UnitTemplate : Entity, IMakeable
+public class UnitTemplate : Entity
 {
     public string Name { get; private set; }
     public IdCount<Troop> TroopCounts { get; private set; }
     public ERef<Regime> Regime { get; private set; }
-    public MakeableAttribute Makeable { get; private set; }
     public ModelRef<MoveType> MoveType { get; private set; }
     public TroopDomain Domain { get; private set; }
     public static UnitTemplate Create(ICreateWriteKey key, 
@@ -17,23 +16,19 @@ public class UnitTemplate : Entity, IMakeable
         MoveType moveType,
         Regime regime)
     {
-        var itemCosts = IdCount<Item>.Construct();
-        var industrialCost = 0f;
+        var costs = IdCount<IModel>.Construct();
         foreach (var kvp in troopCounts)
         {
             var troop = kvp.Key;
             var numTroop = kvp.Value;
-            foreach (var itemCost in troop.Makeable.ItemCosts.Contents)
+            foreach (var cost in troop.Makeable.BuildCosts.Contents)
             {
-                itemCosts.Add(itemCost.Key, itemCost.Value * numTroop);
+                costs.Add(cost.Key, cost.Value * numTroop);
             }
-
-            industrialCost += troop.Makeable.IndustrialCost * numTroop;
         }
         var u = new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
             moveType.MakeRef(), regime.MakeRef(),
             key.Data.IdDispenser.TakeId(),
-            new MakeableAttribute(itemCosts, industrialCost),
             domain);
         key.Create(u);
         return u;
@@ -41,13 +36,11 @@ public class UnitTemplate : Entity, IMakeable
     [SerializationConstructor] private UnitTemplate(string name,
         IdCount<Troop> troopCounts, ModelRef<MoveType> moveType,
         ERef<Regime> regime, int id, 
-        MakeableAttribute makeable,
         TroopDomain domain) 
         : base(id)
     {
         MoveType = moveType;
         Name = name;
-        Makeable = makeable;
         TroopCounts = troopCounts;
         Regime = regime;
         Domain = domain;

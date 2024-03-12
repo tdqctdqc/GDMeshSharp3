@@ -24,7 +24,6 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             // GetSettlementSize, 
             GetPeeps,
             GetBuildings,
-            GetConstructions,
             GetResourceDeposits,
             // GetAltitude,
             // GetSlots
@@ -38,7 +37,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         if (bs != null)
         {
             var counts = bs
-                .Select(b => b.Model.Model(d)).GetCounts();
+                .Select(b => b.Model.Get(d)).GetCounts();
             foreach (var kvp in counts)
             {
                 var box = NodeExt.GetLabeledIcon<HBoxContainer>(
@@ -87,9 +86,9 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             return NodeExt.CreateLabel("None");
         }
 
-        var r = polyR.Entity(d);
+        var r = polyR.Get(d);
         var box = NodeExt.GetLabeledIcon<HBoxContainer>(
-            polyR.Entity(d).Template.Model(d).Flag,
+            polyR.Get(d).Template.Get(d).Flag,
             r.Name, iconSize);
         return box;
     }
@@ -121,33 +120,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         }
         return jobs;
     }
-    private static Control GetConstructions((MapPolygon poly, Cell cell) t, Data d)
-    {
-        var entries = new VBoxContainer();
-        if (d.Infrastructure.CurrentConstruction.ByPoly.ContainsKey(t.poly.Id) == false)
-            return entries;
-        var constructions = d.Infrastructure.CurrentConstruction.ByPoly[t.poly.Id];
-        if(constructions.Count == 0) 
-            return entries;
-        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
-
-        var kvps = constructions.Select(
-            c => new KeyValuePair<BuildingModel, Vector2>
-            (c.Model.Model(d), 
-                new Vector2(c.Model.Model(d).NumTicksToBuild - c.TicksLeft, c.Model.Model(d).NumTicksToBuild))
-        );
-        
-        foreach (var kvp in kvps)
-        {
-            var progress = kvp.Value;
-            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
-                kvp.Key.Icon, $"{(int)progress.X} / {(int)progress.Y}",
-                iconSize);
-            entries.AddChild(box);
-        }
-
-        return entries;
-    }
+    
     private static Control GetId((MapPolygon poly, Cell cell) t, Data d)
     {
         return NodeExt.CreateLabel("Poly Id: " + t.poly.Id.ToString());
@@ -164,7 +137,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             foreach (var r in rs)
             {
                 if (iter != 0) label.Text += "\n";
-                label.Text += $"{r.Item.Model(d).Name}: {Mathf.FloorToInt(r.Size)}";
+                label.Text += $"{r.Item.Get(d).Name}: {Mathf.FloorToInt(r.Size)}";
             }
 
             return label;
@@ -184,15 +157,5 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         return  d.Infrastructure.SettlementAux.ByPoly[t.poly] is Settlement s
             ? NodeExt.CreateLabel("Settlement Name: " + s.Name)
             : null;
-    }
-
-    private static Control GetSlots((MapPolygon poly, Cell cell) t, Data d)
-    {
-        var c = new VBoxContainer();
-        foreach (var kvp in t.poly.PolyBuildingSlots.AvailableSlots)
-        {
-            c.AddChild(NodeExt.CreateLabel($"Available {kvp.Key} Slots: {kvp.Value.Count}"));
-        }
-        return c;
     }
 }

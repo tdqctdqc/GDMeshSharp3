@@ -67,17 +67,10 @@ public static class MapPolygonExt
 
     public static List<MapBuilding> GetBuildings(this MapPolygon poly, Data data)
     {
-        return data.Infrastructure.BuildingAux.ByPoly[poly];
-    }
-    public static int GetLaborSurplus(this MapPolygon poly, Data data)
-    {
-        if (poly.GetBuildings(data) == null) return 0;
-        if (poly.GetPeep(data) == null) return 0;
-        
-        return data.Infrastructure.BuildingAux.ByPoly[poly]
-            .Select(b => b.Model.Model(data))
-            .Where(b => b.HasComponent<Workplace>())
-            .Sum(wb => poly.GetPeep(data).Size - wb.GetComponent<Workplace>().TotalLaborReq());
+        var bAux = data.Infrastructure.BuildingAux;
+        return poly.GetCells(data)
+            .Where(c => bAux.ByCell.ContainsKey(c))
+            .Select(c => bAux.ByCell[c]).ToList();
     }
 
     public static bool HasSettlement(this MapPolygon p, Data data)
@@ -100,18 +93,11 @@ public static class MapPolygonExt
     public static IEnumerable<MapPolyNexus> GetNexi(this MapPolygon p, Data data)
     {
         var edges = p.GetEdges(data);
-        return edges.Select(e => e.HiNexus.Entity(data)).Union(edges.Select(e => e.LoNexus.Entity(data))).Distinct();
+        return edges.Select(e => e.HiNexus.Get(data)).Union(edges.Select(e => e.LoNexus.Get(data))).Distinct();
     }
     public static IEnumerable<MapPolygonEdge> GetEdges(this MapPolygon p, Data data)
     {
         return p.Neighbors.Items(data).Select(n => p.GetEdge(n, data));
-    }
-
-    public static List<Construction> GetCurrentConstructions(this MapPolygon poly, Data data)
-    {
-        var curr = data.Infrastructure.CurrentConstruction.ByPoly;
-        if (curr.ContainsKey(poly.Id)) return curr[poly.Id];
-        return null;
     }
 
 

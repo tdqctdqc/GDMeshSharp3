@@ -27,7 +27,7 @@ public partial class MapGraphics : Node2D, IClientComponent
             .LocalPlayer.Regime;
         if (localPlayerRegime.Fulfilled())
         {
-            SpectateRegime(localPlayerRegime.Entity(client.Data));
+            SpectateRegime(localPlayerRegime.Get(client.Data));
         }
         else
         {
@@ -39,7 +39,7 @@ public partial class MapGraphics : Node2D, IClientComponent
             {
                 if (n.Entity == client.Data.BaseDomain.PlayerAux.LocalPlayer)
                 {
-                    SpectateRegime(n.Entity.Regime.Entity(client.Data));
+                    SpectateRegime(n.Entity.Regime.Get(client.Data));
                 }
             }, this);
 

@@ -5,7 +5,7 @@ public class RoadNetwork : Entity
 {
     public IdGraphLite<Cell, ModelRef<RoadModel>> Roads { get; private set; }
     public RoadModel Get(Cell t1, Cell t2, Data data) 
-        => Roads[t1, t2]?.Model(data);
+        => Roads[t1, t2]?.Get(data);
     
     public static RoadNetwork Create(GenWriteKey key)
     {

@@ -51,13 +51,13 @@ public class MouseOverHandler
 
         if (c is IPolyCell single)
         {
-            SetPoly(single.Polygon.Entity(data));
+            SetPoly(single.Polygon.Get(data));
         }
         else if (c is RiverCell r)
         {
-            var edge = r.Edge.Entity(data);
-            var p1 = edge.HighPoly.Entity(data);
-            var p2 = edge.LowPoly.Entity(data);
+            var edge = r.Edge.Get(data);
+            var p1 = edge.HighPoly.Get(data);
+            var p2 = edge.LowPoly.Get(data);
             var close =mousePosMapSpace.Offset(p1.Center, data)
                 < mousePosMapSpace.Offset(p2.Center, data)
                 ? p1 : p2;

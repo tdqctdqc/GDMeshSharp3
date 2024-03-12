@@ -4,15 +4,20 @@ using Godot;
 public interface IMakeable
 {
     MakeableAttribute Makeable { get; }
+    void Make(Regime r, 
+        float amount,
+        ProcedureWriteKey key);
 }
 public class MakeableAttribute : IItemAttribute, ITroopAttribute
 {
-    public IdCount<Item> ItemCosts { get; private set; }
-    public float IndustrialCost { get; private set; }
+    public IdCount<IModel> BuildCosts { get; private set; }
+    public IdCount<IModel> MaintainCosts { get; private set; }
 
-    public MakeableAttribute(IdCount<Item> itemCosts, float industrialCost)
+    public MakeableAttribute(IdCount<IModel> buildCosts,
+        IdCount<IModel> maintainCosts)
     {
-        ItemCosts = itemCosts;
-        IndustrialCost = industrialCost;
+        BuildCosts = buildCosts;
+        MaintainCosts = maintainCosts;
     }
+    
 }

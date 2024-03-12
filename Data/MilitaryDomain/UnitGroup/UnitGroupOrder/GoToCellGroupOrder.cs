@@ -17,7 +17,7 @@ public class GoToCellGroupOrder : UnitGroupOrder
         if (moveType.Passable(destWp, alliance, d) == false)
         {
             throw new Exception($"{moveType.GetType().Name} cant go to {destWp.GetType().Name}" +
-                                $" alliance {alliance.Leader.Entity(d).Id}" +
+                                $" alliance {alliance.Leader.Get(d).Id}" +
                                 $" occupier {destWp.Controller.RefId} ");
         }
         
@@ -34,12 +34,12 @@ public class GoToCellGroupOrder : UnitGroupOrder
         HandleUnitOrdersProcedure proc)
     {
         var d = key.Data;
-        var alliance = g.Regime.Entity(d).GetAlliance(d);
+        var alliance = g.Regime.Get(d).GetAlliance(d);
         var dest = PlanetDomainExt.GetPolyCell(DestId, d);
         foreach (var unit in g.Units.Items(d))
         {
             var pos = unit.Position.Copy();
-            var moveType = unit.Template.Entity(d).MoveType.Model(d);
+            var moveType = unit.Template.Get(d).MoveType.Get(d);
             var movePoints = moveType.BaseSpeed;
             var moveData = new MoveData(unit.Id, moveType, movePoints, alliance);
             pos.MoveToCell(moveData, dest, key);
@@ -49,11 +49,11 @@ public class GoToCellGroupOrder : UnitGroupOrder
     public override void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data d)
     {
         var dest = PlanetDomainExt.GetPolyCell(DestId, d);
-        var alliance = group.Regime.Entity(d).GetAlliance(d);
+        var alliance = group.Regime.Get(d).GetAlliance(d);
         foreach (var unit in group.Units.Items(d))
         {
             var from = unit.Position.GetCell(d);
-            var moveType = unit.Template.Entity(d).MoveType.Model(d);
+            var moveType = unit.Template.Get(d).MoveType.Get(d);
             var path = d.Context.PathCache
                 .GetOrAdd((moveType, alliance, from, dest));
             mb.DrawCellPath(relTo, path, group.Color, 2f, d);

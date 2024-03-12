@@ -23,14 +23,14 @@ public class LineOrder : UnitGroupOrder
         HandleUnitOrdersProcedure proc)
     {
         var units = g.Units.Items(key.Data);
-        var alliance = g.Regime.Entity(key.Data).GetAlliance(key.Data);
+        var alliance = g.Regime.Get(key.Data).GetAlliance(key.Data);
         var assgn = GetAssignments(g, key.Data);
         foreach (var unit in units)
         {
             var dest = PlanetDomainExt
                 .GetPolyCell(assgn[unit].Native, key.Data);
             var pos = unit.Position.Copy();
-            var moveType = unit.Template.Entity(key.Data).MoveType.Model(key.Data);
+            var moveType = unit.Template.Get(key.Data).MoveType.Get(key.Data);
             var movePoints = moveType.BaseSpeed;
             var moveCtx = new MoveData(unit.Id, moveType, movePoints, alliance);
             pos.MoveToCell(moveCtx, dest, key);
@@ -41,7 +41,7 @@ public class LineOrder : UnitGroupOrder
     private Dictionary<Unit, FrontFace> GetAssignments(UnitGroup g, Data d)
     {
         var units = g.Units.Items(d);
-        var alliance = g.Regime.Entity(d).GetAlliance(d);
+        var alliance = g.Regime.Get(d).GetAlliance(d);
         return Assigner
             .PickBestAndAssignAlongFacesSingle<Unit, FrontFace>
             (
@@ -56,7 +56,7 @@ public class LineOrder : UnitGroupOrder
                     return 1f;
                     var foreignCell = PlanetDomainExt.GetPolyCell(f.Foreign, d);
                     if (foreignCell.Controller.RefId == -1) return 0f;
-                    var foreignRegime = foreignCell.Controller.Entity(d);
+                    var foreignRegime = foreignCell.Controller.Get(d);
                     var foreignAlliance = foreignRegime.GetAlliance(d);
                     var units = foreignCell.GetUnits(d);
                     if (units == null || units.Count == 0) return HoldLineAssignment.PowerPointsPerCellFaceToCover;
@@ -69,11 +69,11 @@ public class LineOrder : UnitGroupOrder
     public override void Draw(UnitGroup group, Vector2 relTo, 
         MeshBuilder mb, Data d)
     {
-        var innerColor = group.Regime.Entity(d).PrimaryColor;
-        var outerColor = group.Regime.Entity(d).PrimaryColor;
+        var innerColor = group.Regime.Get(d).PrimaryColor;
+        var outerColor = group.Regime.Get(d).PrimaryColor;
         var squareSize = 10f;
         var lineSize = 5f;
-        var alliance = group.Regime.Entity(d).GetAlliance(d);
+        var alliance = group.Regime.Get(d).GetAlliance(d);
         var assgns = GetAssignments(group, d);
 
         var natives = Faces.Select(f => f.GetNative(d)).Distinct();
@@ -92,7 +92,7 @@ public class LineOrder : UnitGroupOrder
         foreach (var (unit, dest) in assgns)
         {
             var pos = unit.Position;
-            var moveType = unit.Template.Entity(d).MoveType.Model(d);
+            var moveType = unit.Template.Get(d).MoveType.Get(d);
             var path = d.Context.PathCache
                 .GetOrAdd((moveType, alliance, pos.GetCell(d),
                     dest.GetNative(d)));

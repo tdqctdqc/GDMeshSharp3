@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class PeepJob : IModel
+public class PeepJob : IModel, IIconed
 {
     public string Name { get; private set; }
     public int Id { get; private set; }

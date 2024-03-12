@@ -20,8 +20,4 @@ public class Income : Flow
         return fromPeeps + tradeBalance;
     }
 
-    public override float GetConsumption(Regime r, Data d)
-    {
-        return 0f;
-    }
 }

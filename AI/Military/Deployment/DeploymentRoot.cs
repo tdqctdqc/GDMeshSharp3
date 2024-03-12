@@ -48,7 +48,7 @@ public class DeploymentRoot : DeploymentBranch
     
     public override Cell GetCharacteristicCell(Data d)
     {
-        return Alliance.Leader.Entity(d).Capital.Entity(d).GetCells(d).First();
+        return Alliance.Leader.Get(d).Capital.Get(d).GetCells(d).First();
     }
     
 

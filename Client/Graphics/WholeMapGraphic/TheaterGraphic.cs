@@ -18,7 +18,7 @@ public partial class TheaterGraphic : Node2D
         this.ClearChildren();
         if (theaterBranch.Theater.Cells.Count() == 0) return;
         var alliance = theaterBranch.Alliance;
-        var outer = alliance.Leader.Entity(d).PrimaryColor;
+        var outer = alliance.Leader.Get(d).PrimaryColor;
         var inner = ColorsExt.GetRandomColor();
         
         var mb = MeshBuilder.GetFromPool();
@@ -35,7 +35,7 @@ public partial class TheaterGraphic : Node2D
         var relTo = theaterBranch.Theater.Cells.First().GetCenter();
         Func<Vector2, Vector2> relPos = p => relTo.Offset(p, d);
         var allianceColor = theaterBranch.Alliance
-            .Leader.Entity(d).PrimaryColor;
+            .Leader.Get(d).PrimaryColor;
         
         foreach (var seg in theaterBranch.Assignments.OfType<HoldLineAssignment>())
         {
@@ -62,7 +62,7 @@ public partial class TheaterGraphic : Node2D
     {
         var relTo = theaterBranch.Theater.Cells.First().GetCenter();
         var allianceColor = theaterBranch.Alliance
-            .Leader.Entity(d).PrimaryColor;
+            .Leader.Get(d).PrimaryColor;
         var size = 5f;
         
         foreach (var wp in theaterBranch.Theater.Cells)
@@ -77,7 +77,7 @@ public partial class TheaterGraphic : Node2D
     {
         var relTo = theaterBranch.Theater.Cells.First().GetCenter();
         var allianceColor = theaterBranch.Alliance
-            .Leader.Entity(d).PrimaryColor;
+            .Leader.Get(d).PrimaryColor;
 
         foreach (var wp in theaterBranch.Theater.Cells)
         {

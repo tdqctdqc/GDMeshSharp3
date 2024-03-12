@@ -75,7 +75,7 @@ public class Models
         MoveTypes = new MoveTypes();
         AddManager(MoveTypes);
         
-        Troops = new Troops(Items);
+        Troops = new Troops(Items, Flows);
         AddManager(Troops);
     }
 

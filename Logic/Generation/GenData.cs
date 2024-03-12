@@ -24,7 +24,6 @@ public class GenData : Data
         PlanetInfo.Create(GenMultiSettings.Dimensions, key);
         Market.Create(key);
         RuleVars.CreateDefault(key);
-        CurrentConstruction.Create(key);
         ProposalList.Create(key);
         ClientPlayerData.SetLocalPlayerGuid(new Guid());
         Player.Create(ClientPlayerData.LocalPlayerGuid, "Doot", key);

@@ -29,7 +29,7 @@ public static class RegimeExt
     }
     public static bool IsLocalPlayerRegime(this Regime r, Data data)
     {
-        return data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(data) == r;
+        return data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(data) == r;
     }
     public static Player GetPlayer(this Regime r, Data data)
     {
@@ -54,7 +54,7 @@ public static class RegimeExt
     public static float GetPowerScore(this Regime r, Data data)
     {
         var fromPop = r.GetPopulation(data);
-        var fromIndustry = r.Flows.Get(data.Models.Flows.IndustrialPower).FlowIn;
+        var fromIndustry = r.Store.Get(data.Models.Flows.IndustrialPower);
         return fromPop + fromIndustry;
     }
 

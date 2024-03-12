@@ -14,7 +14,7 @@
             _data = data;
             PlayerChangedRegime = new ValChangeAction<Player, Regime>();
             ByRegime = PropEntityIndexer<Player, Regime>.CreateDynamic(data, 
-                p => p.Regime.Entity(data), PlayerChangedRegime);
+                p => p.Regime.Get(data), PlayerChangedRegime);
             ByGuid = PropEntityIndexer<Player, Guid>.CreateConstant(data, p => p.PlayerGuid);
             SetLocalPlayer = new RefAction();
             data.SubscribeForCreation<Player>(p =>

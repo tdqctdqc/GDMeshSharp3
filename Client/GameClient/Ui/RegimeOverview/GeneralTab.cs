@@ -24,7 +24,7 @@ public partial class GeneralTab : ScrollContainer
         Name = regime.Name;
         _container.ClearChildren();
 
-        var flag = regime.Template.Model(client.Data).Flag;
+        var flag = regime.Template.Get(client.Data).Flag;
         var flagTexture = flag.GetTextureRect(100f);
         _container.AddChild(flagTexture);
         
@@ -38,7 +38,7 @@ public partial class GeneralTab : ScrollContainer
         _container.AddChild(seeAlliance);
         var spectating = client.GetComponent<MapGraphics>()
             .SpectatingRegime;
-        var localPlayerRegime = client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(client.Data);
+        var localPlayerRegime = client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data);
         if (regime != spectating)
         {
             var spectateRegime = ButtonExt.GetButton(() =>
@@ -66,10 +66,10 @@ public partial class GeneralTab : ScrollContainer
         }
 
         var spectatingAlliance = spectating.GetAlliance(client.Data);
-        var spectatingAllianceLeader = spectatingAlliance.Leader.Entity(client.Data);
+        var spectatingAllianceLeader = spectatingAlliance.Leader.Get(client.Data);
         
         var regimeAlliance = regime.GetAlliance(client.Data);
-        var regimeAllianceLeader = regimeAlliance.Leader.Entity(client.Data);
+        var regimeAllianceLeader = regimeAlliance.Leader.Get(client.Data);
         
         if (regime != spectating
             && spectatingAllianceLeader == spectating)
@@ -90,8 +90,8 @@ public partial class GeneralTab : ScrollContainer
 
         _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(client.Data).Id);
         _container.CreateLabelAsChild("ALLIANCE LEADER: " 
-                                      + regime.GetAlliance(client.Data).Leader.Entity(client.Data).Name
-                                      + " " + regime.GetAlliance(client.Data).Leader.Entity(client.Data).Id);
+                                      + regime.GetAlliance(client.Data).Leader.Get(client.Data).Name
+                                      + " " + regime.GetAlliance(client.Data).Leader.Get(client.Data).Id);
         _container.CreateLabelAsChild("ALLIANCE MEMBERS");
         foreach (var ally in regime.GetAlliance(client.Data).Members.Items(client.Data))
         {
@@ -101,14 +101,14 @@ public partial class GeneralTab : ScrollContainer
         _container.CreateLabelAsChild("RIVALS");
         foreach (var rival in regime.GetAlliance(client.Data).GetRivals(client.Data))
         {
-            _container.CreateLabelAsChild(rival.Leader.Entity(client.Data).Name);
+            _container.CreateLabelAsChild(rival.Leader.Get(client.Data).Name);
         }
 
         
         _container.CreateLabelAsChild("AT WAR");
         foreach (var rival in regime.GetAlliance(client.Data).GetAtWar(client.Data))
         {
-            _container.CreateLabelAsChild(rival.Leader.Entity(client.Data).Name);
+            _container.CreateLabelAsChild(rival.Leader.Get(client.Data).Name);
         }
     }
 }

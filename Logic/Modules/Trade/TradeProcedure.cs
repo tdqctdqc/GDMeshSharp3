@@ -48,11 +48,11 @@ public class TradeProcedure : Procedure
             var q = tradeReport.Net();
             if (q > 0)
             {
-                regime.Items.Add(item, q);
+                regime.Store.Add(item, q);
             }
             else
             {
-                regime.Items.Remove(item, -q);
+                regime.Store.Remove(item, -q);
             }
 
             var itemReport = regime.History.ItemHistory.Get(item, tick);

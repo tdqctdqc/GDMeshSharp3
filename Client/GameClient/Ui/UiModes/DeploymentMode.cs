@@ -46,9 +46,9 @@ public class DeploymentMode : UiMode
         }
         mg.DebugOverlay.Clear();
         var alliance = _mouseOverHandler.MouseOverCell.Controller
-            .Entity(_client.Data).GetAlliance(_client.Data);
+            .Get(_client.Data).GetAlliance(_client.Data);
         DrawAllianceBorders(alliance);
-        if (alliance.Leader.Entity(_client.Data).IsPlayerRegime(_client.Data))
+        if (alliance.Leader.Get(_client.Data).IsPlayerRegime(_client.Data))
         {
             return;
         }
@@ -89,7 +89,7 @@ public class DeploymentMode : UiMode
     private Vector2 DrawDeploymentBranch(DeploymentBranch branch)
     {
         var alliance = branch.Alliance;
-        var leader = alliance.Leader.Entity(_client.Data);
+        var leader = alliance.Leader.Get(_client.Data);
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
         var template = new DeploymentBranchTooltipTemplate();
@@ -140,7 +140,7 @@ public class DeploymentMode : UiMode
         var cells = _client.Data.Planet.PolygonAux.PolyCells.Cells.Values
             .Where(c => alliance.Members.RefIds.Contains(c.Controller.RefId)).ToArray();
         
-        var relTo = alliance.Leader.Entity(_client.Data).GetPolys(_client.Data).First().Center;
+        var relTo = alliance.Leader.Get(_client.Data).GetPolys(_client.Data).First().Center;
         
         foreach (var c in cells)
         {
@@ -156,7 +156,7 @@ public class DeploymentMode : UiMode
                 }
                 else
                 {
-                    var foreignAlliance = n.Controller.Entity(_client.Data).GetAlliance(_client.Data);
+                    var foreignAlliance = n.Controller.Get(_client.Data).GetAlliance(_client.Data);
                     if (alliance.IsAtWar(foreignAlliance, _client.Data))
                     {
                         color = Colors.Red;

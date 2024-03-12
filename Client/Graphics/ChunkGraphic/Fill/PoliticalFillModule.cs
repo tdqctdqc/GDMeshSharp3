@@ -21,22 +21,22 @@ public partial class PoliticalFillModule : PolyCellFillChunkGraphic
         if (Parent.SelectedMode == PoliticalChunkModule.Mode.Regime)
         {
             if(cell.Controller.IsEmpty()) return Colors.Transparent;
-            return cell.Controller.Entity(d).GetMapColor();
+            return cell.Controller.Get(d).GetMapColor();
         }
         else if (Parent.SelectedMode == PoliticalChunkModule.Mode.Alliance)
         {
             if(cell.Controller.IsEmpty()) return Colors.Transparent;
-            return cell.Controller.Entity(d).GetAlliance(d).Leader.Entity(d).GetMapColor();
+            return cell.Controller.Get(d).GetAlliance(d).Leader.Get(d).GetMapColor();
         }
         else if (Parent.SelectedMode == PoliticalChunkModule.Mode.Diplomacy)
         {
             if (cell.Controller.Fulfilled() == false) return Colors.Transparent;
             if (d.BaseDomain.PlayerAux.LocalPlayer == null) return Colors.Gray;
             if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.IsEmpty()) return Colors.Gray;
-            var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Entity(d);
+            var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(d);
             if (cell.Controller.RefId == playerRegime.Id) return Colors.Green;
             var playerAlliance = playerRegime.GetAlliance(d);
-            var polyAlliance = cell.Controller.Entity(d).GetAlliance(d);
+            var polyAlliance = cell.Controller.Get(d).GetAlliance(d);
             if (playerAlliance.Members.RefIds.Contains(cell.Controller.RefId)) 
                 return Colors.SkyBlue;
             if (playerAlliance.IsAtWar(polyAlliance, d)) 

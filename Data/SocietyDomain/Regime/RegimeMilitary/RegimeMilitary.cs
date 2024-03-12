@@ -6,18 +6,15 @@ using MessagePack;
 public class RegimeMilitary
 {
     public ERef<Regime> Regime { get; private set; }
-    public IdCount<Troop> TroopReserve { get; private set; }
     public static RegimeMilitary Construct(int regimeId, Data data)
     {
-        return new RegimeMilitary(new ERef<Regime>(regimeId), IdCount<Troop>.Construct());
+        return new RegimeMilitary(new ERef<Regime>(regimeId));
     }
 
     [SerializationConstructor] 
-    private RegimeMilitary(ERef<Regime> regime,
-        IdCount<Troop> troopReserve)
+    private RegimeMilitary(ERef<Regime> regime)
     {
         Regime = regime;
-        TroopReserve = troopReserve;
     }
 
     

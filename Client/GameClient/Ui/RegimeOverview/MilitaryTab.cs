@@ -23,10 +23,12 @@ public partial class MilitaryTab : ScrollContainer
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var iconSize = client.Settings.MedIconSize.Value;
 
-        foreach (var kvp in regime.Military.TroopReserve.GetEnumerableModel(client.Data))
+        foreach (var kvp in regime.Store
+                     .GetEnumerableModel(client.Data)
+                     .Where(k => k.Key is Troop t))
         {
             var amt = kvp.Value;
-            var troop = kvp.Key;
+            var troop = (Troop)kvp.Key;
             var hbox = troop.Icon.GetLabeledIcon<HBoxContainer>(
                 amt.ToString(), iconSize);
             _container.AddChild(hbox);
@@ -65,7 +67,7 @@ public partial class MilitaryTab : ScrollContainer
                 var gUnits = group.Units.Items(client.Data);
                 foreach (var unit in gUnits)
                 {
-                    _container.CreateLabelAsChild("\t" + unit.Template.Entity(client.Data).Name);
+                    _container.CreateLabelAsChild("\t" + unit.Template.Get(client.Data).Name);
                 }
             }
         }

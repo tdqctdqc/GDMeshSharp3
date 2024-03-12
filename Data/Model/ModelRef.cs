@@ -4,24 +4,25 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class ModelRef<T> where T : class, IModel
+public class ModelRef<T> : IDRef<T>
+    where T : class, IModel
 {
-    public int ModelId { get; private set; }
+    public int RefId { get; private set; }
     public ModelRef(T model, ICreateWriteKey key)
     {
-        ModelId = model.Id;
+        RefId = model.Id;
     }
 
-    public ModelRef(int modelId)
+    public ModelRef(int refId)
     {
-        ModelId = modelId;
+        RefId = refId;
     }
 
-    public T Model(Data data)
+    public T Get(Data data)
     {
-        if (ModelId != -1)
+        if (RefId != -1)
         {
-            return data.Models.GetModel<T>(ModelId);
+            return data.Models.GetModel<T>(RefId);
         }
 
         return null;
@@ -29,7 +30,7 @@ public class ModelRef<T> where T : class, IModel
 
     public ModelRef<T> Copy()
     {
-        return new ModelRef<T>(ModelId);
+        return new ModelRef<T>(RefId);
     }
 
 }

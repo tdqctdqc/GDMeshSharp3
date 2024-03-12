@@ -44,6 +44,22 @@ public class IdCount<T> : Count<int>
         return Contents.Select(kvp => 
             new KeyValuePair<T, float>(get(kvp.Key, d), kvp.Value));
     }
+    public void Add<T2>(IdCount<T2> count)
+        where T2 : T
+    {
+        foreach (var (key, value) in count.Contents)
+        {
+            Add(key, value);
+        }
+    }
+    public void Add<T2>(Dictionary<T2, float> count)
+        where T2 : T
+    {
+        foreach (var (key, value) in count)
+        {
+            Add(key, value);
+        }
+    }
     public void Add(T model, float amount)
     {
         if (amount == 0) return;

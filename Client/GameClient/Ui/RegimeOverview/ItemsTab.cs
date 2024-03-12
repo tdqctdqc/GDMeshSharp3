@@ -25,7 +25,7 @@ public partial class ItemsTab : ScrollContainer
 
         foreach (var item in itemIds)
         {
-            var amt = regime.Items.Get(item);
+            var amt = regime.Store.Get(item);
             var itemReport = regime.History.ItemHistory.GetLatest(item);
             
             var hbox = new HBoxContainer();

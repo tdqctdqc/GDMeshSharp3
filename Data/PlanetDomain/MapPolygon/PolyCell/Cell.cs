@@ -19,9 +19,9 @@ public abstract class Cell : IPolymorph,
     [MessagePack.IgnoreMember] public Vector2 RelTo => Geometry.RelTo;
     [MessagePack.IgnoreMember] public Vector2[] RelBoundary => Geometry.PointsRel;
     
-    public Vegetation GetVegetation(Data d) => Vegetation.Model(d);
+    public Vegetation GetVegetation(Data d) => Vegetation.Get(d);
     public ModelRef<Vegetation> Vegetation { get; private set; }
-    public Landform GetLandform(Data d) => Landform.Model(d);
+    public Landform GetLandform(Data d) => Landform.Get(d);
     public ModelRef<Landform> Landform { get; private set; }
     public CellGeometry Geometry { get; private set; }
         
@@ -115,5 +115,10 @@ public abstract class Cell : IPolymorph,
         var index = Neighbors.IndexOf(n.Id);
         if (index == -1) throw new Exception();
         return Edges[index];
+    }
+
+    public CellRef MakeRef()
+    {
+        return new CellRef(Id);
     }
 }

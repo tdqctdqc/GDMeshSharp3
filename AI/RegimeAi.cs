@@ -23,7 +23,7 @@ public class RegimeAi
     {
         var orders = MajorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
         var alliance = Regime.GetAlliance(key.Data);
-        var allianceLeader = alliance.Leader.Entity(key.Data);
+        var allianceLeader = alliance.Leader.Get(key.Data);
         if (allianceLeader == Regime)
         {
             var ai = key.Data.HostLogicData.AllianceAis[alliance];
@@ -40,7 +40,7 @@ public class RegimeAi
         var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
         
         var alliance = Regime.GetAlliance(key.Data);
-        var allianceLeader = alliance.Leader.Entity(key.Data);
+        var allianceLeader = alliance.Leader.Get(key.Data);
         if (allianceLeader == Regime)
         {
             var ai = key.Data.HostLogicData.AllianceAis[alliance];

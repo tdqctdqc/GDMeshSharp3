@@ -23,7 +23,7 @@ public partial class ControllerPolyCellBorder : PolyCellBorder
 
     protected override Color GetColor(Cell p1, Data data)
     {
-        return p1.Controller.IsEmpty() ? Colors.Transparent : p1.Controller.Entity(data).SecondaryColor;
+        return p1.Controller.IsEmpty() ? Colors.Transparent : p1.Controller.Get(data).SecondaryColor;
     }
 
     public override void RegisterForRedraws(Data d)

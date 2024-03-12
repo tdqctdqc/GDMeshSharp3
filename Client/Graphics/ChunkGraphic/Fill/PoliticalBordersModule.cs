@@ -31,8 +31,8 @@ public partial class PoliticalBordersModule : PolyCellBorder
         {
             if (m.Controller.RefId == -1 || n.Controller.RefId == -1) 
                 return 5f;
-            if (m.Controller.Entity(data).GetAlliance(data) 
-                == n.Controller.Entity(data).GetAlliance(data))
+            if (m.Controller.Get(data).GetAlliance(data) 
+                == n.Controller.Get(data).GetAlliance(data))
             {
                 return 2.5f;
             }
@@ -45,13 +45,13 @@ public partial class PoliticalBordersModule : PolyCellBorder
     {
         if (Parent.SelectedMode == PoliticalChunkModule.Mode.Regime)
         {
-            return p1.Controller.Entity(data).PrimaryColor;
+            return p1.Controller.Get(data).PrimaryColor;
         }
         else if (Parent.SelectedMode == PoliticalChunkModule.Mode.Alliance
                  || Parent.SelectedMode == PoliticalChunkModule.Mode.Diplomacy)
         {
             if(p1.Controller.Fulfilled() == false) return Colors.Transparent;
-            var allianceLeader = p1.Controller.Entity(data).GetAlliance(data).Leader.Entity(data);
+            var allianceLeader = p1.Controller.Get(data).GetAlliance(data).Leader.Get(data);
             return allianceLeader.PrimaryColor;
         }
         else throw new Exception();

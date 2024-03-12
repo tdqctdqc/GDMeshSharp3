@@ -21,7 +21,7 @@ public class RegimeUseTroopsProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        var regimeTroops = Regime.Entity(key.Data).Military.TroopReserve;
+        var regimeTroops = Regime.Get(key.Data).Store;
         foreach (var kvp in UsageByTroopId)
         {
             regimeTroops.Remove(kvp.Key, kvp.Value);

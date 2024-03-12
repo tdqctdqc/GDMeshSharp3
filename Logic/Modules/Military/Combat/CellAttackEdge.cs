@@ -91,7 +91,7 @@ public class CellAttackEdge : ICombatGraphEdge
     {
         var defenders = Target.GetUnits(key.Data);
         if (defenders == null || defenders.Count == 0) return;
-        var defenderAlliance = Target.Controller.Entity(key.Data)
+        var defenderAlliance = Target.Controller.Get(key.Data)
             .GetAlliance(key.Data);
         var retreatCells = Target.GetNeighbors(key.Data)
             .Where(n => n.Controller.RefId == Target.Controller.RefId)
@@ -115,8 +115,8 @@ public class CellAttackEdge : ICombatGraphEdge
             var retreatCell = retreatCells
                 .FirstOrDefault(c =>
                 {
-                    var moveType = defender.Template.Entity(key.Data)
-                        .MoveType.Model(key.Data);
+                    var moveType = defender.Template.Get(key.Data)
+                        .MoveType.Get(key.Data);
                     return moveType.Passable(c, defenderAlliance, key.Data);
                 });
             if (retreatCell != null)
@@ -143,10 +143,10 @@ public class CellAttackEdge : ICombatGraphEdge
         .Where(u => combat.Suppressed.Contains(u) == false);
         if (nonSuppressedAttackers.Count() == 0) return;
         var victoriousAllianceUnits = nonSuppressedAttackers
-            .SortInto(u => u.Regime.Entity(key.Data).GetAlliance(key.Data))
+            .SortInto(u => u.Regime.Get(key.Data).GetAlliance(key.Data))
             .MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data)));
         
-        var victoriousRegime = victoriousAllianceUnits.Value.SortInto(u => u.Regime.Entity(key.Data))
+        var victoriousRegime = victoriousAllianceUnits.Value.SortInto(u => u.Regime.Get(key.Data))
             .MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data))).Key;
         // GD.Print($"Advance by {victoriousRegime.Name} at cell {Target.Id}");
         var changeController = ChangePolyCellControllerProcedure

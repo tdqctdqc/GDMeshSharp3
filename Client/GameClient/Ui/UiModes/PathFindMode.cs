@@ -72,7 +72,7 @@ public class PathFindMode : UiMode
             return;
         }
 
-        var alliance = _from.Controller.Entity(_client.Data).GetAlliance(_client.Data);
+        var alliance = _from.Controller.Get(_client.Data).GetAlliance(_client.Data);
         
         
         var stratMove = _client.Data.Models.MoveTypes.StrategicMove;

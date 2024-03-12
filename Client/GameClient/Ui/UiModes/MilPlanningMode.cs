@@ -37,7 +37,7 @@ public class MilPlanningMode : UiMode
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell == null) return;
         if (cell.Controller.IsEmpty()) return;
-        var regime = cell.Controller.Entity(_client.Data);
+        var regime = cell.Controller.Get(_client.Data);
         if (regime.IsPlayerRegime(_client.Data)) return;
         var alliance = regime.GetAlliance(_client.Data);
         var ai = _client.Data.HostLogicData.AllianceAis[alliance];

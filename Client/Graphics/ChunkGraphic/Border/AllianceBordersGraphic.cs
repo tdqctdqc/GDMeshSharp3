@@ -15,7 +15,7 @@ public partial class AllianceBordersGraphic : PolyBorder
     protected override Color GetColor(MapPolygon p, Data data)
     {
         if(p.OwnerRegime.Fulfilled() == false) return Colors.Transparent;
-        var allianceLeader = p.OwnerRegime.Entity(data).GetAlliance(data).Leader.Entity(data);
+        var allianceLeader = p.OwnerRegime.Get(data).GetAlliance(data).Leader.Get(data);
         return allianceLeader.PrimaryColor;
     }
 
@@ -28,8 +28,8 @@ public partial class AllianceBordersGraphic : PolyBorder
     {
         if (m.OwnerRegime.RefId == -1 || n.OwnerRegime.RefId == -1) 
             return 5f;
-        if (m.OwnerRegime.Entity(data).GetAlliance(data) 
-            == n.OwnerRegime.Entity(data).GetAlliance(data))
+        if (m.OwnerRegime.Get(data).GetAlliance(data) 
+            == n.OwnerRegime.Get(data).GetAlliance(data))
         {
             return 2.5f;
         }

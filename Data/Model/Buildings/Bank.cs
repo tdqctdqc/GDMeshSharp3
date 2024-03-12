@@ -13,14 +13,16 @@ public class Bank : BuildingModel
                     {
                         {jobs.Bureaucrat, 500}
                     }),
-                new FlowProd(100, flows.Income)
+                new BuildingProd(flows.Income, 100)
             },
             new MakeableAttribute(
-                IdCount<Item>.Construct(new Dictionary<Item, float>
+                IdCount<IModel>.Construct(new Dictionary<IModel, float>
                 {
                     { items.FinancialPower, 10_000 },
-                    { items.BuildingMaterial, 500 },
-                }), 0f
+                }),
+              IdCount<IModel>.Construct(new Dictionary<IModel, float>
+                {
+                })
             )  
         )
     {

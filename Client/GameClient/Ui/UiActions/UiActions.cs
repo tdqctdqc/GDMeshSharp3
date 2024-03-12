@@ -13,7 +13,7 @@ public static class UiActions
         }
         if (poly.OwnerRegime.Fulfilled())
         {
-            var r = poly.OwnerRegime.Entity(client.Data);
+            var r = poly.OwnerRegime.Get(client.Data);
             var w = Game.I.Client.GetComponent<WindowManager>().OpenWindow<RegimeOverviewWindow>();
             w.Setup(r, client);
         }

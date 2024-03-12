@@ -68,7 +68,7 @@ public class MapPolygonEdge : Entity
     public MapPolyNexus GetOtherNexus(MapPolyNexus nexus, Data data)
     {
         if (IsIncidentToNexus(nexus) == false) throw new Exception();
-        return HiNexus.RefId == nexus.Id ? LoNexus.Entity(data) : HiNexus.Entity(data);
+        return HiNexus.RefId == nexus.Id ? LoNexus.Get(data) : HiNexus.Get(data);
     }
 
     public override void CleanUp(StrongWriteKey key)

@@ -57,7 +57,7 @@ public partial class UnitPanel : ScrollPanel
         _healthRect.Visible = true;
         _healthRect.Modulate = Colors.Red.Interpolate(Colors.Green, healthRatio);
         _power.Text = $"{(int)health.X} / {(int)health.Y} Power Points";
-        _regime.Text = u.Regime.Entity(d).Name;
+        _regime.Text = u.Regime.Get(d).Name;
         _id.Text = "Id: " + u.Id;
         foreach (var (troop, num) in u.Troops.GetEnumerableModel(d))
         {

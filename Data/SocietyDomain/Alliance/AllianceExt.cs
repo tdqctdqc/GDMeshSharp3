@@ -22,7 +22,7 @@ public static class AllianceExt
         return alliance.Members.Items(data)
             .SelectMany(r => r.GetPolys(data))
             .SelectMany(p => p.Neighbors.Items(data).Where(e => e.OwnerRegime.Fulfilled()))
-            .Select(p => p.OwnerRegime.Entity(data).GetAlliance(data))
+            .Select(p => p.OwnerRegime.Get(data).GetAlliance(data))
             .Distinct()
             .Where(a => a != alliance);
     }

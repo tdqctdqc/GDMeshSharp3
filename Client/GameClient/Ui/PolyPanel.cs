@@ -37,7 +37,7 @@ public partial class PolyPanel : ScrollPanel
         Inner.CreateLabelAsChild("Poly " + poly.Id);
         if (poly.OwnerRegime.Fulfilled())
         {
-            Inner.CreateLabelAsChild("Owner " + poly.OwnerRegime.Entity(d).Name);
+            Inner.CreateLabelAsChild("Owner " + poly.OwnerRegime.Get(d).Name);
         }
         Inner.CreateLabelAsChild("Roughness " + poly.Roughness.RoundTo2Digits());
         
@@ -53,7 +53,7 @@ public partial class PolyPanel : ScrollPanel
         {
             foreach (var (model, count) 
                      in poly.GetBuildings(d)
-                         .Select(b => b.Model.Model(d))
+                         .Select(b => b.Model.Get(d))
                          .GetCounts())
             {
                 var label = model.Icon

@@ -26,7 +26,7 @@ public class MapPolygonAux
         ChangedOccupierRegime = new ValChangeAction<MapPolygon, Regime>();
 
         PolysByRegime = new EntityMultiIndexer<Regime, MapPolygon>(data,
-            p => p.OwnerRegime.Entity(data), 
+            p => p.OwnerRegime.Get(data), 
             new RefAction[] { }, ChangedOwnerRegime);
         
         data.Notices.SetLandAndSea.Subscribe(() =>
@@ -78,14 +78,14 @@ public class MapPolygonAux
             
             if (element is IPolyCell l)
             {
-                CellsByPoly.GetOrAdd(l.Polygon.Entity(data), p => new List<Cell>())
+                CellsByPoly.GetOrAdd(l.Polygon.Get(data), p => new List<Cell>())
                     .Add(element);
             }
             else if (element is IEdgeCell e)
             {
-                CellsByPoly.GetOrAdd(e.Edge.Entity(data).HighPoly.Entity(data), p => new List<Cell>())
+                CellsByPoly.GetOrAdd(e.Edge.Get(data).HighPoly.Get(data), p => new List<Cell>())
                     .Add(element);
-                CellsByPoly.GetOrAdd(e.Edge.Entity(data).LowPoly.Entity(data), p => new List<Cell>())
+                CellsByPoly.GetOrAdd(e.Edge.Get(data).LowPoly.Get(data), p => new List<Cell>())
                     .Add(element);
             }
         }

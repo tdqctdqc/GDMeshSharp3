@@ -38,8 +38,8 @@ public class AllianceMergeProposal : Proposal
     {
         if (accepted)
         {
-            var target = Target.Entity(key.Data);
-            var proposer = Proposer.Entity(key.Data);
+            var target = Target.Get(key.Data);
+            var proposer = Proposer.Get(key.Data);
             var targetMembers = target.Members.Items(key.Data).ToList();
             
             for (var i = 0; i < targetMembers.Count; i++)
@@ -67,14 +67,14 @@ public class AllianceMergeProposal : Proposal
             return false;
         }
         var target = (Alliance) data.EntitiesById[Target.RefId];
-        var targetLeader = target.Leader.Entity(data);
+        var targetLeader = target.Leader.Get(data);
         if (targetLeader.IsMajor)
         {
             error = "Target leader is major regime";
             return false;
         }
         var proposer = (Alliance) data.EntitiesById[Proposer.RefId];
-        var proposerLeader = proposer.Leader.Entity(data);
+        var proposerLeader = proposer.Leader.Get(data);
         if (proposerLeader.IsMajor == false)
         {
             error = "Proposer leader is not major regime";

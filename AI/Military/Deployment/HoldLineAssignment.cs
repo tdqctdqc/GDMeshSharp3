@@ -214,7 +214,7 @@ public class HoldLineAssignment : GroupAssignment
         {
             throw new Exception();
         }
-        var foreignRegime = foreignCell.Controller.Entity(d);
+        var foreignRegime = foreignCell.Controller.Get(d);
         var foreignAlliance = foreignRegime.GetAlliance(d);
         var units = foreignCell.GetUnits(d);
         if (units == null || units.Count == 0) return 0f;

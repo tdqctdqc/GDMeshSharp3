@@ -43,10 +43,6 @@ public class PolyCellGenerator : Generator
         _data.Notices.MadeCells.Invoke();
         report.StopSection("constructing cell grid");
 
-        report.StartSection();
-        Parallel.ForEach(polys, p => p.SetTerrainStats(key)); 
-        report.StopSection("setting terrain stats");
-        
         return report;
     }
 
@@ -92,7 +88,7 @@ public class PolyCellGenerator : Generator
         var landCells = key.Data.Planet.PolygonAux.PolyCells.Cells.Values
             .OfType<LandCell>();
         var landCellsByPoly = landCells
-            .SortInto(l => l.Polygon.Entity(key.Data));
+            .SortInto(l => l.Polygon.Get(key.Data));
         Parallel.ForEach(landCellsByPoly, kvp =>
         {
             var cells = kvp.Value;
@@ -145,7 +141,7 @@ public class PolyCellGenerator : Generator
 
         void swampRidging(Cell cell)
         {
-            if (cell.Vegetation.Model(_data) == _data.Models.Vegetations.Swamp)
+            if (cell.Vegetation.Get(_data) == _data.Models.Vegetations.Swamp)
             {
                 var globalPos = cell.GetCenter();
                 var noise = swampNoise.GetNoise2D(globalPos.X, globalPos.Y);

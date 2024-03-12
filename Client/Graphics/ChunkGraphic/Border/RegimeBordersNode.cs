@@ -24,7 +24,7 @@ public partial class RegimeBordersGraphic : PolyBorder
 
     protected override Color GetColor(MapPolygon p, Data data)
     {
-        return p.OwnerRegime.Fulfilled() ? p.OwnerRegime.Entity(data).PrimaryColor : Colors.Transparent;
+        return p.OwnerRegime.Fulfilled() ? p.OwnerRegime.Get(data).PrimaryColor : Colors.Transparent;
     }
 
     public override void RegisterForRedraws(Data d)

@@ -56,12 +56,12 @@ public class ClientPlayerData
     public void ResetMajorOrders(Data data)
     {
         var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
-        MajorOrders = MajorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Entity(data));
+        MajorOrders = MajorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Get(data));
     }
     public void ResetMinorOrders(Data data)
     {
         var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
-        MinorOrders = MinorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Entity(data));
+        MinorOrders = MinorTurnOrders.Construct(data.BaseDomain.GameClock.Tick, localPlayer.Regime.Get(data));
     }
 
     public RegimeTurnOrders GetOrdersForThisTurn(Data data)

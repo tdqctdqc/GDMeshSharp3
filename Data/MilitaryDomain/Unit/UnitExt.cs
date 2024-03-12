@@ -25,7 +25,7 @@ public static class UnitExt
 
     public static bool Hostile(this Unit u, Alliance a, Data d)
     {
-        return u.Regime.Entity(d).GetAlliance(d).IsRivals(a, d);
+        return u.Regime.Get(d).GetAlliance(d).IsRivals(a, d);
     }
 
     public static Troop GetMaxPowerTroop(this Unit unit, Data data)
@@ -44,7 +44,7 @@ public static class UnitExt
     {
         var totalPp = unit.Troops.GetEnumerableModel(data)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-        var templatePp = unit.Template.Entity(data).TroopCounts.GetEnumerableModel(data)
+        var templatePp = unit.Template.Get(data).TroopCounts.GetEnumerableModel(data)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
         return new Vector2(totalPp, templatePp);
     }

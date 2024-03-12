@@ -20,97 +20,43 @@ public static class BudgetConstrainer
             }
         }
     }
-    
-    public static void SetItemsConstraints<T>(this Solver solver, Data data, 
-        IdCount<Item> budget, Dictionary<T, Variable> vars)
-        where T : IMakeable
-    {
-        solver.SetNumConstraints<T, Item>(
-            data.Models.GetModels<Item>().Values.ToList(),
-            t => t.Makeable.ItemCosts.GetEnumerableModel(data)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
-            data, budget, vars);
-    }
-    
-    public static void SetNumConstraints<T, TConstrained>(this Solver solver, 
-        List<TConstrained> constrained,
-        Func<T, Dictionary<TConstrained, float>> getCosts,
-        Data data, IdCount<TConstrained> budget, 
-        Dictionary<T, Variable> vars)
-            where T : IMakeable 
-            where TConstrained : IIdentifiable
+
+
+    public static void SetModelConstraints<TBuild>(
+            this Solver solver, 
+            Data data, BudgetPool pool, 
+            Dictionary<TBuild, Variable> vars
+        ) where TBuild : IMakeable
     {
         var constraints = new Dictionary<int, Constraint>();
-        constrained.ForEach(c =>
+        foreach (var (build, variable) in vars)
         {
-            var itemConstraint = solver.MakeConstraint(0f, budget.Get(c));
-            constraints.Add(c.Id, itemConstraint);
-        });
-        foreach (var kvp in vars)
-        {
-            var b = kvp.Key;
-            var projVar = kvp.Value;
-            var buildCosts = getCosts(b);
-            foreach (var kvp2 in buildCosts)
+            var costs = build.Makeable.BuildCosts.GetEnumerableModel(data);
+            foreach (var (model, amount) in costs)
             {
-                var item = kvp2.Key;
-                var num = kvp2.Value;
-                var itemConstraint = constraints[item.Id];
-                itemConstraint.SetCoefficient(projVar, num);
+                if (constraints.TryGetValue(model.Id, 
+                        out var constraint) == false)
+                {
+                    constraint = solver.MakeConstraint(0f,
+                        pool.AvailModels.Get(model));
+                }
+                constraint.SetCoefficient(variable, amount);
             }
         }
     }
     
     
-    public static void SetIndustrialPointConstraints<T>(this Solver solver, 
-        Regime r, Data data, float maxBacklogRatio, 
-        Dictionary<T, Variable> vars) 
-        where T : IMakeable
-    {
-        var ipFlow = data.Models.Flows.IndustrialPower;
-        var backlogRatio = 3f;
-        var ipUsed = r.ManufacturingQueue.Queue
-            .Sum(m => m.Remaining(data));
-        var ipAvail = r.Flows.Get(ipFlow).Net() * backlogRatio - ipUsed;
-        var ipConstraint = solver.MakeConstraint(0f, ipAvail);
-
-        foreach (var kvp in vars)
-        {
-            var b = kvp.Key;
-            var projVar = kvp.Value;
-            var industrialCost = b.Makeable.IndustrialCost;
-            ipConstraint.SetCoefficient(projVar, industrialCost);
-        }
-    }
-    public static void SetItemConstraint<T>(this Solver solver, Item constrainedItem,
-        Data data, IdCount<Item> budget, Dictionary<T, Variable> vars) 
-        where T : IMakeable
-    {
-        var itemConstraint = solver.MakeConstraint(0f, budget.Get(constrainedItem));
-        foreach (var kvp in vars)
-        {
-            var b = kvp.Key;
-            var projVar = kvp.Value;
-            var buildCosts = b.Makeable.ItemCosts.GetEnumerableModel(data);
-            foreach (var kvp2 in buildCosts)
-            {
-                var item = kvp2.Key;
-                var num = kvp2.Value;
-                itemConstraint.SetCoefficient(projVar, num);
-            }
-        }
-    }
     
     
     public static void SetCreditConstraint<T>(this Solver solver, Data data, float credit,
-        Dictionary<Item, float> prices, 
+        Dictionary<IModel, float> prices, 
         Dictionary<T, Variable> vars) where T : IMakeable
     {
         var creditConstraint = solver.MakeConstraint(0f, credit, "Credits");
         foreach (var kvp in vars)
         {
             var projVar = kvp.Value;
-            var buildCosts = kvp.Key.Makeable.ItemCosts.GetEnumerableModel(data);
+            var buildCosts = kvp.Key.Makeable.BuildCosts.GetEnumerableModel(data);
             var projPrice = buildCosts
                 .Where(kvp => kvp.Key is TradeableItem)
                 .Sum(kvp => prices[kvp.Key] * kvp.Value);
@@ -150,21 +96,17 @@ public static class BudgetConstrainer
     public static void SetBuildingSlotConstraints(this Solver solver, 
         Regime regime, Dictionary<BuildingModel, Variable> buildingVars, Data data)
     {
-        var slotConstraints = new Dictionary<BuildingType, Constraint>();
-        var slotTypes = buildingVars.Select(kvp => kvp.Key.BuildingType).Distinct();
+        var cells = regime.GetPolys(data)
+            .SelectMany(p => p.GetCells(data))
+            .Where(c => c.HasBuilding(data) == false);
         
-        foreach (var slotType in slotTypes)
-        {
-            var slots = regime.GetPolys(data).Select(p => p.PolyBuildingSlots[slotType]).Sum();
-            var slotConstraint = solver.MakeConstraint(0, slots, slotType.ToString());
-            slotConstraints.Add(slotType, slotConstraint);
-        }
+        
         foreach (var kvp in buildingVars)
         {
             var b = kvp.Key;
             var projVar = kvp.Value;
-            var slotConstraint = slotConstraints[b.BuildingType];
-            slotConstraint.SetCoefficient(projVar, 1);
+            var validCells = cells.Count(c => b.CanBuildInCell(c, data));
+            projVar.SetUb(Mathf.Min(projVar.Ub(), validCells));
         }
     }
 }

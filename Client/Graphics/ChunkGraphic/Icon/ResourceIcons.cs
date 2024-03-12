@@ -30,12 +30,12 @@ public partial class ResourceIcons
 
     protected override Item GetModel(ResourceDeposit t, Data d)
     {
-        return t.Item.Model(d);
+        return t.Item.Get(d);
     }
 
     protected override Vector2 GetWorldPos(ResourceDeposit t, Data d)
     {
-        return t.Poly.Entity(d).Center;
+        return t.Poly.Get(d).Center;
     }
 
     public override void RegisterForRedraws(Data d)

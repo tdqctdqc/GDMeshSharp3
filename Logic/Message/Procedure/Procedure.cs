@@ -3,7 +3,7 @@ using System;
 
 
 [MessagePack.Union(0, typeof(ChangePolyCellControllerProcedure))]
-[MessagePack.Union(1, typeof(ClearFinishedConstructionsProcedure))]
+[MessagePack.Union(1, typeof(ReinforceUnitProcedure))]
 [MessagePack.Union(2, typeof(DecideOnProposalProcedure))]
 [MessagePack.Union(3, typeof(DeclareRivalProcedure))]
 [MessagePack.Union(4, typeof(DeclareWarProcedure))]
@@ -22,13 +22,11 @@ using System;
 [MessagePack.Union(17, typeof(SetContextProcedure))]
 [MessagePack.Union(18, typeof(SetUnitGroupProcedure))]
 [MessagePack.Union(19, typeof(SetUnitOrderProcedure))]
-[MessagePack.Union(20, typeof(StartConstructionProcedure))]
-[MessagePack.Union(21, typeof(StartManufacturingProjectProc))]
-[MessagePack.Union(22, typeof(TickProcedure))]
-[MessagePack.Union(23, typeof(TradeProcedure))]
-[MessagePack.Union(24, typeof(TroopLossesProcedure))]
-[MessagePack.Union(25, typeof(SetPlayerRegimeProcedure))]
-[MessagePack.Union(26, typeof(ReinforceUnitProcedure))]
+[MessagePack.Union(20, typeof(StartMakeProjectProc))]
+[MessagePack.Union(21, typeof(TickProcedure))]
+[MessagePack.Union(22, typeof(TradeProcedure))]
+[MessagePack.Union(23, typeof(TroopLossesProcedure))]
+[MessagePack.Union(24, typeof(SetPlayerRegimeProcedure))]
 public abstract class Procedure : Message, IPolymorph
 {
     protected Procedure()

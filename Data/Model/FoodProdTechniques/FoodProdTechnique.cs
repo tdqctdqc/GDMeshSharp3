@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract class FoodProdTechnique : IModel
+public abstract class FoodProdTechnique : IModel, IIconed
 {
     public string Name { get; private set; }
     public int Id { get; private set; }

@@ -25,8 +25,8 @@ public class FaultLine
 
         edges.ForEach(e =>
         {
-            var hi = e.HighPoly.Entity(data);
-            var lo = e.LowPoly.Entity(data);
+            var hi = e.HighPoly.Get(data);
+            var lo = e.LowPoly.Get(data);
             var cells = data.GenAuxData.PreCellPolys[hi];
                 
             for (var i = 0; i < cells.Count; i++)

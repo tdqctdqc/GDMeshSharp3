@@ -6,15 +6,12 @@ using Google.OrTools.LinearSolver;
 
 
 public abstract class SolverPriority<TBuild> : IBudgetPriority
-    where TBuild : IIdentifiable, IMakeable
+    where TBuild : class, IModel, IMakeable
 {
     public string Name { get; private set; }
-    public Dictionary<Item, int> Wishlist { get; private set; }
     private Func<Data, Regime, float> _getWeight;
     private Func<Data, IEnumerable<TBuild>> _getAll;
     public float Weight { get; private set; }
-    public BudgetAccount Account { get; private set; }
-    
     
     public SolverPriority(string name, 
         Func<Data, IEnumerable<TBuild>> getAll,
@@ -23,45 +20,70 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         Name = name;
         _getWeight = getWeight;
         _getAll = getAll;
-        Account = new BudgetAccount();
-        Wishlist = new Dictionary<Item, int>();
     }
     public void SetWeight(Data data, Regime regime)
     {
         Weight = _getWeight(data, regime);
     }
-    public void Calculate(Regime regime, LogicWriteKey key)
+
+    public Dictionary<IModel, float> GetWishlistCosts(
+        Regime regime, 
+        Data d)
+    {
+        var expandedPool = BudgetPool.ConstructForRegime(regime, d);
+        foreach (var i in expandedPool.AvailModels.Contents.Keys.ToList())
+        {
+            expandedPool.AvailModels.Contents[i] *= 2f;
+        }
+        SetCalcData(regime, d);
+        var solver = MakeSolver();
+        var projVars = MakeProjVars(solver, d);
+        SetConstraints(solver, regime, expandedPool, projVars, d);
+        var success = Solve(solver, projVars);
+        if (success == false)
+        {
+            GD.Print("failed");
+        }
+        var toBuild = projVars
+            .Where(v => v.Value.SolutionValue() > 0f)
+            .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
+        return GetCosts(toBuild, d);
+    }
+    public bool Calculate(BudgetPool pool, 
+        Regime regime, 
+        LogicWriteKey key,
+        out Dictionary<IModel, float> modelCosts)
     {
         SetCalcData(regime, key.Data);
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, key.Data);
-        SetConstraints(solver, regime, projVars, key.Data);
+        SetConstraints(solver, regime, pool, projVars, key.Data);
         
         var success = Solve(solver, projVars);
         if (success == false)
         {
-            foreach (var kvp in Account.Items.Contents)
-            {
-                var item = (Item) key.Data.Models[kvp.Key];
-                var q = kvp.Value;
-            }
+            GD.Print("failed");
         }
-        
-        var toBuild = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        Complete(regime, toBuild, key);
+        var toBuild = projVars
+            .Where(v => v.Value.SolutionValue() > 0f)
+            .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
+        Complete(pool, regime, toBuild, key);
+        modelCosts = GetCosts(toBuild, key.Data);
+        return toBuild.Count > 0;
     }
 
     protected abstract float Utility(TBuild t);
     protected abstract bool Relevant(TBuild t, Data d);
     protected abstract void SetCalcData(Regime r, Data d);
-    protected abstract void SetConstraints(Solver solver, Regime r,
+    protected abstract void SetConstraints(Solver solver, 
+        Regime r,
+        BudgetPool pool,
         Dictionary<TBuild, Variable> projVars, 
         Data data);
-    protected abstract void SetWishlistConstraints(Solver solver, Regime r,
-        Dictionary<TBuild, Variable> projVars, 
-        Data data, BudgetPool pool, float proportion);
-    protected abstract void Complete(Regime r,
-        Dictionary<TBuild, int> toBuild, LogicWriteKey key);
+
+    protected abstract Dictionary<IModel, float>
+        GetCosts(Dictionary<TBuild, int> toBuild, Data d);
+    
     private bool Solve(Solver solver, 
         Dictionary<TBuild, Variable> projVars)
     {
@@ -78,28 +100,6 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         var status = solver.Solve();
         return status == Solver.ResultStatus.OPTIMAL || status == Solver.ResultStatus.FEASIBLE;
     }
-    public Dictionary<Item, int> CalculateWishlist(Regime regime, Data data,
-        BudgetPool pool, float proportion)
-    {
-        var solver = MakeSolver();
-        var projVars = MakeProjVars(solver, data);
-        SetWishlistConstraints(solver, regime, projVars, data, pool, proportion);
-        
-        var success = Solve(solver, projVars);
-        if (success == false)
-        {
-            foreach (var kvp in Account.Items.Contents)
-            {
-                var item = (Item) data.Models[kvp.Key];
-                var q = kvp.Value;
-            }
-        }
-        
-        var toBuild = projVars.ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        return projVars.GetCounts(
-            kvp => kvp.Key.Makeable.ItemCosts.GetEnumerableModel(data).ToDictionary(kvp => kvp.Key, kvp => (int)kvp.Value), 
-            (kvp, i) => Mathf.CeilToInt(i * kvp.Value.SolutionValue()));
-    }
     
     protected Dictionary<TBuild, Variable> MakeProjVars(
         Solver solver, 
@@ -114,65 +114,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         }).ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
     }
     
-    public void Wipe()
-    {
-        Account.Clear();
-        Wishlist.Clear();
-    }
-
-    public void SetWishlist(Regime r, Data d, BudgetPool pool, float proportion)
-    {
-        Wishlist = CalculateWishlist(r, d, pool, proportion);
-    }
-    public void FirstRound(Regime regime, float proportion, 
-        BudgetPool pool, LogicWriteKey key)
-    {
-        var taken = new BudgetAccount();
-        taken.TakeShare(proportion, pool, key.Data);
-        Account.Add(taken);
-        Calculate(regime, key);
-    }
-
-    public void SecondRound(Regime regime, float proportion, 
-        BudgetPool pool, LogicWriteKey key, float multiplier)
-    {
-        proportion = Mathf.Min(1f, multiplier * proportion);
-        FirstRound(regime, proportion, pool, key);
-        ReturnUnused(pool, key.Data);
-    }
-
-    private void ReturnUnused(BudgetPool pool, Data data)
-    {
-        foreach (var kvp in Account.Items.Contents)
-        {
-            var item = data.Models.GetModel<Item>(kvp.Key);
-            var q = kvp.Value;
-            if (Account.UsedItem.Contains(item) == false 
-                && Wishlist.ContainsKey(item) == false)
-            {
-                Account.Items.Remove(item, q);
-                pool.AvailItems.Add(item, q);
-            }
-        }
-        
-        foreach (var kvp in Account.Models.Contents)
-        {
-            var model = data.Models.GetModel<IModel>(kvp.Key);
-            var q = kvp.Value;
-            if (Account.UsedModel.Contains(model) == false)
-            {
-                Account.Models.Remove(model, q);
-                pool.AvailModels.Add(model, q);
-            }
-        }
-
-        if (Account.UsedLabor == false)
-        {
-            var labor = Account.Labor;
-            Account.UseLabor(labor);
-            pool.AvailLabor += labor;
-        }
-    }
+    
     protected Solver MakeSolver()
     {
         var solver = Solver.CreateSolver("CBC_MIXED_INTEGER_PROGRAMMING");
@@ -183,5 +125,19 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         }
 
         return solver;
+    }
+
+    protected virtual void Complete(
+        BudgetPool pool,
+        Regime r,
+        Dictionary<TBuild, int> toBuild,
+        LogicWriteKey key)
+    {
+        foreach (var (model, value) in toBuild)
+        {
+            var make = MakeProject.Construct(model, value);
+            var proc = new StartMakeProjectProc(r.MakeRef(), make);
+            key.SendMessage(proc);
+        }
     }
 }

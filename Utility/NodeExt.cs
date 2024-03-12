@@ -41,9 +41,8 @@ public static class NodeExt
             () =>
             {
                 var regime = client.GetComponent<MapGraphics>().SpectatingRegime;
-                var f = regime.Flows.Get(flow);
-                // return $"In: {f.FlowIn} \n Out: {f.FlowOut} \n Net: {f.Net()}";
-                return $"{f.Net()}";
+                var f = regime.Store.Get(flow);
+                return $"{f}";
             },
             height, triggers);
         var tooltipTemplate = new FlowTooltipTemplate();

@@ -31,7 +31,7 @@ public class OrderHolder
     public void SubmitPlayerTurnOrders(Player player, RegimeTurnOrders orders, Data data)
     {
         if (orders.Tick != data.BaseDomain.GameClock.Tick) throw new Exception();
-        var regime = orders.Regime.Entity(data);
+        var regime = orders.Regime.Get(data);
         if (Orders.ContainsKey(regime) && Orders[regime] != null) throw new Exception();
         Orders[regime] = orders;
     }

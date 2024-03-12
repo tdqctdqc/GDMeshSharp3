@@ -6,26 +6,16 @@ using Godot;
 
 public class ForceCompositionAi
 {
-    public float BuildTroopWeight { get; private set; }
-    public IBudgetPriority[] Priorities { get; private set; }
     private static int PreferredGroupSize = 7;
 
     public ForceCompositionAi(Regime regime)
     {
-        BuildTroopWeight = 1f;
-        Priorities = new IBudgetPriority[]
-        {
-            new FormUnitPriority("Form unit",
-                d => regime.GetUnitTemplates(d),
-                (d,r) => 1f)
-        };
+        
     }
 
     public void Calculate(Regime regime, LogicWriteKey key)
     {
-        SetBuildTroopWeight(regime, key.Data);
         ReinforceUnits(regime, key);
-        BuildUnits(key, regime);
         AssignFreeUnitsToGroups(regime, key);
     }
     private void AssignFreeUnitsToGroups(Regime regime, 
@@ -80,17 +70,13 @@ public class ForceCompositionAi
                 newGroup, key);
         }
     }
-    private void SetBuildTroopWeight(Regime regime, Data data)
-    {
-        BuildTroopWeight = 1f;
-    }
     private void ReinforceUnits(Regime regime,
         LogicWriteKey key)
     {
         var needCounts = new Dictionary<Troop, float>();
         foreach (var unit in regime.GetUnits(key.Data))
         {
-            var template = unit.Template.Entity(key.Data);
+            var template = unit.Template.Get(key.Data);
             foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
             {
                 var shouldHave = template.TroopCounts.Get(troop);
@@ -102,10 +88,10 @@ public class ForceCompositionAi
         }
         
         var proc = ReinforceUnitProcedure.Construct(regime);
-        var reserve = regime.Military.TroopReserve;
+        var reserve = regime.Store;
         foreach (var unit in regime.GetUnits(key.Data))
         {
-            var template = unit.Template.Entity(key.Data);
+            var template = unit.Template.Get(key.Data);
             foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
             {
                 if (needCounts.ContainsKey(troop) == false) continue;
@@ -121,37 +107,5 @@ public class ForceCompositionAi
             }
         }
         key.SendMessage(proc);
-    }
-
-    private void BuildUnits(LogicWriteKey key, Regime regime)
-    {
-        var pool = new BudgetPool(
-            IdCount<Item>.Construct(),
-            IdCount<IModel>.Construct<IModel, Troop>(regime.Military.TroopReserve), 
-            0f);
-        DoPriorities(pool, key, regime);
-    }
-    
-    private void DoPriorities(BudgetPool pool, LogicWriteKey key,
-         Regime regime)
-    {
-        foreach (var bp in Priorities)
-        {
-            bp.SetWeight(key.Data, regime);
-        }
-        var totalPriority = Priorities.Sum(p => p.Weight);
-        if (totalPriority <= 0f) throw new Exception();
-        foreach (var priority in Priorities)
-        {
-            priority.Wipe();
-            var proportion = priority.Weight / totalPriority;
-            priority.SetWishlist(regime, key.Data, pool, proportion);
-            priority.FirstRound(regime, proportion, pool, key);
-        }
-        foreach (var priority in Priorities)
-        {
-            var proportion = priority.Weight / totalPriority;
-            priority.SecondRound(regime, proportion, pool, key, 3f);
-        }
     }
 }

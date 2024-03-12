@@ -14,11 +14,4 @@ public class ConstructionCap : Flow
                   + r.GetPopulation(d);
         return val / 10f;
     }
-
-    public override float GetConsumption(Regime r, Data d)
-    {
-        return d.Infrastructure.CurrentConstruction.ByPoly
-            .Where(kvp => d.Get<MapPolygon>(kvp.Key).OwnerRegime.RefId == r.Id)
-            .Sum(kvp => kvp.Value.Sum(c => c.Model.Model(d).ConstructionCapPerTick));
-    }
 }

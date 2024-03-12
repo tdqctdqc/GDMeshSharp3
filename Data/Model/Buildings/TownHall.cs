@@ -16,12 +16,11 @@ public class TownHall : BuildingModel
                 })
             },
             new MakeableAttribute(
-                IdCount<Item>.Construct(
-                    new Dictionary<Item, float>
-                    {
-                        {items.BuildingMaterial, 500}
-                    }), 
-                0f))
+                IdCount<IModel>.Construct(
+                    new Dictionary<IModel, float> {}),
+                IdCount<IModel>.Construct(
+                    new Dictionary<IModel, float> {})
+                ))
     {
     }
 

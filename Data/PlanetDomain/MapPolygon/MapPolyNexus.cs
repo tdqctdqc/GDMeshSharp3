@@ -74,16 +74,16 @@ public class MapPolyNexus : Entity
 
     public MapPolygonEdge GetEdgeWith(MapPolyNexus n, Data data)
     {
-        return IncidentEdges.Items(data).First(e => e.HiNexus.Entity(data) == n
-                                    || e.LoNexus.Entity(data) == n);
+        return IncidentEdges.Items(data).First(e => e.HiNexus.Get(data) == n
+                                    || e.LoNexus.Get(data) == n);
     }
 
     public IEnumerable<MapPolyNexus> GetNeighbors(Data data)
     {
         return IncidentEdges.Items(data).Select(e =>
         {
-            if (e.HiNexus.Entity(data) == this) return e.LoNexus.Entity(data);
-            return e.HiNexus.Entity(data);
+            if (e.HiNexus.Get(data) == this) return e.LoNexus.Get(data);
+            return e.HiNexus.Get(data);
         });
     }
     

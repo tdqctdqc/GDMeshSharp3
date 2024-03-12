@@ -12,9 +12,9 @@ public class SetUnitGroupProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        var oldGroup = key.Data.Military.UnitAux.UnitByGroup[Unit.Entity(key.Data)];
-        UnitGroup.ChangeUnitGroup(Unit.Entity(key.Data),
-            oldGroup, NewGroup.Entity(key.Data), key);
+        var oldGroup = key.Data.Military.UnitAux.UnitByGroup[Unit.Get(key.Data)];
+        UnitGroup.ChangeUnitGroup(Unit.Get(key.Data),
+            oldGroup, NewGroup.Get(key.Data), key);
     }
 
     public override bool Valid(Data data, out string error)

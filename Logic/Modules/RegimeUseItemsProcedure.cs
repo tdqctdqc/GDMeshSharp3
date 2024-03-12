@@ -20,7 +20,7 @@ public class RegimeUseItemsProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        var regimeItems = Regime.Entity(key.Data).Items;
+        var regimeItems = Regime.Get(key.Data).Store;
         foreach (var kvp in UsageByItemId)
         {
             regimeItems.Remove(kvp.Key, kvp.Value);

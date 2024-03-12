@@ -76,7 +76,7 @@ public class DiplomacyAi
         var targetNeighborPolys = targetPolys
             .Where(p => p.Neighbors.Items(data)
                 .Any(np => np.OwnerRegime.Fulfilled()
-                           && np.OwnerRegime.Entity(data).GetAlliance(data) == alliance)).Count();
+                           && np.OwnerRegime.Get(data).GetAlliance(data) == alliance)).Count();
         var pCount = targetPolys.Count();
         if (pCount == 0) return 0f;
         return targetNeighborPolys / pCount;
@@ -85,7 +85,7 @@ public class DiplomacyAi
         RegimeTurnOrders orders, float friendPower,
         float rivalPower, LogicWriteKey key)
     {
-        var regime = orders.Regime.Entity(key.Data);
+        var regime = orders.Regime.Get(key.Data);
         if (regime.IsMajor == false) return;
         
         var friendPowerToFill = rivalPower * DesiredFriendToRivalPowerRatio - friendPower;
@@ -95,7 +95,7 @@ public class DiplomacyAi
             .Where(a =>
             {
                 if (a == _alliance) return false;
-                if (a.Leader.Entity(key.Data).IsMajor) return false;
+                if (a.Leader.Get(key.Data).IsMajor) return false;
                 return _alliance.IsRivals(a, key.Data) == false;
             })
             .ToHashSet();

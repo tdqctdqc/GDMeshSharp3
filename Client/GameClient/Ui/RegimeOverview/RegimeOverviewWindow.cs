@@ -7,13 +7,12 @@ using Ui.RegimeOverview;
 public partial class RegimeOverviewWindow : TabWindow
 {
     private GeneralTab _general;
-    private ConstructionTab _construction;
     private PeepsTab _peeps;
     private ItemsTab _items;
     private FoodTab _ag;
     private BudgetTab _budget;
     private FlowsTab _flows;
-    private ManufacturingTab _manuf;
+    private MakingTab _manuf;
     private MilitaryTab _troop;
     public RegimeOverviewWindow()
     {
@@ -21,9 +20,6 @@ public partial class RegimeOverviewWindow : TabWindow
 
         _general = new GeneralTab();
         AddTab(_general);
-        
-        _construction = new ConstructionTab();
-        AddTab(_construction);
 
         _peeps = new PeepsTab();
         AddTab(_peeps);
@@ -40,7 +36,7 @@ public partial class RegimeOverviewWindow : TabWindow
         _flows = new FlowsTab();
         AddTab(_flows);
 
-        _manuf = new ManufacturingTab();
+        _manuf = new MakingTab();
         AddTab(_manuf);
 
         _troop = new MilitaryTab();
@@ -49,7 +45,6 @@ public partial class RegimeOverviewWindow : TabWindow
     public void Setup(Regime regime, Client client)
     {
         _general.Setup(regime, client);
-        _construction.Setup(regime, client);
         _peeps.Setup(regime, client);
         _items.Setup(regime, client);
         _ag.Setup(regime, client);

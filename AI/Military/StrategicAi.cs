@@ -39,7 +39,7 @@ public class StrategicAi
                     p =>
                     {
                         if (p.Controller.IsEmpty()) return false;
-                        var pAlliance = p.Controller.Entity(_data).GetAlliance(_data);
+                        var pAlliance = p.Controller.Get(_data).GetAlliance(_data);
                         return alliance.IsRivals(pAlliance, _data);
                     }, _data)
                 .Select(fs => new Frontline(fs, Alliance))

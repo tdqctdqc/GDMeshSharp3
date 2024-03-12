@@ -30,7 +30,7 @@ public partial class ItemBar : HBoxContainer
             () =>
             {
                 var r = client.GetComponent<MapGraphics>().SpectatingRegime;
-                return r != null ? r.Items.Get(sr).ToString() : 0.ToString();
+                return r != null ? r.Store.Get(sr).ToString() : 0.ToString();
             }, 
             10f,
             Game.I.Client.Notices.ChangedSpectatingRegime.Blank,

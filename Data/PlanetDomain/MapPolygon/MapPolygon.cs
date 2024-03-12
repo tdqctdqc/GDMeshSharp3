@@ -18,7 +18,6 @@ public class MapPolygon : Entity
     public ERef<Regime> OwnerRegime { get; protected set; }
     public ERef<Regime> OccupierRegime { get; private set; }
     public bool IsLand { get; protected set; }
-    public PolyBuildingSlots PolyBuildingSlots { get; private set; }
     public PolyFoodProd PolyFoodProd { get; private set; }
     [SerializationConstructor] private MapPolygon(int id, 
         Vector2 center, ERefSet<MapPolygon> neighbors, 
@@ -26,7 +25,6 @@ public class MapPolygon : Entity
         float moisture, ERef<Regime> ownerRegime, 
         ERef<Regime> occupierRegime,
         bool isLand,
-        PolyBuildingSlots polyBuildingSlots, 
         PolyFoodProd polyFoodProd,
         Vector2[] boundaryPoints) 
             : base(id)
@@ -39,7 +37,6 @@ public class MapPolygon : Entity
         OwnerRegime = ownerRegime;
         OccupierRegime = occupierRegime;
         IsLand = isLand;
-        PolyBuildingSlots = polyBuildingSlots;
         PolyFoodProd = polyFoodProd;
         BoundaryPoints = boundaryPoints;
     }
@@ -68,7 +65,6 @@ public class MapPolygon : Entity
             new ERef<Regime>(-1),
             new ERef<Regime>(-1),
             true,
-            PolyBuildingSlots.Construct(),
             PolyFoodProd.Construct(),
             boundaryPoints
         );
@@ -121,21 +117,17 @@ public class MapPolygon : Entity
     }
     public void SetOwnerRegime(Regime r, StrongWriteKey key)
     {
-        var old = OwnerRegime.Entity(key.Data);
+        var old = OwnerRegime.Get(key.Data);
         OwnerRegime = r.MakeRef();
         key.Data.Planet.PolygonAux.ChangedOwnerRegime.Invoke(this, r, old);
     }
     public void SetOccupierRegime(Regime r, StrongWriteKey key)
     {
-        var old = OccupierRegime.Entity(key.Data);
+        var old = OccupierRegime.Get(key.Data);
         OccupierRegime = r.MakeRef();
         key.Data.Planet.PolygonAux.ChangedOccupierRegime.Invoke(this, r, old);
     }
 
-    public void SetTerrainStats(GenWriteKey key)
-    {
-        PolyBuildingSlots.SetSlotNumbers(this, key);
-    }
     public void SetIsLand(bool isLand, GenWriteKey key)
     {
         IsLand = isLand;

@@ -47,7 +47,7 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
         return Chunk.Polys.Where(p => p.HasSettlement(d))
             .Select(p =>
             {
-                var urban = p.GetCells(d).Where(c => c.Landform.ModelId == d.Models.Landforms.Urban.Id)
+                var urban = p.GetCells(d).Where(c => c.Landform.RefId == d.Models.Landforms.Urban.Id)
                     .FirstOrDefault();
                 Vector2 pos;
                 if(urban is not null)

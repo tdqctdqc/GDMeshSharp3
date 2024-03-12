@@ -47,8 +47,8 @@ public class RiverCellGenerator
                 var c = (LandCell)cells[k.X];
                 var n = (LandCell)cells[k.Y];
                 
-                var poly = c.Polygon.Entity(key.Data);
-                var oPoly = n.Polygon.Entity(key.Data);
+                var poly = c.Polygon.Get(key.Data);
+                var oPoly = n.Polygon.Get(key.Data);
                 var polyEdge = poly.GetEdge(oPoly, key.Data);
                 
                 var edge = c.GetEdgeRelWith(n);
@@ -104,10 +104,10 @@ public class RiverCellGenerator
         Dictionary<MapPolyNexus, float> nexusRiverWidths,
         GenWriteKey key)
     {
-        var hiPoly = e.HighPoly.Entity(key.Data);
-        var loPoly = e.LowPoly.Entity(key.Data);
-        var hiNexus = e.HiNexus.Entity(key.Data);
-        var loNexus = e.LoNexus.Entity(key.Data);
+        var hiPoly = e.HighPoly.Get(key.Data);
+        var loPoly = e.LowPoly.Get(key.Data);
+        var hiNexus = e.HiNexus.Get(key.Data);
+        var loNexus = e.LoNexus.Get(key.Data);
         var hiWidth = nexusRiverWidths[hiNexus];
         var loWidth = nexusRiverWidths[loNexus];
 

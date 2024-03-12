@@ -12,7 +12,7 @@ public class SetUnitOrderProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        Group.Entity(key.Data).SetOrder(GroupOrder, key);
+        Group.Get(key.Data).SetOrder(GroupOrder, key);
     }
 
     public override bool Valid(Data data, out string error)

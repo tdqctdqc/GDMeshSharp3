@@ -9,14 +9,16 @@ public class Barracks : BuildingModel
             500, 
             new List<BuildingModelComponent>
             {
-                new ItemProd(items.Recruits, 100),
-                new FlowProd(1000, flows.MilitaryCap)
+                new BuildingProd(items.Recruits, 100),
+                new BuildingProd(flows.MilitaryCap, 1000)
             }, 
             new MakeableAttribute(
-                IdCount<Item>.Construct(new Dictionary<Item, float>
+                IdCount<IModel>.Construct(new Dictionary<IModel, float>
                 {
-                    { items.BuildingMaterial, 500 }
-                }), 0f)
+                }),
+                IdCount<IModel>.Construct(new Dictionary<IModel, float>
+                {
+                }))
         )
     {
     }

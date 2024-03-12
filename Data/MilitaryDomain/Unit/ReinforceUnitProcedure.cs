@@ -20,8 +20,8 @@ public class ReinforceUnitProcedure : Procedure
         ReinforceCounts { get; private set; }
     public override void Enact(ProcedureWriteKey key)
     {
-        var regime = Regime.Entity(key.Data);
-        var reserve = regime.Military.TroopReserve;
+        var regime = Regime.Get(key.Data);
+        var reserve = regime.Store;
         foreach (var (unitId, troopId, count) in ReinforceCounts)
         {
             if (key.Data.HasEntity(unitId) == false) continue;

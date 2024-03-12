@@ -1,20 +1,16 @@
-
+using System.Linq;
 public class BudgetPool
 {
-    public IdCount<Item> OrigItems { get; private set; }
-    public IdCount<Item> AvailItems { get; private set; }
-    public IdCount<IModel> OrigModels { get; private set; }
     public IdCount<IModel> AvailModels { get; private set; }
-    public float OrigLabor { get; set; }
-    public float AvailLabor { get; set; }
-    public BudgetPool(IdCount<Item> items, 
-        IdCount<IModel> models, float origLabor)
+
+    public static BudgetPool ConstructForRegime(Regime r, Data d)
     {
-        OrigItems = IdCount<Item>.Construct(items);
-        AvailItems = IdCount<Item>.Construct(items);
-        OrigModels = IdCount<IModel>.Construct(models);
+        var models = IdCount<IModel>.Construct();
+        models.Add(r.Store);
+        return new BudgetPool(models);
+    }
+    public BudgetPool(IdCount<IModel> models)
+    {
         AvailModels = IdCount<IModel>.Construct(models);
-        OrigLabor = origLabor;
-        AvailLabor = origLabor;
     }
 }

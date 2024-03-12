@@ -115,7 +115,7 @@ public class MoistureGenerator : Generator
             var edges = lm.Polys
                 .SelectMany(p => p.Neighbors.Items(Data).Select(n => p.GetEdge(n, Data)))
                 .Distinct()
-                .Where(e => e.HighPoly.Entity(Data).IsLand && e.LowPoly.Entity(Data).IsLand);
+                .Where(e => e.HighPoly.Get(Data).IsLand && e.LowPoly.Get(Data).IsLand);
             var coastEdges = edges.Where(e => e.IsLandToSeaEdge(Data));
             var covered = coastEdges.ToHashSet();
             var curr = coastEdges.ToHashSet();
@@ -126,7 +126,7 @@ public class MoistureGenerator : Generator
                 var adjs = curr.SelectMany(c => c.GetIncidentEdges(Data))
                     .Distinct()
                     .Where(e => covered.Contains(e) == false 
-                                && e.HighPoly.Entity(Data).IsLand && e.LowPoly.Entity(Data).IsLand);
+                                && e.HighPoly.Get(Data).IsLand && e.LowPoly.Get(Data).IsLand);
                 curr = adjs.ToHashSet();
                 if (adjs.Count() == 0) break;
                 foreach (var adj in adjs)

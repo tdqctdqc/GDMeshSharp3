@@ -60,7 +60,7 @@ public abstract class MoveType : IModel
         Cell cell, Data d)
     {
         if (cell is LandCell l == false) return true;
-        var controllerAlliance = cell.Controller.Entity(d).GetAlliance(d);
+        var controllerAlliance = cell.Controller.Get(d).GetAlliance(d);
         return moverAlliance == controllerAlliance;
     }
 }

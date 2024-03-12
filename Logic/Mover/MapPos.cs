@@ -25,12 +25,12 @@ public class MapPos
         var cell = PlanetDomainExt.GetPolyCell(polyCell, key.Data);
         if (moveDat.MoveType.Passable(cell, moveDat.Alliance, key.Data) == false)
         {
-            var moverAllianceLeader = moveDat.Alliance.Leader.Entity(key.Data);
-            var cellAllianceLeader = cell.Controller.Entity(key.Data).GetAlliance(key.Data).Leader.Entity(key.Data);
+            var moverAllianceLeader = moveDat.Alliance.Leader.Get(key.Data);
+            var cellAllianceLeader = cell.Controller.Get(key.Data).GetAlliance(key.Data).Leader.Get(key.Data);
             throw new Exception($"cell type {cell.GetType().Name}" +
                                 $"\nmove type {moveDat.MoveType.Name}" +
-                                $"\nlandform {cell.Landform.Model(key.Data).Name}" +
-                                $"\nvegetation {cell.Vegetation.Model(key.Data).Name}" +
+                                $"\nlandform {cell.Landform.Get(key.Data).Name}" +
+                                $"\nvegetation {cell.Vegetation.Get(key.Data).Name}" +
                                 $"\nmover alliance {moverAllianceLeader.Name} {moverAllianceLeader.Id}" +
                                 $"\ncell alliance {cellAllianceLeader.Name} {cellAllianceLeader.Id}");
         }

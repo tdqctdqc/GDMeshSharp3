@@ -12,7 +12,7 @@ public class UnitGroup : Entity
     public UnitGroupOrder GroupOrder { get; private set; }
     public Color Color { get; private set; }
     public MoveType MoveType(Data d) => Units.Items(d)
-        .FirstOrDefault()?.Template.Entity(d).MoveType.Model(d);
+        .FirstOrDefault()?.Template.Get(d).MoveType.Get(d);
     public static UnitGroup Create(Regime r, IEnumerable<int> unitIds, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();

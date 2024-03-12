@@ -15,12 +15,12 @@ public class SetPlayerRegimeProcedure : Procedure
     public override void Enact(ProcedureWriteKey key)
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[PlayerGuid];
-        player.SetRegime(Regime.Entity(key.Data), key);
+        player.SetRegime(Regime.Get(key.Data), key);
     }
 
     public override bool Valid(Data data, out string error)
     {
-        if (Regime.Entity(data).IsPlayerRegime(data))
+        if (Regime.Get(data).IsPlayerRegime(data))
         {
             error = "Regime already has player";
             return false;

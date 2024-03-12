@@ -10,7 +10,6 @@ public class TurnEndState : TurnState
         {
             new DoTurnOrderProceduresModule(),
             new ProduceConstructModule(),
-            new CleanUpFinishedConstructionsModule(),
             new FoodAndPopGrowthModule(),
             new FinanceModule(),
             new TradeModule(),

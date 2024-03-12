@@ -28,7 +28,7 @@ public partial class UnitGraphic : Node2D
     
     public UnitGraphic(Unit unit, Data data)
     {
-        var regime = unit.Regime.Entity(data);
+        var regime = unit.Regime.Get(data);
         
         _borderColor = new MeshInstance2D();
         _borderColor.Mesh = _border;
@@ -43,7 +43,7 @@ public partial class UnitGraphic : Node2D
         _regimeColor.Mesh = _regime;
         AddChild(_regimeColor);
 
-        _flagRect = regime.Template.Model(data).Flag.
+        _flagRect = regime.Template.Get(data).Flag.
             GetTextureRect(_iconSize * .25f);
         _flagRect.Position = new Vector2(0f, _iconSize * .1f);
         AddChild(_flagRect);
@@ -70,7 +70,7 @@ public partial class UnitGraphic : Node2D
         var healthRatio = Mathf.Clamp(health.X / health.Y, 0f, 1f);
         _healthMesh.Modulate = Colors.Red.Lerp(Colors.Green, healthRatio);
 
-        _regimeColor.Modulate = unit.Regime.Entity(data).GetUnitColor();
+        _regimeColor.Modulate = unit.Regime.Get(data).GetUnitColor();
         
         if (unit.GetGroup(data) is UnitGroup g)
         {

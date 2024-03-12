@@ -16,9 +16,9 @@ public partial class ControllerRegimePolyCellFill
 
     public override Color GetColor(Cell cell, Data d)
     {
-        var r = cell.Controller.Entity(d);
+        var r = cell.Controller.Get(d);
         if(r == null) return Colors.Transparent;
-        return cell.Controller.Entity(d).GetMapColor();
+        return cell.Controller.Get(d).GetMapColor();
     }
 
     public override void RegisterForRedraws(Data d)

@@ -32,22 +32,22 @@ public partial class ConstructBuildingsPanel : ScrollPanel
     {
         _info.ClearChildren();
         var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer
-            .Regime.Entity(d);
+            .Regime.Get(d);
         if (playerRegime == null) return;
         
         _info.CreateLabelAsChild("Costs");
-        if (model.Makeable.IndustrialCost > 0f)
+        foreach (var (item, count) in model.Makeable.BuildCosts.GetEnumerableModel(d))
         {
-            var industrial = d.Models.Flows.IndustrialPower;
-            industrial.Icon
-                .GetLabeledIcon<HBoxContainer>(
-                    $"{playerRegime.Flows.Flows[industrial.Id].Net()} / {model.Makeable.IndustrialCost}",
-                    30f);
-        }
-        foreach (var (item, count) in model.Makeable.ItemCosts.GetEnumerableModel(d))
-        {
-            _info.AddChild(item.Icon.GetLabeledIcon<HBoxContainer>(
-                $"{playerRegime.Items.Get(item)} / {count}", 30f));
+            if (item is IIconed iconed)
+            {
+                _info.AddChild(iconed.Icon.GetLabeledIcon<HBoxContainer>(
+                    $"{playerRegime.Store.Get(item)} / {count}", 30f));
+            }
+            else
+            {
+                _info.AddChild(NodeExt.CreateLabel(
+                    $"{playerRegime.Store.Get(item)} / {count}"));
+            }
         }
     }
 }

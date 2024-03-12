@@ -11,24 +11,23 @@ public class Regime : Entity
     public ModelRef<RegimeTemplate> Template { get; private set; }
     public Color PrimaryColor { get; protected set; }
     public Color SecondaryColor { get; protected set; }
-    public IdCount<Item> Items { get; protected set; }
-    public RegimeFlows Flows { get; private set; }
+    public IdCount<IModel> Store { get; protected set; }
     public RegimeHistory History { get; private set; }
     public string Name { get; protected set; }
     public RegimeFinance Finance { get; private set; }
     public bool IsMajor { get; private set; }
-    public ManufacturingQueue ManufacturingQueue { get; private set; }
+    public MakeQueue MakeQueue { get; private set; }
     public RegimeMilitary Military { get; private set; }
 
     [SerializationConstructor] private Regime(int id, string name, 
         Color primaryColor, Color secondaryColor, 
         ERef<MapPolygon> capital,
-        IdCount<Item> items, RegimeHistory history, ModelRef<Culture> culture,
+        IdCount<IModel> store, RegimeHistory history, ModelRef<Culture> culture,
         ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, 
-        RegimeFlows flows, ManufacturingQueue manufacturingQueue,
+        MakeQueue makeQueue,
         RegimeMilitary military) : base(id)
     {
-        Items = items;
+        Store = store;
         PrimaryColor = primaryColor;
         SecondaryColor = secondaryColor;
         Name = name;
@@ -38,8 +37,7 @@ public class Regime : Entity
         Template = template;
         Finance = finance;
         IsMajor = isMajor;
-        Flows = flows;
-        ManufacturingQueue = manufacturingQueue;
+        MakeQueue = makeQueue;
         Military = military;
     }
 
@@ -47,24 +45,19 @@ public class Regime : Entity
         RegimeTemplate regimeTemplate, bool isMajor, 
         ICreateWriteKey key)
     {
-        var items = IdCount<Item>.Construct();
-        var flows = new RegimeFlows(new Dictionary<int, FlowData>());
-        flows.AddFlowIn(key.Data.Models.Flows.Income, 0f);
-        flows.AddFlowIn(key.Data.Models.Flows.ConstructionCap, 0f);
-        flows.AddFlowIn(key.Data.Models.Flows.IndustrialPower, 0f);
+        var store = IdCount<IModel>.Construct();
         var id = key.Data.IdDispenser.TakeId();
         var r = new Regime(id, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
             new ERef<MapPolygon>(seed.Id),
-            items,
+            store,
             RegimeHistory.Construct(key.Data), 
             regimeTemplate.Culture.MakeRef(),
             regimeTemplate.MakeRef(),
             RegimeFinance.Construct(),
             isMajor,
-            flows,
-            ManufacturingQueue.Construct(),
+            MakeQueue.Construct(),
             RegimeMilitary.Construct(id, key.Data)
         );
         key.Create(r);
@@ -78,11 +71,6 @@ public class Regime : Entity
         IsMajor = isMajor;
     }
 
-    public void SetFlows(RegimeFlows flows, ProcedureWriteKey key)
-    {
-        Flows = flows;
-    }
-    public override string ToString() => Name;
     public override void CleanUp(StrongWriteKey key)
     {
         var alliance = this.GetAlliance(key.Data);

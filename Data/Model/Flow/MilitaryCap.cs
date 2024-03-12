@@ -11,12 +11,4 @@ public class MilitaryCap : Flow
     {
         return 1000f;
     }
-
-    public override float GetConsumption(Regime r, Data d)
-    {
-        return r.GetUnits(d)
-            .Sum(u => u.Template.Entity(d)
-                .TroopCounts.GetEnumerableModel(d)
-                .Sum(v => v.Key.MilitaryCapCost));
-    }
 }

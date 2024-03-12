@@ -29,9 +29,9 @@ public partial class SpectatingRegimeInfoBar : HBoxContainer
 
     private void ChangedSpectator(Regime spectating)
     {
-        _flag.Texture = spectating.Template.Model(_data).Flag.Texture;
+        _flag.Texture = spectating.Template.Get(_data).Flag.Texture;
         var localPlayerRegime = _data.BaseDomain.PlayerAux.LocalPlayer.Regime
-            .Entity(_data);
+            .Get(_data);
         if (localPlayerRegime == spectating)
         {
             _name.Text = spectating.Name;

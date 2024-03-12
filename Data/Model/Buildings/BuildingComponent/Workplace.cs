@@ -11,11 +11,10 @@ public class Workplace : BuildingModelComponent
         JobLaborReqs = jobLaborReqs;
     }
 
-    public override void Work(ProduceConstructProcedure proc, MapPolygon poly, 
-        float staffingRatio, Data data)
-    {
-        // proc.EmploymentReports
-    }
 
     public int TotalLaborReq() => JobLaborReqs.Sum(kvp => kvp.Value);
+    public override void Work(Cell cell, float staffingRatio, ProcedureWriteKey key)
+    {
+        
+    }
 }

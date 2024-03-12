@@ -29,12 +29,12 @@ public partial class BuildingIcons
 
     protected override BuildingModel GetModel(MapBuilding t, Data d)
     {
-        return t.Model.Model(d);
+        return t.Model.Get(d);
     }
 
     protected override Vector2 GetWorldPos(MapBuilding t, Data d)
     {
-        return PlanetDomainExt.GetPolyCell(t.PolyCellId, d).GetCenter();
+        return t.Cell.Get(d).GetCenter();
     }
 
     public override void RegisterForRedraws(Data d)

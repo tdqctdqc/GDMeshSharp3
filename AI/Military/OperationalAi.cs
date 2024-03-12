@@ -27,13 +27,13 @@ public class OperationalAi
             var rival = frontline.Faces
                 .Select(f => f.GetForeign(_data))
                 .Distinct()
-                .Where(f => f.Controller.Entity(_data)
+                .Where(f => f.Controller.Get(_data)
                         .GetAlliance(_data).IsRivals(Alliance, _data))
                 .ToHashSet();
             rival = rival.Union(rival.SelectMany(r => 
                 r.GetNeighbors(_data)
                     .Where(f => f.Controller.Fulfilled()
-                        && f.Controller.Entity(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
+                        && f.Controller.Get(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
                 .ToHashSet();
             if (rival.Count == 0)
             {

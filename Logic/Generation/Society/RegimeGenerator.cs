@@ -29,7 +29,7 @@ public class RegimeGenerator : Generator
         
         foreach (var landCell in landCells)
         {
-            var r = landCell.Polygon.Entity(_data).OccupierRegime.Entity(_data);
+            var r = landCell.Polygon.Get(_data).OccupierRegime.Get(_data);
             landCell.SetController(r, key);
         }
         

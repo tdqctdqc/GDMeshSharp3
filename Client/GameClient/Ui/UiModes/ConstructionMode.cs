@@ -31,24 +31,24 @@ public class ConstructionMode : UiMode
         _mesh.Texture = Setting.Value.Icon.Texture;
         var model = Setting.Value;
         var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
-        var localPlayerRegime = localPlayer.Regime.Entity(_client.Data);
+        var localPlayerRegime = localPlayer.Regime.Get(_client.Data);
         if (localPlayerRegime == null) return;
-        var proc = StartConstructionProcedure
-            .Construct(model.MakeRef(),
-                _mouseOver.MouseOverCell.Id,
-                localPlayerRegime.MakeRef(),
-                _client.Data);
-        
-        if (proc.Valid(_client.Data, out string error))
-        {
-            _mesh.Modulate = Colors.White;
-            _errorLabel.Text = "";
-        }
-        else
-        {
-            _mesh.Modulate = new Color(Colors.White, .5f);
-            _errorLabel.Text = error;
-        }
+        // var proc = StartConstructionProcedure
+        //     .Construct(model.MakeRef(),
+        //         _mouseOver.MouseOverCell.Id,
+        //         localPlayerRegime.MakeRef(),
+        //         _client.Data);
+        //
+        // if (proc.Valid(_client.Data, out string error))
+        // {
+        //     _mesh.Modulate = Colors.White;
+        //     _errorLabel.Text = "";
+        // }
+        // else
+        // {
+        //     _mesh.Modulate = new Color(Colors.White, .5f);
+        //     _errorLabel.Text = error;
+        // }
         
         _client.GetComponent<MapGraphics>().Segmenter
             .AddElement(_mesh, _mouseOver.MouseOverCell.GetCenter());
@@ -67,16 +67,16 @@ public class ConstructionMode : UiMode
     {
         var model = Setting.Value;
         var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
-        var localPlayerRegime = localPlayer.Regime.Entity(_client.Data);
+        var localPlayerRegime = localPlayer.Regime.Get(_client.Data);
         if (localPlayerRegime is not null)
         {
-            var proc = StartConstructionProcedure
-                .Construct(model.MakeRef(),
-                    _mouseOver.MouseOverCell.Id,
-                    localPlayerRegime.MakeRef(),
-                    _client.Data);
-            var com = new DoProcedureCommand(proc, localPlayer.PlayerGuid);
-            _client.HandleCommand(com);
+            // var proc = StartConstructionProcedure
+            //     .Construct(model.MakeRef(),
+            //         _mouseOver.MouseOverCell.Id,
+            //         localPlayerRegime.MakeRef(),
+            //         _client.Data);
+            // var com = new DoProcedureCommand(proc, localPlayer.PlayerGuid);
+            // _client.HandleCommand(com);
         }
     }
     public override void Enter()

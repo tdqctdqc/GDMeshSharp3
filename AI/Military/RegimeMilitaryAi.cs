@@ -15,7 +15,6 @@ public class RegimeMilitaryAi
     }
     public void CalculateMajor(LogicWriteKey key, MajorTurnOrders orders)
     {
-        var reserve = IdCount<Troop>.Construct(_regime.Military.TroopReserve);
         ForceComposition.Calculate(_regime, key);
     }
 

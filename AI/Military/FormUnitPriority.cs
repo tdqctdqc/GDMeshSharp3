@@ -4,66 +4,47 @@ using System.Linq;
 using Godot;
 using Google.OrTools.LinearSolver;
 
-public class FormUnitPriority : SolverPriority<UnitTemplate>
+public class FormUnitPriority 
 {
     public FormUnitPriority(string name, 
         Func<Data, IEnumerable<UnitTemplate>> getAll, 
         Func<Data, Regime, float> getWeight) 
-        : base(name, getAll, getWeight)
     {
     }
 
-    protected override float Utility(UnitTemplate t)
+    protected float Utility(UnitTemplate t)
     {
         return 1f;
     }
 
-    protected override bool Relevant(UnitTemplate t, Data d)
+    protected bool Relevant(UnitTemplate t, Data d)
     {
         return true;
     }
 
-    protected override void SetCalcData(Regime r, Data d)
+    protected void SetCalcData(Regime r, Data d)
     {
         
     }
 
-    protected override void SetConstraints(Solver solver, Regime r, 
-        Dictionary<UnitTemplate, Variable> projVars, Data data)
+    protected void Complete(
+        BudgetPool pool,
+        Regime r, 
+        Dictionary<UnitTemplate, int> toBuild, 
+        LogicWriteKey key)
     {
-        solver.SetNumConstraints<UnitTemplate, Troop>(
-            data.Models.GetModels<Troop>().Values.ToList(),
-            t => t.TroopCounts.GetEnumerableModel(data)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
-            data, r.Military.TroopReserve, projVars);
-    }
-
-    protected override void SetWishlistConstraints(Solver solver, Regime r, 
-        Dictionary<UnitTemplate, Variable> projVars, Data data, 
-        BudgetPool pool, float proportion)
-    {
-        solver.SetNumConstraints<UnitTemplate, Troop>(
-            data.Models.GetModels<Troop>().Values.ToList(),
-            t => t.TroopCounts.GetEnumerableModel(data)
-                .ToDictionary(kvp => kvp.Key, kvp => kvp.Value),
-            data, r.Military.TroopReserve, projVars);
-    }
-
-    protected override void Complete(Regime regime, 
-        Dictionary<UnitTemplate, int> toBuild, LogicWriteKey key)
-    {
-        var useTroops = RegimeUseTroopsProcedure.Construct(regime);
-        var capitalPoly = regime.Capital.Entity(key.Data);
+        var useTroops = RegimeUseTroopsProcedure.Construct(r);
+        var capitalPoly = r.Capital.Get(key.Data);
         var pos = (Vector2I)capitalPoly.Center;
         var cell = 
             capitalPoly.GetCells(key.Data).First(c => c is LandCell);
-        var deployPolyCell = regime.GetPolys(key.Data)
+        var deployPolyCell = r.GetPolys(key.Data)
             .First(p => p.GetCells(key.Data).Any(goodDeployCell))
             .GetCells(key.Data).Where(goodDeployCell).First();
 
         bool goodDeployCell(Cell c)
         {
-            return c.Controller.RefId == regime.Id;
+            return c.Controller.RefId == r.Id;
         }
         
         var unitPos = new MapPos(deployPolyCell.Id, (-1, 0f));
@@ -73,8 +54,7 @@ public class FormUnitPriority : SolverPriority<UnitTemplate>
             useTroops.AddTroopCosts(template, num, key.Data);
             for (var i = 0; i < num; i++)
             {
-                Unit.Create(template, regime, 
-                    unitPos.Copy(), key);
+                Unit.Create(template, r, unitPos.Copy(), key);
             }
         }
     }

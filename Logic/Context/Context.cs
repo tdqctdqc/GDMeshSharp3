@@ -35,7 +35,7 @@ public class Context
         ControlledAreas.Clear();
         var landCells = data.Planet.PolygonAux.PolyCells
             .Cells.Values.OfType<LandCell>().ToHashSet();
-        var unions = landCells.SortInto(c => c.Controller.Entity(data));
+        var unions = landCells.SortInto(c => c.Controller.Get(data));
             
         foreach (var union in unions)
         {

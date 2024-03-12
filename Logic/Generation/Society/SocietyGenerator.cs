@@ -159,16 +159,19 @@ public class SocietyGenerator : Generator
     {
             
         var t = _data.Models.GetManager<BuildingModel>().Models
-            .Where(kvp => kvp.Value.GetComponent<ExtractionProd>() != null);
-        var extractBuildings = new System.Collections.Generic.Dictionary<Item, List<BuildingModel>>();
+            .Where(kvp => kvp.Value.Components.OfType<BuildingProd>()
+                .Where(prod => prod.Produced is NaturalResource).Count() > 0);
+        var extractBuildings = new Dictionary<IModel, List<BuildingModel>>();
 
         foreach (var kvp in t)
         {
             var model = kvp.Value;
-            var comps = model.Components.OfType<ExtractionProd>();
+            var comps = model.Components
+                .OfType<BuildingProd>()
+                .Where(prod => prod.Produced is NaturalResource);
             foreach (var extractionProd in comps)
             {
-                extractBuildings.AddOrUpdate(extractionProd.ProdItem, model);
+                extractBuildings.AddOrUpdate(extractionProd.Produced, model);
             }
         }
 
@@ -176,19 +179,17 @@ public class SocietyGenerator : Generator
         
         foreach (var p in r.GetPolys(_data))
         {
-            if (p.GetResourceDeposits(_data) is IEnumerable<ResourceDeposit> rds == false)
+            if (p.GetResourceDeposits(_data) 
+                    is IEnumerable<ResourceDeposit> rds == false)
             {
                 continue;
             }
-            var extractSlots = p.PolyBuildingSlots[BuildingType.Extraction];
             polyBuildings.Add(p, new List<BuildingModel>());
 
             foreach (var rd in rds)
             {
-                if (extractSlots < 1) break;
-                if (extractBuildings.ContainsKey(rd.Item.Model(_data)) == false) continue;
-                extractSlots--;
-                var b = extractBuildings[rd.Item.Model(_data)];
+                if (extractBuildings.ContainsKey(rd.Item.Get(_data)) == false) continue;
+                var b = extractBuildings[rd.Item.Get(_data)];
                 polyBuildings[p].Add(b.First());
             }
         }
@@ -197,11 +198,18 @@ public class SocietyGenerator : Generator
         foreach (var kvp in polyBuildings)
         {
             var poly = kvp.Key;
-            foreach (var model in kvp.Value)
+            var cells = poly.GetCells(_key.Data)
+                .Where(c => c.HasBuilding(_key.Data) == false)
+                .ToList();
+            
+            var limit = Mathf.Min(cells.Count(), kvp.Value.Count());
+            for (var i = 0; i < limit; i++)
             {
-                var w = model.GetComponent<Workplace>();
-                laborDemand += w.JobLaborReqs.Sum(kvp2 => kvp2.Value);
-                MapBuilding.CreateGen(poly, model, _key);
+                var model = kvp.Value[i];
+                var workplace = model.GetComponent<Workplace>();
+                var cell = cells[i];
+                laborDemand += workplace.JobLaborReqs.Sum(kvp2 => kvp2.Value);
+                MapBuilding.CreateGen(cell, model, _key);
             }
         }
 
@@ -210,9 +218,18 @@ public class SocietyGenerator : Generator
     private float GenerateTownHalls(Regime r, HashSet<MapPolygon> settlementPolys)
     {
         var townHall = _data.Models.Buildings.TownHall;
+        
+        
+        
         foreach (var p in settlementPolys)
         {
-            MapBuilding.CreateGen(p, townHall, _key);
+            var cell = p.GetCells(_key.Data)
+                .Where(c => c.HasBuilding(_key.Data) == false)
+                .FirstOrDefault();
+            if (cell is not null)
+            {
+                MapBuilding.CreateGen(cell, townHall, _key);
+            }
         }
 
         return townHall.GetComponent<Workplace>().TotalLaborReq() * settlementPolys.Count();
@@ -232,11 +249,14 @@ public class SocietyGenerator : Generator
             var p = polys[i];
             var pop = portions[i];
             var num = Mathf.Round(pop / laborReq);
-            num = Mathf.Min(p.PolyBuildingSlots[model.BuildingType], num);
+            var cells = p.GetCells(_key.Data).Where(c => c.HasBuilding(_key.Data) == false)
+                .ToList();
+            
+            num = Mathf.Min(cells.Count(), num);
             
             for (var j = 0; j < num; j++)
             {
-                MapBuilding.CreateGen(p, model, _key);
+                MapBuilding.CreateGen(cells[j], model, _key);
             }
         }
     }
@@ -251,10 +271,12 @@ public class SocietyGenerator : Generator
         {
             var p = polys[i];
             var num = numToBuild(p);
-            num = Mathf.Min(p.PolyBuildingSlots[model.BuildingType], num);
+            var cells = p.GetCells(_key.Data).Where(c => c.HasBuilding(_key.Data) == false)
+                .ToList();
+            num = Mathf.Min(cells.Count(), num);
             for (var j = 0; j < num; j++)
             {
-                MapBuilding.CreateGen(p, model, _key);
+                MapBuilding.CreateGen(cells[j], model, _key);
             }
         }
     }
@@ -269,7 +291,7 @@ public class SocietyGenerator : Generator
             if (buildings == null) continue;
             
             var laborBuildings = buildings
-                .Select(b => b.Model.Model(_data))
+                .Select(b => b.Model.Get(_data))
                 .Where(b => b.GetComponent<Workplace>() != null);
             if (laborBuildings.Count() > 0)
             {
@@ -283,7 +305,7 @@ public class SocietyGenerator : Generator
             var buildings = p.GetBuildings(_data);
             if (buildings == null) continue;
             var workBuildings = buildings
-                .Select(b => b.Model.Model(_data))
+                .Select(b => b.Model.Get(_data))
                 .Where(b => b.HasComponent<Workplace>());
             var peep = p.GetPeep(_data);
             foreach (var wb in workBuildings)
@@ -338,9 +360,9 @@ public class SocietyGenerator : Generator
                     && t.GetLandform(_data) != _data.Models.Landforms.Peak)
                 .OrderBy(t => t.RelBoundary.Avg().LengthSquared()).ToList();
             var settlement = p.GetSettlement(_data);
-            var tier = settlement.Tier.Model(_data);
+            var tier = settlement.Tier.Get(_data);
             var numUrbanTris = Mathf.Max(1, tier.NumTris);
-            if (settlement.Tier.Model(_data) == _data.Models.Settlements.Village)
+            if (settlement.Tier.Get(_data) == _data.Models.Settlements.Village)
             {
                 numUrbanTris = 1;
             }
@@ -404,7 +426,7 @@ public class SocietyGenerator : Generator
             var settlements = r.GetPolys(_data)
                 .Where(p => p.HasSettlement(_data))
                 .Select(p => p.GetSettlement(_data));
-            var names = r.Culture.Model(_data)
+            var names = r.Culture.Get(_data)
                 .SettlementNames.Where(n => taken.Contains(n) == false)
                 .ToList();
             if (settlements.Count() > names.Count) continue;

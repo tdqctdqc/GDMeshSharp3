@@ -19,7 +19,7 @@ public class ChooseRegimeCommand : Command
 
     public override bool Valid(Data data, out string error)
     {
-        if (Regime.Entity(data).IsPlayerRegime(data))
+        if (Regime.Get(data).IsPlayerRegime(data))
         {
             error = "Regime already has player";
             return false;

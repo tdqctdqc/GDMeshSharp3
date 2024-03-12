@@ -11,18 +11,20 @@ public class Mine : BuildingModel
             150, 3000,
             new List<BuildingModelComponent>
             {
-                new ExtractionProd(prodItem, 20),
+                new BuildingProd(prodItem, 20),
                 new Workplace(new Dictionary<PeepJob, int>
                 {
                     {jobs.Miner, 500}
                 })
             },
             new MakeableAttribute(
-                IdCount<Item>.Construct(new Dictionary<Item, float>
+                IdCount<IModel>.Construct(new Dictionary<IModel, float>
                 {
                     {items.Iron, 1000},
-                    {items.BuildingMaterial, 1000}
-                }), 0f)
+                }),
+                IdCount<IModel>.Construct(new Dictionary<IModel, float>
+                {
+                }))
         )
     {
         MinedItem = prodItem;
@@ -36,6 +38,6 @@ public class Mine : BuildingModel
     {
         var ds = p.GetResourceDeposits(data);
         return ds != null 
-               && ds.Any(d => d.Item.Model(data) == MinedItem);
+               && ds.Any(d => d.Item.Get(data) == MinedItem);
     }
 }

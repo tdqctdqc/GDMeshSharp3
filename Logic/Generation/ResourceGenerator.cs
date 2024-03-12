@@ -52,7 +52,7 @@ public class ResourceGenerator : Generator
             {
                 var deps = p.GetResourceDeposits(_data);
                 if (deps == null) return false;
-                return deps.Any(d => d.Item.Model(_data) == res);
+                return deps.Any(d => d.Item.Get(_data) == res);
             });
             if (has) return;
             var poly = regime.GetPolys(_key.Data).OrderBy(p => res.GetDepositScore(p, _data)).First();
