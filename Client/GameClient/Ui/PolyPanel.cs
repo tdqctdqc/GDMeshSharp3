@@ -35,19 +35,9 @@ public partial class PolyPanel : ScrollPanel
         }
         
         Inner.CreateLabelAsChild("Poly " + poly.Id);
-        if (poly.OwnerRegime.Fulfilled())
-        {
-            Inner.CreateLabelAsChild("Owner " + poly.OwnerRegime.Get(d).Name);
-        }
+        
         Inner.CreateLabelAsChild("Roughness " + poly.Roughness.RoundTo2Digits());
         
-        foreach (var (id, num) in poly.FoodProd.Nums)
-        {
-            var prod = id.Get(d);
-            var label = prod.Icon.GetLabeledIcon<HBoxContainer>(
-                $"{prod.Name}: {num}", 40f);
-            Inner.AddChild(label);
-        }
 
         if (poly.GetBuildings(d) is List<MapBuilding> buildings)
         {

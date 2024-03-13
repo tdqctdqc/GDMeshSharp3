@@ -5,15 +5,16 @@ using Godot;
 
 public static class UiActions
 {
-    public static void TryOpenRegimeOverview(this Client client, MapPolygon poly)
+    public static void TryOpenRegimeOverview(this Client client, 
+        Cell cell)
     {
-        if (poly == null)
+        if (cell == null)
         {
             throw new Exception();
         }
-        if (poly.OwnerRegime.Fulfilled())
+        if (cell.Controller.Fulfilled())
         {
-            var r = poly.OwnerRegime.Get(client.Data);
+            var r = cell.Controller.Get(client.Data);
             var w = Game.I.Client.GetComponent<WindowManager>().OpenWindow<RegimeOverviewWindow>();
             w.Setup(r, client);
         }

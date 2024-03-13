@@ -46,14 +46,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             }
         }
 
-        var foods = t.poly.FoodProd.Nums;
-        foreach (var kvp in foods)
-        {
-            var technique = kvp.Key.Get(d);
-            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
-                technique.Icon, kvp.Value.ToString(), iconSize);
-            control.AddChild(box);
-        }
+        
         return control;
     }
 

@@ -27,7 +27,7 @@ public class PolyMode : UiMode
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         if(e.IsAction("Open Regime Overview"))
         {
-            _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverPoly);
+            _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverCell);
         }
         
         Tooltip(mapPos);

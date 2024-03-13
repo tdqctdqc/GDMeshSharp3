@@ -15,17 +15,12 @@ public class MapPolygon : Entity
     public float Altitude { get; protected set; }
     public float Roughness { get; protected set; }
     public float Moisture { get; protected set; }
-    public ERef<Regime> OwnerRegime { get; protected set; }
-    public ERef<Regime> OccupierRegime { get; private set; }
     public bool IsLand { get; protected set; }
-    public FoodProd FoodProd { get; private set; }
     [SerializationConstructor] private MapPolygon(int id, 
         Vector2 center, ERefSet<MapPolygon> neighbors, 
         float altitude, float roughness, 
-        float moisture, ERef<Regime> ownerRegime, 
-        ERef<Regime> occupierRegime,
+        float moisture, 
         bool isLand,
-        FoodProd foodProd,
         Vector2[] boundaryPoints) 
             : base(id)
     {
@@ -34,10 +29,7 @@ public class MapPolygon : Entity
         Altitude = altitude;
         Roughness = roughness;
         Moisture = moisture;
-        OwnerRegime = ownerRegime;
-        OccupierRegime = occupierRegime;
         IsLand = isLand;
-        FoodProd = foodProd;
         BoundaryPoints = boundaryPoints;
     }
 
@@ -62,10 +54,7 @@ public class MapPolygon : Entity
             0f,
             0f,
             0f,
-            new ERef<Regime>(-1),
-            new ERef<Regime>(-1),
             true,
-            FoodProd.Construct(),
             boundaryPoints
         );
         key.Create(p);
@@ -108,24 +97,6 @@ public class MapPolygon : Entity
     {
         //only use in merging left-right wrap
         Neighbors.Remove(poly, key);
-    }
-
-    public void SetInitialRegime(Regime r, GenWriteKey key)
-    {
-        SetOwnerRegime(r, key);
-        SetOccupierRegime(r, key);
-    }
-    public void SetOwnerRegime(Regime r, StrongWriteKey key)
-    {
-        var old = OwnerRegime.Get(key.Data);
-        OwnerRegime = r.MakeRef();
-        key.Data.Notices.Political.ChangedOwnerRegime.Invoke(this, r, old);
-    }
-    public void SetOccupierRegime(Regime r, StrongWriteKey key)
-    {
-        var old = OccupierRegime.Get(key.Data);
-        OccupierRegime = r.MakeRef();
-        key.Data.Notices.Political.ChangedOccupierRegime.Invoke(this, r, old);
     }
 
     public void SetIsLand(bool isLand, GenWriteKey key)

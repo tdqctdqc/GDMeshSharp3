@@ -5,89 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Data/Model/Flow/Labor.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Repo/Indexer.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Repo/MultiIndexer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetConstrainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetConstrainer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/FormUnitPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/FormUnitPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/PolyPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/PolyPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DeploymentMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DeploymentMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ResourceIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ResourceIcons.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/BuildingAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/BuildingAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadNetwork.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Bank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Bank.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Barracks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Barracks.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/BuildingComponent/BuildingProd.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/BuildingComponent/BuildingProd.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/BuildingComponent/Workplace.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/BuildingList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/BuildingList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Factory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Factory.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Mine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Mine.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/TownHall.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/TownHall.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Flow/FlowList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/FlowList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Flow/Income.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/Income.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Farm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Farm.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Fishery.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Fishery.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Ranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Ranch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Items/Coal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/Coal.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Items/HeavyMetal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/HeavyMetal.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Items/Iron.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/Iron.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Items/NaturalResource.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/NaturalResource.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Items/Oil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/Oil.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/ModelRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ModelRef.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/RegimeBordersNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/RegimeBordersNode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/CellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/CellExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/LandCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCell/LandCell.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyCells.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/CellHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PolyFoodProd.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/FoodProd.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/PlanetDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/PlanetDomain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDepositAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDepositAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/AuxMultiIndexer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/EntityMultiIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/EntityMultiIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/EntityPropEntityIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/EntityPropEntityIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/PropEntityIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/PropEntityIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/PropertyMultiIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/PropertyMultiIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Location/SettlementAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/SettlementAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Peep/PolyPeepAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/PolyPeepAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeHistory/RegimePeepsReport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeHistory/RegimePeepsReport.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/ResourceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/ResourceGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Message/Notice/ValChangeNotice.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Notice/ValChangeNotice.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/PolyEmploymentScratch.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConstructModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConstructModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Sorter/Sorter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Sorter/Sorter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/ValChangeAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/ValChangeAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DictionaryExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DictionaryExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -158,9 +82,9 @@
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/Border/AllianceBordersGraphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Alliance/AllianceAux.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -658,6 +582,9 @@
       <workItem from="1710271791634" duration="1611000" />
       <workItem from="1710275216257" duration="2865000" />
       <workItem from="1710281358623" duration="2376000" />
+      <workItem from="1710287984672" duration="5488000" />
+      <workItem from="1710349043389" duration="647000" />
+      <workItem from="1710350512989" duration="558000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -869,14 +796,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00158" summary="reimplementing rivers">
-      <option name="closed" value="true" />
-      <created>1709075118528</created>
-      <option name="number" value="00158" />
-      <option name="presentableId" value="LOCAL-00158" />
-      <option name="project" value="LOCAL" />
-      <updated>1709075118528</updated>
-    </task>
     <task id="LOCAL-00159" summary="river cells done, going to optimize">
       <option name="closed" value="true" />
       <created>1709259443079</created>
@@ -1021,7 +940,15 @@
       <option name="project" value="LOCAL" />
       <updated>1710264574358</updated>
     </task>
-    <option name="localTasksCounter" value="177" />
+    <task id="LOCAL-00177" summary="doot">
+      <option name="closed" value="true" />
+      <created>1710293340309</created>
+      <option name="number" value="00177" />
+      <option name="presentableId" value="LOCAL-00177" />
+      <option name="project" value="LOCAL" />
+      <updated>1710293340310</updated>
+    </task>
+    <option name="localTasksCounter" value="178" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1055,7 +982,6 @@
     <MESSAGE value="reimplementing rivers" />
     <MESSAGE value="river cells done, going to optimize" />
     <MESSAGE value="optimizing, still need to connect river cells" />
-    <MESSAGE value="doot" />
     <MESSAGE value="optimized river cell gen somewhat" />
     <MESSAGE value="refactoring graphics" />
     <MESSAGE value="working on chunkGraphics" />
@@ -1068,6 +994,7 @@
     <MESSAGE value="ditto" />
     <MESSAGE value="adding mil cap" />
     <MESSAGE value="refactoring production" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactoring production" />
+    <MESSAGE value="doot" />
+    <option name="LAST_COMMIT_MESSAGE" value="doot" />
   </component>
 </project>
