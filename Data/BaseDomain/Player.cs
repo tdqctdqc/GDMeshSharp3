@@ -27,7 +27,7 @@ public class Player : Entity
         if (regime.IsMajor == false) throw new Exception("player must be major regime");
         var old = Regime.Get(key.Data);
         Regime = regime.MakeRef();
-        key.Data.BaseDomain.PlayerAux.PlayerChangedRegime.Invoke(this, regime, old);
+        key.Data.Notices.Player.PlayerChangedRegime.Invoke(this, regime, old);
     }
 
     public override void CleanUp(StrongWriteKey key)

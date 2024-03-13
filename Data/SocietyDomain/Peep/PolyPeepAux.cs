@@ -5,10 +5,9 @@ using Godot;
 
 public class PolyPeepAux
 {
-    public EntityPropEntityIndexer<Peep, MapPolygon> ByPoly { get; private set; } 
+    public Indexer<Cell, Peep> ByCell { get; private set; } 
     public PolyPeepAux(Data data)
     {
-        ByPoly = EntityPropEntityIndexer<Peep, MapPolygon>
-            .CreateStatic(data, p => p.Poly);
+        ByCell = Indexer.MakeForEntity<Cell, Peep>(p => p.Cell.Get(data), data);
     }
 }

@@ -34,20 +34,21 @@ public partial class FoodTab : ScrollContainer
         
         
         
-        var populatedPolys = regime.GetPolys(client.Data)
-            .Where(p => p.HasPeep(client.Data));
-        var peeps = populatedPolys
+        var populatedCells = regime.GetCells(client.Data)
+            .OfType<LandCell>().Where(c => c.HasPeep(client.Data));
+        var peeps = populatedCells
             .Select(p => p.GetPeep(client.Data));
         var peepCount = peeps.Count();
         var peepSize = peeps.Sum(p => p.Size);
-        var jobs = populatedPolys
+        var jobs = populatedCells
             .Select(p => p.GetPeep(client.Data))
             .SelectMany(p => p.Employment.Counts)
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);
 
-        var techniqueCounts = populatedPolys
-            .SelectMany(p => p.PolyFoodProd.Nums)
-            .SortInto(p => client.Data.Models.GetModel<FoodProdTechnique>(p.Key), p => p.Value);
+        var techniqueCounts = 
+            populatedCells
+            .SelectMany(p => p.FoodProd.Nums)
+            .SortInto(p => p.Key.Get(client.Data), p => p.Value);
         
         var iconSize = client.Settings.MedIconSize.Value;
 

@@ -84,7 +84,7 @@ public partial class GameSession : Node, ISession
     }
     public void GeneratorToGameTransition()
     {
-        Data.Notices.ExitedGen.Invoke();
+        Data.Notices.Gen.ExitedGen.Invoke();
         var hServer = new HostServer();
         var logic = new HostLogic(this);
         Logic = logic;

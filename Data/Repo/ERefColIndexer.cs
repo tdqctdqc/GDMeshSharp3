@@ -3,23 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class EntityRefColIndexer<TSingle, TKey>
-    : AuxData<TSingle> where TKey : Entity where TSingle : Entity
+public class ERefColIndexer<TSingle, TKey>
+        where TKey : Entity 
+        where TSingle : Entity
 {
     public TSingle this[TKey k] => _dic.ContainsKey(k) ? _dic[k] : null;
     private Func<TSingle, IEnumerable<TKey>> _get;
     private Dictionary<TKey, TSingle> _dic;
-    public EntityRefColIndexer(Func<TSingle, IEnumerable<TKey>> get,
+    public ERefColIndexer(Func<TSingle, IEnumerable<TKey>> get,
         RefColMeta<TSingle, TKey> colMeta, Data data) 
-        : base(data)
     {
         _get = get;
         _dic = new Dictionary<TKey, TSingle>();
         colMeta.Added.Subscribe(HandleColAdd);
         colMeta.Removed.Subscribe(HandleColRemove);
+        data.SubscribeForCreation<TSingle>
+            (n => HandleAdded((TSingle)n.Entity));
+        data.SubscribeForDestruction<TSingle>
+            (n => HandleRemoved((TSingle)n.Entity));
     }
 
-    public override void HandleAdded(TSingle added)
+    public void HandleAdded(TSingle added)
     {
         var keys = _get(added);
         foreach (var k in keys)
@@ -28,7 +32,7 @@ public class EntityRefColIndexer<TSingle, TKey>
         }
     }
 
-    public override void HandleRemoved(TSingle removing)
+    public void HandleRemoved(TSingle removing)
     {
         var keys = _get(removing);
         foreach (var k in keys)

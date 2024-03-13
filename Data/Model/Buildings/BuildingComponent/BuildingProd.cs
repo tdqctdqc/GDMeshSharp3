@@ -1,24 +1,33 @@
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public class BuildingProd : BuildingModelComponent
 {
-    public IModel Produced { get; private set; }
-    public int ProdCap { get; private set; }
+    public IdCount<IModel> Inputs { get; private set; }
+    public IdCount<IModel> Outputs { get; private set; }
+    public IdCount<PeepJob> Jobs { get; private set; }
 
-    public BuildingProd(IModel produced, int prodCap)
+    public BuildingProd(IdCount<IModel> inputs,
+        IdCount<IModel> outputs,
+        IdCount<PeepJob> jobs,
+        FlowList flows)
     {
-        Produced = produced;
-        ProdCap = prodCap;
+        Inputs = inputs;
+        Outputs = outputs;
+        Jobs = jobs;
+
+        var jobSum = Jobs.Contents.Sum(kvp => kvp.Value);
+        var laborSum = inputs.Get(flows.Labor);
+        if (jobSum != laborSum) throw new Exception();
     }
 
     public override void Work(Cell cell, float staffingRatio, 
         ProcedureWriteKey key)
     {
-        if (cell.Controller.IsEmpty()) return;
-        var regime = cell.Controller.Get(key.Data);
-        staffingRatio = Mathf.Clamp(staffingRatio, 0f, 1f);
-        regime.Store.Add(Produced, ProdCap * staffingRatio);
+        
     }
 
 }

@@ -20,9 +20,9 @@ public static class AllianceExt
     public static IEnumerable<Alliance> GetNeighborAlliances(this Alliance alliance, Data data)
     {
         return alliance.Members.Items(data)
-            .SelectMany(r => r.GetPolys(data))
-            .SelectMany(p => p.Neighbors.Items(data).Where(e => e.OwnerRegime.Fulfilled()))
-            .Select(p => p.OwnerRegime.Get(data).GetAlliance(data))
+            .SelectMany(r => r.GetCells(data))
+            .SelectMany(p => p.GetNeighbors(data).Where(e => e.Controller.Fulfilled()))
+            .Select(p => p.Controller.Get(data).GetAlliance(data))
             .Distinct()
             .Where(a => a != alliance);
     }

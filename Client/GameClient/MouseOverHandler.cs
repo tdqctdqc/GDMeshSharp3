@@ -41,11 +41,11 @@ public class MouseOverHandler
     
     private void Find(Data data, Vector2 mousePosMapSpace)
     {
-        var c = data.Planet.PolygonAux
+        var c = data.Planet.MapAux
             .CellGrid.GetElementAtPointWhere(mousePosMapSpace, 
                 c => c is RiverCell,
                 data);
-        if(c == null) c = data.Planet.PolygonAux
+        if(c == null) c = data.Planet.MapAux
             .CellGrid.GetElementAtPoint(mousePosMapSpace, data);
         SetCell(c);
 

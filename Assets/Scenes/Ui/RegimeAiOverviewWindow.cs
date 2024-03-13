@@ -5,7 +5,7 @@ using Godot;
 
 public partial class RegimeAiOverviewWindow : TabWindow
 {
-    private EntityValueCache<Regime, RegimeAi> _aiRegimes;
+    private Cache<Regime, RegimeAi> _aiRegimes;
     private Data _data;
     public static RegimeAiOverviewWindow Get(Data data)
     {

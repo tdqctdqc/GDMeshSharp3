@@ -1,12 +1,10 @@
 
 public class ResourceDepositAux
 {
-    public EntityMultiIndexer<MapPolygon, ResourceDeposit> ByPoly { get; private set; }
+    public Indexer<Cell, ResourceDeposit> ByCell { get; private set; }
     public ResourceDepositAux(Data data)
     {
-        ByPoly = new EntityMultiIndexer<MapPolygon, ResourceDeposit>(data, 
-            r => r.Poly.Get(data),
-            new RefAction[]{data.Notices.FinishedStateSync, data.Notices.MadeResources}
-        );
+        ByCell = Indexer.MakeForEntity<Cell, ResourceDeposit>(
+            r => r.Cell.Get(data), data);
     }
 }

@@ -41,9 +41,9 @@ public partial class PolyPanel : ScrollPanel
         }
         Inner.CreateLabelAsChild("Roughness " + poly.Roughness.RoundTo2Digits());
         
-        foreach (var (id, num) in poly.PolyFoodProd.Nums)
+        foreach (var (id, num) in poly.FoodProd.Nums)
         {
-            var prod = d.Models.GetModel<FoodProdTechnique>(id);
+            var prod = id.Get(d);
             var label = prod.Icon.GetLabeledIcon<HBoxContainer>(
                 $"{prod.Name}: {num}", 40f);
             Inner.AddChild(label);
@@ -59,20 +59,6 @@ public partial class PolyPanel : ScrollPanel
                 var label = model.Icon
                     .GetLabeledIcon<HBoxContainer>(
                         $"{model.Name}: {count}", 40f);
-                Inner.AddChild(label);
-            }
-        }
-        
-        
-        if (poly.HasPeep(d))
-        {
-            var peep = poly.GetPeep(d);
-            Inner.CreateLabelAsChild("Population: " + peep.Size);
-            foreach (var (key, num) in peep.Employment.Counts)
-            {
-                var job = d.Models.GetModel<PeepJob>(key);
-                var label = job.Icon.GetLabeledIcon<HBoxContainer>(
-                    $"{job.Name}: {num}", 50f);
                 Inner.AddChild(label);
             }
         }

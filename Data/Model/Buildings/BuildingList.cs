@@ -11,7 +11,8 @@ public class BuildingList : ModelList<BuildingModel>
     public TownHall TownHall { get; private set; }
     public Bank Bank { get; private set; }
     public Barracks Barracks { get; private set; }
-    public BuildingList(Items items, FlowList flows, PeepJobList jobs)
+    public BuildingList(Items items, FlowList flows, 
+        PeepJobList jobs)
     {
         IronMine = new Mine(nameof(IronMine), items.Iron, items, jobs, flows);
         CoalMine = new Mine(nameof(CoalMine), items.Coal, items, jobs, flows);

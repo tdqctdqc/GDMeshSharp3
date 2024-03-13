@@ -11,4 +11,7 @@ public class FlowList : ModelList<Flow>
         = new ();
     public MilitaryCap MilitaryCap { get; private set; }
         = new ();
+
+    public Labor Labor { get; private set; }
+        = new();
 }

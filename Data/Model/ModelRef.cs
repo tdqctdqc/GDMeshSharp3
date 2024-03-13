@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class ModelRef<T> : IDRef<T>
+public struct ModelRef<T> : IDRef<T>
     where T : class, IModel
 {
     public int RefId { get; private set; }

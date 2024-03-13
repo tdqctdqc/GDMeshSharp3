@@ -68,7 +68,7 @@ public class WorldGenerator
             LogType.Generation);
         _key.Data.Logger.Log("Total gen time: " + _totalTime.Elapsed.TotalMilliseconds,
             LogType.Generation);
-        Data.Notices.FinishedGen.Invoke();
+        Data.Notices.Gen.FinishedGen.Invoke();
     }
 
     private void RunGenerator(Generator gen)

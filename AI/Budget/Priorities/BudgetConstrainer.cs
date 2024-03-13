@@ -77,27 +77,10 @@ public static class BudgetConstrainer
             constructLaborConstraint.SetCoefficient(projVar, b.ConstructionCapPerTick);
         }
     }
-    
-    
-    public static void SetBuildingLaborConstraint(this Solver solver, int laborAvail, 
-        Dictionary<BuildingModel, Variable> buildingVars)
-    {
-        var buildingLaborConstraint = solver.MakeConstraint(0, laborAvail, "BuildingLabor");
-        foreach (var kvp in buildingVars)
-        {
-            var projVar = kvp.Value;
-            var b = kvp.Key;
-            if(b.HasComponent<Workplace>())
-            {
-                buildingLaborConstraint.SetCoefficient(projVar, b.GetComponent<Workplace>().TotalLaborReq());
-            }
-        }
-    }
     public static void SetBuildingSlotConstraints(this Solver solver, 
         Regime regime, Dictionary<BuildingModel, Variable> buildingVars, Data data)
     {
-        var cells = regime.GetPolys(data)
-            .SelectMany(p => p.GetCells(data))
+        var cells = regime.GetCells(data)
             .Where(c => c.HasBuilding(data) == false);
         
         

@@ -47,9 +47,12 @@ public class AllianceMergeProposal : Proposal
                 var r = targetMembers[i];
                 target.Members.Remove(r, key);
                 proposer.Members.Add(r, key);
+                key.Data.Notices.Political.AllianceRemovedRegime.Invoke((target, r));
+                key.Data.Notices.Political.AllianceAddedRegime.Invoke((proposer, r));
             }
             
             key.Data.Society.DiploGraph.MergeRelations(target, proposer, key);
+            
             key.Data.RemoveEntity(target.Id, key);
         }
     }

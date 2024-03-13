@@ -46,10 +46,10 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             }
         }
 
-        var foods = t.poly.PolyFoodProd.Nums;
+        var foods = t.poly.FoodProd.Nums;
         foreach (var kvp in foods)
         {
-            var technique = d.Models.GetModel<FoodProdTechnique>(kvp.Key);
+            var technique = kvp.Key.Get(d);
             var box = NodeExt.GetLabeledIcon<HBoxContainer>(
                 technique.Icon, kvp.Value.ToString(), iconSize);
             control.AddChild(box);
@@ -94,31 +94,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
     }
     private static Control GetPeeps((MapPolygon poly, Cell cell) t, Data d)
     {
-        var peeps = t.poly.GetPeep(d);
-        if (peeps == null)
-        {
-            var l = new Label();
-            l.Text = "No Peeps";
-            return l;
-        }
-        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
-
-        var jobs = new VBoxContainer();
-        var size = new Label();
-        size.Text = "Num Peeps: " + peeps.Size;
-        jobs.AddChild(size);
-        var peepJobCounts = t.poly.GetPeep(d).Employment.Counts
-            // .Where(kvp => kvp.Value > 0)
-            .Select(kvp => new KeyValuePair<PeepJob, int>((PeepJob)d.Models[kvp.Key], kvp.Value))
-            .ToList();
-        foreach (var peepJobCount in peepJobCounts)
-        {
-            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
-                peepJobCount.Key.Icon, peepJobCount.Value.ToString(), 
-                iconSize);
-            jobs.AddChild(box);
-        }
-        return jobs;
+        return new Control();
     }
     
     private static Control GetId((MapPolygon poly, Cell cell) t, Data d)
@@ -129,15 +105,17 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
     {
         var iconSize = Vector2.One * Game.I.Client.Settings.MedIconSize.Value;
 
-        var rs = t.poly.GetResourceDeposits(d);
+        var rs = t.poly
+            .GetResourceDeposits(d)
+            .GetCountsBy(rd => rd.Item.Get(d));
         if (rs != null)
         {
             var label = new Label();
             int iter = 0;
-            foreach (var r in rs)
+            foreach (var (item, amt) in rs)
             {
                 if (iter != 0) label.Text += "\n";
-                label.Text += $"{r.Item.Get(d).Name}: {Mathf.FloorToInt(r.Size)}";
+                label.Text += $"{item.Name}: {amt}";
             }
 
             return label;
@@ -145,16 +123,10 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         return null;
     }
 
-    private static Control GetSettlementSize((MapPolygon poly, Cell cell) t, Data d)
-    {
-        return  d.Infrastructure.SettlementAux.ByPoly[t.poly] is Settlement s
-            ? NodeExt.CreateLabel("Settlement Size: " + t.poly.GetPeep(d).Size)
-            : null;
-    }
 
     private static Control GetSettlementName((MapPolygon poly, Cell cell) t, Data d)
     {
-        return  d.Infrastructure.SettlementAux.ByPoly[t.poly] is Settlement s
+        return  d.Infrastructure.SettlementAux.ByCell[t.cell] is Settlement s
             ? NodeExt.CreateLabel("Settlement Name: " + s.Name)
             : null;
     }

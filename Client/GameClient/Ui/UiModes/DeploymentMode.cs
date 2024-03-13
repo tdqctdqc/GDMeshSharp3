@@ -137,10 +137,10 @@ public class DeploymentMode : UiMode
     {
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
-        var cells = _client.Data.Planet.PolygonAux.PolyCells.Cells.Values
+        var cells = _client.Data.Planet.MapAux.CellHolder.Cells.Values
             .Where(c => alliance.Members.RefIds.Contains(c.Controller.RefId)).ToArray();
         
-        var relTo = alliance.Leader.Get(_client.Data).GetPolys(_client.Data).First().Center;
+        var relTo = alliance.Leader.Get(_client.Data).GetCells(_client.Data).First().GetCenter();
         
         foreach (var c in cells)
         {

@@ -41,7 +41,7 @@ public class CellAttackEdge : ICombatGraphEdge
     {
         var attackers = GetAttackers(combat);
         var defenders = Target.GetUnits(d);
-        if (defenders == null || defenders.Count == 0)
+        if (defenders == null || defenders.Any() == false)
         {
             NoDefenders = true;
             DefendersForcedBack = true;
@@ -90,7 +90,7 @@ public class CellAttackEdge : ICombatGraphEdge
     public void InvoluntaryResults(CombatCalculator combat, LogicWriteKey key)
     {
         var defenders = Target.GetUnits(key.Data);
-        if (defenders == null || defenders.Count == 0) return;
+        if (defenders == null ||  defenders.Any() == false) return;
         var defenderAlliance = Target.Controller.Get(key.Data)
             .GetAlliance(key.Data);
         var retreatCells = Target.GetNeighbors(key.Data)

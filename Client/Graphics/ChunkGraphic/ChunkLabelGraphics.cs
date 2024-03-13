@@ -44,21 +44,10 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
 
     private List<(string, Vector2)> GetLabels(Data d)
     {
-        return Chunk.Polys.Where(p => p.HasSettlement(d))
+        return Chunk.Cells.Where(p => p.HasSettlement(d))
             .Select(p =>
             {
-                var urban = p.GetCells(d).Where(c => c.Landform.RefId == d.Models.Landforms.Urban.Id)
-                    .FirstOrDefault();
-                Vector2 pos;
-                if(urban is not null)
-                {
-                    pos = Chunk.RelTo.Center.Offset(urban.GetCenter(), d);
-                }
-                else
-                {
-                    pos = Chunk.RelTo.Center.Offset(p.Center, d);
-                }
-                return (p.GetSettlement(d).Name, pos);
+                return (p.GetSettlement(d).Name, p.GetCenter());
             }).ToList();
     }
     public void RegisterForRedraws(Data d)

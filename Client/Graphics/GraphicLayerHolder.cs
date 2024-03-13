@@ -24,7 +24,7 @@ public class GraphicLayerHolder
         UnitGraphics = new EntityGraphicReservoir<Unit, UnitGraphic>(
             u => new UnitGraphic(u, data), 
             data);
-        Chunks = data.Planet.PolygonAux.Chunks
+        Chunks = data.Planet.MapAux.Chunks
             .Select(c =>
             {
                 var graphic = new ChunkGraphic(c, this, data);

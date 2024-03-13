@@ -35,7 +35,7 @@ public partial class ResourceIcons
 
     protected override Vector2 GetWorldPos(ResourceDeposit t, Data d)
     {
-        return t.Poly.Get(d).Center;
+        return t.Cell.Get(d).GetCenter();
     }
 
     public override void RegisterForRedraws(Data d)

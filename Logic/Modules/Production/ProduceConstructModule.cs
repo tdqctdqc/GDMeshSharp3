@@ -19,6 +19,20 @@ public class ProduceConstructModule : LogicModule
 
     private ProductionResult DoRegime(Regime r, Data d)
     {
+        var cells = d.Planet.MapAux.CellHolder
+            .Cells.Values.Where(c => c.Controller.RefId == r.Id).ToArray();
+        var buildings = cells
+            .Where(c => c.HasBuilding(d))
+            .Select(c => c.GetBuilding(d));
+        
+        //first add labor flow
+        
+        
+        
+        //last do flow consumptions from units, etc
+        
+        
+        
         return null;
     }
 }

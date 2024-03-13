@@ -42,7 +42,7 @@ public class UnitGroup : Entity
     {
         oldG?.Units.Remove(u, key);
         newG?.Units.Add(u, key);
-        key.Data.Military.UnitAux.UnitChangedGroup.Invoke(u, newG, oldG);
+        key.Data.Notices.Military.UnitChangedGroup.Invoke(u, newG, oldG);
     }
 
     public Cell GetCell(Data d)

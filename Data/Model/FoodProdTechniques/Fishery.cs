@@ -6,25 +6,28 @@ using Godot;
 public class Fishery : FoodProdTechnique
 {
     public Fishery(PeepJobList jobs) 
-        : base(nameof(Fishery), 1000, 200, 10, jobs.Fisher)
+        : base(nameof(Fishery), 1000, 
+            200, 10, jobs.Fisher)
     {
     }
 
-    public override int NumForPoly(MapPolygon poly, Data data)
+    public override float NumForCell(Cell cell, Data data)
     {
         var val = 0f;
-        var waterNs = poly.Neighbors.Items(data).Where(n => n.IsWater());
-        if(waterNs.Count() > 0)
+        var seaNs = cell.GetNeighbors(data)
+            .Where(n => n is SeaCell);
+        if(seaNs.Count() > 0)
         {
-            val += waterNs.Sum(n => n.GetArea(data));
+            val += seaNs.Sum(n => n.Area());
         }
         
-        var riverCells = poly.GetCells(data)
-            .OfType<RiverCell>();
-        if(riverCells.Count() > 0)
+        var riverNs = cell.GetNeighbors(data)
+            .Where(n => n is RiverCell);
+        if(riverNs.Count() > 0)
         {
-            val +=  riverCells.Sum(t => t.Area()) * 50f;
+            val += riverNs.Sum(n => n.Area() * 50f);
         }
+        
 
         if (val < 0f)
         {
@@ -34,12 +37,12 @@ public class Fishery : FoodProdTechnique
         if (num < 0 || num > 100)
         {
             throw new Exception($"{num} fisheries" +
-                                $"\n{waterNs.Count()} water ns" +
-                                $"\n{(waterNs.Count() == 0 ? 0f :
-                                    waterNs.Sum(n => n.GetArea(data)))} water score" +
-                                $"\n{riverCells.Count()} river cells" +
-                                $"\n{(riverCells.Count() == 0 ? 0f :
-                                    riverCells.Sum(t => t.Area()) * 50f)} river score");
+                                $"\n{seaNs.Count()} water ns" +
+                                $"\n{(seaNs.Count() == 0 ? 0f :
+                                    seaNs.Sum(n => n.Area()))} water score" +
+                                $"\n{riverNs.Count()} river cells" +
+                                $"\n{(riverNs.Count() == 0 ? 0f :
+                                    riverNs.Sum(t => t.Area()) * 50f)} river score");
             
         }
         return num;

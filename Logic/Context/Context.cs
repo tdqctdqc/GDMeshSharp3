@@ -33,7 +33,7 @@ public class Context
     private void CalculateControlAreas(Data data)
     {
         ControlledAreas.Clear();
-        var landCells = data.Planet.PolygonAux.PolyCells
+        var landCells = data.Planet.MapAux.CellHolder
             .Cells.Values.OfType<LandCell>().ToHashSet();
         var unions = landCells.SortInto(c => c.Controller.Get(data));
             

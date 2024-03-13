@@ -4,16 +4,16 @@ using System.Linq;
 
 public class HostLogicData
 {
-    public EntityValueCache<Regime, RegimeAi> RegimeAis { get; private set; }
-    public EntityValueCache<Alliance, AllianceAi> AllianceAis { get; private set; }
+    public Cache<Regime, RegimeAi> RegimeAis { get; private set; }
+    public Cache<Alliance, AllianceAi> AllianceAis { get; private set; }
     public IdRecycler CombatGraphIds { get; private set; }
     public HostLogicData(Data data)
     {
         //todo make serialized and saved
-        RegimeAis = EntityValueCache<Regime, RegimeAi>
-            .ConstructConstant(data, r => new RegimeAi(r, data));
-        AllianceAis = EntityValueCache<Alliance, AllianceAi>
-            .ConstructConstant(data, a => new AllianceAi(a, data));
+        RegimeAis = Cache.MakeForEntity<Regime, RegimeAi>
+            (r => new RegimeAi(r, data), data);
+        AllianceAis = Cache.MakeForEntity<Alliance, AllianceAi>
+            (a => new AllianceAi(a, data), data);
         CombatGraphIds = new IdRecycler();
     }
 }

@@ -5,10 +5,6 @@ using Godot;
 
 public class Coal : NaturalResource, IMineable
 {
-    protected override int _overflowSize { get; } = 100;
-    protected override int _minDepositSize { get; } = 10;
-    protected override OverFlowType _overflow { get; } = OverFlowType.Single;
-
     public Coal() 
         : base(nameof(Coal), Colors.Black, 
             5)
@@ -16,17 +12,12 @@ public class Coal : NaturalResource, IMineable
     }
 
     protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    public override int GetDepositScore(MapPolygon p, Data d)
+    public override int GetDepositScore(Cell p, Data d)
     {
         var score = 15;
-        score = Mathf.FloorToInt(score + p.Roughness * 30);
-        if (p.IsWater()) score /= 5;
-        if(p.IsLand && p.Moisture >= d.Models.Vegetations.Swamp.MinMoisture * .75f) score += 40;
+        score = Mathf.FloorToInt(score + p.Landform.Get(d).MinRoughness * 30);
+        if (p is LandCell == false) score /= 5;
+        if(p is LandCell && p.Vegetation.Get(d).MinMoisture >= d.Models.Vegetations.Swamp.MinMoisture * .75f) score += 40;
         return score;
-    }
-
-    public override int GenerateDepositSize(MapPolygon p)
-    {
-        return Mathf.FloorToInt(100 * Game.I.Random.RandfRange(.5f, 2f));
     }
 }

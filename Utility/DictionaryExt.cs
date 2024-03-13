@@ -75,48 +75,14 @@ public static class DictionaryExt
         dic.Add(key, genned);
         return genned;
     }
-    
-    public static Dictionary<TKey, TValue> BindDictionary<TKey, TValue>(this List<TKey> keys,
-        List<TValue> values)
-    {
-        if (keys.Count != values.Count) throw new Exception("different number of keys and values");
-        var res = new Dictionary<TKey, TValue>();
-        for (var i = 0; i < keys.Count; i++)
-        {
-            res.Add(keys[i], values[i]);
-        }
-        return res;
-    }
-    public static Dictionary<TKey, int> GetCounts<TKey, TIn>(this IEnumerable<TIn> ts, 
-        Func<TIn, Dictionary<TKey, int>> getNums, Func<TIn, int, int> numMod)
-    {
-        var res = new Dictionary<TKey, int>();
-        foreach (var t in ts)
-        {
-            var nums = getNums(t);
-            foreach (var kvp2 in nums)
-            {
-                var item = kvp2.Key;
-                var numItem = numMod(t, kvp2.Value);
-                res.AddOrSum(item, numItem);
-            }
-        }
 
-        return res;
-    }
-    public static Dictionary<TKey, int> GetCounts<TKey, TIn>(this IEnumerable<TIn> ts, 
-        Func<TIn, Dictionary<TKey, int>> getNums)
+    public static Dictionary<TValue, int> GetCountsBy<TValue, TEnum>(
+        this IEnumerable<TEnum> e, Func<TEnum, TValue> getValue)
     {
-        var res = new Dictionary<TKey, int>();
-        foreach (var t in ts)
+        var res = new Dictionary<TValue, int>();
+        foreach (var t in e)
         {
-            var nums = getNums(t);
-            foreach (var kvp2 in nums)
-            {
-                var item = kvp2.Key;
-                var numItem = kvp2.Value;
-                res.AddOrSum(item, numItem);
-            }
+            res.AddOrSum(getValue(t), 1);
         }
 
         return res;

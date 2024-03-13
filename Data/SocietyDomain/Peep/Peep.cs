@@ -5,23 +5,25 @@ using MessagePack;
 
 public class Peep : Entity
 {
-    public ERef<MapPolygon> Poly { get; private set; }
+    public CellRef Cell { get; private set; }
     public int Size { get; private set; }
     public PeepEmploymentReport Employment { get; private set; }
 
-    public static Peep Create(MapPolygon poly, ICreateWriteKey key)
+    public static Peep Create(Cell cell, ICreateWriteKey key)
     {
-        var p = new Peep(PeepEmploymentReport.Construct(), poly.MakeRef(), 0, 
+        var p = new Peep(PeepEmploymentReport.Construct(), 
+            cell.MakeRef(), 0, 
             key.Data.IdDispenser.TakeId());
         key.Create(p);
         return p;
     }
-    [SerializationConstructor] private Peep(PeepEmploymentReport employment, ERef<MapPolygon> poly,
+    [SerializationConstructor] private Peep(
+        PeepEmploymentReport employment, CellRef cell,
         int size, int id) : base(id)
     {
         Employment = employment;
         Size = size;
-        Poly = poly;
+        Cell = cell;
     }
 
     public void GrowSize(int delta, ProcedureWriteKey key)

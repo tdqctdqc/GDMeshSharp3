@@ -72,11 +72,12 @@ public class DiplomacyAi
     private float GetRivalScore(Alliance alliance, Alliance target,
         Data data)
     {
-        var targetPolys = target.Members.Items(data).SelectMany(r => r.GetPolys(data));
+        var targetPolys = target.Members.Items(data)
+            .SelectMany(r => r.GetCells(data));
         var targetNeighborPolys = targetPolys
-            .Where(p => p.Neighbors.Items(data)
-                .Any(np => np.OwnerRegime.Fulfilled()
-                           && np.OwnerRegime.Get(data).GetAlliance(data) == alliance)).Count();
+            .Where(p => p.GetNeighbors(data)
+                .Any(np => np.Controller.Fulfilled()
+                           && np.Controller.Get(data).GetAlliance(data) == alliance)).Count();
         var pCount = targetPolys.Count();
         if (pCount == 0) return 0f;
         return targetNeighborPolys / pCount;

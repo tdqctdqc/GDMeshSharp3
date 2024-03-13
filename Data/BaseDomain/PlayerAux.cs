@@ -4,26 +4,17 @@
 
     public class PlayerAux
     {
-        public PropEntityIndexer<Player, Regime> ByRegime { get; private set; }
-        public PropEntityIndexer<Player, Guid> ByGuid { get; private set; }
-        public ValChangeAction<Player, Regime> PlayerChangedRegime { get; private set; }
-        public RefAction SetLocalPlayer { get; private set; }
+        public Indexer<Regime, Player> ByRegime { get; private set; }
+        public Indexer<Guid, Player> ByGuid { get; private set; }
         private Data _data;
         public PlayerAux(Data data)
         {
             _data = data;
-            PlayerChangedRegime = new ValChangeAction<Player, Regime>();
-            ByRegime = PropEntityIndexer<Player, Regime>.CreateDynamic(data, 
-                p => p.Regime.Get(data), PlayerChangedRegime);
-            ByGuid = PropEntityIndexer<Player, Guid>.CreateConstant(data, p => p.PlayerGuid);
-            SetLocalPlayer = new RefAction();
-            data.SubscribeForCreation<Player>(p =>
-            {
-                if (((Player) p.Entity).PlayerGuid == data.ClientPlayerData.LocalPlayerGuid)
-                {
-                    SetLocalPlayer.Invoke();
-                }
-            });
+            ByRegime = Indexer.MakeForEntity<Regime, Player>(
+                p => p.Regime.Get(data), data);
+            ByRegime.RegisterChanged(data.Notices.Player.PlayerChangedRegime);
+            ByGuid = Indexer.MakeForEntity<Guid, Player>(
+                p => p.PlayerGuid, data);
         }
         public Player LocalPlayer => ByGuid[_data.ClientPlayerData.LocalPlayerGuid];
     }

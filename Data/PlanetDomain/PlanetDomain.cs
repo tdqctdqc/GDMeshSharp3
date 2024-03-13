@@ -5,14 +5,14 @@ using Godot;
 
 public class PlanetDomain
 {
-    public MapPolygonAux PolygonAux { get; private set; }
+    public MapAux MapAux { get; private set; }
     public PolyEdgeAux PolyEdgeAux { get; private set; }
-    public PlanetInfo Info => _planetInfoAux != null ? _planetInfoAux.Value : null;
-    private SingletonAux<PlanetInfo> _planetInfoAux;
+    public PlanetInfo Info => _planetInfoCache != null ? _planetInfoCache.Value : null;
+    private SingletonCache<PlanetInfo> _planetInfoCache;
     public ResourceDepositAux ResourceDepositAux { get; private set; }
-    public float Width => _planetInfoAux.Value.Dimensions.X;
-    public float Height => _planetInfoAux.Value.Dimensions.Y;
-    public Vector2 Dim => _planetInfoAux.Value.Dimensions;
+    public float Width => _planetInfoCache.Value.Dimensions.X;
+    public float Height => _planetInfoCache.Value.Dimensions.Y;
+    public Vector2 Dim => _planetInfoCache.Value.Dimensions;
     private Data _data;
     public PlanetDomain(Data data)
     {
@@ -20,9 +20,9 @@ public class PlanetDomain
     }
     public void Setup()
     {
-        _planetInfoAux = new SingletonAux<PlanetInfo>(_data);
+        _planetInfoCache = new SingletonCache<PlanetInfo>(_data);
         // _polyNav = new SingletonAux<NavWaypoints>(_data);
-        PolygonAux = new MapPolygonAux(_data);
+        MapAux = new MapAux(_data);
         PolyEdgeAux = new PolyEdgeAux(_data);
         ResourceDepositAux = new ResourceDepositAux(_data);
         
@@ -73,6 +73,6 @@ public static class PlanetDomainExt
 {
     public static Cell GetPolyCell(int id, Data d)
     {
-        return d.Planet.PolygonAux.PolyCells.Cells[id];
+        return d.Planet.MapAux.CellHolder.Cells[id];
     }
 }

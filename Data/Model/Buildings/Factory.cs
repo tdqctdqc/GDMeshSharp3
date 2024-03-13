@@ -9,11 +9,18 @@ public class Factory : BuildingModel
         20, 2000,
         new List<BuildingModelComponent>
             {
-                new BuildingProd(flows.IndustrialPower, 100),
-                new Workplace(new Dictionary<PeepJob, int>
-                {
-                    {jobs.Prole, 500}
-                })
+                new BuildingProd(
+                    IdCount<IModel>.Construct(
+                        (flows.Labor, 500)
+                    ),
+                    IdCount<IModel>.Construct(
+                        (flows.IndustrialPower, 100)
+                    ),
+                    IdCount<PeepJob>.Construct(
+                        (jobs.Prole, 500)
+                    ),
+                    flows
+                )
             },
             new MakeableAttribute(IdCount<IModel>.Construct(
                     new Dictionary<IModel, float>

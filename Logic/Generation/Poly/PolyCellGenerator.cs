@@ -23,7 +23,7 @@ public class PolyCellGenerator : Generator
             .AsParallel()
             .SelectMany(p => BuildCells(p, key))
             .ToDictionary(c => c.Id, c => c);
-        PolyCells.Create(cells, key);
+        CellHolder.Create(cells, key);
         report.StopSection("Building poly cells");
         
         report.StartSection();
@@ -31,7 +31,7 @@ public class PolyCellGenerator : Generator
         report.StopSection("creating river cells");
 
         report.StartSection();
-        _data.Notices.SetPolyShapes.Invoke();
+        _data.Notices.Gen.SetPolyShapes.Invoke();
         report.StopSection("set poly shapes");
 
 
@@ -40,7 +40,7 @@ public class PolyCellGenerator : Generator
         report.StopSection("postprocessing polytris");
         
         report.StartSection();
-        _data.Notices.MadeCells.Invoke();
+        _data.Notices.Gen.MadeCells.Invoke();
         report.StopSection("constructing cell grid");
 
         return report;
@@ -85,7 +85,7 @@ public class PolyCellGenerator : Generator
         var tundra = key.Data.Models.Vegetations.Tundra;
 
 
-        var landCells = key.Data.Planet.PolygonAux.PolyCells.Cells.Values
+        var landCells = key.Data.Planet.MapAux.CellHolder.Cells.Values
             .OfType<LandCell>();
         var landCellsByPoly = landCells
             .SortInto(l => l.Polygon.Get(key.Data));

@@ -14,8 +14,8 @@ public class RiverCellGenerator
         var sw = new Stopwatch();
         sw.Start();
         var nexi = key.Data.GetAll<MapPolyNexus>();
-        var cells = key.Data.Planet.PolygonAux
-            .PolyCells.Cells;
+        var cells = key.Data.Planet.MapAux
+            .CellHolder.Cells;
         
         var nexusRiverWidths = nexi
             .AsParallel()

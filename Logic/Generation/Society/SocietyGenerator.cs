@@ -15,16 +15,15 @@ public class SocietyGenerator : Generator
         var report = new GenReport("Society");
         _key = key;
         _data = key.GenData;
-        foreach (var p in _data.GetAll<MapPolygon>())
+        foreach (var c in _data.Planet.MapAux.CellHolder.Cells.Values.OfType<LandCell>())
         {
-            if(p.IsLand) Peep.Create(p, key);
+            Peep.Create(c, key);
         }
         foreach (var r in _data.GetAll<Regime>())
         {
             GenerateForRegime(r);
         }
         NameSettlements();
-        _data.Notices.PopulatedWorld.Invoke();
         Deforest();
         CreateUnits(key);
         return report;
@@ -38,24 +37,16 @@ public class SocietyGenerator : Generator
         var employed = popSurplus * (1f - (unemployedRatio + margin));
         if (popSurplus <= 0) return;
 
-        var favored = PickFavoredSettlementPolys(r.GetPolys(_data).ToList());
         
-        
-        float favoredBonus(MapPolygon p)
-        {
-            if (favored.Contains(p)) return 10f;
-            return 1f;
-        }
 
-        float score(MapPolygon p)
+        float score(LandCell p)
         {
-            var s = (p.GetPeep(_data).Size + PolyHabitability(p)) * favoredBonus(p);
+            var s = (p.GetPeep(_data).Size + CellHabitability(p));
             return s * s * s;
         }
         
         
         var extractionLabor = GenerateExtractionBuildings(r);
-        // var adminLabor = GenerateTownHalls(r, settlementPolys);
         var surplus = employed - (extractionLabor);
         var forFactories = surplus * .9f;
         var forBanks = surplus * .1f;
@@ -68,19 +59,15 @@ public class SocietyGenerator : Generator
         GenerateUnemployed(r, Mathf.FloorToInt(popSurplus * unemployedRatio));
         
         CreateSettlements(r);
-        GenerateNonWorkBuildingType(_key.Data.Models.Buildings.Barracks, r,
-            p =>
-            {
-                if (p.HasSettlement(_key.Data) == false) return 0;
-                return 1;
-            });
+        GenerateNonWorkBuildingType(_key.Data.Models.Buildings.Barracks, 
+            r, .02f);
     }
 
     private float GenerateFoodProducers(Regime r)
     {
         var developmentScale = _data.GenMultiSettings.SocietySettings.DevelopmentScale.Value;
         var foodConsPerPeep = _data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
-        var territory = r.GetPolys(_data);
+        var territory = r.GetCells(_data).OfType<LandCell>();
         var foodSurplus = new ConcurrentBag<float>();
         
         foreach (var foodProdTechnique in _data.Models.GetModels<FoodProdTechnique>().Values)
@@ -94,62 +81,32 @@ public class SocietyGenerator : Generator
             Parallel.ForEach(territory, p =>
             {
                 var numBuilding = Mathf
-                    .RoundToInt(technique.NumForPoly(p, _data) * developmentScale);
+                    .RoundToInt(technique.NumForCell(p, _data) * developmentScale);
                 if (numBuilding == 0) return;
                 foodSurplus.Add(buildingSurplus * numBuilding);
                 p.GetPeep(_key.Data)
                     .GrowSize(technique.BaseLabor * numBuilding, _key);
-                p.PolyFoodProd.Add(technique, numBuilding);
+                p.FoodProd.Add(technique, numBuilding);
             });
         }
         
         return foodSurplus.Sum() / foodConsPerPeep;
     }
     
-    private HashSet<MapPolygon> PickFavoredSettlementPolys(List<MapPolygon> regimeUnionPolys)
+    
+    private float CellHabitability(LandCell cell)
     {
-        float scorePerSettlement = 1f;
-        var numSettlements = regimeUnionPolys.Count / 3;
-        if (numSettlements == 0) numSettlements = 1;
-        
-        var polyQueue = new SimplePriorityQueue<MapPolygon>();
-        for (var i = 0; i < regimeUnionPolys.Count; i++)
-        {
-            var p = regimeUnionPolys[i];
-            var cells = p.GetCells(_key.Data);
-            if (cells.Any(t => t.GetLandform(_data) != _data.Models.Landforms.Mountain
-                           && t.GetLandform(_data) != _data.Models.Landforms.Peak
-                           && t.GetLandform(_data) != _data.Models.Landforms.River))
-            {
-                polyQueue.Enqueue(p, -PolyHabitability(p));
-            }
-        }
-        numSettlements = Math.Min(numSettlements, polyQueue.Count);
-        var settlementPolys = new HashSet<MapPolygon>();
-        var forbidden = new HashSet<MapPolygon>();
-
-        for (var i = 0; i < numSettlements; i++)
-        {
-            if (polyQueue.Count == 0) break;
-            var poly = polyQueue.Dequeue();
-            if (forbidden.Contains(poly)) continue;
-            foreach (var n in poly.Neighbors.Items(_data))
-            {
-                forbidden.Add(n);
-            }
-            settlementPolys.Add(poly);
-        }
-
-        return settlementPolys;
-    }
-    private float PolyHabitability(MapPolygon poly)
-    {
-        var score = 2f * (poly.Moisture + (1f - poly.Roughness * .5f));
-        if (poly.GetEdges(_key.Data).Any(e => e.IsRiver()))
+        var score = 2f * (cell.Vegetation.Get(_data).MinMoisture
+                          + (1f - cell.Landform.Get(_data).MinRoughness * .5f));
+        if (cell.GetNeighbors(_key.Data)
+            .Any(e => e is LandCell l 
+                && l.Polygon.RefId != cell.Polygon.RefId
+                && l.Polygon.Get(_data).GetEdge(cell.Polygon.Get(_data), _data).IsRiver()))
         {
             score *= 1.5f;
         }
-        if (poly.IsCoast(_data))
+        if (cell.GetNeighbors(_key.Data)
+            .Any(n => n is SeaCell))
         {
             score *= 1.5f;
         }
@@ -157,63 +114,8 @@ public class SocietyGenerator : Generator
     }
     private float GenerateExtractionBuildings(Regime r)
     {
-            
-        var t = _data.Models.GetManager<BuildingModel>().Models
-            .Where(kvp => kvp.Value.Components.OfType<BuildingProd>()
-                .Where(prod => prod.Produced is NaturalResource).Count() > 0);
-        var extractBuildings = new Dictionary<IModel, List<BuildingModel>>();
 
-        foreach (var kvp in t)
-        {
-            var model = kvp.Value;
-            var comps = model.Components
-                .OfType<BuildingProd>()
-                .Where(prod => prod.Produced is NaturalResource);
-            foreach (var extractionProd in comps)
-            {
-                extractBuildings.AddOrUpdate(extractionProd.Produced, model);
-            }
-        }
-
-        var polyBuildings = new System.Collections.Generic.Dictionary<MapPolygon, List<BuildingModel>>();
-        
-        foreach (var p in r.GetPolys(_data))
-        {
-            if (p.GetResourceDeposits(_data) 
-                    is IEnumerable<ResourceDeposit> rds == false)
-            {
-                continue;
-            }
-            polyBuildings.Add(p, new List<BuildingModel>());
-
-            foreach (var rd in rds)
-            {
-                if (extractBuildings.ContainsKey(rd.Item.Get(_data)) == false) continue;
-                var b = extractBuildings[rd.Item.Get(_data)];
-                polyBuildings[p].Add(b.First());
-            }
-        }
-
-        var laborDemand = 0f;
-        foreach (var kvp in polyBuildings)
-        {
-            var poly = kvp.Key;
-            var cells = poly.GetCells(_key.Data)
-                .Where(c => c.HasBuilding(_key.Data) == false)
-                .ToList();
-            
-            var limit = Mathf.Min(cells.Count(), kvp.Value.Count());
-            for (var i = 0; i < limit; i++)
-            {
-                var model = kvp.Value[i];
-                var workplace = model.GetComponent<Workplace>();
-                var cell = cells[i];
-                laborDemand += workplace.JobLaborReqs.Sum(kvp2 => kvp2.Value);
-                MapBuilding.CreateGen(cell, model, _key);
-            }
-        }
-
-        return laborDemand;
+        return 0f;
     }
     private float GenerateTownHalls(Regime r, HashSet<MapPolygon> settlementPolys)
     {
@@ -232,149 +134,95 @@ public class SocietyGenerator : Generator
             }
         }
 
-        return townHall.GetComponent<Workplace>().TotalLaborReq() * settlementPolys.Count();
+        return townHall.GetComponent<BuildingProd>().Inputs.Get(_data.Models.Flows.Labor) * settlementPolys.Count();
     }
     
-    private void GenerateWorkBuildingType(BuildingModel model, Regime r, float popBudget,
-        Func<MapPolygon, float> suitability)
+    private void GenerateWorkBuildingType(BuildingModel model, 
+        Regime r, float popBudget,
+        Func<LandCell, float> suitability)
     {
         if (popBudget <= 0) return;
-
-        var polys = r.GetPolys(_data)
-            .Where(p => model.CanBuildInPoly(p, _key.Data)).ToList();
-        var portions = Apportioner.ApportionLinear(popBudget, polys, suitability);
-        var laborReq = model.GetComponent<Workplace>().TotalLaborReq();
-        for (var i = 0; i < polys.Count; i++)
+        var cells = r.GetCells(_data)
+            .OfType<LandCell>()
+            .Where(c =>
+                c.HasBuilding(_data) == false
+                    && model.CanBuildInCell(c, _key.Data))
+            .OrderByDescending(suitability)
+            .ToList();
+        var portions = Apportioner.ApportionLinear(popBudget, cells, suitability);
+        var laborReq = model.GetComponent<BuildingProd>().Inputs.Get(_data.Models.Flows.Labor);
+        var num = Mathf.FloorToInt(popBudget / laborReq);
+        
+        for (var i = 0; i < num; i++)
         {
-            var p = polys[i];
-            var pop = portions[i];
-            var num = Mathf.Round(pop / laborReq);
-            var cells = p.GetCells(_key.Data).Where(c => c.HasBuilding(_key.Data) == false)
-                .ToList();
-            
-            num = Mathf.Min(cells.Count(), num);
-            
-            for (var j = 0; j < num; j++)
-            {
-                MapBuilding.CreateGen(cells[j], model, _key);
-            }
+            MapBuilding.CreateGen(cells[i], model, _key);
         }
     }
     private void GenerateNonWorkBuildingType(BuildingModel model, Regime r,
-        Func<MapPolygon, int> numToBuild)
+        float buildChance)
     {
-        var polys = r.GetPolys(_data)
-            .Where(p => model.CanBuildInPoly(p, _key.Data))
+        var cells = r.GetCells(_data)
+            .Where(p => p.HasBuilding(_data) == false
+                && model.CanBuildInCell(p, _key.Data))
             .ToList();
         
-        for (var i = 0; i < polys.Count; i++)
+        for (var i = 0; i < cells.Count; i++)
         {
-            var p = polys[i];
-            var num = numToBuild(p);
-            var cells = p.GetCells(_key.Data).Where(c => c.HasBuilding(_key.Data) == false)
-                .ToList();
-            num = Mathf.Min(cells.Count(), num);
-            for (var j = 0; j < num; j++)
-            {
-                MapBuilding.CreateGen(cells[j], model, _key);
-            }
+            var cell = cells[i];
+            var chance = Game.I.Random.Randf();
+            if (chance > buildChance) continue;
+            MapBuilding.CreateGen(cell, model, _key);
         }
     }
     private void GenerateLaborers(Regime r, float popSurplus)
     {
         if (popSurplus <= 0) return;
-        var polys = r.GetPolys(_data).ToList();
+        var cells = r.GetCells(_data).ToList();
         var laborDesire = 0;
-        foreach (var p in polys)
+        foreach (var c in cells)
         {
-            var buildings = p.GetBuildings(_data);
-            if (buildings == null) continue;
+            if (c.HasBuilding(_data) == false) continue;
+            var building = c.GetBuilding(_data);
             
-            var laborBuildings = buildings
-                .Select(b => b.Model.Get(_data))
-                .Where(b => b.GetComponent<Workplace>() != null);
-            if (laborBuildings.Count() > 0)
-            {
-                laborDesire += laborBuildings.Sum(b => b.GetComponent<Workplace>().TotalLaborReq());
-            }
+            laborDesire += (int)building.Model.Get(_data).GetComponent<BuildingProd>().Inputs.Get(_data.Models.Flows.Labor);
         }
         var laborRatio = Mathf.Min(1f, popSurplus / laborDesire);
         if (laborRatio == 0) return;
-        foreach (var p in polys)
+        foreach (var c in cells)
         {
-            var buildings = p.GetBuildings(_data);
-            if (buildings == null) continue;
-            var workBuildings = buildings
-                .Select(b => b.Model.Get(_data))
-                .Where(b => b.HasComponent<Workplace>());
-            var peep = p.GetPeep(_data);
-            foreach (var wb in workBuildings)
-            {
-                foreach (var laborReq in wb.GetComponent<Workplace>().JobLaborReqs)
-                {
-                    var num = Mathf.FloorToInt(laborReq.Value * laborRatio);
-                    peep.GrowSize(num, _key);
-                }
-            }
+            if (c.HasBuilding(_data) == false) continue;
+            var building = c.GetBuilding(_data);
+            var peep = c.GetPeep(_data);
+            var laborReq = (int)building.Model.Get(_data).GetComponent<BuildingProd>().Inputs.Get(_data.Models.Flows.Labor);
+            peep.GrowSize((int)(laborReq * laborRatio), _key);
         }
     }
 
     private void GenerateUnemployed(Regime r, int pop)
     {
-        var polys = r.GetPolys(_data).ToList();
-        var portions = Apportioner.ApportionLinear(pop, polys, 
+        var cells = r.GetCells(_data).ToList();
+        var portions = Apportioner.ApportionLinear(pop, cells, 
             p => p.GetPeep(_data).Size);
-        for (var i = 0; i < polys.Count; i++)
+        for (var i = 0; i < cells.Count; i++)
         {
-            var poly = polys[i];
-            var peep = poly.GetPeep(_data);
-            var polyUnemployed = portions[i];
-            peep.GrowSize(polyUnemployed, _key);
+            var cell = cells[i];
+            var peep = cell.GetPeep(_data);
+            var cellUnemployed = portions[i];
+            peep.GrowSize(cellUnemployed, _key);
         }
     }
 
     private void CreateSettlements(Regime r)
     {
         var minSize = _data.Models.Settlements.TiersBySize.First().MinSize;
-        var settlementPolys = new HashSet<MapPolygon>();
-        foreach (var p in r.GetPolys(_data))
+        foreach (var p in r.GetCells(_data))
         {
             var settlementSize = p.GetPeep(_data).Size;
             if (settlementSize < minSize) continue;
             Settlement.Create("", p, settlementSize, _key);
-            settlementPolys.Add(p);
-        }
-        SetUrbanTris(settlementPolys);
-    }
-    private void SetUrbanTris(HashSet<MapPolygon> settlementPolys)
-    {
-        // var sizeForTri = 500;
-        
-        foreach (var p in settlementPolys)
-        {
-            var cells = p.GetCells(_data);
-            var availCells = cells
-                .Where(t => t is LandCell 
-                    && t.GetLandform(_data) != _data.Models.Landforms.River
-                    && t.GetLandform(_data) != _data.Models.Landforms.Mountain
-                    && t.GetLandform(_data) != _data.Models.Landforms.Peak)
-                .OrderBy(t => t.RelBoundary.Avg().LengthSquared()).ToList();
-            var settlement = p.GetSettlement(_data);
-            var tier = settlement.Tier.Get(_data);
-            var numUrbanTris = Mathf.Max(1, tier.NumTris);
-            if (settlement.Tier.Get(_data) == _data.Models.Settlements.Village)
-            {
-                numUrbanTris = 1;
-            }
-            numUrbanTris = Mathf.Min(availCells.Count, numUrbanTris);
-            
-            for (var j = 0; j < numUrbanTris; j++)
-            {
-                availCells[j].SetLandform(_data.Models.Landforms.Urban, _key);
-                availCells[j].SetVegetation(_data.Models.Vegetations.Barren, _key);
-            }
         }
     }
+    
     private void Deforest()
     {
         var polys = _data.GetAll<MapPolygon>();
@@ -397,13 +245,9 @@ public class SocietyGenerator : Generator
                 .Where(t => t.GetVegetation(_data) == forest
                     || t.GetVegetation(_data) == jungle);
             float deforestStr = 0f;
-            if (poly.HasSettlement(_data))
+            if (poly.GetCells(_data).Any(c => c.HasSettlement(_data)))
             {
                 deforestStr = .25f;
-            }
-            else if (poly.Neighbors.Items(_data).Any(n => n.HasSettlement(_data)))
-            {
-                deforestStr = .05f;
             }
             else continue;
             foreach (var cell in choppableCells)
@@ -423,7 +267,7 @@ public class SocietyGenerator : Generator
         var taken = new HashSet<string>();
         foreach (var r in _data.GetAll<Regime>())
         {
-            var settlements = r.GetPolys(_data)
+            var settlements = r.GetCells(_data)
                 .Where(p => p.HasSettlement(_data))
                 .Select(p => p.GetSettlement(_data));
             var names = r.Culture.Get(_data)
@@ -447,24 +291,23 @@ public class SocietyGenerator : Generator
             var template = regime.GetUnitTemplates(key.Data)
                 .First();
 
-            var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetPolys(key.Data).Count()));
-            var numUnits = score * 20;
+            var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetCells(key.Data).Count()));
+            var numUnits = score * 2;
 
-            var polys = regime
-                .GetPolys(key.Data)
+            var cells = regime
+                .GetCells(key.Data)
                 .Where(p => p.HasPeep(key.Data));
             
-            var numPolys = polys.Count();
-            var numToDistributeIn = numPolys / 3;
-            numPolys = Mathf.Max(numToDistributeIn, 1);
+            var numCells = cells.Count();
+            var numToDistributeIn = numCells / 3;
+            numCells = Mathf.Max(numToDistributeIn, 1);
             var distributeInPolys = regime
-                .GetPolys(key.Data)
+                .GetCells(key.Data)
                 .OrderByDescending(p => p.GetPeep(key.Data).Size)
-                .Take(numPolys).ToArray();
+                .Take(numCells).ToArray();
             for (var i = 0; i < numUnits; i++)
             {
-                var poly = distributeInPolys.Modulo(i);
-                var cell = poly.GetCells(key.Data).First(c => c is LandCell);
+                var cell = distributeInPolys.Modulo(i);
                 var unitPos = new MapPos(cell.Id, (-1, 0f));
                 Unit.Create(template, regime, unitPos.Copy(), key);
             }

@@ -55,7 +55,7 @@ public class DeploymentRoot : DeploymentBranch
     public override Vector2 GetMapPosForDisplay(Data d)
     {
         var polys = Alliance.Members.Items(d)
-            .SelectMany(r => r.GetPolys(d));
-        return d.Planet.GetAveragePosition(polys.Select(p => p.Center));
+            .SelectMany(r => r.GetCells(d));
+        return d.Planet.GetAveragePosition(polys.Select(p => p.GetCenter()));
     }
 }

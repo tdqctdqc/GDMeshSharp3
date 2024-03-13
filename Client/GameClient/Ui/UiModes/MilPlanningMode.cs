@@ -41,7 +41,7 @@ public class MilPlanningMode : UiMode
         if (regime.IsPlayerRegime(_client.Data)) return;
         var alliance = regime.GetAlliance(_client.Data);
         var ai = _client.Data.HostLogicData.AllianceAis[alliance];
-        var relTo = regime.GetPolys(_client.Data).First().Center;
+        var relTo = regime.GetCells(_client.Data).First().GetCenter();
         if (ai.Military.Strategic.Theaters == null) return;
         foreach (var theater in ai.Military.Strategic.Theaters)
         {

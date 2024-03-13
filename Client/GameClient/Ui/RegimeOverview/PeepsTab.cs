@@ -18,13 +18,13 @@ public partial class PeepsTab : ScrollContainer
     public void Setup(Regime regime, Client client)
     {
         _container.ClearChildren();
-        var populatedPolys = regime.GetPolys(client.Data)
+        var populatedCells = regime.GetCells(client.Data)
             .Where(p => p.HasPeep(client.Data));
-        var peeps = populatedPolys
+        var peeps = populatedCells
             .Select(p => p.GetPeep(client.Data));
         var peepCount = peeps.Count();
         var peepSize = peeps.Sum(p => p.Size);
-        var jobs = populatedPolys
+        var jobs = populatedCells
             .Select(p => p.GetPeep(client.Data))
             .SelectMany(p => p.Employment.Counts)
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);

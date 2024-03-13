@@ -217,7 +217,7 @@ public class HoldLineAssignment : GroupAssignment
         var foreignRegime = foreignCell.Controller.Get(d);
         var foreignAlliance = foreignRegime.GetAlliance(d);
         var units = foreignCell.GetUnits(d);
-        if (units == null || units.Count == 0) return 0f;
+        if (units == null || units.Any() == false) return 0f;
         if (alliance.IsRivals(foreignAlliance, d) == false)
         {
             throw new Exception();

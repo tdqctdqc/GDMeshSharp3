@@ -9,16 +9,22 @@ public class Barracks : BuildingModel
             500, 
             new List<BuildingModelComponent>
             {
-                new BuildingProd(items.Recruits, 100),
-                new BuildingProd(flows.MilitaryCap, 1000)
+                new BuildingProd(
+                    IdCount<IModel>.Construct(
+                        (flows.Labor, 100)),
+
+                    IdCount<IModel>.Construct(
+                        (items.Recruits, 100),
+                        (flows.MilitaryCap, 1000)),
+                    
+                    IdCount<PeepJob>.Construct(
+                        (jobs.Bureaucrat, 100)),
+                    flows
+                ),
             }, 
             new MakeableAttribute(
-                IdCount<IModel>.Construct(new Dictionary<IModel, float>
-                {
-                }),
-                IdCount<IModel>.Construct(new Dictionary<IModel, float>
-                {
-                }))
+                IdCount<IModel>.Construct(),
+                IdCount<IModel>.Construct())
         )
     {
     }

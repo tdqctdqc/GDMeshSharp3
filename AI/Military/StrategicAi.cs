@@ -23,8 +23,8 @@ public class StrategicAi
     private void MakeTheaters()
     {
         var alliance = Alliance;
-        var cells = _data.Planet.PolygonAux
-            .PolyCells.Cells.Values
+        var cells = _data.Planet.MapAux
+            .CellHolder.Cells.Values
             .Where(c => alliance.Members.RefIds.Contains(c.Controller.RefId))
             .ToArray();
         var unions = UnionFind.Find(cells,

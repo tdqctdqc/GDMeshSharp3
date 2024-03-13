@@ -11,7 +11,7 @@ public class NoPolysInCellIssue : Issue
 
     public override void Draw(Client c)
     {
-        var grid = c.Data.Planet.PolygonAux.MapPolyGrid;
+        var grid = c.Data.Planet.MapAux.MapPolyGrid;
         var debugDrawer = c.GetComponent<MapGraphics>().DebugOverlay;
         debugDrawer.Clear();
         debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, 10f, Colors.Red), Pos);

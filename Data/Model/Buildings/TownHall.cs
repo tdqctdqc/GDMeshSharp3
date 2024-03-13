@@ -10,10 +10,17 @@ public class TownHall : BuildingModel
             500, 
             new List<BuildingModelComponent>
             {
-                new Workplace(new Dictionary<PeepJob, int>
-                {
-                    {jobs.Bureaucrat, 100}
-                })
+                new BuildingProd(
+                    IdCount<IModel>.Construct(
+                        (flows.Labor, 100)
+                    ), 
+                    IdCount<IModel>.Construct(
+                    ), 
+                    IdCount<PeepJob>.Construct(
+                        (jobs.Bureaucrat, 100)
+                    ),
+                    flows
+                )
             },
             new MakeableAttribute(
                 IdCount<IModel>.Construct(

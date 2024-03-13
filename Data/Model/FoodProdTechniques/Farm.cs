@@ -10,17 +10,16 @@ public class Farm : FoodProdTechnique
     {
     }
 
-    public override int NumForPoly(MapPolygon poly, Data data)
+    public override float NumForCell(Cell t, Data data)
     {
-        
-        return Mathf.FloorToInt(poly.GetCells(data)
-                    .Where(t =>
-                        t.GetLandform(data).IsLand
-                        && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
-                        && t.GetVegetation(data).MinMoisture >= data.Models.Vegetations.Arid.MinMoisture
-                        && float.IsNaN(t.Area()) == false
-                    )
-                    .Sum(t => t.Area() * t.GetLandform(data).FertilityMod * t.GetVegetation(data).FertilityMod)
-                / 5000f);
+        if (t.GetLandform(data).IsLand
+            && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
+            && t.GetVegetation(data).MinMoisture >= data.Models.Vegetations.Arid.MinMoisture
+            && float.IsNaN(t.Area()) == false)
+        {
+            return t.Area() * t.GetLandform(data).FertilityMod * t.GetVegetation(data).FertilityMod;
+        }
+
+        return 0;
     }
 }

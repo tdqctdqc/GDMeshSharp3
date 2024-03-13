@@ -25,7 +25,7 @@ public static class RegimeExt
     }
     public static bool IsPlayerRegime(this Regime r, Data data)
     {
-        return data.BaseDomain.PlayerAux.ByRegime.ContainsKey(r);
+        return data.BaseDomain.PlayerAux.ByRegime.Contains(r);
     }
     public static bool IsLocalPlayerRegime(this Regime r, Data data)
     {
@@ -36,13 +36,14 @@ public static class RegimeExt
         return data.BaseDomain.PlayerAux.ByRegime[r];
     }
 
-    public static IEnumerable<MapPolygon> GetPolys(this Regime r, Data data)
+    public static IEnumerable<Cell> GetCells(this Regime r, Data d)
     {
-        return data.Planet.PolygonAux.PolysByRegime[r];
+        return d.Planet.MapAux.CellHolder.Cells.Values
+            .Where(c => c.Controller.RefId == r.Id);
     }
     public static IEnumerable<Peep> GetPeeps(this Regime r, Data data)
     {
-        return r.GetPolys(data).Where(p => p.HasPeep(data))
+        return r.GetCells(data).Where(p => p.HasPeep(data))
             .Select(p => p.GetPeep(data));
     }
 

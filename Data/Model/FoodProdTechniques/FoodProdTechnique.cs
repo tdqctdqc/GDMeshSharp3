@@ -23,6 +23,6 @@ public abstract class FoodProdTechnique : IModel, IIconed
         JobType = jobType;
     }
 
-    public abstract int NumForPoly(MapPolygon poly, Data data);
+    public abstract float NumForCell(Cell cell, Data data);
     public float FoodPerLabor() => BaseProd / BaseLabor;
 }

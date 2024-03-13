@@ -38,9 +38,7 @@ public class FormUnitPriority
         var pos = (Vector2I)capitalPoly.Center;
         var cell = 
             capitalPoly.GetCells(key.Data).First(c => c is LandCell);
-        var deployPolyCell = r.GetPolys(key.Data)
-            .First(p => p.GetCells(key.Data).Any(goodDeployCell))
-            .GetCells(key.Data).Where(goodDeployCell).First();
+        var deployPolyCell = r.GetCells(key.Data).Where(goodDeployCell).First();
 
         bool goodDeployCell(Cell c)
         {

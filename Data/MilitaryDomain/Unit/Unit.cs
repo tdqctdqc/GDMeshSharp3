@@ -37,7 +37,7 @@ public class Unit : Entity, ICombatGraphNode
     {
         var old = Position;
         Position = pos;
-        key.Data.Military.UnitAux.UnitChangedPos.Invoke(
+        key.Data.Notices.Military.UnitChangedPos.Invoke(
             this, pos, old);
     }
 

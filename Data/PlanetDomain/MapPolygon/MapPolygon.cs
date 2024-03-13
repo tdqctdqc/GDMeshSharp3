@@ -18,14 +18,14 @@ public class MapPolygon : Entity
     public ERef<Regime> OwnerRegime { get; protected set; }
     public ERef<Regime> OccupierRegime { get; private set; }
     public bool IsLand { get; protected set; }
-    public PolyFoodProd PolyFoodProd { get; private set; }
+    public FoodProd FoodProd { get; private set; }
     [SerializationConstructor] private MapPolygon(int id, 
         Vector2 center, ERefSet<MapPolygon> neighbors, 
         float altitude, float roughness, 
         float moisture, ERef<Regime> ownerRegime, 
         ERef<Regime> occupierRegime,
         bool isLand,
-        PolyFoodProd polyFoodProd,
+        FoodProd foodProd,
         Vector2[] boundaryPoints) 
             : base(id)
     {
@@ -37,7 +37,7 @@ public class MapPolygon : Entity
         OwnerRegime = ownerRegime;
         OccupierRegime = occupierRegime;
         IsLand = isLand;
-        PolyFoodProd = polyFoodProd;
+        FoodProd = foodProd;
         BoundaryPoints = boundaryPoints;
     }
 
@@ -65,7 +65,7 @@ public class MapPolygon : Entity
             new ERef<Regime>(-1),
             new ERef<Regime>(-1),
             true,
-            PolyFoodProd.Construct(),
+            FoodProd.Construct(),
             boundaryPoints
         );
         key.Create(p);
@@ -119,13 +119,13 @@ public class MapPolygon : Entity
     {
         var old = OwnerRegime.Get(key.Data);
         OwnerRegime = r.MakeRef();
-        key.Data.Planet.PolygonAux.ChangedOwnerRegime.Invoke(this, r, old);
+        key.Data.Notices.Political.ChangedOwnerRegime.Invoke(this, r, old);
     }
     public void SetOccupierRegime(Regime r, StrongWriteKey key)
     {
         var old = OccupierRegime.Get(key.Data);
         OccupierRegime = r.MakeRef();
-        key.Data.Planet.PolygonAux.ChangedOccupierRegime.Invoke(this, r, old);
+        key.Data.Notices.Political.ChangedOccupierRegime.Invoke(this, r, old);
     }
 
     public void SetIsLand(bool isLand, GenWriteKey key)

@@ -16,8 +16,7 @@ public partial class SettlementIcons
     }
     protected override IEnumerable<Cell> GetElements(Data data)
     {
-        return Chunk.Polys.Where(p => p.HasSettlement(data))
-            .SelectMany(p => p.GetCells(data))
+        return Chunk.Cells.Where(p => p.HasSettlement(data))
             .Where(c => c.Landform.Get(data) == data.Models.Landforms.Urban);
     }
     protected override Texture2D GetTexture(SettlementTier t)
@@ -27,8 +26,7 @@ public partial class SettlementIcons
 
     protected override SettlementTier GetModel(Cell t, Data d)
     {
-        var poly = ((LandCell)t).Polygon.Get(d);
-        return poly.GetSettlement(d).Tier.Get(d);
+        return t.GetSettlement(d).Tier.Get(d);
     }
 
     protected override Vector2 GetWorldPos(Cell t, Data d)

@@ -35,5 +35,16 @@ public static class SorterExt
         return dic;
     }
     
-    
+    public static Dictionary<TKey, float> SortInto<TKey, TSource>(this IEnumerable<TSource> sources,
+        Func<TSource, TKey> getKey, Func<TSource, float> getValue)
+    {
+        var dic = new Dictionary<TKey, float>();
+        foreach (var source in sources)
+        {
+            var key = getKey(source);
+            var val = getValue(source);
+            dic.AddOrSum(key, val);
+        }
+        return dic;
+    }
 }

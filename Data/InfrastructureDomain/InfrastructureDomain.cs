@@ -8,7 +8,7 @@ public class InfrastructureDomain
     public SettlementAux SettlementAux { get; private set; }
     
     public RoadNetwork RoadNetwork => _roads.Value;
-    private SingletonAux<RoadNetwork> _roads;
+    private SingletonCache<RoadNetwork> _roads;
     public InfrastructureDomain() 
     {
     }
@@ -16,7 +16,7 @@ public class InfrastructureDomain
     public void Setup(Data data)
     {
         SettlementAux = new SettlementAux(data);
-        _roads = new SingletonAux<RoadNetwork>(data);
+        _roads = new SingletonCache<RoadNetwork>(data);
         BuildingAux = new BuildingAux(data);
     }
 }

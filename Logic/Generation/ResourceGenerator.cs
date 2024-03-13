@@ -16,24 +16,25 @@ public class ResourceGenerator : Generator
         var report = new GenReport(GetType().Name);
         GenerateResources();
         MakeSureMajorRegimesHaveResources();
-        key.Data.Notices.MadeResources.Invoke();
         return report;
     }
 
     private void GenerateResources()
     {
-        var deposits = new ConcurrentDictionary<NaturalResource, Dictionary<MapPolygon, int>>();
-        var resources = _data.Models.GetModels<Item>().Values;
-        Parallel.ForEach(resources, r =>
+        //todo not fair! will under-generate later resources in list
+        var resources = _data.Models
+            .GetModels<Item>().Values
+            .OfType<NaturalResource>();
+        
+        foreach (var nr in resources)
         {
-            if (r is NaturalResource n == false) return;
-            deposits.TryAdd(n, n.GenerateDeposits(_data));
-        });
-        foreach (var kvp in deposits)
-        {
-            var resource = kvp.Key;
-            var rDeposits = kvp.Value;
-            foreach (var kvp2 in rDeposits) ResourceDeposit.Create(resource, kvp2.Key, kvp2.Value, _key);
+            var deposits = nr
+                .GenerateDeposits(_data)
+                .Where(c => c.HasResourceDeposit(_data) == false);
+            foreach (var cell in deposits)
+            {
+                ResourceDeposit.Create(nr, cell, _key);
+            }
         }
     }
     private void MakeSureMajorRegimesHaveResources()
@@ -48,16 +49,18 @@ public class ResourceGenerator : Generator
 
         void addResource(Regime regime, NaturalResource res)
         {
-            var has = regime.GetPolys(_key.Data).Any(p =>
+            var has = regime.GetCells(_data).Any(p =>
             {
-                var deps = p.GetResourceDeposits(_data);
-                if (deps == null) return false;
-                return deps.Any(d => d.Item.Get(_data) == res);
+                if (p.HasResourceDeposit(_data) == false) return false;
+                
+                var dep = p.GetResourceDeposit(_data);
+                if (dep == null) return false;
+                return dep.Item.Get(_data) == res;
             });
             if (has) return;
-            var poly = regime.GetPolys(_key.Data).OrderBy(p => res.GetDepositScore(p, _data)).First();
-            var size = res.GenerateDepositSize(poly);
-            ResourceDeposit.Create(res, poly, size, _key);
+            var cell = regime.GetCells(_key.Data)
+                .OrderBy(p => res.GetDepositScore(p, _data)).First();
+            ResourceDeposit.Create(res, cell, _key);
         }
     }
 }

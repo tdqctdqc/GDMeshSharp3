@@ -14,10 +14,10 @@ public class ClientPlayerData
     {
         Issues = new List<Issue>();
         RiverCells = new Dictionary<Cell, List<Vector2[]>>();
-        data.BaseDomain.PlayerAux.PlayerChangedRegime.Subscribe(a =>
+        data.Notices.Player.PlayerChangedRegime.Subscribe(a =>
         {
             var localPlayer = data.BaseDomain.PlayerAux.LocalPlayer;
-            if (data.BaseDomain.PlayerAux.ByRegime.ContainsKey(a.NewVal))
+            if (data.BaseDomain.PlayerAux.ByRegime.Contains(a.NewVal))
             {
                 var player = data.BaseDomain.PlayerAux.ByRegime[a.NewVal];
                 if(player.PlayerGuid == localPlayer.PlayerGuid)

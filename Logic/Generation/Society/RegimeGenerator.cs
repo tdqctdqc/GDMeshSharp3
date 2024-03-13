@@ -25,7 +25,7 @@ public class RegimeGenerator : Generator
         report.StartSection();
         GenerateRegimes();
 
-        var landCells = _data.Planet.PolygonAux.PolyCells.Cells.Values.OfType<LandCell>();
+        var landCells = _data.Planet.MapAux.CellHolder.Cells.Values.OfType<LandCell>();
         
         foreach (var landCell in landCells)
         {
@@ -34,7 +34,7 @@ public class RegimeGenerator : Generator
         }
         
         
-        _data.Notices.GeneratedRegimes.Invoke();
+        _data.Notices.Gen.GeneratedRegimes.Invoke();
         
         report.StopSection("all");
         return report;
@@ -48,7 +48,7 @@ public class RegimeGenerator : Generator
         var lmPickers = new ConcurrentDictionary<HashSet<MapPolygon>, WandererPicker>();
         var templates = _data.Models.RegimeTemplates.Models.Values.ToHashSet();
         
-        _data.Planet.PolygonAux.LandSea.Landmasses.ForEach(lm =>
+        _data.Planet.MapAux.LandSea.Landmasses.ForEach(lm =>
         {
             var picker = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);
             lmPickers.TryAdd(lm.Polys, picker);
@@ -56,7 +56,7 @@ public class RegimeGenerator : Generator
 
         var remainders = new ConcurrentBag<HashSet<MapPolygon>>();
         
-        Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
+        Parallel.ForEach(_data.Planet.MapAux.LandSea.Landmasses, lm =>
         {
             var remainder = ExpandRegimes(lm.Polys, lmPickers[lm.Polys]);
             remainders.Add(remainder);

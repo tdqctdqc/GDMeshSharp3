@@ -11,7 +11,7 @@ public class Income : Flow
 
     public override float GetNonBuildingSupply(Regime r, Data d)
     {
-        var fromPeeps = r.GetPolys(d)
+        var fromPeeps = r.GetCells(d)
             .Select(p => p.GetPeep(d))
             .Select(p => p.Employment)
             .Sum(p => p.Counts

@@ -88,11 +88,15 @@ public abstract class Cell : IPolymorph,
 
     public void SetController(Regime controller, StrongWriteKey key)
     {
+        var old = Controller.Get(key.Data);
         Controller = controller.MakeRef();
+        key.Data.Notices.Political.ChangedControllerRegime.Invoke(this, controller, old);
     }
     public void SetController(Regime controller, GenWriteKey key)
     {
+        var old = Controller.Get(key.Data);
         Controller = controller.MakeRef();
+        key.Data.Notices.Political.ChangedControllerRegime.Invoke(this, controller, old);
     }
 
     public List<Triangle> GetTriangles(Vector2 relTo, Data d)

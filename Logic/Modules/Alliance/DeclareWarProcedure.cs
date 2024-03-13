@@ -21,6 +21,7 @@ public class DeclareWarProcedure : Procedure
         var alliance = key.Data.Get<Alliance>(DeclaringAllianceId);
         var target = key.Data.Get<Alliance>(TargetAllianceId);
         key.Data.Society.DiploGraph.AddEdge(alliance, target, DiploRelation.War, key);            
+        key.Data.Notices.Political.WarDeclared.Invoke((alliance, target));
     }
 
     public override bool Valid(Data data, out string error)

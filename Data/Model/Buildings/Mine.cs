@@ -11,11 +11,18 @@ public class Mine : BuildingModel
             150, 3000,
             new List<BuildingModelComponent>
             {
-                new BuildingProd(prodItem, 20),
-                new Workplace(new Dictionary<PeepJob, int>
-                {
-                    {jobs.Miner, 500}
-                })
+                new BuildingProd(
+                    IdCount<IModel>.Construct(
+                        (flows.Labor, 500)
+                    ),
+                    IdCount<IModel>.Construct(
+                        (prodItem, 20)
+                    ),
+                    IdCount<PeepJob>.Construct(
+                        (jobs.Miner, 500)
+                    ),
+                    flows
+                )
             },
             new MakeableAttribute(
                 IdCount<IModel>.Construct(new Dictionary<IModel, float>

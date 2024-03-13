@@ -17,6 +17,7 @@ public class DeclareRivalProcedure : Procedure
         var a = key.Data.Get<Alliance>(AllianceId);
         var t = key.Data.Get<Alliance>(TargetAllianceId);
         key.Data.Society.DiploGraph.AddEdge(a, t, DiploRelation.Rivals, key);
+        key.Data.Notices.Political.RivalryDeclared.Invoke((a,t));
     }
 
     public override bool Valid(Data data, out string error)

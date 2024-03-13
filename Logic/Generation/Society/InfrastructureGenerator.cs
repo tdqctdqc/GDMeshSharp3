@@ -25,7 +25,7 @@ public class InfrastructureGenerator : Generator
         var roads = RoadNetwork.Create(key);
         var allSegs = new ConcurrentBag<Dictionary<Vector2I, RoadModel>>();
 
-        Parallel.ForEach(_data.Planet.PolygonAux.LandSea.Landmasses, lm =>
+        Parallel.ForEach(_data.Planet.MapAux.LandSea.Landmasses, lm =>
         {
             var segs = GenerateForLandmass(lm);
             if(segs != null) allSegs.Add(segs);
@@ -82,14 +82,16 @@ public class InfrastructureGenerator : Generator
             p =>
             {
                 var landCells = p.GetCells(_data).OfType<LandCell>();
-                if (p.HasSettlement(_data)
-                    && p.GetSettlement(_data).Tier.Get(_data).MinSize 
+                if (p.GetCells(_data).Any(c => c.HasSettlement(_data))
+                    && p.GetCells(_data).Where(c => c.HasPeep(_data))
+                        .Sum(c => c.GetPeep(_data).Size)
                         >= _minSettlementSizeForInfraNode
                     )
                 {
                     var urbanCell = landCells
                         .First(t => t.GetLandform(_data) == urban);
-                    var iNode = new InfrastructureNode(urbanCell, p.GetPeep(_data).Size);
+                    var total = p.GetCells(_data).Sum(c => c.GetPeep(_data).Size);
+                    var iNode = new InfrastructureNode(urbanCell, total);
                     return iNode;
                 }
                 else

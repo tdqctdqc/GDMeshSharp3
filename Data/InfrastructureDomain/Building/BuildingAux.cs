@@ -3,11 +3,11 @@ using System;
 
 public class BuildingAux
 {
-    public PropEntityIndexer<MapBuilding, Cell> ByCell { get; private set; }
+    public Indexer<Cell, MapBuilding> ByCell { get; private set; }
     public BuildingAux(Data data)
     {
-        ByCell = PropEntityIndexer<MapBuilding, Cell>.CreateConstant(
-            data, 
-            b => data.Planet.PolygonAux.PolyCells.Cells[b.Cell.RefId]);
+        ByCell = Indexer.MakeForEntity<Cell, MapBuilding>(
+            b => data.Planet.MapAux.CellHolder.Cells[b.Cell.RefId],
+            data);
     }
 }

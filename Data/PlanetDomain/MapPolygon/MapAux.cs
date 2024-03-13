@@ -4,32 +4,22 @@ using System.Diagnostics;
 using System.Linq;
 using Godot;
 
-public class MapPolygonAux
+public class MapAux
 {
     public PolyGrid<MapPolygon> MapPolyGrid { get; private set; }
     public PolyGrid<Cell> CellGrid { get; private set; }
-    public PolyCells PolyCells => _polyCells.Value;
-    private SingletonAux<PolyCells> _polyCells;
+    public CellHolder CellHolder => _cells.Value;
+    private SingletonCache<CellHolder> _cells;
     public HashSet<MapChunk> Chunks { get; private set; }
     public Dictionary<Cell, MapChunk> ChunksByCell { get; private set; }
     public LandSeaManager LandSea { get; private set; }
-    public ValChangeAction<MapPolygon, Regime> ChangedOwnerRegime { get; private set; }
-    public ValChangeAction<MapPolygon, Regime> ChangedOccupierRegime { get; private set; }
-    public EntityMultiIndexer<Regime, MapPolygon> PolysByRegime { get; private set; }
     public Dictionary<MapPolygon, List<Cell>> CellsByPoly { get; private set; }
     
-    public MapPolygonAux(Data data)
+    public MapAux(Data data)
     {
-        _polyCells = new SingletonAux<PolyCells>(data);
+        _cells = new SingletonCache<CellHolder>(data);
         
-        ChangedOwnerRegime = new ValChangeAction<MapPolygon, Regime>();
-        ChangedOccupierRegime = new ValChangeAction<MapPolygon, Regime>();
-
-        PolysByRegime = new EntityMultiIndexer<Regime, MapPolygon>(data,
-            p => p.OwnerRegime.Get(data), 
-            new RefAction[] { }, ChangedOwnerRegime);
-        
-        data.Notices.SetLandAndSea.Subscribe(() =>
+        data.Notices.Gen.SetLandAndSea.Subscribe(() =>
         {
             LandSea = new LandSeaManager();
             LandSea.SetMasses(data);
@@ -40,13 +30,13 @@ public class MapPolygonAux
             LandSea.SetMasses(data);
         });
         
-        data.Notices.SetPolyShapes.Subscribe(() => BuildPolyGrid(data));
+        data.Notices.Gen.SetPolyShapes.Subscribe(() => BuildPolyGrid(data));
         data.Notices.FinishedStateSync.Subscribe(() => BuildPolyGrid(data));
         
         data.Notices.FinishedStateSync.Subscribe(() => BuildChunks(data));
-        data.Notices.MadeCells.Subscribe(() => BuildChunks(data));
+        data.Notices.Gen.MadeCells.Subscribe(() => BuildChunks(data));
         
-        data.Notices.MadeCells.Subscribe(() => BuildCells(data));
+        data.Notices.Gen.MadeCells.Subscribe(() => BuildCells(data));
         data.Notices.FinishedStateSync.Subscribe(() => BuildCells(data));
     }
 
@@ -72,7 +62,7 @@ public class MapPolygonAux
             p => p.RelTo);
         CellsByPoly = new Dictionary<MapPolygon, List<Cell>>();
         foreach (var element in 
-                 data.GetAll<PolyCells>().First().Cells.Values)
+                 data.GetAll<CellHolder>().First().Cells.Values)
         {
             CellGrid.AddElement(element);
             
@@ -109,8 +99,8 @@ public class MapPolygonAux
         }
         polyGrid.Update();
         
-        foreach (var c in data.Planet.PolygonAux
-                     .PolyCells.Cells.Values)
+        foreach (var c in data.Planet.MapAux
+                     .CellHolder.Cells.Values)
         {
             cellGrid.AddElement(c);
         }

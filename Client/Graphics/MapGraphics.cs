@@ -34,12 +34,12 @@ public partial class MapGraphics : Node2D, IClientComponent
             SpectatingRegime = null;
         }
         
-        client.Data.BaseDomain.PlayerAux
+        client.Data.Notices.Player
             .PlayerChangedRegime.SubscribeForNode(n =>
             {
-                if (n.Entity == client.Data.BaseDomain.PlayerAux.LocalPlayer)
+                if (n.Owner == client.Data.BaseDomain.PlayerAux.LocalPlayer)
                 {
-                    SpectateRegime(n.Entity.Regime.Get(client.Data));
+                    SpectateRegime(n.Owner.Regime.Get(client.Data));
                 }
             }, this);
 

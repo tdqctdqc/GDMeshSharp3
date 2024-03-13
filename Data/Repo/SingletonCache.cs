@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class SingletonAux<T> where T : Entity
+public class SingletonCache<T> where T : Entity
 {
     private Data _data;
     public T Value => _data.GetAll<T>().FirstOrDefault();
-    public SingletonAux(Data data)
+    public SingletonCache(Data data)
     {
         _data = data;
         _data.SubscribeForCreation<T>(

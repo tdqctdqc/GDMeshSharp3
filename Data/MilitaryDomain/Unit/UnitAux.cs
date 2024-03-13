@@ -4,54 +4,43 @@ using Godot;
 
 public class UnitAux
 {
-    public EntityMultiIndexer<Regime, Unit> UnitByRegime { get; private set; }
-    public EntityRefColIndexer<UnitGroup, Unit> UnitByGroup { get; private set; }
-    public EntityMultiIndexer<Regime, UnitGroup> UnitGroupByRegime { get; private set; }
-    public EntityMultiIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
-    public ValChangeAction<Unit, UnitGroup> UnitChangedGroup { get; private set; }
-    public ValChangeAction<Unit, MapPos> UnitChangedPos { get; private set; }
-
-    public PropertyMultiIndexer<Cell, Unit> UnitsByCell { get; private set; }
+    public MultiIndexer<Regime, Unit> UnitByRegime { get; private set; }
+    public ERefColIndexer<UnitGroup, Unit> UnitByGroup { get; private set; }
+    public MultiIndexer<Regime, UnitGroup> UnitGroupByRegime { get; private set; }
+    public MultiIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
+    public MultiIndexer<Cell, Unit> UnitsByCell { get; private set; }
     
     private Data _data;
     public UnitAux(Data d)
     {
         _data = d;
-        UnitByRegime = new EntityMultiIndexer<Regime, Unit>(d,
-            u => u.Regime.Get(d), new RefAction[] { },
-            new ValChangeAction<Unit, Regime>[] { });
-        UnitGroupByRegime = new EntityMultiIndexer<Regime, UnitGroup>(d,
-            g => g.Regime.Get(d), new RefAction[] { },
-            new ValChangeAction<UnitGroup, Regime>[] { });
-        UnitTemplates = new EntityMultiIndexer<Regime, UnitTemplate>(
-            d, t => t.Regime.Get(d), new RefAction[] { },
-            new ValChangeAction<UnitTemplate, Regime>[] { });
-        UnitByGroup = new EntityRefColIndexer<UnitGroup, Unit>(
+        UnitByRegime = MultiIndexer.MakeForEntity<Regime, Unit>(
+            u => u.Regime.Get(d), d);
+        
+        UnitGroupByRegime = MultiIndexer.MakeForEntity<Regime, UnitGroup>(
+            g => g.Regime.Get(d), d);
+        
+        UnitTemplates = MultiIndexer.MakeForEntity<Regime, UnitTemplate>(
+            t => t.Regime.Get(d), d);
+        
+        UnitByGroup = new ERefColIndexer<UnitGroup, Unit>(
             g => g.Units.Items(d),  
             d.GetEntityMeta<UnitGroup>().GetRefColMeta<Unit>(nameof(UnitGroup.Units)),
             d);
-        UnitChangedPos = new ValChangeAction<Unit, MapPos>();
-        UnitChangedGroup = new ValChangeAction<Unit, UnitGroup>();
-        
        
-       var unitChangedCell = new ValChangeAction<Unit, Cell>();
-       UnitChangedPos.Subscribe(n => unitChangedCell.Invoke(n.Entity, n.NewVal.GetCell(d), n.OldVal.GetCell(d)));
-
-        UnitsByCell = new PropertyMultiIndexer<Cell, Unit>(
-            d, u => u.Position.GetCell(d),
-            new RefAction[]
-            {
-                d.Notices.FinishedGen,
-                d.Notices.FinishedStateSync
-            }, 
-            unitChangedCell
-        );
-        
+        var unitChangedCell = new ValChangeAction<Unit, Cell>();
+        _data.Notices.Military.UnitChangedPos.Subscribe(n => unitChangedCell.Invoke(n.Owner, n.NewVal.GetCell(d), n.OldVal.GetCell(d)));
+                
+        UnitsByCell = MultiIndexer.MakeForEntity<Cell, Unit>(
+            u => u.Position.GetCell(d), d);
+        UnitsByCell.RegisterReCalc(d.Notices.Gen.FinishedGen);
+        UnitsByCell.RegisterReCalc(d.Notices.FinishedStateSync);
+        UnitsByCell.RegisterChanged(unitChangedCell);
         
         d.Notices.FinishedStateSync.Subscribe(MakeUnitGrid);
         d.Notices.Ticked.Blank.Subscribe(MakeUnitGrid);
-        d.Notices.ExitedGen.Subscribe(MakeUnitGrid);
-        d.Notices.FinishedGen.Subscribe(MakeUnitGrid);
+        d.Notices.Gen.ExitedGen.Subscribe(MakeUnitGrid);
+        d.Notices.Gen.FinishedGen.Subscribe(MakeUnitGrid);
     }
 
     private void MakeUnitGrid()

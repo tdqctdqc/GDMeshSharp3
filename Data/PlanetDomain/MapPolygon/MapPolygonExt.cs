@@ -59,35 +59,19 @@ public static class MapPolygonExt
     public static MapPolygonEdge GetEdge(this MapPolygon poly, MapPolygon neighbor, Data data) 
         => data.Planet.PolyEdgeAux.GetEdge(poly, neighbor);
     
-    public static ReadOnlyHash<ResourceDeposit> GetResourceDeposits(this MapPolygon p, Data data)
+    public static IEnumerable<ResourceDeposit> GetResourceDeposits(this MapPolygon p, Data data)
     {
-        var rd = data.Planet.ResourceDepositAux.ByPoly[p];
-        return rd == null ? null : new ReadOnlyHash<ResourceDeposit>(rd.ToHashSet());
+        return p.GetCells(data)
+            .Where(c => c.HasResourceDeposit(data))
+            .Select(c => c.GetResourceDeposit(data));
     }
 
     public static List<MapBuilding> GetBuildings(this MapPolygon poly, Data data)
     {
         var bAux = data.Infrastructure.BuildingAux;
         return poly.GetCells(data)
-            .Where(c => bAux.ByCell.ContainsKey(c))
+            .Where(c => bAux.ByCell.Contains(c))
             .Select(c => bAux.ByCell[c]).ToList();
-    }
-
-    public static bool HasSettlement(this MapPolygon p, Data data)
-    {
-        return GetSettlement(p, data) != null;
-    }
-    public static Settlement GetSettlement(this MapPolygon p, Data data)
-    {
-        return data.Infrastructure.SettlementAux.ByPoly.ContainsKey(p) ? data.Infrastructure.SettlementAux.ByPoly[p] : null;
-    }
-    public static Peep GetPeep(this MapPolygon poly, Data data)
-    {
-        return data.Society.PolyPeepAux.ByPoly[poly];
-    }
-    public static bool HasPeep(this MapPolygon poly, Data data)
-    {
-        return data.Society.PolyPeepAux.ByPoly[poly] != null;
     }
 
     public static IEnumerable<MapPolyNexus> GetNexi(this MapPolygon p, Data data)
@@ -103,7 +87,7 @@ public static class MapPolygonExt
 
     public static List<Cell> GetCells(this MapPolygon p, Data d)
     {
-        return d.Planet.PolygonAux.CellsByPoly[p];
+        return d.Planet.MapAux.CellsByPoly[p];
     }
 
     public static float GetArea(this MapPolygon p, Data d)

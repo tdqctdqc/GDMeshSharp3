@@ -7,26 +7,28 @@ using MessagePack;
 
 public class Settlement : Location
 {
-    public ERef<MapPolygon> Poly { get; protected set; }
+    public CellRef Cell { get; protected set; }
     public ModelRef<SettlementTier> Tier { get; private set; }
     public string Name { get; protected set; }
     
     public static Settlement Create(string name, 
-        MapPolygon poly, int size, ICreateWriteKey key)
+        Cell cell, int size, ICreateWriteKey key)
     {
         var tier = key.Data.Models.Settlements.GetTier(size);
-        var s = new Settlement(key.Data.IdDispenser.TakeId(), poly.MakeRef(), 
+        var s = new Settlement(key.Data.IdDispenser.TakeId(),
+            cell.MakeRef(), 
             tier.MakeRef(), name);
         key.Create(s);
         return s;
     }
-    [SerializationConstructor] private Settlement(int id, ERef<MapPolygon> poly,
+    [SerializationConstructor] private Settlement(int id, 
+        CellRef cell,
         ModelRef<SettlementTier> tier, 
         string name) : base(id)
     {
         Tier = tier;
         Name = name;
-        Poly = poly;
+        Cell = cell;
     }
 
     public void SetName(string name, GenWriteKey key)
@@ -38,7 +40,7 @@ public class Settlement : Location
     {
         var old = Tier.Get(key.Data);
         Tier = tier.MakeRef();
-        key.Data.Infrastructure.SettlementAux.ChangedTier.Invoke(this, tier, old);
+        key.Data.Notices.Infrastructure.ChangedTier.Invoke(this, tier, old);
     }
 
     public void SetSizeGen(int size, GenWriteKey key)

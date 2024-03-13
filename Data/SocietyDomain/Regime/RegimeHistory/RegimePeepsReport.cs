@@ -12,7 +12,7 @@ public class RegimePeepsReport
     public static RegimePeepsReport Construct(Regime r, Data d)
     {
         return new RegimePeepsReport(d.Tick, r.GetPeeps(d).Sum(p => p.Size),
-            r.GetPolys(d).Sum(p => p.GetPeep(d).Employment.NumUnemployed(d)));
+            r.GetCells(d).Sum(p => p.GetPeep(d).Employment.NumUnemployed(d)));
     }
     [SerializationConstructor] private RegimePeepsReport(int tick, int totalPop, int unemployed)
     {

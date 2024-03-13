@@ -9,11 +9,20 @@ public class Bank : BuildingModel
             25, 200, 
             new List<BuildingModelComponent>
             {
-                new Workplace(new Dictionary<PeepJob, int>
-                    {
-                        {jobs.Bureaucrat, 500}
-                    }),
-                new BuildingProd(flows.Income, 100)
+                new BuildingProd(
+                    IdCount<IModel>.Construct(
+                        (flows.Labor, 500)
+                    ),
+                    
+                    IdCount<IModel>.Construct(
+                        (flows.Income, 100)
+                    ), 
+                    
+                    IdCount<PeepJob>.Construct(
+                        (jobs.Bureaucrat, 500)
+                    ), 
+                    
+                    flows)
             },
             new MakeableAttribute(
                 IdCount<IModel>.Construct(new Dictionary<IModel, float>

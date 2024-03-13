@@ -19,7 +19,7 @@ public class OrderHolder
         Orders = new ConcurrentDictionary<Regime, RegimeTurnOrders>();
         _aiCalcCancelTokens = new ConcurrentDictionary<Regime, CancellationTokenSource>();
         _aiOrderCalcs = new ConcurrentDictionary<Regime, Task<RegimeTurnOrders>>();
-        key.Data.BaseDomain.PlayerAux.PlayerChangedRegime
+        key.Data.Notices.Player.PlayerChangedRegime
             .Subscribe(HandlePlayerChangedRegime);
     }
 

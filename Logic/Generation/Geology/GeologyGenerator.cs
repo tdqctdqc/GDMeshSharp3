@@ -45,7 +45,7 @@ public class GeologyGenerator : Generator
         report.StopSection("HandleIsthmusAndInlandSeas");
         
         report.StartSection(); 
-        Data.Notices.SetLandAndSea.Invoke();
+        Data.Notices.Gen.SetLandAndSea.Invoke();
         report.StopSection("SetLandmasses");
         
         return report;

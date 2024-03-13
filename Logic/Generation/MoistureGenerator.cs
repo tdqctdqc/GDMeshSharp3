@@ -107,7 +107,7 @@ public class MoistureGenerator : Generator
         var riverFlowPerMoisture = Data.GenMultiSettings.MoistureSettings.RiverFlowPerMoisture.Value;
         var baseRiverFlowCost = Data.GenMultiSettings.MoistureSettings.BaseRiverFlowCost.Value;
         var roughnessMult = Data.GenMultiSettings.MoistureSettings.RiverFlowCostRoughnessMult.Value;
-        Parallel.ForEach(Data.Planet.PolygonAux.LandSea.Landmasses, doLandmass);
+        Parallel.ForEach(Data.Planet.MapAux.LandSea.Landmasses, doLandmass);
         
         
         void doLandmass(Landmass lm)

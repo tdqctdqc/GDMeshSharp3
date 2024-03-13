@@ -6,28 +6,18 @@ using Godot;
 
 public class Iron : NaturalResource, IMineable
 {
-    protected override int _overflowSize { get; } = 100;
-    protected override int _minDepositSize { get; } = 10;
-    protected override OverFlowType _overflow { get; } = OverFlowType.Single;
-    
-    
     public Iron() 
         : base(nameof(Iron), Colors.DarkRed,
             5f)
     {
     }
     protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    public override int GetDepositScore(MapPolygon p, Data d)
+    public override int GetDepositScore(Cell p, Data d)
     {
         var score = 15;
-        score = Mathf.FloorToInt(score + p.Roughness * 50);
-        if (p.IsWater()) score /= 10;
-        if(p.IsLand && p.Moisture >= d.Models.Vegetations.Swamp.MinMoisture * .75f) score += 20;
+        score = Mathf.FloorToInt(score + p.Landform.Get(d).MinRoughness * 50);
+        if (p is RiverCell || p is SeaCell) score /= 10;
+        if(p is LandCell && p.Vegetation.Get(d).MinMoisture >= d.Models.Vegetations.Swamp.MinMoisture * .75f) score += 20;
         return score;
-    }
-
-    public override int GenerateDepositSize(MapPolygon p)
-    {
-        return Mathf.FloorToInt(500 * Game.I.Random.RandfRange(.5f, 2f));
     }
 }
