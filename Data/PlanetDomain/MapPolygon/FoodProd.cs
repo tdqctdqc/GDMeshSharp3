@@ -22,7 +22,7 @@ public class FoodProd
         Nums = nums;
     }
 
-    public void Add(FoodProdTechnique tech, int num)
+    public void Add(FoodProdTechnique tech, float num)
     {
         Nums.AddOrSum(tech.MakeRef(), num);
     }

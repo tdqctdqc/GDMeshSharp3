@@ -120,6 +120,20 @@ public static class EnumerableExt
         return res;
     }
     
+    public static Dictionary<T, float> MergeCounts<T>
+        (this IEnumerable<Dictionary<T, float>> elements)
+    {
+        var res = new Dictionary<T, float>();
+        foreach (var dic in elements)
+        {
+            foreach (var (key, value) in dic)
+            {
+                res.AddOrSum(key, value);
+            }
+        }
+        return res;
+    }
+    
     public static void DoForRuns<T>(this List<T> list,
         Func<T, bool> valid,
         Action<List<T>> handleRun)

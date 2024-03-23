@@ -13,7 +13,9 @@ public abstract class FoodProdTechnique : IModel, IIconed
     public Icon Icon { get; private set; }
     public PeepJob JobType { get; private set; }
 
-    public FoodProdTechnique(string name, int baseProd, int baseLabor, int income, PeepJob jobType)
+    public FoodProdTechnique(string name, int baseProd, 
+        int baseLabor, int income, 
+        PeepJob jobType)
     {
         Name = name;
         BaseProd = baseProd;

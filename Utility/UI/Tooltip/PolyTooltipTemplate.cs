@@ -16,6 +16,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             GetRegime,
             GetLandform,
             GetVeg,
+            GetPop
         };
     protected override List<Func<(MapPolygon poly, Cell cell), Data, Control>> _slowGetters { get; }
         = new List<Func<(MapPolygon poly, Cell cell), Data, Control>>
@@ -24,11 +25,30 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             // GetSettlementSize, 
             GetPeeps,
             GetBuildings,
+            GetFoodProd,
             GetResourceDeposits,
             // GetAltitude,
             // GetSlots
         };
 
+    private static Control GetPop((MapPolygon poly, Cell cell) t, Data d)
+    {
+        var s = "";
+        var cells = t.poly.GetCells(d).Where(c => c.HasPeep(d));
+        if (cells.Count() > 0)
+        {
+            s += "Poly pop: " 
+                 + cells.Sum(c => c.GetPeep(d).Size)
+                 + "\n";
+        }
+
+        if (t.cell is LandCell)
+        {
+            s += "Cell pop: " + t.cell.GetPeep(d).Size;
+        }
+
+        return NodeExt.CreateLabel(s);
+    }
     private static Control GetBuildings((MapPolygon poly, Cell cell) t, Data d)
     {
         var bs = t.poly.GetBuildings(d);
@@ -49,7 +69,30 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         
         return control;
     }
-
+    private static Control GetFoodProd((MapPolygon poly, Cell cell) t, Data d)
+    {
+        if (t.cell is LandCell l == false) return new Control();
+        var polyFoodCounts = t.poly
+            .GetCells(d).OfType<LandCell>()
+            .Select(c => c.FoodProd.Nums)
+            .MergeCounts();
+        
+        var bs = t.cell;
+        var control = new VBoxContainer();
+        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
+        
+        foreach (var (model, num) in l.FoodProd.Nums)
+        {
+            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+                model.Get(d).Icon, 
+                $"{num.RoundTo2Digits()} " +
+                $"/ {polyFoodCounts[model].RoundTo2Digits()}",
+                iconSize);
+            control.AddChild(box);
+        }
+        
+        return control;
+    }
     private static Control GetAltitude((MapPolygon poly, Cell cell) t, Data d)
     {
         return NodeExt.CreateLabel("Altitude: " + t.poly.Altitude);
@@ -71,7 +114,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
 
     private static Control GetRegime((MapPolygon poly, Cell cell) t, Data d)
     {
-        var polyR = t.poly.OwnerRegime;
+        var polyR = t.cell.Controller;
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
 
         if (polyR.IsEmpty())

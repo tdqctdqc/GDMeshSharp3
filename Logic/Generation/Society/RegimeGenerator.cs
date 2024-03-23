@@ -23,16 +23,15 @@ public class RegimeGenerator : Generator
         _data = key.GenData;
         var report = new GenReport(GetType().Name);
         report.StartSection();
-        GenerateRegimes();
+        var polyRegimes = GenerateRegimes();
 
         var landCells = _data.Planet.MapAux.CellHolder.Cells.Values.OfType<LandCell>();
         
         foreach (var landCell in landCells)
         {
-            var r = landCell.Polygon.Get(_data).OccupierRegime.Get(_data);
+            var r = polyRegimes[landCell.Polygon.Get(_data)];
             landCell.SetController(r, key);
         }
-        
         
         _data.Notices.Gen.GeneratedRegimes.Invoke();
         
@@ -42,79 +41,67 @@ public class RegimeGenerator : Generator
 
     
 
-    private void GenerateRegimes()
+    private Dictionary<MapPolygon, Regime> GenerateRegimes()
     {
         var polysPerRegime = 30;
-        var lmPickers = new ConcurrentDictionary<HashSet<MapPolygon>, WandererPicker>();
+        var polyRegimes = 
+            new Dictionary<MapPolygon, Regime>();
         var templates = _data.Models.RegimeTemplates.Models.Values.ToHashSet();
         
-        _data.Planet.MapAux.LandSea.Landmasses.ForEach(lm =>
-        {
-            var picker = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);
-            lmPickers.TryAdd(lm.Polys, picker);
-        });
+        _data.Planet.MapAux.LandSea.Landmasses.ForEach(
+            lm =>
+            {
+                var lmRegimes = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);
+                polyRegimes.AddRange(lmRegimes);
+            });
 
         var remainders = new ConcurrentBag<HashSet<MapPolygon>>();
         
-        Parallel.ForEach(_data.Planet.MapAux.LandSea.Landmasses, lm =>
+        foreach (var lm in _data.Planet.MapAux.LandSea.Landmasses)
         {
-            var remainder = ExpandRegimes(lm.Polys, lmPickers[lm.Polys]);
+            var remainder = ExpandRegimes(polyRegimes);
             remainders.Add(remainder);
-        });
+        }
         
         foreach (var r in remainders)
         {
-            HandleRemainder(r, templates);
+            HandleRemainder(r, templates, polyRegimes);
         }
+
+        return polyRegimes;
     }
 
-    private WandererPicker GenerateLandmassRegimes(HashSet<MapPolygon> lm, int polysPerRegime,
+    private Dictionary<MapPolygon, Regime> GenerateLandmassRegimes(HashSet<MapPolygon> lm, int polysPerRegime,
         HashSet<RegimeTemplate> templates)
     {
-        var sw = new Stopwatch();
-        var hash = lm.ToHashSet();
-
+        var res = new Dictionary<MapPolygon, Regime>();
         int numRegimes = lm.Count / _polysForRegimeAvg;
         numRegimes = Mathf.Max(1, numRegimes);
-        
-        
         var seeds = lm.GetDistinctRandomElements(numRegimes);
-        var group = numRegimes;
-        var num6s = numRegimes / 4;
-        var num2s = numRegimes / 3;
         
-        var picker = new WandererPicker(lm);
-        var iter = 0;
         for (var i = 0; i < seeds.Count; i++)
         {
-            var prim = ColorsExt.GetRandomColor();
-            var sec = prim.Inverted();
-            iter++;
             var template = templates.GetRandomElement();
-            // templates.Remove(template);
             var regime = Regime.Create(seeds[i], template, false, _key);
-            seeds[i].SetInitialRegime(regime, _key);
-
-            int numToPick = 0;
-            if (num6s > 0)
-            {
-                numToPick = 6;
-                num6s--;
-            }
-            else if (num2s > 0)
-            {
-                numToPick = 2;
-                num2s--;
-            }
-            else numToPick = 1;
-            var wand = new RegimeWanderer(regime, seeds[i], picker, numToPick, _data);
-            seeds[i].SetInitialRegime(regime, _key);
+            res.Add(seeds[i], regime);
         }
-        
-        return picker;
+        return res;
     }
-    private HashSet<MapPolygon> ExpandRegimes(HashSet<MapPolygon> lm, WandererPicker picker)
+    private HashSet<MapPolygon> ExpandRegimes(Dictionary<MapPolygon, Regime> polyRegimes)
     {
+        var free = _key.Data.GetAll<MapPolygon>()
+            .Where(p => p.IsLand).Except(polyRegimes.Keys).ToHashSet();
+        
+        var picker = new WandererPicker(free);
+        int iter = 1;
+        foreach (var (p, r) in polyRegimes)
+        {
+            var w = new RegimeWanderer(r, p, picker, iter, _key.Data);
+            iter += 2;
+            iter %= 6;
+            if (iter == 0) iter++;
+            picker.AddWanderer(w);
+        }
         picker.Pick(_data);
         
         foreach (var w in picker.Wanderers)
@@ -122,7 +109,10 @@ public class RegimeGenerator : Generator
             var r = ((RegimeWanderer) w).Regime;
             foreach (var p in w.Picked)
             {
-                p.SetInitialRegime(r, _key);
+                if (polyRegimes.ContainsKey(p) == false)
+                {
+                    polyRegimes.Add(p, r);
+                }
             }
             r.SetIsMajor(w.Picked.Count >= _numPolysToBeMajor, _key);
         }
@@ -130,7 +120,9 @@ public class RegimeGenerator : Generator
         return picker.NotTaken;
     }
 
-    private void HandleRemainder(HashSet<MapPolygon> remainder, HashSet<RegimeTemplate> templates)
+    private void HandleRemainder(HashSet<MapPolygon> remainder,
+        HashSet<RegimeTemplate> templates,
+        Dictionary<MapPolygon, Regime> polyRegimes)
     {
         var unions = UnionFind.Find(
             remainder, 
@@ -153,7 +145,8 @@ public class RegimeGenerator : Generator
             for (var i = 0; i < union.Count; i++)
             {
                 var p = union[i];
-                p.SetInitialRegime(regime, _key);
+                if (polyRegimes.ContainsKey(p)) continue;
+                polyRegimes.Add(p, regime);
             }
         }
     }

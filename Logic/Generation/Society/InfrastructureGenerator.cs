@@ -23,26 +23,26 @@ public class InfrastructureGenerator : Generator
         
         genReport.StartSection();
         var roads = RoadNetwork.Create(key);
-        var allSegs = new ConcurrentBag<Dictionary<Vector2I, RoadModel>>();
-
-        Parallel.ForEach(_data.Planet.MapAux.LandSea.Landmasses, lm =>
-        {
-            var segs = GenerateForLandmass(lm);
-            if(segs != null) allSegs.Add(segs);
-        });
-        foreach (var segs in allSegs)
-        {
-            foreach (var kvp in segs)
-            {
-                var edge = kvp.Key;
-                var road = kvp.Value;
-                var wp1 = PlanetDomainExt.GetPolyCell(edge.X, _data);
-                var wp2 = PlanetDomainExt.GetPolyCell(edge.Y, _data);
-                var success = roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
-                if (success == false) throw new Exception();
-            }
-        }
-        genReport.StopSection(nameof(GenerateForLandmass));
+        // var allSegs = new ConcurrentBag<Dictionary<Vector2I, RoadModel>>();
+        //
+        // Parallel.ForEach(_data.Planet.MapAux.LandSea.Landmasses, lm =>
+        // {
+        //     var segs = GenerateForLandmass(lm);
+        //     if(segs != null) allSegs.Add(segs);
+        // });
+        // foreach (var segs in allSegs)
+        // {
+        //     foreach (var kvp in segs)
+        //     {
+        //         var edge = kvp.Key;
+        //         var road = kvp.Value;
+        //         var wp1 = PlanetDomainExt.GetPolyCell(edge.X, _data);
+        //         var wp2 = PlanetDomainExt.GetPolyCell(edge.Y, _data);
+        //         var success = roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
+        //         if (success == false) throw new Exception();
+        //     }
+        // }
+        // genReport.StopSection(nameof(GenerateForLandmass));
         return genReport;
     }
     private Dictionary<Vector2I, RoadModel> GenerateForLandmass(Landmass lm)
@@ -81,7 +81,8 @@ public class InfrastructureGenerator : Generator
             p => p,
             p =>
             {
-                var landCells = p.GetCells(_data).OfType<LandCell>();
+                var landCells = p
+                    .GetCells(_data).OfType<LandCell>();
                 if (p.GetCells(_data).Any(c => c.HasSettlement(_data))
                     && p.GetCells(_data).Where(c => c.HasPeep(_data))
                         .Sum(c => c.GetPeep(_data).Size)
@@ -89,7 +90,8 @@ public class InfrastructureGenerator : Generator
                     )
                 {
                     var urbanCell = landCells
-                        .First(t => t.GetLandform(_data) == urban);
+                        .FirstOrDefault(t => t.GetLandform(_data) == urban);
+                    if (urbanCell == null) urbanCell = landCells.First();
                     var total = p.GetCells(_data).Sum(c => c.GetPeep(_data).Size);
                     var iNode = new InfrastructureNode(urbanCell, total);
                     return iNode;

@@ -36,22 +36,18 @@ public class SocietyGenerator : Generator
         var margin = .2f;
         var employed = popSurplus * (1f - (unemployedRatio + margin));
         if (popSurplus <= 0) return;
-
         
-
         float score(LandCell p)
         {
             var s = (p.GetPeep(_data).Size + CellHabitability(p));
-            return s * s * s;
+            return s;
         }
-        
         
         var extractionLabor = GenerateExtractionBuildings(r);
         var surplus = employed - (extractionLabor);
         var forFactories = surplus * .9f;
         var forBanks = surplus * .1f;
 
-        
         GenerateWorkBuildingType(_key.Data.Models.Buildings.Factory, r, forFactories, score);
         GenerateWorkBuildingType(_key.Data.Models.Buildings.Bank, r, forBanks, score);
         GenerateLaborers(r, employed);
@@ -80,12 +76,11 @@ public class SocietyGenerator : Generator
             var buildingSurplus = technique.BaseProd - technique.BaseLabor * foodConsPerPeep;
             Parallel.ForEach(territory, p =>
             {
-                var numBuilding = Mathf
-                    .RoundToInt(technique.NumForCell(p, _data) * developmentScale);
+                var numBuilding = technique.NumForCell(p, _data) * developmentScale;
                 if (numBuilding == 0) return;
                 foodSurplus.Add(buildingSurplus * numBuilding);
                 p.GetPeep(_key.Data)
-                    .GrowSize(technique.BaseLabor * numBuilding, _key);
+                    .GrowSize(Mathf.CeilToInt(technique.BaseLabor * numBuilding), _key);
                 p.FoodProd.Add(technique, numBuilding);
             });
         }
@@ -114,7 +109,6 @@ public class SocietyGenerator : Generator
     }
     private float GenerateExtractionBuildings(Regime r)
     {
-
         return 0f;
     }
     private float GenerateTownHalls(Regime r, HashSet<MapPolygon> settlementPolys)
@@ -147,12 +141,13 @@ public class SocietyGenerator : Generator
             .Where(c =>
                 c.HasBuilding(_data) == false
                     && model.CanBuildInCell(c, _key.Data))
-            .OrderByDescending(suitability)
+            .OrderBy(c => Game.I.Random.Randf())
             .ToList();
-        var portions = Apportioner.ApportionLinear(popBudget, cells, suitability);
+        var portions = Apportioner
+            .ApportionLinear(popBudget, cells, suitability);
         var laborReq = model.GetComponent<BuildingProd>().Inputs.Get(_data.Models.Flows.Labor);
         var num = Mathf.FloorToInt(popBudget / laborReq);
-        
+        num = Mathf.Min(cells.Count - 1, num);
         for (var i = 0; i < num; i++)
         {
             MapBuilding.CreateGen(cells[i], model, _key);
@@ -208,6 +203,7 @@ public class SocietyGenerator : Generator
             var cell = cells[i];
             var peep = cell.GetPeep(_data);
             var cellUnemployed = portions[i];
+            if (cellUnemployed <= 0f) continue;
             peep.GrowSize(cellUnemployed, _key);
         }
     }

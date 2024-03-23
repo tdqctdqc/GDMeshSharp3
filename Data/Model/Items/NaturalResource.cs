@@ -11,7 +11,8 @@ public abstract class NaturalResource : TradeableItem
     }
     public HashSet<Cell> GenerateDeposits(Data data)
     {
-        var cells = data.Planet.MapAux.CellHolder.Cells.Values;
+        var cells = data.Planet.MapAux
+            .CellHolder.Cells.Values;
         var deps = new HashSet<Cell>();
         var scores = new Dictionary<MapPolygon, int>();
         foreach (var p in cells)

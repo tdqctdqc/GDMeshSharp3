@@ -11,7 +11,8 @@ public static class Indexer
             (Func<TValue, TKey> getKey, Data d)
             where TValue : Entity
     {
-        var indexer = new Indexer<TKey, TValue>(() => d.GetAll<TValue>(),
+        var indexer = new Indexer<TKey, TValue>(
+            () => d.GetAll<TValue>(),
             getKey);
         d.SubscribeForCreation<TValue>(n => indexer.HandleAdded((TValue)n.Entity));
         d.SubscribeForDestruction<TValue>(n => indexer.HandleRemoved((TValue)n.Entity));
@@ -65,7 +66,12 @@ public class Indexer<TKey, TValue>
     }
     public void HandleAdded(TValue v)
     {
-        _dic.Add(_getKey(v), v);
+        var key = _getKey(v);
+        if (key == null)
+        {
+            return;
+        }
+        _dic.Add(key, v);
     }
     public void HandleRemoved(TValue v)
     {

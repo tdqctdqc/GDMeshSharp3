@@ -52,9 +52,9 @@ public class WorldGenerator
             Data.GenMultiSettings.Dimensions, 
             true));
         RunGenerator(new GeologyGenerator());
-        RunGenerator(new ResourceGenerator());
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyCellGenerator());
+        // RunGenerator(new ResourceGenerator());
         RunGenerator(new RegimeGenerator());
         RunGenerator(new SocietyGenerator());
         RunGenerator(new InfrastructureGenerator());
