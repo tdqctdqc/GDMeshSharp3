@@ -6,9 +6,10 @@ public class BudgetPool
     public static BudgetPool ConstructForRegime(Regime r, Data d)
     {
         var models = IdCount<IModel>.Construct();
-        models.Add(r.Store);
+        models.Add(r.Stock.Stock);
         return new BudgetPool(models);
     }
+    
     public BudgetPool(IdCount<IModel> models)
     {
         AvailModels = IdCount<IModel>.Construct(models);

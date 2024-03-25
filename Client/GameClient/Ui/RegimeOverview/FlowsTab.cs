@@ -23,7 +23,7 @@ public partial class FlowsTab : ScrollContainer
 
         foreach (var flow in flowIds)
         {
-            var avail = regime.Store.Get(flow);
+            var avail = regime.Stock.Stock.Get(flow);
             var box = NodeExt.GetLabeledIcon<HBoxContainer>(
                 flow.Icon, $"Available: {avail}",
                 iconSize);

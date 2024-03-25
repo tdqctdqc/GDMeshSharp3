@@ -24,12 +24,6 @@ public class FoodAndPopGrowthProcedure : Procedure
         DoFoodConsumption(key);
         var tick = key.Data.Tick;
         
-        //todo make history update itself in its own procedure
-        foreach (var r in key.Data.GetAll<Regime>())
-        {
-            var peepHist = RegimePeepsReport.Construct(r, key.Data);
-            r.History.PeepHistory.Add(tick, peepHist);
-        }
     }
 
     private void DoFoodConsumption(ProcedureWriteKey key)
@@ -39,8 +33,7 @@ public class FoodAndPopGrowthProcedure : Procedure
         {
             var regime = key.Data.Get<Regime>(kvp.Key);
             var cons = kvp.Value;
-            regime.History.ItemHistory.GetLatest(food).Consumed += cons;
-            regime.Store.Remove(food, cons);
+            regime.Stock.Stock.Remove(food, cons);
         }
     }
     private void DoGrowth(ProcedureWriteKey key)

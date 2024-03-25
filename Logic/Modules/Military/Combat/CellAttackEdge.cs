@@ -143,10 +143,10 @@ public class CellAttackEdge : ICombatGraphEdge
         .Where(u => combat.Suppressed.Contains(u) == false);
         if (nonSuppressedAttackers.Count() == 0) return;
         var victoriousAllianceUnits = nonSuppressedAttackers
-            .SortInto(u => u.Regime.Get(key.Data).GetAlliance(key.Data))
+            .SortBy(u => u.Regime.Get(key.Data).GetAlliance(key.Data))
             .MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data)));
         
-        var victoriousRegime = victoriousAllianceUnits.Value.SortInto(u => u.Regime.Get(key.Data))
+        var victoriousRegime = victoriousAllianceUnits.Value.SortBy(u => u.Regime.Get(key.Data))
             .MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data))).Key;
         // GD.Print($"Advance by {victoriousRegime.Name} at cell {Target.Id}");
         var changeController = ChangePolyCellControllerProcedure

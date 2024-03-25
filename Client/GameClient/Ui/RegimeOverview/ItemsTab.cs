@@ -25,23 +25,23 @@ public partial class ItemsTab : ScrollContainer
 
         foreach (var item in itemIds)
         {
-            var amt = regime.Store.Get(item);
-            var itemReport = regime.History.ItemHistory.GetLatest(item);
-            
-            var hbox = new HBoxContainer();
-            
-            hbox.AddChild(item.Icon.GetTextureRect(iconSize));
-            hbox.CreateLabelAsChild($"Amount: {amt} ");
-            hbox.CreateLabelAsChild($"Prod: {itemReport.Produced} ");
-            hbox.CreateLabelAsChild($"Consumed: {itemReport.Consumed} ");
-            if (item is TradeableItem)
-            {
-                hbox.CreateLabelAsChild($"Bought: {itemReport.Bought} ");
-                hbox.CreateLabelAsChild($"Sold: {itemReport.Sold} ");
-                hbox.CreateLabelAsChild($"Offered: {itemReport.Offered} ");
-                hbox.CreateLabelAsChild($"Demanded: {itemReport.Demanded} ");
-            }
-            _container.AddChild(hbox);
+            // var amt = regime.Store.Get(item);
+            // var itemReport = regime.History.ItemHistory.GetLatest(item);
+            //
+            // var hbox = new HBoxContainer();
+            //
+            // hbox.AddChild(item.Icon.GetTextureRect(iconSize));
+            // hbox.CreateLabelAsChild($"Amount: {amt} ");
+            // hbox.CreateLabelAsChild($"Prod: {itemReport.Produced} ");
+            // hbox.CreateLabelAsChild($"Consumed: {itemReport.Consumed} ");
+            // if (item is TradeableItem)
+            // {
+            //     hbox.CreateLabelAsChild($"Bought: {itemReport.Bought} ");
+            //     hbox.CreateLabelAsChild($"Sold: {itemReport.Sold} ");
+            //     hbox.CreateLabelAsChild($"Offered: {itemReport.Offered} ");
+            //     hbox.CreateLabelAsChild($"Demanded: {itemReport.Demanded} ");
+            // }
+            // _container.AddChild(hbox);
         }
     }
 }

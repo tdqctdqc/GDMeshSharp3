@@ -5,8 +5,13 @@ using System.Linq;
 
 public abstract class BudgetBranch : IBudgetNode
 {
-    IEnumerable<IBudgetNode> Children { get; }
+    public List<IBudgetNode> Children { get; }
     public BudgetBranch Parent { get; }
+    public ZeroToOne Weight { get; protected set; }
+    protected BudgetBranch()
+    {
+        Children = new List<IBudgetNode>();
+    }
 
     public IEnumerable<PriorityNode> GetLeaves()
     {
@@ -15,6 +20,5 @@ public abstract class BudgetBranch : IBudgetNode
             .SelectMany(b => b.GetLeaves());
         return selfLeaves.Concat(childLeaves);
     }
-
-    public abstract float GetWeight();
+    public abstract void SetWeights(float selfWeight, Regime r, Data d);
 }

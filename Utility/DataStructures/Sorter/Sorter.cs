@@ -10,10 +10,10 @@ public abstract class Sorter
 
 public static class SorterExt
 {
-    public static Dictionary<TKey, List<TValue>> SortInto<TKey, TValue>(this IEnumerable<TValue> vals,
-        Func<TValue, TKey> getKey)
+    public static Dictionary<TKey, List<TSource>> SortBy<TKey, TSource>(this IEnumerable<TSource> vals,
+        Func<TSource, TKey> getKey)
     {
-        var dic = new Dictionary<TKey, List<TValue>>();
+        var dic = new Dictionary<TKey, List<TSource>>();
         foreach (var val in vals)
         {
             var key = getKey(val);
@@ -21,7 +21,18 @@ public static class SorterExt
         }
         return dic;
     }
-    
+    public static Dictionary<TKey, List<TValue>> SortBy<TKey, TSource, TValue>(this IEnumerable<TSource> vals,
+        Func<TSource, TKey> getKey, Func<TSource, TValue> getValue)
+    {
+        var dic = new Dictionary<TKey, List<TValue>>();
+        foreach (var source in vals)
+        {
+            var key = getKey(source);
+            var val = getValue(source);
+            dic.AddOrUpdate(key, val);
+        }
+        return dic;
+    }
     public static Dictionary<TKey, int> SortInto<TKey, TSource>(this IEnumerable<TSource> sources,
         Func<TSource, TKey> getKey, Func<TSource, int> getValue)
     {

@@ -11,8 +11,7 @@ public class Regime : Entity
     public ModelRef<RegimeTemplate> Template { get; private set; }
     public Color PrimaryColor { get; protected set; }
     public Color SecondaryColor { get; protected set; }
-    public IdCount<IModel> Store { get; protected set; }
-    public RegimeHistory History { get; private set; }
+    public RegimeStock Stock { get; protected set; }
     public string Name { get; protected set; }
     public RegimeFinance Finance { get; private set; }
     public bool IsMajor { get; private set; }
@@ -22,17 +21,17 @@ public class Regime : Entity
     [SerializationConstructor] private Regime(int id, string name, 
         Color primaryColor, Color secondaryColor, 
         ERef<MapPolygon> capital,
-        IdCount<IModel> store, RegimeHistory history, ModelRef<Culture> culture,
-        ModelRef<RegimeTemplate> template, RegimeFinance finance, bool isMajor, 
+        RegimeStock stock, ModelRef<Culture> culture,
+        ModelRef<RegimeTemplate> template, 
+        RegimeFinance finance, bool isMajor, 
         MakeQueue makeQueue,
         RegimeMilitary military) : base(id)
     {
-        Store = store;
+        Stock = stock;
         PrimaryColor = primaryColor;
         SecondaryColor = secondaryColor;
         Name = name;
         Capital = capital;
-        History = history;
         Culture = culture;
         Template = template;
         Finance = finance;
@@ -45,14 +44,13 @@ public class Regime : Entity
         RegimeTemplate regimeTemplate, bool isMajor, 
         ICreateWriteKey key)
     {
-        var store = IdCount<IModel>.Construct();
+        var store = RegimeStock.Construct();
         var id = key.Data.IdDispenser.TakeId();
         var r = new Regime(id, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
             new ERef<MapPolygon>(seed.Id),
             store,
-            RegimeHistory.Construct(key.Data), 
             regimeTemplate.Culture.MakeRef(),
             regimeTemplate.MakeRef(),
             RegimeFinance.Construct(),
@@ -79,5 +77,10 @@ public class Regime : Entity
         {
             key.Data.RemoveEntity(alliance.Id, key);
         }
+    }
+
+    public void SetStock(RegimeStock stock, ProcedureWriteKey key)
+    {
+        Stock = stock;
     }
 }

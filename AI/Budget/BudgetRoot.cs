@@ -5,9 +5,19 @@ using System.Linq;
 
 public class BudgetRoot : BudgetBranch
 {
-    
+    private BudgetBranch _construct, _military;
+    public BudgetRoot(Data d)
+    {
+        _construct = new ConstructBuildingsBudgetBranch(d);
+        Children.Add(_construct);
+
+        _military = new MilitaryBudgetBranch(d);
+        Children.Add(_military);
+    }
+
     public void Calculate(Regime r, LogicWriteKey key)
     {
+        SetWeights(1f, r, key.Data);
         Bid(r, key);
     }
 
@@ -21,14 +31,17 @@ public class BudgetRoot : BudgetBranch
             priorityNode.Credit.AddCreditToCurrent(weight);
         }
 
-        var pool = BudgetPool.ConstructForRegime(r, key.Data);
-        var modelPrices = GetPrices(r, key.Data, leaves, pool);
+        var buildCostPool = BudgetPool.ConstructForRegime(r, key.Data);
+        
+        var modelPrices = GetPrices(r, key.Data, leaves, buildCostPool);
         var valid = leaves.ToHashSet();
-        while (valid.Count > 0)
+        var iter = 0;
+        while (valid.Count > 0 && iter < 10)
         {
+            iter++;
             var most = valid
                 .MaxBy(v => v.Credit.GetCredit());
-            var stillValid = most.Priority.Calculate(pool, r, key,
+            var stillValid = most.Priority.Calculate(buildCostPool, r, key,
                 out var modelCosts);
             if (stillValid == false) valid.Remove(most);
             var price = modelCosts.Sum(
@@ -84,8 +97,10 @@ public class BudgetRoot : BudgetBranch
 
         return modelPrices;
     }
-    public override float GetWeight()
+
+    public override void SetWeights(float selfWeight, Regime r, Data d)
     {
-        return 1f;
+        _construct.SetWeights(.75f, r, d);
+        _military.SetWeights(.25f, r, d);
     }
 }

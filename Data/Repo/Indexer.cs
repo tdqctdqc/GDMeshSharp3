@@ -80,8 +80,15 @@ public class Indexer<TKey, TValue>
 
     public void HandleChanged(ValChangeNotice<TValue, TKey> notice)
     {
-        _dic.Remove(notice.OldVal);
-        _dic.Add(notice.NewVal, notice.Owner);
+        if (notice.OldVal != null)
+        {
+            _dic.Remove(notice.OldVal);
+        }
+
+        if (notice.NewVal != null)
+        {
+            _dic.Add(notice.NewVal, notice.Owner);
+        }
     }
 
     public bool Contains(TKey key)

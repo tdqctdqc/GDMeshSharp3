@@ -16,8 +16,6 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         frame.AddTopBar(this);
         
         var regimeInfoBar = new SpectatingRegimeInfoBar(client, data, host);
-        
-        
         var general = new HBoxContainer();
         general.AddChild(regimeInfoBar);
         AddChild(general);
@@ -51,7 +49,7 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
                 }
             );
         }, this);
-        AddChild(new ItemBar(client, data));
+        AddChild(new RegimeStockBar(client, data));
         if (host)
         {
             var ordersReadyLabel = NodeExt.MakeStatDisplay(

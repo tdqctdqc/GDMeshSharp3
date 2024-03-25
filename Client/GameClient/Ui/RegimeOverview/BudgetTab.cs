@@ -21,12 +21,6 @@ public partial class BudgetTab : ScrollContainer
         if (ais.Dic.ContainsKey(regime) == false) return;
         var ai = ais[regime];
         var budget = ai.Budget;
-        _container.CreateLabelAsChild("BUDGET PRIORITIES");
-        foreach (var priority in budget.Priorities)
-        {
-            var panel = new Panel();
-            panel.Size = new Vector2(300f, 500f);
-            _container.CreateLabelAsChild($"\t{priority.Name.ToUpper()}");
-        }
+        
     }
 }

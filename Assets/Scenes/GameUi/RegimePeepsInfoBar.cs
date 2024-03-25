@@ -36,13 +36,13 @@ public partial class RegimePeepsInfoBar : HBoxContainer
     private int GetPeepDelta(Data data)
     {
         var r = Game.I.Client.GetComponent<MapGraphics>().SpectatingRegime;
-        var ordered = r.History.PeepHistory.GetOrdered();
-        if (ordered.Count > 1)
-        {
-            var last = ordered[ordered.Count - 1].TotalPop;
-            var penult = ordered[ordered.Count - 2].TotalPop;
-            return Mathf.FloorToInt(last - penult);
-        }
+        // var ordered = r.History.PeepHistory.GetOrdered();
+        // if (ordered.Count > 1)
+        // {
+        //     var last = ordered[ordered.Count - 1].TotalPop;
+        //     var penult = ordered[ordered.Count - 2].TotalPop;
+        //     return Mathf.FloorToInt(last - penult);
+        // }
 
         return 0;
     }

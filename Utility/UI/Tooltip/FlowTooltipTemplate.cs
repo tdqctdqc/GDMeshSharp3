@@ -8,7 +8,7 @@ public class FlowTooltipTemplate : TooltipTemplate<(Flow, Regime)>
     protected override List<Func<(Flow, Regime), Data, Control>> _fastGetters { get; }
         = new ()
         {
-            (fr, d) => NodeExt.CreateLabel("Net: " + fr.Item2.Store.Get(fr.Item1)),
+            (fr, d) => NodeExt.CreateLabel("Net: " + fr.Item2.Stock.Stock.Get(fr.Item1)),
         };
 
     protected override List<Func<(Flow, Regime), Data, Control>> _slowGetters { get; }

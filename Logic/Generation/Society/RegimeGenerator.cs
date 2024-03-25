@@ -68,6 +68,30 @@ public class RegimeGenerator : Generator
             HandleRemainder(r, templates, polyRegimes);
         }
 
+        var bySize = polyRegimes
+            .SortBy(
+                kvp => kvp.Value,
+                kvp => kvp.Key)
+            .OrderByDescending(v => v.Value.Count)
+            .Select(v => v.Key)
+            .ToList();
+        
+        for (var i = 0; i < bySize.Count; i++)
+        {
+            var regime = bySize[i];
+            if (i < bySize.Count / 4 || i < 4)
+            {
+                regime.SetIsMajor(true, _key);
+            }
+            else
+            {
+                regime.SetIsMajor(false, _key);
+            }
+        }
+        
+        
+        
+        
         return polyRegimes;
     }
 
@@ -82,7 +106,8 @@ public class RegimeGenerator : Generator
         for (var i = 0; i < seeds.Count; i++)
         {
             var template = templates.GetRandomElement();
-            var regime = Regime.Create(seeds[i], template, false, _key);
+            var regime = Regime.Create(seeds[i], template,
+                false, _key);
             res.Add(seeds[i], regime);
         }
         return res;
@@ -114,9 +139,7 @@ public class RegimeGenerator : Generator
                     polyRegimes.Add(p, r);
                 }
             }
-            r.SetIsMajor(w.Picked.Count >= _numPolysToBeMajor, _key);
         }
-        
         return picker.NotTaken;
     }
 

@@ -28,7 +28,7 @@ public abstract partial class ChunkIconsMultiMesh<TModel, TInstance>
     {
         Clear();
         var elementsByModel = GetElements(d)
-            .SortInto(e => GetModel(e, d));
+            .SortBy(e => GetModel(e, d));
         foreach (var kvp in elementsByModel)
         {
             var model = kvp.Key;

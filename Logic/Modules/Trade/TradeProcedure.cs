@@ -48,18 +48,12 @@ public class TradeProcedure : Procedure
             var q = tradeReport.Net();
             if (q > 0)
             {
-                regime.Store.Add(item, q);
+                regime.Stock.Stock.Add(item, q);
             }
             else
             {
-                regime.Store.Remove(item, -q);
+                regime.Stock.Stock.Remove(item, -q);
             }
-
-            var itemReport = regime.History.ItemHistory.Get(item, tick);
-            itemReport.Bought = tradeReport.QuantityBought;
-            itemReport.Sold = tradeReport.QuantitySold;
-            itemReport.Offered = tradeReport.QuantityOffered;
-            itemReport.Demanded = tradeReport.QuantityDemanded;
         }
         
         foreach (var kvp in RegimeTradeBalances)

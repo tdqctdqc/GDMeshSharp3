@@ -11,12 +11,9 @@ public abstract class ConstructionPriority
     public ConstructionPriority(string name, 
         Func<Data, Regime, float> getWeight) 
         : base(name, 
-            d => d.Models.GetModels<BuildingModel>().Values, 
-            getWeight)
+            d => d.Models.GetModels<BuildingModel>().Values)
     {
     }
-
-
 
     protected override void SetCalcData(Regime r, Data d)
     {
@@ -28,7 +25,8 @@ public abstract class ConstructionPriority
         BudgetPool pool,
         Dictionary<BuildingModel, Variable> projVars, Data data)
     {
-        solver.SetModelConstraints(data, pool, projVars);
+        //todo add maintain cost constraints
+        solver.SetBuildCostConstraints(data, pool, projVars);
         solver.SetBuildingSlotConstraints(r, projVars, data);
     }
 
@@ -40,7 +38,7 @@ public abstract class ConstructionPriority
     {
         foreach (var (model, value) in toBuild)
         {
-            var make = MakeProject.Construct(model, value);
+            var make = MakeProject.Construct(r, model, value);
             var proc = new StartMakeProjectProc(r.MakeRef(), make);
             key.SendMessage(proc);
         }

@@ -2,6 +2,8 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
+
 public class MakeProject
 {
     public ERef<Regime> Regime { get; private set; }
@@ -9,16 +11,22 @@ public class MakeProject
     public int Amount { get; private set; }
     public IdCount<IModel> Fulfilled { get; private set; }
 
-    public static MakeProject Construct<TMakeable>(TMakeable t,
+    public static MakeProject Construct<TMakeable>(
+        Regime r,
+        TMakeable t,
         int amount)
         where TMakeable : class, IModel, IMakeable
     {
-        return new MakeProject(((IModel)t).MakeRef(),
+        return new MakeProject(r.MakeRef(),
+            ((IModel)t).MakeRef(),
             amount, IdCount<IModel>.Construct());
     }
-    protected MakeProject(ModelRef<IModel> making,
+    [SerializationConstructor] private MakeProject(
+        ERef<Regime> regime, 
+        ModelRef<IModel> making,
         int amount, IdCount<IModel> fulfilled)
     {
+        Regime = regime;
         Amount = amount;
         Making = making;
         Fulfilled = fulfilled;
@@ -26,7 +34,7 @@ public class MakeProject
     public virtual void Finish(ProcedureWriteKey key)
     {
         var regime = Regime.Get(key.Data);
-        regime.Store.Add(Making.Get(key.Data), Amount);
+        regime.Stock.Stock.Add(Making.Get(key.Data), Amount);
     }
     public Control GetDisplay(Data d)
     {

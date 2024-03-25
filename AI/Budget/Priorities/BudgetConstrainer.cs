@@ -22,7 +22,7 @@ public static class BudgetConstrainer
     }
 
 
-    public static void SetModelConstraints<TBuild>(
+    public static void SetBuildCostConstraints<TBuild>(
             this Solver solver, 
             Data data, BudgetPool pool, 
             Dictionary<TBuild, Variable> vars
@@ -31,7 +31,8 @@ public static class BudgetConstrainer
         var constraints = new Dictionary<int, Constraint>();
         foreach (var (build, variable) in vars)
         {
-            var costs = build.Makeable.BuildCosts.GetEnumerableModel(data);
+            var costs = build.Makeable
+                .BuildCosts.GetEnumerableModel(data);
             foreach (var (model, amount) in costs)
             {
                 if (constraints.TryGetValue(model.Id, 

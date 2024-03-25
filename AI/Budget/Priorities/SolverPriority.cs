@@ -9,21 +9,13 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     where TBuild : class, IModel, IMakeable
 {
     public string Name { get; private set; }
-    private Func<Data, Regime, float> _getWeight;
-    private Func<Data, IEnumerable<TBuild>> _getAll;
-    public float Weight { get; private set; }
+    protected Func<Data, IEnumerable<TBuild>> _getAll;
     
     public SolverPriority(string name, 
-        Func<Data, IEnumerable<TBuild>> getAll,
-        Func<Data, Regime, float> getWeight) 
+        Func<Data, IEnumerable<TBuild>> getAll) 
     {
         Name = name;
-        _getWeight = getWeight;
         _getAll = getAll;
-    }
-    public void SetWeight(Data data, Regime regime)
-    {
-        Weight = _getWeight(data, regime);
     }
 
     public Dictionary<IModel, float> GetWishlistCosts(
@@ -135,7 +127,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     {
         foreach (var (model, value) in toBuild)
         {
-            var make = MakeProject.Construct(model, value);
+            var make = MakeProject.Construct(r, model, value);
             var proc = new StartMakeProjectProc(r.MakeRef(), make);
             key.SendMessage(proc);
         }

@@ -72,6 +72,11 @@ public class IdCount<T> : Count<int>
         if (amount == 0) return;
         Add(model.Id, amount);
     }
+
+    public void Set(T model, float amount)
+    {
+        Contents[model.Id] = amount;
+    }
     public void Remove(T model, float amount)
     {
         if (amount == 0) return;

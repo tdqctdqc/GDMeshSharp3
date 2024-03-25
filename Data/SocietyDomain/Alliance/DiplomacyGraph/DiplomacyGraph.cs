@@ -5,17 +5,17 @@ using MessagePack;
 
 public class DiplomacyGraph : Entity
 {
-    public IdMultiEdgeGraph<Alliance, DiploRelation> Graph { get; private set; }
+    public ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation> Graph { get; private set; }
 
     public static DiplomacyGraph Create(GenWriteKey key)
     {
-        var g = new DiplomacyGraph(IdMultiEdgeGraph<Alliance, DiploRelation>.Construct(),
+        var g = new DiplomacyGraph(ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation>.Construct(),
             key.Data.IdDispenser.TakeId());
         key.Create(g);
         return g;
     }
     [SerializationConstructor] private DiplomacyGraph(
-        IdMultiEdgeGraph<Alliance, DiploRelation> graph,
+        ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation> graph,
         int id) : base(id)
     {
         Graph = graph;
@@ -30,7 +30,7 @@ public class DiplomacyGraph : Entity
     public bool HasRelation(Alliance a1, Alliance a2, DiploRelation edge)
     {
         return Graph.TryGetEdges(a1, a2, out var edges)
-            && edges.Any(e => e == edge);
+            && edges.Any(e => e.Key == edge);
     }
 
     public IEnumerable<Alliance> GetRelations(Alliance a, DiploRelation edge, Data d)

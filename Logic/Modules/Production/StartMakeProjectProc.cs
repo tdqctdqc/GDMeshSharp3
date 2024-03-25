@@ -1,10 +1,12 @@
 
 using System;
 using Godot;
+using MessagePack;
 
 public class StartMakeProjectProc : Procedure
 {
-    public StartMakeProjectProc(ERef<Regime> regime, MakeProject project)
+    [SerializationConstructor] public StartMakeProjectProc(ERef<Regime> regime, 
+        MakeProject project)
     {
         Regime = regime;
         Project = project;

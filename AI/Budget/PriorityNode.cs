@@ -6,32 +6,30 @@ public class PriorityNode : IBudgetNode
     public CreditBuffer Credit { get; set; }
     public IBudgetPriority Priority { get; private set; }
     public BudgetBranch Parent { get; }
-    private Func<Data, float> _calcWeight;
+    public ZeroToOne Weight { get; private set; }
 
-    public PriorityNode(IBudgetPriority priority, BudgetBranch parent,
-        Func<Data, float> calcWeight)
+    public PriorityNode(IBudgetPriority priority, 
+        BudgetBranch parent)
     {
-        _calcWeight = calcWeight;
         Priority = priority;
         Parent = parent;
         Credit = new CreditBuffer(20);
     }
 
-    public float GetWeight(Data d)
+    public void SetWeight(float weight)
     {
-        return _calcWeight(d);
+        Weight = new ZeroToOne(weight);
     }
-
     public float GetTreeWeight(Data d)
     {
         var mult = 1f;
         var parent = Parent;
         while (parent != null)
         {
-            mult *= parent.GetWeight();
+            mult *= parent.Weight.Value;
             parent = parent.Parent;
         }
-
-        return GetWeight(d) * mult;
+        
+        return Weight.Value * mult;
     }
 }

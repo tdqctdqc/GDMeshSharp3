@@ -23,7 +23,7 @@ public partial class MilitaryTab : ScrollContainer
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var iconSize = client.Settings.MedIconSize.Value;
 
-        foreach (var kvp in regime.Store
+        foreach (var kvp in regime.Stock.Stock
                      .GetEnumerableModel(client.Data)
                      .Where(k => k.Key is Troop t))
         {
@@ -54,10 +54,12 @@ public partial class MilitaryTab : ScrollContainer
             _container.AddChild(hbox);
         }
 
-        var groups = client.Data.Military.UnitAux.UnitGroupByRegime[regime];
+        var groups = client.Data
+            .GetAll<UnitGroup>()
+            .Where(g => g.Regime.RefId == regime.Id);
         _container.CreateLabelAsChild($"{units.Count()} Units");
 
-        if (groups != null)
+        if (groups.Count() > 0)
         {
             _container.CreateLabelAsChild($"{groups.Count()} Groups");
             _container.CreateLabelAsChild("GROUPS");

@@ -26,15 +26,16 @@ public class DeploymentRoot : DeploymentBranch
     {
         var ai = key.Data.HostLogicData.AllianceAis[Alliance]
             .Military.Deployment;
+
         var freeGroups =
-            Alliance.Members.Items(key.Data)
-                .SelectMany(r => key.Data.Military
-                    .UnitAux.UnitGroupByRegime[r]).ToHashSet();
-            
+            key.Data.GetAll<UnitGroup>()
+                .Where(g => Alliance.Members.Contains(g.Regime.Get(key.Data)))
+            .ToHashSet();
+        if (freeGroups.Count == 0) return;
         var taken = GetDescendentAssignments()
             .SelectMany(a => a.Groups);
         freeGroups.ExceptWith(taken);
-        var byCell = freeGroups.SortInto(g => g.GetCell(key.Data));
+        var byCell = freeGroups.SortBy(g => g.GetCell(key.Data));
         foreach (var (cell, groups) in byCell)
         {
             var unassigned = new UnoccupiedAssignment(cell, this, ai, key);

@@ -17,7 +17,7 @@ public static class RegimeExt
     }
     public static IEnumerable<Unit> GetUnits(this Regime r, Data d)
     {
-        return d.Military.UnitAux.UnitByRegime[r];
+        return d.GetAll<Unit>().Where(u => u.Regime.RefId == r.Id);
     }
     public static IEnumerable<UnitTemplate> GetUnitTemplates(this Regime r, Data d)
     {
@@ -55,7 +55,7 @@ public static class RegimeExt
     public static float GetPowerScore(this Regime r, Data data)
     {
         var fromPop = r.GetPopulation(data);
-        var fromIndustry = r.Store.Get(data.Models.Flows.IndustrialPower);
+        var fromIndustry = r.Stock.Stock.Get(data.Models.Flows.IndustrialPower);
         return fromPop + fromIndustry;
     }
 

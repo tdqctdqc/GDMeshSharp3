@@ -19,18 +19,18 @@ public partial class FoodTab : ScrollContainer
     {
         _container.ClearChildren();
         
-        var actualProd = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Produced;
-        var actualCons = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Consumed;
-        var demand = regime.GetPeeps(client.Data).Sum(p => p.Size)
-                     * client.Data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
-        _container.CreateLabelAsChild($"Last Prod: {actualProd}");
-        _container.CreateLabelAsChild($"Consumption: {actualCons}");
-        _container.CreateLabelAsChild($"Net: {actualProd - actualCons}");
-        _container.CreateLabelAsChild($"Demand: {demand}");
-        if (demand > actualCons)
-        {
-            _container.CreateLabelAsChild($"Deficit of {demand - actualCons}");
-        }
+        // var actualProd = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Produced;
+        // var actualCons = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Consumed;
+        // var demand = regime.GetPeeps(client.Data).Sum(p => p.Size)
+        //              * client.Data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
+        // _container.CreateLabelAsChild($"Last Prod: {actualProd}");
+        // _container.CreateLabelAsChild($"Consumption: {actualCons}");
+        // _container.CreateLabelAsChild($"Net: {actualProd - actualCons}");
+        // _container.CreateLabelAsChild($"Demand: {demand}");
+        // if (demand > actualCons)
+        // {
+        //     _container.CreateLabelAsChild($"Deficit of {demand - actualCons}");
+        // }
         
         
         

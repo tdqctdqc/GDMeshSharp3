@@ -41,7 +41,7 @@ public static class NodeExt
             () =>
             {
                 var regime = client.GetComponent<MapGraphics>().SpectatingRegime;
-                var f = regime.Store.Get(flow);
+                var f = regime.Stock.Stock.Get(flow);
                 return $"{f}";
             },
             height, triggers);

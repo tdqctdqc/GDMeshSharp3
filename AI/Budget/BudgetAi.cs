@@ -6,107 +6,18 @@ using Godot;
 public class BudgetAi
 {
     private Regime _regime;
-    public List<IBudgetPriority> Priorities { get; private set; }
+    private BudgetRoot _root;
     public BudgetAi(RegimeMilitaryAi milAi, Data data, Regime regime)
     {
         _regime = regime;
-        Priorities = new List<IBudgetPriority>
-        {
-            // new FlowProdBuildingConstructionPriority(
-            //     data.Models.Flows.IndustrialPower, (d, r) => 1f),
-            // new FlowProdBuildingConstructionPriority(
-            //     data.Models.Flows.Income, (d, r) => .25f),
-            // new ItemProdBuildingConstructionPriority(
-            //     data.Models.Items.Recruits, (d, r) => .1f),
-            // new TroopBuildForTemplatePriority("Troops for templates", regime, 
-            //     (d,r) => 1f),
-            // new ReserveTroopBuildPriority("Troops for reserve",
-            //     (d, r) => .25f),
-            // new ReinforcementTroopBuildPriority("Troops for reinforcement",
-            //     (d,r) => 1f),
-        };
+        _root = new BudgetRoot(data);
     }
 
     public void Calculate(LogicWriteKey key, MajorTurnOrders orders)
     {
-        // foreach (var priority in Priorities)
-        // {
-        //     priority.SetWeight(key.Data, _regime);
-        // }
-        //
-        // var itemsToDistribute = GetItemsToDistribute(key.Data);
-        // var labor = _regime.GetPolys(key.Data)
-        //     .Sum(p => p.GetLaborSurplus(key.Data));
-        // var pool = new BudgetPool(itemsToDistribute, 
-        //     IdCount<IModel>.Construct<IModel, Flow>(
-        //         _regime.Flows.GetSurplusCount()), labor);
-        // DoPriorities(orders, pool, key);
+        _root.Calculate(_regime, key);
     }
 
-    private IdCount<Item> GetItemsToDistribute(Data data)
-    {
-        // var itemsToDistribute = IdCount<Item>.Construct(_regime.Items);
-        // var itemsInAccounts = 
-        //     IdCount<Item>.Union(Priorities.Select(v => v.Account.Items).ToArray());
-        // foreach (var kvp in itemsInAccounts.Contents)
-        // {
-        //     var item = data.Models.GetModel<Item>(kvp.Key);
-        //     var inAccountsQ = kvp.Value;
-        //     var realQ = itemsToDistribute.Get(item);
-        //     if (inAccountsQ > realQ)
-        //     {
-        //         var ratio = realQ / inAccountsQ;
-        //         if (float.IsNaN(ratio)) ratio = 0f;
-        //         var newQ = 0f;
-        //         foreach (var priority in Priorities)
-        //         {
-        //             if (priority.Account.Items.Contents.ContainsKey(item.Id) == false)
-        //             {
-        //                 continue;
-        //             }
-        //             priority.Account.Items.Contents[item.Id] *= ratio;
-        //             newQ += priority.Account.Items.Contents[item.Id];
-        //         }
-        //
-        //         itemsInAccounts.Contents[item.Id] = newQ;
-        //     }
-        // }
-        // itemsToDistribute.Subtract(itemsInAccounts);
-        // return itemsToDistribute;
-        return null;
-    }
-    
-    private void DoPriorities(MajorTurnOrders orders, BudgetPool pool, LogicWriteKey key)
-    {
-        // var totalPriority = Priorities.Sum(p => p.Weight);
-        // if (totalPriority <= 0f) throw new Exception();
-        // foreach (var priority in Priorities)
-        // {
-        //     priority.Wipe();
-        //     var proportion = priority.Weight / totalPriority;
-        //     priority.SetWishlist(_regime, key.Data, pool, proportion);
-        //     priority.FirstRound(_regime, proportion, pool, key);
-        // }
-        // foreach (var priority in Priorities)
-        // {
-        //     var proportion = priority.Weight / totalPriority;
-        //     priority.SecondRound(_regime, proportion, pool, key, 3f);
-        // }
-        // var allWishlists = new Dictionary<Item, int>();
-        // foreach (var priority in Priorities)
-        // {
-        //     var wishlist = priority.CalculateWishlist(_regime,
-        //         key.Data, );
-        //     foreach (var kvp in wishlist)
-        //     {
-        //         if (kvp.Value < 0) throw new Exception();
-        //         allWishlists.AddOrSum(kvp.Key, kvp.Value);
-        //     }
-        // }
-        // Manufacture(key.Data, allWishlists, pool, key);
-        // DoTradeOrders(key.Data, orders, pool, allWishlists);
-    }
-    
     private void Manufacture(Data data, Dictionary<Item, int> wishlist, BudgetPool pool,
          LogicWriteKey key)
      {

@@ -171,7 +171,7 @@ public class Data
 
     public HashSet<T> GetAll<T>() where T : Entity
     {
-        return _entityTypeTree.Get<T>().Entities;
+        return _entityTypeTree.Get<T>().Entities.ToHashSet();
     }
 
     public EntityMeta<T> GetEntityMeta<T>() where T : Entity

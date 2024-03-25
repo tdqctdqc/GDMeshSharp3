@@ -30,9 +30,9 @@ public class TradeModule : LogicModule
     {
         
         var sellByRegime = sellOrders
-            .SortInto(o => new Vector2I(o.RegimeId, o.ItemId));
+            .SortBy(o => new Vector2I(o.RegimeId, o.ItemId));
         var buyByRegime = buyOrders
-            .SortInto(o => new Vector2I(o.RegimeId, o.ItemId));
+            .SortBy(o => new Vector2I(o.RegimeId, o.ItemId));
         
         foreach (var kvp in sellByRegime)
         {

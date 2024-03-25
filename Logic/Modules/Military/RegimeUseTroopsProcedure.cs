@@ -21,10 +21,10 @@ public class RegimeUseTroopsProcedure : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        var regimeTroops = Regime.Get(key.Data).Store;
+        var regimeTroops = Regime.Get(key.Data).Stock;
         foreach (var kvp in UsageByTroopId)
         {
-            regimeTroops.Remove(kvp.Key, kvp.Value);
+            regimeTroops.Stock.Remove(kvp.Key, kvp.Value);
         }
     }
 

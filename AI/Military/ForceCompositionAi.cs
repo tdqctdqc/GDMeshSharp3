@@ -21,14 +21,15 @@ public class ForceCompositionAi
     private void AssignFreeUnitsToGroups(Regime regime, 
         LogicWriteKey key)
     {
-        var freeUnits = key.Data.Military.UnitAux.UnitByRegime[regime]
+        var freeUnits = regime.GetUnits(key.Data)
             ?.Where(u => u != null)
             .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null)
             .ToHashSet();
         if (freeUnits == null || freeUnits.Count() == 0) return;
 
-        var groups = key.Data.Military.UnitAux.UnitGroupByRegime[regime];
-        if (groups != null)
+        var groups = key.Data.GetAll<UnitGroup>()
+            .Where(g => g.Regime.RefId == regime.Id).ToArray();
+        if (groups.Length > 0)
         {
             var understrengthGroups = groups.Where(g => g.Units.Count() < PreferredGroupSize);
             foreach (var understrengthGroup in understrengthGroups)
@@ -66,15 +67,16 @@ public class ForceCompositionAi
         {
             if (newGroup.Count() == 0) continue;
             key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-            UnitGroup.Create(regime,
-                newGroup, key);
+            UnitGroup.Create(regime, newGroup, key);
         }
     }
     private void ReinforceUnits(Regime regime,
         LogicWriteKey key)
     {
         var needCounts = new Dictionary<Troop, float>();
-        foreach (var unit in regime.GetUnits(key.Data))
+        var units = regime.GetUnits(key.Data);
+        if (units == null) return;
+        foreach (var unit in units)
         {
             var template = unit.Template.Get(key.Data);
             foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
@@ -88,19 +90,19 @@ public class ForceCompositionAi
         }
         
         var proc = ReinforceUnitProcedure.Construct(regime);
-        var reserve = regime.Store;
+        var reserve = regime.Stock;
         foreach (var unit in regime.GetUnits(key.Data))
         {
             var template = unit.Template.Get(key.Data);
             foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
             {
                 if (needCounts.ContainsKey(troop) == false) continue;
-                if (reserve.Contents.ContainsKey(troop.Id) == false) continue;
+                if (reserve.Stock.Contents.ContainsKey(troop.Id) == false) continue;
                 var shouldHave = template.TroopCounts.Get(troop);
                 if (value < shouldHave)
                 {
                     var need = shouldHave - value;
-                    var receiveRatio = reserve.Get(troop) / needCounts[troop];
+                    var receiveRatio = reserve.Stock.Get(troop) / needCounts[troop];
                     receiveRatio = Mathf.Clamp(receiveRatio, 0f, 1f);
                     proc.ReinforceCounts.Add((unit.Id, troop.Id, need * receiveRatio));
                 }

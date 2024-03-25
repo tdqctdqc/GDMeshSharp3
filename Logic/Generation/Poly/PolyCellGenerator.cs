@@ -88,7 +88,7 @@ public class PolyCellGenerator : Generator
         var landCells = key.Data.Planet.MapAux.CellHolder.Cells.Values
             .OfType<LandCell>();
         var landCellsByPoly = landCells
-            .SortInto(l => l.Polygon.Get(key.Data));
+            .SortBy(l => l.Polygon.Get(key.Data));
         Parallel.ForEach(landCellsByPoly, kvp =>
         {
             var cells = kvp.Value;

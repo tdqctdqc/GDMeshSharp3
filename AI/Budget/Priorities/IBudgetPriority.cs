@@ -4,7 +4,6 @@ using System.Collections.Generic;
 public interface IBudgetPriority
 {
     string Name { get; }
-
     Dictionary<IModel, float> GetWishlistCosts(
             Regime regime,
             Data d);

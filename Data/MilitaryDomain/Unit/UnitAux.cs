@@ -4,9 +4,7 @@ using Godot;
 
 public class UnitAux
 {
-    public MultiIndexer<Regime, Unit> UnitByRegime { get; private set; }
     public ERefColIndexer<UnitGroup, Unit> UnitByGroup { get; private set; }
-    public MultiIndexer<Regime, UnitGroup> UnitGroupByRegime { get; private set; }
     public MultiIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
     public MultiIndexer<Cell, Unit> UnitsByCell { get; private set; }
     
@@ -14,11 +12,6 @@ public class UnitAux
     public UnitAux(Data d)
     {
         _data = d;
-        UnitByRegime = MultiIndexer.MakeForEntity<Regime, Unit>(
-            u => u.Regime.Get(d), d);
-        
-        UnitGroupByRegime = MultiIndexer.MakeForEntity<Regime, UnitGroup>(
-            g => g.Regime.Get(d), d);
         
         UnitTemplates = MultiIndexer.MakeForEntity<Regime, UnitTemplate>(
             t => t.Regime.Get(d), d);

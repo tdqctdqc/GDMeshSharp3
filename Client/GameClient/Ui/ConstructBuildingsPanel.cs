@@ -41,12 +41,12 @@ public partial class ConstructBuildingsPanel : ScrollPanel
             if (item is IIconed iconed)
             {
                 _info.AddChild(iconed.Icon.GetLabeledIcon<HBoxContainer>(
-                    $"{playerRegime.Store.Get(item)} / {count}", 30f));
+                    $"{playerRegime.Stock.Stock.Get(item)} / {count}", 30f));
             }
             else
             {
                 _info.AddChild(NodeExt.CreateLabel(
-                    $"{playerRegime.Store.Get(item)} / {count}"));
+                    $"{playerRegime.Stock.Stock.Get(item)} / {count}"));
             }
         }
     }
