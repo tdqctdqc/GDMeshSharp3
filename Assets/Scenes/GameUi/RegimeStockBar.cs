@@ -39,7 +39,7 @@ public partial class RegimeStockBar : HBoxContainer
                     var recurring = r.Stock.RecurringCosts.Get(m);
                     var oneTime = r.Stock.SingleTimeCosts.Get(m);
                     var produced = r.Stock.Produced.Get(m);
-                    return $"{stock} / {produced} / {recurring} / {oneTime}";
+                    return $"Stock: {stock} \nProduced: {produced} \nRecurring: {recurring} \nOne Time: {oneTime}";
                 }, 
                 10f,
                 Game.I.Client.Notices.ChangedSpectatingRegime.Blank,

@@ -13,13 +13,18 @@ public class ProduceConsumeModule : LogicModule
     {
         var results = key.Data.GetAll<Regime>()
             .AsParallel()
-            .Select(r => (r.MakeRef(), DoRegime(r, key.Data)))
+            .Select(r =>
+            {
+                var res = DoRegime(r, key.Data);
+                return (r.MakeRef(), res.Item1, res.growthsByPeep);
+            })
             .ToArray();
-        var proc = new SetRegimeStockProcedure(results);
+        var proc = new ProdResultProcedure(results);
         key.SendMessage(proc);
     }
 
-    private RegimeStock DoRegime(Regime r, Data d)
+    private (RegimeStock, Dictionary<int, int> growthsByPeep) 
+        DoRegime(Regime r, Data d)
     {
         var res = RegimeStock.Construct();
         foreach (var (id, amt) in r.Stock.Stock.Contents.ToList())
@@ -37,13 +42,15 @@ public class ProduceConsumeModule : LogicModule
             .Sum(c => c.GetPeep(d).Size);
         var labor = d.Models.Flows.Labor;
         r.Stock.Stock.Set(labor, totalPop);
+        r.Stock.Produced.Set(labor, totalPop);
         
+        var growths = DoFood(r, res, d);
         DoBuildingProds(r, d, res);
         TroopMaintenance(r, d, res);
 
         res.Stock.Add(r.Stock.Stock);
         
-        return res;
+        return (res, growths);
     }
 
     private static void TroopMaintenance(Regime r, Data d, RegimeStock res)
@@ -127,5 +134,106 @@ public class ProduceConsumeModule : LogicModule
             }
         }
     }
+
+    private static Dictionary<int, int> DoFood(
+        Regime regime,
+        RegimeStock res,
+        Data d)
+    {
+
+        
+        
+        var food = d.Models.Items.Food;
+        var growthsByPeep = new Dictionary<int, int>();
+        var foodConsPerPop = d.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
+        var pop = regime.GetPopulation(d);
+        
+        var maxSurplusRatio = d.BaseDomain.Rules.MaxEffectiveSurplusRatio;
+        var foodDemanded = foodConsPerPop * pop * (1f + maxSurplusRatio);
+        var foodProds = regime.GetCells(d)
+            .OfType<LandCell>()
+            .Select(c => c.FoodProd.Nums)
+            .MergeCounts()
+            .OrderByDescending(kvp => kvp.Key.Get(d).FoodPerLabor());
+        var count = foodProds.Count();
+        
+        var foodProduced = 0f;
+        int iter = 0;
+        while (foodProduced < foodDemanded && iter < count)
+        {
+            var demand = foodDemanded - foodProduced;
+            var kvp = foodProds.ElementAt(iter);
+            var prodModel = kvp.Key.Get(d);
+            var amt = kvp.Value;
+            var possibleProd = prodModel.BaseProd * amt;
+            var laborAvail = res.Stock.Get(d.Models.Flows.Labor);
+            
+            var prodRatio = demand / possibleProd;
+            prodRatio = Mathf.Clamp(prodRatio, 0f, 1f);
+
+            var laborNeeded = prodRatio * amt * prodModel.BaseLabor;
+            var laborRatio = laborAvail / laborNeeded;
+            laborRatio = Mathf.Clamp(laborRatio, 0f, 1f);
+
+            prodRatio = Mathf.Clamp(prodRatio, 0f, laborRatio);
+            
+            var produced = prodRatio * possibleProd;
+            var labor = prodRatio * amt * prodModel.BaseLabor;
+            
+            regime.Stock.Stock.Add(d.Models.Items.Food, produced);
+            res.Produced.Add(d.Models.Items.Food, produced);
+            res.RecurringCosts.Add(d.Models.Flows.Labor, labor);
+            regime.Stock.Stock.Remove(d.Models.Flows.Labor, labor);
+        }
+        
+        var foodStock = Mathf.FloorToInt(regime.Stock.Stock.Get(d.Models.Items.Food));
+        var actualCons = Math.Min(foodStock, foodDemanded);
+        var surplusRatio = (float) foodStock / foodDemanded - 1f;
+        res.RecurringCosts.Add(food, actualCons);
+        if (surplusRatio > 0f)
+        {
+            HandleGrowth(regime, surplusRatio, growthsByPeep, d);
+        }
+        else
+        {
+            // HandleDecline(regime, -surplusRatio, growthsByPeep, key.Data);
+        }
+
+        return growthsByPeep;
+    }
     
+    
+    private static void HandleGrowth(Regime regime, 
+        float surplusRatio, Dictionary<int, int> growths,
+        Data data)
+    {
+        var rules = data.BaseDomain.Rules;
+        if (rules.MinSurplusRatioToGetGrowth > surplusRatio) return;
+        
+        var range = rules.MaxEffectiveSurplusRatio - rules.MinSurplusRatioToGetGrowth;
+        if (range < 0) throw new Exception();
+        
+        var effectiveRatio = Mathf.Min(surplusRatio / range, rules.MaxEffectiveSurplusRatio);
+        if (range < 0) throw new Exception();
+        
+        var peeps = regime.GetCells(data).Where(p => p.HasPeep(data))
+            .Select(p => p.GetPeep(data));
+        var numPeeps = peeps.Count();
+        if (numPeeps == 0) return;
+        
+        var effect = rules.GrowthRateCeiling * effectiveRatio * peeps.Sum(p => p.Size);
+        if (effect < 0) throw new Exception();
+
+        var numPeepsToAffect = Mathf.CeilToInt(numPeeps / 10f);
+        if (numPeepsToAffect < 0) throw new Exception();
+        
+        var peepsToAffect = peeps.GetDistinctRandomElements(numPeepsToAffect);
+
+        var growthPerPeep = Mathf.CeilToInt(effect / numPeepsToAffect);
+        if (growthPerPeep < 0) throw new Exception();
+        for (var i = 0; i < peepsToAffect.Count; i++)
+        {
+            growths.Add(peepsToAffect[i].Id, growthPerPeep);
+        }
+    }
 }

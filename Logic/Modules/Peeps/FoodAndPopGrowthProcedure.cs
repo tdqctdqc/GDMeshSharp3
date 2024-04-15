@@ -23,7 +23,6 @@ public class FoodAndPopGrowthProcedure : Procedure
         DoGrowth(key);
         DoFoodConsumption(key);
         var tick = key.Data.Tick;
-        
     }
 
     private void DoFoodConsumption(ProcedureWriteKey key)

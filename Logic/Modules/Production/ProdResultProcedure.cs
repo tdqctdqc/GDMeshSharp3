@@ -1,10 +1,11 @@
 
-public class SetRegimeStockProcedure : Procedure
+using System.Collections.Generic;
+
+public class ProdResultProcedure : Procedure
 {
-    public (ERef<Regime>, RegimeStock)[] Stocks { get; private set; }
+    public (ERef<Regime>, RegimeStock, Dictionary<int, int> peepGrowths)[] Stocks { get; private set; }
 
-
-    public SetRegimeStockProcedure((ERef<Regime>, RegimeStock)[] stocks)
+    public ProdResultProcedure((ERef<Regime>, RegimeStock, Dictionary<int, int>)[] stocks)
     {
         Stocks = stocks;
     }
@@ -13,7 +14,7 @@ public class SetRegimeStockProcedure : Procedure
     {
         for (var i = 0; i < Stocks.Length; i++)
         {
-            var (r, stock) = Stocks[i];
+            var (r, stock, growth) = Stocks[i];
             r.Get(key.Data).SetStock(stock, key);
         }
     }

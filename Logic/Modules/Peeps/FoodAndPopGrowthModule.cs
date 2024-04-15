@@ -65,6 +65,6 @@ public class FoodAndPopGrowthModule : LogicModule
     private void HandleDecline(Regime regime, float surplusRatio, Dictionary<int, int> growths,
         Data data)
     {
-
+        
     }
 }

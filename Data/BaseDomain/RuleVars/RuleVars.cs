@@ -19,7 +19,7 @@ public class RuleVars : Entity
             4,
             2,
             .05f,
-            1f,
+            .5f,
             .02f,
             .1f,
             1f,
