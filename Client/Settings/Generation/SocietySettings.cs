@@ -13,7 +13,8 @@ public class SocietySettings : Settings
     [SerializationConstructor] private SocietySettings() 
         : base("Society")
     {
-        DevelopmentScale = new FloatSettingsOption("Development Scale", .5f, .1f, 1f, .1f, false);
+        DevelopmentScale = new FloatSettingsOption("Development Scale", 
+            .5f, .1f, 1f, .1f, false);
         SettingsOptions.Add(DevelopmentScale);
     }
 }

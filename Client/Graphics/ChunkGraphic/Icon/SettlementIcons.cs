@@ -11,7 +11,7 @@ public partial class SettlementIcons
         Vector2 zoomVisibilityRange,
         Data d) 
         : base("Settlements", zoomVisibilityRange,
-            chunk, MeshExt.GetQuadMesh(Vector2.One * 50f))
+            chunk, MeshExt.GetQuadMesh(Vector2.One * 35f))
     {
     }
     protected override IEnumerable<Cell> GetElements(Data data)

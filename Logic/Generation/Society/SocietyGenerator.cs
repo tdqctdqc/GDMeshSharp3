@@ -154,18 +154,33 @@ public class SocietyGenerator : Generator
         
         foreach (var (poly, weight) in weights)
         {
-            var urban = poly.GetCells(_data).OfType<LandCell>()
-                .MaxBy(CellHabitability);
+            var cellsByHabitability = poly.GetCells(_data).OfType<LandCell>()
+                .OrderByDescending(CellHabitability);
+            var queue = new Queue<LandCell>(cellsByHabitability);
+            var carryRatio = .25f;
             var pop = Mathf.CeilToInt(weight * popPerWeight);
             if (pop < minSize)
             {
-                GD.Print("skipped");
-                continue;
+                throw new Exception();
             }
-            urban.SetLandform(_data.Models.Landforms.Urban, _key);
-            urban.SetVegetation(_data.Models.Vegetations.Barren, _key);
-            urban.GetPeep(_data).GrowSize(pop, _key);
-            Settlement.Create("", urban, pop, _key);
+
+            while (pop * carryRatio >= minSize && queue.Count > 1)
+            {
+                var urban = queue.Dequeue();
+                var forThis = Mathf.CeilToInt(pop * (1f - carryRatio));
+                var forNext = pop - forThis;
+                urban.SetLandform(_data.Models.Landforms.Urban, _key);
+                urban.SetVegetation(_data.Models.Vegetations.Barren, _key);
+                urban.GetPeep(_data).GrowSize(forThis, _key);
+                Settlement.Create("", urban, forThis, _key);
+                pop = forNext;
+            }
+
+            var last = queue.Dequeue();
+            last.SetLandform(_data.Models.Landforms.Urban, _key);
+            last.SetVegetation(_data.Models.Vegetations.Barren, _key);
+            last.GetPeep(_data).GrowSize(pop, _key);
+            Settlement.Create("", last, pop, _key);
         }
     }
     
