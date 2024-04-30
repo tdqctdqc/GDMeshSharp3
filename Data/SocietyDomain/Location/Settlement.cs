@@ -9,6 +9,7 @@ public class Settlement : Location
 {
     public CellRef Cell { get; protected set; }
     public ModelRef<SettlementTier> Tier { get; private set; }
+    public IdCount<SettlementBuildingModel> Buildings { get; private set; }
     public string Name { get; protected set; }
     
     public static Settlement Create(string name, 
@@ -17,15 +18,19 @@ public class Settlement : Location
         var tier = key.Data.Models.Settlements.GetTier(size);
         var s = new Settlement(key.Data.IdDispenser.TakeId(),
             cell.MakeRef(), 
-            tier.MakeRef(), name);
+            tier.MakeRef(), 
+            IdCount<SettlementBuildingModel>.Construct(), 
+            name);
         key.Create(s);
         return s;
     }
     [SerializationConstructor] private Settlement(int id, 
         CellRef cell,
         ModelRef<SettlementTier> tier, 
+        IdCount<SettlementBuildingModel> buildings, 
         string name) : base(id)
     {
+        Buildings = buildings;
         Tier = tier;
         Name = name;
         Cell = cell;

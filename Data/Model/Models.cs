@@ -27,7 +27,7 @@ public class Models
     public FlowList Flows { get; private set; }
     public Troops Troops { get; private set; }
     public MoveTypes MoveTypes { get; private set; }
-    
+    public ResourceExtractionList ResourceExtractions { get; private set; }
     private int _idIter;
     public Models(Data data)
     {
@@ -77,6 +77,9 @@ public class Models
         
         Troops = new Troops(Items, Flows);
         AddManager(Troops);
+
+        ResourceExtractions = new ResourceExtractionList(Items, Flows, PeepJobs);
+        AddManager(ResourceExtractions);
     }
 
     private void SetId(IModel model)

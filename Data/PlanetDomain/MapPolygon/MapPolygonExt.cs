@@ -66,13 +66,7 @@ public static class MapPolygonExt
             .Select(c => c.GetResourceDeposit(data));
     }
 
-    public static List<MapBuilding> GetBuildings(this MapPolygon poly, Data data)
-    {
-        var bAux = data.Infrastructure.BuildingAux;
-        return poly.GetCells(data)
-            .Where(c => bAux.ByCell.Contains(c))
-            .Select(c => bAux.ByCell[c]).ToList();
-    }
+    
 
     public static IEnumerable<MapPolyNexus> GetNexi(this MapPolygon p, Data data)
     {

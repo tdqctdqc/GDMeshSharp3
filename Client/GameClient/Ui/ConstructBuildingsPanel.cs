@@ -28,7 +28,7 @@ public partial class ConstructBuildingsPanel : ScrollPanel
         }, this);
     }
 
-    private void DrawInfo(BuildingModel model, Data d)
+    private void DrawInfo(SettlementBuildingModel model, Data d)
     {
         _info.ClearChildren();
         var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer

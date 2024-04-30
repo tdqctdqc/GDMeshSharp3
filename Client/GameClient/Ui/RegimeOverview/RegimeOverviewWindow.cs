@@ -8,7 +8,7 @@ public partial class RegimeOverviewWindow : TabWindow
 {
     private GeneralTab _general;
     private PeepsTab _peeps;
-    private ItemsTab _items;
+    private StockTab _stock;
     private FoodTab _ag;
     private BudgetTab _budget;
     private FlowsTab _flows;
@@ -24,8 +24,8 @@ public partial class RegimeOverviewWindow : TabWindow
         _peeps = new PeepsTab();
         AddTab(_peeps);
 
-        _items = new ItemsTab();
-        AddTab(_items);
+        _stock = new StockTab();
+        AddTab(_stock);
 
         _ag = new FoodTab();
         AddTab(_ag);
@@ -46,7 +46,7 @@ public partial class RegimeOverviewWindow : TabWindow
     {
         _general.Setup(regime, client);
         _peeps.Setup(regime, client);
-        _items.Setup(regime, client);
+        _stock.Setup(regime, client);
         _ag.Setup(regime, client);
         _budget.Setup(regime, client);
         _flows.Setup(regime, client);

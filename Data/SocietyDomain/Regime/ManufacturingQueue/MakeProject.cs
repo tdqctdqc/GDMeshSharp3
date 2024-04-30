@@ -8,33 +8,33 @@ public class MakeProject
 {
     public ERef<Regime> Regime { get; private set; }
     public ModelRef<IModel> Making { get; protected set; }
-    public int Amount { get; private set; }
-    public IdCount<IModel> Fulfilled { get; private set; }
+    public float Amount { get; private set; }
+    public float Fulfilled { get; private set; }
 
     public static MakeProject Construct<TMakeable>(
         Regime r,
         TMakeable t,
-        int amount)
+        float amount)
         where TMakeable : class, IModel, IMakeable
     {
         return new MakeProject(r.MakeRef(),
             ((IModel)t).MakeRef(),
-            amount, IdCount<IModel>.Construct());
+            amount, 0f);
     }
     [SerializationConstructor] private MakeProject(
         ERef<Regime> regime, 
         ModelRef<IModel> making,
-        int amount, IdCount<IModel> fulfilled)
+        float amount, float fulfilled)
     {
         Regime = regime;
         Amount = amount;
         Making = making;
         Fulfilled = fulfilled;
     }
-    public virtual void Finish(ProcedureWriteKey key)
+
+    public void Increment(float amount, ProcedureWriteKey key)
     {
-        var regime = Regime.Get(key.Data);
-        regime.Stock.Stock.Add(Making.Get(key.Data), Amount);
+        Fulfilled += amount;
     }
     public Control GetDisplay(Data d)
     {
@@ -45,7 +45,7 @@ public class MakeProject
         if (m is IIconed i)
         {
             var icon = i.Icon.GetLabeledIcon<HBoxContainer>(
-                $"{m.Name}",
+                $"{m.Name}: {Fulfilled} / {Amount} ",
                 size);
             vbox.AddChild(icon);
         }
@@ -58,7 +58,9 @@ public class MakeProject
         var costs = makeable.Makeable.BuildCosts.GetEnumerableModel(d);
         foreach (var (key, value) in costs)
         {
-            vbox.CreateLabelAsChild($"{key.Name}: {Fulfilled.Get(key)} / {makeable.Makeable.BuildCosts.Get(key)}");
+            var needed = makeable.Makeable.BuildCosts.Get(key) * Amount;
+            var have = makeable.Makeable.BuildCosts.Get(key) * Fulfilled;
+            vbox.CreateLabelAsChild($"{key.Name}: { have } / { needed }");
         }
         
         return vbox;

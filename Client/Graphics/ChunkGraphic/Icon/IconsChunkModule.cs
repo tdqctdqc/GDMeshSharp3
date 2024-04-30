@@ -5,15 +5,12 @@ using Godot;
 
 public partial class IconsChunkModule : ChunkGraphicMultiModule
 {
-    public BuildingIcons BuildingIcons { get; private set; }
     public SettlementIcons SettlementIcons { get; private set; }
     public IconsChunkModule(MapChunk chunk, Data data)
         : base("Icons", ChunkGraphic.IconZoomVisRange)
     {
         ZIndex = (int)LayerOrder.Icons;
         SettlementIcons = new SettlementIcons(chunk,
-            ChunkGraphic.IconZoomVisRange, data);
-        BuildingIcons = new BuildingIcons(chunk, 
             ChunkGraphic.IconZoomVisRange, data);
         foreach (var m in GetModules())
         {
@@ -24,7 +21,6 @@ public partial class IconsChunkModule : ChunkGraphicMultiModule
     protected override IEnumerable<IChunkGraphicModule> GetModules()
     {
         yield return SettlementIcons;
-        yield return BuildingIcons;
     }
     public override Settings GetSettings(Data d)
     {

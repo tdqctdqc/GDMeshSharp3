@@ -9,7 +9,7 @@ public class TurnStartState : TurnState
         _majorModules = new LogicModule[]
         {
             new DefaultLogicModule(() => new SetContextProcedure()),
-            new ProduceConsumeModule(),
+            new ProductionModule(),
             new FoodAndPopGrowthModule(),
             new DefaultLogicModule(() => new FinishedTurnStartCalcProc())
         };

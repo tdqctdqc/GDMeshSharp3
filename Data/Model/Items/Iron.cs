@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class Iron : NaturalResource, IMineable
+public class Iron : NaturalResource
 {
     public Iron() 
         : base(nameof(Iron), Colors.DarkRed,

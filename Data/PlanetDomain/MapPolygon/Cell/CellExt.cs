@@ -29,14 +29,6 @@ public static class CellExt
         return d.Military.UnitAux.UnitsByCell[cell];
     }
 
-    public static bool HasBuilding(this Cell c, Data d)
-    {
-        return d.Infrastructure.BuildingAux.ByCell.Contains(c);
-    }
-    public static MapBuilding GetBuilding(this Cell c, Data d)
-    {
-        return d.Infrastructure.BuildingAux.ByCell[c];
-    }
 
     public static bool HasPeep(this Cell c, Data d)
     {

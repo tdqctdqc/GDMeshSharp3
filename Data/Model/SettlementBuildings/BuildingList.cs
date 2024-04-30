@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BuildingList : ModelList<BuildingModel>
+public class BuildingList : ModelList<SettlementBuildingModel>
 {
     public Mine IronMine { get; private set; } 
     public Mine CoalMine { get; private set; } 

@@ -87,4 +87,26 @@ public static class DictionaryExt
 
         return res;
     }
+
+    public static Dictionary<TValue, float> ConsolidateCounts<TValue>
+        (this IEnumerable<KeyValuePair<TValue, float>> v)
+    {
+        var res = new Dictionary<TValue, float>();
+        foreach (var (key, value) in v)
+        {
+            res.AddOrSum(key, value);
+        }
+        return res;
+    }
+    
+    public static Dictionary<TValue, int> ConsolidateCounts<TValue>
+        (this IEnumerable<KeyValuePair<TValue, int>> v)
+    {
+        var res = new Dictionary<TValue, int>();
+        foreach (var (key, value) in v)
+        {
+            res.AddOrSum(key, value);
+        }
+        return res;
+    }
 }

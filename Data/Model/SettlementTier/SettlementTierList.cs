@@ -8,13 +8,13 @@ public class SettlementTierList : ModelList<SettlementTier>
 
     public SettlementTier Village { get; private set; } 
         = new SettlementTier(nameof(Village), 
-            1000, 1);
+            500, 1);
     public SettlementTier Town { get; private set; } 
         = new SettlementTier(nameof(Town), 
-            2500, 3);
+            1000, 4);
     public SettlementTier City { get; private set; } 
         = new SettlementTier(nameof(City), 
-            5000, 10);
+            2000, 10);
 
 
     public SettlementTierList()

@@ -2,12 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TownHall : BuildingModel
+public class TownHall : SettlementBuildingModel
 {
     public TownHall(Items items, PeepJobList jobs, FlowList flows) 
-        : base(BuildingType.Government, nameof(TownHall), 
-            50, 
-            500, 
+        : base(nameof(TownHall), 
             new List<BuildingModelComponent>
             {
                 new BuildingProd(
@@ -24,7 +22,10 @@ public class TownHall : BuildingModel
             },
             new MakeableAttribute(
                 IdCount<IModel>.Construct(
-                    new Dictionary<IModel, float> {}),
+                    new Dictionary<IModel, float>
+                    {
+                        { flows.ConstructionCap, 20_000 },
+                    }),
                 IdCount<IModel>.Construct(
                     new Dictionary<IModel, float> {})
                 ))

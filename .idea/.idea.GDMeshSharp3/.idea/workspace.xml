@@ -4,15 +4,46 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="reimplemented food consumption / production">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionResult.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimeStockBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimeStockBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/RuleVars/RuleVars.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/RuleVars/RuleVars.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetConstrainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetConstrainer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/PolyPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/PolyPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/ItemsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/StockTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/RegimeOverviewWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/BuildingIcons.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/IconsChunkModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/IconsChunkModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Attributes/MakeableAttribute.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Attributes/MakeableAttribute.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/BuildingAux.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/BuildingExt.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/MapBuilding.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Building/WorkBuilding.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/InfrastructureDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/InfrastructureDomain.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Bank.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Bank.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Barracks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Barracks.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/BuildingModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/BuildingModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Factory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Factory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/Mine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/Mine.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Buildings/TownHall.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Buildings/TownHall.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTierList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTierList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConsumeModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConsumeModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/SetRegimeStockProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProdResultProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProdResultProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProdResultProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConstructProcedure.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProduceConsumeModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/StartMakeProjectProc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/StartMakeProjectProc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DictionaryExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DictionaryExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -593,7 +624,11 @@
       <workItem from="1711321080095" duration="590000" />
       <workItem from="1711387520463" duration="6031000" />
       <workItem from="1712779316933" duration="586000" />
-      <workItem from="1713192885520" duration="1363000" />
+      <workItem from="1713192885520" duration="1977000" />
+      <workItem from="1713204589730" duration="3045000" />
+      <workItem from="1713215822279" duration="2309000" />
+      <workItem from="1714232654251" duration="2108000" />
+      <workItem from="1714246446521" duration="2028000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -805,14 +840,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00163" summary="doot">
-      <option name="closed" value="true" />
-      <created>1709341229385</created>
-      <option name="number" value="00163" />
-      <option name="presentableId" value="LOCAL-00163" />
-      <option name="project" value="LOCAL" />
-      <updated>1709341229385</updated>
-    </task>
     <task id="LOCAL-00164" summary="doot">
       <option name="closed" value="true" />
       <created>1709343933767</created>
@@ -957,7 +984,15 @@
       <option name="project" value="LOCAL" />
       <updated>1711394880711</updated>
     </task>
-    <option name="localTasksCounter" value="182" />
+    <task id="LOCAL-00182" summary="reimplemented food consumption / production">
+      <option name="closed" value="true" />
+      <created>1713194267140</created>
+      <option name="number" value="00182" />
+      <option name="presentableId" value="LOCAL-00182" />
+      <option name="project" value="LOCAL" />
+      <updated>1713194267141</updated>
+    </task>
+    <option name="localTasksCounter" value="183" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

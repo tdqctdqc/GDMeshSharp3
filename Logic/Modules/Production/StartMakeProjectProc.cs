@@ -16,7 +16,7 @@ public class StartMakeProjectProc : Procedure
     public MakeProject Project { get; private set; }
     public override void Enact(ProcedureWriteKey key)
     {
-        Regime.Get(key.Data).MakeQueue.Queue.Enqueue(Project);
+        Regime.Get(key.Data).MakeQueue.Queue.Add(Project);
     }
 
     public override bool Valid(Data data, out string error)

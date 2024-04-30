@@ -6,12 +6,12 @@ using MessagePack;
 
 public class MakeQueue
 {
-    public Queue<MakeProject> Queue { get; private set; }
+    public List<MakeProject> Queue { get; private set; }
     public static MakeQueue Construct()
     {
-        return new MakeQueue(new Queue<MakeProject>());
+        return new MakeQueue(new List<MakeProject>());
     }
-    [SerializationConstructor] private MakeQueue(Queue<MakeProject> queue)
+    [SerializationConstructor] private MakeQueue(List<MakeProject> queue)
     {
         Queue = queue;
     }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public class BudgetRoot : BudgetBranch
 {
@@ -92,7 +93,8 @@ public class BudgetRoot : BudgetBranch
 
             var test = totalModelDemand.GetEnumerableModel(d)
                            .Sum(kvp => kvp.Value * modelPrices[kvp.Key]);
-            if (test != 1f) throw new Exception("Total price is " + test);
+            
+            if (Mathf.Abs(test - 1f) > .1f) throw new Exception("Total price is " + test);
         }
 
         return modelPrices;

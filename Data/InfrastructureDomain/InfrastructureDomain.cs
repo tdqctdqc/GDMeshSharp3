@@ -4,7 +4,6 @@ using System.Linq;
 
 public class InfrastructureDomain
 {
-    public BuildingAux BuildingAux { get; private set; }
     public SettlementAux SettlementAux { get; private set; }
     
     public RoadNetwork RoadNetwork => _roads.Value;
@@ -17,6 +16,5 @@ public class InfrastructureDomain
     {
         SettlementAux = new SettlementAux(data);
         _roads = new SingletonCache<RoadNetwork>(data);
-        BuildingAux = new BuildingAux(data);
     }
 }

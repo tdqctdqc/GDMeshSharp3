@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class HeavyMetal : NaturalResource, IMineable
+public class HeavyMetal : NaturalResource
 {
     public HeavyMetal() 
         : base(nameof(HeavyMetal), new Color("#0047AB"),

@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Bank : BuildingModel
+public class Bank : SettlementBuildingModel
 {
     public Bank(Items items, PeepJobList jobs, FlowList flows) 
-        : base(BuildingType.Financial, nameof(Bank), 
-            25, 200, 
+        : base(nameof(Bank), 
             new List<BuildingModelComponent>
             {
                 new BuildingProd(
@@ -28,6 +27,7 @@ public class Bank : BuildingModel
                 IdCount<IModel>.Construct(new Dictionary<IModel, float>
                 {
                     { items.FinancialPower, 10_000 },
+                    { flows.ConstructionCap, 5_000 },
                 }),
               IdCount<IModel>.Construct(new Dictionary<IModel, float>
                 {

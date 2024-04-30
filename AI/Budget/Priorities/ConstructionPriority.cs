@@ -6,12 +6,12 @@ using Godot;
 using Google.OrTools.LinearSolver;
 
 public abstract class ConstructionPriority 
-    : SolverPriority<BuildingModel>
+    : SolverPriority<SettlementBuildingModel>
 {
     public ConstructionPriority(string name, 
         Func<Data, Regime, float> getWeight) 
         : base(name, 
-            d => d.Models.GetModels<BuildingModel>().Values)
+            d => d.Models.GetModels<SettlementBuildingModel>().Values)
     {
     }
 
@@ -23,7 +23,7 @@ public abstract class ConstructionPriority
     protected override void SetConstraints(Solver solver, 
         Regime r,
         BudgetPool pool,
-        Dictionary<BuildingModel, Variable> projVars, Data data)
+        Dictionary<SettlementBuildingModel, Variable> projVars, Data data)
     {
         //todo add maintain cost constraints
         solver.SetBuildCostConstraints(data, pool, projVars);
@@ -33,7 +33,7 @@ public abstract class ConstructionPriority
     protected override void Complete(
         BudgetPool pool,
         Regime r, 
-        Dictionary<BuildingModel, int> toBuild, 
+        Dictionary<SettlementBuildingModel, int> toBuild, 
         LogicWriteKey key)
     {
         foreach (var (model, value) in toBuild)

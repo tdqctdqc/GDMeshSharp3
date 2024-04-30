@@ -2,11 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Factory : BuildingModel
+public class Factory : SettlementBuildingModel
 {
     public Factory(Items items, FlowList flows, PeepJobList jobs) : 
-        base(BuildingType.Industry, nameof(Factory),
-        20, 2000,
+        base(nameof(Factory),
         new List<BuildingModelComponent>
             {
                 new BuildingProd(
@@ -26,6 +25,7 @@ public class Factory : BuildingModel
                     new Dictionary<IModel, float>
                 {
                     { items.Iron, 500 },
+                    { flows.ConstructionCap, 100_000 },
                 }),
                 IdCount<IModel>.Construct(
                     new Dictionary<IModel, float>

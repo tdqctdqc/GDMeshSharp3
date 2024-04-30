@@ -4,9 +4,6 @@ using Godot;
 public interface IMakeable
 {
     MakeableAttribute Makeable { get; }
-    void Make(Regime r, 
-        float amount,
-        ProcedureWriteKey key);
 }
 public class MakeableAttribute : IItemAttribute, ITroopAttribute
 {

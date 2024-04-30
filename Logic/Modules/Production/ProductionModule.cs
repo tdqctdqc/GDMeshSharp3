@@ -7,26 +7,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 
-public class ProduceConsumeModule : LogicModule
+public class ProductionModule : LogicModule
 {
     public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
         var results = key.Data.GetAll<Regime>()
             .AsParallel()
-            .Select(r =>
-            {
-                var res = DoRegime(r, key.Data);
-                return (r.MakeRef(), res.Item1, res.growthsByPeep);
-            })
+            .Select(r => DoRegime(r, key.Data))
             .ToArray();
         var proc = new ProdResultProcedure(results);
         key.SendMessage(proc);
     }
 
-    private (RegimeStock, Dictionary<int, int> growthsByPeep) 
-        DoRegime(Regime r, Data d)
+    private ProductionResult DoRegime(Regime r, Data d)
     {
-        var res = RegimeStock.Construct();
+        var newStock = RegimeStock.Construct();
         foreach (var (id, amt) in r.Stock.Stock.Contents.ToList())
         {
             var model = d.Models.GetModel<IModel>(id);
@@ -44,13 +39,24 @@ public class ProduceConsumeModule : LogicModule
         r.Stock.Stock.Set(labor, totalPop);
         r.Stock.Produced.Set(labor, totalPop);
         
-        var growths = DoFood(r, res, d);
-        DoBuildingProds(r, d, res);
-        TroopMaintenance(r, d, res);
-
-        res.Stock.Add(r.Stock.Stock);
+        var growths = DoFood(r, newStock, d);
+        DoBuildingProds(r, d, newStock);
+        TroopMaintenance(r, d, newStock);
         
-        return (res, growths);
+        var constructCap = d.Models.Flows.ConstructionCap;
+        var constructCapProduced = r.GetPopulation(d);
+        constructCapProduced = Mathf.FloorToInt(constructCapProduced);
+        if (constructCapProduced < 0f) throw new Exception();
+        r.Stock.Stock.Set(constructCap, constructCapProduced);
+        newStock.Produced.Set(constructCap, constructCapProduced);
+        
+        var made = DoMake(r, newStock, d);
+        
+        newStock.Stock.Add(r.Stock.Stock);
+        
+        var result = new ProductionResult(r.MakeRef(), 
+            newStock, growths, made);
+        return result;
     }
 
     private static void TroopMaintenance(Regime r, Data d, RegimeStock res)
@@ -75,13 +81,14 @@ public class ProduceConsumeModule : LogicModule
         RegimeStock res)
     {
         var prodBuildings = r.GetCells(d)
-            .Where(c => c.HasBuilding(d))
-            .Select(c => c.GetBuilding(d).Model.Get(d))
-            .Where(b => b.HasComponent<BuildingProd>())
-            .GetCounts();
+            .Where(c => c.HasSettlement(d))
+            .SelectMany(c => c.GetSettlement(d)
+                .Buildings.GetEnumerableModel(d))
+            .Where(kvp => kvp.Key.HasComponent<BuildingProd>())
+            .ConsolidateCounts();
 
         var buildingProdQueue = new PriorityQueue<
-            (BuildingModel, int num, float satisfied), float>();
+            (SettlementBuildingModel, float num, float satisfied), float>();
         foreach (var (b, num) in prodBuildings)
         {
             buildingProdQueue.Enqueue((b, num, 0f), 1f);
@@ -140,9 +147,6 @@ public class ProduceConsumeModule : LogicModule
         RegimeStock res,
         Data d)
     {
-
-        
-        
         var food = d.Models.Items.Food;
         var growthsByPeep = new Dictionary<int, int>();
         var foodConsPerPop = d.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
@@ -157,12 +161,14 @@ public class ProduceConsumeModule : LogicModule
             .OrderByDescending(kvp => kvp.Key.Get(d).FoodPerLabor());
         var count = foodProds.Count();
         
-        var foodProduced = 0f;
+        var totalProduced = 0f;
         int iter = 0;
-        while (foodProduced < foodDemanded && iter < count)
+        while (totalProduced < foodDemanded && iter < count)
         {
-            var demand = foodDemanded - foodProduced;
+            var demand = foodDemanded - totalProduced;
             var kvp = foodProds.ElementAt(iter);
+
+            iter++;
             var prodModel = kvp.Key.Get(d);
             var amt = kvp.Value;
             var possibleProd = prodModel.BaseProd * amt;
@@ -178,6 +184,7 @@ public class ProduceConsumeModule : LogicModule
             prodRatio = Mathf.Clamp(prodRatio, 0f, laborRatio);
             
             var produced = prodRatio * possibleProd;
+            totalProduced += produced;
             var labor = prodRatio * amt * prodModel.BaseLabor;
             
             regime.Stock.Stock.Add(d.Models.Items.Food, produced);
@@ -201,8 +208,6 @@ public class ProduceConsumeModule : LogicModule
 
         return growthsByPeep;
     }
-    
-    
     private static void HandleGrowth(Regime regime, 
         float surplusRatio, Dictionary<int, int> growths,
         Data data)
@@ -235,5 +240,40 @@ public class ProduceConsumeModule : LogicModule
         {
             growths.Add(peepsToAffect[i].Id, growthPerPeep);
         }
+    }
+
+    private static Dictionary<ModelRef<IModel>, float> 
+        DoMake(Regime r, RegimeStock res, Data d)
+    {
+        var queue = r.MakeQueue.Queue;
+        var made = new Dictionary<ModelRef<IModel>, float>();
+        foreach (var proj in queue)
+        {
+            var model = proj.Making.Get(d);
+            var costs = ((IMakeable)model).Makeable.BuildCosts;
+            var num = proj.Amount;
+            var satisfactionIncrement = costs.GetEnumerableModel(d)
+                .Min(kvp => r.Stock.Stock.Get(kvp.Key) / (kvp.Value * num));
+            satisfactionIncrement = Mathf.Clamp(satisfactionIncrement, 0f, 1f);
+            
+            if (satisfactionIncrement > 0f)
+            {
+                foreach (var (inputModel, inputAmt)
+                         in costs.GetEnumerableModel(d))
+                {
+                    r.Stock.Stock.Remove(inputModel,
+                        inputAmt * num * satisfactionIncrement);
+                    res.SingleTimeCosts.Add(inputModel,
+                        inputAmt * num * satisfactionIncrement);
+                }
+
+                var amtMade = num * satisfactionIncrement;
+                r.Stock.Stock.Add(model, amtMade);
+                res.Produced.Add(model, amtMade);
+                made.AddOrSum(model.MakeRef(), amtMade);
+            }
+        }
+
+        return made;
     }
 }

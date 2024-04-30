@@ -39,12 +39,12 @@ public partial class PolyPanel : ScrollPanel
         Inner.CreateLabelAsChild("Roughness " + poly.Roughness.RoundTo2Digits());
         
 
-        if (poly.GetBuildings(d) is List<MapBuilding> buildings)
+        
+        if (mode.Cell.Value is LandCell l
+                && l.GetSettlement(d) is Settlement s)
         {
             foreach (var (model, count) 
-                     in poly.GetBuildings(d)
-                         .Select(b => b.Model.Get(d))
-                         .GetCounts())
+                     in s.Buildings.GetEnumerableModel(d))
             {
                 var label = model.Icon
                     .GetLabeledIcon<HBoxContainer>(

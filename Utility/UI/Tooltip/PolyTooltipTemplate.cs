@@ -51,22 +51,24 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
     }
     private static Control GetBuildings((MapPolygon poly, Cell cell) t, Data d)
     {
-        var bs = t.poly.GetBuildings(d);
-        var control = new VBoxContainer();
-        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
-        if (bs != null)
+        if (t.cell is LandCell l is false)
         {
-            var counts = bs
-                .Select(b => b.Model.Get(d)).GetCounts();
-            foreach (var kvp in counts)
-            {
-                var box = NodeExt.GetLabeledIcon<HBoxContainer>(
-                    kvp.Key.Icon, kvp.Value.ToString(), iconSize);
-                control.AddChild(box);
-            }
+            return new Control();
         }
 
+        if (l.GetSettlement(d) is not Settlement s) return new Control();
         
+        
+        var bs = s.Buildings;
+        var control = new VBoxContainer();
+        var iconSize = Game.I.Client.Settings.MedIconSize.Value;
+        foreach (var kvp in bs.GetEnumerableModel(d))
+        {
+            var box = NodeExt.GetLabeledIcon<HBoxContainer>(
+                kvp.Key.Icon, kvp.Value.ToString(), iconSize);
+            control.AddChild(box);
+        }
+
         return control;
     }
     private static Control GetFoodProd((MapPolygon poly, Cell cell) t, Data d)

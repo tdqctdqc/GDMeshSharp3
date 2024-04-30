@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class Coal : NaturalResource, IMineable
+public class Coal : NaturalResource
 {
     public Coal() 
         : base(nameof(Coal), Colors.Black, 

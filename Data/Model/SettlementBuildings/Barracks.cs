@@ -1,12 +1,11 @@
 using System.Collections.Generic;
 using Godot;
 
-public class Barracks : BuildingModel
+public class Barracks : SettlementBuildingModel
 {
     public Barracks(Items items, FlowList flows, PeepJobList jobs) 
-        : base(BuildingType.Military, 
-            nameof(Barracks), 10,
-            500, 
+        : base(
+            nameof(Barracks), 
             new List<BuildingModelComponent>
             {
                 new BuildingProd(
@@ -23,7 +22,7 @@ public class Barracks : BuildingModel
                 ),
             }, 
             new MakeableAttribute(
-                IdCount<IModel>.Construct(),
+                IdCount<IModel>.Construct((flows.ConstructionCap, 10_000)),
                 IdCount<IModel>.Construct())
         )
     {

@@ -18,12 +18,12 @@ public class MakeProductionBuildingsPriority
         Model = model;
     }
 
-    protected override float Utility(BuildingModel t)
+    protected override float Utility(SettlementBuildingModel t)
     {
         return t.GetComponent<BuildingProd>().Outputs.Contents[Model.Id];
     }
 
-    protected override bool Relevant(BuildingModel t, Data d)
+    protected override bool Relevant(SettlementBuildingModel t, Data d)
     {
         if (t.HasComponent<BuildingProd>() == false)
         {
@@ -40,7 +40,7 @@ public class MakeProductionBuildingsPriority
     }
 
     protected override Dictionary<IModel, float> GetCosts(
-        Dictionary<BuildingModel, int> toBuild, 
+        Dictionary<SettlementBuildingModel, int> toBuild, 
         Data d)
     {
         var res = new Dictionary<IModel, float>();

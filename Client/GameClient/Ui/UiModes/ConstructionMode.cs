@@ -4,7 +4,7 @@ using Godot;
 
 public class ConstructionMode : UiMode
 {
-    public ListSettingsOption<BuildingModel> Setting { get; private set; }
+    public ListSettingsOption<SettlementBuildingModel> Setting { get; private set; }
     private MouseOverHandler _mouseOver;
     private MeshInstance2D _mesh;
     private Label _errorLabel;
@@ -12,7 +12,7 @@ public class ConstructionMode : UiMode
         "Construction")
     {
         var list = client.Data.Models.Buildings.GetList();
-        Setting = new ListSettingsOption<BuildingModel>(
+        Setting = new ListSettingsOption<SettlementBuildingModel>(
             "Building", list, 
             list.Select(m => m.Name).ToList());
         _mouseOver = new MouseOverHandler(client.Data);
@@ -33,6 +33,9 @@ public class ConstructionMode : UiMode
         var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
         var localPlayerRegime = localPlayer.Regime.Get(_client.Data);
         if (localPlayerRegime == null) return;
+        
+        
+        
         // var proc = StartConstructionProcedure
         //     .Construct(model.MakeRef(),
         //         _mouseOver.MouseOverCell.Id,

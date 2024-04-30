@@ -13,10 +13,6 @@ public class Troop : IModel, IMakeable, IIconed
     public int Echelon { get; private set; }
     public Icon Icon { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
-    public void Make(Regime r, float amount, ProcedureWriteKey key)
-    {
-        r.Stock.Stock.Add(this, amount);
-    }
 
     public TroopDomain Domain { get; private set; }
     public Troop(string name, 
