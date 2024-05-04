@@ -5,8 +5,9 @@ using Godot;
 
 public class Ranch : FoodProdTechnique
 {
-    public Ranch(PeepJobList list) 
-        : base(nameof(Ranch), 1000, 100, 2, list.Herder)
+    public Ranch(PeepJobList list, Items items) 
+        : base(nameof(Ranch), 1000, 
+            100, list.Herder, items)
     {
     }
 
@@ -15,7 +16,8 @@ public class Ranch : FoodProdTechnique
         if (t.GetLandform(data).IsLand
             && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
             && t.GetVegetation(data).MinMoisture <= data.Models.Vegetations.Grassland.MinMoisture
-            && float.IsNaN(t.Area()) == false)
+            && float.IsNaN(t.Area()) == false
+            )
         {
             var lfMod = ShapingFunctions.ProjectToRange(t.GetLandform(data).FertilityMod, 1f, .25f, 1f);
             var vMod = ShapingFunctions.ProjectToRange(t.GetVegetation(data).FertilityMod, 1f, .5f, 1f);

@@ -25,7 +25,7 @@ public class ForceCompositionAi
             ?.Where(u => u != null)
             .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null)
             .ToHashSet();
-        if (freeUnits == null || freeUnits.Count() == 0) return;
+        if (freeUnits == null || freeUnits.Any() == false) return;
 
         var groups = key.Data.GetAll<UnitGroup>()
             .Where(g => g.Regime.RefId == regime.Id).ToArray();
@@ -65,7 +65,7 @@ public class ForceCompositionAi
         }
         foreach (var newGroup in newGroups)
         {
-            if (newGroup.Count() == 0) continue;
+            if (newGroup.Count == 0) continue;
             key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
             UnitGroup.Create(regime, newGroup, key);
         }

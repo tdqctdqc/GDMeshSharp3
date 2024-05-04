@@ -45,7 +45,7 @@ public static class PathFinder<T>
                 return res;
             }
             var almostThereNs = ns.Where(endNeighbors.Contains);
-            if (almostThereNs.Count() > 0)
+            if (almostThereNs.Any())
             {
                 var next = almostThereNs.MinBy(a => getDist(a, end));
                 res.Add(next);
@@ -54,7 +54,7 @@ public static class PathFinder<T>
             }
             var dist = getDist(curr, end);
             var close = ns.Where(n => getDist(n, end) < dist);
-            if (close.Count() == 0)
+            if (close.Any() == false)
             {
                 res.Add(end);
                 return res;
@@ -245,8 +245,9 @@ public static class PathFinder<T>
         Func<T,T,float> getHeuristic)
     {
         var res = new Dictionary<T, List<T>>();
-        if (starts.Count() == 0) return res;
-        if (starts.Count() == 1)
+        if (starts.Any() == false) return res;
+        var count = starts.Count();
+        if (count == 1)
         {
             var path = FindPath(starts.First(),
                 end, getNeighbors, getEdgeCost, getHeuristic);
@@ -255,7 +256,7 @@ public static class PathFinder<T>
         }
         var info = _pool.Get();
         int maxIters = 100_000;
-        var count = starts.Count();
+        
         var foundCount = 0;
         int iter = 0;
         info.Open.Enqueue(end, 0f);

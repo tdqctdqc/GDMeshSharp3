@@ -22,7 +22,7 @@ public static class LineSegmentExt
         {
             var seg = segs[i];
             var pointsTo = segs.Where(s => seg.To == s.From);
-            if (pointsTo.Count() == 0) continue;
+            if (pointsTo.Any() == false) continue;
             foreach (var cand in pointsTo)
             {
                 var complete = segs.FirstOrDefault(s => s.To == seg.From && s.From == cand.To);

@@ -119,7 +119,7 @@ public class DiplomacyAi
         var ourEnemies = alliance.GetRivals(data);
         var sharedEnemies = target.GetRivals(data)
             .Where(ourEnemies.Contains);
-        if (sharedEnemies.Count() > 0)
+        if (sharedEnemies.Any())
         {
             res += sharedEnemies.Sum(e => e.GetPowerScore(data));
         }

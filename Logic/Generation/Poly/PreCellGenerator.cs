@@ -29,7 +29,7 @@ public static class PreCellGenerator
         var (points, dummyPoints) 
             = MakeCellPoints(30, dim);
         sw.Stop();
-        GD.Print($"make points {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"make points {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
@@ -43,14 +43,14 @@ public static class PreCellGenerator
         sw.Start();
         var graph = delaunator.GetVoronoiGraphNew(result, dim, key);
         sw.Stop();
-        GD.Print($"make graph {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"make graph {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
         var cells = MakeCells(dim, points, graph, bounds, 
             dummyPoints, key);
         sw.Stop();
-        GD.Print($"make cells {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"make cells {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         
@@ -58,25 +58,25 @@ public static class PreCellGenerator
         sw.Start();
         MergeLeftRight(cells, dim);
         sw.Stop();
-        GD.Print($"merge left right {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"merge left right {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
         Parallel.ForEach(cells, c => c.MakePointsRel(dim));
         sw.Stop();
-        GD.Print($"making cell abs points {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"making cell abs points {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
         var polys = MakePolys(cells, dim, key);
         sw.Stop();
-        GD.Print($"make polys {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"make polys {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
         CheckPolysContiguous(polys, dim, key);
         sw.Stop();
-        GD.Print($"check polys contiguous {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"check polys contiguous {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
 
         foreach (var poly in polys)
@@ -91,20 +91,20 @@ public static class PreCellGenerator
         sw.Start();
         MakePolyNeighbors(polys);
         sw.Stop();
-        GD.Print($"make poly neighbors {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"make poly neighbors {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
         var edges = MakeEdges(polys, key);
         sw.Stop();
-        GD.Print($"make edges {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"make edges {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
         
         sw.Start();
         var nexi = MakeNexi(polys, cells, 
             edges, dim, result, key);
         sw.Stop();
-        GD.Print($"make nexi {sw.Elapsed.TotalMilliseconds}");
+        // GD.Print($"make nexi {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();
 
         result.Nexi = nexi;
@@ -113,7 +113,7 @@ public static class PreCellGenerator
         result.Edges = edges;
         
         total.Stop();
-        GD.Print("total " + total.Elapsed.TotalMilliseconds);
+        // GD.Print("total " + total.Elapsed.TotalMilliseconds);
         return result;
     }
 

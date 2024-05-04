@@ -68,7 +68,7 @@ public class MultiIndexer<TSingle, TMult>
     {
         var single = _getSingle(removing);
         if(single != null) _dic[single].Remove(removing);
-        if (_dic[single].Count() == 0) _dic.Remove(single);
+        if (_dic[single].Any() == false) _dic.Remove(single);
     }
 
     public void HandleChanged(ValChangeNotice<TMult, TSingle> notice)

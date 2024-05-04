@@ -56,7 +56,7 @@ public class PlanetDomain
     }
     public Vector2 GetAveragePosition(IEnumerable<Vector2> ps)
     {
-        if (ps.Count() == 0) throw new Exception();
+        if (ps.Any() == false) throw new Exception();
         var relTo = ps.First();
         var avg = Vector2.Zero;
         foreach (var p in ps)

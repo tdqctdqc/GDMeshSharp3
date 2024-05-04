@@ -128,11 +128,11 @@ public class MoistureGenerator : Generator
                     .Where(e => covered.Contains(e) == false 
                                 && e.HighPoly.Get(Data).IsLand && e.LowPoly.Get(Data).IsLand);
                 curr = adjs.ToHashSet();
-                if (adjs.Count() == 0) break;
+                if (adjs.Any() == false) break;
                 foreach (var adj in adjs)
                 {
                     var coveredNeighborEdges = adj.GetIncidentEdges(Data).Where(covered.Contains);
-                    if (coveredNeighborEdges.Count() == 0) continue;
+                    if (coveredNeighborEdges.Any() == false) continue;
                     var drainTo = coveredNeighborEdges.OrderBy(getCost).First();
                     var node = new DrainGraphNode<MapPolygonEdge>(adj);
                     node.DrainsTo = drainTo;

@@ -8,17 +8,15 @@ public class Factory : SettlementBuildingModel
         base(nameof(Factory),
         new List<BuildingModelComponent>
             {
-                new BuildingProd(
+                new ProdComponent(
                     IdCount<IModel>.Construct(
-                        (flows.Labor, 500)
                     ),
                     IdCount<IModel>.Construct(
                         (flows.IndustrialPower, 100)
                     ),
                     IdCount<PeepJob>.Construct(
                         (jobs.Prole, 500)
-                    ),
-                    flows
+                    )
                 )
             },
             new MakeableAttribute(IdCount<IModel>.Construct(

@@ -6,15 +6,15 @@ using MessagePack;
 public class RegimePeepsReport
 {
     public int Tick { get; private set; }
-    public int TotalPop { get; private set; }
-    public int Unemployed { get; private set; }
+    public float TotalPop { get; private set; }
+    public float Unemployed { get; private set; }
 
     public static RegimePeepsReport Construct(Regime r, Data d)
     {
         return new RegimePeepsReport(d.Tick, r.GetPeeps(d).Sum(p => p.Size),
             r.GetCells(d).Sum(p => p.GetPeep(d).Employment.NumUnemployed(d)));
     }
-    [SerializationConstructor] private RegimePeepsReport(int tick, int totalPop, int unemployed)
+    [SerializationConstructor] private RegimePeepsReport(int tick, float totalPop, float unemployed)
     {
         Tick = tick;
         TotalPop = totalPop;

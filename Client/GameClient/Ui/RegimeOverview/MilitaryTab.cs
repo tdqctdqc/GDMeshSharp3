@@ -59,7 +59,7 @@ public partial class MilitaryTab : ScrollContainer
             .Where(g => g.Regime.RefId == regime.Id);
         _container.CreateLabelAsChild($"{units.Count()} Units");
 
-        if (groups.Count() > 0)
+        if (groups.Any())
         {
             _container.CreateLabelAsChild($"{groups.Count()} Groups");
             _container.CreateLabelAsChild("GROUPS");

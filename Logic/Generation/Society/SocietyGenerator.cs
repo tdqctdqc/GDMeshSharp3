@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Godot;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,68 +11,98 @@ public class SocietyGenerator : Generator
 {
     private GenWriteKey _key;
     private GenData _data;
+    private MultiTimer _times;
     public override GenReport Generate(GenWriteKey key)
     {
         var report = new GenReport("Society");
         _key = key;
         _data = key.GenData;
+        _times = new MultiTimer();
+        _times.AddName("food");
+        _times.AddName("extraction");
+        _times.AddName("settlements");
+        _times.AddName("deforest");
+        _times.AddName("units");
+        _times.AddName("settlement buildings");
+        
         foreach (var c in _data.Planet.MapAux.CellHolder.Cells.Values.OfType<LandCell>())
         {
             Peep.Create(c, key);
         }
-        foreach (var r in _data.GetAll<Regime>())
+
+        var regimes = _data.GetAll<Regime>();
+        Parallel.ForEach(regimes, r => GenerateForRegime(r));
+        var settlements = regimes.AsParallel()
+            .SelectMany(r => GenerateForRegime(r))
+            .ToArray();
+        foreach (var (cell, size) in settlements)
         {
-            GenerateForRegime(r);
+            Settlement.Create("", cell, size, _key);
         }
-        NameSettlements();
-        Deforest();
-        CreateUnits(key);
+        // NameSettlements();
+
+        _times.RunAndTime(() =>
+        {
+            Parallel.ForEach(regimes, r =>
+            {
+                MakeSettlementBuildings(r);
+            });
+        }, "settlement buildings");
+        
+        
+        _times.RunAndTime(Deforest, "deforest");
+        _times.RunAndTime(() => CreateUnits(key), "units");
+        
+        
+        
+        _times.Print();
+
         return report;
     }
     
-    private void GenerateForRegime(Regime r)
+    private List<(LandCell, int)> GenerateForRegime(Regime r)
     {
-        var popSurplus = GenerateFoodProducers(r);
-        if (popSurplus <= 0) return;
+        var popSurplus = _times.RunAndTime(
+            () => GenerateFoodProducers(r), 
+            "food");
+        if (popSurplus <= 0) return new List<(LandCell, int)>();
+
+        popSurplus = _times.RunAndTime(
+            () => GenerateExtractionBuildings(popSurplus, r),
+            "extraction");
         
-        float score(LandCell p)
-        {
-            var s = (p.GetPeep(_data).Size + CellHabitability(p));
-            return s;
-        }
-        
-        popSurplus = GenerateExtractionBuildings(popSurplus, r);
-        
-        CreateSettlements(r, popSurplus);
+        return _times.RunAndTime(() => CreateSettlements(r, popSurplus), "settlements");
     }
 
     private float GenerateFoodProducers(Regime r)
     {
         var developmentScale = _data.GenMultiSettings.SocietySettings.DevelopmentScale.Value;
         var foodConsPerPeep = _data.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
-        var territory = r.GetCells(_data).OfType<LandCell>();
-        var foodSurplus = new ConcurrentBag<float>();
+        var territory = r.GetCells(_data)
+            .OfType<LandCell>()
+            .ToArray();
+        var foodSurplus = 0f;
+        var techniques = _data.Models.GetModels<FoodProdTechnique>().Values.ToArray();
         
-        foreach (var foodProdTechnique in _data.Models.GetModels<FoodProdTechnique>().Values)
+        for (var i = 0; i < territory.Length; i++)
         {
-            makeFoodProdTechnique(foodProdTechnique);
-        }
-        
-        void makeFoodProdTechnique(FoodProdTechnique technique)
-        {
-            var buildingSurplus = technique.BaseProd - technique.BaseLabor * foodConsPerPeep;
-            Parallel.ForEach(territory, p =>
+            var p = territory[i];
+            var peep = p.GetPeep(_data);
+            var foodProd = p.FoodProd;
+            var peepIncrease = 0;
+            for (var j = 0; j < techniques.Length; j++)
             {
+                var technique = techniques[j];
+                var buildingSurplus = technique.BaseProd - technique.BaseLabor * foodConsPerPeep;
                 var numBuilding = technique.NumForCell(p, _data) * developmentScale;
-                if (numBuilding == 0) return;
-                foodSurplus.Add(buildingSurplus * numBuilding);
-                p.GetPeep(_key.Data)
-                    .GrowSize(Mathf.CeilToInt(technique.BaseLabor * numBuilding), _key);
-                p.FoodProd.Add(technique, numBuilding);
-            });
+                foodSurplus += buildingSurplus * numBuilding;
+                peepIncrease += Mathf.CeilToInt(technique.BaseLabor * numBuilding);
+                foodProd.Add(technique, numBuilding);
+            }
+            peep.GrowSize(peepIncrease, _key);
         }
         
-        return foodSurplus.Sum() / foodConsPerPeep;
+        return foodSurplus / foodConsPerPeep;
     }
 
     private float PolyHabitability(MapPolygon poly)
@@ -84,19 +115,25 @@ public class SocietyGenerator : Generator
     {
         var score = 2f * (cell.Vegetation.Get(_data).MinMoisture
                           + (1f - cell.Landform.Get(_data).MinRoughness * .5f));
-        if (cell.GetNeighbors(_key.Data)
-            .Any(e => e is LandCell l 
-                && l.Polygon.RefId != cell.Polygon.RefId
-                && l.Polygon.Get(_data).GetEdge(cell.Polygon.Get(_data), _data).IsRiver()))
-        {
-            score *= 1.5f;
-        }
-        if (cell.GetNeighbors(_key.Data)
-            .Any(n => n is SeaCell))
-        {
-            score *= 1.5f;
-        }
         return score;
+        
+        //
+        //
+        //
+        //
+        // if (cell.GetNeighbors(_key.Data)
+        //     .Any(e => e is LandCell l 
+        //         && l.Polygon.RefId != cell.Polygon.RefId
+        //         && l.Polygon.Get(_data).GetEdge(cell.Polygon.Get(_data), _data).IsRiver()))
+        // {
+        //     score *= 1.5f;
+        // }
+        // if (cell.GetNeighbors(_key.Data)
+        //     .Any(n => n is SeaCell))
+        // {
+        //     score *= 1.5f;
+        // }
+        // return score;
     }
     private float GenerateExtractionBuildings(float popSurplus, Regime r)
     {
@@ -122,14 +159,15 @@ public class SocietyGenerator : Generator
         return popSurplus;
     }
 
-    private void CreateSettlements(Regime r, float popSurplus)
+    private List<(LandCell, int)> CreateSettlements(Regime r, float popSurplus)
     {
+        var res = new List<(LandCell, int)>();
         var minSize = _data.Models.Settlements.TiersBySize.First().MinSize;
         var rPolysByHabitability = _data.GetAll<MapPolygon>()
             .Where(p => p.GetCells(_data).First() is LandCell landCell
                         && landCell.Controller.RefId == r.Id)
             .OrderByDescending(PolyHabitability).ToArray();
-
+        
         var baseNum = Mathf.CeilToInt(
             Mathf.Min(2f * popSurplus / (minSize), 
                 rPolysByHabitability.Length)
@@ -154,16 +192,16 @@ public class SocietyGenerator : Generator
         
         foreach (var (poly, weight) in weights)
         {
-            var cellsByHabitability = poly.GetCells(_data).OfType<LandCell>()
-                .OrderByDescending(CellHabitability);
-            var queue = new Queue<LandCell>(cellsByHabitability);
-            var carryRatio = .25f;
+            var cells = poly.GetCells(_data).OfType<LandCell>();
+            var first = cells.MaxBy(CellHabitability);
+            
+            var cellsByPriority = poly.GetCells(_data).OfType<LandCell>()
+                .OrderBy(c => c.GetCenter()
+                    .Offset(first.GetCenter(), _data).Length());
+            var queue = new Queue<LandCell>(cellsByPriority);
+            var carryRatio = .15f;
             var pop = Mathf.CeilToInt(weight * popPerWeight);
-            if (pop < minSize)
-            {
-                throw new Exception();
-            }
-
+            
             while (pop * carryRatio >= minSize && queue.Count > 1)
             {
                 var urban = queue.Dequeue();
@@ -172,7 +210,7 @@ public class SocietyGenerator : Generator
                 urban.SetLandform(_data.Models.Landforms.Urban, _key);
                 urban.SetVegetation(_data.Models.Vegetations.Barren, _key);
                 urban.GetPeep(_data).GrowSize(forThis, _key);
-                Settlement.Create("", urban, forThis, _key);
+                res.Add((urban, forThis));
                 pop = forNext;
             }
 
@@ -180,8 +218,10 @@ public class SocietyGenerator : Generator
             last.SetLandform(_data.Models.Landforms.Urban, _key);
             last.SetVegetation(_data.Models.Vegetations.Barren, _key);
             last.GetPeep(_data).GrowSize(pop, _key);
-            Settlement.Create("", last, pop, _key);
+            res.Add((last, pop));
         }
+
+        return res;
     }
     
     private void Deforest()
@@ -220,7 +260,38 @@ public class SocietyGenerator : Generator
         }
         
     }
-    
+
+    private void MakeSettlementBuildings(Regime r)
+    {
+        // var settlements = _data.GetAll<Settlement>()
+        //     .Where(s => s.Cell.Get(_data).Controller.RefId == r.Id);
+        // var factory = _data.Models.Buildings.Factory;
+        // var barracks = _data.Models.Buildings.Barracks;
+        //
+        // var pattern = new SettlementBuildingModel[]
+        //     { factory, factory,
+        //         factory, barracks };
+        //
+        //
+        // var labor = _data.Models.Flows.Labor;
+        // foreach (var settlement in settlements)
+        // {
+        //     var cell = (LandCell)settlement.Cell.Get(_data);
+        //     var foodLabor = cell.FoodProd.Nums
+        //         .GetEnumerableModel(_data)
+        //         .Sum(v => v.Key.BaseLabor * v.Value);
+        //     var freeLabor = cell.GetPeep(_data).Size - foodLabor;
+        //     var numBs = 0;
+        //     while (freeLabor > 0)
+        //     {
+        //         var b = pattern[numBs % pattern.Length];
+        //         settlement.Buildings.Add(b, 1);
+        //         freeLabor -= b.GetComponent<BuildingProd>()
+        //             .Inputs.Get(labor);
+        //         numBs++;
+        //     }
+        // }
+    }
     private void NameSettlements()
     {
         var taken = new HashSet<string>();
@@ -249,26 +320,24 @@ public class SocietyGenerator : Generator
         {
             var template = regime.GetUnitTemplates(key.Data)
                 .First();
-
-            var score = Mathf.CeilToInt(Mathf.Sqrt(regime.GetCells(key.Data).Count()));
-            var numUnits = score * 2;
-
             var cells = regime
                 .GetCells(key.Data)
-                .Where(p => p.HasPeep(key.Data));
+                .ToArray();
+
+            var score = Mathf.CeilToInt(Mathf.Sqrt(cells.Length));
+            var numUnits = score * 2;
             
-            var numCells = cells.Count();
+            var numCells = cells.Length;
             var numToDistributeIn = numCells / 3;
             numCells = Mathf.Max(numToDistributeIn, 1);
-            var distributeInPolys = regime
-                .GetCells(key.Data)
+            var distributeIn = cells
                 .OrderByDescending(p => p.GetPeep(key.Data).Size)
-                .Take(numCells).ToArray();
+                .ToArray();
             for (var i = 0; i < numUnits; i++)
             {
-                var cell = distributeInPolys.Modulo(i);
+                var cell = distributeIn.Modulo(i);
                 var unitPos = new MapPos(cell.Id, (-1, 0f));
-                Unit.Create(template, regime, unitPos.Copy(), key);
+                Unit.Create(template, regime, unitPos, key);
             }
         }
     }

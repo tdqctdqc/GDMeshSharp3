@@ -141,7 +141,7 @@ public class CellAttackEdge : ICombatGraphEdge
         .Where(e => key.Data.HasEntity(e.Unit.Id))
         .Select(e => e.Unit)
         .Where(u => combat.Suppressed.Contains(u) == false);
-        if (nonSuppressedAttackers.Count() == 0) return;
+        if (nonSuppressedAttackers.Any() == false) return;
         var victoriousAllianceUnits = nonSuppressedAttackers
             .SortBy(u => u.Regime.Get(key.Data).GetAlliance(key.Data))
             .MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data)));

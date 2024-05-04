@@ -8,13 +8,13 @@ public class SettlementTierList : ModelList<SettlementTier>
 
     public SettlementTier Village { get; private set; } 
         = new SettlementTier(nameof(Village), 
-            250, 1);
+            1000, 1);
     public SettlementTier Town { get; private set; } 
         = new SettlementTier(nameof(Town), 
-            500, 4);
+            3000, 4);
     public SettlementTier City { get; private set; } 
         = new SettlementTier(nameof(City), 
-            1000, 10);
+            5000, 10);
 
 
     public SettlementTierList()
@@ -32,6 +32,8 @@ public class SettlementTierList : ModelList<SettlementTier>
                 return tier;
             }
         }
-        throw new Exception("Could not find tier for settlement");
+
+        return TiersBySize[0];
+        // throw new Exception("Could not find tier for settlement");
     }
 }

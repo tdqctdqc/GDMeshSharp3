@@ -11,7 +11,6 @@ public partial class RegimeStockBar : HBoxContainer
         AddModel(client, data.Models.Flows.IndustrialPower, data);
         AddModel(client, data.Models.Flows.Income, data);
         AddModel(client, data.Models.Flows.MilitaryCap, data);
-        AddModel(client, data.Models.Flows.Labor, data);
 
         foreach (var kvp in data.Models.GetModels<Item>())
         {

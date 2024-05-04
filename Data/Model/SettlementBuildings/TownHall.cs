@@ -8,16 +8,14 @@ public class TownHall : SettlementBuildingModel
         : base(nameof(TownHall), 
             new List<BuildingModelComponent>
             {
-                new BuildingProd(
+                new ProdComponent(
                     IdCount<IModel>.Construct(
-                        (flows.Labor, 100)
                     ), 
                     IdCount<IModel>.Construct(
                     ), 
                     IdCount<PeepJob>.Construct(
                         (jobs.Bureaucrat, 100)
-                    ),
-                    flows
+                    )
                 )
             },
             new MakeableAttribute(

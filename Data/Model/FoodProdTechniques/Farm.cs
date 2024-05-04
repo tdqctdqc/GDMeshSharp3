@@ -5,8 +5,8 @@ using Godot;
 
 public class Farm : FoodProdTechnique
 {
-    public Farm(PeepJobList list) 
-        : base(nameof(Farm), 1500, 500, 2, list.Farmer)
+    public Farm(PeepJobList list, Items items) 
+        : base(nameof(Farm), 1500, 500, list.Farmer, items)
     {
     }
 
@@ -15,7 +15,8 @@ public class Farm : FoodProdTechnique
         if (t.GetLandform(data).IsLand
             && t.GetLandform(data).MinRoughness <= data.Models.Landforms.Hill.MinRoughness
             && t.GetVegetation(data).MinMoisture >= data.Models.Vegetations.Arid.MinMoisture
-            && float.IsNaN(t.Area()) == false)
+            && float.IsNaN(t.Area()) == false
+            )
         {
             return t.Area() * t.GetLandform(data).FertilityMod * t.GetVegetation(data).FertilityMod
                 / 1000f;

@@ -5,26 +5,22 @@ using MessagePack;
 
 public class FoodProd
 {
-    public float BaseProd(Data data) 
-        => Nums.Sum(kvp => kvp.Key.Get(data).BaseProd * kvp.Value);
-    public float BaseLabor(Data data) 
-        => Nums.Sum(kvp => kvp.Key.Get(data).BaseLabor * kvp.Value);
-    public Dictionary<ModelRef<FoodProdTechnique>, float> Nums { get; private set; }
+    public IdCount<FoodProdTechnique> Nums { get; private set; }
 
     public static FoodProd Construct()
     {
-        return new FoodProd(new Dictionary<ModelRef<FoodProdTechnique>, float>());
+        return new FoodProd(IdCount<FoodProdTechnique>.Construct());
     }
 
     [SerializationConstructor] private FoodProd(
-        Dictionary<ModelRef<FoodProdTechnique>, float> nums)
+        IdCount<FoodProdTechnique> nums)
     {
         Nums = nums;
     }
 
     public void Add(FoodProdTechnique tech, float num)
     {
-        Nums.AddOrSum(tech.MakeRef(), num);
+        Nums.Add(tech, num);
     }
     
 }

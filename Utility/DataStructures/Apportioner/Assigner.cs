@@ -15,7 +15,7 @@ public class Assigner
         Action<TPicker, TPicked> assign,
         Func<TPicker, TPicked, float> ranker)
     {
-        if (pickers.Count() == 0) return;
+        if (pickers.Any() == false) return;
         
         var totalPriority = pickers.Sum(getPriority);
         var priorities = pickers.ToDictionary(

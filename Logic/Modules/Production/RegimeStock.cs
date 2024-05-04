@@ -8,7 +8,7 @@ public class RegimeStock
     public IdCount<IModel> SingleTimeCosts { get; private set; }
     public IdCount<IModel> RecurringCosts { get; private set; }
     public IdCount<IModel> Produced { get; private set; }
-    public Dictionary<ERef<MapPolygon>, PeepEmploymentReport> EmploymentReports { get; private set; }
+    public Dictionary<int, PeepEmploymentReport> EmploymentReports { get; private set; }
 
     public static RegimeStock Construct()
     {
@@ -17,7 +17,7 @@ public class RegimeStock
             IdCount<IModel>.Construct(),
             IdCount<IModel>.Construct(),
             IdCount<IModel>.Construct(),
-            new Dictionary<ERef<MapPolygon>, PeepEmploymentReport>()            
+            new Dictionary<int, PeepEmploymentReport>()            
         );
     }
     [SerializationConstructor] private RegimeStock(
@@ -25,7 +25,7 @@ public class RegimeStock
         IdCount<IModel> singleTimeCosts, 
         IdCount<IModel> recurringCosts, 
         IdCount<IModel> produced, 
-        Dictionary<ERef<MapPolygon>, PeepEmploymentReport> employmentReports)
+        Dictionary<int, PeepEmploymentReport> employmentReports)
     {
         Stock = stock;
         SingleTimeCosts = singleTimeCosts;

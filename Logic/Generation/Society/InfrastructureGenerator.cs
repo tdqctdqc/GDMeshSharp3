@@ -13,21 +13,29 @@ public class InfrastructureGenerator : Generator
     private GenWriteKey _key;
     private float _portInfraNodeSize = 0f;
     private float _minSettlementSizeForInfraNode = 0f;
-    private float _sizeBuildRoadRangeMult = .5f;
+    private float _sizeBuildRoadRangeMult = .02f;
+    private MultiTimer _multiTimer;
     public override GenReport Generate(GenWriteKey key)
     {
         _key = key;
         _data = _key.GenData;
         _minSettlementSizeForInfraNode = key.Data.Models.Settlements.Town.MinSize;
         var genReport = new GenReport(nameof(InfrastructureGenerator));
-        
         genReport.StartSection();
+        _multiTimer = new MultiTimer();
+        _multiTimer.AddName("poly level graph");
+        _multiTimer.AddName("high level graph");
+        _multiTimer.AddName("poly level traffic");
+        _multiTimer.AddName("road segs");
         var roads = RoadNetwork.Create(key);
+        
+        // return genReport;
+
         var allSegs = new ConcurrentBag<Dictionary<Vector2I, RoadModel>>();
         
         Parallel.ForEach(_data.Planet.MapAux.LandSea.Landmasses, lm =>
         {
-            var segs = GenerateForLandmass(lm);
+            var segs = BuildLmRoadNetwork(lm);
             if(segs != null) allSegs.Add(segs);
         });
         foreach (var segs in allSegs)
@@ -42,31 +50,32 @@ public class InfrastructureGenerator : Generator
                 if (success == false) throw new Exception();
             }
         }
-        genReport.StopSection(nameof(GenerateForLandmass));
+        genReport.StopSection(nameof(BuildLmRoadNetwork));
+        _multiTimer.Print();
         return genReport;
     }
-    private Dictionary<Vector2I, RoadModel> GenerateForLandmass(Landmass lm)
-    {
-        var n = BuildLmRoadNetwork(lm);
-        return n;
-    }
-
-
-    
     private Dictionary<Vector2I, RoadModel> BuildLmRoadNetwork(Landmass lm)
     {
-        
-        var polyLvlGraph = GetPolyLevelGraph(lm.Polys);
-        var hiLvlTrafficGraph = GetHighLevelTrafficGraph(polyLvlGraph);
+
+        var polyLvlGraph =
+            _multiTimer.RunAndTime(
+                () => GetPolyLevelGraph(lm.Polys), 
+                "poly level graph");
+        var hiLvlTrafficGraph
+            = _multiTimer.RunAndTime(
+                () => GetHighLevelTrafficGraph(polyLvlGraph),
+                "high level graph");
+            
         if (hiLvlTrafficGraph == null)
         {
             return new Dictionary<Vector2I, RoadModel>();
         }
-        DoPolyLevelTraffic(polyLvlGraph, hiLvlTrafficGraph);
+
+        _multiTimer.RunAndTime(
+            () => DoPolyLevelTraffic(polyLvlGraph, hiLvlTrafficGraph),
+            "poly level traffic");
         
-        var segs = GetRoadSegs(polyLvlGraph);
-        
-        return segs;
+        return _multiTimer.RunAndTime(() => GetRoadSegs(polyLvlGraph), "road segs");
     }
     
     private Graph<InfrastructureNode, InfraNodeEdge> GetPolyLevelGraph(HashSet<MapPolygon> polys)

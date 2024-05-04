@@ -8,17 +8,16 @@ public class Barracks : SettlementBuildingModel
             nameof(Barracks), 
             new List<BuildingModelComponent>
             {
-                new BuildingProd(
+                new ProdComponent(
                     IdCount<IModel>.Construct(
-                        (flows.Labor, 100)),
+                        ),
 
                     IdCount<IModel>.Construct(
                         (items.Recruits, 100),
                         (flows.MilitaryCap, 1000)),
                     
                     IdCount<PeepJob>.Construct(
-                        (jobs.Bureaucrat, 100)),
-                    flows
+                        (jobs.Bureaucrat, 100))
                 ),
             }, 
             new MakeableAttribute(

@@ -66,7 +66,7 @@ public class Models
         RegimeTemplates = new RegimeTemplateManager(Cultures);
         AddManager(RegimeTemplates);
         
-        FoodProdTechniques = new FoodProdTechniqueList(PeepJobs);
+        FoodProdTechniques = new FoodProdTechniqueList(PeepJobs, Items);
         AddManager(FoodProdTechniques);
 
         Infras = new InfraList(PeepJobs, Items);

@@ -16,7 +16,7 @@ public partial class TheaterGraphic : Node2D
     public void Draw(TheaterBranch theaterBranch, Data d)
     {
         this.ClearChildren();
-        if (theaterBranch.Theater.Cells.Count() == 0) return;
+        if (theaterBranch.Theater.Cells.Count == 0) return;
         var alliance = theaterBranch.Alliance;
         var outer = alliance.Leader.Get(d).PrimaryColor;
         var inner = ColorsExt.GetRandomColor();

@@ -76,19 +76,18 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         if (t.cell is LandCell l == false) return new Control();
         var polyFoodCounts = t.poly
             .GetCells(d).OfType<LandCell>()
-            .Select(c => c.FoodProd.Nums)
+            .Select(c => c.FoodProd.Nums.Contents)
             .MergeCounts();
         
         var bs = t.cell;
         var control = new VBoxContainer();
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
         
-        foreach (var (model, num) in l.FoodProd.Nums)
+        foreach (var (model, num) in l.FoodProd.Nums.GetEnumerableModel(d))
         {
             var box = NodeExt.GetLabeledIcon<HBoxContainer>(
-                model.Get(d).Icon, 
-                $"{num.RoundTo2Digits()} " +
-                $"/ {polyFoodCounts[model].RoundTo2Digits()}",
+                model.Icon, 
+                $"{num.RoundTo2Digits()}",
                 iconSize);
             control.AddChild(box);
         }

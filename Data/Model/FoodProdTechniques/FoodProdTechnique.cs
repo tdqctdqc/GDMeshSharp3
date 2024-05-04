@@ -3,25 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract class FoodProdTechnique : IModel, IIconed
+public abstract class FoodProdTechnique 
+    : IModel, IIconed
 {
     public string Name { get; private set; }
     public int Id { get; private set; }
     public int BaseProd { get; private set; }
     public int BaseLabor { get; private set; }
-    public int Income { get; private set; }
     public Icon Icon { get; private set; }
     public PeepJob JobType { get; private set; }
-
+    public ProdComponent Prod { get; private set; }
     public FoodProdTechnique(string name, int baseProd, 
-        int baseLabor, int income, 
-        PeepJob jobType)
+        int baseLabor,
+        PeepJob jobType, Items items)
     {
         Name = name;
         BaseProd = baseProd;
         BaseLabor = baseLabor;
+        Prod = new ProdComponent(
+            IdCount<IModel>.Construct(new Dictionary<IModel, float>()), 
+            IdCount<IModel>.Construct(
+                new Dictionary<IModel, float>
+                {
+                    { items.Food, baseProd }
+                }), 
+            IdCount<PeepJob>.Construct(
+                new Dictionary<PeepJob, float>
+                {
+                    { jobType, baseLabor }
+                })
+        );
         Icon = Icon.Create(name, Vector2I.One);
-        Income = income;
         JobType = jobType;
     }
 

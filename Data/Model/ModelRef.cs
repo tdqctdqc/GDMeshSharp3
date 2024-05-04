@@ -33,4 +33,9 @@ public struct ModelRef<T> : IDRef<T>
         return new ModelRef<T>(RefId);
     }
 
+    public bool Fulfilled()
+    {
+        return RefId != -1;
+    }
+
 }

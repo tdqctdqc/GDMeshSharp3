@@ -8,9 +8,8 @@ public class Bank : SettlementBuildingModel
         : base(nameof(Bank), 
             new List<BuildingModelComponent>
             {
-                new BuildingProd(
+                new ProdComponent(
                     IdCount<IModel>.Construct(
-                        (flows.Labor, 500)
                     ),
                     
                     IdCount<IModel>.Construct(
@@ -19,9 +18,7 @@ public class Bank : SettlementBuildingModel
                     
                     IdCount<PeepJob>.Construct(
                         (jobs.Bureaucrat, 500)
-                    ), 
-                    
-                    flows)
+                    ))
             },
             new MakeableAttribute(
                 IdCount<IModel>.Construct(new Dictionary<IModel, float>

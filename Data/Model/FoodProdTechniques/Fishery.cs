@@ -5,9 +5,9 @@ using Godot;
 
 public class Fishery : FoodProdTechnique
 {
-    public Fishery(PeepJobList jobs) 
+    public Fishery(PeepJobList jobs, Items items) 
         : base(nameof(Fishery), 1000, 
-            200, 10, jobs.Fisher)
+            200, jobs.Fisher, items)
     {
     }
 
@@ -16,20 +16,20 @@ public class Fishery : FoodProdTechnique
         var val = 0f;
         var seaNs = cell.GetNeighbors(data)
             .Where(n => n is SeaCell);
-        if(seaNs.Count() > 0)
+        if(seaNs.Any())
         {
             val += seaNs.Sum(n => n.Area());
         }
         
         var riverNs = cell.GetNeighbors(data)
             .Where(n => n is RiverCell);
-        if(riverNs.Count() > 0)
+        if(riverNs.Any())
         {
             val += riverNs.Sum(n => n.Area() * 50f);
         }
         
 
-        if (val < 0f)
+        if (val <= 0f)
         {
             return 0;
         }
@@ -38,10 +38,10 @@ public class Fishery : FoodProdTechnique
         {
             throw new Exception($"{num} fisheries" +
                                 $"\n{seaNs.Count()} water ns" +
-                                $"\n{(seaNs.Count() == 0 ? 0f :
+                                $"\n{(seaNs.Any() == false ? 0f :
                                     seaNs.Sum(n => n.Area()))} water score" +
                                 $"\n{riverNs.Count()} river cells" +
-                                $"\n{(riverNs.Count() == 0 ? 0f :
+                                $"\n{(riverNs.Any() == false ? 0f :
                                     riverNs.Sum(t => t.Area()) * 50f)} river score");
             
         }

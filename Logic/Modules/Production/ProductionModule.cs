@@ -35,12 +35,8 @@ public class ProductionModule : LogicModule
         
         var totalPop = cells
             .Sum(c => c.GetPeep(d).Size);
-        var labor = d.Models.Flows.Labor;
-        r.Stock.Stock.Set(labor, totalPop);
-        r.Stock.Produced.Set(labor, totalPop);
-        
-        var growths = DoFood(r, newStock, d);
-        DoBuildingProds(r, d, newStock);
+        DoProd(r, d, newStock);
+        var growths = HandleFoodConsumption(r, newStock, d);
         TroopMaintenance(r, d, newStock);
         
         var constructCap = d.Models.Flows.ConstructionCap;
@@ -59,7 +55,8 @@ public class ProductionModule : LogicModule
         return result;
     }
 
-    private static void TroopMaintenance(Regime r, Data d, RegimeStock res)
+    private static void TroopMaintenance(Regime r, Data d, 
+        RegimeStock res)
     {
         var units = r.GetUnits(d);
         var milCap = d.Models.Flows.MilitaryCap;
@@ -77,72 +74,130 @@ public class ProductionModule : LogicModule
         r.Stock.Stock.Remove(milCap, Mathf.Min(milCapAvail, milCapCost));
     }
 
-    private static void DoBuildingProds(Regime r, Data d,
-        RegimeStock res)
+
+    private class ProdEntry
     {
-        var prodBuildings = r.GetCells(d)
-            .Where(c => c.HasSettlement(d))
-            .SelectMany(c => c.GetSettlement(d)
-                .Buildings.GetEnumerableModel(d))
-            .Where(kvp => kvp.Key.HasComponent<BuildingProd>())
-            .ConsolidateCounts();
+        public ProdComponent Prod;
+        public float Num;
+        public float Satisfied;
+        public LandCell Cell;
 
-        var buildingProdQueue = new PriorityQueue<
-            (SettlementBuildingModel, float num, float satisfied), float>();
-        foreach (var (b, num) in prodBuildings)
+        public ProdEntry(ProdComponent prod, float num, LandCell cell)
         {
-            buildingProdQueue.Enqueue((b, num, 0f), 1f);
+            Prod = prod;
+            Num = num;
+            Cell = cell;
+            Satisfied = 0f;
         }
-
-        int itersSinceLastProd = 0;
-        while (buildingProdQueue.TryDequeue(out var e,
-                   out var p))
+    }
+    private static void DoProd(Regime r,
+        Data d, RegimeStock stock)
+    {
+        var cells = r
+            .GetCells(d).OfType<LandCell>().ToArray();
+        foreach (var cell in cells)
         {
-            var (model, num, satisfied) = e;
-            var prod = model.GetComponent<BuildingProd>();
-            var satisfactionIncrement = prod.Inputs.GetEnumerableModel(d)
-                .Min(kvp => r.Stock.Stock.Get(kvp.Key) / (kvp.Value * num));
-            satisfactionIncrement = Mathf.Clamp(satisfactionIncrement, 0f, 1f - satisfied);
+            stock.EmploymentReports.Add(cell.Id, PeepEmploymentReport.Construct());
+        }
+        var cellFreeLabor = cells
+            .ToDictionary(c => c,
+                c => c.GetPeep(d).Size);
 
-            if (satisfactionIncrement > 0f)
+        var foodProds = cells.SelectMany(c =>
+        {
+            return c.FoodProd
+                .Nums.GetEnumerableModel(d)
+                .Select(kvp =>
+                    new ProdEntry(kvp.Key.Prod, kvp.Value, c));
+        });
+        
+        var resourceExtractions = cells
+            .Select(c =>
             {
-                itersSinceLastProd = 0;
-                foreach (var (inputModel, inputAmt)
-                         in prod.Inputs.GetEnumerableModel(d))
-                {
-                    r.Stock.Stock.Remove(inputModel,
-                        inputAmt * num * satisfactionIncrement);
-                    res.RecurringCosts.Add(inputModel,
-                        inputAmt * num * satisfactionIncrement);
-                }
+                var dep = c.GetResourceDeposit(d);
+                if (dep is null) return null;
+                if (dep.Extraction.Fulfilled() == false) return null;
+                return new ProdEntry(dep.Extraction.Get(d).Prod, 1f, c);
+            })
+            .Where(v => v is not null);
 
-                foreach (var (outputModel, outputAmt)
-                         in prod.Outputs.GetEnumerableModel(d))
-                {
-                    r.Stock.Stock.Add(outputModel,
-                        outputAmt * num * satisfactionIncrement);
-                    res.Produced.Add(outputModel,
-                        outputAmt * num * satisfactionIncrement);
-                }
+        var settlementBuildings = cells
+            .SelectMany(c =>
+            {
+                if (c.GetSettlement(d) is Settlement s == false) return null;
+                return s.Buildings
+                    .GetEnumerableModel(d)
+                    .Where(kvp => kvp.Key.HasComponent<ProdComponent>())
+                    .Select(kvp =>
+                        new ProdEntry(kvp.Key.GetComponent<ProdComponent>(), kvp.Value, c));
+            })
+            .Where(v => v is not null);
+        var allProds = foodProds
+            .Concat(resourceExtractions).Concat(settlementBuildings)
+            .ToArray();
+
+
+        var iter = 0;
+        var sinceLast = 0;
+        while (sinceLast < allProds.Length)
+        {
+            var entry = allProds[iter % allProds.Length];
+            iter++;
+            sinceLast++;
+            if (entry.Satisfied >= 1f) continue;
+            var laborAvail = cellFreeLabor[entry.Cell]; 
+            if (laborAvail <= 0f) continue;
+            var unsatisfied = 1f - entry.Satisfied;
+
+            var num = entry.Num;
+            
+            var laborReq = entry.Prod.Jobs
+                .Contents.Sum(kvp => kvp.Value)
+                * unsatisfied * num;
+            var laborRatio = laborAvail / laborReq;
+            if (float.IsNaN(laborRatio)) throw new Exception();
+            laborRatio = Mathf.Clamp(laborRatio, 0f, 1f);
+            
+            var inputRatio = 1f;
+            if (entry.Prod.Inputs.Contents.Count > 0)
+            {
+                inputRatio = entry.Prod.Inputs.Contents
+                    .Min(kvp => stock.Stock.Get(kvp.Key) / (kvp.Value * num * unsatisfied));
+                if (float.IsNaN(inputRatio)) throw new Exception();
+                inputRatio = Mathf.Clamp(inputRatio, 0f, 1f);
             }
-            else
+
+            var ratio = Mathf.Min(laborRatio, inputRatio);
+            if (ratio == 0f) continue;
+
+            sinceLast = 0;
+            var satisfactionIncrement = ratio * unsatisfied;
+            entry.Satisfied += satisfactionIncrement;
+            foreach (var (id, amt) in entry.Prod.Inputs.Contents)
             {
-                itersSinceLastProd++;
-                if (itersSinceLastProd > buildingProdQueue.Count)
-                {
-                    break;
-                }
+                var inputAmt = amt * num * unsatisfied * ratio;
+                stock.Stock.Remove(id, inputAmt);
+                stock.RecurringCosts.Add(id, inputAmt);
+            }
+            foreach (var (id, amt) in entry.Prod.Outputs.Contents)
+            {
+                var outputAmt = amt * num * unsatisfied * ratio;
+                stock.Stock.Add(id, outputAmt);
+                stock.Produced.Add(id, outputAmt);
             }
 
-            satisfied += satisfactionIncrement;
-            if (satisfied < 1f)
+            var employment = stock.EmploymentReports[entry.Cell.Id];
+            foreach (var (id, amt) in entry.Prod.Jobs.Contents)
             {
-                buildingProdQueue.Enqueue((model, num, satisfied), p - 1f);
+                employment.Counts.AddOrSum(id, amt * num * ratio * unsatisfied);
             }
         }
     }
-
-    private static Dictionary<int, int> DoFood(
+    
+    
+    
+    
+    private static Dictionary<int, int> HandleFoodConsumption(
         Regime regime,
         RegimeStock res,
         Data d)
@@ -151,48 +206,7 @@ public class ProductionModule : LogicModule
         var growthsByPeep = new Dictionary<int, int>();
         var foodConsPerPop = d.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         var pop = regime.GetPopulation(d);
-        
-        var maxSurplusRatio = d.BaseDomain.Rules.MaxEffectiveSurplusRatio;
-        var foodDemanded = foodConsPerPop * pop * (1f + maxSurplusRatio);
-        var foodProds = regime.GetCells(d)
-            .OfType<LandCell>()
-            .Select(c => c.FoodProd.Nums)
-            .MergeCounts()
-            .OrderByDescending(kvp => kvp.Key.Get(d).FoodPerLabor());
-        var count = foodProds.Count();
-        
-        var totalProduced = 0f;
-        int iter = 0;
-        while (totalProduced < foodDemanded && iter < count)
-        {
-            var demand = foodDemanded - totalProduced;
-            var kvp = foodProds.ElementAt(iter);
-
-            iter++;
-            var prodModel = kvp.Key.Get(d);
-            var amt = kvp.Value;
-            var possibleProd = prodModel.BaseProd * amt;
-            var laborAvail = res.Stock.Get(d.Models.Flows.Labor);
-            
-            var prodRatio = demand / possibleProd;
-            prodRatio = Mathf.Clamp(prodRatio, 0f, 1f);
-
-            var laborNeeded = prodRatio * amt * prodModel.BaseLabor;
-            var laborRatio = laborAvail / laborNeeded;
-            laborRatio = Mathf.Clamp(laborRatio, 0f, 1f);
-
-            prodRatio = Mathf.Clamp(prodRatio, 0f, laborRatio);
-            
-            var produced = prodRatio * possibleProd;
-            totalProduced += produced;
-            var labor = prodRatio * amt * prodModel.BaseLabor;
-            
-            regime.Stock.Stock.Add(d.Models.Items.Food, produced);
-            res.Produced.Add(d.Models.Items.Food, produced);
-            res.RecurringCosts.Add(d.Models.Flows.Labor, labor);
-            regime.Stock.Stock.Remove(d.Models.Flows.Labor, labor);
-        }
-        
+        var foodDemanded = pop * foodConsPerPop;
         var foodStock = Mathf.FloorToInt(regime.Stock.Stock.Get(d.Models.Items.Food));
         var actualCons = Math.Min(foodStock, foodDemanded);
         var surplusRatio = (float) foodStock / foodDemanded - 1f;

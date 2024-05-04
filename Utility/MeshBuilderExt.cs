@@ -77,7 +77,7 @@ public static class MeshBuilderExt
         {
             var last = records[id]
                 .TakeLast(howFarBack).ToList();
-            if (last.Count() == 0) return;
+            if (last.Any() == false) return;
             var tick = last[0].tick;
             var tickIter = 0;
             for (var i = 0; i < last.Count - 1; i++)

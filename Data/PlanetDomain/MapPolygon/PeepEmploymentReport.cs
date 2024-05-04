@@ -5,14 +5,14 @@ using MessagePack;
 
 public class PeepEmploymentReport
 {
-    public Dictionary<int, int> Counts { get; private set; }
+    public Dictionary<int, float> Counts { get; private set; }
     public static PeepEmploymentReport Construct()
     {
-        return new PeepEmploymentReport(new Dictionary<int, int>());
+        return new PeepEmploymentReport(new Dictionary<int, float>());
     }
-    [SerializationConstructor] private PeepEmploymentReport(Dictionary<int, int> counts)
+    [SerializationConstructor] private PeepEmploymentReport(Dictionary<int, float> counts)
     {
-        Counts = new Dictionary<int, int>();
+        Counts = new Dictionary<int, float>();
     }
 
     public void Copy(PeepEmploymentReport toCopy, ProcedureWriteKey key)
@@ -21,7 +21,7 @@ public class PeepEmploymentReport
         Counts.AddRange(toCopy.Counts);
     }
 
-    public int NumUnemployed(Data data)
+    public float NumUnemployed(Data data)
     {
         if (Counts.ContainsKey(data.Models.PeepJobs.Unemployed.Id) == false) return 0;
         return Counts[data.Models.PeepJobs.Unemployed.Id];
