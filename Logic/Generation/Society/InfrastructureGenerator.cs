@@ -13,7 +13,7 @@ public class InfrastructureGenerator : Generator
     private GenWriteKey _key;
     private float _portInfraNodeSize = 0f;
     private float _minSettlementSizeForInfraNode = 0f;
-    private float _sizeBuildRoadRangeMult = .02f;
+    private float _sizeBuildRoadRangeMult = 2.5f;
     private MultiTimer _multiTimer;
     public override GenReport Generate(GenWriteKey key)
     {
@@ -56,7 +56,7 @@ public class InfrastructureGenerator : Generator
     }
     private Dictionary<Vector2I, RoadModel> BuildLmRoadNetwork(Landmass lm)
     {
-
+        
         var polyLvlGraph =
             _multiTimer.RunAndTime(
                 () => GetPolyLevelGraph(lm.Polys), 
@@ -163,20 +163,14 @@ public class InfrastructureGenerator : Generator
         foreach (var aNode in activeNodes)
         {
             var near = activeNodeGrid
-                .GetWithin(aNode.Cell.GetCenter(), 
-                    aNode.Size * _sizeBuildRoadRangeMult, v => true);
+                .GetWithin(aNode.Cell.GetCenter(),
+                    Mathf.Sqrt(aNode.Size) * _sizeBuildRoadRangeMult, v => true);
             foreach (var nearNode in near)
             {
                 if (nearNode == aNode) continue;
                 if (hiLvlTrafficGraph.HasEdge(aNode, nearNode)) continue;
                 var traffic = aNode.Size + nearNode.Size;
-                
-                
                 var dist = aNode.Cell.GetCenter().Offset(nearNode.Cell.GetCenter(), _data).Length();
-
-                var distMult = (10_000f - dist) / 10_000f;
-                distMult = Mathf.Clamp(distMult, 0f, 1f);
-                traffic *= distMult;
                 var edge = new InfraNodeEdge(0f, traffic, dist);
                 hiLvlTrafficGraph.AddEdge(aNode, nearNode, edge);
             }

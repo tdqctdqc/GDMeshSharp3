@@ -109,7 +109,7 @@ public class ProductionModule : LogicModule
                 .Nums.GetEnumerableModel(d)
                 .Select(kvp =>
                     new ProdEntry(kvp.Key.Prod, kvp.Value, c));
-        });
+        }).ToArray();
         
         var resourceExtractions = cells
             .Select(c =>
@@ -119,11 +119,12 @@ public class ProductionModule : LogicModule
                 if (dep.Extraction.Fulfilled() == false) return null;
                 return new ProdEntry(dep.Extraction.Get(d).Prod, 1f, c);
             })
-            .Where(v => v is not null);
+            .Where(v => v is not null).ToArray();
 
         var settlementBuildings = cells
+            .Where(c => c.HasSettlement(d))
             .SelectMany(c =>
-            {
+            { 
                 if (c.GetSettlement(d) is Settlement s == false) return null;
                 return s.Buildings
                     .GetEnumerableModel(d)
@@ -131,7 +132,7 @@ public class ProductionModule : LogicModule
                     .Select(kvp =>
                         new ProdEntry(kvp.Key.GetComponent<ProdComponent>(), kvp.Value, c));
             })
-            .Where(v => v is not null);
+            .Where(v => v is not null).ToArray();
         var allProds = foodProds
             .Concat(resourceExtractions).Concat(settlementBuildings)
             .ToArray();
