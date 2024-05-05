@@ -27,7 +27,13 @@ public abstract class Count<T>
             throw new Exception($"Trying to remove negative amount from wallet");
         if(Contents.ContainsKey(t) == false)
         {
-            throw new Exception($"Trying to remove which is not in wallet");
+            if (CanBeNegative == false)
+            {
+                throw new Exception($"Trying to remove which is not in wallet");
+            }
+
+            Contents[t] = -amount;
+            return;
         }
         if(Contents[t] < amount && CanBeNegative == false)
         {

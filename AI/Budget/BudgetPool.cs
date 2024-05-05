@@ -1,17 +1,69 @@
 using System.Linq;
+using Godot;
+
 public class BudgetPool
 {
-    public IdCount<IModel> AvailModels { get; private set; }
-
+    public IdCount<IModel> Stock { get; private set; }
+    public IdCount<IModel> Net { get; private set; }
+    
     public static BudgetPool ConstructForRegime(Regime r, Data d)
     {
-        var models = IdCount<IModel>.Construct();
-        models.Add(r.Stock.Stock);
-        return new BudgetPool(models);
+        var stock = IdCount<IModel>.Construct();
+        stock.Add(r.Stock.Stock);
+        var net = IdCount<IModel>.ConstructNegative();
+        foreach (var (model, value) 
+                 in r.Stock.Produced.GetEnumerableModel(d))
+        {
+            net.Add(model, value);
+        }
+        foreach (var (model, value) 
+                 in r.Stock.RecurringCosts.GetEnumerableModel(d))
+        {
+            net.Remove(model, value);
+        }
+        
+        var pop = r.GetCells(d).Sum(c => c.GetPeep(d).Size);
+        var prods = r.GetProds(d);
+        var laborDemand = prods.Sum(p => p.Key.Jobs.Contents.Values.Sum());
+        var freeLabor = pop - laborDemand;
+        var inQueue = 0f;
+        
+        r.MakeQueue.Queue.ForEach(m => 
+            {
+                var making = m.Making.Get(d);
+                if (making is ResourceExtractionBuilding r)
+                {
+                    inQueue += r.BaseLabor;
+                    net.Add(r.Resource, r.BaseProd);
+                }
+                else if (making is SettlementBuildingModel b
+                         && b.GetComponent<LaborComponent>() 
+                             is LaborComponent l)
+                {
+                    inQueue += l
+                        .Jobs.Contents.Values.Sum();
+                    foreach (var (model, value) 
+                        in l.Inputs.GetEnumerableModel(d))
+                    {
+                        net.Remove(model, value);
+                    }
+                    foreach (var (model, value) 
+                             in l.Outputs.GetEnumerableModel(d))
+                    {
+                        net.Add(model, value);
+                    }
+                }
+            });
+        freeLabor -= inQueue;
+        freeLabor = Mathf.Max(0f, freeLabor);
+        stock.Add(d.Models.Flows.Labor, pop - laborDemand);
+        return new BudgetPool(stock, net);
     }
     
-    public BudgetPool(IdCount<IModel> models)
+    private BudgetPool(IdCount<IModel> models,
+        IdCount<IModel> net)
     {
-        AvailModels = IdCount<IModel>.Construct(models);
+        Stock = IdCount<IModel>.Construct(models);
+        Net = IdCount<IModel>.ConstructNegative(net);
     }
 }

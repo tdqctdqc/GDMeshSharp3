@@ -13,9 +13,21 @@ public class IdCount<T> : Count<int>
     {
         return new IdCount<T>(new Dictionary<int, float>(), false);
     }
+    public static IdCount<T> ConstructNegative()
+    {
+        return new IdCount<T>(
+            new Dictionary<int, float>(), 
+            true);
+    }
     public static IdCount<T> Construct(IdCount<T> toCopy)
     {
         return new IdCount<T>(new Dictionary<int, float>(toCopy.Contents), false);
+    }
+    public static IdCount<T> ConstructNegative(IdCount<T> toCopy)
+    {
+        return new IdCount<T>(
+            new Dictionary<int, float>(toCopy.Contents),
+            true);
     }
     public static IdCount<TSuper> Construct<TSuper, TSub>(IdCount<TSub> toCopy)
         where TSuper : IIdentifiable where TSub : IIdentifiable

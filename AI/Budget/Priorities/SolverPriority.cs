@@ -23,9 +23,9 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         Data d)
     {
         var expandedPool = BudgetPool.ConstructForRegime(regime, d);
-        foreach (var i in expandedPool.AvailModels.Contents.Keys.ToList())
+        foreach (var i in expandedPool.Stock.Contents.Keys.ToList())
         {
-            expandedPool.AvailModels.Contents[i] *= 2f;
+            expandedPool.Stock.Contents[i] *= 2f;
         }
         SetCalcData(regime, d);
         var solver = MakeSolver();

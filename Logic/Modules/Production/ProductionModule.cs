@@ -77,14 +77,14 @@ public class ProductionModule : LogicModule
 
     private class ProdEntry
     {
-        public ProdComponent Prod;
+        public LaborComponent Labor;
         public float Num;
         public float Satisfied;
         public LandCell Cell;
 
-        public ProdEntry(ProdComponent prod, float num, LandCell cell)
+        public ProdEntry(LaborComponent labor, float num, LandCell cell)
         {
-            Prod = prod;
+            Labor = labor;
             Num = num;
             Cell = cell;
             Satisfied = 0f;
@@ -108,7 +108,7 @@ public class ProductionModule : LogicModule
             return c.FoodProd
                 .Nums.GetEnumerableModel(d)
                 .Select(kvp =>
-                    new ProdEntry(kvp.Key.Prod, kvp.Value, c));
+                    new ProdEntry(kvp.Key.Labor, kvp.Value, c));
         }).ToArray();
         
         var resourceExtractions = cells
@@ -117,7 +117,7 @@ public class ProductionModule : LogicModule
                 var dep = c.GetResourceDeposit(d);
                 if (dep is null) return null;
                 if (dep.Extraction.Fulfilled() == false) return null;
-                return new ProdEntry(dep.Extraction.Get(d).Prod, 1f, c);
+                return new ProdEntry(dep.Extraction.Get(d).Labor, 1f, c);
             })
             .Where(v => v is not null).ToArray();
 
@@ -128,9 +128,9 @@ public class ProductionModule : LogicModule
                 if (c.GetSettlement(d) is Settlement s == false) return null;
                 return s.Buildings
                     .GetEnumerableModel(d)
-                    .Where(kvp => kvp.Key.HasComponent<ProdComponent>())
+                    .Where(kvp => kvp.Key.HasComponent<LaborComponent>())
                     .Select(kvp =>
-                        new ProdEntry(kvp.Key.GetComponent<ProdComponent>(), kvp.Value, c));
+                        new ProdEntry(kvp.Key.GetComponent<LaborComponent>(), kvp.Value, c));
             })
             .Where(v => v is not null).ToArray();
         var allProds = foodProds
@@ -152,7 +152,7 @@ public class ProductionModule : LogicModule
 
             var num = entry.Num;
             
-            var laborReq = entry.Prod.Jobs
+            var laborReq = entry.Labor.Jobs
                 .Contents.Sum(kvp => kvp.Value)
                 * unsatisfied * num;
             var laborRatio = laborAvail / laborReq;
@@ -160,9 +160,9 @@ public class ProductionModule : LogicModule
             laborRatio = Mathf.Clamp(laborRatio, 0f, 1f);
             
             var inputRatio = 1f;
-            if (entry.Prod.Inputs.Contents.Count > 0)
+            if (entry.Labor.Inputs.Contents.Count > 0)
             {
-                inputRatio = entry.Prod.Inputs.Contents
+                inputRatio = entry.Labor.Inputs.Contents
                     .Min(kvp => stock.Stock.Get(kvp.Key) / (kvp.Value * num * unsatisfied));
                 if (float.IsNaN(inputRatio)) throw new Exception();
                 inputRatio = Mathf.Clamp(inputRatio, 0f, 1f);
@@ -174,13 +174,13 @@ public class ProductionModule : LogicModule
             sinceLast = 0;
             var satisfactionIncrement = ratio * unsatisfied;
             entry.Satisfied += satisfactionIncrement;
-            foreach (var (id, amt) in entry.Prod.Inputs.Contents)
+            foreach (var (id, amt) in entry.Labor.Inputs.Contents)
             {
                 var inputAmt = amt * num * unsatisfied * ratio;
                 stock.Stock.Remove(id, inputAmt);
                 stock.RecurringCosts.Add(id, inputAmt);
             }
-            foreach (var (id, amt) in entry.Prod.Outputs.Contents)
+            foreach (var (id, amt) in entry.Labor.Outputs.Contents)
             {
                 var outputAmt = amt * num * unsatisfied * ratio;
                 stock.Stock.Add(id, outputAmt);
@@ -188,7 +188,7 @@ public class ProductionModule : LogicModule
             }
 
             var employment = stock.EmploymentReports[entry.Cell.Id];
-            foreach (var (id, amt) in entry.Prod.Jobs.Contents)
+            foreach (var (id, amt) in entry.Labor.Jobs.Contents)
             {
                 employment.Counts.AddOrSum(id, amt * num * ratio * unsatisfied);
             }

@@ -14,6 +14,7 @@ public class InfrastructureGenerator : Generator
     private float _portInfraNodeSize = 0f;
     private float _minSettlementSizeForInfraNode = 0f;
     private float _sizeBuildRoadRangeMult = 2.5f;
+    private float _maxBuildRoadRange = 2000f;
     private MultiTimer _multiTimer;
     public override GenReport Generate(GenWriteKey key)
     {
@@ -56,7 +57,6 @@ public class InfrastructureGenerator : Generator
     }
     private Dictionary<Vector2I, RoadModel> BuildLmRoadNetwork(Landmass lm)
     {
-        
         var polyLvlGraph =
             _multiTimer.RunAndTime(
                 () => GetPolyLevelGraph(lm.Polys), 
@@ -133,9 +133,8 @@ public class InfrastructureGenerator : Generator
             {
                 if (nPoly.Id > poly.Id) continue;
                 if (polyNodes.ContainsKey(nPoly) == false) continue;
-                var polyCost = PathFinder.RoadBuildPolyEdgeCost(poly, nPoly, _data);
-                var cost = new InfraNodeEdge(polyCost, 0f,
-                    poly.GetOffsetTo(nPoly, _data).Length());
+                var polyCost = 1f;//PathFinder.RoadBuildPolyEdgeCost(poly, nPoly, _data);
+                var cost = new InfraNodeEdge(polyCost, 0f);
                 graph.AddEdge(polyNode, polyNodes[nPoly], cost);
             }
         }
@@ -162,16 +161,17 @@ public class InfrastructureGenerator : Generator
         }
         foreach (var aNode in activeNodes)
         {
+            var radius = Mathf.Sqrt(aNode.Size) * _sizeBuildRoadRangeMult;
+            radius = Mathf.Min(_maxBuildRoadRange, radius);
             var near = activeNodeGrid
                 .GetWithin(aNode.Cell.GetCenter(),
-                    Mathf.Sqrt(aNode.Size) * _sizeBuildRoadRangeMult, v => true);
+                    radius, v => true);
             foreach (var nearNode in near)
             {
                 if (nearNode == aNode) continue;
                 if (hiLvlTrafficGraph.HasEdge(aNode, nearNode)) continue;
                 var traffic = aNode.Size + nearNode.Size;
-                var dist = aNode.Cell.GetCenter().Offset(nearNode.Cell.GetCenter(), _data).Length();
-                var edge = new InfraNodeEdge(0f, traffic, dist);
+                var edge = new InfraNodeEdge(0f, traffic);
                 hiLvlTrafficGraph.AddEdge(aNode, nearNode, edge);
             }
         }
@@ -293,8 +293,8 @@ public class InfrastructureGenerator : Generator
         }
         RoadModel getRoadFromTraffic(float traffic)
         {
-            if (traffic > 100_000f) return paved;
-            else if (traffic > 50_000f) return stone;
+            if (traffic > 200_000f) return paved;
+            else if (traffic > 100_000f) return stone;
             else if (traffic > 1_000f) return dirt;
             return null;
         }

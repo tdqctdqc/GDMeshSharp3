@@ -27,7 +27,31 @@ public abstract class ConstructionPriority
     {
         //todo add maintain cost constraints
         solver.SetBuildCostConstraints(data, pool, projVars);
+        solver.SetMaintainCostConstraints(data, pool, projVars,
+            b =>
+            {
+                if (b.GetComponent<LaborComponent>() is LaborComponent l)
+                {
+                    return l.Inputs.GetEnumerableModel(data)
+                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+                }
+
+                return null;
+            });
         solver.SetBuildingSlotConstraints(r, projVars, data);
+        
+        var laborConstraint = solver.MakeConstraint(0f,
+            pool.Stock.Get(data.Models.Flows.Labor));
+        
+        foreach (var (b, variable) in projVars)
+        {
+            if (b.GetComponent<LaborComponent>() is LaborComponent l)
+            {
+                laborConstraint.SetCoefficient(variable, 
+                    l.Jobs.Contents.Values.Sum());
+                
+            }
+        }
     }
 
     protected override void Complete(

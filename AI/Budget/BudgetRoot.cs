@@ -77,7 +77,7 @@ public class BudgetRoot : BudgetBranch
         foreach (var (id, num) in totalModelDemand.Contents)
         {
             var model = d.Models.GetModel<IModel>(id);
-            var avail = pool.AvailModels.Get(model);
+            var avail = pool.Stock.Get(model);
             var price = num / avail;
             if (avail == 0f) price = 0f;
             modelPrices.Add(model, price);

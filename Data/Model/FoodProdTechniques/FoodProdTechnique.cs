@@ -12,7 +12,7 @@ public abstract class FoodProdTechnique
     public int BaseLabor { get; private set; }
     public Icon Icon { get; private set; }
     public PeepJob JobType { get; private set; }
-    public ProdComponent Prod { get; private set; }
+    public LaborComponent Labor { get; private set; }
     public FoodProdTechnique(string name, int baseProd, 
         int baseLabor,
         PeepJob jobType, Items items)
@@ -20,7 +20,7 @@ public abstract class FoodProdTechnique
         Name = name;
         BaseProd = baseProd;
         BaseLabor = baseLabor;
-        Prod = new ProdComponent(
+        Labor = new LaborComponent(
             IdCount<IModel>.Construct(new Dictionary<IModel, float>()), 
             IdCount<IModel>.Construct(
                 new Dictionary<IModel, float>

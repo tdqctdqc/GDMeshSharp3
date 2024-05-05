@@ -8,7 +8,7 @@ public class Factory : SettlementBuildingModel
         base(nameof(Factory),
         new List<BuildingModelComponent>
             {
-                new ProdComponent(
+                new LaborComponent(
                     IdCount<IModel>.Construct(
                     ),
                     IdCount<IModel>.Construct(

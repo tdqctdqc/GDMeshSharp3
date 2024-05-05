@@ -8,7 +8,7 @@ public class Barracks : SettlementBuildingModel
             nameof(Barracks), 
             new List<BuildingModelComponent>
             {
-                new ProdComponent(
+                new LaborComponent(
                     IdCount<IModel>.Construct(
                         ),
 

@@ -36,9 +36,43 @@ public static class RegimeExt
         return data.BaseDomain.PlayerAux.ByRegime[r];
     }
 
-    public static IEnumerable<Cell> GetCells(this Regime r, Data d)
+    public static Dictionary<LaborComponent, float> GetProds(this Regime r, Data d)
+    {
+        var cells = r.GetCells(d);
+        var res = new Dictionary<LaborComponent, float>();
+        
+        foreach (var c in cells)
+        {
+            var foodProd = c.FoodProd.Nums.GetEnumerableModel(d);
+            foreach (var (key, value) in foodProd)
+            {
+                res.AddOrSum(key.Labor, value);
+            }
+
+            if (c.HasResourceDeposit(d))
+            {
+                res.AddOrSum(c.GetResourceDeposit(d).Extraction.Get(d).Labor, 1f);
+            }
+
+            if (c.HasSettlement(d))
+            {
+                var s = c.GetSettlement(d);
+                foreach (var (key, value) in s.Buildings.GetEnumerableModel(d))
+                {
+                    if (key.HasComponent<LaborComponent>())
+                    {
+                        res.AddOrSum(key.GetComponent<LaborComponent>(), value);
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
+    public static IEnumerable<LandCell> GetCells(this Regime r, Data d)
     {
         return d.Planet.MapAux.CellHolder.Cells.Values
+            .OfType<LandCell>()
             .Where(c => c.Controller.RefId == r.Id);
     }
     public static IEnumerable<Peep> GetPeeps(this Regime r, Data data)

@@ -8,7 +8,7 @@ public class Bank : SettlementBuildingModel
         : base(nameof(Bank), 
             new List<BuildingModelComponent>
             {
-                new ProdComponent(
+                new LaborComponent(
                     IdCount<IModel>.Construct(
                     ),
                     

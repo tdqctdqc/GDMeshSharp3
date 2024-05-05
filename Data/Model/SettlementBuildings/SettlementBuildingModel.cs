@@ -36,10 +36,6 @@ public abstract class SettlementBuildingModel : IModel, IMakeable, IIconed
         return (T) Components.FirstOrDefault(c => c is T t);
     }
     
-    public bool HasComponent<T>(Func<T, bool> good) where T : BuildingModelComponent
-    {
-        return Components.Any(c => c is T t && good(t));
-    }
     public bool HasComponent<T>() where T : BuildingModelComponent
     {
         return Components.Any(c => c is T t);

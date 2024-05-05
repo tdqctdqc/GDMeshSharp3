@@ -39,14 +39,37 @@ public static class BudgetConstrainer
                         out var constraint) == false)
                 {
                     constraint = solver.MakeConstraint(0f,
-                        pool.AvailModels.Get(model));
+                        pool.Stock.Get(model));
                 }
                 constraint.SetCoefficient(variable, amount);
             }
         }
     }
     
-    
+    public static void SetMaintainCostConstraints<TBuild>(
+        this Solver solver, 
+        Data data, BudgetPool pool, 
+        Dictionary<TBuild, Variable> vars,
+        Func<TBuild, Dictionary<IModel, float>?> getMaintainCosts)
+            where TBuild : IMakeable
+    {
+        var constraints = new Dictionary<int, Constraint>();
+        foreach (var (build, variable) in vars)
+        {
+            var costs = getMaintainCosts(build);
+            if (costs is null) continue;
+            foreach (var (model, amount) in costs)
+            {
+                if (constraints.TryGetValue(model.Id, 
+                        out var constraint) == false)
+                {
+                    constraint = solver.MakeConstraint(0f,
+                        pool.Net.Get(model));
+                }
+                constraint.SetCoefficient(variable, amount);
+            }
+        }
+    }
     
     
     public static void SetCreditConstraint<T>(this Solver solver, Data data, float credit,

@@ -77,7 +77,7 @@ public class BudgetAi
         Dictionary<Item, int> wishlist)
      {
          var market = data.Society.Market;
-         var credits = pool.AvailModels.Get(data.Models.Flows.Income);
+         var credits = pool.Stock.Get(data.Models.Flows.Income);
 
          var plausibleCosts = new Dictionary<Item, float>();
          foreach (var kvp in wishlist)
@@ -109,7 +109,7 @@ public class BudgetAi
               buyQ));
          }
  
-         foreach (var kvp in pool.AvailModels.Contents)
+         foreach (var kvp in pool.Stock.Contents)
          {
              var item = data.Models.GetModel<Item>(kvp.Key);
              if (item is TradeableItem t == false) continue;

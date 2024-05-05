@@ -8,7 +8,7 @@ public class TownHall : SettlementBuildingModel
         : base(nameof(TownHall), 
             new List<BuildingModelComponent>
             {
-                new ProdComponent(
+                new LaborComponent(
                     IdCount<IModel>.Construct(
                     ), 
                     IdCount<IModel>.Construct(

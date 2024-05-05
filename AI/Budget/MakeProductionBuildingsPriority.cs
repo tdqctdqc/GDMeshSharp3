@@ -20,17 +20,17 @@ public class MakeProductionBuildingsPriority
 
     protected override float Utility(SettlementBuildingModel t)
     {
-        return t.GetComponent<ProdComponent>().Outputs.Contents[Model.Id];
+        return t.GetComponent<LaborComponent>().Outputs.Contents[Model.Id];
     }
 
     protected override bool Relevant(SettlementBuildingModel t, Data d)
     {
-        if (t.HasComponent<ProdComponent>() == false)
+        if (t.HasComponent<LaborComponent>() == false)
         {
             return false;
         }
 
-        var prod = t.GetComponent<ProdComponent>();
+        var prod = t.GetComponent<LaborComponent>();
         if (prod.Outputs.Contents.ContainsKey(Model.Id) == false)
         {
             return false;

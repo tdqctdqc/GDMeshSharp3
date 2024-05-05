@@ -14,12 +14,11 @@ public class InfraNodeEdge
 {
     public float Cost { get; set; }
     public float Traffic { get; set; }
-    public float Length { get; set; }
-    public InfraNodeEdge(float cost, float traffic,
-        float length)
+    // public float Length { get; set; }
+    public InfraNodeEdge(float cost, float traffic)
     {
         Cost = cost;
         Traffic = traffic;
-        Length = length;
+        // Length = length;
     }
 }

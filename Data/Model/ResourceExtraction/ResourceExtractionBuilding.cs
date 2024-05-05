@@ -12,7 +12,7 @@ public abstract class ResourceExtractionBuilding : IModel, IIconed, IMakeable
     public int Income { get; private set; }
     public Icon Icon { get; private set; }
     public PeepJob JobType { get; private set; }
-    public ProdComponent Prod { get; private set; }
+    public LaborComponent Labor { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
 
     public ResourceExtractionBuilding(string name, 
@@ -30,7 +30,7 @@ public abstract class ResourceExtractionBuilding : IModel, IIconed, IMakeable
         Income = income;
         JobType = jobType;
         Makeable = makeable;
-        Prod = new ProdComponent(
+        Labor = new LaborComponent(
             IdCount<IModel>.Construct(),
             IdCount<IModel>.Construct(
                 new Dictionary<IModel, float> { { Resource, BaseProd } }),
