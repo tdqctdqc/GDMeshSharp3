@@ -36,7 +36,6 @@ public class ProductionModule : LogicModule
         var totalPop = cells
             .Sum(c => c.GetPeep(d).Size);
         DoProd(r, d, newStock);
-        var growths = HandleFoodConsumption(r, newStock, d);
         TroopMaintenance(r, d, newStock);
         
         var constructCap = d.Models.Flows.ConstructionCap;
@@ -49,7 +48,8 @@ public class ProductionModule : LogicModule
         var made = DoMake(r, newStock, d);
         
         newStock.Stock.Add(r.Stock.Stock);
-        
+        var growths = HandleFoodConsumption(r, newStock, d);
+
         var result = new ProductionResult(r.MakeRef(), 
             newStock, growths, made);
         return result;
@@ -137,7 +137,6 @@ public class ProductionModule : LogicModule
             .Concat(resourceExtractions).Concat(settlementBuildings)
             .ToArray();
 
-
         var iter = 0;
         var sinceLast = 0;
         while (sinceLast < allProds.Length)
@@ -195,9 +194,6 @@ public class ProductionModule : LogicModule
         }
     }
     
-    
-    
-    
     private static Dictionary<int, int> HandleFoodConsumption(
         Regime regime,
         RegimeStock res,
@@ -208,10 +204,11 @@ public class ProductionModule : LogicModule
         var foodConsPerPop = d.BaseDomain.Rules.FoodConsumptionPerPeepPoint;
         var pop = regime.GetPopulation(d);
         var foodDemanded = pop * foodConsPerPop;
-        var foodStock = Mathf.FloorToInt(regime.Stock.Stock.Get(d.Models.Items.Food));
+        var foodStock = Mathf.FloorToInt(res.Stock.Get(d.Models.Items.Food));
         var actualCons = Math.Min(foodStock, foodDemanded);
         var surplusRatio = (float) foodStock / foodDemanded - 1f;
         res.RecurringCosts.Add(food, actualCons);
+        res.Stock.Remove(food, actualCons);
         if (surplusRatio > 0f)
         {
             HandleGrowth(regime, surplusRatio, growthsByPeep, d);

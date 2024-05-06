@@ -6,7 +6,7 @@ using MessagePack;
 public class Peep : Entity
 {
     public CellRef Cell { get; private set; }
-    public int Size { get; private set; }
+    public float Size { get; private set; }
     public PeepEmploymentReport Employment { get; private set; }
 
     public static Peep Create(Cell cell, ICreateWriteKey key)
@@ -19,27 +19,27 @@ public class Peep : Entity
     }
     [SerializationConstructor] private Peep(
         PeepEmploymentReport employment, CellRef cell,
-        int size, int id) : base(id)
+        float size, int id) : base(id)
     {
         Employment = employment;
         Size = size;
         Cell = cell;
     }
 
-    public void GrowSize(int delta, ProcedureWriteKey key)
+    public void GrowSize(float delta, ProcedureWriteKey key)
     {
         if (delta == 0) return;
         if (delta < 0) throw new Exception();
         Size += delta;
     }
-    public void GrowSize(int delta, GenWriteKey key)
+    public void GrowSize(float delta, GenWriteKey key)
     {
         if (delta == 0) return;
         if (delta < 0) throw new Exception();
         Size += delta;
     }
 
-    public void ShrinkSize(int delta, ProcedureWriteKey key)
+    public void ShrinkSize(float delta, ProcedureWriteKey key)
     {
         if (delta == 0) return;
         if (delta < 0) throw new Exception();

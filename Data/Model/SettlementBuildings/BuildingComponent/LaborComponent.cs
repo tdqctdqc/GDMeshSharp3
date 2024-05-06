@@ -18,4 +18,7 @@ public class LaborComponent : BuildingModelComponent
         Outputs = outputs;
         Jobs = jobs;
     }
+
+    public float TotalLabor() => Jobs.Contents.Values.Sum();
+
 }

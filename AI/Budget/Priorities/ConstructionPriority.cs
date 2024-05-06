@@ -47,8 +47,7 @@ public abstract class ConstructionPriority
         {
             if (b.GetComponent<LaborComponent>() is LaborComponent l)
             {
-                laborConstraint.SetCoefficient(variable, 
-                    l.Jobs.Contents.Values.Sum());
+                laborConstraint.SetCoefficient(variable, l.TotalLabor());
                 
             }
         }

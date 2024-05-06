@@ -9,7 +9,7 @@ using System;
 [MessagePack.Union(4, typeof(DeclareWarProcedure))]
 [MessagePack.Union(5, typeof(FinishedTurnEndCalcProc))]
 [MessagePack.Union(6, typeof(FinishedTurnStartCalcProc))]
-[MessagePack.Union(7, typeof(FoodAndPopGrowthProcedure))]
+[MessagePack.Union(7, typeof(MigrationProcedure))]
 [MessagePack.Union(8, typeof(FormUnitProcedure))]
 [MessagePack.Union(9 , typeof(HandleUnitOrdersProcedure))]
 [MessagePack.Union(10, typeof(MakeProposalProcedure))]

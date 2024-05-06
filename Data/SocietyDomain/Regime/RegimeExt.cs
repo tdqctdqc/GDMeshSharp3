@@ -81,7 +81,7 @@ public static class RegimeExt
             .Select(p => p.GetPeep(data));
     }
 
-    public static int GetPopulation(this Regime r, Data data)
+    public static float GetPopulation(this Regime r, Data data)
     {
         return r.GetPeeps(data).Sum(p => p.Size);
     }

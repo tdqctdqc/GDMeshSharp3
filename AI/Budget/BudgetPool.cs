@@ -24,7 +24,7 @@ public class BudgetPool
         
         var pop = r.GetCells(d).Sum(c => c.GetPeep(d).Size);
         var prods = r.GetProds(d);
-        var laborDemand = prods.Sum(p => p.Key.Jobs.Contents.Values.Sum());
+        var laborDemand = prods.Sum(p => p.Key.TotalLabor());
         var freeLabor = pop - laborDemand;
         var inQueue = 0f;
         
@@ -41,7 +41,7 @@ public class BudgetPool
                              is LaborComponent l)
                 {
                     inQueue += l
-                        .Jobs.Contents.Values.Sum();
+                        .TotalLabor();
                     foreach (var (model, value) 
                         in l.Inputs.GetEnumerableModel(d))
                     {
