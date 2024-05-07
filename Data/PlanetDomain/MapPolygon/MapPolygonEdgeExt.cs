@@ -13,13 +13,7 @@ public static class MapPolygonEdgeExt
     }
 
     
-    public static MapPolygon GetOtherPoly(this MapPolygonEdge b, MapPolygon p, Data data)
-    {
-        if (p == b.LowPoly.Get(data)) return b.HighPoly.Get(data);
-        if (p == b.HighPoly.Get(data)) return b.LowPoly.Get(data);
-        throw new Exception();
-    }
-
+   
     public static float GetAvgMoisture(this MapPolygonEdge e, Data data)
     {
         return (e.HighPoly.Get(data).Moisture + e.LowPoly.Get(data).Moisture) / 2f;

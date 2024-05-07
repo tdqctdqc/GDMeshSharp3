@@ -8,7 +8,6 @@ public class FaultLine
     public List<LineSegment> Segments { get; private set; }
     public GenPlate LowId { get; private set; }
     public GenPlate HighId { get; private set; }
-    public List<MapPolygon> PolyFootprint { get; private set; }
     public float Friction { get; private set; }
     public MapPolygon Origin => HighId.GetSeedPoly();
     public FaultLine(float friction, GenPlate highId, 
@@ -18,7 +17,6 @@ public class FaultLine
         Friction = friction;
         HighId = highId;
         LowId = lowId;
-        PolyFootprint = new List<MapPolygon>();
         Segments = new List<LineSegment>();
 
 

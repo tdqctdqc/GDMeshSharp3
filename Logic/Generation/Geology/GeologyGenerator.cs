@@ -215,17 +215,13 @@ public class GeologyGenerator : Generator
         var seaLevel = gSettings.SeaLevel.Value;
         var frictionRoughnessEffectSetting = gSettings.FrictionRoughnessEffect.Value * roughnessScale;
         ConcurrentBag<FaultLine> faults = new ConcurrentBag<FaultLine>();
-        Parallel.ForEach(Data.GenAuxData.Plates, setFriction);
-        foreach (var f in faults)
-        {
-            Data.GenAuxData.FaultLines.AddFault(f);
-        }
+        MakeFaults(faults);
         Parallel.ForEach(Data.GenAuxData.FaultLines.FaultLines, f =>
         {
             var inRange = getPolysInRangeOfFault(f);
             foreach (var mapPolygon in inRange)
             {
-                doFaultLineEffect(mapPolygon, f);
+                doFaultLinePolyEffect(mapPolygon, f);
             }
             f.PolyFootprint.AddRange(inRange);   
         });
@@ -233,9 +229,58 @@ public class GeologyGenerator : Generator
         {
             poly.SetIsLand(poly.Altitude > seaLevel, _key);
         }
+
+
+        IEnumerable<MapPolygon> getPolysInRangeOfFault(FaultLine fault)
+        {
+            var faultRange = fault.Friction * faultRangeSetting;
+            var polys = fault.HighId.Cells.SelectMany(c => c.Polys)
+                .Union(fault.LowId.Cells.SelectMany(c => c.Polys));
+            
+            var polysInRange = new List<MapPolygon>();
+            foreach (var poly in polys)
+            {
+                var dist = fault.GetDist(poly, Data);
+                if (dist < faultRange)
+                {
+                    polysInRange.Add(poly);
+                }
+            }
+            return polysInRange;
+        }
         
-        
-        
+        void doFaultLinePolyEffect(MapPolygon poly, FaultLine fault)
+        {
+            var close = fault.GetClosestSeg(poly, Data);
+            var dist = close.DistanceTo(fault.Origin.GetOffsetTo(poly, Data));
+            var faultRange = fault.Friction * faultRangeSetting;
+            var distRatio = (faultRange - dist) / faultRange;
+            var spineOsc = oscilMetric.Calc(dist);
+            
+            var distFactor = distRatio * spineOsc;
+            var altEffect = fault.Friction * frictionAltEffect * distFactor;
+            poly.SetAltitude(Mathf.Min(1f, poly.Altitude + altEffect), _key);
+            
+            
+            float roughnessErosion = 0f;
+            if (poly.Altitude < seaLevel) roughnessErosion 
+                = poly.Altitude * roughnessErosionMult;
+            
+            var frictionEffect = fault.Friction * frictionRoughnessEffectSetting * distFactor;
+            var rand = Game.I.Random.RandfRange(-.4f, .4f);
+            var newRoughness = Mathf.Clamp(frictionEffect - roughnessErosion + rand, 0f, 1f);
+            poly.SetRoughness(newRoughness, _key);
+        }
+    }
+
+    private void MakeFaults(ConcurrentBag<FaultLine> faults)
+    {
+        Parallel.ForEach(Data.GenAuxData.Plates, setFriction);
+        foreach (var f in faults)
+        {
+            Data.GenAuxData.FaultLines.AddFault(f);
+        }
+
         void setFriction(GenPlate hiPlate)
         {
             var neighbors = hiPlate.Neighbors.ToList();
@@ -243,7 +288,7 @@ public class GeologyGenerator : Generator
             for (var j = 0; j < count; j++)
             {
                 var loPlate = neighbors[j];
-                if (loPlate.Id < hiPlate.Id 
+                if (loPlate.Id < hiPlate.Id
                     && loPlate.Mass.GenContinent != hiPlate.Mass.GenContinent)
                 {
                     var drift1 = hiPlate.Mass.GenContinent.Drift;
@@ -269,56 +314,14 @@ public class GeologyGenerator : Generator
                                 }
                             }
                         }
-                        
-                        
-                        var fault = new FaultLine(driftStr, 
+
+
+                        var fault = new FaultLine(driftStr,
                             hiPlate, loPlate, edges, Data);
                         faults.Add(fault);
                     }
                 }
             }
-        }
-        
-
-        IEnumerable<MapPolygon> getPolysInRangeOfFault(FaultLine fault)
-        {
-            var faultRange = fault.Friction * faultRangeSetting;
-            var polys = fault.HighId.Cells.SelectMany(c => c.Polys)
-                .Union(fault.LowId.Cells.SelectMany(c => c.Polys));
-            
-            var polysInRange = new List<MapPolygon>();
-            foreach (var poly in polys)
-            {
-                var dist = fault.GetDist(poly, Data);
-                if (dist < faultRange)
-                {
-                    polysInRange.Add(poly);
-                }
-            }
-            return polysInRange;
-        }
-        
-        void doFaultLineEffect(MapPolygon poly, FaultLine fault)
-        {
-            var close = fault.GetClosestSeg(poly, Data);
-            var dist = close.DistanceTo(fault.Origin.GetOffsetTo(poly, Data));
-            var faultRange = fault.Friction * faultRangeSetting;
-            var distRatio = (faultRange - dist) / faultRange;
-            var spineOsc = oscilMetric.Calc(dist);
-            
-            var distFactor = distRatio * spineOsc;
-            var altEffect = fault.Friction * frictionAltEffect * distFactor;
-            poly.SetAltitude(Mathf.Min(1f, poly.Altitude + altEffect), _key);
-            
-            
-            float roughnessErosion = 0f;
-            if (poly.Altitude < seaLevel) roughnessErosion 
-                = poly.Altitude * roughnessErosionMult;
-            
-            var frictionEffect = fault.Friction * frictionRoughnessEffectSetting * distFactor;
-            var rand = Game.I.Random.RandfRange(-.4f, .4f);
-            var newRoughness = Mathf.Clamp(frictionEffect - roughnessErosion + rand, 0f, 1f);
-            poly.SetRoughness(newRoughness, _key);
         }
     }
 }

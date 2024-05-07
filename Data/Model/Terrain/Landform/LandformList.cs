@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using VoronoiSandbox;
 
 public class LandformList : ModelList<Landform>
 {
@@ -19,13 +20,10 @@ public class LandformList : ModelList<Landform>
         ByPriority = new List<Landform> { Peak, Mountain, Hill, Sea, Plain, Urban, River };
     }
     
-    public Landform GetAtPoint(MapPolygon poly, Vector2 pRel, Data data)
+    public Landform GetAtPoint(MapPolygon poly,
+        PreCell pre,
+        Vector2 pRel, Data data)
     {
-        var close = poly.Neighbors.Items(data).OrderBy(n => (poly.GetOffsetTo(n, data) - pRel).Length());
-        var first = close.ElementAt(0);
-        var second = close.ElementAt(1);
-        var score = poly.GetScore(first, second, pRel, data, 
-            p => p.Roughness);
-        return ByPriority.First(lf => lf.MinRoughness <= score);
+        return ByPriority.First(lf => lf.MinRoughness <= pre.Roughness);
     }
 }

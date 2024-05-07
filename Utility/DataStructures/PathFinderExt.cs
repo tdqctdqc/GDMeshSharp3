@@ -45,18 +45,6 @@ public static partial class PathFinder
             (p, q) => costs.GetEdge(p, q), 
             (p1, p2) => p1.GetOffsetTo(p2, data).Length());
     }
-
-    public static float RoadBuildPolyEdgeCost(MapPolygon p1, MapPolygon p2, Data d)
-    {
-        var riverMult = 1f;
-        if (p1.GetEdge(p2, d).IsRiver()) riverMult = 2f;
-        return RoadBuildPolyCost(p1, d) + RoadBuildPolyCost(p2, d);
-    }
-    public static float RoadBuildPolyCost(MapPolygon p, Data d)
-    {
-        if (p.IsWater()) return Mathf.Inf;
-        return p.Roughness;
-    }
     public static float RoadBuildEdgeCost(Cell p1, Cell p2, Data data)
     {
         if (p1 is LandCell l1 == false) return Mathf.Inf;

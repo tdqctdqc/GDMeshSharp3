@@ -10,7 +10,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
     {
         var sizeLabel = new Label();
         var deltaLabel = new Label();
-        var popSize = StatLabel.Construct<int>(client, "Pop Size", sizeLabel,
+        var popSize = StatLabel.Construct<float>(client, "Pop Size", sizeLabel,
             () => GetPopulationCount(data));
         var notices = client.Notices;
         popSize.AddTrigger(notices.ChangedSpectatingRegime.Blank);
@@ -27,7 +27,7 @@ public partial class RegimePeepsInfoBar : HBoxContainer
         AddChild(deltaLabel);
     }
 
-    private int GetPopulationCount(Data data)
+    private float GetPopulationCount(Data data)
     {
         var r = Game.I.Client.GetComponent<MapGraphics>().SpectatingRegime;
         return r.GetPopulation(data);

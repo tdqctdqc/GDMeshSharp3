@@ -5,17 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/MigrationModule.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/MigrationProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/ConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/ConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementBuildings/BuildingComponent/LaborComponent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementBuildings/BuildingComponent/LaborComponent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthModule.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/FoodAndPopGrowthProcedure.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PreCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PreCell.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

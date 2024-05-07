@@ -14,7 +14,7 @@ public class PreCell : IIdentifiable
     public List<PreCell> Neighbors { get; private set; }
     public List<(Vector2, Vector2)> EdgesRel => Geometry.EdgesRel;
     public CellGeometry Geometry { get; private set; }
-    
+    public float Roughness { get; private set; }
     public PreCell(int id, Vector2I relTo)
     {
         Id = id;
@@ -22,6 +22,7 @@ public class PreCell : IIdentifiable
         Geometry = new CellGeometry(relTo, null,
             new List<int>(), 
             new List<(Vector2, Vector2)>());
+        Roughness = 0f;
     }
 
     public void AddNeighborAbs(PreCell n, 
@@ -65,5 +66,10 @@ public class PreCell : IIdentifiable
     public void MakePointsRel(Vector2I dim)
     {
         Geometry.MakePointsRel(dim);
+    }
+
+    public void SetRoughness(float roughness)
+    {
+        Roughness = roughness;
     }
 }
