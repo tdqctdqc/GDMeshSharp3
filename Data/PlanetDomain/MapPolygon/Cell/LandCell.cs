@@ -13,7 +13,7 @@ public class LandCell : Cell, IPolyCell
     {
         var poly = key.Data.Get<MapPolygon>(pre.PrePoly.Id);
         var relTo = pre.RelTo;
-        var lf = key.Data.Models.Landforms.GetAtPoint(poly, relTo, key.Data);
+        var lf = key.Data.Models.Landforms.GetAtPoint(poly, pre, relTo, key.Data);
         var v = key.Data.Models.Vegetations.GetAtPoint(poly, relTo, lf, key.Data);
         var id = pre.Id;
         var c = new LandCell(poly.MakeRef(),

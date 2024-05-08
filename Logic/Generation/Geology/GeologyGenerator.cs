@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using VoronoiSandbox;
 
 public class GeologyGenerator : Generator
 {
@@ -216,60 +217,74 @@ public class GeologyGenerator : Generator
         var frictionRoughnessEffectSetting = gSettings.FrictionRoughnessEffect.Value * roughnessScale;
         ConcurrentBag<FaultLine> faults = new ConcurrentBag<FaultLine>();
         MakeFaults(faults);
-        Parallel.ForEach(Data.GenAuxData.FaultLines.FaultLines, f =>
+        
+        foreach (var f in Data.GenAuxData.FaultLines.FaultLines)
         {
-            var inRange = getPolysInRangeOfFault(f);
-            foreach (var mapPolygon in inRange)
+            var cellsInRange = getCellsInRangeOfFault(f);
+            foreach (var preCell in cellsInRange)
             {
-                doFaultLinePolyEffect(mapPolygon, f);
+                doFaultLineCellEffect(preCell, f);
             }
-            f.PolyFootprint.AddRange(inRange);   
-        });
+        }
+        
+        // Parallel.ForEach(Data.GenAuxData.FaultLines.FaultLines, f =>
+        // {
+        //     var cellsInRange = getCellsInRangeOfFault(f);
+        //     foreach (var preCell in cellsInRange)
+        //     {
+        //         doFaultLineCellEffect(preCell, f);
+        //     }
+        // });
         foreach (var poly in Data.GetAll<MapPolygon>())
         {
             poly.SetIsLand(poly.Altitude > seaLevel, _key);
         }
-
-
-        IEnumerable<MapPolygon> getPolysInRangeOfFault(FaultLine fault)
+        
+        IEnumerable<PreCell> getCellsInRangeOfFault(FaultLine fault)
         {
             var faultRange = fault.Friction * faultRangeSetting;
-            var polys = fault.HighId.Cells.SelectMany(c => c.Polys)
-                .Union(fault.LowId.Cells.SelectMany(c => c.Polys));
+            var polys = 
+                fault.HighId.Cells.SelectMany(c => c.Polys).SelectMany(p => Data.GenAuxData.PreCellPolys[p])
+                .Union(
+                    fault.LowId.Cells.SelectMany(c => c.Polys).SelectMany(p => Data.GenAuxData.PreCellPolys[p])
+                );
             
-            var polysInRange = new List<MapPolygon>();
-            foreach (var poly in polys)
+            var inRange = new List<PreCell>();
+            foreach (var pre in polys)
             {
-                var dist = fault.GetDist(poly, Data);
+                var dist = fault.GetDist(pre.RelTo, Data);
                 if (dist < faultRange)
                 {
-                    polysInRange.Add(poly);
+                    inRange.Add(pre);
                 }
             }
-            return polysInRange;
+            return inRange;
         }
         
-        void doFaultLinePolyEffect(MapPolygon poly, FaultLine fault)
+        
+        void doFaultLineCellEffect(PreCell pre, FaultLine fault)
         {
-            var close = fault.GetClosestSeg(poly, Data);
-            var dist = close.DistanceTo(fault.Origin.GetOffsetTo(poly, Data));
+            var close = fault.GetClosestSeg(pre.RelTo, Data);
+            var dist = close.DistanceTo(fault.Origin.GetOffsetTo(pre.RelTo, Data));
             var faultRange = fault.Friction * faultRangeSetting;
             var distRatio = (faultRange - dist) / faultRange;
             var spineOsc = oscilMetric.Calc(dist);
             
             var distFactor = distRatio * spineOsc;
-            var altEffect = fault.Friction * frictionAltEffect * distFactor;
-            poly.SetAltitude(Mathf.Min(1f, poly.Altitude + altEffect), _key);
             
             
-            float roughnessErosion = 0f;
-            if (poly.Altitude < seaLevel) roughnessErosion 
-                = poly.Altitude * roughnessErosionMult;
-            
+            // float roughnessErosion = 0f;
+            // if (poly.Altitude < seaLevel) roughnessErosion 
+            //     = poly.Altitude * roughnessErosionMult;
+            //
             var frictionEffect = fault.Friction * frictionRoughnessEffectSetting * distFactor;
-            var rand = Game.I.Random.RandfRange(-.4f, .4f);
-            var newRoughness = Mathf.Clamp(frictionEffect - roughnessErosion + rand, 0f, 1f);
-            poly.SetRoughness(newRoughness, _key);
+            var rand = 0f;
+                Game.I.Random.RandfRange(-.4f, .4f);
+            var newRoughness = Mathf.Clamp(frictionEffect 
+                                           // - roughnessErosion 
+                                           + rand, 
+                    0f, 1f);
+            pre.SetRoughness(newRoughness + pre.Roughness);
         }
     }
 

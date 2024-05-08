@@ -46,15 +46,15 @@ public class FaultLine
         Segments.ForEach(ss => ss.Clamp(data.Planet.Width));
     }
 
-    public LineSegment GetClosestSeg(MapPolygon poly, GenData data)
+    public LineSegment GetClosestSeg(Vector2 pos, GenData data)
     {
         return Segments
-            .OrderBy(s => s.DistanceTo(Origin.GetOffsetTo(poly, data)))
+            .OrderBy(s => s.DistanceTo(Origin.GetOffsetTo(pos, data)))
             .First();
     }
-    public float GetDist(MapPolygon poly, GenData data)
+    public float GetDist(Vector2 pos, GenData data)
     {
-        return GetClosestSeg(poly, data).DistanceTo(Origin.GetOffsetTo(poly, data));
+        return GetClosestSeg(pos, data).DistanceTo(Origin.GetOffsetTo(pos, data));
     }
     public bool PointWithinDist(Vector2 pointAbs, float dist, GenData data)
     {

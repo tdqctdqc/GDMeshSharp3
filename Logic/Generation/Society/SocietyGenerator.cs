@@ -50,7 +50,7 @@ public class SocietyGenerator : Generator
         }, "settlement buildings");
         
         
-        _times.RunAndTime(Deforest, "deforest");
+        // _times.RunAndTime(Deforest, "deforest");
         _times.RunAndTime(() => CreateUnits(key), "units");
         
         

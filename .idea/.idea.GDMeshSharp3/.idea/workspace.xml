@@ -6,9 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PreCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PreCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/LandCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/LandCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/FaultLine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/FaultLine.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,8 +79,9 @@
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/SettlementBuildings/Bank.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Generation/Geology/FaultLine.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Generation/Geology/FaultLine.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -811,14 +813,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00169" summary="more graphics stuff">
-      <option name="closed" value="true" />
-      <created>1709681755358</created>
-      <option name="number" value="00169" />
-      <option name="presentableId" value="LOCAL-00169" />
-      <option name="project" value="LOCAL" />
-      <updated>1709681755358</updated>
-    </task>
     <task id="LOCAL-00170" summary="made label chunk graphic">
       <option name="closed" value="true" />
       <created>1709682684529</created>
@@ -963,7 +957,15 @@
       <option name="project" value="LOCAL" />
       <updated>1714953307120</updated>
     </task>
-    <option name="localTasksCounter" value="188" />
+    <task id="LOCAL-00188" summary="doot">
+      <option name="closed" value="true" />
+      <created>1715045540046</created>
+      <option name="number" value="00188" />
+      <option name="presentableId" value="LOCAL-00188" />
+      <option name="project" value="LOCAL" />
+      <updated>1715045540046</updated>
+    </task>
+    <option name="localTasksCounter" value="189" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1008,8 +1010,8 @@
     <MESSAGE value="reforming buildings, settlements" />
     <MESSAGE value="ditto" />
     <MESSAGE value="reimplementing prod" />
-    <MESSAGE value="doot" />
     <MESSAGE value="added maintain cost and added back labor cost to budget constraining," />
-    <option name="LAST_COMMIT_MESSAGE" value="added maintain cost and added back labor cost to budget constraining," />
+    <MESSAGE value="doot" />
+    <option name="LAST_COMMIT_MESSAGE" value="doot" />
   </component>
 </project>
