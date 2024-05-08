@@ -16,6 +16,7 @@ public class GraphicLayerHolder
 {
     public Dictionary<MapChunk, ChunkGraphic> Chunks { get; private set; }
     public EntityGraphicReservoir<Unit, UnitGraphic> UnitGraphics { get; private set; }
+    public List<WholeMapGraphic> WholeMapGraphics { get; private set; }
     private Client _client;
     public GraphicLayerHolder(Client client, GraphicsSegmenter segmenter, 
         Data data)
@@ -37,6 +38,12 @@ public class GraphicLayerHolder
         foreach (var kvp in Chunks)
         {
             segmenter.AddElement(kvp.Value, kvp.Key.RelTo.Center);
+        }
+
+        WholeMapGraphics = new List<WholeMapGraphic>();
+        if (data is GenData g)
+        {
+            WholeMapGraphics.Add(new GenGraphics(segmenter, g));
         }
         client.UiTick.Subscribe(DoUiTick);
     }

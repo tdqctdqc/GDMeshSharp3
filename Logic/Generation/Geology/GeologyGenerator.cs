@@ -86,8 +86,11 @@ public class GeologyGenerator : Generator
     {
         var id = Data.IdDispenser;
         var cellsPerPlate = 3;
-        var numPlates = Data.GenAuxData.Cells.Count / cellsPerPlate;
-        var plateSeeds = Picker.PickSeeds(Data.GenAuxData.Cells, new[] {numPlates})[0];
+        var numPlates 
+            = Data.GenAuxData.Cells.Count / cellsPerPlate;
+        var plateSeeds 
+            = Picker.PickSeeds(Data.GenAuxData.Cells, 
+                new[] {numPlates})[0];
         var plates = plateSeeds.Select(s => new GenPlate(s, id.TakeId(), _key)).ToList();
         
         Data.GenAuxData.Plates.AddRange(plates);
@@ -95,7 +98,11 @@ public class GeologyGenerator : Generator
         var remainder = Picker.PickInTurnHeuristic(cellsNotTaken, plates, 
             plate => plate.NeighboringCells,
             (plate, cell) => plate.AddCell(cell, _key),
-            ((cell, plate) => plate.NeighboringCellsAdjCount[cell]));
+            (cell, plate) => 
+                plate.Center.Offset(cell.Center, Data).Length()
+                // plate.NeighboringCellsAdjCount[cell]
+            
+            );
         if (remainder.Count > 0) throw new Exception();
         plates.ForEach(p =>
         {
@@ -150,11 +157,14 @@ public class GeologyGenerator : Generator
         var waterSeeds = seeds[1].ToHashSet();
         var allSeeds = landSeeds.Union(waterSeeds);
         var landConts = landSeeds
-            .Select(s => new GenContinent(s, id.TakeId(), Game.I.Random.RandfRange(landMinAlt, landMaxAlt)))
+            .Select(s => new GenContinent(s, 
+                id.TakeId(), 
+            Game.I.Random.RandfRange(landMinAlt, landMaxAlt), true))
             .ToList();
         //todo make delaunay graph for landConts and put a sea on each edge
         var seaConts = waterSeeds
-            .Select(s => new GenContinent(s, id.TakeId(), Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt)))
+            .Select(s => new GenContinent(s, id.TakeId(), 
+                Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt), false))
             .ToList();
         var width = Data.GenMultiSettings.Dimensions.X;
         var landRemainder = Picker.PickInTurnToLimitHeuristic(
@@ -176,7 +186,10 @@ public class GeologyGenerator : Generator
             var unions = UnionFind.Find(seaRemainder, (g, h) => true, m => m.Neighbors);
             foreach (var u in unions)
             {
-                var cont = new GenContinent(u.First(), id.TakeId(), Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt));
+                var cont = new GenContinent(u.First(), 
+                    id.TakeId(), 
+                    Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt),
+                    false);
                 for (var i = 1; i < u.Count; i++)
                 {
                     cont.AddMass(u[i]);
@@ -212,7 +225,6 @@ public class GeologyGenerator : Generator
         var faultRangeSetting = gSettings.FaultLineRange.Value;
         var frictionAltEffect = gSettings.FrictionAltEffect.Value * altScale;
         var roughnessErosionMult = gSettings.RoughnessErosionMult.Value * roughnessScale;
-        var oscilMetric = new OscillatingDownFunction(50f, 1f, 0f, 100f);
         var seaLevel = gSettings.SeaLevel.Value;
         var frictionRoughnessEffectSetting = gSettings.FrictionRoughnessEffect.Value * roughnessScale;
         ConcurrentBag<FaultLine> faults = new ConcurrentBag<FaultLine>();
@@ -220,72 +232,66 @@ public class GeologyGenerator : Generator
         
         foreach (var f in Data.GenAuxData.FaultLines.FaultLines)
         {
-            var cellsInRange = getCellsInRangeOfFault(f);
-            foreach (var preCell in cellsInRange)
-            {
-                doFaultLineCellEffect(preCell, f);
-            }
+            f.DoEffect(Data);
         }
-        
-        // Parallel.ForEach(Data.GenAuxData.FaultLines.FaultLines, f =>
-        // {
-        //     var cellsInRange = getCellsInRangeOfFault(f);
-        //     foreach (var preCell in cellsInRange)
-        //     {
-        //         doFaultLineCellEffect(preCell, f);
-        //     }
-        // });
-        foreach (var poly in Data.GetAll<MapPolygon>())
+
+        MakeIslands(seaLevel);
+        MakeHills();
+    }
+
+    private void MakeHills()
+    {
+        foreach (var plate in Data.GenAuxData.Plates)
         {
-            poly.SetIsLand(poly.Altitude > seaLevel, _key);
-        }
-        
-        IEnumerable<PreCell> getCellsInRangeOfFault(FaultLine fault)
-        {
-            var faultRange = fault.Friction * faultRangeSetting;
-            var polys = 
-                fault.HighId.Cells.SelectMany(c => c.Polys).SelectMany(p => Data.GenAuxData.PreCellPolys[p])
-                .Union(
-                    fault.LowId.Cells.SelectMany(c => c.Polys).SelectMany(p => Data.GenAuxData.PreCellPolys[p])
-                );
-            
-            var inRange = new List<PreCell>();
-            foreach (var pre in polys)
+            if (plate.Mass.GenContinent.IsLand == false) continue;
+            if (Game.I.Random.Randf() < .3f) continue;
+            var noise = new FastNoiseLite();
+            noise.Frequency = 1f / Game.I.Random.RandfRange(50f, 300f);
+            noise.NoiseType = FastNoiseLite.NoiseTypeEnum.Perlin;
+            noise.FractalOctaves = 1;
+
+            var mult = Game.I.Random.RandfRange(.5f, .75f);
+            foreach (var cell in plate.Cells)
             {
-                var dist = fault.GetDist(pre.RelTo, Data);
-                if (dist < faultRange)
+                foreach (var poly in cell.Polys)
                 {
-                    inRange.Add(pre);
+                    foreach (var c in Data.GenAuxData.PreCellPolys[poly])
+                    {
+                        var sample = noise.GetNoise2D(c.RelTo.X, c.RelTo.Y);
+                        sample += 1f;
+                        sample /= 2f;
+                        sample *= mult;
+                        c.SetRoughness(Mathf.Max(c.Roughness, sample));
+                    }
                 }
             }
-            return inRange;
         }
-        
-        
-        void doFaultLineCellEffect(PreCell pre, FaultLine fault)
+    }
+
+    private HashSet<MapPolygon> MakeIslands(float seaLevel)
+    {
+        var polys = Data.GetAll<MapPolygon>();
+        foreach (var poly in polys)
         {
-            var close = fault.GetClosestSeg(pre.RelTo, Data);
-            var dist = close.DistanceTo(fault.Origin.GetOffsetTo(pre.RelTo, Data));
-            var faultRange = fault.Friction * faultRangeSetting;
-            var distRatio = (faultRange - dist) / faultRange;
-            var spineOsc = oscilMetric.Calc(dist);
-            
-            var distFactor = distRatio * spineOsc;
-            
-            
-            // float roughnessErosion = 0f;
-            // if (poly.Altitude < seaLevel) roughnessErosion 
-            //     = poly.Altitude * roughnessErosionMult;
-            //
-            var frictionEffect = fault.Friction * frictionRoughnessEffectSetting * distFactor;
-            var rand = 0f;
-                Game.I.Random.RandfRange(-.4f, .4f);
-            var newRoughness = Mathf.Clamp(frictionEffect 
-                                           // - roughnessErosion 
-                                           + rand, 
-                    0f, 1f);
-            pre.SetRoughness(newRoughness + pre.Roughness);
+            poly.SetIsLand(poly.Altitude > seaLevel, _key);
+            if (poly.IsLand == false)
+            {
+                var avgRough = Data.GenAuxData.PreCellPolys[poly]
+                    .Average(c => c.Roughness);
+                if (avgRough >= .9f)
+                {
+                    poly.SetIsLand(true, _key);
+                    foreach (var c in Data.GenAuxData.PreCellPolys[poly])
+                    {
+                        c.SetRoughness(c.Roughness / 2f);
+                    }
+
+                    poly.SetAltitude(seaLevel + .1f, _key);
+                }
+            }
         }
+
+        return polys;
     }
 
     private void MakeFaults(ConcurrentBag<FaultLine> faults)
@@ -300,41 +306,39 @@ public class GeologyGenerator : Generator
         {
             var neighbors = hiPlate.Neighbors.ToList();
             var count = neighbors.Count;
+            var driftStr = 0f;
             for (var j = 0; j < count; j++)
             {
                 var loPlate = neighbors[j];
+                if (loPlate.Id > hiPlate.Id) continue;
                 if (loPlate.Id < hiPlate.Id
                     && loPlate.Mass.GenContinent != hiPlate.Mass.GenContinent)
                 {
                     var drift1 = hiPlate.Mass.GenContinent.Drift;
                     var drift2 = loPlate.Mass.GenContinent.Drift;
-
+                    
                     var axis = loPlate.Center - hiPlate.Center;
-                    var driftStr = (drift1 - drift2).Length() / 2f;
-                    if (driftStr > .5f)
+                    driftStr = (drift1 - drift2).Length() / 2f;
+                }
+                else if(loPlate.Id < hiPlate.Id
+                        && loPlate.Mass != hiPlate.Mass)
+                {
+                    var drift1 = hiPlate.Mass.Drift;
+                    var drift2 = loPlate.Mass.Drift;
+                    
+                    var axis = loPlate.Center - hiPlate.Center;
+                    driftStr = (drift1 - drift2).Length() / 2f;
+                }
+                if (driftStr > .25f)
+                {
+                    var friction = driftStr.ProjectToRange(1f, .5f, .5f);
+                    if (hiPlate.Mass.GenContinent.IsLand != loPlate.Mass.GenContinent.IsLand)
                     {
-                        var friction = driftStr.ProjectToRange(1f, .5f, .5f);
-                        var edges = new List<MapPolygonEdge>();
-                        foreach (var cell in hiPlate.Cells)
-                        {
-                            foreach (var poly in cell.Polys)
-                            {
-                                foreach (var nPoly in poly.Neighbors.Items(Data))
-                                {
-                                    var nCell = Data.GenAuxData.PolyGenCells[nPoly];
-                                    if (nCell.Plate == loPlate)
-                                    {
-                                        edges.Add(poly.GetEdge(nPoly, Data));
-                                    }
-                                }
-                            }
-                        }
-
-
-                        var fault = new FaultLine(driftStr,
-                            hiPlate, loPlate, edges, Data);
-                        faults.Add(fault);
+                        friction /= 2f;
                     }
+                    var fault = new FaultLine(driftStr,
+                        hiPlate, loPlate, Data);
+                    faults.Add(fault);
                 }
             }
         }

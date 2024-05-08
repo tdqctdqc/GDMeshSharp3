@@ -6,6 +6,7 @@ using System.Linq;
 public class GenMass
 {
     public int Id { get; private set; }
+    public Vector2 Drift { get; private set; }
     public GenContinent GenContinent { get; private set; }
     public GenPlate Seed { get; private set; }
     public HashSet<GenPlate> Plates { get; private set; }
@@ -22,6 +23,7 @@ public class GenMass
         NeighboringPlates = new HashSet<GenPlate>();
         NeighboringPlatesAdjCount = new Dictionary<GenPlate, int>();
         Neighbors = new HashSet<GenMass>();
+        Drift = Vector2.Left.Rotated(Game.I.Random.RandfRange(0f, 2f * Mathf.Pi));
         AddPlate(seed);
     }
     public MapPolygon GetSeedPoly() => Seed.GetSeedPoly();

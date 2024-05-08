@@ -5,7 +5,7 @@ using Godot;
 
 public class River : Landform
 {
-    public static readonly float WidthFloor = 2f, 
+    public static readonly float WidthFloor = 5f, 
         WidthCeil = 20f,
         FlowFloor = 10f,
         FlowCeil = 200f;

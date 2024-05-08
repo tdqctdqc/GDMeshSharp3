@@ -2,62 +2,70 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using VoronoiSandbox;
 
 public class FaultLine 
 {
-    public List<LineSegment> Segments { get; private set; }
     public GenPlate LowId { get; private set; }
     public GenPlate HighId { get; private set; }
     public float Friction { get; private set; }
     public MapPolygon Origin => HighId.GetSeedPoly();
     public FaultLine(float friction, GenPlate highId, 
-        GenPlate lowId, List<MapPolygonEdge> edges,
-        GenData data)
+        GenPlate lowId, GenData data)
     {
         Friction = friction;
         HighId = highId;
         LowId = lowId;
-        Segments = new List<LineSegment>();
+
+    }
 
 
+    public void DoEffect(GenData data)
+    {
+        if (Friction < .25f) return;
+        var hiCells = HighId.Cells.SelectMany(c => c.Polys)
+            .SelectMany(p => data.GenAuxData.PreCellPolys[p]).ToHashSet();
 
-        edges.ForEach(e =>
+        var loCells = LowId.Cells.SelectMany(c => c.Polys)
+            .SelectMany(p => data.GenAuxData.PreCellPolys[p]).ToHashSet();
+        
+        var borderCells = hiCells.Where(c => c.Neighbors.Any(loCells.Contains))
+            .Concat(loCells.Where(c => c.Neighbors.Any(hiCells.Contains))).ToHashSet();
+        
+        var gSettings = data.GenMultiSettings.GeologySettings;
+        var roughnessScale = gSettings.RoughnessScale.Value;
+        var altScale = gSettings.FaultLineAltitudeScale.Value;
+        var faultRangeSetting = gSettings.FaultLineRange.Value;
+        var frictionAltEffect = gSettings.FrictionAltEffect.Value * altScale;
+        var roughnessErosionMult = gSettings.RoughnessErosionMult.Value * roughnessScale;
+        var frictionRoughnessEffect = gSettings.FrictionRoughnessEffect.Value * roughnessScale;
+
+        
+        var radius = Mathf.FloorToInt(Friction * 3f);
+        var old = new HashSet<PreCell>();
+        var curr = borderCells;
+        
+        for (var i = 1; i < radius + 1; i++)
         {
-            var hi = e.HighPoly.Get(data);
-            var lo = e.LowPoly.Get(data);
-            var cells = data.GenAuxData.PreCellPolys[hi];
-                
-            for (var i = 0; i < cells.Count; i++)
+            var frictionEffect = Friction 
+                * Friction
+                * frictionRoughnessEffect / i;
+            var rand = Game.I.Random.RandfRange(-.6f, .2f);
+            
+            foreach (var c in curr)
             {
-                var cell = cells[i];
-                for (var j = 0; j < cell.Neighbors.Count; j++)
-                {
-                    var nCell = cell.Neighbors[j];
-                    if (nCell.PrePoly.Id == lo.Id)
-                    {
-                        var edge = cell.EdgesRel[j];
-                        var from = edge.Item1 + cell.RelTo;
-                        var to = edge.Item2 + cell.RelTo;
-                        Segments.Add(new LineSegment(from, to));
-                    }
-                }
+                var newRoughness = Mathf.Clamp(frictionEffect 
+                                               // - roughnessErosion 
+                                               + rand, 
+                    0f, 1f);
+                c.SetRoughness(newRoughness + c.Roughness);
             }
-        });
-        Segments.ForEach(ss => ss.Clamp(data.Planet.Width));
-    }
-
-    public LineSegment GetClosestSeg(Vector2 pos, GenData data)
-    {
-        return Segments
-            .OrderBy(s => s.DistanceTo(Origin.GetOffsetTo(pos, data)))
-            .First();
-    }
-    public float GetDist(Vector2 pos, GenData data)
-    {
-        return GetClosestSeg(pos, data).DistanceTo(Origin.GetOffsetTo(pos, data));
-    }
-    public bool PointWithinDist(Vector2 pointAbs, float dist, GenData data)
-    {
-        return Segments.Any(seg => seg.DistanceTo(Origin.GetOffsetTo(pointAbs, data)) < dist);
+            old.UnionWith(curr);
+            curr = curr.SelectMany(c => 
+                    c.Neighbors.Where(n =>
+                        (hiCells.Contains(n) || loCells.Contains(n))
+                        && old.Contains(n) == false))
+                .ToHashSet();
+        }
     }
 }

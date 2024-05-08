@@ -14,7 +14,9 @@ public class GenContinent
     public Vector2 Drift { get; private set; }
     public Vector2 Center { get; private set; }
     public float Altitude { get; private set; }
-    public GenContinent(GenMass seed, int id, float altitude)
+    public bool IsLand { get; private set; }
+    public GenContinent(GenMass seed, int id, float altitude,
+        bool isLand)
     {
         Altitude = altitude;
         Center = Vector2.Zero;
@@ -25,6 +27,7 @@ public class GenContinent
         NeighboringMassesAdjCount = new Dictionary<GenMass, int>();
         Drift = Vector2.Left.Rotated(Game.I.Random.RandfRange(0f, 2f * Mathf.Pi));
         AddMass(seed);
+        IsLand = isLand;
     }
     public MapPolygon GetSeedPoly() => Seed.GetSeedPoly();
 

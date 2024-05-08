@@ -34,6 +34,18 @@ public partial class MapGraphicsOptionsPanel : Panel
                 vbox.AddChild(setting.GetControlInterface());
             }
         }
+        foreach (var wholeMapGraphic in client.GetComponent<MapGraphics>()
+                     .GraphicLayerHolder.WholeMapGraphics)
+        {
+            var settings = wholeMapGraphic.GetSettings();
+            
+            vbox.AddChild(NodeExt.CreateLabel(wholeMapGraphic.Name));
+            foreach (var setting in settings.SettingsOptions)
+            {
+                vbox.AddChild(setting.GetControlInterface());
+            }
+        }
+        
     }
 
     public override void _GuiInput(InputEvent @event)
