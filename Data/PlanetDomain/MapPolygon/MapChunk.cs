@@ -9,7 +9,7 @@ public class MapChunk
     public Vector2 Coords { get; private set; }
     public HashSet<MapPolygon> Polys { get; private set; }
     public List<Cell> Cells { get; private set; }
-    public Dictionary<Cell, int> CellTriCounts { get; private set; }
+    public int[] CellTriCounts { get; private set; }
     public Vector2[] CellTriVertices { get; private set; }
     public MapPolygon RelTo => Polys.First();
     public Color Color { get; private set; }
@@ -28,7 +28,7 @@ public class MapChunk
     public void SetVertexInfos(Data d)
     {
         var vertices = new List<Vector2>();
-        CellTriCounts = new Dictionary<Cell, int>();
+        CellTriCounts = new int[Cells.Count];
         for (var i = 0; i < Cells.Count; i++)
         {
             var cell = Cells[i];
@@ -43,7 +43,7 @@ public class MapChunk
                 vertices.Add(RelTo.Center.Offset(c + cell.RelTo, d));
             }
             
-            CellTriCounts.Add(cell, tris.Length / 3);
+            CellTriCounts[i] = tris.Length / 3;
         }
 
         CellTriVertices = vertices.ToArray();

@@ -10,7 +10,7 @@ public abstract partial class TriColorMesh<TElement>
 {
     public string Name { get; private set; }
     public Node2D Node => this;
-    private Dictionary<TElement, int> _elementTriCounts;
+    private IReadOnlyList<int> _elementTriCounts;
     private Vector2[] _vertices;
     private IReadOnlyList<TElement> _elements;
     private Color[] _colors;
@@ -20,7 +20,7 @@ public abstract partial class TriColorMesh<TElement>
     public TriColorMesh(string name, 
         Vector2 mapPos,
         LayerOrder layerOrder,
-        Dictionary<TElement, int> elementTriCounts,
+        IReadOnlyList<int> elementTriCounts,
         IReadOnlyList<TElement> elements,
         Vector2[] vertices,
         Vector2 visibleZoomRange,
@@ -32,7 +32,7 @@ public abstract partial class TriColorMesh<TElement>
         _vertices = vertices;
         _elementTriCounts = elementTriCounts;
         _elements = elements;
-        _colors = new Color[_elementTriCounts.Sum(kvp => kvp.Value) * 3];
+        _colors = new Color[_elementTriCounts.Sum() * 3];
     }
     public abstract Color GetColor(TElement cell, Data d);
     public abstract void RegisterForRedraws(Data d);
@@ -45,7 +45,7 @@ public abstract partial class TriColorMesh<TElement>
         {
             var e = _elements[i];
             var color = GetColor(e, d);
-            var triCount = _elementTriCounts[e];
+            var triCount = _elementTriCounts[i];
             for (var j = 0; j < triCount; j++)
             {
                 _colors[iter] = color;
