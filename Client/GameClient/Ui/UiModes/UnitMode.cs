@@ -9,10 +9,15 @@ public class UnitMode : UiMode
     public DefaultSettingsOption<Unit> Unit { get; private set; }
     private MeshInstance2D _selectedUnitHighlight;
     private MouseOverHandler _mouseOverHandler;
+    private IMouseAction _mouseAction;
     public UnitMode(Client client) : base(client, "Unit")
     {
-        _mouseOverHandler = new MouseOverHandler(client.Data);
+        _mouseOverHandler = new MouseOverHandler(client.Data,
+            c => c is not RiverCell);
         _mouseOverHandler.ChangedCell += c => Draw();
+        _mouseOverHandler.ChangedSecondClosest += c => Draw();
+        _mouseAction = new DrawCellEdgeLine(MouseButtonMask.Right,
+            client.Data, _mouseOverHandler);
         Unit = new DefaultSettingsOption<Unit>("Unit",
             null);
         Unit.SettingChanged.Subscribe(n => Draw());
@@ -24,9 +29,13 @@ public class UnitMode : UiMode
     
     public override void HandleInput(InputEvent e)
     {
-        if (e is InputEventMouseButton m 
-            && m.ButtonIndex == MouseButton.Left 
-            && m.Pressed == false)
+        if (e is InputEventMouse m)
+        {
+            _mouseAction.Process(m);
+        }
+        if (e is InputEventMouseButton mb 
+            && mb.ButtonIndex == MouseButton.Left 
+            && mb.Pressed == false)
         {
             SelectAndCycleUnits();
         }
@@ -55,6 +64,7 @@ public class UnitMode : UiMode
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
         highlight.Clear();
         _mouseOverHandler.Highlight();
+        _mouseAction.Highlight(_client);
         OverlayForUnit();
         UnitTooltip();
     }

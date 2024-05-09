@@ -7,11 +7,24 @@ public class MouseOverHandler
 {
     public MapPolygon MouseOverPoly { get; private set; }
     public Cell MouseOverCell { get; private set; }
+    public Cell SecondClosest { get; private set; }
     public Action<Cell> ChangedCell { get; set; }
     public Action<MapPolygon> ChangedPoly { get; set; }
+    public Action<Cell> ChangedSecondClosest { get; set; }
     private TimerAction _timerAction;
-    public MouseOverHandler(Data data)
+    private Func<Cell, bool> _validCell;
+    public MouseOverHandler(Data data,
+        Func<Cell, bool> validCell = null)
     {
+        if (validCell is null)
+        {
+            _validCell = c => true;
+        }
+        else
+        {
+            _validCell = validCell;
+        }
+        
         _timerAction = new TimerAction(.1f, 0f,
             () =>
             {
@@ -24,62 +37,87 @@ public class MouseOverHandler
     {
         _timerAction.Process(delta);
     }
-
-    private void FindPoly(Data data, Vector2 mousePosMapSpace)
-    {
-        if (mousePosMapSpace.Y <= 0f 
-            || mousePosMapSpace.Y >= data.Planet.Height)
-        {
-            SetPoly(null);
-            SetCell(null);
-            return;
-        }
-
-        Find(data, mousePosMapSpace);
-    }
-
     
     private void Find(Data data, Vector2 mousePosMapSpace)
     {
-        var c = data.Planet.MapAux
-            .CellGrid.GetElementAtPointWhere(mousePosMapSpace, 
-                c => c is RiverCell,
-                data);
-        if(c == null) c = data.Planet.MapAux
-            .CellGrid.GetElementAtPoint(mousePosMapSpace, data);
-        SetCell(c);
+        SetCell(data, mousePosMapSpace);
+        SetClosests(data, mousePosMapSpace);
+        SetPoly(data, mousePosMapSpace);
+        
+        ChangedCell?.Invoke(MouseOverCell);
+        ChangedPoly?.Invoke(MouseOverPoly);
+        ChangedSecondClosest?.Invoke(SecondClosest);
+    }
 
-        if (c is IPolyCell single)
+    private void SetClosests(Data data, Vector2 mousePosMapSpace)
+    {
+        Cell secondClosestAny = null;
+        
+        if(MouseOverCell is not null)
         {
-            SetPoly(single.Polygon.Get(data));
+            var dist = Mathf.Inf;
+            var relToCell = MouseOverCell.RelTo.Offset(mousePosMapSpace, data);
+
+            for (var i = 0; i < MouseOverCell.Geometry.EdgesRel.Count; i++)
+            {
+                var edge = MouseOverCell.Geometry.EdgesRel[i];
+                var thisDist = Vector2Ext.DistToLine(relToCell, edge.Item1, edge.Item2);
+                
+                if (thisDist < dist)
+                {
+                    var cand = PlanetDomainExt.GetPolyCell(MouseOverCell.Geometry.Neighbors[i], data);
+                    if (_validCell(cand))
+                    {
+                        secondClosestAny = cand;
+                        dist = thisDist;
+                    }
+                }
+            }
         }
-        else if (c is RiverCell r)
+
+        if (secondClosestAny != SecondClosest)
+        {
+            SecondClosest = secondClosestAny;
+        }
+    }
+
+    private void SetPoly(Data data, Vector2 mousePosMapSpace)
+    {
+        MapPolygon close = null;
+        if (MouseOverCell is null)
+        {
+            close = null;
+        }
+        else if (MouseOverCell is IPolyCell single)
+        {
+            close = single.Polygon.Get(data);
+        }
+        else if (MouseOverCell is RiverCell r)
         {
             var edge = r.Edge.Get(data);
             var p1 = edge.HighPoly.Get(data);
             var p2 = edge.LowPoly.Get(data);
-            var close =mousePosMapSpace.Offset(p1.Center, data)
-                < mousePosMapSpace.Offset(p2.Center, data)
+            close = mousePosMapSpace.Offset(p1.Center, data)
+                       < mousePosMapSpace.Offset(p2.Center, data)
                 ? p1 : p2;
-            SetPoly(close);
         }
-    }
-    private void SetPoly(MapPolygon p)
-    {
-        if (p != MouseOverPoly)
-        {
-            MouseOverPoly = p;
-            ChangedPoly?.Invoke(MouseOverPoly);
-        }
+        
+        
+        MouseOverPoly = close;
     }
 
-    private void SetCell(Cell c)
+    private void SetCell(Data data, Vector2 mousePosMapSpace)
     {
-        if (c != MouseOverCell)
-        {
-            MouseOverCell = c;
-            ChangedCell?.Invoke(MouseOverCell);
-        }
+        var c = data.Planet.MapAux
+            .CellGrid.GetElementAtPointWhere(mousePosMapSpace, 
+                c => c is RiverCell && _validCell(c),
+                data);
+        if(c == null) c = data.Planet.MapAux
+            .CellGrid.GetElementAtPointWhere(mousePosMapSpace,
+                _validCell,
+                data);
+        
+        MouseOverCell = c;
     }
 
 
@@ -87,7 +125,20 @@ public class MouseOverHandler
     {
         var client = Game.I.Client;
         var highlight = client.GetComponent<MapGraphics>().Highlighter;
-        client.HighlightPoly(MouseOverPoly, 3f);
-        client.HighlightCell(MouseOverCell, 5f);
+        client.HighlightCell(MouseOverCell, 2f);
+        client.HighlightCellNeighbors(MouseOverCell, 1f);
+        // client.HighlightPoly(MouseOverPoly, 1f);
+        if (SecondClosest is not null)
+        {
+            var edge = MouseOverCell
+                .GetEdgeRelWith(SecondClosest);
+            highlight.Draw(mb => mb.AddLine(edge.Item1,
+                edge.Item2, Colors.Blue, 2f), 
+                MouseOverCell.RelTo);
+        }
+        else
+        {
+            GD.Print("Couldnt find any");
+        }
     }
 }

@@ -39,18 +39,16 @@ public class MoistureGenerator : Generator
         Parallel.ForEach(Data.GenAuxData.Cells, p =>
         {
             var distFromEquator = Mathf.Abs(Data.Planet.Height / 2f - p.Center.Y);
-            var altMult = (1f - equatorDistMultWeight) 
+            var latitudeMult = (1f - equatorDistMultWeight) 
                           + equatorDistMultWeight * (1f - distFromEquator / (Data.Planet.Height / 2f));
             var polyGeos = p.Polys;
             var count = polyGeos.Count;
             var waterCount = polyGeos.Where(g => g.IsWater()).Count();
-            var score = scale * altMult * waterCount / count;
+            var score = scale * latitudeMult * waterCount / count;
             genCellMoistures.TryAdd(p, score);
         });
 
 
-        float maxFriction = 0f;
-        float averageFriction = 0f;
         int iter = 0;
         for (int i = 0; i < 3; i++)
         {
@@ -87,8 +85,6 @@ public class MoistureGenerator : Generator
                         && Data.GenAuxData.FaultLines.TryGetFault(plate, nPlate, out var fault))
                     {
                         mult = 1f - fault.Friction * frictionCostMult;
-                        maxFriction = Mathf.Max(maxFriction, fault.Friction);
-                        averageFriction += fault.Friction;
                         iter++;
                     }
                     return mult * genCellMoistures[n];
@@ -108,7 +104,6 @@ public class MoistureGenerator : Generator
         var baseRiverFlowCost = Data.GenMultiSettings.MoistureSettings.BaseRiverFlowCost.Value;
         var roughnessMult = Data.GenMultiSettings.MoistureSettings.RiverFlowCostRoughnessMult.Value;
         Parallel.ForEach(Data.Planet.MapAux.LandSea.Landmasses, doLandmass);
-        
         
         void doLandmass(Landmass lm)
         {

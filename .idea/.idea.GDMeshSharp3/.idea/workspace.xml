@@ -4,24 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="doot">
-      <change afterPath="$PROJECT_DIR$/Client/Graphics/GenGraphics.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/DrawCellEdgeLine.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/IMouseAction.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/MouseHoldAction.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/UnitMode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/ChunkUnitsGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkUnitsGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/GraphicLayer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphic.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/TheaterGraphicLayer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/UnitGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitOrderGraphic.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/WholeMapGraphic/UnitOrdersGraphicLayer.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/FaultLine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/FaultLine.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GenContinent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenContinent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GenMass.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenMass.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/ColorsExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/ColorsExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,6 +56,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/12b544f3d6604d0c98a8a519e62542912200/05/5ddd39d8/IPool`1.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/0b/4ac82b1f/MouseButtonMask.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/25/e6133dbc/ItemList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/38/fc3bba61/Node.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -92,7 +88,6 @@
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Generation/Geology/FaultLine.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -613,7 +608,8 @@
       <workItem from="1714838102390" duration="11437000" />
       <workItem from="1714949128715" duration="4641000" />
       <workItem from="1715017675438" duration="3484000" />
-      <workItem from="1715180881249" duration="13059000" />
+      <workItem from="1715180881249" duration="14973000" />
+      <workItem from="1715202742185" duration="12267000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -825,14 +821,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00171" summary="added spectating regime">
-      <option name="closed" value="true" />
-      <created>1709742804643</created>
-      <option name="number" value="00171" />
-      <option name="presentableId" value="LOCAL-00171" />
-      <option name="project" value="LOCAL" />
-      <updated>1709742804643</updated>
-    </task>
     <task id="LOCAL-00172" summary="made alliance ai take over mil ai functions except for force composition">
       <option name="closed" value="true" />
       <created>1709848922380</created>
@@ -977,7 +965,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715180912977</updated>
     </task>
-    <option name="localTasksCounter" value="190" />
+    <task id="LOCAL-00190" summary="reformed geology generation">
+      <option name="closed" value="true" />
+      <created>1715194221414</created>
+      <option name="number" value="00190" />
+      <option name="presentableId" value="LOCAL-00190" />
+      <option name="project" value="LOCAL" />
+      <updated>1715194221414</updated>
+    </task>
+    <option name="localTasksCounter" value="191" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -999,7 +995,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="before trying to fix polyCell connection over mapPoly boundary" />
     <MESSAGE value="merge, still have to fix map boundary nexi bug" />
     <MESSAGE value="before merging again" />
     <MESSAGE value="fixed cell border drawing" />
@@ -1024,6 +1019,7 @@
     <MESSAGE value="reimplementing prod" />
     <MESSAGE value="added maintain cost and added back labor cost to budget constraining," />
     <MESSAGE value="doot" />
-    <option name="LAST_COMMIT_MESSAGE" value="doot" />
+    <MESSAGE value="reformed geology generation" />
+    <option name="LAST_COMMIT_MESSAGE" value="reformed geology generation" />
   </component>
 </project>

@@ -39,13 +39,18 @@ public static class UiActions
             highlighter.Draw(mb => mb.DrawPolygonOutline(
                 cell.RelBoundary, thickness,
                 Colors.White), cell.RelTo);
+        }
+    }
 
-            foreach (var n in cell.GetNeighbors(client.Data))
-            {
-                highlighter.Draw(mb => mb.DrawPolygonOutline(
-                    n.RelBoundary, thickness / 2f,
-                    Colors.Red), n.RelTo);
-            }
+    public static void HighlightCellNeighbors(this Client client, Cell cell,
+        float thickness)
+    {
+        var highlighter = client.GetComponent<MapGraphics>().Highlighter;
+        foreach (var n in cell.GetNeighbors(client.Data))
+        {
+            highlighter.Draw(mb => mb.DrawPolygonOutline(
+                n.RelBoundary, thickness,
+                Colors.White.Tint(.5f)), n.RelTo);
         }
     }
 }

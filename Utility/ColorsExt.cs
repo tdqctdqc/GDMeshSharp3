@@ -36,6 +36,11 @@ public static class ColorsExt
         );
     }
 
+    public static Color Tint(this Color c, float a)
+    {
+        return new Color(c, a);
+    }
+
 public static Color GetRainbowColor(int index)
     {
         return Rainbow[index % Rainbow.Count];

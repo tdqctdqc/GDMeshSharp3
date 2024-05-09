@@ -43,7 +43,7 @@ public class GraphicLayerHolder
         WholeMapGraphics = new List<WholeMapGraphic>();
         if (data is GenData g)
         {
-            WholeMapGraphics.Add(new GenGraphics(segmenter, g));
+            // WholeMapGraphics.Add(new GenGraphics(segmenter, g));
         }
         client.UiTick.Subscribe(DoUiTick);
     }

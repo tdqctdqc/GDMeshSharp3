@@ -237,6 +237,13 @@ public class GeologyGenerator : Generator
 
         MakeIslands(seaLevel);
         MakeHills();
+        
+        foreach (var mapPolygon in Data.GetAll<MapPolygon>())
+        {
+            var pres = Data.GenAuxData.PreCellPolys[mapPolygon];
+            var avg = pres.Average(p => p.Roughness);
+            mapPolygon.SetRoughness(avg, _key);
+        }
     }
 
     private void MakeHills()
@@ -244,7 +251,7 @@ public class GeologyGenerator : Generator
         foreach (var plate in Data.GenAuxData.Plates)
         {
             if (plate.Mass.GenContinent.IsLand == false) continue;
-            if (Game.I.Random.Randf() < .3f) continue;
+            if (Game.I.Random.Randf() < .5f) continue;
             var noise = new FastNoiseLite();
             noise.Frequency = 1f / Game.I.Random.RandfRange(50f, 300f);
             noise.NoiseType = FastNoiseLite.NoiseTypeEnum.Perlin;

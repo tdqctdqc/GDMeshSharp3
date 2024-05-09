@@ -263,34 +263,34 @@ public class SocietyGenerator : Generator
 
     private void MakeSettlementBuildings(Regime r)
     {
-        // var settlements = _data.GetAll<Settlement>()
-        //     .Where(s => s.Cell.Get(_data).Controller.RefId == r.Id);
-        // var factory = _data.Models.Buildings.Factory;
-        // var barracks = _data.Models.Buildings.Barracks;
-        //
-        // var pattern = new SettlementBuildingModel[]
-        //     { factory, factory,
-        //         factory, barracks };
-        //
-        //
-        // var labor = _data.Models.Flows.Labor;
-        // foreach (var settlement in settlements)
-        // {
-        //     var cell = (LandCell)settlement.Cell.Get(_data);
-        //     var foodLabor = cell.FoodProd.Nums
-        //         .GetEnumerableModel(_data)
-        //         .Sum(v => v.Key.BaseLabor * v.Value);
-        //     var freeLabor = cell.GetPeep(_data).Size - foodLabor;
-        //     var numBs = 0;
-        //     while (freeLabor > 0)
-        //     {
-        //         var b = pattern[numBs % pattern.Length];
-        //         settlement.Buildings.Add(b, 1);
-        //         freeLabor -= b.GetComponent<BuildingProd>()
-        //             .Inputs.Get(labor);
-        //         numBs++;
-        //     }
-        // }
+        var settlements = _data.GetAll<Settlement>()
+            .Where(s => s.Cell.Get(_data).Controller.RefId == r.Id);
+        var factory = _data.Models.Buildings.Factory;
+        var barracks = _data.Models.Buildings.Barracks;
+        
+        var pattern = new SettlementBuildingModel[]
+            { factory, factory,
+                factory, barracks };
+        
+        
+        var labor = _data.Models.Flows.Labor;
+        foreach (var settlement in settlements)
+        {
+            var cell = (LandCell)settlement.Cell.Get(_data);
+            var foodLabor = cell.FoodProd.Nums
+                .GetEnumerableModel(_data)
+                .Sum(v => v.Key.BaseLabor * v.Value);
+            var freeLabor = cell.GetPeep(_data).Size - foodLabor;
+            var numBs = 0;
+            while (freeLabor > 0)
+            {
+                var b = pattern[numBs % pattern.Length];
+                settlement.Buildings.Add(b, 1);
+                freeLabor -= b.GetComponent<LaborComponent>()
+                    .Inputs.Get(labor);
+                numBs++;
+            }
+        }
     }
     private void NameSettlements()
     {
