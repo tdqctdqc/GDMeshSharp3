@@ -6,6 +6,10 @@ using Godot;
 
 public static class MapPolygonExt
 {
+    public static MapChunk GetChunk(this MapPolygon p, Data d)
+    {
+        return d.Planet.MapAux.ChunksByPoly[p];
+    }
     public static float DistFromEquatorRatio(this MapPolygon p, Data data)
     {
         var mapHeight = data.Planet.Height;

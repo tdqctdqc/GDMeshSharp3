@@ -258,7 +258,6 @@ public class SocietyGenerator : Generator
                 }
             }
         }
-        
     }
 
     private void MakeSettlementBuildings(Regime r)
@@ -267,11 +266,13 @@ public class SocietyGenerator : Generator
             .Where(s => s.Cell.Get(_data).Controller.RefId == r.Id);
         var factory = _data.Models.Buildings.Factory;
         var barracks = _data.Models.Buildings.Barracks;
-        
-        var pattern = new SettlementBuildingModel[]
-            { factory, factory,
-                factory, barracks };
-        
+
+        var weights = new Dictionary<SettlementBuildingModel, float>
+        {
+            {factory, 4},
+            {barracks, 1}
+        };
+        var totalWeight = weights.Values.Sum();
         
         var labor = _data.Models.Flows.Labor;
         foreach (var settlement in settlements)
@@ -281,14 +282,14 @@ public class SocietyGenerator : Generator
                 .GetEnumerableModel(_data)
                 .Sum(v => v.Key.BaseLabor * v.Value);
             var freeLabor = cell.GetPeep(_data).Size - foodLabor;
-            var numBs = 0;
-            while (freeLabor > 0)
+            
+            foreach (var (model, weight) in weights)
             {
-                var b = pattern[numBs % pattern.Length];
-                settlement.Buildings.Add(b, 1);
-                freeLabor -= b.GetComponent<LaborComponent>()
-                    .Inputs.Get(labor);
-                numBs++;
+                var laborNeed = model.GetComponent<LaborComponent>()
+                    .TotalLabor();
+                var laborAvail = freeLabor * weight / totalWeight;
+                var num = Mathf.FloorToInt(laborAvail / laborNeed);
+                settlement.Buildings.Add(model, num);
             }
         }
     }

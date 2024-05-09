@@ -15,16 +15,6 @@ public class RegularGrid<T>
         Cells = new Dictionary<Vector2, List<T>>();
         _coords = new Dictionary<T, Vector2>();
     }
-    public void AddElement(T element, int x, int y)
-    {
-        var key = new Vector2(x,y);
-        if(Cells.ContainsKey(key) == false)
-        {
-            Cells.Add(key, new List<T>());
-        }
-        Cells[key].Add(element);
-        _coords.Add(element, key);
-    }
     public void AddElement(T element)
     {
         var pos = _posFunc(element);

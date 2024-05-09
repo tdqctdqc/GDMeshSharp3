@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 public static class CellExt
@@ -19,9 +20,19 @@ public static class CellExt
         return a.Members.RefIds.Contains(p.Controller.RefId);
     }
 
-    public static MapChunk GetChunk(this Cell p, Data d)
+    public static MapChunk GetChunk(this Cell c, Data d)
     {
-        return d.Planet.MapAux.ChunksByCell[p];
+        if (c is IPolyCell p)
+        {
+            return p.Polygon.Get(d).GetChunk(d);
+        }
+
+        if (c is IEdgeCell e)
+        {
+            return e.Edge.Get(d).HighPoly.Get(d).GetChunk(d);
+        }
+
+        throw new Exception();
     }
 
     public static IEnumerable<Unit> GetUnits(this Cell cell, Data d)
