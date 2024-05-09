@@ -30,71 +30,61 @@ public class MoistureGenerator : Generator
     }
     private void SetPolyMoistures()
     {
+        var massBaseMoistures = new Dictionary<GenMass, float>();
+        foreach (var genMass in Data.GenAuxData.Masses)
+        {
+            massBaseMoistures.Add(genMass, 
+                Game.I.Random.RandfRange(-.2f, .2f));
+        }
+        
         var scale = Data.GenMultiSettings.MoistureSettings.Scale.Value;
-        var genCellMoistures = new ConcurrentDictionary<GenCell, float>();
         var equatorDistMultWeight = Data.GenMultiSettings
             .MoistureSettings.EquatorDistMoistureMultWeight.Value;
         var frictionCostMult = Data.GenMultiSettings
             .MoistureSettings.MoistureFlowRoughnessCostMult.Value;
-        Parallel.ForEach(Data.GenAuxData.Cells, p =>
+        var polys = Data.GetAll<MapPolygon>();
+        Parallel.ForEach(polys, p =>
         {
             var distFromEquator = Mathf.Abs(Data.Planet.Height / 2f - p.Center.Y);
             var latitudeMult = (1f - equatorDistMultWeight) 
                           + equatorDistMultWeight * (1f - distFromEquator / (Data.Planet.Height / 2f));
-            var polyGeos = p.Polys;
-            var count = polyGeos.Count;
-            var waterCount = polyGeos.Where(g => g.IsWater()).Count();
-            var score = scale * latitudeMult * waterCount / count;
-            genCellMoistures.TryAdd(p, score);
+            var baseScore = p.IsLand 
+                ? massBaseMoistures[Data.GenAuxData.PolyGenCells[p].Plate.Mass] 
+                : 1f;
+            var score = scale * latitudeMult * baseScore;
+            p.SetMoisture(score, _key);
         });
-
-
-        int iter = 0;
-        for (int i = 0; i < 3; i++)
+        var avgDim = (Data.Planet.Height + Data.Planet.Width) / 2f;
+        var diffuseNum = Mathf.CeilToInt(avgDim / 1000f);
+        for (int i = 0; i < diffuseNum; i++)
         {
             diffuse();
         }
-        Parallel.ForEach(Data.GenAuxData.Cells, setPlateMoistures);
-        void setPlateMoistures(GenCell cell)
+        foreach (var poly in polys)
         {
-            foreach (var poly in cell.Polys)
-            {
-                if (poly.IsWater()) poly.SetMoisture(1f, _key);
-                else
-                {
-                    var moisture = genCellMoistures[cell] + Game.I.Random.RandfRange(-.1f, .1f);
-                    
-                    poly.SetMoisture(Mathf.Clamp(moisture, 0f, 1f), _key);
-                }
-            }
+            poly.SetMoisture(Mathf.Clamp(poly.Moisture, 0f, 1f), _key);
         }
+        
         
         
         void diffuse()
         {
-            Data.GenAuxData.Cells.ForEach(c =>
+            foreach (var c in polys)
             {
-                var oldScore = genCellMoistures[c];
-                var plate = c.Plate;
+                var oldScore = c.Moisture;
 
-                var newScore = c.Neighbors.Select(n =>
+                var newScore = c.Neighbors.Items(Data)
+                    .Select(n =>
                 {
-                    var mult = 1f;
-                    var nPlate = n.Plate;
-                    if (plate != nPlate 
-                        && Data.GenAuxData.FaultLines.TryGetFault(plate, nPlate, out var fault))
-                    {
-                        mult = 1f - fault.Friction * frictionCostMult;
-                        iter++;
-                    }
-                    return mult * genCellMoistures[n];
+                    var mult = 1f - (c.Roughness + n.Roughness) / 3f;
+                    return mult * n.Moisture;
                 }).Average();
 
                 if (newScore > oldScore)
                 {
-                    genCellMoistures[c] = newScore;
+                    c.SetMoisture(newScore, _key);
                 }
-            });
+            }
         }
     }
 

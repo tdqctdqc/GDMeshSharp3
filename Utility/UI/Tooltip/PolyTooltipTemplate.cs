@@ -9,14 +9,16 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
     {
     }
 
-    protected override List<Func<(MapPolygon poly, Cell cell), Data, Control>> _fastGetters { get; }
+    protected override List<Func<(MapPolygon poly, Cell cell), Data, Control>> 
+        _fastGetters { get; }
         = new List<Func<(MapPolygon poly, Cell cell), Data, Control>>
         {
             GetId,
             GetRegime,
             GetLandform,
             GetVeg,
-            GetPop
+            GetPop,
+            GetGeographicInfo
         };
     protected override List<Func<(MapPolygon poly, Cell cell), Data, Control>> _slowGetters { get; }
         = new List<Func<(MapPolygon poly, Cell cell), Data, Control>>
@@ -166,5 +168,13 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         return  d.Infrastructure.SettlementAux.ByCell[t.cell] is Settlement s
             ? NodeExt.CreateLabel("Settlement Name: " + s.Name)
             : null;
+    }
+
+    private static Control GetGeographicInfo((MapPolygon poly, Cell cell) t, Data d)
+    {
+        var label = new Label();
+        label.Text += $"Poly moisture: {t.poly.Moisture}";
+        label.Text += $"\nPoly roughness: {t.poly.Roughness}";
+        return label;
     }
 }

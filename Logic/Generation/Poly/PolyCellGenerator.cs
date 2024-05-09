@@ -79,7 +79,11 @@ public class PolyCellGenerator : Generator
         swampNoise.Frequency = .005f;
         var swampWideNoise = new FastNoiseLite();
         swampWideNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
-        swampWideNoise.Frequency = 300f;
+        swampWideNoise.Frequency = 500f;
+
+        var reforestNoise = new FastNoiseLite();
+        reforestNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
+        reforestNoise.Frequency = 1 / 200f;
         
         var grassland = key.Data.Models.Vegetations.Grassland;
         var tundra = key.Data.Models.Vegetations.Tundra;
@@ -99,6 +103,7 @@ public class PolyCellGenerator : Generator
                 irrigate(poly, cell);
                 mountainRidging(poly, cell);
                 swampRidging(cell);
+                reforest(cell);
             }
         });
 
@@ -176,6 +181,23 @@ public class PolyCellGenerator : Generator
                     cell.SetVegetation(_data.Models.Vegetations.GetAtPoint(poly, poly.Center.Offset(cell.GetCenter(), key.Data), _data.Models.Landforms.Hill, _data), key);
                 }
             }
+        }
+
+        void reforest(Cell cell)
+        {
+            if (cell is LandCell l is false) return;
+            if (cell.GetVegetation(key.Data) != key.Data.Models.Vegetations.Grassland)
+            {
+                return;
+            }
+
+            var poly = l.Polygon.Get(_data);
+            var plate = key.GenData.GenAuxData.PolyGenCells[poly].Plate;
+            var plateSample = reforestNoise.GetNoise2D(plate.Center.X, plate.Center.Y);
+            if (plateSample < 0f) return;
+            var cellSample = reforestNoise.GetNoise2D(cell.RelTo.X, cell.RelTo.Y);
+            if (cellSample < 0f) return;
+            cell.SetVegetation(key.Data.Models.Vegetations.Forest, key);
         }
     }
 }
