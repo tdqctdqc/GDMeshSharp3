@@ -32,7 +32,8 @@ public class SocietyGenerator : Generator
 
         var regimes = _data.GetAll<Regime>();
         Parallel.ForEach(regimes, r => GenerateForRegime(r));
-        var settlements = regimes.AsParallel()
+        var settlements = regimes
+            .AsParallel()
             .SelectMany(r => GenerateForRegime(r))
             .ToArray();
         foreach (var (cell, size) in settlements)
@@ -53,10 +54,8 @@ public class SocietyGenerator : Generator
         // _times.RunAndTime(Deforest, "deforest");
         _times.RunAndTime(() => CreateUnits(key), "units");
         
-        
-        
         _times.Print();
-
+        
         return report;
     }
     

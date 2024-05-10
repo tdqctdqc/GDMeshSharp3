@@ -18,14 +18,14 @@ public class Fishery : FoodProdTechnique
             .Where(n => n is SeaCell);
         if(seaNs.Any())
         {
-            val += seaNs.Sum(n => n.Area());
+            val += seaNs.Count() * 1000f;
         }
         
         var riverNs = cell.GetNeighbors(data)
             .Where(n => n is RiverCell);
         if(riverNs.Any())
         {
-            val += riverNs.Sum(n => n.Area() * 50f);
+            val += riverNs.Count() * 5000f;
         }
         
 
