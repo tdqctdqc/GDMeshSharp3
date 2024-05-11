@@ -6,16 +6,15 @@ using Godot;
 
 public class LineOrder : UnitGroupOrder
 {
-    public List<FrontFace> Faces { get; private set; }
-    public List<Cell[]> FaceAdvanceRoutes { get; private set; }
+    public List<FrontFace> LineFaces { get; private set; }
+    public List<FrontFace> AdvanceLineFaces { get; private set; }
     
     public bool Advance { get; private set; }
-    public LineOrder(List<FrontFace> faces, 
-        List<Cell[]> faceAdvanceRoutes,
+    public LineOrder(List<FrontFace> lineFaces, 
+        List<FrontFace> advanceLineFaces, 
         bool advance)
     {
-        FaceAdvanceRoutes = faceAdvanceRoutes;
-        Faces = faces;
+        LineFaces = lineFaces;
         Advance = advance;
     }
 
@@ -45,7 +44,7 @@ public class LineOrder : UnitGroupOrder
         return Assigner
             .PickBestAndAssignAlongFacesSingle<Unit, FrontFace>
             (
-                Faces,
+                LineFaces,
                 units,
                 u => u.GetPowerPoints(d),
                 (u, f) => 
@@ -76,8 +75,8 @@ public class LineOrder : UnitGroupOrder
         var alliance = group.Regime.Get(d).GetAlliance(d);
         var assgns = GetAssignments(group, d);
 
-        var natives = Faces.Select(f => f.GetNative(d)).Distinct();
-        var foreigns = Faces.Select(f => f.GetForeign(d)).Distinct();
+        var natives = LineFaces.Select(f => f.GetNative(d)).Distinct();
+        var foreigns = LineFaces.Select(f => f.GetForeign(d)).Distinct();
         foreach (var n in natives)
         {
             mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
@@ -109,8 +108,7 @@ public class LineOrder : UnitGroupOrder
         CombatCalculator combat, LogicWriteKey key)
     {
         // if(Advance == false) return;
-        if (FaceAdvanceRoutes == null 
-            || FaceAdvanceRoutes.Count == 0) return;
+        if (AdvanceLineFaces == null || AdvanceLineFaces.Count == 0) return;
         var d = key.Data;
         var units = g.Units.Items(d);
         var assignments = GetAssignments(g, d);
@@ -118,21 +116,21 @@ public class LineOrder : UnitGroupOrder
         {
             var face = assignments[unit];
             var target = face.GetForeign(d);
-            var index = Faces.IndexOf(face);
-            var route = FaceAdvanceRoutes[index];
-            if (route == null || route.Length == 0)
-            {
-                continue;
-            }
-
-            if (route[0] != target) throw new Exception();
-            UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
+            var index = LineFaces.IndexOf(face);
+            // var route = FaceAdvanceRoutes[index];
+            // if (route == null || route.Length == 0)
+            // {
+            //     continue;
+            // }
+            //
+            // if (route[0] != target) throw new Exception();
+            // UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
         }
     }
 
     public override string GetDescription(Data d)
     {
-        return $"Deploying on line from {Faces.First().GetNative(d).Id}" +
-               $" to {Faces.Last().GetNative(d).Id}";
+        return $"Deploying on line from {LineFaces.First().GetNative(d).Id}" +
+               $" to {LineFaces.Last().GetNative(d).Id}";
     }
 }

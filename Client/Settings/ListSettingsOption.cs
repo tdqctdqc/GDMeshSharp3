@@ -23,13 +23,13 @@ public class ListSettingsOption<T> : SettingsOption<T>
     public void Choose<TOption>() where TOption : T
     {
         var first = Options.First(t => t is TOption);
-        SetProtected(first);
+        Set(first);
     }
 
     public void Choose(T t)
     {
         if (Options.Contains(t) == false) throw new Exception();
-        SetProtected(t);
+        Set(t);
     }
     public override Control GetControlInterface()
     {
@@ -38,7 +38,7 @@ public class ListSettingsOption<T> : SettingsOption<T>
         token.Setup<T>(
             Options,
             t => _names[t],
-            t => () => SetProtected(t)
+            t => () => Set(t)
         );
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);
@@ -58,7 +58,7 @@ public class ListSettingsOption<T> : SettingsOption<T>
             m => _names[m],
             m => { return () =>
             {
-                SetProtected(m);
+                Set(m);
             }; },
             getTexture);
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),

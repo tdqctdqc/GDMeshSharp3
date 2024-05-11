@@ -12,8 +12,4 @@ public class DefaultSettingsOption<T> : SettingsOption<T>
         return new Control();
     }
 
-    public void Set(T t)
-    {
-        SetProtected(t);
-    }
 }

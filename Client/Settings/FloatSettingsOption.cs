@@ -34,7 +34,7 @@ public class FloatSettingsOption : SettingsOption<float>
         hbox.AddChild(slider);
         slider.ValueChanged += t =>
         {
-            SetProtected((float)t);
+            Set((float)t);
             l.Text = Name + ": " + Value.ToString().PadDecimals(2);
         };
         SettingChanged.Subscribe(v => slider.Value = v.newVal);

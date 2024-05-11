@@ -174,30 +174,38 @@ public class Assigner
         var runningStrength = 0f;
         var unitsInOrder = new List<TUnit>();
         var pickFrom = units.ToHashSet();
+        var canCoverAll = pickFrom.Count >= faces.Count;
+        
+
         while (pickFrom.Count > 0)
         {
             var proportion = runningStrength / totalStrength;
-            var face = getFaceAtProportion(proportion);
+            var faceIndex = getFaceIndexOfProportion(proportion);
+            
+            var face = faces[faceIndex];
             var picked = pickFrom.MaxBy(u => rank(u, face));
             pickFrom.Remove(picked);
             unitsInOrder.Add(picked);
             res.Add(picked, face);
             runningStrength += getStrength(picked);
         }
+        
+        
+        
 
         return res;
         
-        TFace getFaceAtProportion(float prop)
+        int getFaceIndexOfProportion(float prop)
         {
-            if (prop == 0f) return faces[0];
-            if (prop == 1f) return faces[faces.Count - 1];
+            if (prop == 0f) return 0;
+            if (prop == 1f) return faces.Count - 1;
             for (var i = 0; i < faceProportions.Length; i++)
             {
                 var faceProp = faceProportions[i];
-                if (faceProp >= prop) return faces[i];
+                if (faceProp >= prop) return i;
             }
 
-            return faces[faces.Count - 1];
+            return faces.Count - 1;
         }
     }
     

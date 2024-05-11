@@ -38,7 +38,7 @@ public abstract class ConstructionPriority
 
                 return null;
             });
-        solver.SetBuildingSlotConstraints(r, projVars, data);
+        // solver.SetBuildingSlotConstraints(r, projVars, data);
         
         var laborConstraint = solver.MakeConstraint(0f,
             pool.Stock.Get(data.Models.Flows.Labor));

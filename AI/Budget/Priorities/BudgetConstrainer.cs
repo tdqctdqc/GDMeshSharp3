@@ -87,21 +87,4 @@ public static class BudgetConstrainer
             creditConstraint.SetCoefficient(projVar, projPrice);
         }
     }
-    public static void SetBuildingSlotConstraints(this Solver solver, 
-        Regime regime, Dictionary<SettlementBuildingModel, Variable> buildingVars, Data data)
-    {
-        var settlements = regime.GetCells(data)
-            .Where(c => c.HasSettlement(data))
-            .Select(c => c.GetSettlement(data))
-            .ToList();
-        
-        
-        foreach (var kvp in buildingVars)
-        {
-            var b = kvp.Key;
-            var projVar = kvp.Value;
-            var amt = settlements.Sum(s => s.Tier.Get(data).MaxBuildingLevel - s.Buildings.Get(b));
-            projVar.SetUb(Mathf.Min(projVar.Ub(), amt));
-        }
-    }
 }

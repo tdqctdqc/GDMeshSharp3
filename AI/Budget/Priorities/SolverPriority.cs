@@ -32,10 +32,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         var projVars = MakeProjVars(solver, d);
         SetConstraints(solver, regime, expandedPool, projVars, d);
         var success = Solve(solver, projVars);
-        if (success == false)
-        {
-            GD.Print("failed");
-        }
+        
         var toBuild = projVars
             .Where(v => v.Value.SolutionValue() > 0f)
             .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
@@ -52,13 +49,11 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         SetConstraints(solver, regime, pool, projVars, key.Data);
         
         var success = Solve(solver, projVars);
-        if (success == false)
-        {
-            GD.Print("failed");
-        }
         var toBuild = projVars
             .Where(v => v.Value.SolutionValue() > 0f)
             .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
+
+        GD.Print($"{Name} { success.ToString()} count {toBuild.Sum(kvp => kvp.Value)}");
         Complete(pool, regime, toBuild, key);
         modelCosts = GetCosts(toBuild, key.Data);
         return toBuild.Count > 0;
@@ -76,7 +71,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     protected abstract Dictionary<IModel, float>
         GetCosts(Dictionary<TBuild, int> toBuild, Data d);
     
-    private bool Solve(Solver solver, 
+    private Solver.ResultStatus Solve(Solver solver, 
         Dictionary<TBuild, Variable> projVars)
     {
         var objective = solver.Objective();
@@ -89,8 +84,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
             var benefit = Utility(b);
             objective.SetCoefficient(projVar, benefit);
         }
-        var status = solver.Solve();
-        return status == Solver.ResultStatus.OPTIMAL || status == Solver.ResultStatus.FEASIBLE;
+        return solver.Solve();
     }
     
     protected Dictionary<TBuild, Variable> MakeProjVars(

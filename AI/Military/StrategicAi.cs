@@ -7,7 +7,6 @@ public class StrategicAi
     public Alliance Alliance { get; private set; }
     private Data _data;
     public HashSet<Theater> Theaters { get; private set; }
-    public Dictionary<Cell, float> Targets { get; private set; }
 
     public StrategicAi(Data data, Alliance alliance)
     {

@@ -42,8 +42,10 @@ public partial class GeneratorUi : Node, IClientComponent
                 wrapper.FinalizeGen?.Invoke();
             }
         });
-        topBar.AddWindowButton<GeneratorSettingsWindow>("Gen Settings");
         
+        topBar.AddWindowButton<GeneratorSettingsWindow>("Gen Settings");
+            
+        AddQuickSets(topBar);
         var genSettingsWindow = GeneratorSettingsWindow.Get(wrapper.Data.GenMultiSettings);
         var windows = client.GetComponent<WindowManager>();
         windows.AddWindow(genSettingsWindow);
@@ -55,7 +57,31 @@ public partial class GeneratorUi : Node, IClientComponent
             topBar.QueueFree();
         };
     }
-    
+
+    private void AddQuickSets(HBoxContainer topBar)
+    {
+        topBar.AddButton("16x8", () =>
+        {
+            _logic.Data.GenMultiSettings.PlanetSettings.MapHeight
+                .Set(8000);
+            _logic.Data.GenMultiSettings.PlanetSettings.MapWidth
+                .Set(16000);
+        });
+        topBar.AddButton("12x6", () =>
+        {
+            _logic.Data.GenMultiSettings.PlanetSettings.MapHeight
+                .Set(6000);
+            _logic.Data.GenMultiSettings.PlanetSettings.MapWidth
+                .Set(12000);
+        });
+        topBar.AddButton("8x4", () =>
+        {
+            _logic.Data.GenMultiSettings.PlanetSettings.MapHeight
+                .Set(4000);
+            _logic.Data.GenMultiSettings.PlanetSettings.MapWidth
+                .Set(8000);
+        });
+    }
     public void GoToGameSession()
     {
     }

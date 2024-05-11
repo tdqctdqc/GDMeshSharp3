@@ -18,7 +18,7 @@ public abstract class SettingsOption<T> : ISettingsOption
         SettingChanged = new RefAction<(T, T)>();
     }
 
-    protected void SetProtected(T val)
+    public void Set(T val)
     {
         if (Value is not null && Value.Equals(val)) return;
         if (Value is null && val is null) return;

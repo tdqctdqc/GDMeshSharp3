@@ -19,7 +19,7 @@ public class BoolSettingsOption : SettingsOption<bool>
         check.FocusMode = Control.FocusModeEnum.None;
         check.ToggleMode = true;
         check.ButtonPressed = Value;
-        check.Toggled += SetProtected;
+        check.Toggled += Set;
         SettingChanged.Subscribe(b => check.ButtonPressed = b.newVal);
         hbox.AddChild(check);
         return hbox;

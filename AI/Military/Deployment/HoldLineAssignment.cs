@@ -129,7 +129,7 @@ public class HoldLineAssignment : GroupAssignment
         {
             var groupFaces = Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
             var order = new LineOrder(groupFaces, 
-                new List<Cell[]>(), 
+                new List<FrontFace>(), 
                 false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),

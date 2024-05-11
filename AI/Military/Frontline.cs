@@ -7,9 +7,8 @@ public class Frontline
 {
     public Alliance Alliance { get; private set; }
     public List<FrontFace> Faces { get; private set; }
-    public List<Cell[]> FaceAdvanceRoutes { get; private set; }
     public List<FrontFace> AdvanceFront { get; private set; }
-    public List<List<FrontFace>> SalientFronts { get; private set; }
+    public List<List<FrontFace>> AdvanceFronts { get; private set; }
     public HashSet<Cell> AdvanceInto { get; private set; }
     public Frontline(List<FrontFace> faces, Alliance alliance)
     {
@@ -70,20 +69,20 @@ public class Frontline
         var natives = Faces
             .Select(f => f.GetNative(d)).ToHashSet();
 
-        SalientFronts = FrontFinder
+        AdvanceFronts = FrontFinder
             .FindFront(advanceInto.Union(natives).ToHashSet(),
                 c =>
                 {
                     return Alliance.Members.RefIds.Contains(c.Controller.RefId) == false
-                        // && c.Controller.IsEmpty() == false
+                        && c.Controller.IsEmpty() == false
                         && advanceInto.Contains(c) == false;
                 },
             d);
         return;
 
-        if (SalientFronts.Count == 1)
+        if (AdvanceFronts.Count == 1)
         {
-            AdvanceFront = SalientFronts[0];
+            AdvanceFront = AdvanceFronts[0];
             return;
         }
         var currIndex = 0;
@@ -92,7 +91,7 @@ public class Frontline
         while (currIndex < Faces.Count && currIndex != -1)
         {
             var curr = Faces[currIndex];
-            var salientIndex = SalientFronts.FindIndex(f => f[0].JoinsWith(curr));
+            var salientIndex = AdvanceFronts.FindIndex(f => f[0].JoinsWith(curr));
 
             if (salientIndex == -1)
             {
@@ -101,7 +100,7 @@ public class Frontline
             }
             else
             {
-                var salient = SalientFronts[salientIndex];
+                var salient = AdvanceFronts[salientIndex];
                 AdvanceFront.AddRange(salient);
                 currIndex = Faces.FindLastIndex(f => f.JoinsWith(salient[^1]));
             }
