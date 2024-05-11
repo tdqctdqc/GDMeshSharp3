@@ -4,12 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="fiddling w/ moisture, reforesting">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Farm.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Farm.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Fishery.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Fishery.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Ranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/Ranch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,6 +77,7 @@
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/FoodProdTechniques/Farm.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/PlanetDomain/MapPolygon/MapChunk.cs" root0="SKIP_HIGHLIGHTING" />
@@ -607,7 +604,8 @@
       <workItem from="1715017675438" duration="3484000" />
       <workItem from="1715180881249" duration="14973000" />
       <workItem from="1715202742185" duration="12267000" />
-      <workItem from="1715291496758" duration="8238000" />
+      <workItem from="1715291496758" duration="9646000" />
+      <workItem from="1715351169364" duration="1191000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -819,14 +817,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00176" summary="refactoring production">
-      <option name="closed" value="true" />
-      <created>1710264574357</created>
-      <option name="number" value="00176" />
-      <option name="presentableId" value="LOCAL-00176" />
-      <option name="project" value="LOCAL" />
-      <updated>1710264574358</updated>
-    </task>
     <task id="LOCAL-00177" summary="doot">
       <option name="closed" value="true" />
       <created>1710293340309</created>
@@ -971,7 +961,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715298652152</updated>
     </task>
-    <option name="localTasksCounter" value="195" />
+    <task id="LOCAL-00195" summary="changed food prod generation, use constant value instead of cell area">
+      <option name="closed" value="true" />
+      <created>1715300606744</created>
+      <option name="number" value="00195" />
+      <option name="presentableId" value="LOCAL-00195" />
+      <option name="project" value="LOCAL" />
+      <updated>1715300606744</updated>
+    </task>
+    <option name="localTasksCounter" value="196" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -993,7 +991,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="reimplementing rivers" />
     <MESSAGE value="river cells done, going to optimize" />
     <MESSAGE value="optimizing, still need to connect river cells" />
     <MESSAGE value="optimized river cell gen somewhat" />
@@ -1018,6 +1015,7 @@
     <MESSAGE value="optimizing chunks" />
     <MESSAGE value="ditto" />
     <MESSAGE value="fiddling w/ moisture, reforesting" />
-    <option name="LAST_COMMIT_MESSAGE" value="fiddling w/ moisture, reforesting" />
+    <MESSAGE value="changed food prod generation, use constant value instead of cell area" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed food prod generation, use constant value instead of cell area" />
   </component>
 </project>

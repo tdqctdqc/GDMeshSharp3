@@ -55,7 +55,7 @@ public class MoistureGenerator : Generator
             p.SetMoisture(score, _key);
         });
         var avgDim = (Data.Planet.Height + Data.Planet.Width) / 2f;
-        var diffuseNum = Mathf.CeilToInt(avgDim / 1000f);
+        var diffuseNum = Mathf.CeilToInt( avgDim / 500f);
         for (int i = 0; i < diffuseNum; i++)
         {
             diffuse();

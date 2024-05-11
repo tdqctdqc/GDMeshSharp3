@@ -76,10 +76,7 @@ public class PolyCellGenerator : Generator
         mountainNoise.Frequency = .002f;
         var swampNoise = new FastNoiseLite();
         swampNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
-        swampNoise.Frequency = .005f;
-        var swampWideNoise = new FastNoiseLite();
-        swampWideNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
-        swampWideNoise.Frequency = 500f;
+        swampNoise.Frequency = 1 / 100f;
 
         var reforestNoise = new FastNoiseLite();
         reforestNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
@@ -102,8 +99,8 @@ public class PolyCellGenerator : Generator
                 erode(poly, cell);
                 irrigate(poly, cell);
                 mountainRidging(poly, cell);
+                reforestDeforest(cell);
                 swampRidging(cell);
-                reforest(cell);
             }
         });
 
@@ -144,21 +141,29 @@ public class PolyCellGenerator : Generator
             }
         }
 
-        void swampRidging(Cell cell)
+        void swampRidging(LandCell cell)
         {
             if (cell.Vegetation.Get(_data) == _data.Models.Vegetations.Swamp)
             {
                 var globalPos = cell.GetCenter();
                 var noise = swampNoise.GetNoise2D(globalPos.X, globalPos.Y);
-                var wideNoise = swampWideNoise.GetNoise2D(globalPos.X, globalPos.Y);
-                if (noise < -.3f && wideNoise < 0f)
+
+                if (noise < -.75f)
                 {
-                    cell.SetVegetation(_data.Models.Vegetations.Forest, key);
-                }
-                else if (noise < -.2f && wideNoise < 0f)
-                {
-                    
                     cell.SetVegetation(_data.Models.Vegetations.Grassland, key);
+                }
+                else if (noise < -.25f)
+                {
+                    var poly = cell.Polygon.Get(_data);
+                    if (_data.Models.Vegetations.Jungle.Allowed(poly,
+                            poly.Moisture, cell.Landform.Get(_data), _data))
+                    {
+                        cell.SetVegetation(_data.Models.Vegetations.Jungle, key);
+                    }
+                    else
+                    {
+                        cell.SetVegetation(_data.Models.Vegetations.Forest, key);
+                    }
                 }
             }
         }
@@ -183,10 +188,17 @@ public class PolyCellGenerator : Generator
             }
         }
 
-        void reforest(Cell cell)
+        void reforestDeforest(Cell cell)
         {
             if (cell is LandCell l is false) return;
-            if (cell.GetVegetation(key.Data) != key.Data.Models.Vegetations.Grassland)
+            var veg = cell.GetVegetation(key.Data);
+            var grass = 
+                veg == key.Data.Models.Vegetations.Grassland;
+            var forest = 
+                veg == key.Data.Models.Vegetations.Forest;
+            var jungle = 
+                veg == key.Data.Models.Vegetations.Jungle;
+            if ((grass || forest || jungle) == false)
             {
                 return;
             }
@@ -194,10 +206,22 @@ public class PolyCellGenerator : Generator
             var poly = l.Polygon.Get(_data);
             var plate = key.GenData.GenAuxData.PolyGenCells[poly].Plate;
             var plateSample = reforestNoise.GetNoise2D(plate.Center.X, plate.Center.Y);
-            if (plateSample < 0f) return;
+            // if (plateSample < 0f) return;
             var cellSample = reforestNoise.GetNoise2D(cell.RelTo.X, cell.RelTo.Y);
-            if (cellSample < 0f) return;
-            cell.SetVegetation(key.Data.Models.Vegetations.Forest, key);
+            if (cellSample < .25f) return;
+
+            if (grass)
+            {
+                cell.SetVegetation(key.Data.Models.Vegetations.Forest, key);
+            }
+            else if (forest)
+            {
+                cell.SetVegetation(key.Data.Models.Vegetations.Grassland, key);
+            }
+            else if (jungle)
+            {
+                cell.SetVegetation(key.Data.Models.Vegetations.Grassland, key);
+            }
         }
     }
 }

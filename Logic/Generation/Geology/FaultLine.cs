@@ -20,7 +20,7 @@ public class FaultLine
     }
 
 
-    public void DoEffect(GenData data)
+    public void DoEffect(GenData data, FastNoiseLite noise)
     {
         if (Friction < .25f) return;
         var hiCells = HighId.Cells.SelectMany(c => c.Polys)
@@ -58,7 +58,10 @@ public class FaultLine
                                                // - roughnessErosion 
                                                + rand, 
                     0f, 1f);
-                c.SetRoughness(newRoughness + c.Roughness);
+                var sample = noise.GetNoise2D(c.RelTo.X, c.RelTo.Y);
+                sample += 1f;
+                // sample /= 1.5f;
+                c.SetRoughness(newRoughness * sample + c.Roughness);
             }
             old.UnionWith(curr);
             curr = curr.SelectMany(c => 

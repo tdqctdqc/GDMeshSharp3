@@ -229,10 +229,14 @@ public class GeologyGenerator : Generator
         var frictionRoughnessEffectSetting = gSettings.FrictionRoughnessEffect.Value * roughnessScale;
         ConcurrentBag<FaultLine> faults = new ConcurrentBag<FaultLine>();
         MakeFaults(faults);
+
+        var mtnPassNoise = new FastNoiseLite();
+        mtnPassNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
+        mtnPassNoise.Frequency = 1 / 100f;
         
         foreach (var f in Data.GenAuxData.FaultLines.FaultLines)
         {
-            f.DoEffect(Data);
+            f.DoEffect(Data, mtnPassNoise);
         }
 
         MakeIslands(seaLevel);
