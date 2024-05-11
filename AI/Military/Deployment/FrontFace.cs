@@ -25,18 +25,13 @@ public struct FrontFace
             .Intersect(foreign.Neighbors)
             .Distinct()
             .Select(i => PlanetDomainExt.GetPolyCell(i, d))
-            .Where(n => n is not RiverCell)
-            .ToArray();
-        
-        if (sharedNs.Length > 2)
+            .Where(n => n is not RiverCell);
+
+        int iter = 0;
+        foreach (var sharedN in sharedNs)
         {
-            GD.Print($"{sharedNs.Length} shared neighbors for {native.Id} {foreign.Id}");
-            return new FrontFace(native.Id, foreign.Id, -1, -1);
-        }
-        
-        for (var i = 0; i < sharedNs.Length; i++)
-        {
-            var sharedN = sharedNs[i];
+            iter++;
+            if (iter > 2) throw new Exception();
             var nAxis = native.GetCenter().Offset(sharedN.GetCenter(), d);
             var onLeft = nfAxis.GetCCWAngleTo(nAxis) < Mathf.Pi;
             if (onLeft)
