@@ -74,7 +74,8 @@ public class Frontline
                 c =>
                 {
                     return Alliance.Members.RefIds.Contains(c.Controller.RefId) == false
-                        && c.Controller.IsEmpty() == false
+                        // && c.Controller.IsEmpty() == false
+                        && c is not RiverCell
                         && advanceInto.Contains(c) == false;
                 },
             d);

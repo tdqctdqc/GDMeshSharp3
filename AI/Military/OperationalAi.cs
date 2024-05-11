@@ -30,11 +30,16 @@ public class OperationalAi
                 .Where(f => f.Controller.Get(_data)
                         .GetAlliance(_data).IsRivals(Alliance, _data))
                 .ToHashSet();
-            rival = rival.Union(rival.SelectMany(r => 
-                r.GetNeighbors(_data)
-                    .Where(f => f.Controller.Fulfilled()
-                        && f.Controller.Get(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
-                .ToHashSet();
+            for (int i = 0; i < 10; i++)
+            {
+                rival = rival.Union(rival.SelectMany(r => 
+                                r.GetNeighbors(_data)
+                                    .Where(f => 
+                                        f.Controller.Fulfilled()
+                                        && f.Controller.Get(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
+                                .ToHashSet();
+            }
+            
             if (rival.Count == 0)
             {
                 continue;

@@ -13,7 +13,7 @@ public struct FrontFace
     public static FrontFace
         Construct(Cell native, Cell foreign, Data d)
     {
-        if (native is not LandCell || foreign is not LandCell)
+        if (native is RiverCell || foreign is RiverCell)
         {
             return new FrontFace(native.Id, foreign.Id, -1, -1);
         }
@@ -25,7 +25,7 @@ public struct FrontFace
             .Intersect(foreign.Neighbors)
             .Distinct()
             .Select(i => PlanetDomainExt.GetPolyCell(i, d))
-            .Where(n => n is LandCell)
+            .Where(n => n is not RiverCell)
             .ToArray();
         
         if (sharedNs.Length > 2)
