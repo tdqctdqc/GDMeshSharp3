@@ -68,10 +68,10 @@ public class MilPlanningMode : UiMode
                         Colors.White, 2f, pos, _client.Data), pos);
                 }
 
-                if (frontline.AdvanceFronts != null)
+                if (frontline.SalientFronts != null)
                 {
                     int iter = 0;
-                    foreach (var salient in frontline.AdvanceFronts)
+                    foreach (var salient in frontline.SalientFronts)
                     {
                         debug.Draw(mb => mb.DrawFrontFaces(
                             salient, 

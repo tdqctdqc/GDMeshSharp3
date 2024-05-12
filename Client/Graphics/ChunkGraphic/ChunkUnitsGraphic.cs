@@ -96,6 +96,7 @@ public partial class ChunkUnitsGraphic : Node2D, IChunkGraphicModule
     {
         if (UnitsInOrder.ContainsKey(cell) == false) return;
         var list = UnitsInOrder[cell];
+        if (list.Count == 0) return;
         var first = list.First();
         list.Remove(first);
         list.Add(first);

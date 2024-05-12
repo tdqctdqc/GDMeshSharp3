@@ -53,7 +53,11 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
             .Where(v => v.Value.SolutionValue() > 0f)
             .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
 
-        GD.Print($"{Name} { success.ToString()} count {toBuild.Sum(kvp => kvp.Value)}");
+        if (success != Solver.ResultStatus.OPTIMAL
+            && success != Solver.ResultStatus.FEASIBLE)
+        {
+            GD.Print($"{Name} { success.ToString()} count {toBuild.Sum(kvp => kvp.Value)}");
+        }
         Complete(pool, regime, toBuild, key);
         modelCosts = GetCosts(toBuild, key.Data);
         return toBuild.Count > 0;

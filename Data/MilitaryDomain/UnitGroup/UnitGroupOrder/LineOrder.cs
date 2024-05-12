@@ -15,6 +15,11 @@ public class LineOrder : UnitGroupOrder
         bool advance)
     {
         LineFaces = lineFaces;
+        AdvanceLineFaces = advanceLineFaces;
+        if (AdvanceLineFaces.Count > 0)
+        {
+            GD.Print("have advance line");
+        }
         Advance = advance;
     }
 
@@ -82,11 +87,20 @@ public class LineOrder : UnitGroupOrder
             mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
                 new Color(Colors.Blue, .5f));
         }
-        foreach (var n in foreigns)
+        // foreach (var n in foreigns)
+        // {
+        //     mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
+        //         new Color(Colors.Red, .5f));
+        // }
+        
+        for (var i = 0; i < AdvanceLineFaces.Count; i++)
         {
-            mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
-                new Color(Colors.Red, .5f));
+            var face = AdvanceLineFaces[i];
+            var native = face.GetNative(d);
+            mb.DrawPolygon(native.RelBoundary.Select(p => relTo.Offset(p + native.RelTo, d)).ToArray(),
+            new Color(Colors.Red, .5f));
         }
+        
         
         foreach (var (unit, dest) in assgns)
         {

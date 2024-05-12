@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public class OperationalAi
 {
@@ -58,8 +59,8 @@ public class OperationalAi
                 .Sum(u => u.GetPowerPoints(_data));
 
             if (
-                true ||
-                friendlyPowerPoints > 1.5f * enemyPowerPoints
+                true 
+                // || friendlyPowerPoints > 1.5f * enemyPowerPoints
                 )
             {
                 GeneralAdvance(frontline, rival);

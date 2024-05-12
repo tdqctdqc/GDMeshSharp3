@@ -32,18 +32,7 @@ public class StrategicAi
         Theaters = new HashSet<Theater>();
         foreach (var union in unions)
         {
-            var theaterCells = union.ToHashSet();
-            var frontlines = FrontFinder
-                .FindFront(theaterCells,
-                    p =>
-                    {
-                        if (p.Controller.IsEmpty()) return false;
-                        var pAlliance = p.Controller.Get(_data).GetAlliance(_data);
-                        return alliance.IsRivals(pAlliance, _data);
-                    }, _data)
-                .Select(fs => new Frontline(fs, Alliance))
-                .ToHashSet();
-            var theater = new Theater(theaterCells, frontlines);
+            var theater = Theater.Construct(Alliance, union.ToHashSet(), _data);
             Theaters.Add(theater);
         }
     }

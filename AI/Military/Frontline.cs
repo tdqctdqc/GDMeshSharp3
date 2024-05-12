@@ -8,57 +8,13 @@ public class Frontline
     public Alliance Alliance { get; private set; }
     public List<FrontFace> Faces { get; private set; }
     public List<FrontFace> AdvanceFront { get; private set; }
-    public List<List<FrontFace>> AdvanceFronts { get; private set; }
+    public List<List<FrontFace>> SalientFronts { get; private set; }
     public HashSet<Cell> AdvanceInto { get; private set; }
-    public Frontline(List<FrontFace> faces, Alliance alliance)
+    public Frontline(List<FrontFace> faces, 
+        Alliance alliance)
     {
         Faces = faces;
         Alliance = alliance;
-    }
-
-    public bool CheckReunite(
-        List<List<FrontFace>> frontLines,
-        HashSet<FrontFace> frontFaces,
-        HashSet<FrontFace> otherSegFaces,
-        LogicWriteKey key,
-        out List<List<FrontFace>> res)
-    {
-        var valid = Faces
-            .Where(frontFaces.Contains).ToHashSet();
-        var resInner = new List<List<FrontFace>>();
-        for (var i = 0; i < frontLines.Count; i++)
-        {
-            var line = frontLines[i];
-            line.DoForRuns(
-                c =>
-                {
-                    return frontFaces.Contains(c)
-                        && otherSegFaces.Contains(c) == false;
-                },
-                r =>
-                {
-                    //bc of 'single' edges !!
-                    if (r.Any(valid.Contains))
-                    {
-                        var start = r.FindIndex(f => valid.Contains(f));
-                        var end = r.FindLastIndex(f => valid.Contains(f));
-                        var l = r.GetRange(start, end - start + 1);
-                        resInner.Add(l);
-                    }
-                }
-            );
-        }
-
-        res = resInner;
-        if (res.Count == 1)
-        {
-            Faces = res.First();
-        }
-        else
-        {
-            Faces.Clear();
-        }
-        return res.Count() == 1;
     }
 
     public void SetAdvanceInto(
@@ -69,7 +25,7 @@ public class Frontline
         var natives = Faces
             .Select(f => f.GetNative(d)).ToHashSet();
 
-        AdvanceFronts = FrontFinder
+        SalientFronts = FrontFinder
             .FindFront(advanceInto.Union(natives).ToHashSet(),
                 c =>
                 {
@@ -79,32 +35,33 @@ public class Frontline
                         && advanceInto.Contains(c) == false;
                 },
             d);
-        return;
 
-        if (AdvanceFronts.Count == 1)
+        if (SalientFronts.Count == 1)
         {
-            AdvanceFront = AdvanceFronts[0];
-            return;
+            AdvanceFront = SalientFronts[0];
         }
-        var currIndex = 0;
-        AdvanceFront = new List<FrontFace>();
-        
-        while (currIndex < Faces.Count && currIndex != -1)
+        else
         {
-            var curr = Faces[currIndex];
-            var salientIndex = AdvanceFronts.FindIndex(f => f[0].JoinsWith(curr));
+            var currIndex = 0;
+            AdvanceFront = new List<FrontFace>();
+            while (currIndex < Faces.Count && currIndex != -1)
+            {
+                var curr = Faces[currIndex];
+                var salientIndex = SalientFronts.FindIndex(f => f[0].JoinsWith(curr));
 
-            if (salientIndex == -1)
-            {
-                AdvanceFront.Add(curr);
-                currIndex++;
-            }
-            else
-            {
-                var salient = AdvanceFronts[salientIndex];
-                AdvanceFront.AddRange(salient);
-                currIndex = Faces.FindLastIndex(f => f.JoinsWith(salient[^1]));
+                if (salientIndex == -1)
+                {
+                    AdvanceFront.Add(curr);
+                    currIndex++;
+                }
+                else
+                {
+                    var salient = SalientFronts[salientIndex];
+                    AdvanceFront.AddRange(salient);
+                    currIndex = Faces.FindLastIndex(f => f.JoinsWith(salient[^1]));
+                }
             }
         }
+
     }
 }

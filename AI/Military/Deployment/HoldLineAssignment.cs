@@ -103,8 +103,11 @@ public class HoldLineAssignment : GroupAssignment
     public override void GiveOrders(DeploymentAi ai, 
         LogicWriteKey key)
     {
-        var faceCosts = GetFaceCosts(key.Data);
-        var subSegs = GetSubSegs(key, faceCosts);
+        var frontlineFaceCosts = GetFaceCosts(
+            Frontline.Faces, key.Data);
+        
+        
+        var subSegs = GetSubSegs(key, frontlineFaceCosts);
         var toPick = InsertingGroups.ToHashSet();
         while (toPick.Count > 0)
         {
@@ -123,13 +126,28 @@ public class HoldLineAssignment : GroupAssignment
         var inOrder = GetLineGroupsInOrder(key.Data);
         var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
             Frontline.Faces, inOrder, u => u.GetPowerPoints(key.Data),
-            f => faceCosts[f]);
+            f => frontlineFaceCosts[f]);
+        Dictionary<UnitGroup, Vector2I> advanceLines = null;
+        if (Frontline.AdvanceFront != null && Frontline.AdvanceFront.Count > 0)
+        {
+            var advanceLineFaceCosts
+                = GetFaceCosts(Frontline.AdvanceFront, key.Data);
+            advanceLines = Assigner.PickInOrderAndAssignAlongFaces(
+                Frontline.AdvanceFront, inOrder, 
+                u => u.GetPowerPoints(key.Data),
+                f => advanceLineFaceCosts[f]);
+        }
         
         foreach (var (group, bounds) in lineOrders)
         {
             var groupFaces = Frontline.Faces.GetRange(bounds.X, bounds.Y - bounds.X + 1);
+            var advance = advanceLines is not null
+                ? Frontline.AdvanceFront
+                    .GetRange(advanceLines[group].X, 
+                        advanceLines[group].Y - advanceLines[group].X + 1)
+                : new List<FrontFace>();
             var order = new LineOrder(groupFaces, 
-                new List<FrontFace>(), 
+                advance, 
                 false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
@@ -167,23 +185,26 @@ public class HoldLineAssignment : GroupAssignment
     public Dictionary<UnitGroup, List<FrontFace>> 
         GetLineAssignments(Data d)
     {
-        var inOrder = GetLineGroupsInOrder(d);
-        var faceCosts = GetFaceCosts(d);
+        var groupsInOrder = GetLineGroupsInOrder(d);
+        var faceCosts = GetFaceCosts(Frontline.Faces, d);
         var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
-            Frontline.Faces, inOrder, u => u.GetPowerPoints(d),
+            Frontline.Faces, 
+            groupsInOrder, 
+            u => u.GetPowerPoints(d),
             f => faceCosts[f]);
         return lineOrders.ToDictionary(kvp => kvp.Key,
             kvp => Frontline.Faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1));
     }
-    private Dictionary<FrontFace, float> GetFaceCosts(Data d)
+    private Dictionary<FrontFace, float> GetFaceCosts(
+        List<FrontFace> toCover,
+        Data d)
     {
-        if (Frontline.Faces.Count == 0) return new Dictionary<FrontFace, float>();
-        var totalEnemyCost = Frontline
-            .Faces.Sum(f => GetFaceEnemyCost(Alliance, f, d));
-        var totalLengthCost = Frontline.Faces.Count;
+        if (toCover.Count == 0) return new Dictionary<FrontFace, float>();
+        var totalEnemyCost = toCover.Sum(f => GetFaceEnemyCost(Alliance, f, d));
+        var totalLengthCost = toCover.Count;
         var enemyCostWeight = CoverOpposingWeight;
         var lengthCostWeight = CoverLengthWeight;
-        return Frontline.Faces
+        return toCover
             .ToDictionary(f => f,
                 f =>
                 {
@@ -212,15 +233,16 @@ public class HoldLineAssignment : GroupAssignment
         var foreignCell = PlanetDomainExt.GetPolyCell(f.Foreign, d);
         if (foreignCell.Controller.RefId == -1)
         {
-            throw new Exception();
+            return 0f;
         }
         var foreignRegime = foreignCell.Controller.Get(d);
+        if (foreignRegime is null) return 0f;
         var foreignAlliance = foreignRegime.GetAlliance(d);
         var units = foreignCell.GetUnits(d);
         if (units == null || units.Any() == false) return 0f;
         if (alliance.IsRivals(foreignAlliance, d) == false)
         {
-            throw new Exception();
+            return 0f;
         }
         float mult = 1f;
         if (alliance.IsAtWar(foreignAlliance, d)) mult = 2f;

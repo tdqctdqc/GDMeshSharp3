@@ -43,7 +43,6 @@ public class MultiTimer
 
     public void Print()
     {
-        GD.Print("printing");
         foreach (var (name, sws) in _sws)
         {
             var time = sws.Sum(sw => sw.Elapsed.Milliseconds);
