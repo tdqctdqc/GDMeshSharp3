@@ -106,6 +106,120 @@ public class HoldLineAssignment : GroupAssignment
         var frontlineFaceCosts = GetFaceCosts(
             Frontline.Faces, key.Data);
         
+        HandleInsertingGroupsOrders(key, frontlineFaceCosts);
+
+        var inOrder = GetLineGroupsInOrder(key.Data);
+        if (inOrder.Count == 0) return;
+        var lineBounds = 
+            Assigner.PickInOrderAndAssignAlongFaces(
+            Frontline.Faces, inOrder, u => u.GetPowerPoints(key.Data),
+            f => frontlineFaceCosts[f]);
+
+        var frontFaces = inOrder
+            .ToDictionary(g => g,
+                g => Frontline.Faces.GetRange(lineBounds[g].X, lineBounds[g].Y - lineBounds[g].X + 1)
+            );
+        
+        if (Frontline.AdvanceFront is null
+            || Frontline.AdvanceFront.Count == 0)
+        {
+            for (var i = 0; i < inOrder.Count; i++)
+            {
+                var group = inOrder[i];
+                var bounds = lineBounds[group];
+                var front = frontFaces[group];
+                var order = new LineOrder(front, 
+                    new HashSet<LandCell>(),
+                    false);
+                var proc = new SetUnitOrderProcedure(
+                    group.MakeRef(),
+                    order);
+                key.SendMessage(proc);
+            }
+
+            return;
+        }
+
+
+
+        var toTake = Frontline.AdvanceInto.ToHashSet();
+        var claims = inOrder.ToDictionary(g => g,
+            g => Frontline.AdvanceInto
+                .Where(c => frontFaces[g].Any(f => f.Foreign == c.Id))
+                .OfType<LandCell>()
+                .ToHashSet());
+        var iter = 0;
+        
+        toTake.ExceptWith(claims.Values.SelectMany(v => v));
+        while (toTake.Count > 0)
+        {
+            iter++;
+            if (iter > Frontline.AdvanceInto.Count * 1.5f)
+            {
+                throw new Exception("over max iter");
+            }
+            var frontier = toTake
+                .Where(c => c.GetNeighbors(key.Data)
+                    .Any(n => Frontline.AdvanceInto.Contains(n)
+                              && toTake.Contains(n) == false))
+                .OfType<LandCell>()
+                .ToArray();
+            foreach (var (group, claim) in claims)
+            {
+                int maxNeighbors = 0;
+
+                for (var i = 0; i < frontier.Length; i++)
+                {
+                    var fCell = frontier[i];
+                    int neighbors = 0;
+                    foreach (var claimed in claim)
+                    {
+                        if (claimed.Neighbors.Contains(fCell.Id))
+                        {
+                            neighbors++;
+                            maxNeighbors = Mathf.Max(neighbors, maxNeighbors);
+                            if (neighbors > 1)
+                            {
+                                claim.Add(fCell);
+                                toTake.Remove(fCell);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (maxNeighbors == 1)
+                {
+                    var adjs = frontier
+                        .Where(f => claim.Any(c => c.Neighbors.Contains(f.Id)));
+                    foreach (var adj in adjs)
+                    {
+                        claim.Add(adj);
+                        toTake.Remove(adj);
+                    }
+                }
+            }
+        }
+        
+        
+        
+        
+        
+        for (var i = 0; i < inOrder.Count; i++)
+        {
+            var group = inOrder[i];
+            var order = new LineOrder(frontFaces[group],
+                claims[group], false);
+            var proc = new SetUnitOrderProcedure(
+                group.MakeRef(),
+                order);
+            key.SendMessage(proc);
+        }
+    }
+
+    private void HandleInsertingGroupsOrders(LogicWriteKey key,
+        Dictionary<FrontFace, float> frontlineFaceCosts)
+    {
         var subSegs = GetSubSegs(key, frontlineFaceCosts);
         var toPick = InsertingGroups.ToHashSet();
         while (toPick.Count > 0)
@@ -120,133 +234,6 @@ public class HoldLineAssignment : GroupAssignment
             var order = GoToCellGroupOrder.Construct(cell, Alliance,
                 picked, key.Data);
             key.SendMessage(new SetUnitOrderProcedure(picked.MakeRef(), order));
-        }
-        
-        var inOrder = GetLineGroupsInOrder(key.Data);
-        if (inOrder.Count == 0) return;
-        var lineBounds = 
-            Assigner.PickInOrderAndAssignAlongFaces(
-            Frontline.Faces, inOrder, u => u.GetPowerPoints(key.Data),
-            f => frontlineFaceCosts[f]);
-
-        var fronts = inOrder
-            .ToDictionary(g => g,
-                g => Frontline.Faces.GetRange(lineBounds[g].X, lineBounds[g].Y - lineBounds[g].X + 1)
-            );
-        
-        if (Frontline.AdvanceFront is null
-            || Frontline.AdvanceFront.Count == 0)
-        {
-            for (var i = 0; i < inOrder.Count; i++)
-            {
-                var group = inOrder[i];
-                var bounds = lineBounds[group];
-                var front = fronts[group];
-                var order = new LineOrder(front, 
-                    new List<FrontFace>(), 
-                    new HashSet<LandCell>(),
-                    false);
-                var proc = new SetUnitOrderProcedure(
-                    group.MakeRef(),
-                    order);
-                key.SendMessage(proc);
-            }
-
-            return;
-        }
-        
-        
-        
-        var advanceLineFaceCosts
-            = GetFaceCosts(Frontline.AdvanceFront, key.Data);
-        var advanceFrontBounds = Assigner.PickInOrderAndAssignAlongFaces(
-            Frontline.AdvanceFront, inOrder, 
-            u => u.GetPowerPoints(key.Data),
-            f => advanceLineFaceCosts[f]);
-
-        var advanceFronts = inOrder.ToDictionary(g => g,
-            g =>
-            {
-                return Frontline.AdvanceFront
-                    .GetRange(advanceFrontBounds[g].X,
-                        advanceFrontBounds[g].Y - advanceFrontBounds[g].X + 1);
-            });
-        
-        
-        for (var i = 0; i < inOrder.Count; i++)
-        {
-            var group = inOrder[i];
-            var bounds = lineBounds[group];
-            var front = fronts[group];
-            var advanceFront = advanceFronts[group];
-
-
-            var path1 = PathFinder.FindCellBorderPath(
-                front[0].GetIdEdgeKey(),
-                advanceFront[0].GetIdEdgeKey(),
-                (c, d) =>
-                {
-                    return Frontline.AdvanceInto.Contains(c)
-                           || Frontline.AdvanceInto.Contains(d);
-                }, key.Data);
-            if (path1 is null)
-            {
-                GD.Print($"path1 null from {front[0].Native}/{front[0].Foreign} " +
-                         $"to {advanceFront[0].Native}/{advanceFront[0].Foreign}");
-                continue;
-            }
-            
-            var path2 = PathFinder.FindCellBorderPath(
-                front[^1].GetIdEdgeKey(),
-                advanceFront[^1].GetIdEdgeKey(),
-                (c, d) =>
-                {
-                    var edge = c.GetIdEdgeKey(d);
-                    if (edge != advanceFront[^1].GetIdEdgeKey()
-                        && path1.Contains(edge)) return false;
-                    return Frontline.AdvanceInto.Contains(c)
-                           || Frontline.AdvanceInto.Contains(d);
-                }, key.Data);
-            if (path2 is null)
-            {
-                GD.Print($"path2 null from {front[^1].Native}/{front[^1].Foreign} " +
-                         $"to {advanceFront[^1].Native}/{advanceFront[^1].Foreign}");
-                continue;
-            }
-            
-            
-            var allPathEdges = path1.Concat(path2).ToHashSet();
-            
-
-            var foreignStart = front[0].GetForeign(key.Data);
-            var opposed = front.Select(f => f.GetForeign(key.Data))
-                .OfType<LandCell>().ToHashSet();
-            if (Frontline.AdvanceInto.Contains(foreignStart))
-            {
-                var flood = FloodFill<Cell>
-                    .GetFloodFill(foreignStart,
-                        Frontline.AdvanceInto.Contains,
-                        c =>
-                        {
-                            return c.GetNeighbors(key.Data)
-                                .Where(n => allPathEdges
-                                    .Contains(n.GetIdEdgeKey(c)) == false);
-                        });
-                opposed.UnionWith(flood.OfType<LandCell>());
-                
-                var order = new LineOrder(fronts[group], 
-                    advanceFronts[group], 
-                    opposed,
-                    false);
-                var proc = new SetUnitOrderProcedure(
-                    group.MakeRef(),
-                    order);
-                key.SendMessage(proc);
-                
-            }
-            
-            
-            
         }
     }
 

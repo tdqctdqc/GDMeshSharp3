@@ -7,16 +7,13 @@ using Godot;
 public class LineOrder : UnitGroupOrder
 {
     public List<FrontFace> LineFaces { get; private set; }
-    public List<FrontFace> AdvanceLineFaces { get; private set; }
     public HashSet<LandCell> AdvanceInto { get; private set; }
     public bool Advance { get; private set; }
     public LineOrder(List<FrontFace> lineFaces, 
-        List<FrontFace> advanceLineFaces, 
         HashSet<LandCell> advanceInto,
         bool advance)
     {
         LineFaces = lineFaces;
-        AdvanceLineFaces = advanceLineFaces;
         AdvanceInto = advanceInto;
         Advance = advance;
     }
@@ -85,15 +82,6 @@ public class LineOrder : UnitGroupOrder
                 new Color(Colors.Blue, .5f));
         }
         
-        for (var i = 0; i < AdvanceLineFaces.Count; i++)
-        {
-            var face = AdvanceLineFaces[i];
-            var native = face.GetNative(d);
-            mb.DrawPolygon(native.RelBoundary.Select(p => relTo.Offset(p + native.RelTo, d)).ToArray(),
-            new Color(Colors.Red, .5f));
-        }
-        
-        
         foreach (var landCell in AdvanceInto)
         {
             mb.DrawPolygon(landCell.RelBoundary.Select(p => relTo.Offset(p + landCell.RelTo, d)).ToArray(),
@@ -120,9 +108,7 @@ public class LineOrder : UnitGroupOrder
         UnitGroup g, 
         CombatCalculator combat, LogicWriteKey key)
     {
-        if (Advance == false 
-            || AdvanceLineFaces == null
-            || AdvanceLineFaces.Count == 0)
+        if (Advance == false)
         {
             return;
         }
