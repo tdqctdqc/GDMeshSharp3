@@ -23,7 +23,7 @@ public class MapPos
         LogicWriteKey key)
     {
         var cell = PlanetDomainExt.GetPolyCell(polyCell, key.Data);
-        if (moveDat.MoveType.Passable(cell, moveDat.Alliance, key.Data) == false)
+        if (moveDat.MoveType.PassableFriendly(cell, moveDat.Alliance, key.Data) == false)
         {
             var moverAllianceLeader = moveDat.Alliance.Leader.Get(key.Data);
             var cellAllianceLeader = cell.Controller.Get(key.Data).GetAlliance(key.Data).Leader.Get(key.Data);

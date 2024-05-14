@@ -14,7 +14,7 @@ public class GoToCellGroupOrder : UnitGroupOrder
         var currWp = g.GetCell(d);
         var moveType = g.MoveType(d);
         
-        if (moveType.Passable(destWp, alliance, d) == false)
+        if (moveType.PassableFriendly(destWp, alliance, d) == false)
         {
             throw new Exception($"{moveType.GetType().Name} cant go to {destWp.GetType().Name}" +
                                 $" alliance {alliance.Leader.Get(d).Id}" +
@@ -54,7 +54,7 @@ public class GoToCellGroupOrder : UnitGroupOrder
         {
             var from = unit.Position.GetCell(d);
             var moveType = unit.Template.Get(d).MoveType.Get(d);
-            var path = d.Context.PathCache
+            var path = d.Context.FriendlyPathCache
                 .GetOrAdd((moveType, alliance, from, dest));
             mb.DrawCellPath(relTo, path, group.Color, 2f, d);
         }

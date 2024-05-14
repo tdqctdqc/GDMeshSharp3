@@ -61,7 +61,7 @@ public static class FloodFill<T>
         return res;
     }
 
-    public static void FloodTilFirst(T start, 
+    public static HashSet<T> FloodTilFirst(T start, 
         Func<T, bool> validNeighbor,
         Func<T, IEnumerable<T>> getNeighbors,
         Func<T, bool> validResult,
@@ -80,7 +80,7 @@ public static class FloodFill<T>
             {
                 if (validResult(neighbor))
                 {
-                    return;
+                    return res;
                 }
                 if (res.Contains(neighbor)) continue;
                 if (validNeighbor(neighbor) == false) continue;
@@ -88,5 +88,44 @@ public static class FloodFill<T>
                 res.Add(neighbor);
             }
         }
+
+        return res;
+    }
+
+    public static HashSet<T> FloodFillTilAllFoundMultipleStarts
+    (IEnumerable<T> starts, 
+        Func<T, bool> validNeighbor,
+        Func<T, IEnumerable<T>> getNeighbors,
+        IEnumerable<T> need,
+        int maxIter = 1_000)
+    {
+        var res = starts.ToHashSet();
+        var unencountered = need.ToHashSet();
+        var queue = new Queue<T>();
+        foreach (var r in res)
+        {
+            queue.Enqueue(r);
+        }
+        int iter = 0;
+        while (queue.TryDequeue(out var curr))
+        {
+            iter++;
+            if (iter == maxIter) break;
+            var neighbors = getNeighbors(curr);
+            foreach (var neighbor in neighbors)
+            {
+                if (unencountered.Contains(neighbor))
+                {
+                    unencountered.Remove(neighbor);
+                }
+                if (res.Contains(neighbor)) continue;
+                if (validNeighbor(neighbor) == false) continue;
+                queue.Enqueue(neighbor);
+                res.Add(neighbor);
+                if (unencountered.Count == 0) return res;
+            }
+        }
+
+        return res;
     }
 }

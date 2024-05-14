@@ -67,7 +67,7 @@ public class CantFindPathIssue : Issue
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
         foreach (var n in union)
         {
-            Color canPass = canPass = MoveType.Passable(n, Alliance, c.Data)
+            Color canPass = canPass = MoveType.PassableFriendly(n, Alliance, c.Data)
                 ? Colors.White : Colors.Black;
             
             Color isStartOrDest = Colors.White;

@@ -117,7 +117,7 @@ public class CellAttackEdge : ICombatGraphEdge
                 {
                     var moveType = defender.Template.Get(key.Data)
                         .MoveType.Get(key.Data);
-                    return moveType.Passable(c, defenderAlliance, key.Data);
+                    return moveType.PassableFriendly(c, defenderAlliance, key.Data);
                 });
             if (retreatCell != null)
             {

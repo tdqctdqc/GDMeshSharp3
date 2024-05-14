@@ -8,18 +8,16 @@ public class LineOrder : UnitGroupOrder
 {
     public List<FrontFace> LineFaces { get; private set; }
     public List<FrontFace> AdvanceLineFaces { get; private set; }
-    
+    public HashSet<LandCell> AdvanceInto { get; private set; }
     public bool Advance { get; private set; }
     public LineOrder(List<FrontFace> lineFaces, 
         List<FrontFace> advanceLineFaces, 
+        HashSet<LandCell> advanceInto,
         bool advance)
     {
         LineFaces = lineFaces;
         AdvanceLineFaces = advanceLineFaces;
-        if (AdvanceLineFaces.Count > 0)
-        {
-            GD.Print("have advance line");
-        }
+        AdvanceInto = advanceInto;
         Advance = advance;
     }
 
@@ -81,17 +79,11 @@ public class LineOrder : UnitGroupOrder
         var assgns = GetAssignments(group, d);
 
         var natives = LineFaces.Select(f => f.GetNative(d)).Distinct();
-        var foreigns = LineFaces.Select(f => f.GetForeign(d)).Distinct();
         foreach (var n in natives)
         {
             mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
                 new Color(Colors.Blue, .5f));
         }
-        // foreach (var n in foreigns)
-        // {
-        //     mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
-        //         new Color(Colors.Red, .5f));
-        // }
         
         for (var i = 0; i < AdvanceLineFaces.Count; i++)
         {
@@ -102,11 +94,18 @@ public class LineOrder : UnitGroupOrder
         }
         
         
+        foreach (var landCell in AdvanceInto)
+        {
+            mb.DrawPolygon(landCell.RelBoundary.Select(p => relTo.Offset(p + landCell.RelTo, d)).ToArray(),
+                new Color(Colors.White, .5f));
+        }
+        
+        
         foreach (var (unit, dest) in assgns)
         {
             var pos = unit.Position;
             var moveType = unit.Template.Get(d).MoveType.Get(d);
-            var path = d.Context.PathCache
+            var path = d.Context.FriendlyPathCache
                 .GetOrAdd((moveType, alliance, pos.GetCell(d),
                     dest.GetNative(d)));
             if (path != null)
@@ -121,8 +120,12 @@ public class LineOrder : UnitGroupOrder
         UnitGroup g, 
         CombatCalculator combat, LogicWriteKey key)
     {
-        // if(Advance == false) return;
-        if (AdvanceLineFaces == null || AdvanceLineFaces.Count == 0) return;
+        if (Advance == false 
+            || AdvanceLineFaces == null
+            || AdvanceLineFaces.Count == 0)
+        {
+            return;
+        }
         var d = key.Data;
         var units = g.Units.Items(d);
         var assignments = GetAssignments(g, d);
@@ -131,14 +134,6 @@ public class LineOrder : UnitGroupOrder
             var face = assignments[unit];
             var target = face.GetForeign(d);
             var index = LineFaces.IndexOf(face);
-            // var route = FaceAdvanceRoutes[index];
-            // if (route == null || route.Length == 0)
-            // {
-            //     continue;
-            // }
-            //
-            // if (route[0] != target) throw new Exception();
-            // UnitAttackEdge.ConstuctAndAddToGraph(target, unit, combat, d);
         }
     }
 

@@ -7,7 +7,7 @@ using Godot;
 public static partial class PathFinder
 {
     
-    public static List<Cell> FindPath(
+    public static List<Cell> FindPathThroughFriendly(
         MoveType moveType, 
         Alliance alliance,
         Cell start,
@@ -16,7 +16,20 @@ public static partial class PathFinder
     {
         return PathFinder<Cell>.FindPath(start, dest, 
             p => p.GetNeighbors(d)
-                .Where(wp => moveType.Passable(wp, alliance, d)),
+                .Where(wp => moveType.PassableFriendly(wp, alliance, d)),
+            (w, v) => moveType.EdgeCost(w, v, d), 
+            (p1, p2) => p1.GetCenter().Offset(p2.GetCenter(), d).Length());
+    }
+    public static List<Cell> FindPathThroughFriendlyAndRival(
+        MoveType moveType, 
+        Alliance alliance,
+        Cell start,
+        Cell dest, 
+        Data d)
+    {
+        return PathFinder<Cell>.FindPath(start, dest, 
+            p => p.GetNeighbors(d)
+                .Where(wp => moveType.PassableFriendlyOrRival(wp, alliance, d)),
             (w, v) => moveType.EdgeCost(w, v, d), 
             (p1, p2) => p1.GetCenter().Offset(p2.GetCenter(), d).Length());
     }
@@ -69,5 +82,61 @@ public static partial class PathFinder
             roughCost += 1f + n2.GetLandform(data).MinRoughness;
         }
         return cost + roughCost * roughCost;
+    }
+
+
+
+    public static List<Vector2I> FindCellBorderPath(
+        Vector2I start, Vector2I end, 
+        Func<Cell, Cell, bool> allowed,
+        Data d)
+    {
+        return PathFinder<Vector2I>
+            .FindPath(start, end,
+                v => GetCellEdgeNeighbors(v, allowed, d),
+                (v, w) => 1f,
+                (v, w) =>
+                {
+                    var v1 = PlanetDomainExt.GetPolyCell(v.X, d);
+                    var v2 = PlanetDomainExt.GetPolyCell(v.Y, d);
+                    var vPos = v1.GetCenter() + v1.GetCenter().Offset(v2.GetCenter(), d) / 2f;
+                    
+                    var w1 = PlanetDomainExt.GetPolyCell(w.X, d);
+                    var w2 = PlanetDomainExt.GetPolyCell(w.Y, d);
+                    var wPos = w1.GetCenter() + w1.GetCenter().Offset(w2.GetCenter(), d) / 2f;
+
+                    return vPos.Offset(wPos, d).Length();
+                });
+    }
+
+    private static IEnumerable<Vector2I> GetCellEdgeNeighbors(
+        Vector2I v, 
+        Func<Cell, Cell, bool> allowed,
+        Data d)
+    {
+        var v1 = PlanetDomainExt.GetPolyCell(v.X, d);
+        var v2 = PlanetDomainExt.GetPolyCell(v.Y, d);
+        for (var i = 0; i < v1.Neighbors.Count; i++)
+        {
+            var n1 = v1.Neighbors[i];
+            for (var j = 0; j < v2.Neighbors.Count; j++)
+            {
+                if (n1 == v2.Neighbors[j] == false)
+                {
+                    continue;
+                }
+
+                var nCell = PlanetDomainExt.GetPolyCell(n1, d);
+                if (allowed(v1, nCell))
+                {
+                    yield return nCell.GetIdEdgeKey(v1);
+                }
+                if (allowed(v2, nCell))
+                {
+                    yield return nCell.GetIdEdgeKey(v2);
+                }
+                break;
+            }
+        }
     }
 }

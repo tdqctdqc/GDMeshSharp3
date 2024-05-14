@@ -11,13 +11,19 @@ public class Context
 {
     public ConcurrentDictionary<int, MovementRecord> MovementRecords { get; private set; }
     public Dictionary<Regime, HashSet<LandCell>> ControlledAreas { get; private set; }
-    public PathCache PathCache { get; private set; }
+    public PathCache FriendlyPathCache { get; private set; }
+    public PathCache RivalPathCache { get; private set; }
     public Context(Data data)
     {
         ControlledAreas = new Dictionary<Regime, HashSet<LandCell>>();
         MovementRecords = new ConcurrentDictionary<int, MovementRecord>();
-        PathCache = new PathCache(data);
-        data.Notices.Ticked.Subscribe(i => PathCache.Clear());
+        FriendlyPathCache = new PathCache(false, data);
+        RivalPathCache = new PathCache(true, data);
+        data.Notices.Ticked.Subscribe(i =>
+        {
+            FriendlyPathCache.Clear();
+            RivalPathCache.Clear();
+        });
     }
 
     public void Calculate(Data data)

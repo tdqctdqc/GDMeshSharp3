@@ -5,10 +5,16 @@ public abstract class MoveType : IModel
 {
     protected abstract float TerrainCostInstantaneous(Cell pt, Data d);
 
-    public bool Passable(Cell cell, Alliance a, Data d)
+    public bool PassableFriendly(Cell cell, Alliance a, Data d)
     {
         return TerrainPassable(cell, d) && 
-            AllianceCanPass(a, cell, d);
+            IsFriendly(a, cell, d);
+    }
+    public bool PassableFriendlyOrRival(Cell cell, 
+        Alliance a, Data d)
+    {
+        return TerrainPassable(cell, d) && 
+               IsFriendlyOrRival(a, cell, d);
     }
     public abstract bool TerrainPassable(Cell p, Data d);
 
@@ -56,11 +62,19 @@ public abstract class MoveType : IModel
         BaseSpeed = baseSpeed;
         Name = name;
     }
-    protected static bool AllianceCanPass(Alliance moverAlliance, 
+    protected static bool IsFriendly(Alliance moverAlliance, 
         Cell cell, Data d)
     {
         if (cell is LandCell l == false) return true;
         var controllerAlliance = cell.Controller.Get(d).GetAlliance(d);
         return moverAlliance == controllerAlliance;
+    }
+    protected static bool IsFriendlyOrRival(Alliance moverAlliance, 
+        Cell cell, Data d)
+    {
+        if (cell is LandCell l == false) return false;
+        var controllerAlliance = cell.Controller.Get(d).GetAlliance(d);
+        return moverAlliance == controllerAlliance
+            || moverAlliance.IsRivals(controllerAlliance, d);
     }
 }

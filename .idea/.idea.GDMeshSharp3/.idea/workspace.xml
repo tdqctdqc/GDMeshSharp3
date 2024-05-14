@@ -6,15 +6,26 @@
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/SolverPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/SolverPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Frontline.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Frontline.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/OperationalAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/OperationalAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Theater.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Theater.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PathFindMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PathFindMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/GoToCellGroupOrder.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/LineOrder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitGroup/UnitGroupOrder/LineOrder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/MultiTimer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MultiTimer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Context/PathCache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/PathCache.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellAttackEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellAttackEdge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Mover/MapPos.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/MapPos.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Mover/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/Mover.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/FloodFill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/FloodFill.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,6 +77,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f9cd2b865094294bc69db1184ad68be40888/ce/da3f4d25/ConcurrentDictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b34296d7545f4a54bda041aecea156b4b1d878/1c/94f3ee6b/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f91966cb9bce4035a5e5d1453a1193d8238b0/e4/a72000f3/Parallel.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/215ca8fd95391172a79e7562793d1c44d7ec8c3b6bb186f01251b947efd0f6a4/Index.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/25b7a8e363cf4f9521afbcde038b888809e22255c8a1e06c5ba0d0b8aa7b2/Attributes.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/46f85f6668fa0db3ebaa6247785f1c770b7433addf0f1bae21e374a1eabca98/Solver.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6879c9ed20391a5ccfea363be5964fbcfe4f1dfde9558aa84b36df6b6ec92c6/List.cs" root0="SKIP_HIGHLIGHTING" />
@@ -81,20 +93,16 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8b78e83a7fcb41b463a82a2c615d0eb9a82f63e6fe93ffd1fe6781e6349d9b/HashSet.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/FrontFace.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/FrontFace.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Generation/Geology/FaultLine.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Assigner.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -616,7 +624,10 @@
       <workItem from="1715291496758" duration="9646000" />
       <workItem from="1715351169364" duration="1191000" />
       <workItem from="1715459060061" duration="10507000" />
-      <workItem from="1715536021317" duration="3045000" />
+      <workItem from="1715536021317" duration="4529000" />
+      <workItem from="1715613915798" duration="11930000" />
+      <workItem from="1715638812006" duration="1086000" />
+      <workItem from="1715645244266" duration="2821000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -828,14 +839,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00181" summary="doot">
-      <option name="closed" value="true" />
-      <created>1711394880711</created>
-      <option name="number" value="00181" />
-      <option name="presentableId" value="LOCAL-00181" />
-      <option name="project" value="LOCAL" />
-      <updated>1711394880711</updated>
-    </task>
     <task id="LOCAL-00182" summary="reimplemented food consumption / production">
       <option name="closed" value="true" />
       <created>1713194267140</created>
@@ -980,7 +983,15 @@
       <option name="project" value="LOCAL" />
       <updated>1715469664038</updated>
     </task>
-    <option name="localTasksCounter" value="200" />
+    <task id="LOCAL-00200" summary="working on advancing fronts">
+      <option name="closed" value="true" />
+      <created>1715539324674</created>
+      <option name="number" value="00200" />
+      <option name="presentableId" value="LOCAL-00200" />
+      <option name="project" value="LOCAL" />
+      <updated>1715539324674</updated>
+    </task>
+    <option name="localTasksCounter" value="201" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1002,7 +1013,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="working on chunkGraphics" />
     <MESSAGE value="reworking unit graphics" />
     <MESSAGE value="more graphics stuff" />
     <MESSAGE value="made label chunk graphic" />
@@ -1027,6 +1037,7 @@
     <MESSAGE value="removed settlement tier building slot limit" />
     <MESSAGE value="working on advance lines" />
     <MESSAGE value="optimized front face a bit, removed array allocation" />
-    <option name="LAST_COMMIT_MESSAGE" value="optimized front face a bit, removed array allocation" />
+    <MESSAGE value="working on advancing fronts" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on advancing fronts" />
   </component>
 </project>

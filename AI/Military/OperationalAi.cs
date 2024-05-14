@@ -31,21 +31,13 @@ public class OperationalAi
                 .Where(f => f.Controller.Get(_data)
                         .GetAlliance(_data).IsRivals(Alliance, _data))
                 .ToHashSet();
-            for (int i = 0; i < 10; i++)
-            {
-                rival = rival.Union(rival.SelectMany(r => 
-                                r.GetNeighbors(_data)
-                                    .Where(f => 
-                                        f.Controller.Fulfilled()
-                                        && f.Controller.Get(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
-                                .ToHashSet();
-            }
+            
             
             if (rival.Count == 0)
             {
                 continue;
             }
-
+            
             var enemyPowerPoints = rival
                 .Where(c => c.GetUnits(_data) is not null)
                 .SelectMany(c => c.GetUnits(_data))
@@ -71,6 +63,17 @@ public class OperationalAi
     private void GeneralAdvance(Frontline f, 
         HashSet<Cell> enemy)
     {
-        f.SetAdvanceInto(enemy, _data);
+        HashSet<Cell> advanceInto = enemy.ToHashSet();
+        for (int i = 0; i < 3; i++)
+        {
+            advanceInto = advanceInto.Union(advanceInto.SelectMany(r => 
+                    r.GetNeighbors(_data)
+                        .Where(f => 
+                            f.Controller.Fulfilled()
+                            && advanceInto.Contains(f) == false
+                            && f.Controller.Get(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
+                .ToHashSet();
+        }
+        f.SetAdvanceInto(advanceInto, _data);
     }
 }

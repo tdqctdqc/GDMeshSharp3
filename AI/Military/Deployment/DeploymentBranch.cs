@@ -102,7 +102,7 @@ public abstract class DeploymentBranch
                 var idKey = a1.GetIdEdgeKey(a2);
                 var cell2 = a2.GetCharacteristicCell(key.Data);
                 var cost = 0f;
-                var path = d.Context.PathCache.GetOrAdd((stratMove,
+                var path = d.Context.FriendlyPathCache.GetOrAdd((stratMove,
                     alliance, cell1, cell2));
                 if (path == null)
                 {

@@ -72,7 +72,7 @@ public static class PathFinder<T>
         Func<T, IEnumerable<T>> getNeighbors, 
         Func<T,T,float> getEdgeCost, 
         Func<T,T,float> heuristicFunc,
-        int maxIter = Int32.MaxValue)
+        int maxIter = 10_000)
     {
         var info = _pool.Get();
         info.Open.Enqueue(start, 0f);

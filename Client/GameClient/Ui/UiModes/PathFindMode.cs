@@ -76,7 +76,7 @@ public class PathFindMode : UiMode
         
         
         var stratMove = _client.Data.Models.MoveTypes.StrategicMove;
-        var path = PathFinder.FindPath(stratMove, alliance,
+        var path = PathFinder.FindPathThroughFriendly(stratMove, alliance,
             _from, _to, _client.Data);
         if (path == null)
         {

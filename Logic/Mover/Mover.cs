@@ -10,7 +10,7 @@ public static class Mover
         MoveData moveDat, Cell dest, 
         LogicWriteKey key)
     {
-        var path = key.Data.Context.PathCache.GetOrAdd(
+        var path = key.Data.Context.FriendlyPathCache.GetOrAdd(
             (moveDat.MoveType, moveDat.Alliance, pos.GetCell(key.Data), dest));
             
         if (path == null)

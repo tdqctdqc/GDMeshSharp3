@@ -162,6 +162,11 @@ public struct FrontFace
                             || Left == id || Right == id
                             ? 1 : 0;
     }
+
+    public Vector2I GetIdEdgeKey()
+    {
+        return Native.GetIdEdgeKey(Foreign);
+    }
 }
 
 public static class FrontFaceExt

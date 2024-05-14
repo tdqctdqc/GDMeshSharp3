@@ -81,6 +81,12 @@ public partial class GeneratorUi : Node, IClientComponent
             _logic.Data.GenMultiSettings.PlanetSettings.MapWidth
                 .Set(8000);
         });
+        
+        topBar.AddButton("50% Land", () =>
+        {
+            _logic.Data.GenMultiSettings.GeologySettings.LandRatio
+                .Set(.5f);
+        });
     }
     public void GoToGameSession()
     {
