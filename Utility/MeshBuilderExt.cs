@@ -23,6 +23,7 @@ public static class MeshBuilderExt
         HoldLineAssignment seg, 
         Data d)
     {
+        
         var markerSize = 5f;
         var color = seg.Color;
         if (seg.Frontline.Faces.Count == 1)
@@ -44,7 +45,9 @@ public static class MeshBuilderExt
                 color, markerSize);
         }
 
-        foreach (var kvp in seg.GetLineAssignments(d))
+        foreach (var kvp in 
+                 MilAiUtil.GetLineAssignments(seg.Alliance, seg.Groups,
+                     seg.Frontline.Faces, d))
         {
             var line = kvp.Value;
             var group = kvp.Key;

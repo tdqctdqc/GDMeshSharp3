@@ -22,6 +22,7 @@ public class Context
         data.Notices.Ticked.Subscribe(i =>
         {
             FriendlyPathCache.Clear();
+            
             RivalPathCache.Clear();
         });
     }

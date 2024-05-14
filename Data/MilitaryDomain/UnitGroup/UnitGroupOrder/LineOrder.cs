@@ -41,6 +41,8 @@ public class LineOrder : UnitGroupOrder
     {
         var units = g.Units.Items(d);
         var alliance = g.Regime.Get(d).GetAlliance(d);
+        var faceCosts = MilAiUtil
+            .GetFaceCosts(alliance, LineFaces, d);
         return Assigner
             .PickBestAndAssignAlongFacesSingle<Unit, FrontFace>
             (
@@ -50,19 +52,7 @@ public class LineOrder : UnitGroupOrder
                 (u, f) => 
                     u.Position.GetCell(d).GetCenter().Offset(
                         PlanetDomainExt.GetPolyCell(f.Native, d).GetCenter(), d).Length(),
-                f =>
-                {
-                    return 1f;
-                    var foreignCell = PlanetDomainExt.GetPolyCell(f.Foreign, d);
-                    if (foreignCell.Controller.RefId == -1) return 0f;
-                    var foreignRegime = foreignCell.Controller.Get(d);
-                    var foreignAlliance = foreignRegime.GetAlliance(d);
-                    var units = foreignCell.GetUnits(d);
-                    if (units == null || units.Any() == false) return HoldLineAssignment.PowerPointsPerCellFaceToCover;
-                    if (alliance.IsRivals(foreignAlliance, d) == false) return 0f;
-                    float mult = HoldLineAssignment.DesiredOpposingPpRatio;
-                    return units.Sum(u => u.GetPowerPoints(d)) * mult;
-                }
+                f => faceCosts[f]
             );
     }
     public override void Draw(UnitGroup group, Vector2 relTo, 
@@ -114,6 +104,9 @@ public class LineOrder : UnitGroupOrder
         }
         var d = key.Data;
         var units = g.Units.Items(d);
+        
+        
+        
         var assignments = GetAssignments(g, d);
         foreach (var unit in units)
         {
