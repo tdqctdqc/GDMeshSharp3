@@ -98,25 +98,16 @@ public class HoldLineAssignment : GroupAssignment
     public override void GiveOrders(DeploymentAi ai, 
         LogicWriteKey key)
     {
-        InsertingGroups = Groups.Where(g =>
-        {
-            return g.Units.Items(key.Data)
-                        .Any(u =>
-                        {
-                            return Frontline.Faces.Any(f => f.Native == u.Position.PolyCell);
-                        }) == false;
-        }).ToHashSet();
-        LineGroups = Groups.Except(InsertingGroups).ToHashSet();
+        SetLineAndInsertingGroups(key);
         var frontlineFaceCosts 
             = MilAiUtil.GetFaceCosts(Alliance, Frontline.Faces, key.Data);
-        
         HandleInsertingGroupsOrders(key, frontlineFaceCosts);
         if (LineGroups.Count == 0) return;
         var lineAssignments = MilAiUtil
             .GetLineAssignments(Alliance, LineGroups, Frontline.Faces, key.Data);
         
-        if (Frontline.AdvanceFront is null
-            || Frontline.AdvanceFront.Count == 0)
+        if (Frontline.AdvanceInto is null
+            || Frontline.AdvanceInto.Count == 0)
         {
             foreach (var (group, faces) in lineAssignments)
             {
@@ -124,8 +115,7 @@ public class HoldLineAssignment : GroupAssignment
                     new HashSet<LandCell>(),
                     false);
                 var proc = new SetUnitOrderProcedure(
-                    group.MakeRef(),
-                    order);
+                    group.MakeRef(), order);
                 key.SendMessage(proc);
             }
 
@@ -133,14 +123,29 @@ public class HoldLineAssignment : GroupAssignment
         }
 
         var toTake = Frontline.AdvanceInto.ToHashSet();
+        var claims = MakeAdvanceZones(key, lineAssignments, toTake);
+
+        foreach (var (group, faces) in lineAssignments)
+        {
+            var order = new LineOrder(faces,
+                claims[group], false);
+            var proc = new SetUnitOrderProcedure(
+                group.MakeRef(),
+                order);
+            key.SendMessage(proc);
+        }
+    }
+
+    private Dictionary<UnitGroup, HashSet<LandCell>> MakeAdvanceZones(LogicWriteKey key, Dictionary<UnitGroup, List<FrontFace>> lineAssignments, HashSet<Cell> toTake)
+    {
         var claims = lineAssignments
             .ToDictionary(kvp => kvp.Key,
                 kvp => Frontline.AdvanceInto
-                .Where(c => kvp.Value.Any(f => f.Foreign == c.Id))
-                .OfType<LandCell>()
-                .ToHashSet());
+                    .Where(c => kvp.Value.Any(f => f.Foreign == c.Id))
+                    .OfType<LandCell>()
+                    .ToHashSet());
         var iter = 0;
-        
+
         toTake.ExceptWith(claims.Values.SelectMany(v => v));
         while (toTake.Count > 0)
         {
@@ -149,6 +154,7 @@ public class HoldLineAssignment : GroupAssignment
             {
                 throw new Exception("over max iter");
             }
+
             var frontier = toTake
                 .Where(c => c.GetNeighbors(key.Data)
                     .Any(n => Frontline.AdvanceInto.Contains(n)
@@ -191,16 +197,18 @@ public class HoldLineAssignment : GroupAssignment
                 }
             }
         }
-        
-        foreach (var (group, faces) in lineAssignments)
+
+        return claims;
+    }
+
+    private void SetLineAndInsertingGroups(LogicWriteKey key)
+    {
+        InsertingGroups = Groups.Where(g =>
         {
-            var order = new LineOrder(faces,
-                claims[group], false);
-            var proc = new SetUnitOrderProcedure(
-                group.MakeRef(),
-                order);
-            key.SendMessage(proc);
-        }
+            return g.Units.Items(key.Data)
+                .Any(u => { return Frontline.Faces.Any(f => f.Native == u.Position.PolyCell); }) == false;
+        }).ToHashSet();
+        LineGroups = Groups.Except(InsertingGroups).ToHashSet();
     }
 
     private void HandleInsertingGroupsOrders(LogicWriteKey key,

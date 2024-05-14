@@ -59,14 +59,6 @@ public class MilPlanningMode : UiMode
                 }
                 debug.Draw(mb => mb.DrawFrontFaces(frontline.Faces, 
                     Colors.Black, 3f, pos, _client.Data), pos);
-
-
-                if (frontline.AdvanceFront != null)
-                {
-                    debug.Draw(mb => mb.DrawFrontFaces(
-                        frontline.AdvanceFront, 
-                        Colors.White, 2f, pos, _client.Data), pos);
-                }
             }
         }
     }

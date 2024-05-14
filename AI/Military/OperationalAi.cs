@@ -32,7 +32,6 @@ public class OperationalAi
                         .GetAlliance(_data).IsRivals(Alliance, _data))
                 .ToHashSet();
             
-            
             if (rival.Count == 0)
             {
                 continue;
@@ -74,6 +73,7 @@ public class OperationalAi
                             && f.Controller.Get(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
                 .ToHashSet();
         }
-        f.SetAdvanceInto(advanceInto, _data);
+        f.AdvanceInto.Clear();
+            f.AdvanceInto.UnionWith(advanceInto);
     }
 }

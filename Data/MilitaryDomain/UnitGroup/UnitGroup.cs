@@ -49,20 +49,6 @@ public class UnitGroup : Entity
     {
         var unit = Units.Items(d).First();
         return unit.Position.GetCell(d);
-        // var moveType = unit.Template.Entity(d)
-        //     .MoveType.Model(d);
-        // var pos = unit.Position;
-        // var alliance = Regime.Entity(d).GetAlliance(d);
-        // var found = d.Military.WaypointGrid.TryGetClosest(pos.Pos,
-        //     out var wp, 
-        //     w => MoveType(d).TerrainPassable(w.Tri.Tri(d), d));
-        // if (found == false) throw new Exception();
-        // return wp;
-    }
-
-    public Vector2 GetPosition(Data d)
-    {
-        return Units.Items(d).First().Position.GetCell(d).GetCenter();
     }
     public void SetOrder(UnitGroupOrder groupOrder, ProcedureWriteKey key)
     {

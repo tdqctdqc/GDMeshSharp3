@@ -5,12 +5,15 @@ using System.Linq;
 
 public static class MilAiUtil
 {
-    public static float CoverOpposingWeight {get; private set;} = .5f;
-    public static float CoverLengthWeight {get; private set;} = 1f;
-    public static float DesiredOpposingPpRatio {get; private set;} = 2f;
-    public static float PowerPointsPerCellFaceToCover {get; private set;} = 100f;
-    public static int IdealSegmentLength = 5;
-
+    public static float CoverOpposingWeight { get; private set; }
+        = .5f;
+    public static float CoverLengthWeight { get; private set; }
+        = 1f;
+    public static float DesiredOpposingPpRatio { get; private set; }
+        = 2f;
+    public static float PowerPointsPerCellFaceToCover { get; private set; }
+        = 100f;
+    
     public static float GetFaceEnemyCost(Alliance alliance, 
         FrontFace f, Data d)
     {
