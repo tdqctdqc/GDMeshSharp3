@@ -98,13 +98,22 @@ public class HoldLineAssignment : GroupAssignment
     public override void GiveOrders(DeploymentAi ai, 
         LogicWriteKey key)
     {
+        InsertingGroups = Groups.Where(g =>
+        {
+            return g.Units.Items(key.Data)
+                        .Any(u =>
+                        {
+                            return Frontline.Faces.Any(f => f.Native == u.Position.PolyCell);
+                        }) == false;
+        }).ToHashSet();
+        LineGroups = Groups.Except(InsertingGroups).ToHashSet();
         var frontlineFaceCosts 
             = MilAiUtil.GetFaceCosts(Alliance, Frontline.Faces, key.Data);
         
         HandleInsertingGroupsOrders(key, frontlineFaceCosts);
-
+        if (LineGroups.Count == 0) return;
         var lineAssignments = MilAiUtil
-            .GetLineAssignments(Alliance, Groups, Frontline.Faces, key.Data);
+            .GetLineAssignments(Alliance, LineGroups, Frontline.Faces, key.Data);
         
         if (Frontline.AdvanceFront is null
             || Frontline.AdvanceFront.Count == 0)
@@ -136,7 +145,7 @@ public class HoldLineAssignment : GroupAssignment
         while (toTake.Count > 0)
         {
             iter++;
-            if (iter > 1000)
+            if (iter > Frontline.AdvanceInto.Count * 1.5f)
             {
                 throw new Exception("over max iter");
             }
