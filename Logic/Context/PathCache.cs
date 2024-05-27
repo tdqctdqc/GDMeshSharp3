@@ -11,7 +11,6 @@ public class PathCache : ThreadSafeCache<(MoveType moveType, Alliance a, Cell fr
         _thruRival = thruRival;
         _data = d;
     }
-    
     public List<Cell> FindPath(MoveType m, Alliance a,
         Cell from, Cell to)
     {

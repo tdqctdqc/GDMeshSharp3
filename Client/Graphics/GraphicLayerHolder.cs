@@ -15,16 +15,13 @@ public enum LayerOrder
 public class GraphicLayerHolder
 {
     public Dictionary<MapChunk, ChunkGraphic> Chunks { get; private set; }
-    public EntityGraphicReservoir<Unit, UnitGraphic> UnitGraphics { get; private set; }
-    public List<WholeMapGraphic> WholeMapGraphics { get; private set; }
+    public List<ISettinged> WholeMapGraphics { get; private set; }
     private Client _client;
     public GraphicLayerHolder(Client client, GraphicsSegmenter segmenter, 
         Data data)
     {
         _client = client;
-        UnitGraphics = new EntityGraphicReservoir<Unit, UnitGraphic>(
-            u => new UnitGraphic(u, data), 
-            data);
+        
         Chunks = data.Planet.MapAux.Chunks
             .Select(c =>
             {
@@ -40,7 +37,8 @@ public class GraphicLayerHolder
             segmenter.AddElement(kvp.Value, kvp.Key.RelTo.Center);
         }
 
-        WholeMapGraphics = new List<WholeMapGraphic>();
+        WholeMapGraphics = new List<ISettinged>();
+        WholeMapGraphics.Add(new ArmyGraphicManager(client));
         if (data is GenData g)
         {
             // WholeMapGraphics.Add(new GenGraphics(segmenter, g));

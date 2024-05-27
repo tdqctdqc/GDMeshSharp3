@@ -38,20 +38,15 @@ public class OperationalAi
             }
             
             var enemyPowerPoints = rival
-                .Where(c => c.GetUnits(_data) is not null)
-                .SelectMany(c => c.GetUnits(_data))
-                .Where(v => v is not null)
-                .Sum(u => u.GetPowerPoints(_data));
+                .Sum(c => _data.Context.PowerPoints[c]);
             var friendly = frontline.Faces
                 .Select(f => f.GetNative(_data)).Distinct().ToArray();
             var friendlyPowerPoints = friendly
-                .Where(c => c.GetUnits(_data) is not null)
-                .SelectMany(c => c.GetUnits(_data).Where(u => Alliance.Members.RefIds.Contains(u.Regime.RefId)))
-                .Sum(u => u.GetPowerPoints(_data));
+                .Sum(c => _data.Context.PowerPoints[c]);;
 
             if (
-                true 
-                // || friendlyPowerPoints > 1.5f * enemyPowerPoints
+                // true || 
+                friendlyPowerPoints > 1.5f * enemyPowerPoints
                 )
             {
                 GeneralAdvance(frontline, rival);
@@ -63,7 +58,7 @@ public class OperationalAi
         HashSet<Cell> enemy)
     {
         HashSet<Cell> advanceInto = enemy.ToHashSet();
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 1; i++)
         {
             advanceInto = advanceInto.Union(advanceInto.SelectMany(r => 
                     r.GetNeighbors(_data)
@@ -74,6 +69,6 @@ public class OperationalAi
                 .ToHashSet();
         }
         f.AdvanceInto.Clear();
-            f.AdvanceInto.UnionWith(advanceInto);
+        f.AdvanceInto.UnionWith(advanceInto);
     }
 }

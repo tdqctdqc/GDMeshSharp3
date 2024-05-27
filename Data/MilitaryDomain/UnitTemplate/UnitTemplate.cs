@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Linq;
 using MessagePack;
 
 public class UnitTemplate : Entity
@@ -60,5 +61,11 @@ public class UnitTemplate : Entity
     public override void CleanUp(StrongWriteKey key)
     {
         
+    }
+
+    public float GetPowerPoints(Data d)
+    {
+        return TroopCounts.GetEnumerableModel(d)
+            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
     }
 }

@@ -6,6 +6,7 @@ using Godot;
 public class CombatGraph
 {
     private CombatCalculator _combat;
+    public Dictionary<Cell, CellCombatNode> CellCombatNodes { get; private set; }
     private Dictionary<int, ICombatGraphNode> _nodesById;
     private Dictionary<Vector2I, List<ICombatGraphEdge>> _edgesByEdgeId;
     private Dictionary<ICombatGraphEdge, (ICombatGraphNode, ICombatGraphNode)> _nodesByEdge;
@@ -18,6 +19,7 @@ public class CombatGraph
         _edgesByEdgeId = new Dictionary<Vector2I, List<ICombatGraphEdge>>();
         _edgesByNode = new Dictionary<ICombatGraphNode, List<ICombatGraphEdge>>();
         _nodesByEdge = new Dictionary<ICombatGraphEdge, (ICombatGraphNode, ICombatGraphNode)>();
+        CellCombatNodes = new Dictionary<Cell, CellCombatNode>();
     }
 
     public bool HasNode(ICombatGraphNode n)
@@ -55,6 +57,11 @@ public class CombatGraph
         _edgesByNode[edge.Node2].Add(edge);
         _nodesByEdge.Add(edge, (edge.Node1, edge.Node2));
     }
+
+    public void DistributeResources(Data d)
+    {
+        
+    }
     public void CalculateCombat(Data d)
     {
         Do((e, combat) 
@@ -74,20 +81,16 @@ public class CombatGraph
     {
         Do((e, combat) =>
         {
-            if (e.Suppressed(combat, key.Data)) return;
             e.VoluntaryResults(combat, key);
         });
     }
-    private void Do(Action<ICombatGraphEdge, CombatCalculator> act)
+    private void Do(Action<ICombatGraphNode, CombatCalculator> act)
     {
-        foreach (var (edgeId, edges) in _edgesByEdgeId)
+        foreach (var (id, node) in _nodesById)
         {
-            var n1 = _nodesById[edgeId.X];
-            var n2 = _nodesById[edgeId.X];
-            foreach (var edge in edges)
-            {
-                act(edge, _combat);
-            }
+            // var n1 = _nodesById[edgeId.X];
+            // var n2 = _nodesById[edgeId.X];
+            act(node, _combat);
         }
     }
 }

@@ -36,7 +36,6 @@ public class MapPos
         }
         PolyCell = polyCell;
         Destination = destCell;
-        key.Data.Context.AddToMovementRecord(moveDat.Id, this, key.Data);
     }
 
     public Cell GetCell(Data d)

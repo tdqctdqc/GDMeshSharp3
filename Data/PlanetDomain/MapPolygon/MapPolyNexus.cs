@@ -27,9 +27,9 @@ public class MapPolyNexus : Entity
         var n = new MapPolyNexus(id, pre.Pos, 
             ERefSet<MapPolygonEdge>.Construct(
                 nameof(IncidentEdges), id,
-                es, key.Data),
+                es),
             ERefSet<MapPolygon>.Construct(nameof(IncidentPolys), id,
-                ps, key.Data)
+                ps)
             );
         
         key.Create(n);
@@ -53,10 +53,10 @@ public class MapPolyNexus : Entity
             pos, 
             ERefSet<MapPolygonEdge>.Construct(
                 nameof(IncidentEdges), id,
-                new HashSet<int>{e1.Id, e2.Id, e3.Id}, key.Data),
+                new HashSet<int>{e1.Id, e2.Id, e3.Id}),
             
             ERefSet<MapPolygon>.Construct(nameof(IncidentPolys), id,
-                new HashSet<int>{p1.Id, p2.Id, p3.Id}, key.Data)
+                new HashSet<int>{p1.Id, p2.Id, p3.Id})
         );
         
         key.Create(n);

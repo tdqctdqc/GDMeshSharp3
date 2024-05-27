@@ -34,25 +34,13 @@ public class FormUnitPriority
         LogicWriteKey key)
     {
         var useTroops = RegimeUseTroopsProcedure.Construct(r);
-        var capitalPoly = r.Capital.Get(key.Data);
-        var pos = (Vector2I)capitalPoly.Center;
-        var cell = 
-            capitalPoly.GetCells(key.Data).First(c => c is LandCell);
-        var deployPolyCell = r.GetCells(key.Data).Where(goodDeployCell).First();
-
-        bool goodDeployCell(Cell c)
-        {
-            return c.Controller.RefId == r.Id;
-        }
-        
-        var unitPos = new MapPos(deployPolyCell.Id, (-1, 0f));
         
         foreach (var (template, num) in toBuild)
         {
             useTroops.AddTroopCosts(template, num, key.Data);
             for (var i = 0; i < num; i++)
             {
-                Unit.Create(template, r, unitPos.Copy(), key);
+                Unit.Create(template, r, key);
             }
         }
     }

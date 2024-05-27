@@ -5,150 +5,164 @@ using Godot;
 using Google.OrTools;
 using Google.OrTools.Graph;
 
-public class OrToolsExt
+public static class OrToolsExt
 {
-    // private static Dictionary<int, string> _results = new Dictionary<int, string>()
-    // {
-    //     {MinCostFlowBase.OPTIMAL, "OPTIMAL"},
-    //     {MinCostFlowBase.FEASIBLE, "FEASIBLE"},
-    //     {MinCostFlowBase.BAD_RESULT, "BAD_RESULT"},
-    //     {MinCostFlowBase.NOT_SOLVED, "NOT_SOLVED"},
-    //     {MinCostFlowBase.INFEASIBLE, "INFEASIBLE"},
-    //     {MinCostFlowBase.UNBALANCED, "UNBALANCED"},
-    //     {MinCostFlowBase.BAD_COST_RANGE, "BAD_COST_RANGE"},
-    // };
-    
-    public static Graph<T, int> SolveMinFlow<T>(List<T> nodes, Func<T, IEnumerable<T>> getNeighbors,
-        Func<T, T, int> getCapacity, Func<T, T, int> getCost, Func<T, int> getSupply)
-    {
-        MinCostFlow minCostFlow = new MinCostFlow();
-        var indices = new Dictionary<T, int>();
-        for (var i = 0; i < nodes.Count; i++)
-        {
-            indices.Add(nodes[i], i);
-        }
-        
-        
-        var froms = new List<int>();
-        var tos = new List<int>();
-        var costs = new List<int>();
-        var capacities = new List<int>();
 
-        for (var i = 0; i < nodes.Count; i++)
+    public static Dictionary<TWorker, TTask> 
+        GetLinearSumAssignment<TWorker, TTask>(
+            IReadOnlyList<TWorker> workers,
+            IReadOnlyList<TTask> tasks,
+            Func<TWorker, TTask, int> getCost)
+    {
+        var assignment = new LinearSumAssignment();
+        for (var i = 0; i < workers.Count; i++)
         {
-            var node = nodes[i];
-            var ns = getNeighbors(node);
-            foreach (var n in ns)
+            var worker = workers[i];
+            for (var j = 0; j < tasks.Count; j++)
             {
-                if (indices.ContainsKey(n) == false) continue;
-                froms.Add(i);
-                tos.Add(indices[n]);
-                costs.Add(Math.Max(0, getCost(node, n)));
-                capacities.Add(getCapacity(node, n));
+                var task = tasks[j];
+                var cost = getCost(worker, task);
+                assignment.AddArcWithCost(i, j, cost);
+
             }
         }
 
-        int[] supplies = nodes.Select(getSupply).ToArray();
-
-        for (int i = 0; i < froms.Count; ++i)
+        var solution = assignment.Solve();
+        var res = new Dictionary<TWorker, TTask>();
+        if (solution == LinearSumAssignment.Status.OPTIMAL)
         {
-            int arc =
-                minCostFlow.AddArcWithCapacityAndUnitCost(froms[i], tos[i], capacities[i], costs[i]);
-            if (arc != i)
-                throw new Exception("Internal error");
+            for (var i = 0; i < workers.Count; i++)
+            {
+                var taskIndex = assignment.RightMate(i);
+                var task = tasks[taskIndex];
+                res.Add(workers[i], task);
+            }
+        }
+        else
+        {
+            throw new Exception();
         }
 
-        for (int i = 0; i < supplies.Length; ++i)
-        {
-            minCostFlow.SetNodeSupply(i, supplies[i]);
-        }
-        var status = minCostFlow.Solve();
-        GD.Print(status);
-        
-        var graph = new Graph<T, int>();
-        nodes.ForEach(n => graph.AddNode(n));
-        var arcs = minCostFlow.NumArcs();
-        for (int i = 0; i < minCostFlow.NumArcs(); i++)
-        {
-            var fromIndex = minCostFlow.Tail(i);
-
-            var toIndex = minCostFlow.Head(i);
-
-            var from = nodes[fromIndex];
-            var to = nodes[toIndex];
-            graph.AddEdge(from, to, 100);
-        }
-
-        return graph;
+        return res;
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    public static void Test()
+    public static Dictionary<TWorker, TTask> 
+        RepeatLinearSumAssignment<TWorker, TTask>(
+            IReadOnlyList<TWorker> workersSource,
+            IReadOnlyList<TTask> tasks,
+            Func<TWorker, TTask, int> getCost)
     {
-        // Instantiate a SimpleMinCostFlow solver.
-        MinCostFlow minCostFlow = new MinCostFlow();
-
-        // Define four parallel arrays: sources, destinations, capacities, and unit costs
-        // between each pair. For instance, the arc from node 0 to node 1 has a
-        // capacity of 15.
-        // Problem taken From Taha's 'Introduction to Operations Research',
-        // example 6.4-2.
-        int[] startNodes = { 0, 0, 1, 1, 1, 2, 2, 3, 4 };
-        int[] endNodes = { 1, 2, 2, 3, 4, 3, 4, 4, 2 };
-        int[] capacities = { 15, 8, 20, 4, 10, 15, 4, 20, 5 };
-        int[] unitCosts = { 4, 4, 2, 2, 6, 1, 3, 2, 3 };
-
-        // Define an array of supplies at each node.
-        int[] supplies = { 20, 0, 0, -5, -15 };
-
-        // Add each arc.
-        for (int i = 0; i < startNodes.Length; ++i)
+        var res = new Dictionary<TWorker, TTask>();
+        var workersToTake = workersSource.ToHashSet();
+        var maxIter = workersSource.Count / (float)tasks.Count
+                      + 2;
+        var iter = 0;
+        while (workersToTake.Count > 0)
         {
-            int arc =
-                minCostFlow.AddArcWithCapacityAndUnitCost(startNodes[i], endNodes[i], capacities[i], unitCosts[i]);
-            if (arc != i)
-                throw new Exception("Internal error");
+            iter++;
+            if (iter > maxIter)
+            {
+                throw new Exception();
+            }
+            var workers = workersToTake.ToList();
+            var assignment = new LinearSumAssignment();
+
+            for (var i = 0; i < workers.Count; i++)
+            {
+                var worker = workers[i];
+                for (var j = 0; j < tasks.Count; j++)
+                {
+                    var task = tasks[j];
+                    var cost = getCost(worker, task);
+                    if (cost == 0) cost = 1;
+                    if (cost < 0 || float.IsNaN(cost))
+                    {
+                        throw new Exception();
+                    }
+                    assignment.AddArcWithCost(i, j, cost);
+                }
+            }
+
+            var solution = assignment.Solve();
+            if (solution == LinearSumAssignment.Status.OPTIMAL)
+            {
+                for (var i = 0; i < workers.Count; i++)
+                {
+                    var taskIndex = assignment.RightMate(i);
+                    if (taskIndex == -1)
+                    {
+                        GD.Print("skipping");
+                        continue;
+                    }
+                    var task = tasks[taskIndex];
+                    var worker = workers[i];
+                    res.Add(worker, task);
+                    workersToTake.Remove(worker);
+                }
+            }
+            else
+            {
+                throw new Exception($"iter {iter} workers {workers.Count} jobs {tasks.Count}");
+            }
         }
 
-        // Add node supplies.
-        for (int i = 0; i < supplies.Length; ++i)
+        return res;
+    }
+
+    public static Dictionary<TWorker, TTask>
+        MinCostFlowAssignment<TWorker, TTask>(
+            IReadOnlyList<TWorker> workers,
+            IReadOnlyList<TTask> tasks,
+            Func<TWorker, TTask, int> getCost)
+    {
+        var flow = workers.Count;
+        int source = workers.Count + tasks.Count;
+        int sink = source + 1;
+        var solver = new MinCostFlow();
+        for (var i = 0; i < workers.Count; i++)
         {
-            minCostFlow.SetNodeSupply(i, supplies[i]);
+            solver.AddArcWithCapacityAndUnitCost(source,
+                i, 1, 0);
+        }
+        for (var i = 0; i < tasks.Count; i++)
+        {
+            solver.AddArcWithCapacityAndUnitCost(
+                i + workers.Count,
+                sink, flow, 0);
+        }
+        for (var i = 0; i < workers.Count; i++)
+        {
+            var worker = workers[i];
+            for (var j = 0; j < tasks.Count; j++)
+            {
+                var task = tasks[j];
+                var taskNodeIndex = j + workers.Count;
+                var cost = getCost(worker, task);
+                solver.AddArcWithCapacityAndUnitCost(i, taskNodeIndex,
+                    1, cost);
+            }
         }
         
-        
-        
-        var status = minCostFlow.Solve();
+        solver.SetNodeSupply(source, flow);
+        solver.SetNodeSupply(sink, -flow);
+    
+        var solution = solver.Solve();
+        var res = new Dictionary<TWorker, TTask>();
+        for (var i = 0; i < solver.NumArcs(); i++)
+        {
+            if (solver.Tail(i) == source || solver.Head(i) == sink)
+            {
+                continue;
+            }
 
-        // Find the min cost flow.
+            if (solver.Flow(i) > 0)
+            {
+                var worker = solver.Tail(i);
+                var task = solver.Head(i) - workers.Count;
+                res.Add(workers[worker], tasks[task]);
+            }
+        }
 
-        // if (status == MinCostFlow.Status.OPTIMAL)
-        // {
-        //     Console.WriteLine("Minimum cost: " + minCostFlow.OptimalCost());
-        //     Console.WriteLine("");
-        //     Console.WriteLine(" Edge   Flow / Capacity  Cost");
-        //     for (int i = 0; i < minCostFlow.NumArcs(); ++i)
-        //     {
-        //         long cost = minCostFlow.Flow(i) * minCostFlow.UnitCost(i);
-        //         Console.WriteLine(minCostFlow.Tail(i) + " -> " + minCostFlow.Head(i) + "  " +
-        //                           string.Format("{0,3}", minCostFlow.Flow(i)) + "  / " +
-        //                           string.Format("{0,3}", minCostFlow.Capacity(i)) + "       " +
-        //                           string.Format("{0,3}", cost));
-        //     }
-        // }
-        // else
-        // {
-        //     Console.WriteLine("Solving the min cost flow problem failed. Solver status: " + status);
-        // }
+        return res;
     }
 }

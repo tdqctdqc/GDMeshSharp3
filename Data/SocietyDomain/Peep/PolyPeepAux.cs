@@ -5,9 +5,9 @@ using Godot;
 
 public class PolyPeepAux
 {
-    public Indexer<Cell, Peep> ByCell { get; private set; } 
+    public OneToOneIndexer<Cell, Peep> ByCell { get; private set; } 
     public PolyPeepAux(Data data)
     {
-        ByCell = Indexer.MakeForEntity<Cell, Peep>(p => p.Cell.Get(data), data);
+        ByCell = OneToOneIndexer.MakeForEntity<Cell, Peep>(p => p.Cell.Get(data), data);
     }
 }

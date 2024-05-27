@@ -5,16 +5,15 @@ using Godot;
 
 public class DoNothingUnitGroupOrder : UnitGroupOrder
 {
-    public override void Handle(UnitGroup g, LogicWriteKey key,
+    public override void Handle(Army g, LogicWriteKey key,
         HandleUnitOrdersProcedure proc)
     {
         
     }
 
-    public override void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data d)
+    public override void Draw(Army group, Vector2 relTo, MeshBuilder mb, Data d)
     {
-        var cells = group.Units.Items(d)
-            .Select(u => u.Position.GetCell(d)).Distinct();
+        var cells = group.GetCells(d);
         var crossSize = 10f;
         foreach (var c in cells)
         {
@@ -29,7 +28,7 @@ public class DoNothingUnitGroupOrder : UnitGroupOrder
         return;
     }
 
-    public override void RegisterCombatActions(UnitGroup group, CombatCalculator combat, LogicWriteKey key)
+    public override void RegisterCombatActions(Army group, CombatCalculator combat, LogicWriteKey key)
     {
         
     }

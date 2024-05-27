@@ -6,10 +6,10 @@ using Godot;
 
 public class PolyEdgeAux
 {
-    private Indexer<Vector2, MapPolygonEdge> _byEdge;
+    private OneToOneIndexer<Vector2, MapPolygonEdge> _byEdge;
     public PolyEdgeAux(Data data)
     {
-        _byEdge = Indexer.MakeForEntity<Vector2, MapPolygonEdge>
+        _byEdge = OneToOneIndexer.MakeForEntity<Vector2, MapPolygonEdge>
             (e => MakeEdge(e, data), data);
     }
     private Vector2 MakeEdge(MapPolygonEdge e, Data data)

@@ -1,35 +1,34 @@
 
 using System.Diagnostics;
+using System.Linq;
 using Godot;
 
 public class UnitAux
 {
-    public ERefColIndexer<UnitGroup, Unit> UnitByGroup { get; private set; }
-    public MultiIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
-    public MultiIndexer<Cell, Unit> UnitsByCell { get; private set; }
-    
+    public ERefColIndexer<Army, Unit> UnitByGroup { get; private set; }
+    public OneToManyIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
+    public ManyToManyIndexer<Army, Cell> ArmiesByOccupancy { get; private set; }
+    public OneToManyIndexer<Cell, Army> ArmiesByHomeCell { get; private set; }
     private Data _data;
     public UnitAux(Data d)
     {
         _data = d;
         
-        UnitTemplates = MultiIndexer.MakeForEntity<Regime, UnitTemplate>(
+        UnitTemplates = OneToManyIndexer.MakeForEntity<Regime, UnitTemplate>(
             t => t.Regime.Get(d), d);
         
-        UnitByGroup = new ERefColIndexer<UnitGroup, Unit>(
+        UnitByGroup = new ERefColIndexer<Army, Unit>(
             g => g.Units.Items(d),  
-            d.GetEntityMeta<UnitGroup>().GetRefColMeta<Unit>(nameof(UnitGroup.Units)),
+            d.GetEntityMeta<Army>().GetRefColMeta<Unit>(nameof(Army.Units)),
             d);
-       
-        var unitChangedCell = new ValChangeAction<Unit, Cell>();
-        _data.Notices.Military.UnitChangedPos.Subscribe(n => unitChangedCell.Invoke(n.Owner, n.NewVal.GetCell(d), n.OldVal.GetCell(d)));
-                
-        UnitsByCell = MultiIndexer.MakeForEntity<Cell, Unit>(
-            u => u.Position.GetCell(d), d);
-        UnitsByCell.RegisterReCalc(d.Notices.Gen.FinishedGen);
-        UnitsByCell.RegisterReCalc(d.Notices.FinishedStateSync);
-        UnitsByCell.RegisterChanged(unitChangedCell);
         
+        ArmiesByOccupancy = ManyToManyIndexer.MakeForEntity<Cell, Army>(
+            a => a.Cells.Select(c => PlanetDomainExt.GetPolyCell(c, d)),
+            d);
+
+        ArmiesByHomeCell = OneToManyIndexer.MakeForEntity<Cell, Army>(
+            a => a.GetHomeCell(d), d);
+       
         d.Notices.FinishedStateSync.Subscribe(MakeUnitGrid);
         d.Notices.Ticked.Blank.Subscribe(MakeUnitGrid);
         d.Notices.Gen.ExitedGen.Subscribe(MakeUnitGrid);
@@ -41,9 +40,9 @@ public class UnitAux
         var sw = new Stopwatch();
         sw.Start();
         var dim = new Vector2(_data.Planet.Width, _data.Planet.Height);
-
+        ArmiesByOccupancy.ReCalc();
         sw.Stop();
-        _data.Logger.Log("Make unit grid time " + sw.Elapsed.TotalMilliseconds,
+        _data.Logger.Log("Make army grid time " + sw.Elapsed.TotalMilliseconds,
             LogType.Logic);
     }
 }

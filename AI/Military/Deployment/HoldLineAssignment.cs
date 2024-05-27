@@ -10,8 +10,8 @@ public class HoldLineAssignment : GroupAssignment
 {
     public Frontline Frontline { get; private set; }
     public Color Color { get; private set; }
-    public HashSet<UnitGroup> LineGroups { get; private set; }
-    public HashSet<UnitGroup> InsertingGroups { get; private set; }
+    public HashSet<Army> LineGroups { get; private set; }
+    public HashSet<Army> InsertingGroups { get; private set; }
     public HoldLineAssignment(
         DeploymentAi ai,
         DeploymentBranch parent,
@@ -19,22 +19,22 @@ public class HoldLineAssignment : GroupAssignment
         LogicWriteKey key) : base(parent, ai, key)
     {
         Frontline = frontline;
-        LineGroups = new HashSet<UnitGroup>();
-        InsertingGroups = new HashSet<UnitGroup>();
+        LineGroups = new HashSet<Army>();
+        InsertingGroups = new HashSet<Army>();
         Color = ColorsExt.GetRandomColor();
     }
     
 
-    protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
+    protected override void RemoveGroupFromData(DeploymentAi ai, Army g)
     {
         LineGroups.Remove(g);
         InsertingGroups.Remove(g);
     }
 
     protected override void AddGroupToData(DeploymentAi ai,
-        UnitGroup g, Data d)
+        Army g, Data d)
     {
-        var cell = g.GetCell(d);
+        var cell = g.GetHomeCell(d);
         
         if (Frontline.Faces.Any(f => f.Native == cell.Id)
             == false)
@@ -58,8 +58,8 @@ public class HoldLineAssignment : GroupAssignment
 
         return Mathf.Max(oppNeed, lengthNeed);
     }
-    public override UnitGroup PullGroup(DeploymentAi ai, 
-        Func<UnitGroup, float> suitability, 
+    public override Army PullGroup(DeploymentAi ai, 
+        Func<Army, float> suitability, 
         LogicWriteKey key)
     {
         if (Groups.Count < 2) return null;
@@ -85,7 +85,7 @@ public class HoldLineAssignment : GroupAssignment
         return null;
     }
 
-    public override float Suitability(UnitGroup g, Data d)
+    public override float Suitability(Army g, Data d)
     {
         return g.GetPowerPoints(d) + g.Units.Items(d).Sum(u => u.GetHitPoints(d));
     }
@@ -101,18 +101,18 @@ public class HoldLineAssignment : GroupAssignment
         SetLineAndInsertingGroups(key);
         var frontlineFaceCosts 
             = MilAiUtil.GetFaceCosts(Alliance, Frontline.Faces, key.Data);
-        HandleInsertingGroupsOrders(key, frontlineFaceCosts);
+        HandleInsertingGroupsOrders(key);
         if (LineGroups.Count == 0) return;
         var lineAssignments = MilAiUtil
-            .GetLineAssignments(Alliance, LineGroups, Frontline.Faces, key.Data);
+            .GetGroupLineAssignments(Alliance, LineGroups, Frontline.Faces, key.Data);
         
         if (Frontline.AdvanceInto is null
             || Frontline.AdvanceInto.Count == 0)
         {
             foreach (var (group, faces) in lineAssignments)
             {
-                var order = new LineOrder(faces, 
-                    new HashSet<LandCell>(),
+                var order = new LineOrder(faces.Select(f => f.Id).ToHashSet(), 
+                    new HashSet<int>(),
                     false);
                 var proc = new SetUnitOrderProcedure(
                     group.MakeRef(), order);
@@ -123,12 +123,13 @@ public class HoldLineAssignment : GroupAssignment
         }
 
         var toTake = Frontline.AdvanceInto.ToHashSet();
-        var claims = MakeAdvanceZones(key, lineAssignments, toTake);
+            
+            
 
         foreach (var (group, faces) in lineAssignments)
         {
-            var order = new LineOrder(faces,
-                claims[group], false);
+            var order = new LineOrder(faces.Select(c => c.Id).ToHashSet(),
+                new HashSet<int>(), false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
                 order);
@@ -136,132 +137,35 @@ public class HoldLineAssignment : GroupAssignment
         }
     }
 
-    private Dictionary<UnitGroup, HashSet<LandCell>> MakeAdvanceZones(LogicWriteKey key, Dictionary<UnitGroup, List<FrontFace>> lineAssignments, HashSet<Cell> toTake)
-    {
-        var claims = lineAssignments
-            .ToDictionary(kvp => kvp.Key,
-                kvp => Frontline.AdvanceInto
-                    .Where(c => kvp.Value.Any(f => f.Foreign == c.Id))
-                    .OfType<LandCell>()
-                    .ToHashSet());
-        var iter = 0;
-
-        toTake.ExceptWith(claims.Values.SelectMany(v => v));
-        while (toTake.Count > 0)
-        {
-            iter++;
-            if (iter > Frontline.AdvanceInto.Count * 1.5f)
-            {
-                throw new Exception("over max iter");
-            }
-
-            var frontier = toTake
-                .Where(c => c.GetNeighbors(key.Data)
-                    .Any(n => Frontline.AdvanceInto.Contains(n)
-                              && toTake.Contains(n) == false))
-                .OfType<LandCell>()
-                .ToArray();
-            foreach (var (group, claim) in claims)
-            {
-                int maxNeighbors = 0;
-
-                for (var i = 0; i < frontier.Length; i++)
-                {
-                    var fCell = frontier[i];
-                    int neighbors = 0;
-                    foreach (var claimed in claim)
-                    {
-                        if (claimed.Neighbors.Contains(fCell.Id))
-                        {
-                            neighbors++;
-                            maxNeighbors = Mathf.Max(neighbors, maxNeighbors);
-                            if (neighbors > 1)
-                            {
-                                claim.Add(fCell);
-                                toTake.Remove(fCell);
-                                break;
-                            }
-                        }
-                    }
-                }
-
-                if (maxNeighbors == 1)
-                {
-                    var adjs = frontier
-                        .Where(f => claim.Any(c => c.Neighbors.Contains(f.Id)));
-                    foreach (var adj in adjs)
-                    {
-                        claim.Add(adj);
-                        toTake.Remove(adj);
-                    }
-                }
-            }
-        }
-
-        return claims;
-    }
 
     private void SetLineAndInsertingGroups(LogicWriteKey key)
     {
         InsertingGroups = Groups.Where(g =>
         {
             return g.Units.Items(key.Data)
-                .Any(u => { return Frontline.Faces.Any(f => f.Native == u.Position.PolyCell); }) == false;
+                .Any(u => Frontline.Faces.Any(f => g.Cells.Contains(f.Native))) == false;
         }).ToHashSet();
         LineGroups = Groups.Except(InsertingGroups).ToHashSet();
     }
 
-    private void HandleInsertingGroupsOrders(LogicWriteKey key,
-        Dictionary<FrontFace, float> frontlineFaceCosts)
+    private void HandleInsertingGroupsOrders(LogicWriteKey key)
     {
-        var subSegs = GetSubSegs(key, frontlineFaceCosts);
-        var toPick = InsertingGroups.ToHashSet();
-        while (toPick.Count > 0)
+        foreach (var army in InsertingGroups)
         {
-            var picker = subSegs.MinBy(s => s.Value.have / s.Value.need);
-            var values = picker.Value;
-            var cell = picker.Key.First().GetNative(key.Data);
-            var picked = toPick.MinBy(g =>
-                g.GetCell(key.Data).GetCenter().Offset(cell.GetCenter(), key.Data).Length());
-            toPick.Remove(picked);
-            subSegs[picker.Key] = (values.need, values.have + picked.GetPowerPoints(key.Data));
-            var order = GoToCellGroupOrder.Construct(cell, Alliance,
-                picked, key.Data);
-            key.SendMessage(new SetUnitOrderProcedure(picked.MakeRef(), order));
+            var close = GetInsertPoint(army, key.Data);
+            var order = GoToCellsOrder.Construct(
+                close.Yield(), 
+                Alliance,
+                army, key.Data);
+            key.SendMessage(new SetUnitOrderProcedure(army.MakeRef(), order));
         }
     }
 
-    private Dictionary<List<FrontFace>, (float need, float have)>
-        GetSubSegs(LogicWriteKey key, Dictionary<FrontFace, float> faceCosts)
+    private Cell GetInsertPoint(Army army, Data d)
     {
-        var subSegments = new Dictionary<List<FrontFace>, (float need, float have)>();
-        for (var i = 0; i < Frontline.Faces.Count; i += 5)
-        {
-            var from = i;
-            var to = Mathf.Min(Frontline.Faces.Count - 1, i + 5);
-            var subSeg = Frontline.Faces.GetRange(from, to - from + 1);
-            var need = subSeg.Sum(f => faceCosts[f]);
-            if (need == 0f) throw new Exception();
-            var have = 0f;
-            var natives = subSeg.Select(f => f.GetNative(key.Data)).Distinct();
-            foreach (var native in natives)
-            {
-                var units = native.GetUnits((key.Data));
-                if (units is null) continue;
-                have += units.Sum(u => u.GetPowerPoints(key.Data));
-            }
-
-            subSegments.Add(subSeg, (need, have));
-        }
-
-        return subSegments;
+        return Frontline.Faces.Select(f => f.GetNative(d))
+            .MinBy(c => c.GetCenter().Offset(army.GetHomeCell(d).GetCenter(), d).Length());
     }
-
-    
-    
-
-    
-    
     public float GetOpposingPowerPoints(Data data)
     {
         return Frontline.Faces.Select(f => f.GetNative(data))
@@ -269,12 +173,7 @@ public class HoldLineAssignment : GroupAssignment
             .SelectMany(c => c.GetNeighbors(data))
             .Distinct()
             .Where(n => n.RivalControlled(Alliance, data))
-            .Sum(n =>
-            {
-                var us = n.GetUnits(data);
-                if (us == null) return 0f;
-                return us.Sum(u => u.GetPowerPoints(data));
-            });
+            .Sum(c => data.Context.PowerPoints[c]);
     }
 
     public int GetLength(Data d)

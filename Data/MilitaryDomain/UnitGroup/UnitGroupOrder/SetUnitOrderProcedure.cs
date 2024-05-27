@@ -1,10 +1,10 @@
 
 public class SetUnitOrderProcedure : Procedure
 {
-    public ERef<UnitGroup> Group { get; private set; }
+    public ERef<Army> Group { get; private set; }
     public UnitGroupOrder GroupOrder { get; private set; }
 
-    public SetUnitOrderProcedure(ERef<UnitGroup> group, UnitGroupOrder groupOrder)
+    public SetUnitOrderProcedure(ERef<Army> group, UnitGroupOrder groupOrder)
     {
         Group = group;
         GroupOrder = groupOrder;

@@ -21,7 +21,7 @@ public class Theater
                     var pAlliance = p.Controller.Get(data).GetAlliance(data);
                     return alliance.IsRivals(pAlliance, data);
                 }, data)
-            .Select(fs => new Frontline(fs, alliance))
+            .Select(fs => new Frontline(fs, new HashSet<Cell>(), alliance))
             .ToHashSet();
         
         

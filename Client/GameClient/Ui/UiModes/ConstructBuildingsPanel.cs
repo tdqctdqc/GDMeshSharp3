@@ -2,7 +2,7 @@
 using System.Linq;
 using Godot;
 
-public partial class ConstructBuildingsPanel : ScrollPanel
+public partial class ConstructBuildingsPanel : Panel
 {
     private VBoxContainer _info;
     private ConstructBuildingsPanel()
@@ -10,8 +10,10 @@ public partial class ConstructBuildingsPanel : ScrollPanel
     {
     }
     public ConstructBuildingsPanel(Client c) 
-        : base(new Vector2(300f, 600f), Colors.Black)
     {
+        var inner = this.MakeScroll<VBoxContainer>(new Vector2(300f, 600f));
+        this.SelfModulate = Colors.Black;
+        
         var list = c.Data.Models.Buildings.GetList();
         var setting = c.UiController.ModeOption.Options
             .OfType<ConstructionMode>()
@@ -19,9 +21,9 @@ public partial class ConstructBuildingsPanel : ScrollPanel
         var menu = setting
             .GetControlInterfaceIcon(m => m.Icon.Texture,
             Vector2I.One * 50);
-        Inner.AddChild(menu);
+        inner.AddChild(menu);
         _info = new VBoxContainer();
-        Inner.AddChild(_info);
+        inner.AddChild(_info);
         setting.SettingChanged.SubscribeForNode(v =>
         {
             DrawInfo(v.newVal, c.Data);

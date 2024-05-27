@@ -72,7 +72,7 @@ public partial class UnitGraphic : Node2D
 
         _regimeColor.Modulate = unit.Regime.Get(data).GetUnitColor();
         
-        if (unit.GetGroup(data) is UnitGroup g)
+        if (unit.GetGroup(data) is Army g)
         {
             _groupColor.Modulate = g.Color;
         }

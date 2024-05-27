@@ -12,7 +12,7 @@ public class HandleUnitOrdersModule : LogicModule
     {
         var data = key.Data;
         var proc = HandleUnitOrdersProcedure.Construct();
-        Parallel.ForEach(data.GetAll<UnitGroup>(), 
+        Parallel.ForEach(data.GetAll<Army>(), 
             group =>
             {
                 group.GroupOrder.Handle(group, key, proc);

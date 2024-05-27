@@ -74,19 +74,39 @@ public partial class GeneralTab : ScrollContainer
         if (regime != spectating
             && spectatingAllianceLeader == spectating)
         {
-            var target = regime.GetAlliance(client.Data);
-            var declareRival = ButtonExt.GetButton(() =>
+            if (spectatingAlliance.IsRivals(regimeAlliance, client.Data)
+                    == false)
             {
-                var proc = new DeclareRivalProcedure(
-                    spectatingAlliance.Id,
-                    target.Id);
-                var com = new DoProcedureCommand(proc, 
-                    client.Data.ClientPlayerData.LocalPlayerGuid);
-                client.Server.QueueCommandLocal(com);
-            });
-            declareRival.Text = "Declare Rival";
-            _container.AddChild(declareRival);
+                var declareRival = ButtonExt.GetButton(() =>
+                {
+                    var proc = new DeclareRivalProcedure(
+                        spectatingAlliance.Id,
+                        regimeAlliance.Id);
+                    var com = new SendMessageCommand(proc, 
+                        client.Data.ClientPlayerData.LocalPlayerGuid);
+                    client.Server.QueueCommandLocal(com);
+                });
+                declareRival.Text = "Declare Rival";
+                _container.AddChild(declareRival);
+            }
+            else if(spectatingAlliance.IsAtWar(regimeAlliance, client.Data)
+                    == false)
+            {
+                var declareRival = ButtonExt.GetButton(() =>
+                {
+                    var proc = new DeclareWarProcedure(
+                        regimeAlliance.Id,
+                        spectatingAlliance.Id);
+                    var com = new SendMessageCommand(proc, 
+                        client.Data.ClientPlayerData.LocalPlayerGuid);
+                    client.Server.QueueCommandLocal(com);
+                });
+                declareRival.Text = "Declare War";
+                _container.AddChild(declareRival);
+            }
+            
         }
+        
 
         _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(client.Data).Id);
         _container.CreateLabelAsChild("ALLIANCE LEADER: " 

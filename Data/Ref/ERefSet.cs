@@ -14,7 +14,7 @@ public class ERefSet<TRef>
     }
     public static ERefSet<TRef> Construct(string name, 
         int ownerId,
-        HashSet<int> refIds, Data data)
+        HashSet<int> refIds)
     {
         var col = new ERefSet<TRef>(name, ownerId, refIds);
         return col;

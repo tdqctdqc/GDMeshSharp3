@@ -10,11 +10,11 @@ public interface IDeploymentNode
     float GetPowerPointNeed(Data data);
     void GiveOrders(DeploymentAi ai, LogicWriteKey key);
     Cell GetCharacteristicCell(Data d);
-    UnitGroup PullGroup(DeploymentAi ai, 
-        Func<UnitGroup, float> suitability,
+    Army PullGroup(DeploymentAi ai, 
+        Func<Army, float> suitability,
         LogicWriteKey key);
 
-    void PushGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key);
+    void PushGroup(DeploymentAi ai, Army g, LogicWriteKey key);
 }
 
 public static class IDeploymentNodeExt

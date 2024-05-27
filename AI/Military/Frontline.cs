@@ -9,9 +9,11 @@ public class Frontline
     public List<FrontFace> Faces { get; private set; }
     public HashSet<Cell> AdvanceInto { get; private set; }
     public Frontline(List<FrontFace> faces, 
+        HashSet<Cell> advanceInto,
         Alliance alliance)
     {
         Faces = faces;
         Alliance = alliance;
+        AdvanceInto = advanceInto;
     }
 }

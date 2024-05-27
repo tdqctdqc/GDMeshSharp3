@@ -46,12 +46,12 @@ public static class MeshBuilderExt
         }
 
         foreach (var kvp in 
-                 MilAiUtil.GetLineAssignments(seg.Alliance, seg.Groups,
+                 MilAiUtil.GetGroupLineAssignments(seg.Alliance, seg.Groups,
                      seg.Frontline.Faces, d))
         {
-            var line = kvp.Value;
+            var held = kvp.Value;
             var group = kvp.Key;
-            for (var i = 0; i < line.Count; i++)
+            for (var i = 0; i < held.Count; i++)
             {
                 var face = seg.Frontline.Faces[i];
                 var native = face.GetNative(d);
@@ -60,48 +60,20 @@ public static class MeshBuilderExt
                     relTo.Offset(foreign.GetCenter(), d),
                     markerSize / 5f, group.Color);
             }
-            for (var i = 0; i < line.Count - 1; i++)
+            foreach (var cell in held)
             {
-                var a = line[i].GetNative(d);
-                var b = line[i + 1].GetNative(d);
-                if (a == b) continue;
-                
-                mb.AddLine(relTo.Offset(a.GetCenter(), d),
-                    relTo.Offset(b.GetCenter(), d),
-                    group.Color, markerSize / 2f);
-            }
-        }
-    }
-    public static void DrawMovementRecord(this MeshBuilder mb,
-        int id, int howFarBack, Vector2 relTo, Data d)
-    {
-        var records = d.Context.MovementRecords;
-        if (records.ContainsKey(id))
-        {
-            var last = records[id]
-                .TakeLast(howFarBack).ToList();
-            if (last.Any() == false) return;
-            var tick = last[0].tick;
-            var tickIter = 0;
-            for (var i = 0; i < last.Count - 1; i++)
-            {
-                var from = last[i];
-                var fromCell = PlanetDomainExt.GetPolyCell(from.cellId, d);
-                var to = last[i + 1];
-                var toCell = PlanetDomainExt.GetPolyCell(to.cellId, d);
-
-                if (to.tick != tick)
+                foreach (var neighbor in cell.GetNeighbors(d))
                 {
-                    tick = to.tick;
-                    tickIter++;
+                    if (cell.Id < neighbor.Id) continue;
+                    if (held.Contains(neighbor) == false) continue;
+                    mb.AddLine(relTo.Offset(cell.GetCenter(), d),
+                        relTo.Offset(neighbor.GetCenter(), d),
+                        group.Color, markerSize / 2f);
                 }
-
-                var color = ColorsExt.GetRainbowColor(tickIter);
-                mb.AddArrow(relTo.Offset(fromCell.GetCenter(), d), 
-                    relTo.Offset(toCell.GetCenter(), d), 2f, color);
             }
         }
     }
+    
     public static void DrawPolygonOutline(this MeshBuilder mb,
         Vector2[] boundaryPoints, float thickness, Color color)
     {

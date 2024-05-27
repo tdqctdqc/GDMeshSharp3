@@ -10,11 +10,11 @@ public class UnoccupiedAssignment : GroupAssignment
     {
         Cell = cell;
     }
-    protected override void RemoveGroupFromData(DeploymentAi ai, UnitGroup g)
+    protected override void RemoveGroupFromData(DeploymentAi ai, Army g)
     {
         
     }
-    protected override void AddGroupToData(DeploymentAi ai, UnitGroup g, Data d)
+    protected override void AddGroupToData(DeploymentAi ai, Army g, Data d)
     {
         
     }
@@ -27,7 +27,7 @@ public class UnoccupiedAssignment : GroupAssignment
         
     }
 
-    public override float Suitability(UnitGroup g, Data d)
+    public override float Suitability(Army g, Data d)
     {
         return 1f;
     }
@@ -37,8 +37,8 @@ public class UnoccupiedAssignment : GroupAssignment
         return Cell;
     }
 
-    public override UnitGroup PullGroup(DeploymentAi ai, 
-        Func<UnitGroup, float> suitability, 
+    public override Army PullGroup(DeploymentAi ai, 
+        Func<Army, float> suitability, 
         LogicWriteKey key)
     {
         if (Groups.Count == 0) return null;

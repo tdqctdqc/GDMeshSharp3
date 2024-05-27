@@ -12,7 +12,7 @@ public class ROERefSet<TRef>
     public int Count() => RefIds.Count;
     public static ROERefSet<TRef> Construct(string name, 
         int ownerId,
-        HashSet<int> refIds, Data data)
+        HashSet<int> refIds)
     {
         var col = new ROERefSet<TRef>(name, ownerId, refIds);
         return col;

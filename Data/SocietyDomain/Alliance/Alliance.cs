@@ -14,7 +14,7 @@ public class Alliance : Entity
     {
         var id = key.Data.IdDispenser.TakeId();
         var members = ERefSet<Regime>.Construct(nameof(Members), id,
-            new HashSet<int>{founder.Id}, key.Data);
+            new HashSet<int>{founder.Id});
         
         var a = new Alliance(founder.MakeRef(), members,
             id);

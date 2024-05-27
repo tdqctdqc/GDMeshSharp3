@@ -44,7 +44,7 @@ public abstract partial class PolyCellBorder
                 if (nCell is LandCell lN == false) continue;
                 if (InUnion(cell, nCell, data)) continue;
                 if (InUnion(nCell, cell, data)) continue;
-                mb.DrawPolyCellEdge(l, lN, 
+                mb.DrawCellBorder(l, lN, 
                     p => cellColor, 
                     GetThickness(cell, nCell, data), 
                     Chunk.RelTo.Center, data);

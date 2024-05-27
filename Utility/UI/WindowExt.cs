@@ -9,4 +9,15 @@ public static class WindowExt
     {
         w.CloseRequested += w.Hide;
     }
+
+    public static T MakeScrollContainer<T>(this Window w,
+        Vector2I size)
+        where T : Container, new()
+    {
+        var t = new T();
+        var panel = new Panel();
+        panel.MakeScroll<T>(size);
+        w.AddChild(panel);
+        return t;
+    }
 }

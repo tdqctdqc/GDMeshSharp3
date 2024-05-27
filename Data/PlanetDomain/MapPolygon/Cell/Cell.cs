@@ -9,7 +9,7 @@ using MessagePack;
 [MessagePack.Union(1, typeof(RiverCell))]
 [MessagePack.Union(2, typeof(SeaCell))]
 public abstract class Cell : IPolymorph,
-    IIdentifiable, ICombatGraphNode
+    IIdentifiable
 {
     public int Id { get; private set; }
     public ERef<Regime> Controller { get; private set; }

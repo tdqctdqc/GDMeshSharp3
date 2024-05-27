@@ -35,8 +35,8 @@ public abstract class DeploymentBranch
     }
     public abstract Cell GetCharacteristicCell(Data d);
 
-    public UnitGroup PullGroup(DeploymentAi ai, 
-        Func<UnitGroup, float> suitability, 
+    public Army PullGroup(DeploymentAi ai, 
+        Func<Army, float> suitability, 
         LogicWriteKey key)
     {
         var children = SubBranches
@@ -51,7 +51,7 @@ public abstract class DeploymentBranch
     }
 
     public void PushGroup(DeploymentAi ai, 
-        UnitGroup g, LogicWriteKey key)
+        Army g, LogicWriteKey key)
     {
         var child = SubBranches
                     .Union<IDeploymentNode>(Assignments)
@@ -144,7 +144,7 @@ public abstract class DeploymentBranch
                     if (eligibleToTakeFrom(a2, ratio)
                         && a2.PullGroup(ai, 
                                 g => a.Suitability(g, key.Data), key)
-                            is UnitGroup g)
+                            is Army g)
                     {
                         a.PushGroup(ai, g, key);
                         break;

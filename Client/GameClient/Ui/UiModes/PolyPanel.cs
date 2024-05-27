@@ -3,15 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PolyPanel : ScrollPanel
+public partial class PolyPanel : Panel
 {
+    private VBoxContainer _inner;
     private PolyPanel()
         : base()
     {
     }
     public PolyPanel(Client c) 
-        : base(new Vector2(300f, 600f), Colors.Black)
     {
+        _inner = this.MakeScroll<VBoxContainer>(new Vector2(300f, 600f));
+        SelfModulate = Colors.Black;
+        
         var list = c.Data.Models.Buildings.GetList();
         var mode = c.UiController.ModeOption.Options
             .OfType<PolyMode>()
@@ -26,17 +29,17 @@ public partial class PolyPanel : ScrollPanel
 
     private void Set(PolyMode mode, Data d)
     {
-        Inner.ClearChildren();
+        _inner.ClearChildren();
         var poly = mode.Poly.Value;
         if (poly == null)
         {
-            Inner.CreateLabelAsChild("No poly");
+            _inner.CreateLabelAsChild("No poly");
             return;
         }
         
-        Inner.CreateLabelAsChild("Poly " + poly.Id);
+        _inner.CreateLabelAsChild("Poly " + poly.Id);
         
-        Inner.CreateLabelAsChild("Roughness " + poly.Roughness.RoundTo2Digits());
+        _inner.CreateLabelAsChild("Roughness " + poly.Roughness.RoundTo2Digits());
         
 
         
@@ -49,7 +52,7 @@ public partial class PolyPanel : ScrollPanel
                 var label = model.Icon
                     .GetLabeledIcon<HBoxContainer>(
                         $"{model.Name}: {count}", 40f);
-                Inner.AddChild(label);
+                _inner.AddChild(label);
             }
         }
     }

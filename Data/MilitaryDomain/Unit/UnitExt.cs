@@ -5,8 +5,14 @@ public static class UnitExt
 {
     public static float GetPowerPoints(this Unit u, Data d)
     {
+        if (u.Troops.Contents.Count == 0) return 0f; 
         return u.Troops.GetEnumerableModel(d)
-            .Sum(kvp => kvp.Value * kvp.Key.GetPowerPoints());
+            .Sum(kvp =>
+            {
+                var v = kvp.Value * kvp.Key.GetPowerPoints();
+                if (float.IsNaN(v)) return 0f;
+                return v;
+            });
     }
     public static float GetAttackPoints(this Unit u, Data d)
     {
@@ -18,7 +24,7 @@ public static class UnitExt
         return u.Troops.GetEnumerableModel(d)
             .Sum(kvp => kvp.Value * kvp.Key.Hitpoints);
     }
-    public static UnitGroup GetGroup(this Unit u, Data d)
+    public static Army GetGroup(this Unit u, Data d)
     {
         return d.Military.UnitAux.UnitByGroup[u];
     }
@@ -47,5 +53,12 @@ public static class UnitExt
         var templatePp = unit.Template.Get(data).TroopCounts.GetEnumerableModel(data)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
         return new Vector2(totalPp, templatePp);
+    }
+
+    public static Control GetUnitDisplay(this Unit u, Data d)
+    {
+        return u.GetMaxPowerTroop(d).Icon
+            .GetLabeledIcon<HBoxContainer>($"{u.Template.Get(d).Name}: {u.GetPowerPoints(d)} / {u.Template.Get(d).GetPowerPoints(d)}",
+                10f);
     }
 }

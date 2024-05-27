@@ -1,16 +1,21 @@
 
+using System;
 using System.Collections.Generic;
 using Godot;
 
-public class DrawCellEdgeLine : MouseHoldAction
+public class CellEdgeLineMouseAction : MouseHoldAction
 {
+    private Func<Cell, Cell, bool> _valid;
     private List<Vector2I> _edges;
     private Data _data;
     private MouseOverHandler _mouseOverHandler;
-    public DrawCellEdgeLine(MouseButtonMask button,
+    public Action<List<Vector2I>> MouseReleased { get; set; }
+    public CellEdgeLineMouseAction(MouseButtonMask button,
+        Func<Cell, Cell, bool> valid,
         Data data,
         MouseOverHandler mouseOverHandler) : base(button)
     {
+        _valid = valid;
         _data = data;
         _mouseOverHandler = mouseOverHandler;
     }
@@ -20,13 +25,29 @@ public class DrawCellEdgeLine : MouseHoldAction
         _edges = new List<Vector2I>();
         var edge = _mouseOverHandler.MouseOverCell.GetIdEdgeKey(
             _mouseOverHandler.SecondClosest);
+        var c1 = PlanetDomainExt.GetPolyCell(edge.X, _data);
+        var c2 = PlanetDomainExt.GetPolyCell(edge.Y, _data);
+        if (c1 is null || c2 is null) return;
+        if (_valid(c1, c2) == false)
+        {
+            return;
+        }
         _edges.Add(edge);
     }
 
     protected override void MouseHeld(InputEventMouse m)
     {
+        if (_edges.Count == 0) return;
         var edge = _mouseOverHandler.MouseOverCell.GetIdEdgeKey(
             _mouseOverHandler.SecondClosest);
+        var c1 = PlanetDomainExt.GetPolyCell(edge.X, _data);
+        var c2 = PlanetDomainExt.GetPolyCell(edge.Y, _data);
+
+        if (c1 is null || c2 is null) return;
+        if (_valid(c1, c2) == false)
+        {
+            return;
+        }
         var last = _edges[^1];
         if (edge == last) return;
         if (incident(edge, last) == false)
@@ -105,7 +126,9 @@ public class DrawCellEdgeLine : MouseHoldAction
 
     protected override void MouseUp(InputEventMouse m)
     {
-        _edges.Clear();
+        if (_edges.Count == 0) return;
+        MouseReleased?.Invoke(_edges);
+        _edges = null;
     }
 
     public override void Highlight(Client c)
@@ -118,9 +141,13 @@ public class DrawCellEdgeLine : MouseHoldAction
             var edge = _edges[i];
             var c1 = PlanetDomainExt.GetPolyCell(edge.X, c.Data);
             var c2 = PlanetDomainExt.GetPolyCell(edge.Y, c.Data);
-            highlighter.Draw(mb => 
-                mb.DrawPolyCellEdge(c1, c2, c => Colors.Red, 
-                    3f, Vector2.Zero, c.Data), Vector2.Zero);
+            highlighter.Draw(mb =>
+            {
+                mb.DrawCellBorder(c1, c2, c => Colors.Red,
+                    3f, Vector2.Zero, c.Data);
+                mb.DrawCellBorder(c2, c1, c => Colors.Red,
+                    3f, Vector2.Zero, c.Data);
+            }, Vector2.Zero);
         }
     }
 }

@@ -21,6 +21,7 @@ public partial class WindowManager : Node, IClientComponent
        AddWindow(LoggerWindow.Get(client.Data));
        AddWindow(new EntityOverviewWindow());
        AddWindow(IssueWindow.Get(client));
+       AddWindow(new FillArmyWindow());
        client.UiLayer.AddChild(this);
     }
     public void AddWindow(Window window)

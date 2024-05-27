@@ -27,17 +27,11 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
             if (wp == null) return;
             client.Cam().JumpTo(wp.GetCenter());
         });
-        this.AddIntButton("Jump to Unit", i =>
-        {
-            var unit = client.Data.Get<Unit>(i);
-            if (unit == null) return;
-            client.Cam().JumpTo(unit.Position.GetCell(client.Data).GetCenter());
-        });
         this.AddIntButton("Jump to Group", i =>
         {
-            var group = client.Data.Get<UnitGroup>(i);
+            var group = client.Data.Get<Army>(i);
             if (group == null) return;
-            client.Cam().JumpTo(group.GetCell(client.Data).GetCenter());
+            client.Cam().JumpTo(group.GetHomeCell(client.Data).GetCenter());
         });
         
         var uiFrame = client.GetComponent<UiFrame>();

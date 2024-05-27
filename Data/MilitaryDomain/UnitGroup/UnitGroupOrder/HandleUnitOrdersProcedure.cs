@@ -6,24 +6,24 @@ using MessagePack;
 
 public class HandleUnitOrdersProcedure : Procedure
 {
-    public ConcurrentDictionary<int, MapPos> NewUnitPosesById { get; private set; }
+    public ConcurrentDictionary<int, HashSet<int>> NewArmyPosesById { get; private set; }
     public static HandleUnitOrdersProcedure Construct()
     {
-        return new HandleUnitOrdersProcedure(new ConcurrentDictionary<int, MapPos>());
+        return new HandleUnitOrdersProcedure(new ConcurrentDictionary<int, HashSet<int>>());
     }
 
     [SerializationConstructor] private HandleUnitOrdersProcedure(
-        ConcurrentDictionary<int, MapPos> newUnitPosesById)
+        ConcurrentDictionary<int, HashSet<int>> newArmyPosesById)
     {
-        NewUnitPosesById = newUnitPosesById;
+        NewArmyPosesById = newArmyPosesById;
     }
 
     public override void Enact(ProcedureWriteKey key)
     {
-        foreach (var kvp in NewUnitPosesById)
+        foreach (var kvp in NewArmyPosesById)
         {
-            var unit = key.Data.Get<Unit>(kvp.Key);
-            unit.SetPosition(kvp.Value, key);
+            var army = key.Data.Get<Army>(kvp.Key);
+            army.SetCells(kvp.Value, key);
         }
     }
 

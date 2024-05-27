@@ -11,10 +11,10 @@ public partial class ChunkGraphic : Node2D
     public RoadChunkGraphicNode Roads {get; private set; }
     public IconsChunkModule Icons {get; private set; }
     public ResourceIcons ResourceIcons {get; private set; }
-    public ChunkUnitsGraphic Units { get; private set; }
     public ChunkLabelGraphics Labels { get; private set; }
     
-    public ChunkGraphic(MapChunk chunk, GraphicLayerHolder holder,
+    public ChunkGraphic(MapChunk chunk, 
+        GraphicLayerHolder holder,
         Data d)
     {
         ZAsRelative = false;
@@ -63,7 +63,7 @@ public partial class ChunkGraphic : Node2D
         Roads = new RoadChunkGraphicNode(Chunk, ChunkGraphic.IconZoomVisRange, d);
         Icons = new IconsChunkModule(Chunk, d);
         ResourceIcons = new ResourceIcons(Chunk, ChunkGraphic.IconZoomVisRange, d);
-        Units = new ChunkUnitsGraphic(Chunk, IconZoomVisRange, holder.UnitGraphics, d);
+        
         Labels = new ChunkLabelGraphics(Chunk, IconZoomVisRange, d);
     }
     public IEnumerable<IChunkGraphicModule> GetModules()
@@ -73,7 +73,6 @@ public partial class ChunkGraphic : Node2D
         yield return Roads;
         yield return Icons;
         yield return ResourceIcons;
-        yield return Units;
         yield return Labels;
     }
 }

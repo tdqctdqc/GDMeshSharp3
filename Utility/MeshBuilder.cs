@@ -91,12 +91,12 @@ public class MeshBuilder
         var color = getColor(poly);
         foreach (var v in edges)
         {
-            DrawPolyCellEdge(v.c, v.n, 
+            DrawCellBorder(v.c, v.n, 
                 c => color, 
                 thickness, relTo, d);
         }
     }
-    public void DrawPolyCellEdge(Cell c, Cell n,
+    public void DrawCellBorder(Cell c, Cell n,
         Func<Cell, Color> getColor,
         float thickness, Vector2 relTo, Data d,
         bool debug = false)
@@ -372,5 +372,14 @@ public class MeshBuilder
         meshInstance.Mesh = mesh;
         Labels.ForEach(l => meshInstance.AddChild(l));
         return meshInstance;
+    }
+
+    public Mesh GetMesh()
+    {
+        if (TriVertices.Count == 0) return null;
+        var mesh = MeshGenerator.GetArrayMesh(
+            TriVertices.ToArray(), 
+            Colors.ToArray());
+        return mesh;
     }
 }

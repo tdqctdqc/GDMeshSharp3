@@ -4,12 +4,12 @@ using Godot;
 
 [MessagePack.Union(0, typeof(LineOrder))]
 [MessagePack.Union(1, typeof(DoNothingUnitGroupOrder))]
-[MessagePack.Union(2, typeof(GoToCellGroupOrder))]
+[MessagePack.Union(2, typeof(GoToCellsOrder))]
 public abstract class UnitGroupOrder : IPolymorph
 {
-    public abstract void Handle(UnitGroup g, LogicWriteKey key, HandleUnitOrdersProcedure proc);
-    public abstract void Draw(UnitGroup group, Vector2 relTo, MeshBuilder mb, Data d);
+    public abstract void Handle(Army g, LogicWriteKey key, HandleUnitOrdersProcedure proc);
+    public abstract void Draw(Army group, Vector2 relTo, MeshBuilder mb, Data d);
     public abstract void RegisterCombatActions(
-        UnitGroup group, CombatCalculator combat, LogicWriteKey key);
+        Army group, CombatCalculator combat, LogicWriteKey key);
     public abstract string GetDescription(Data d);
 }

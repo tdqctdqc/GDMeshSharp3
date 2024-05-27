@@ -35,12 +35,6 @@ public static class CellExt
         throw new Exception();
     }
 
-    public static IEnumerable<Unit> GetUnits(this Cell cell, Data d)
-    {
-        return d.Military.UnitAux.UnitsByCell[cell];
-    }
-
-
     public static bool HasPeep(this Cell c, Data d)
     {
         return d.Society.PolyPeepAux.ByCell.Contains(c);
@@ -101,5 +95,14 @@ public static class CellExt
         }
 
         return laborDemand;
+    }
+
+    public static IEnumerable<Army> GetOccupyingArmies(this Cell c, Data d)
+    {
+        return d.Military.UnitAux.ArmiesByOccupancy[c];
+    }
+    public static IEnumerable<Army> GetArmiesWithHomeHere(this Cell c, Data d)
+    {
+        return d.Military.UnitAux.ArmiesByHomeCell[c];
     }
 }

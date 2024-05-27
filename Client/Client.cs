@@ -143,6 +143,8 @@ public partial class Client : Node, IClient
         RemoveComponent<GeneratorUi>();
         var gameUi = new GameplayUi(this, Data, host);
         AddComponent(gameUi);
+        var windows = GetComponent<WindowManager>();
+        windows.AddWindow(RegimeAiOverviewWindow.Get(Data));
     }
 
     public void SetupForGameData()
@@ -163,10 +165,10 @@ public partial class Client : Node, IClient
         
         uiFrame.LeftBar.Add(() =>
             {
-                UiController.ModeOption.Choose<UnitMode>();
-                return new UnitPanel(this);
+                UiController.ModeOption.Choose<ArmyMode>();
+                return new ArmyPanel(this);
             },
-            "Units");
+            "Armies");
         
         uiFrame.LeftBar.Add(() =>
             {

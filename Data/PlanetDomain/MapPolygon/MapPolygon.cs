@@ -50,7 +50,7 @@ public class MapPolygon : Entity
         var p = new MapPolygon(id, mapCenter,
             ERefSet<MapPolygon>
                 .Construct(nameof(Neighbors), 
-                    id, new HashSet<int>(), key.Data),
+                    id, new HashSet<int>()),
             0f,
             0f,
             0f,

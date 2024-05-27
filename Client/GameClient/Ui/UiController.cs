@@ -18,7 +18,7 @@ public partial class UiController : Node, IClientComponent
         var modes = new List<UiMode>
         {
             new BlankMode(client),
-            new UnitMode(client),
+            new ArmyMode(client),
             new PolyMode(client),
             // new TacticalMode(client),
             new DeploymentMode(client),

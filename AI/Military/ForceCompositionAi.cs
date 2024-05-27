@@ -27,7 +27,7 @@ public class ForceCompositionAi
             .ToHashSet();
         if (freeUnits == null || freeUnits.Any() == false) return;
 
-        var groups = key.Data.GetAll<UnitGroup>()
+        var groups = key.Data.GetAll<Army>()
             .Where(g => g.Regime.RefId == regime.Id).ToArray();
         if (groups.Length > 0)
         {
@@ -67,7 +67,8 @@ public class ForceCompositionAi
         {
             if (newGroup.Count == 0) continue;
             key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-            UnitGroup.Create(regime, newGroup, key);
+            Army.Create(regime, regime.Capital.Get(key.Data),
+                newGroup, key);
         }
     }
     private void ReinforceUnits(Regime regime,

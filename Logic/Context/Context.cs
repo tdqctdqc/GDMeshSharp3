@@ -9,46 +9,37 @@ using Godot;
 
 public class Context
 {
-    public ConcurrentDictionary<int, MovementRecord> MovementRecords { get; private set; }
-    public Dictionary<Regime, HashSet<LandCell>> ControlledAreas { get; private set; }
     public PathCache FriendlyPathCache { get; private set; }
     public PathCache RivalPathCache { get; private set; }
+    public Dictionary<Cell, float> PowerPoints { get; private set; }
     public Context(Data data)
     {
-        ControlledAreas = new Dictionary<Regime, HashSet<LandCell>>();
-        MovementRecords = new ConcurrentDictionary<int, MovementRecord>();
         FriendlyPathCache = new PathCache(false, data);
         RivalPathCache = new PathCache(true, data);
+        PowerPoints = new Dictionary<Cell, float>();
         data.Notices.Ticked.Subscribe(i =>
         {
             FriendlyPathCache.Clear();
-            
             RivalPathCache.Clear();
         });
     }
 
     public void Calculate(Data data)
     {
-        CalculateControlAreas(data);
-    }
-
-    public void AddToMovementRecord(int id, MapPos pos, Data d)
-    {
-        var record = MovementRecords.GetOrAdd(id, i => new MovementRecord());
-        record.Add((d.BaseDomain.GameClock.Tick, pos.PolyCell));
-    }
-    private void CalculateControlAreas(Data data)
-    {
-        ControlledAreas.Clear();
-        var landCells = data.Planet.MapAux.CellHolder
-            .Cells.Values.OfType<LandCell>().ToHashSet();
-        var unions = landCells.SortBy(c => c.Controller.Get(data));
-            
-        foreach (var union in unions)
+        PowerPoints.Clear();
+        foreach (var c in data.Planet.MapAux.CellHolder.Cells.Values)
         {
-            var regime = union.Key;
-            ControlledAreas.Add(regime, union.Value.ToHashSet());
+            PowerPoints.Add(c, 0f);
+        }
+        foreach (var army in data.GetAll<Army>())
+        {
+            var pp = army.GetPowerPoints(data);
+            foreach (var cell in army.GetCells(data))
+            {
+                PowerPoints[cell] += pp / army.Cells.Count;
+            }
         }
     }
+
 
 }

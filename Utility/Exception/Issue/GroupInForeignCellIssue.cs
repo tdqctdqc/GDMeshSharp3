@@ -4,8 +4,8 @@ using Godot;
 public class GroupInForeignCellIssue : Issue
 {
     private Cell _cell;
-    private UnitGroup _group;
-    public GroupInForeignCellIssue(UnitGroup g, Cell cell) 
+    private Army _group;
+    public GroupInForeignCellIssue(Army g, Cell cell) 
         : base(cell.GetCenter(), "")
     {
         _cell = cell;
@@ -19,7 +19,7 @@ public class GroupInForeignCellIssue : Issue
         debug.Clear();
         debug.Draw(mb =>
         {
-            var groupP = Pos.Offset(_group.GetCell(c.Data).GetCenter(), c.Data);
+            var groupP = Pos.Offset(_group.GetHomeCell(c.Data).GetCenter(), c.Data);
             var cellP = Pos.Offset(_cell.GetCenter(), c.Data);
             mb.AddPoint(cellP, 20f, Colors.Black);
             mb.AddPoint(groupP, 10f, _group.Color);

@@ -39,7 +39,7 @@ public partial class MapGraphicsOptionsPanel : Panel
         {
             var settings = wholeMapGraphic.GetSettings();
             
-            vbox.AddChild(NodeExt.CreateLabel(wholeMapGraphic.Name));
+            vbox.AddChild(NodeExt.CreateLabel(settings.Name));
             foreach (var setting in settings.SettingsOptions)
             {
                 vbox.AddChild(setting.GetControlInterface());

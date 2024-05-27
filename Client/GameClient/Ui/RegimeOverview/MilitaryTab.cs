@@ -55,7 +55,7 @@ public partial class MilitaryTab : ScrollContainer
         }
 
         var groups = client.Data
-            .GetAll<UnitGroup>()
+            .GetAll<Army>()
             .Where(g => g.Regime.RefId == regime.Id);
         _container.CreateLabelAsChild($"{units.Count()} Units");
 

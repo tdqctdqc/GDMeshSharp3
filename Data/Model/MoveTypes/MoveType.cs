@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Godot;
 
 public abstract class MoveType : IModel
@@ -18,6 +19,17 @@ public abstract class MoveType : IModel
     }
     public abstract bool TerrainPassable(Cell p, Data d);
 
+    public float PathCost(List<Cell> path, Data d)
+    {
+        var cost = 0f;
+        for (var i = 0; i < path.Count - 1; i++)
+        {
+            var from = path[i];
+            var to = path[i + 1];
+            cost += EdgeCost(from, to, d);
+        }
+        return cost;
+    }
     public float EdgeCost(Cell from, Cell to, Data d)
     {
         var l = from.GetCenter().Offset(to.GetCenter(), d).Length();

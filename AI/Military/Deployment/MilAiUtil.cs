@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public static class MilAiUtil
 {
@@ -25,15 +26,19 @@ public static class MilAiUtil
         var foreignRegime = foreignCell.Controller.Get(d);
         if (foreignRegime is null) return 0f;
         var foreignAlliance = foreignRegime.GetAlliance(d);
-        var units = foreignCell.GetUnits(d);
-        if (units == null || units.Any() == false) return 0f;
         if (alliance.IsRivals(foreignAlliance, d) == false)
         {
             return 0f;
         }
+        
         float mult = 1f;
         if (alliance.IsAtWar(foreignAlliance, d)) mult = 3f;
-        return units.Sum(u => u.GetPowerPoints(d)) * mult;
+        var val = d.Context.PowerPoints[foreignCell] * mult;
+        if (float.IsNaN(val))
+        {
+            throw new Exception();
+        }
+        return val;
     }
     
     
@@ -72,9 +77,9 @@ public static class MilAiUtil
                 });
     }
     
-    public static Dictionary<UnitGroup, List<FrontFace>> 
-        GetLineAssignments(Alliance alliance,
-            IEnumerable<UnitGroup> groups,
+    public static Dictionary<Army, HashSet<Cell>> 
+        GetGroupLineAssignments(Alliance alliance,
+            IEnumerable<Army> groups,
             List<FrontFace> faces,
             Data d)
     {
@@ -87,26 +92,23 @@ public static class MilAiUtil
             u => u.GetPowerPoints(d),
             f => faceCosts[f]);
         return lineOrders.ToDictionary(kvp => kvp.Key,
-            kvp => faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1));
+            kvp => faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1)
+                .Select(f => f.GetNative(d)).ToHashSet());
     }
-    
-    
-    public static List<UnitGroup> GetLineGroupsInOrder(List<FrontFace> faces,
-        IEnumerable<UnitGroup> lineGroups,
+    public static List<Army> GetLineGroupsInOrder(List<FrontFace> faces,
+        IEnumerable<Army> lineGroups,
         Data d)
     {
         var list = lineGroups.ToList();
         list.Sort((g, f) =>
         {
-            var boundsG = g.Units.Items(d)
-                .Select(u => u.Position.GetCell(d)).ToHashSet();
+            var boundsG = g.GetCells(d);
             var gFirst = faces
                 .FindIndex(f => boundsG.Contains(f.GetNative(d)));
             var gLast = faces
                 .FindLastIndex(f => boundsG.Contains(f.GetNative(d)));
 
-            var boundsF = f.Units.Items(d)
-                .Select(u => u.Position.GetCell(d));
+            var boundsF = f.GetCells(d);
             var fFirst = faces
                 .FindIndex(f => boundsF.Contains(f.GetNative(d)));
             var fLast = faces

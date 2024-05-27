@@ -5,11 +5,11 @@ using Godot;
 
 public class MilAiMemo
 {
-    public HashSet<UnitGroup> FrontSegmentGroups { get; private set; }
+    public HashSet<Army> FrontSegmentGroups { get; private set; }
     public MilAiMemo(Alliance owner, Data d)
     {
         var ai = d.HostLogicData.AllianceAis[owner];
-        FrontSegmentGroups = new HashSet<UnitGroup>();
+        FrontSegmentGroups = new HashSet<Army>();
 
         var root = ai.Military.Deployment.GetRoot();
         if (root == null)
@@ -33,7 +33,7 @@ public class MilAiMemo
         var validGroups = FrontSegmentGroups.Where(g => d.HasEntity(g.Id)).ToArray();
         foreach (var group in validGroups)
         {
-            var groupCell = group.GetCell(d);
+            var groupCell = group.GetHomeCell(d);
 
             if (groupCell is LandCell == false)
             {
@@ -63,7 +63,7 @@ public class MilAiMemo
                 frontSegment = segments.MinBy(s =>
                     s.Frontline.Faces.First().GetNative(d)
                         .GetCenter()
-                        .Offset(group.GetCell(d).GetCenter(), d)
+                        .Offset(group.GetHomeCell(d).GetCenter(), d)
                         .Length());
             }
             if (frontSegment != null)

@@ -10,7 +10,7 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
     public int Id { get; private set; }
     public DeploymentBranch Parent { get; }
     public Alliance Alliance { get; private set; }
-    public HashSet<UnitGroup> Groups { get; }
+    public HashSet<Army> Groups { get; }
     
     protected GroupAssignment(DeploymentBranch parent,
         DeploymentAi ai, LogicWriteKey key)
@@ -18,24 +18,24 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
         Id = ai.IdDispenser.TakeId();
         Parent = parent;
         Alliance = ai.Alliance;
-        Groups = new HashSet<UnitGroup>();
+        Groups = new HashSet<Army>();
     }
 
-    public void RemoveGroup(DeploymentAi ai, UnitGroup g)
+    public void RemoveGroup(DeploymentAi ai, Army g)
     {
         if (Groups.Contains(g) == false) throw new Exception();
         Groups.Remove(g);
         RemoveGroupFromData(ai, g);
     }
-    protected abstract void RemoveGroupFromData(DeploymentAi ai, UnitGroup g);
+    protected abstract void RemoveGroupFromData(DeploymentAi ai, Army g);
     
-    public void PushGroup(DeploymentAi ai, UnitGroup g, LogicWriteKey key)
+    public void PushGroup(DeploymentAi ai, Army g, LogicWriteKey key)
     {
         AddGroupToData(ai, g, key.Data);
         if (Groups.Contains(g)) throw new Exception();
         Groups.Add(g);
     }
-    protected abstract void AddGroupToData(DeploymentAi ai, UnitGroup g, Data d);
+    protected abstract void AddGroupToData(DeploymentAi ai, Army g, Data d);
     public abstract float GetPowerPointNeed(Data d);
     public float GetPowerPointsAssigned(Data data)
     {
@@ -44,8 +44,8 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
 
 
     public abstract void GiveOrders(DeploymentAi ai, LogicWriteKey key);
-    public abstract UnitGroup PullGroup(DeploymentAi ai, Func<UnitGroup, float> suitability, LogicWriteKey key);
-    public abstract float Suitability(UnitGroup g, Data d);
+    public abstract Army PullGroup(DeploymentAi ai, Func<Army, float> suitability, LogicWriteKey key);
+    public abstract float Suitability(Army g, Data d);
     public abstract Cell GetCharacteristicCell(Data d);
 
 }

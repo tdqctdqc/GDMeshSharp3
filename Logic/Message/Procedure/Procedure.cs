@@ -13,7 +13,7 @@ using System;
 [MessagePack.Union(8, typeof(FormUnitProcedure))]
 [MessagePack.Union(9 , typeof(HandleUnitOrdersProcedure))]
 [MessagePack.Union(10, typeof(MakeProposalProcedure))]
-[MessagePack.Union(11, typeof(MoveUnitProcedure))]
+[MessagePack.Union(11, typeof(SetPlayerRegimeProcedure))]
 [MessagePack.Union(12, typeof(ProdResultProcedure))]
 [MessagePack.Union(13, typeof(RegimeUseItemsProcedure))]
 [MessagePack.Union(14, typeof(RegimeUseTroopsProcedure))]
@@ -24,7 +24,6 @@ using System;
 [MessagePack.Union(19, typeof(TickProcedure))]
 [MessagePack.Union(20, typeof(TradeProcedure))]
 [MessagePack.Union(21, typeof(TroopLossesProcedure))]
-[MessagePack.Union(22, typeof(SetPlayerRegimeProcedure))]
 public abstract class Procedure : Message, IPolymorph
 {
     protected Procedure()

@@ -323,21 +323,13 @@ public class SocietyGenerator : Generator
             var cells = regime
                 .GetCells(key.Data)
                 .ToArray();
-
             var score = Mathf.CeilToInt(Mathf.Sqrt(cells.Length));
-            var numUnits = score * 2;
+            var numUnits = score * 4;
             
-            var numCells = cells.Length;
-            var numToDistributeIn = numCells / 3;
-            numCells = Mathf.Max(numToDistributeIn, 1);
-            var distributeIn = cells
-                .OrderByDescending(p => p.GetPeep(key.Data).Size)
-                .ToArray();
+            
             for (var i = 0; i < numUnits; i++)
             {
-                var cell = distributeIn.Modulo(i);
-                var unitPos = new MapPos(cell.Id, (-1, 0f));
-                Unit.Create(template, regime, unitPos, key);
+                Unit.Create(template, regime, key);
             }
         }
     }
