@@ -53,19 +53,23 @@ public class LineOrder : UnitGroupOrder
     }
 
     public override void RegisterCombatActions(
-        Army g, 
+        Army army, 
         CombatCalculator combat, LogicWriteKey key)
     {
-        // if (Advance == false)
-        // {
-        //     return;
-        // }
         var d = key.Data;
-        if (g.Units.Count() == 0) return;
-        var units = g.Units.Items(d).ToHashSet();
-        var alliance = units.First().Regime.Get(d).GetAlliance(d);
+        if (army.Units.Count() == 0) return;
+
+        var cells = LineCells.Select(i => PlanetDomainExt.GetPolyCell(i, key.Data));
+        var adjacentAdvanceCells = cells
+            .SelectMany(c => c.Neighbors)
+            .Distinct()
+            .Where(n => AdvanceInto.Contains(n))
+            .Select(n => PlanetDomainExt.GetPolyCell(n, key.Data));
         
-        
+        foreach (var advanceCell in adjacentAdvanceCells)
+        {
+            ArmyAttackEdge.ConstructAndAddToGraph(army, advanceCell, combat, key.Data);
+        }
     }
     public override string GetDescription(Data d)
     {

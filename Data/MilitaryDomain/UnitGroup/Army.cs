@@ -80,6 +80,51 @@ public class Army : Entity, ICombatGraphNode
         Cells.UnionWith(cells);
     }
 
+    public void DistributeResources(CombatCalculator combat, Data d)
+    {
+        GD.Print("distributing");
+        var edges = combat.Graph
+            .GetNodeEdges(this);
+        var edgeNeeds = edges
+            .ToDictionary(e => e, 
+                e =>
+                {
+                    float demand = 0f;
+                    if (e is ArmyAttackEdge atk)
+                    {
+                        demand = atk.CellCombatNode.GetPotentialDefendingPower(d, combat);
+                    }
+                    else if (e is ArmyDefendEdge def)
+                    {
+                        demand = def.CellCombatNode.GetPotentialAttackingPower(d, combat);
+                    }
+                    else throw new Exception();
+
+                    return demand;
+                });
+        var assigns = 
+            Assigner.AssignFractional<ICombatGraphEdge, Unit>(
+                edges,
+                Units.Items(d).ToList(),
+                e => edgeNeeds[e],
+                u => u.GetPowerPoints(d)
+            );
+        for (var i = 0; i < assigns.Count; i++)
+        {
+            var (edge, unit, proportion) = assigns[i];
+            if (edge is ArmyAttackEdge atk)
+            {
+                GD.Print("adding attacker proportion " + proportion);
+                atk.Attackers.Add((unit, proportion));
+            }
+            else if (edge is ArmyDefendEdge def)
+            {
+                def.Defenders.Add((unit, proportion));
+            }
+            else throw new Exception();
+        } 
+    }
+
     public void CalculateCombat(CombatCalculator combat, Data d)
     {
     }

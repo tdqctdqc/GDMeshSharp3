@@ -14,9 +14,8 @@ public static class WindowExt
         Vector2I size)
         where T : Container, new()
     {
-        var t = new T();
         var panel = new Panel();
-        panel.MakeScroll<T>(size);
+        var t = panel.MakeScroll<T>(size);
         w.AddChild(panel);
         return t;
     }

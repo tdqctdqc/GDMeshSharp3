@@ -7,7 +7,100 @@ using Godot;
 
 public class Assigner
 {
-    public static void Assign<TPicker, TPicked>(IEnumerable<TPicker> pickers,
+    public static List<(TPicker, TPicked, float)>
+        AssignFractional<TPicker, TPicked>(
+            IReadOnlyList<TPicker> pickers,
+            IReadOnlyList<TPicked> toPick,
+            Func<TPicker, float> getNeed,
+            Func<TPicked, float> getCapability
+            )
+    {
+        var res = new List<(TPicker, TPicked, float)>();
+        var totalNeed = pickers.Sum(getNeed);
+        var totalCapability = toPick.Sum(getCapability);
+        var needProportionBookmark = 0f;
+        var capabilityProportionBookmark = 0f;
+        var pickerIter = 0;
+        var toPickIter = 0;
+        while (pickerIter < pickers.Count
+               && toPickIter < toPick.Count)
+        {
+            var nextToPick = toPick[toPickIter];
+            var nextPicker = pickers[pickerIter];
+            
+            var cap = getCapability(nextToPick);
+            var nextCap = capabilityProportionBookmark + cap / totalCapability;
+            var need = getNeed(nextPicker);
+            var nextNeed = needProportionBookmark + need / totalNeed;
+            
+            if (nextCap == nextNeed)
+            {
+                pickerIter++;
+                toPickIter++;
+                needProportionBookmark += need / totalNeed;
+                capabilityProportionBookmark += cap / totalCapability;
+                res.Add((nextPicker, nextToPick, needProportionBookmark));
+            }
+            else if (nextCap < nextNeed)
+            {
+                capabilityProportionBookmark += cap / totalCapability;
+                res.Add((nextPicker, nextToPick, capabilityProportionBookmark));
+                toPickIter++;
+            }
+            else if (nextCap > nextNeed)
+            {
+                needProportionBookmark += need / totalNeed;
+                res.Add((nextPicker, nextToPick, needProportionBookmark));
+                pickerIter++;
+            }
+            else throw new Exception();
+        }
+
+        var lastProp = 0f;
+        for (var i = 0; i < res.Count; i++)
+        {
+            var (picker, picked, proportion) = res[i];
+            var diff = proportion - lastProp;
+            var cap = getCapability(picked);
+            if (cap == 0f)
+            {
+                res[i] = (picker, picked, 0f);
+            }
+            else
+            {
+                var marginalCapability = diff * totalCapability;
+                var selfProportion = marginalCapability / cap;
+                if (selfProportion < 0f || selfProportion > 1.001f)
+                {
+                    GD.Print($"bad proportion {selfProportion}" +
+                             $"\n capability {cap}" +
+                             $"\n proportion {proportion}" +
+                             $"\n last proportion {lastProp}" +
+                             $"\n marginal cap {marginalCapability}" +
+                             $"\n total cap {totalCapability}" +
+                             $"\n diff {diff}");
+                }
+
+            res[i] = (picker, picked, selfProportion);
+            }
+
+            lastProp = proportion;
+        }
+        
+        foreach (var picked in toPick)
+        {
+            var sum = res
+                .Where(v => v.Item2.Equals(picked))
+                .Sum(v => v.Item3);
+            if (Mathf.Abs(sum - 0f) > .001f
+                && Mathf.Abs(sum - 1f) > .001f)
+            {
+                GD.Print("bad sum " + sum);
+            }
+        }
+        return res;
+    }
+    public static void AssignRanked<TPicker, TPicked>(IEnumerable<TPicker> pickers,
         Func<TPicker, float> getPriority,
         Func<TPicker, IEnumerable<TPicked>> getExisting,
         Func<TPicked, float> getPrice, 

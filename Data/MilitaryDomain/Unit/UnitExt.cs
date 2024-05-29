@@ -1,5 +1,7 @@
 using System.Linq;
 using Godot;
+using MathNet.Numerics;
+using Control = Godot.Control;
 
 public static class UnitExt
 {
@@ -58,7 +60,7 @@ public static class UnitExt
     public static Control GetUnitDisplay(this Unit u, Data d)
     {
         return u.GetMaxPowerTroop(d).Icon
-            .GetLabeledIcon<HBoxContainer>($"{u.Template.Get(d).Name}: {u.GetPowerPoints(d)} / {u.Template.Get(d).GetPowerPoints(d)}",
+            .GetLabeledIcon<HBoxContainer>($"{u.Template.Get(d).Name}: {u.GetPowerPoints(d).Round(2)} / {u.Template.Get(d).GetPowerPoints(d).Round(2)}",
                 10f);
     }
 }

@@ -38,6 +38,7 @@ public class FloatSettingsOption : SettingsOption<float>
             l.Text = Name + ": " + Value.ToString().PadDecimals(2);
         };
         SettingChanged.Subscribe(v => slider.Value = v.newVal);
+        hbox.CustomMinimumSize = hbox.Size;
         return hbox;
     }
     

@@ -22,6 +22,7 @@ public class BoolSettingsOption : SettingsOption<bool>
         check.Toggled += Set;
         SettingChanged.Subscribe(b => check.ButtonPressed = b.newVal);
         hbox.AddChild(check);
+        hbox.CustomMinimumSize = check.Size;
         return hbox;
     }
 }

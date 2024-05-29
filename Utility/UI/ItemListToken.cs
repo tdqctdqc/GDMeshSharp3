@@ -4,48 +4,42 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class ItemListToken : Node
+public class ItemListToken<T>
 {
-    private ItemList _node;
-    private List<object> _items;
-    private List<Action> _actions;
-
-    public static ItemListToken Construct(ItemList node)
+    public T Selected { get; private set; }
+    public ItemList ItemList { get; private set; }
+    private List<T> _items;
+    
+    public ItemListToken(
+        IEnumerable<T> items, 
+        Func<T, string> getLabelText, 
+        Action<T> selectAction,
+        Func<T, Texture2D> getTexture = null,
+        Vector2I? textureSize = null)
     {
-        var token = new ItemListToken(node);
-        node.AddChild(token);
-        return token;
-    }
-    public void Setup<T>(IReadOnlyList<T> items, 
-        Func<T, string> getLabelText, Func<T, Action> getAction,
-        Func<T, Texture2D> getTexture = null)
-    {
-        _node.Clear();
-        _items = items.Select(i => (object) i).ToList();
-        _actions = items.Select(i => getAction(i)).ToList();
-        var labelTexts = items.Select(i => getLabelText(i)).ToList();
-        for (var i = 0; i < items.Count; i++)
+        ItemList = new ItemList();
+        if (textureSize.HasValue)
         {
-            if (getTexture is not null)
-            {
-                _node.AddItem(getLabelText(items[i]),
-                    getTexture(items[i]));
-            }
-            else
-            {
-                _node.AddItem(getLabelText(items[i]));
-            }
+            ItemList.FixedIconSize = textureSize.Value;
         }
-    }
-    private ItemListToken(ItemList node)
-    {
-        _node = node;
-        _node.AutoHeight = true;
-        node.ItemSelected += i => SelectedCallback((int)i);
-    }
 
-    private void SelectedCallback(int i)
-    {
-        _actions[i]();
+        _items = new List<T>();
+        
+        foreach (var item in items)
+        {
+            _items.Add(item);
+            ItemList.AddItem(getLabelText(item),
+                getTexture is not null
+                    ? getTexture(item)
+                    : null
+            );
+        }
+
+        ItemList.ItemSelected += i =>
+        {
+            var selected = _items[(int)i];
+            Selected = selected;
+            selectAction(selected);
+        };
     }
 }

@@ -33,13 +33,13 @@ public class ListSettingsOption<T> : SettingsOption<T>
     }
     public override Control GetControlInterface()
     {
-        var list = new ItemList();
-        var token = ItemListToken.Construct(list);
-        token.Setup<T>(
+        var token = new ItemListToken<T>(
             Options,
             t => _names[t],
-            t => () => Set(t)
+            t =>  Set(t)
         );
+        var list = token.ItemList;
+        list.CustomMinimumSize = list.Size;
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);
         list.Select(Options.IndexOf(Value));
@@ -51,16 +51,14 @@ public class ListSettingsOption<T> : SettingsOption<T>
         Func<T, Texture2D> getTexture,
         Vector2I iconSize)
     {
-        var list = new ItemList();
-        list.FixedIconSize = iconSize;
-        var token = ItemListToken.Construct(list);
-        token.Setup(Options,
+        var token = new ItemListToken<T>(
+            Options,
             m => _names[m],
-            m => { return () =>
-            {
-                Set(m);
-            }; },
+            m => Set(m),
             getTexture);
+        var list = token.ItemList;
+        list.FixedIconSize = iconSize;
+
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);
         list.Select(Options.IndexOf(Value));

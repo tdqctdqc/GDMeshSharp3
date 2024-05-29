@@ -10,7 +10,7 @@ public abstract class SettingsOption<T> : ISettingsOption
     public RefAction<(T oldVal, T newVal)> SettingChanged { get; private set; }
     RefAction ISettingsOption.SettingChanged => SettingChanged.Blank;
     public abstract Control GetControlInterface();
-
+    
     protected SettingsOption(string name, T value)
     {
         Name = name;

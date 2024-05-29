@@ -6,27 +6,40 @@ using Godot;
 
 public class ArmyAttackEdge : ICombatGraphEdge
 {
-    ICombatGraphNode ICombatGraphEdge.Node1 => CellNode;
-    ICombatGraphNode ICombatGraphEdge.Node2 => Army;
-    public CellCombatNode CellNode { get; private set; }
+    public List<(Unit unit, float proportion)> Attackers { get; private set; }
     public Army Army { get; private set; }
-    
+    public CellCombatNode CellCombatNode { get; private set; }
     public static ArmyAttackEdge ConstructAndAddToGraph(
         Army army,
         Cell target,
         CombatCalculator combat, Data d)
     {
         var cellNode = CellCombatNode.GetOrConstruct(combat.Graph, target, d);
-        var already = combat.Graph.GetEdgesBetween(army, cellNode)
-            .Any(e => e is ArmyAttackEdge);
-        if (already) throw new Exception();
+        var edges = combat.Graph.GetEdgesBetween(army, cellNode);
+        if (edges is not null 
+            && edges.Any(e => e is ArmyAttackEdge))
+        {
+            throw new Exception();
+        }
         var e = new ArmyAttackEdge(army, cellNode);
-        combat.Graph.AddEdge(e, d);
+        combat.Graph.AddEdge(cellNode, army, e, d);
+        var defendingArmies 
+            = d.Military.UnitAux.ArmiesByOccupancy[target];
+        if (defendingArmies is not null)
+        {
+            foreach (var def in defendingArmies)
+            {
+                ArmyDefendEdge.ConstructAndAddToGraph(def, target, combat, d);
+            }
+        }
+        
         return e;
     }
-    protected ArmyAttackEdge(Army army, CellCombatNode cellNode)
+    protected ArmyAttackEdge(Army army, 
+        CellCombatNode cellCombatNode)
     {
         Army = army;
-        CellNode = cellNode;
+        CellCombatNode = cellCombatNode;
+        Attackers = new List<(Unit unit, float proportion)>();
     }
 }

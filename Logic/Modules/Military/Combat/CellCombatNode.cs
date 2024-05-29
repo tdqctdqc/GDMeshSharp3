@@ -31,18 +31,65 @@ public class CellCombatNode : ICombatGraphNode
         Attackers = new List<UnitCombatMemo>();
         Defenders = new List<UnitCombatMemo>();
     }
-    
-    
-    
-    
+
+    public float GetPotentialDefendingPower(Data d, CombatCalculator combat)
+    {
+        var defenders = d.Military.UnitAux.ArmiesByOccupancy[Cell];
+
+        return defenders.Sum(a =>
+        {
+            var numEdges = combat.Graph.GetNodeEdges(a)
+                .Count(e => e is ArmyAttackEdge || e is ArmyDefendEdge);
+            return a.GetPowerPoints(d) / numEdges;
+        });
+    }
+    public float GetPotentialAttackingPower(Data d, CombatCalculator combat)
+    {
+        var attackers = combat.Graph.GetNodeEdges(this)
+            .OfType<ArmyAttackEdge>()
+            .Select(e => e.Army);
+
+        return attackers.Sum(a =>
+        {
+            var numEdges = combat.Graph.GetNodeEdges(a)
+                .Count(e => e is ArmyAttackEdge || e is ArmyDefendEdge);
+            return a.GetPowerPoints(d) / numEdges;
+        });
+    }
+    public void DistributeResources(CombatCalculator combat, Data d)
+    {
+        
+    }
+
     public void CalculateCombat(CombatCalculator combat, Data d)
     {
+        var atkEdges = combat.Graph.GetNodeEdges(this)
+            .OfType<ArmyAttackEdge>();
+        Attackers = atkEdges
+            .SelectMany(a => a.Attackers
+                .Select(v => new UnitCombatMemo(v.unit, v.proportion)))
+            .ToList();
+        var defEdges = combat.Graph.GetNodeEdges(this)
+            .OfType<ArmyDefendEdge>();
+        Defenders = defEdges
+            .SelectMany(a => a.Defenders
+                .Select(v => new UnitCombatMemo(v.unit, v.proportion)))
+            .ToList();
+        if (Attackers == null || Attackers.Any() == false)
+        {
+            GD.Print("no attackers at " + Cell.Id);
+            return;
+        }
         if (Defenders == null || Defenders.Any() == false)
         {
+            GD.Print("no defenders at " + Cell.Id);
             DefendersForcedBack = true;
+            return;
         }
         else
         {
+            GD.Print("fight at " + Cell.Id);
+
             foreach (var attacker in Attackers)
             {
                 var atkPower = attacker.Unit.GetAttackPoints(d) * attacker.Proportion;
@@ -109,6 +156,7 @@ public class CellCombatNode : ICombatGraphNode
 
     public void VoluntaryResults(CombatCalculator combat, LogicWriteKey key)
     {
+        
     }
 
     public class UnitCombatMemo

@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 public class CombatGraph
@@ -37,7 +38,12 @@ public class CombatGraph
         ICombatGraphNode n1,
         ICombatGraphNode n2)
     {
-        return _edgesByEdgeId[n1.GetIdEdgeKey(n2)];
+        if (_edgesByEdgeId.TryGetValue(n1.GetIdEdgeKey(n2), out var edges))
+        {
+            return edges;
+        }
+
+        return null;
     }
 
     public IReadOnlyList<ICombatGraphEdge> GetNodeEdges
@@ -46,21 +52,25 @@ public class CombatGraph
         AddNode(n);
         return _edgesByNode[n];
     }
-    public void AddEdge(ICombatGraphEdge edge, Data d)
+
+    public void AddEdge(ICombatGraphNode node1,
+        ICombatGraphNode node2,
+        ICombatGraphEdge edge, Data d)
     {
-        AddNode(edge.Node1);
-        AddNode(edge.Node2);
-        var edgeId = edge.Node1.GetIdEdgeKey(edge.Node2);
+        AddNode(node1);
+        AddNode(node2);
+        var edgeId = node1.GetIdEdgeKey(node2);
         _edgesByEdgeId.GetOrAdd(edgeId, e => new List<ICombatGraphEdge>())
             .Add(edge);
-        _edgesByNode[edge.Node1].Add(edge);
-        _edgesByNode[edge.Node2].Add(edge);
-        _nodesByEdge.Add(edge, (edge.Node1, edge.Node2));
+        _edgesByNode[node1].Add(edge);
+        _edgesByNode[node2].Add(edge);
+        _nodesByEdge.Add(edge, (node1, node2));
     }
 
     public void DistributeResources(Data d)
     {
-        
+        Do((e, combat) 
+            => e.DistributeResources(combat, d));
     }
     public void CalculateCombat(Data d)
     {

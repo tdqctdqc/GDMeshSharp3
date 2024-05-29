@@ -9,7 +9,8 @@ public class DefaultSettingsOption<T> : SettingsOption<T>
 
     public override Control GetControlInterface()
     {
-        return new Control();
+        var c = new Control();
+        return c;
     }
 
 }

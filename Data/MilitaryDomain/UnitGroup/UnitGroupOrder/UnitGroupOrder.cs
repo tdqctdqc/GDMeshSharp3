@@ -10,6 +10,6 @@ public abstract class UnitGroupOrder : IPolymorph
     public abstract void Handle(Army g, LogicWriteKey key, HandleUnitOrdersProcedure proc);
     public abstract void Draw(Army group, Vector2 relTo, MeshBuilder mb, Data d);
     public abstract void RegisterCombatActions(
-        Army group, CombatCalculator combat, LogicWriteKey key);
+        Army army, CombatCalculator combat, LogicWriteKey key);
     public abstract string GetDescription(Data d);
 }

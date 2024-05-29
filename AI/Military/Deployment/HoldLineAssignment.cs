@@ -106,6 +106,9 @@ public class HoldLineAssignment : GroupAssignment
         var lineAssignments = MilAiUtil
             .GetGroupLineAssignments(Alliance, LineGroups, Frontline.Faces, key.Data);
         
+        var toTake = Frontline.AdvanceInto.ToHashSet();
+
+        
         if (Frontline.AdvanceInto is null
             || Frontline.AdvanceInto.Count == 0)
         {
@@ -122,7 +125,6 @@ public class HoldLineAssignment : GroupAssignment
             return;
         }
 
-        var toTake = Frontline.AdvanceInto.ToHashSet();
             
             
 

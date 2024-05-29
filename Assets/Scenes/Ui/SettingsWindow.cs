@@ -28,7 +28,7 @@ public partial class SettingsWindow : ConfirmationDialog
         var tabs = new TabContainer();
         tabs.Size = Size;
         AddChild(tabs);
-        var controls = SettingsControls.Construct(settings);
+        var controls = SettingsControls.Construct(settings, Vector2I.One * 500);
         controls.Name = settings.Name;
         tabs.AddChild(controls);
     }
@@ -39,7 +39,7 @@ public partial class SettingsWindow : ConfirmationDialog
         AddChild(tabs);
         foreach (var settings in multi.Settings)
         {
-            var controls = SettingsControls.Construct(settings);
+            var controls = SettingsControls.Construct(settings, Vector2I.One * 500);
             controls.Name = settings.Name;
             tabs.AddChild(controls);
         }

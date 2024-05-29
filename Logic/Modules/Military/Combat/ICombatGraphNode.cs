@@ -2,6 +2,8 @@ using System.Linq;
 
 public interface ICombatGraphNode : IIdentifiable
 {
+    void DistributeResources(CombatCalculator combat, 
+        Data d);
     void CalculateCombat(CombatCalculator combat,
         Data d);
     void DirectResults(CombatCalculator combat,

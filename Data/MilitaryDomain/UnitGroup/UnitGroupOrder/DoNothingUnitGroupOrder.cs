@@ -28,7 +28,7 @@ public class DoNothingUnitGroupOrder : UnitGroupOrder
         return;
     }
 
-    public override void RegisterCombatActions(Army group, CombatCalculator combat, LogicWriteKey key)
+    public override void RegisterCombatActions(Army army, CombatCalculator combat, LogicWriteKey key)
     {
         
     }
