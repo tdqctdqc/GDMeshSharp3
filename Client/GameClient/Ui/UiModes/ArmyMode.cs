@@ -88,15 +88,17 @@ public class ArmyMode : UiMode
                 mb.DrawPolygon(cell.RelBoundary, Colors.Yellow.Tint(.5f));
             }, cell.RelTo);
         }
-        if (army.GroupOrder is not null)
+        highlight.Draw(mb =>
+        {
+            army.LineMission.Draw(army, Vector2.Zero, mb, _client.Data);
+        }, Vector2.Zero);
+        foreach (var order in army.OtherOrders)
         {
             highlight.Draw(mb =>
             {
-                army.GroupOrder.Draw(army, Vector2.Zero, mb, _client.Data);
+                order.Draw(army, Vector2.Zero, mb, _client.Data);
             }, Vector2.Zero);
         }
-        
-        
     }
 
     private void SelectAndCycle(Client c)
@@ -130,39 +132,48 @@ public class ArmyMode : UiMode
 
     private void MakeMouseActions()
     {
-        var drawArmyLine = new CellLineMouseAction(
-            MouseButtonMask.Right,
-            c =>
+        var drawArmyLine = GetDrawArmyOccupancyMouseAction();
+
+
+        var drawArmyAdvance = GetDrawArmyAdvanceMouseAction();
+
+
+        var makeArmy = GetMakeArmyMouseAction();
+
+        MouseActions = new ListSettingsOption<IMouseAction>(
+            "Mouse Actions",
+            new List<IMouseAction>{ drawArmyLine, 
+                drawArmyAdvance, makeArmy },
+            new List<string> { "Draw Army Line", 
+                "Draw Army Advance", "Make Army" } );
+    }
+
+    private CellMousePressAction GetMakeArmyMouseAction()
+    {
+        var makeArmy = new CellMousePressAction(MouseButtonMask.Right,
+            _mouseOverHandler, c =>
             {
                 var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
                 var localAlliance = localPlayer.Regime.Get(_client.Data).GetAlliance(_client.Data);
                 return localAlliance.Members.RefIds.Contains(c.Controller.RefId);
-            },
-            _client.Data, _mouseOverHandler);
-        drawArmyLine.MouseReleased += l =>
+            });
+        makeArmy.MouseReleased += cell =>
         {
-            var army = Army.Value;
-            if (army is null) return;
-            var order = new LineOrder(l.Select(c => c.Id).ToHashSet(),
-                new HashSet<int>(), false);
-            var proc = new SetUnitOrderProcedure(army.MakeRef(),
-                order);
             var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
-            var com = new SendMessageCommand(proc, localPlayer.PlayerGuid);
-            _client.HandleCommand(com);
+            var command = new CreateArmyCommand(cell.MakeRef(), localPlayer.PlayerGuid);
+            _client.HandleCommand(command);
         };
+        return makeArmy;
+    }
 
-
+    private CellHashMouseAction GetDrawArmyAdvanceMouseAction()
+    {
         var drawArmyAdvance = new CellHashMouseAction(
             _mouseOverHandler,
             (v) =>
             {
                 var army = Army.Value;
                 if (army is null) return false;
-                if (army.GroupOrder is LineOrder l == false)
-                {
-                    return false;
-                }
 
                 var cell = v.prospect;
                 var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
@@ -178,7 +189,7 @@ public class ArmyMode : UiMode
                     return true;
                 }
 
-                if (l.LineCells.Any(c => cell.Neighbors.Contains(c)))
+                if (army.LineMission.LineCells.Any(c => cell.Neighbors.Contains(c)))
                 {
                     return true;
                 }
@@ -190,24 +201,20 @@ public class ArmyMode : UiMode
         {
             var army = Army.Value;
             if (army is null) return;
-            if (army.GroupOrder is LineOrder l == false)
-            {
-                return;
-            }
 
             var advanceZone = advance.Select(c => c.Id).ToHashSet();
-            var exclusive = advanceZone.Except(l.AdvanceInto);
-            
+            var exclusive = advanceZone.Except(army.LineMission.AdvanceInto);
+
             if (exclusive.Any() == false)
             {
-                advanceZone = l.AdvanceInto.Except(advanceZone).ToHashSet();
+                advanceZone = army.LineMission.AdvanceInto.Except(advanceZone).ToHashSet();
             }
             else
             {
-                advanceZone = l.AdvanceInto.Union(advanceZone).ToHashSet();
+                advanceZone = army.LineMission.AdvanceInto.Union(advanceZone).ToHashSet();
             }
-            
-            var order = new LineOrder(l.LineCells.ToHashSet(),
+
+            var order = new LineMission(army.LineMission.LineCells.ToHashSet(),
                 advanceZone, false);
             var proc = new SetUnitOrderProcedure(army.MakeRef(),
                 order);
@@ -216,27 +223,48 @@ public class ArmyMode : UiMode
             var com = new SendMessageCommand(proc, localPlayer.PlayerGuid);
             _client.HandleCommand(com);
         };
+        return drawArmyAdvance;
+    }
 
-
-        var makeArmy = new CellMousePressAction(MouseButtonMask.Right,
-            _mouseOverHandler, c =>
+    private CellHashMouseAction GetDrawArmyOccupancyMouseAction()
+    {
+        var drawArmyLine = new CellHashMouseAction(
+            _mouseOverHandler,
+            c =>
             {
                 var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
                 var localAlliance = localPlayer.Regime.Get(_client.Data).GetAlliance(_client.Data);
-                return localAlliance.Members.RefIds.Contains(c.Controller.RefId);
-            });
-        makeArmy.MouseReleased += cell =>
+                return localAlliance.Members.RefIds.Contains(c.prospect.Controller.RefId);
+            },
+            MouseButtonMask.Right,
+            _client.Data
+        );
+        drawArmyLine.MouseReleased += l =>
         {
-            var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
-            var command = new CreateArmyCommand(cell.MakeRef(), localPlayer.PlayerGuid);
-            _client.HandleCommand(command);
-        };
+            var army = Army.Value;
+            if (army is null) return;
 
-        MouseActions = new ListSettingsOption<IMouseAction>(
-            "Mouse Actions",
-            new List<IMouseAction>{ drawArmyLine, 
-                drawArmyAdvance, makeArmy },
-            new List<string> { "Draw Army Line", 
-                "Draw Army Advance", "Make Army" } );
+            HashSet<int> occupy;
+            HashSet<int> advanceInto = army.LineMission.AdvanceInto.ToHashSet();
+            var old = army.LineMission.LineCells;
+            var exclusive = l.Where(c => old.Contains(c.Id) == false);
+            if (exclusive.Any())
+            {
+                occupy = l.Select(c => c.Id).Concat(old).ToHashSet();
+            }
+            else
+            {
+                occupy = old.Except(l.Select(c => c.Id)).ToHashSet();
+            }
+
+            var order = new LineMission(occupy,
+                advanceInto, false);
+            var proc = new SetUnitOrderProcedure(army.MakeRef(),
+                order);
+            var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
+            var com = new SendMessageCommand(proc, localPlayer.PlayerGuid);
+            _client.HandleCommand(com);
+        };
+        return drawArmyLine;
     }
 }

@@ -2,7 +2,7 @@ using Godot;
 using System;
 
 
-[MessagePack.Union(0, typeof(ChangePolyCellControllerProcedure))]
+[MessagePack.Union(0, typeof(ConquerCellProcedure))]
 [MessagePack.Union(1, typeof(ReinforceUnitProcedure))]
 [MessagePack.Union(2, typeof(DecideOnProposalProcedure))]
 [MessagePack.Union(3, typeof(DeclareRivalProcedure))]
@@ -24,6 +24,7 @@ using System;
 [MessagePack.Union(19, typeof(TickProcedure))]
 [MessagePack.Union(20, typeof(TradeProcedure))]
 [MessagePack.Union(21, typeof(TroopLossesProcedure))]
+[MessagePack.Union(22, typeof(CleanUpArmyMissionsProcedure))]
 public abstract class Procedure : Message, IPolymorph
 {
     protected Procedure()

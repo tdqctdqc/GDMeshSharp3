@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class LineOrder : UnitGroupOrder
+public class LineMission : ArmyMission
 {
     public HashSet<int> LineCells { get; private set; }
     public HashSet<int> AdvanceInto { get; private set; }
     public bool Advance { get; private set; }
-    public LineOrder(HashSet<int> lineCells, 
+    public LineMission(HashSet<int> lineCells, 
         HashSet<int> advanceInto,
         bool advance)
     {

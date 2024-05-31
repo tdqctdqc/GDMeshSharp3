@@ -43,10 +43,15 @@ public class UnitTooltipTemplate : TooltipTemplate<Unit>
     {
         var g = u.GetGroup(d);
         if (g == null) return new Control();
+        var vbox = new VBoxContainer();
+        vbox.CreateLabelAsChild(g.LineMission.GetDescription(d));
+        foreach (var order in g.OtherOrders)
+        {
+            vbox.CreateLabelAsChild(order.GetDescription(d));
+
+        }
         
-        var order = g.GroupOrder;
-        if (order == null) return NodeExt.CreateLabel("No order");
-        return NodeExt.CreateLabel(order.GetDescription(d));
+        return vbox;
     }
     
 }

@@ -17,7 +17,7 @@ public partial class PromptWindow : ClosableWindow
         _container.AddChild(descrLabel);
         for (var i = 0; i < prompt.Actions.Count; i++)
         {
-            var btn = ButtonExt.GetButton();
+            var btn = ButtonExt.GetMultiActionButton();
             btn.ButtonUp += prompt.Actions[i];
             btn.ButtonUp += () =>
             {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class DoNothingUnitGroupOrder : UnitGroupOrder
+public class DoNothingArmyMission : ArmyMission
 {
     public override void Handle(Army g, LogicWriteKey key,
         HandleUnitOrdersProcedure proc)

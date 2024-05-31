@@ -22,9 +22,11 @@ public class CombatCalculator
     {
         foreach (var group in key.Data.GetAll<Army>())
         {
-            var order = group.GroupOrder;
-            if (order == null) continue;
-            order.RegisterCombatActions(group, this, key);
+            group.LineMission.RegisterCombatActions(group, this, key);
+            foreach (var other in group.OtherOrders)
+            {
+                other.RegisterCombatActions(group, this, key);
+            }
         }
     }
 }

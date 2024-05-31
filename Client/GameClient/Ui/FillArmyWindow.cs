@@ -46,49 +46,59 @@ public partial class FillArmyWindow : Window
         var left = new VBoxContainer();
         hbox.AddChild(left);
         left.CreateLabelAsChild("In Reserve");
-        var reserveUnits = new ItemListToken<Unit>(
+        var reserveUnits = new ItemMultiListToken<Unit>(
             regime
                     .GetUnits(c.Data)
                     .Where(u => c.Data.Military.UnitAux.UnitByGroup[u] == null),
             u => u.Template.Get(c.Data).Name,
             u => { },
+            new Vector2(200f, 500f),
             u => u.GetMaxPowerTroop(c.Data).Icon.Texture,
             new Vector2I(20, 20)
         );
-        reserveUnits.ItemList.CustomMinimumSize = new Vector2I(250, 800);
         left.AddChild(reserveUnits.ItemList);
         
         var right = new VBoxContainer();
         right.CreateLabelAsChild("In Army");
         hbox.AddChild(right);
-        var armyUnits = new ItemListToken<Unit>(
+        var armyUnits = new ItemMultiListToken<Unit>(
             army.Units.Items(c.Data),
             u => u.Template.Get(c.Data).Name,
             u => { },
+            new Vector2(200f, 500f),
             u => u.GetMaxPowerTroop(c.Data).Icon.Texture,
             new Vector2I(20, 20)
         );
-        armyUnits.ItemList.CustomMinimumSize = new Vector2I(250, 800);
+        armyUnits.ItemList.SelectMode = ItemList.SelectModeEnum.Multi;
         right.AddChild(armyUnits.ItemList);
         
         var takeToArmy = ButtonExt.GetButton(() =>
         {
-            if (reserveUnits.Selected == null) return;
-            var proc = new SetUnitGroupProcedure(reserveUnits.Selected.MakeRef(),
-                army.MakeRef());
-            var com = new SendMessageCommand(proc, player.PlayerGuid);
-            c.HandleCommand(com);
+            if (reserveUnits.Selected.Count == 0) return;
+            
+            foreach (var unit in reserveUnits.Selected)
+            {
+                var proc = new SetUnitGroupProcedure(unit.MakeRef(),
+                    army.MakeRef());
+                var com = new SendMessageCommand(proc, player.PlayerGuid);
+                c.HandleCommand(com);
+            }
+            
             _redraw = () => Setup(army, c);
         });
         takeToArmy.Text = "Take to Army";
         
         var sendToReserve = ButtonExt.GetButton(() =>
         {
-            if (armyUnits.Selected == null) return;
-            var proc = new SetUnitGroupProcedure(armyUnits.Selected.MakeRef(),
-                ERef<Army>.GetEmpty());
-            var com = new SendMessageCommand(proc, player.PlayerGuid);
-            c.HandleCommand(com);
+            if (armyUnits.Selected.Count == 0) return;
+            foreach (var unit in armyUnits.Selected)
+            {
+                var proc = new SetUnitGroupProcedure(unit.MakeRef(),
+                    ERef<Army>.GetEmpty());
+                var com = new SendMessageCommand(proc, player.PlayerGuid);
+                c.HandleCommand(com);
+            }
+            
             _redraw = () => Setup(army, c);
         });
         sendToReserve.Text = "Send to Reserve";

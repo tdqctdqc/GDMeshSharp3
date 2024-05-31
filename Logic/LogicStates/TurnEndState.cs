@@ -17,8 +17,9 @@ public class TurnEndState : TurnState
         _minorModules = new LogicModule[]
         {
             new DoTurnOrderProceduresModule(),
-            new HandleUnitOrdersModule(),
+            new HandleUnitMissionsModule(),
             new CombatModule(),
+            new DefaultLogicModule(() => new CleanUpArmyMissionsProcedure()),
             new DefaultLogicModule(() => new TickProcedure()),
             new ClearOrdersModule(orders)
         };

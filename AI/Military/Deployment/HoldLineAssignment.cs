@@ -114,7 +114,7 @@ public class HoldLineAssignment : GroupAssignment
         {
             foreach (var (group, faces) in lineAssignments)
             {
-                var order = new LineOrder(faces.Select(f => f.Id).ToHashSet(), 
+                var order = new LineMission(faces.Select(f => f.Id).ToHashSet(), 
                     new HashSet<int>(),
                     false);
                 var proc = new SetUnitOrderProcedure(
@@ -130,7 +130,7 @@ public class HoldLineAssignment : GroupAssignment
 
         foreach (var (group, faces) in lineAssignments)
         {
-            var order = new LineOrder(faces.Select(c => c.Id).ToHashSet(),
+            var order = new LineMission(faces.Select(c => c.Id).ToHashSet(),
                 new HashSet<int>(), false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
@@ -155,7 +155,7 @@ public class HoldLineAssignment : GroupAssignment
         foreach (var army in InsertingGroups)
         {
             var close = GetInsertPoint(army, key.Data);
-            var order = GoToCellsOrder.Construct(
+            var order = GoToCellsMission.Construct(
                 close.Yield(), 
                 Alliance,
                 army, key.Data);

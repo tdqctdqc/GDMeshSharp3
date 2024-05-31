@@ -10,7 +10,8 @@ public class Army : Entity, ICombatGraphNode
     public ERef<Regime> Regime { get; private set; }
     public ERefSet<Unit> Units { get; private set; }
     public HashSet<int> Cells { get; private set; }
-    public UnitGroupOrder GroupOrder { get; private set; }
+    public LineMission LineMission { get; private set; }
+    public HashSet<ArmyMission> OtherOrders { get; private set; }
     public Color Color { get; private set; }
     public MoveType MoveType(Data d) => Units.Items(d)
         .FirstOrDefault()?.Template.Get(d).MoveType.Get(d);
@@ -21,7 +22,9 @@ public class Army : Entity, ICombatGraphNode
         var id = key.Data.IdDispenser.TakeId();
         var units = ERefSet<Unit>.Construct(nameof(Units), id, unitIds.ToHashSet());
         var u = new Army(id, r.MakeRef(), units,
-            new DoNothingUnitGroupOrder(),
+            new LineMission(new HashSet<int>{startCell.Id},
+                new HashSet<int>(), false),
+            new HashSet<ArmyMission>(),
             new HashSet<int>{startCell.Id},
             ColorsExt.GetRandomColor());
         key.Create(u);
@@ -30,14 +33,16 @@ public class Army : Entity, ICombatGraphNode
     [SerializationConstructor] private Army(int id,
         ERef<Regime> regime, 
         ERefSet<Unit> units,
-        UnitGroupOrder groupOrder,
+        LineMission lineMission,
+        HashSet<ArmyMission> otherOrders,
         HashSet<int> cells,
         Color color) 
         : base(id)
     {
         Regime = regime;
         Units = units;
-        GroupOrder = groupOrder;
+        LineMission = lineMission;
+        OtherOrders = otherOrders;
         Color = color;
         Cells = cells;
     }
@@ -59,9 +64,14 @@ public class Army : Entity, ICombatGraphNode
     {
         return Cells.Select(c => PlanetDomainExt.GetPolyCell(c, d)).ToHashSet();
     }
-    public void SetOrder(UnitGroupOrder groupOrder, ProcedureWriteKey key)
+
+    public void SetLineOrder(LineMission mission, ProcedureWriteKey key)
     {
-        GroupOrder = groupOrder;
+        LineMission = mission;
+    }
+    public void AddOrder(ArmyMission groupMission, ProcedureWriteKey key)
+    {
+        OtherOrders.Add(groupMission);
     }
 
     public float GetPowerPoints(Data data)
@@ -82,7 +92,6 @@ public class Army : Entity, ICombatGraphNode
 
     public void DistributeResources(CombatCalculator combat, Data d)
     {
-        GD.Print("distributing");
         var edges = combat.Graph
             .GetNodeEdges(this);
         var edgeNeeds = edges
@@ -114,7 +123,6 @@ public class Army : Entity, ICombatGraphNode
             var (edge, unit, proportion) = assigns[i];
             if (edge is ArmyAttackEdge atk)
             {
-                GD.Print("adding attacker proportion " + proportion);
                 atk.Attackers.Add((unit, proportion));
             }
             else if (edge is ArmyDefendEdge def)

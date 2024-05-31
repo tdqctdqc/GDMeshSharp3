@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-public class HandleUnitOrdersModule : LogicModule
+public class HandleUnitMissionsModule : LogicModule
 {
     public override void Calculate(List<RegimeTurnOrders> orders, 
         LogicWriteKey key)
@@ -15,7 +15,11 @@ public class HandleUnitOrdersModule : LogicModule
         Parallel.ForEach(data.GetAll<Army>(), 
             group =>
             {
-                group.GroupOrder.Handle(group, key, proc);
+                group.LineMission.Handle(group, key, proc);
+                foreach (var order in group.OtherOrders)
+                {
+                    order.Handle(group, key, proc);
+                }
             }
         );
         key.SendMessage(proc);

@@ -35,7 +35,7 @@ public class CellCombatNode : ICombatGraphNode
     public float GetPotentialDefendingPower(Data d, CombatCalculator combat)
     {
         var defenders = d.Military.UnitAux.ArmiesByOccupancy[Cell];
-
+        if(defenders == null || defenders.Count == 0) return 1f;
         return defenders.Sum(a =>
         {
             var numEdges = combat.Graph.GetNodeEdges(a)
@@ -88,8 +88,6 @@ public class CellCombatNode : ICombatGraphNode
         }
         else
         {
-            GD.Print("fight at " + Cell.Id);
-
             foreach (var attacker in Attackers)
             {
                 var atkPower = attacker.Unit.GetAttackPoints(d) * attacker.Proportion;
@@ -127,11 +125,14 @@ public class CellCombatNode : ICombatGraphNode
                 .SortBy(u => u.Unit.Regime.Get(key.Data).GetAlliance(key.Data))
                 .MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data)));
 
-            var victoriousRegime = victoriousAllianceUnits.Value.SortBy(u => u.Unit.Regime.Get(key.Data))
-                .MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data))).Key;
-            // GD.Print($"Advance by {victoriousRegime.Name} at cell {Target.Id}");
-            var changeController = ChangePolyCellControllerProcedure
-                .Construct(Cell, victoriousRegime);
+            var max = victoriousAllianceUnits.Value.SortBy(u => u.Unit.Regime.Get(key.Data))
+                .MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data)));
+            
+            var victoriousRegime = max.Key;
+            var victoriousArmies = max.Value.Select(u => u.Unit.GetGroup(key.Data))
+                .Distinct();
+            var changeController = ConquerCellProcedure
+                .Construct(Cell, victoriousRegime, victoriousArmies);
             key.SendMessage(changeController);
         }
         void sendLosses(UnitCombatMemo memo)

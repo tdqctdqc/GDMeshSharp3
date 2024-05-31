@@ -5,10 +5,10 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class GoToCellsOrder : UnitGroupOrder
+public class GoToCellsMission : ArmyMission
 {
     public HashSet<int> DestIds { get; private set; }
-    public static GoToCellsOrder Construct(IEnumerable<Cell> destCells,
+    public static GoToCellsMission Construct(IEnumerable<Cell> destCells,
         Alliance alliance, Army g, Data d)
     {
         var currWp = g.GetHomeCell(d);
@@ -23,9 +23,9 @@ public class GoToCellsOrder : UnitGroupOrder
         }
         
         
-        return new GoToCellsOrder(destCells.Select(c => c.Id).ToHashSet());
+        return new GoToCellsMission(destCells.Select(c => c.Id).ToHashSet());
     }
-    [SerializationConstructor] private GoToCellsOrder(
+    [SerializationConstructor] private GoToCellsMission(
         HashSet<int> destIds)
     {
         DestIds = destIds;

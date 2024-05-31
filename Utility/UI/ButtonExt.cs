@@ -32,7 +32,7 @@ public static class ButtonExt
         };
         return b;
     }
-    public static Button GetButton(params Action[] action)
+    public static Button GetMultiActionButton(params Action[] action)
     {
         var b = new Button();
         b.FocusMode = Control.FocusModeEnum.None;

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using Godot;
 
-[MessagePack.Union(0, typeof(LineOrder))]
-[MessagePack.Union(1, typeof(DoNothingUnitGroupOrder))]
-[MessagePack.Union(2, typeof(GoToCellsOrder))]
-public abstract class UnitGroupOrder : IPolymorph
+[MessagePack.Union(0, typeof(LineMission))]
+[MessagePack.Union(1, typeof(DoNothingArmyMission))]
+[MessagePack.Union(2, typeof(GoToCellsMission))]
+public abstract class ArmyMission : IPolymorph
 {
     public abstract void Handle(Army g, LogicWriteKey key, HandleUnitOrdersProcedure proc);
     public abstract void Draw(Army group, Vector2 relTo, MeshBuilder mb, Data d);

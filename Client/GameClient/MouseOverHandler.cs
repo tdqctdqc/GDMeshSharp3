@@ -127,7 +127,6 @@ public class MouseOverHandler
         var highlight = client.GetComponent<MapGraphics>().Highlighter;
         client.HighlightCell(MouseOverCell, 2f);
         client.HighlightCellNeighbors(MouseOverCell, 1f);
-        // client.HighlightPoly(MouseOverPoly, 1f);
         if (SecondClosest is not null)
         {
             var edge = MouseOverCell

@@ -7,17 +7,15 @@ public static class ContainerExt
         Vector2 size)
             where T : Container, new()
     {
-        // c.CustomMinimumSize = size;
-        // c.Size = size;
+        c.CustomMinimumSize = size;
         c.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         var scroll = new ScrollContainer();
         scroll.AnchorsPreset =  (int)Control.LayoutPreset.FullRect;
         c.MouseFilter = Control.MouseFilterEnum.Stop;
-        // scroll.CustomMinimumSize = size;
+        scroll.CustomMinimumSize = size;
         c.AddChild(scroll);
         var inner = new T();
         inner.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
-        // inner.CustomMinimumSize = size;
         scroll.AddChild(inner);
         c.GuiInput += e =>
         {
