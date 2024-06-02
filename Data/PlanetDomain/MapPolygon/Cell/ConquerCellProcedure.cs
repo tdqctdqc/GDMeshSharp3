@@ -32,8 +32,9 @@ public class ConquerCellProcedure : Procedure
         var newController = ConqueringRegime.Get(key.Data);
         var oldController = cell.Controller.IsEmpty() ? null : cell.Controller.Get(key.Data);
         cell.SetController(newController, key);
-        var armies = ConqueringArmies.Select(i => key.Data.Get<Army>(i));
-        foreach (var army in armies)
+        
+        var conqueringArmies = ConqueringArmies.Select(i => key.Data.Get<Army>(i));
+        foreach (var army in conqueringArmies)
         {
             army.Cells.Add(cell.Id);
         }

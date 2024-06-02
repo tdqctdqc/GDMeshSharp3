@@ -1,4 +1,5 @@
 
+using System;
 using System.Linq;
 using Godot;
 
@@ -17,7 +18,7 @@ public partial class ArmyGraphic : Node2D
     {
         var regime = army.Regime.Get(c.Data);
         var homeCell = army.GetHomeCell(c.Data);
-
+        
         var chunk = homeCell.GetChunk(c.Data);
         var segmenter = c.GetComponent<MapGraphics>().Segmenter;
         
@@ -27,6 +28,16 @@ public partial class ArmyGraphic : Node2D
         var mb = MeshBuilder.GetFromPool();
         var thickness = 10f;
         var cells = army.GetCells(c.Data);
+        var unions = UnionFind.Find<Cell>(
+            cells, (c1, c2) => true, c1 => c1.GetNeighbors(c.Data));
+        
+        
+        
+            
+        
+        
+        
+        
         if (cells.Count > 1)
         {
             foreach (var cell in army.GetCells(c.Data))

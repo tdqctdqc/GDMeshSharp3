@@ -86,8 +86,7 @@ public class Army : Entity, ICombatGraphNode
 
     public void SetCells(IEnumerable<int> cells, ProcedureWriteKey key)
     {
-        Cells.Clear();
-        Cells.UnionWith(cells);
+        Cells = cells.ToHashSet();
     }
 
     public void DistributeResources(CombatCalculator combat, Data d)
@@ -139,10 +138,42 @@ public class Army : Entity, ICombatGraphNode
 
     public void DirectResults(CombatCalculator combat, LogicWriteKey key)
     {
+        
     }
 
     public void InvoluntaryResults(CombatCalculator combat, LogicWriteKey key)
     {
+        var cells = GetCells(key.Data);
+        var alliance = Regime.Get(key.Data).GetAlliance(key.Data);
+        var heldCells = cells
+            .Where(c => c.FriendlyControlled(alliance, key.Data))
+            .ToArray();
+        
+        if (heldCells.Length == 0)
+        {
+            var close = cells.SelectMany(c => c.GetNeighbors(key.Data))
+                .FirstOrDefault(c => c.FriendlyControlled(alliance, key.Data));
+            if (close is null)
+            {
+                combat.Graph.RemoveNode(this);
+                var update = new DestroyArmyProcedure(this.MakeRef());
+                key.SendMessage(update);
+                return;
+            }
+            else
+            {
+                var proc = new SetArmyOccupationProcedure(new HashSet<int> { close.Id }, this.MakeRef());
+                key.SendMessage(proc);
+                return;
+            }
+        }
+        else 
+        {
+            var proc = new SetArmyOccupationProcedure(
+                heldCells.Select(c => c.Id).ToHashSet(), this.MakeRef());
+            key.SendMessage(proc);
+            return;
+        }
     }
 
     public void VoluntaryResults(CombatCalculator combat, LogicWriteKey key)

@@ -4,15 +4,15 @@ using System.Collections.Generic;
 using Godot;
 using MessagePack;
 
-public class HandleUnitOrdersProcedure : Procedure
+public class HandleUnitMissionsProcedure : Procedure
 {
     public ConcurrentDictionary<int, HashSet<int>> NewArmyPosesById { get; private set; }
-    public static HandleUnitOrdersProcedure Construct()
+    public static HandleUnitMissionsProcedure Construct()
     {
-        return new HandleUnitOrdersProcedure(new ConcurrentDictionary<int, HashSet<int>>());
+        return new HandleUnitMissionsProcedure(new ConcurrentDictionary<int, HashSet<int>>());
     }
 
-    [SerializationConstructor] private HandleUnitOrdersProcedure(
+    [SerializationConstructor] private HandleUnitMissionsProcedure(
         ConcurrentDictionary<int, HashSet<int>> newArmyPosesById)
     {
         NewArmyPosesById = newArmyPosesById;

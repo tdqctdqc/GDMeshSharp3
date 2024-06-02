@@ -11,7 +11,7 @@ using System;
 [MessagePack.Union(6, typeof(FinishedTurnStartCalcProc))]
 [MessagePack.Union(7, typeof(MigrationProcedure))]
 [MessagePack.Union(8, typeof(FormUnitProcedure))]
-[MessagePack.Union(9 , typeof(HandleUnitOrdersProcedure))]
+[MessagePack.Union(9 , typeof(HandleUnitMissionsProcedure))]
 [MessagePack.Union(10, typeof(MakeProposalProcedure))]
 [MessagePack.Union(11, typeof(SetPlayerRegimeProcedure))]
 [MessagePack.Union(12, typeof(ProdResultProcedure))]
@@ -25,6 +25,9 @@ using System;
 [MessagePack.Union(20, typeof(TradeProcedure))]
 [MessagePack.Union(21, typeof(TroopLossesProcedure))]
 [MessagePack.Union(22, typeof(CleanUpArmyMissionsProcedure))]
+[MessagePack.Union(23, typeof(SetArmyOccupationProcedure))]
+[MessagePack.Union(24, typeof(DestroyArmyProcedure))]
+
 public abstract class Procedure : Message, IPolymorph
 {
     protected Procedure()

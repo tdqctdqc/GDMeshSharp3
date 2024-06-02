@@ -19,12 +19,9 @@ public class LineMission : ArmyMission
     }
 
     public override void Handle(Army g, LogicWriteKey key,
-        HandleUnitOrdersProcedure proc)
+        HandleUnitMissionsProcedure proc)
     {
-        if (g.Cells.SetEquals(LineCells) == false)
-        {
-            proc.NewArmyPosesById.TryAdd(g.Id, LineCells.ToHashSet());
-        }
+        proc.NewArmyPosesById.TryAdd(g.Id, LineCells.ToHashSet());
     }
     
     
@@ -37,7 +34,9 @@ public class LineMission : ArmyMission
         var lineSize = 5f;
         var alliance = group.Regime.Get(d).GetAlliance(d);
 
-        var natives = LineCells.Select(f => PlanetDomainExt.GetPolyCell(f, d));
+        var natives = LineCells
+            .Select(f => PlanetDomainExt.GetPolyCell(f, d))
+            .ToArray();
         foreach (var n in natives)
         {
             mb.DrawPolygon(n.RelBoundary.Select(p => relTo.Offset(p + n.RelTo, d)).ToArray(),
@@ -71,6 +70,27 @@ public class LineMission : ArmyMission
             ArmyAttackEdge.ConstructAndAddToGraph(army, advanceCell, combat, key.Data);
         }
     }
+
+    public override bool CleanUp(Army army, ProcedureWriteKey key)
+    {
+        var alliance = army.Regime.Get(key.Data).GetAlliance(key.Data);
+        var lost = army.LineMission.LineCells
+            .Where(c => PlanetDomainExt.GetPolyCell(c, key.Data)
+                .FriendlyControlled(alliance, key.Data) == false)
+            .ToArray();
+        army.LineMission.AdvanceInto.UnionWith(lost);
+        army.LineMission.LineCells.ExceptWith(lost);
+        army.Cells.ExceptWith(lost);
+        var conquered = army.LineMission.AdvanceInto
+            .Where(i =>PlanetDomainExt.GetPolyCell(i, key.Data)
+                .FriendlyControlled(alliance, key.Data))
+            .ToArray();
+        army.LineMission.LineCells.UnionWith(conquered);
+        army.LineMission.AdvanceInto.ExceptWith(conquered);
+        army.Cells.UnionWith(army.LineMission.LineCells);
+        return true;
+    }
+
     public override string GetDescription(Data d)
     {
         return $"Deploying on line from {LineCells.First()}" +

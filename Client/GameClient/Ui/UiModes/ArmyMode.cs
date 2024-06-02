@@ -246,11 +246,22 @@ public class ArmyMode : UiMode
 
             HashSet<int> occupy;
             HashSet<int> advanceInto = army.LineMission.AdvanceInto.ToHashSet();
+            var drawn = l.Select(c => c.Id).ToHashSet();
             var old = army.LineMission.LineCells;
-            var exclusive = l.Where(c => old.Contains(c.Id) == false);
+            var exclusive = drawn
+                .Where(c => old.Contains(c) == false);
             if (exclusive.Any())
             {
-                occupy = l.Select(c => c.Id).Concat(old).ToHashSet();
+                var intersect = drawn.Intersect(old);
+                if (intersect.Any())
+                {
+                    occupy = drawn.Concat(old)
+                        .ToHashSet();
+                }
+                else
+                {
+                    occupy = drawn;
+                }
             }
             else
             {

@@ -155,10 +155,10 @@ public class HoldLineAssignment : GroupAssignment
         foreach (var army in InsertingGroups)
         {
             var close = GetInsertPoint(army, key.Data);
-            var order = GoToCellsMission.Construct(
-                close.Yield(), 
-                Alliance,
-                army, key.Data);
+            var order = new LineMission(
+                close.Id.Yield().ToHashSet(), 
+                new HashSet<int>(),
+                false);
             key.SendMessage(new SetUnitOrderProcedure(army.MakeRef(), order));
         }
     }

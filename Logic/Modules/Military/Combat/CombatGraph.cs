@@ -34,6 +34,30 @@ public class CombatGraph
         _edgesByNode.Add(n, new List<ICombatGraphEdge>());
     }
 
+    public void RemoveNode(ICombatGraphNode n)
+    {
+        var edges = _edgesByNode[n];
+        foreach (var edge in edges)
+        {
+            var (n1, n2) = _nodesByEdge[edge];
+            var key = n1.GetIdEdgeKey(n2);
+            var other = n == n1 ? n2 : n1;
+            _edgesByNode[n2].Remove(edge);
+            _edgesByEdgeId.Remove(key);
+            _nodesByEdge.Remove(edge);
+        }
+
+        _edgesByNode.Remove(n);
+
+        if (n is CellCombatNode c)
+        {
+            CellCombatNodes.Remove(c.Cell);
+        }
+
+        _nodesById.Remove(n.Id);
+     }
+
+
     public IReadOnlyList<ICombatGraphEdge> GetEdgesBetween(
         ICombatGraphNode n1,
         ICombatGraphNode n2)

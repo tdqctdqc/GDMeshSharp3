@@ -77,12 +77,10 @@ public class CellCombatNode : ICombatGraphNode
             .ToList();
         if (Attackers == null || Attackers.Any() == false)
         {
-            GD.Print("no attackers at " + Cell.Id);
             return;
         }
         if (Defenders == null || Defenders.Any() == false)
         {
-            GD.Print("no defenders at " + Cell.Id);
             DefendersForcedBack = true;
             return;
         }

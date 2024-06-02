@@ -8,27 +8,15 @@ public class CleanUpArmyMissionsProcedure : Procedure
         foreach (var army in key.Data.GetAll<Army>())
         {
             var alliance = army.Regime.Get(key.Data).GetAlliance(key.Data);
-            army.OtherOrders.Clear();
-            var lost = army.LineMission.LineCells
-                .Where(c =>
+            army.LineMission.CleanUp(army, key);
+            foreach (var mission in army.OtherOrders.ToArray())
+            {
+                var keep = mission.CleanUp(army, key);
+                if (keep == false)
                 {
-                    var cell = PlanetDomainExt.GetPolyCell(c, key.Data);
-                    return alliance.Members.RefIds.Contains(cell.Controller.RefId)
-                           == false;
-                })
-                .ToArray();
-            army.LineMission.AdvanceInto.UnionWith(lost);
-            army.LineMission.LineCells.ExceptWith(lost);
-            var conquered = army.LineMission.AdvanceInto
-                .Where(i =>
-                {
-                    var cell = PlanetDomainExt.GetPolyCell(i, key.Data);
-                    return alliance.Members.RefIds.Contains(cell.Controller.RefId);
-                })
-                .ToArray();
-            army.LineMission.LineCells.UnionWith(conquered);
-            army.LineMission.AdvanceInto.ExceptWith(conquered);
-            
+                    army.OtherOrders.Remove(mission);
+                }
+            }
         }
     }
 

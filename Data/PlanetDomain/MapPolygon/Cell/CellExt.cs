@@ -8,7 +8,12 @@ public static class CellExt
     {
         return d.Infrastructure.RoadNetwork.Get(p1, p2, d);
     }
-
+    public static bool FriendlyControlled(this Cell p, Alliance a, Data d)
+    {
+        if (p.Controller.IsEmpty()) return false;
+        var controllerAlliance = p.Controller.Get(d).GetAlliance(d);
+        return a == controllerAlliance;
+    }
     public static bool RivalControlled(this Cell p, Alliance a, Data d)
     {
         if (p.Controller.IsEmpty()) return false;

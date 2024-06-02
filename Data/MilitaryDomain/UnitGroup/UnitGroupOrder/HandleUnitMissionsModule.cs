@@ -11,7 +11,7 @@ public class HandleUnitMissionsModule : LogicModule
         LogicWriteKey key)
     {
         var data = key.Data;
-        var proc = HandleUnitOrdersProcedure.Construct();
+        var proc = HandleUnitMissionsProcedure.Construct();
         Parallel.ForEach(data.GetAll<Army>(), 
             group =>
             {
