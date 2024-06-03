@@ -20,6 +20,15 @@ public class CellGeometry
     }
     public void MakePointsRel(Vector2I dim)
     {
+        if (RelTo.X == dim.X)
+        {
+            RelTo = new Vector2I(dim.X - 1, RelTo.Y);
+            EdgesRel = EdgesRel.Select(
+                v => (v.Item1 + Vector2I.Right,
+                    v.Item2 + Vector2I.Right)).ToList();
+            
+        }
+        
         var start = (Vector2)EdgesRel[0].Item1;
         var res = GetEdgePoints().Distinct()
             .OrderBy(p => start.GetCWAngleTo(p));

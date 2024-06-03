@@ -39,6 +39,7 @@ public static class UiActions
             highlighter.Draw(mb => mb.DrawPolygonOutline(
                 cell.RelBoundary, thickness,
                 Colors.White), cell.RelTo);
+
         }
     }
 
