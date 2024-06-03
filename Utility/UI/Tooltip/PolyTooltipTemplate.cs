@@ -13,7 +13,8 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         _fastGetters { get; }
         = new List<Func<(MapPolygon poly, Cell cell), Data, Control>>
         {
-            GetId,
+            GetPolyId,
+            GetCellId,
             GetRegime,
             GetLandform,
             GetVeg,
@@ -136,9 +137,13 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         return new Control();
     }
     
-    private static Control GetId((MapPolygon poly, Cell cell) t, Data d)
+    private static Control GetPolyId((MapPolygon poly, Cell cell) t, Data d)
     {
         return NodeExt.CreateLabel("Poly Id: " + t.poly.Id.ToString());
+    }
+    private static Control GetCellId((MapPolygon poly, Cell cell) t, Data d)
+    {
+        return NodeExt.CreateLabel("Cell Id: " + t.cell.Id.ToString());
     }
     private static Control GetResourceDeposits((MapPolygon poly, Cell cell) t, Data d)
     {

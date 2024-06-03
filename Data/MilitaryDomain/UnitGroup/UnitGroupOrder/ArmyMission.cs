@@ -11,5 +11,4 @@ public abstract class ArmyMission : IPolymorph
     public abstract bool CleanUp(Army army, ProcedureWriteKey key);
     public abstract string GetDescription(Data d);
     public abstract void Draw(Army group, Vector2 relTo, MeshBuilder mb, Data d);
-
 }

@@ -26,6 +26,7 @@ public static class FrontFinder
                 natives.Contains,
                 oppositionsHash.Contains, d);
             oppositionsHash.ExceptWith(front);
+            if (front.Count == 0) continue;
             res.Add(front);
         }
         return res;
