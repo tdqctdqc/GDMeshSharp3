@@ -98,8 +98,7 @@ public class MeshBuilder
     }
     public void DrawCellBorder(Cell c, Cell n,
         Func<Cell, Color> getColor,
-        float thickness, Vector2 relTo, Data d,
-        bool debug = false)
+        float thickness, Vector2 relTo, Data d)
     {
         var color = getColor(c);
         var edge = c.GetEdgeRelWith(n);
@@ -189,6 +188,107 @@ public class MeshBuilder
             throw new Exception();
         }
     }
+    
+    
+    
+    public void DrawCellBorderInset(Cell c, Cell n,
+        Func<Cell, Color> getColor,
+        float thickness, 
+        float inset,
+        Vector2 relTo, Data d)
+    {
+        var color = getColor(c);
+        var edge = c.GetEdgeRelWith(n);
+        var offsetToCenter = relTo.Offset(c.GetCenter(), d);
+        var perpToInset = Clockwise
+            .GetPerpTowards(edge.Item1, edge.Item2, 
+                Vector2.Zero).Normalized() * inset;        
+        var (insetLeft, insetRight) = (edge.Item1 + perpToInset, edge.Item2 + perpToInset);
+        
+
+        var perpToInner = Clockwise
+            .GetPerpTowards(edge.Item1, edge.Item2, 
+                Vector2.Zero).Normalized() * (thickness + inset);
+        var innerSeg = (edge.Item1 + perpToInner, edge.Item2 + perpToInner);
+        var mid = (insetLeft + insetRight) / 2f;
+        var innerMid = mid + perpToInner;
+        var mutuals = c.Neighbors.Intersect(n.Neighbors)
+            .Select(i => PlanetDomainExt.GetPolyCell(i, d)).ToArray();
+        // if (mutuals.Length > 2) throw new Exception();
+        
+        for (var i = 0; i < mutuals.Length; i++)
+        {
+            var mutual = mutuals[i];
+            var mEdge = c.GetEdgeRelWith(mutual);
+            var mInsetPerp = Clockwise
+                .GetPerpTowards(mEdge.Item1, mEdge.Item2, 
+                    Vector2.Zero).Normalized() * inset; 
+            if (mEdge == default) continue;
+            var (mEdgeInset1, mEdgeInset2)
+                = (mEdge.Item1 + mInsetPerp, mEdge.Item2 + mInsetPerp);
+
+            var foundIntersect = Vector2Ext.LineSegIntersect(innerSeg.Item1,
+                innerSeg.Item2,
+                mEdge.Item1, mEdge.Item2, true,
+                out var shared);
+            
+            if (foundIntersect &&
+                Vector2Ext.LineSegIntersect(innerSeg.Item1, 
+                    innerSeg.Item2,
+                    mEdge.Item1, mEdge.Item2, true,
+                    out var innerIntersectPoint))
+            {
+                //acute
+                AddTriRel(mid + c.RelTo, 
+                    innerMid + c.RelTo, innerIntersectPoint + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(mid + c.RelTo, shared + c.RelTo, 
+                    innerIntersectPoint + c.RelTo, color,
+                    relTo, d);
+                
+            }
+            else
+            {
+                var axis = mid - shared;
+                var mExclusive = getExclusive(mEdge, shared);
+                var mAxis = mExclusive - shared;
+                var mLength = Mathf.Min(thickness, mEdge.Item1.DistanceTo(mEdge.Item2));
+                var mPoint = shared + mAxis.Normalized() * mLength;
+                AddTriRel(mid + c.RelTo, shared + c.RelTo, 
+                    shared + perpToInner + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(innerMid + c.RelTo, mid + c.RelTo, 
+                    shared + perpToInner + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(shared + perpToInner + c.RelTo, 
+                    shared + c.RelTo, mPoint + c.RelTo, color, 
+                     relTo, d);
+            }
+            
+            
+            if (mutuals.Length == 1)
+            {
+                var exclusive = getExclusive((insetLeft, insetRight), shared);
+                AddTriRel(innerMid + c.RelTo, mid + c.RelTo, 
+                    exclusive + perpToInner + c.RelTo, color,
+                    relTo, d);
+                AddTriRel(exclusive + c.RelTo, mid + c.RelTo, 
+                    exclusive + perpToInner + c.RelTo, color,
+                    relTo, d);
+            }
+        }
+
+        
+
+
+        Vector2 getExclusive((Vector2, Vector2) e, Vector2 shared)
+        {
+            return e.Item1.DistanceTo(shared) > e.Item2.DistanceTo(shared)
+                ? e.Item1
+                : e.Item2;
+        }
+    }
+    
 
     public void AddLine(Vector2 from, Vector2 to, Color color, float thickness)
     {
