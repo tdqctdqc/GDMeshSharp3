@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -117,10 +118,10 @@ public class ArmyGraphicManager : ISettinged
         else
         {
             var length = Mathf.Min(10f, armies.Count * 2f);
-            var from = center - Vector2.One * length / 2f;
-            var to = center + Vector2.One * length / 2f;
+            var from = center + Vector2.One * length / 2f;
+            var to = center - Vector2.One * length / 2f;
 
-            for (var j = 0; j < armies.Count; j++)
+            for (var j = armies.Count - 1; j >= 0; j--)
             {
                 var army = armies[j];
                 var pos = from.Lerp(to, (float)j / (armies.Count - 1));
@@ -130,9 +131,29 @@ public class ArmyGraphicManager : ISettinged
             }
         }
     }
-    public void CycleArmies()
+    public void CycleArmies(Cell cell, Client c)
     {
-        
+        if (ArmiesInOrder.TryGetValue(cell, out var list) == false
+            || list.Count < 2) return;
+        var first = list[0];
+        list.RemoveAt(0);
+        list.Add(first);
+        RedrawCell(cell, c);
+        var newFirst = list[0];
+        var area = ArmyAreaGraphics.Graphics[newFirst];
+        area.Draw(newFirst, c);
+    }
+
+    public void SetArmyToTop(Army army, Client c)
+    {
+        var cell = army.GetHomeCell(c.Data);
+        var list = ArmiesInOrder[cell];
+        var remove = list.Remove(army);
+        if (remove == false) throw new Exception();
+        list.Insert(0, army);
+        RedrawCell(cell, c);
+        var area = ArmyAreaGraphics.Graphics[army];
+        area.Draw(army, c);
     }
     public Settings GetSettings()
     {

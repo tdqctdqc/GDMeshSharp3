@@ -10,9 +10,11 @@ public partial class ArmyIconGraphic : Node2D
     private MeshInstance2D _borderColor, _groupColor,
         _regimeColor, _healthMesh;
     private TextureRect _flagRect;
-
+    private Control _control;
+    private Army _army;
     static ArmyIconGraphic()
     {
+        
         _labelSettings = new LabelSettings();
         _labelSettings.FontSize = 25;
         _border = MeshExt.GetQuadMesh(Vector2.One * _iconSize);
@@ -23,7 +25,7 @@ public partial class ArmyIconGraphic : Node2D
     public ArmyIconGraphic()
     {
         ZAsRelative = false;
-        ZIndex = (int)LayerOrder.ArmyArea;
+        ZIndex = (int)LayerOrder.ArmyIcon;
         
         _borderColor = new MeshInstance2D();
         _borderColor.Mesh = _border;
@@ -54,9 +56,25 @@ public partial class ArmyIconGraphic : Node2D
         _healthMesh.Position = new Vector2(_iconSize * .3f, -_iconSize * .3f);
         _healthMesh.Mesh = _health;
         AddChild(_healthMesh);
+
+        _control = new Control();
+        _control.Size = _iconSize * Vector2.One;
+        _control.Position = -_iconSize * Vector2.One / 2f;
+        _control.GuiInput += e =>
+        {
+            if (e is InputEventMouseButton mb == false
+                || mb.Pressed) return;
+            if (_army is null) return;
+            var c = Game.I.Client;
+            var mode = c.UiController.Mode;
+            if (mode is ArmyMode am == false) return;
+            am.Select(_army);
+        };
+        AddChild(_control);
     }
     public void Draw(Army army, Client c)
     {
+        _army = army;
         c.QueuedUpdates.Enqueue(() =>
         {
             var health = army.GetHealth(c.Data);

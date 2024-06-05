@@ -16,7 +16,7 @@ public class GraphicLayerHolder
 {
     public Dictionary<MapChunk, ChunkGraphic> Chunks { get; private set; }
     public List<ISettinged> WholeMapGraphics { get; private set; }
-    
+    public ArmyGraphicManager ArmyGraphics { get; private set; }
     private Client _client;
     public GraphicLayerHolder(Client client, GraphicsSegmenter segmenter, 
         Data data)
@@ -39,8 +39,9 @@ public class GraphicLayerHolder
         }
 
         WholeMapGraphics = new List<ISettinged>();
-        
-        WholeMapGraphics.Add(new ArmyGraphicManager(client));
+
+        ArmyGraphics = new ArmyGraphicManager(client);
+        WholeMapGraphics.Add(ArmyGraphics);
         if (data is GenData g)
         {
             // WholeMapGraphics.Add(new GenGraphics(segmenter, g));

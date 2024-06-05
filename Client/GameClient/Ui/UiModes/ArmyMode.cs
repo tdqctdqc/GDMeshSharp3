@@ -40,7 +40,7 @@ public class ArmyMode : UiMode
             && mb.ButtonIndex == MouseButton.Left 
             && mb.Pressed == false)
         {
-            SelectAndCycle(_client);
+            Cycle();
         }
     }
 
@@ -101,33 +101,36 @@ public class ArmyMode : UiMode
         }
     }
 
-    private void SelectAndCycle(Client c)
+    private void Cycle()
     {
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell != null)
         {
-            var layerHolder = _client.GetComponent<MapGraphics>()
-                .GraphicLayerHolder;
-            var armiesOnCell = c.Data.Military.UnitAux
-                .ArmiesByOccupancy[cell];
-            if (armiesOnCell is null || armiesOnCell.Count() == 0)
+            var armyGraphics = _client.GetComponent<MapGraphics>()
+                .GraphicLayerHolder.ArmyGraphics;
+            if (armyGraphics.ArmiesInOrder
+                    .TryGetValue(cell, out var armiesOnCell)
+                        == false
+                    || armiesOnCell.Count() == 0)
             {
                 Army.Set(null);
                 return;
             }
-            var armiesOrdered = armiesOnCell.OrderBy(a => a.Id).ToList();
             var selected = Army.Value;
-            if (selected is not null && armiesOrdered.Contains(selected))
+            if (selected == armiesOnCell[0])
             {
-                var index = armiesOrdered.IndexOf(selected);
-                var next = armiesOrdered[(index + 1) % armiesOrdered.Count];
-                Army.Set(next);
+                armyGraphics.CycleArmies(cell, _client);
             }
-            else
-            {
-                Army.Set(armiesOrdered[0]);
-            }
+            Army.Set(armiesOnCell[0]);
         }
+    }
+
+    public void Select(Army army)
+    {
+        Army.Set(army);
+        var armyGraphics = _client.GetComponent<MapGraphics>()
+            .GraphicLayerHolder.ArmyGraphics;
+        armyGraphics.SetArmyToTop(army, _client);
     }
 
     private void MakeMouseActions()
