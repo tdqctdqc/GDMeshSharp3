@@ -63,6 +63,24 @@ public static class GeometryExt
         return true;
     }
 
+    public static Vector2[] IntersectPolygons(this Vector2[] polygon,
+        Vector2[] clip)
+    {
+        var intersects = Geometry2D.IntersectPolygons(polygon, clip);
+        if (intersects.Count != 1) throw new Exception();
+        return intersects[0];
+    }
+    
+    public static bool TryIntersectPolygons(this Vector2[] polygon,
+        Vector2[] intersect, out Vector2[] newBounds)
+    {
+        newBounds = null;
+        var intersects = Geometry2D.IntersectPolygons(polygon, intersect);
+        if (intersects.Count != 1) return false;
+        newBounds = intersects[0];
+        return true;
+    }
+
     public static Vector2[] GetBiggestClip(this Vector2[] polygon,
         Vector2[] clip)
     {
@@ -70,6 +88,70 @@ public static class GeometryExt
         if (differences.Count == 0) throw new Exception();
         if (differences[0].Length == 0) throw new Exception();
         return differences.MaxBy(p => p.GetArea());
+    }
+
+    public static Vector2[] ShrinkGrowPoly(this Vector2[] polygon,
+        float growBy)
+    {
+        var res = Geometry2D.OffsetPolygon(polygon, growBy);
+        if (res.Count != 1) throw new Exception();
+        return res[0];
+    }
+    public static bool TryShrinkGrowPoly(this Vector2[] polygon,
+        float growBy, out Vector2[] newPoly)
+    {
+        newPoly = null;
+        var res = Geometry2D.OffsetPolygon(polygon, growBy);
+        if (res.Count != 1) return false;
+        newPoly = res[0];
+        return true;
+    }
+
+    public static List<Vector2[]> GetCellUnionPolygons(
+        IEnumerable<Cell> cells, 
+        Vector2 relTo,
+        Data d)
+    {
+        var res = new List<Vector2[]>();
+        var hash = cells.ToHashSet();
+        while (hash.Count > 0)
+        {
+            var queue = new Queue<Cell>();
+            var first = hash.First();
+            hash.Remove(first);
+            queue.Enqueue(first);
+            Vector2[] boundary = null;
+            while (queue.Count > 0)
+            {
+                var c = queue.Dequeue();
+                if (boundary is null)
+                {
+                    boundary = getRelRelBoundary(c);
+                }
+                else
+                {
+                    boundary = GeometryExt.UnifyPolygons(boundary,
+                        getRelRelBoundary(c));
+                }
+
+                foreach (var neighbor in c.GetNeighbors(d))
+                {
+                    if (hash.Contains(neighbor) == false) continue;
+                    if (neighbor is RiverCell) continue;
+                    hash.Remove(neighbor);
+                    queue.Enqueue(neighbor);
+                }
+            }
+            res.Add(boundary);
+        }
+        
+        Vector2[] getRelRelBoundary(Cell c)
+        {
+            var offset = relTo.Offset(c.RelTo, d);
+            return c.RelBoundary.Select(v => v + offset).ToArray();
+        }
+
+        return res;
     }
     
 }

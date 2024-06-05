@@ -6,7 +6,6 @@ using System.Diagnostics;
 using System.Linq;
 using DelaunatorSharp;
 using MIConvexHull;
-using Poly2Tri;
 
 
 public static class Triangulator

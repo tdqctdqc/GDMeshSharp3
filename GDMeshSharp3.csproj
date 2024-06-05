@@ -17,6 +17,7 @@
     <PackageReference Include="MIConvexHull" Version="1.1.19.1019" />
     <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="7.0.4" />
     <PackageReference Include="OptimizedPriorityQueue" Version="5.1.0" />
+    <PackageReference Include="Poly2Tri" Version="1.0.1" />
     <PackageReference Include="RandomFriendlyNameGenerator" Version="1.0.7" />
     <PackageReference Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>
