@@ -86,4 +86,9 @@ public class OneToManyIndexer<TIndex, T>
     {
         action.Subscribe(ReCalc);
     }
+
+    public IReadOnlyDictionary<TIndex, HashSet<T>> GetDictionary()
+    {
+        return _dic;
+    }
 }

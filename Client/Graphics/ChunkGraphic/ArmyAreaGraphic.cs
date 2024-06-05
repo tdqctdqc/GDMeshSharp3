@@ -4,14 +4,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class ArmyGraphic : Node2D
+public partial class ArmyAreaGraphic : Node2D
 {
     private MeshInstance2D _mesh;
 
-    public ArmyGraphic()
+    public ArmyAreaGraphic()
     {
         ZAsRelative = false;
-        ZIndex = (int)LayerOrder.Units;
+        ZIndex = (int)LayerOrder.ArmyArea;
         _mesh = new MeshInstance2D();
         AddChild(_mesh);
     }
@@ -28,10 +28,11 @@ public partial class ArmyGraphic : Node2D
         var mb = MeshBuilder.GetFromPool();
         var thickness = 10f;
         var cells = army.GetCells(c.Data);
-        NewMethod(army, c, cells, mb, homeCell);
+        mb.DrawCellsBordersInsetLocal(cells, 
+            army.Regime.Get(c.Data).PrimaryColor.Tint(.25f),
+            army.Color, 
+            2f, 3f, army.GetHomeCell(c.Data).RelTo, c.Data);
 
-
-        // OldMethod(army, c, cells, homeCell, mb, thickness, regime);
         var mesh = mb.GetMesh();
         c.QueuedUpdates.Enqueue(() =>
         {
@@ -46,16 +47,5 @@ public partial class ArmyGraphic : Node2D
         });
 
         mb.Return();
-    }
-
-
-    private static void NewMethod(Army army, Client c, 
-        HashSet<Cell> cells, MeshBuilder mb, Cell homeCell)
-    {
-        mb.DrawCellsBordersInsetLocal(cells, 
-            army.Regime.Get(c.Data).PrimaryColor.Tint(.25f),
-            army.Color, 
-            2f, 3f, army.GetHomeCell(c.Data).RelTo, c.Data);
-            
     }
 }

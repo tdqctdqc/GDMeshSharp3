@@ -298,21 +298,7 @@ public class MeshBuilder
             JoinLinePoints(froms[i], tos[i], thickness, color);
         }
     }
-    public void AddLines(IReadOnlyList<ISegment<Vector2>> segs, float thickness, List<Color> colors)
-    {
-        for (int i = 0; i < segs.Count; i++)
-        {
-            var color = colors[i];
-            JoinLinePoints(segs[i].From, segs[i].To, thickness, color);
-        }
-    }
-    public void AddLines(IReadOnlyList<ISegment<Vector2>> segs, float thickness, Color color)
-    {
-        for (int i = 0; i < segs.Count; i++)
-        {
-            JoinLinePoints(segs[i].From, segs[i].To, thickness, color);
-        }
-    }
+    
     public void AddLinesCustomWidths(List<Vector2> froms,
         List<Vector2> tos, List<float> widths, List<Color> colors)
     {

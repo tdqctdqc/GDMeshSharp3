@@ -123,6 +123,16 @@ public static class LineSegmentExt
         if (froms.IsChain() == false) throw new Exception();
         return froms; 
     }
+    public static bool IsChain(this IReadOnlyList<LineSegment> segs)
+    {
+        for (int i = 0; i < segs.Count - 1; i++)
+        {
+            if (segs[i].To != segs[i + 1].From) return false;
+            if (segs[i].From == segs[i + 1].To) return false;
+        }
+
+        return true;
+    }
     
     public static List<LineSegment> Chainify(this List<LineSegment> lineSegments)
     {

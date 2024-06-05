@@ -1,7 +1,8 @@
 
 using Godot;
 
-public partial class ControllerPolyCellBorder : PolyCellBorder
+public partial class ControllerPolyCellBorder 
+    : PolyCellBorder
 {
     public ControllerPolyCellBorder(MapChunk chunk, 
         Data data) : base("Controller border",

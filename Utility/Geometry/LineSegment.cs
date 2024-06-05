@@ -5,7 +5,7 @@ using System.Linq;
 using Godot;
 
 
-public class LineSegment : ISegment<Vector2>
+public class LineSegment 
 {
     public Vector2 From { get; set; }
     public Vector2 To { get; set; }
@@ -100,18 +100,6 @@ public class LineSegment : ISegment<Vector2>
     {
         return $"[from {From} to {To}] \b";
     }
-    ISegment<Vector2> ISegment<Vector2>.ReverseGeneric() => Reverse();
-    bool ISegment<Vector2>.PointsTo(ISegment<Vector2> s)
-    {
-        return To == s.From;
-    }
-
-    bool ISegment<Vector2>.ComesFrom(ISegment<Vector2> s)
-    {
-        if (s is ISegment<Vector2> t == false) return false;
-        return From == t.To;
-    }
-
     public LineSegment Copy()
     {
         return new LineSegment(From, To);

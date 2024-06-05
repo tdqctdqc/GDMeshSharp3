@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class GenPlate 
+public class GenPlate : IIdentifiable
 {
     public int Id { get; private set; }
     public GenCell Seed { get; private set; }

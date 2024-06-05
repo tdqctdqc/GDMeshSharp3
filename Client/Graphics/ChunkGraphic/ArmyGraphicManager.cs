@@ -1,17 +1,37 @@
 
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Linq;
+using Godot;
+
 public class ArmyGraphicManager : ISettinged
 {
-    public EntityGraphicReservoir<Army, ArmyGraphic> ArmyGraphics { get; private set; }
-
+    public EntityGraphicReservoir<Army, ArmyAreaGraphic> ArmyAreaGraphics { get; private set; }
+    public EntityGraphicReservoir<Army, ArmyIconGraphic> ArmyIconGraphics { get; private set; }
+    private ConcurrentBag<Cell> _redraw;
+    public Dictionary<Cell, List<Army>> ArmiesInOrder { get; private set; }
     public ArmyGraphicManager(Client c)
     {
-        ArmyGraphics = new EntityGraphicReservoir<Army, ArmyGraphic>(
+        _redraw = new ConcurrentBag<Cell>();
+        ArmyAreaGraphics = new EntityGraphicReservoir<Army, ArmyAreaGraphic>(
             a =>
             {
-                var g = new ArmyGraphic();
+                var g = new ArmyAreaGraphic();
                 g.Draw(a, c);
                 return g;
             }, c.Data);
+        ArmyIconGraphics = new EntityGraphicReservoir<Army, ArmyIconGraphic>(
+            a =>
+            {
+                var g = new ArmyIconGraphic();
+                g.Draw(a, c);
+                var cell = a.GetHomeCell(c.Data);
+                ArmiesInOrder.AddOrUpdate(cell, a);
+                _redraw.Add(cell);
+                return g;
+            }, c.Data);
+
+        ArmiesInOrder = new Dictionary<Cell, List<Army>>();
         c.Data.Notices.Ticked.Subscribe(i =>
         {
             DrawAll(c);
@@ -24,16 +44,96 @@ public class ArmyGraphicManager : ISettinged
         {
             DrawAll(c);
         });
+        c.UiTick.Subscribe(() =>
+        {
+            Redraw(c);
+        });
     }
 
     private void DrawAll(Client c)
     {
-        foreach (var (army, graphic) in ArmyGraphics.Graphics)
+        foreach (var (army, graphic) in ArmyAreaGraphics.Graphics)
         {
             graphic.Draw(army, c);
         }
+        
+        foreach (var (army, graphic) in ArmyIconGraphics.Graphics)
+        {
+            graphic.Draw(army, c);
+        }
+        PositionAllIcons(c);
     }
+
     
+    private void PositionAllIcons(Client c)
+    {
+        SetArmiesInCellOrder(c);
+        foreach (var (cell, armies) in ArmiesInOrder)
+        {
+            RedrawCell(cell, c);
+        }
+    }
+
+    private void SetArmiesInCellOrder(Client c)
+    {
+        ArmiesInOrder.Clear();
+        foreach (var army in c.Data.GetAll<Army>())
+        {
+            var homeCell = army.GetHomeCell(c.Data);
+            ArmiesInOrder.AddOrUpdate(homeCell, army);
+        }
+    }
+    private void Redraw(Client c)
+    {
+        var redraw = _redraw.ToArray();
+        _redraw.Clear();
+        var segmenter = c.GetComponent<MapGraphics>()
+            .Segmenter;
+        c.QueuedUpdates.Enqueue(() =>
+        {
+            for (var i = 0; i < redraw.Length; i++)
+            {
+                var cell = redraw[i];
+                RedrawCell(cell, c);
+            }
+        });
+    }
+
+    private void RedrawCell(
+        Cell cell, 
+        Client c)
+    {
+        var segmenter = c.GetComponent<MapGraphics>()
+            .Segmenter;
+        var armies = ArmiesInOrder[cell];
+        var center = cell.GetCenter();
+        if (armies.Count == 1)
+        {
+            var army = armies[0];
+            var icon = ArmyIconGraphics.Graphics[army];
+            c.QueuedUpdates.Enqueue(
+                () => segmenter.AddElement(icon, center));
+        }
+        else
+        {
+            var length = Mathf.Min(10f, armies.Count * 2f);
+            var from = center - Vector2.One * length / 2f;
+            var to = center + Vector2.One * length / 2f;
+
+            for (var j = 0; j < armies.Count; j++)
+            {
+                var army = armies[j];
+                var pos = from.Lerp(to, (float)j / (armies.Count - 1));
+                var icon = ArmyIconGraphics.Graphics[army];
+                c.QueuedUpdates.Enqueue(
+                    () => segmenter.AddElement(icon, pos));
+            }
+        }
+    }
+    public void CycleArmies()
+    {
+        
+    }
     public Settings GetSettings()
     {
         var settings = new Settings("Armies");
@@ -42,7 +142,7 @@ public class ArmyGraphicManager : ISettinged
         visibility.SettingChanged.Subscribe(
             v =>
             {
-                foreach (var graphic in ArmyGraphics.Graphics.Values)
+                foreach (var graphic in ArmyAreaGraphics.Graphics.Values)
                 {
                     graphic.Visible = v.newVal;
                 }

@@ -179,4 +179,10 @@ public class Army : Entity, ICombatGraphNode
     public void VoluntaryResults(CombatCalculator combat, LogicWriteKey key)
     {
     }
+
+    public Vector2 GetHealth(Data d)
+    {
+        return Units.Items(d).Select(u => u.GetHealth(d))
+            .Sum();
+    }
 }

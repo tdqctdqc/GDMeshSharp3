@@ -9,13 +9,14 @@ public enum LayerOrder
 {
     Terrain, PolyFill, Rivers, 
     Roads, Icons, Resources,
-    UnitOrders, Units, Theaters,
+    ArmyArea, ArmyIcon,
     Labels, Debug, Highlighter, Ui
 }
 public class GraphicLayerHolder
 {
     public Dictionary<MapChunk, ChunkGraphic> Chunks { get; private set; }
     public List<ISettinged> WholeMapGraphics { get; private set; }
+    
     private Client _client;
     public GraphicLayerHolder(Client client, GraphicsSegmenter segmenter, 
         Data data)
@@ -38,6 +39,7 @@ public class GraphicLayerHolder
         }
 
         WholeMapGraphics = new List<ISettinged>();
+        
         WholeMapGraphics.Add(new ArmyGraphicManager(client));
         if (data is GenData g)
         {
@@ -45,7 +47,7 @@ public class GraphicLayerHolder
         }
         client.UiTick.Subscribe(DoUiTick);
     }
-
+    
     private void DoUiTick()
     {
         var context = new UiTickContext(_client);

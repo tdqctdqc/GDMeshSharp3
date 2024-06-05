@@ -41,6 +41,7 @@ public class UnitAux
         sw.Start();
         var dim = new Vector2(_data.Planet.Width, _data.Planet.Height);
         ArmiesByOccupancy.ReCalc();
+        ArmiesByHomeCell.ReCalc();
         sw.Stop();
         _data.Logger.Log("Make army grid time " + sw.Elapsed.TotalMilliseconds,
             LogType.Logic);

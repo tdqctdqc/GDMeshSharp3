@@ -113,7 +113,7 @@ public static class GeometryExt
         Data d)
     {
         var res = new List<Vector2[]>();
-        var hash = cells.ToHashSet();
+        var hash = cells.Where(c => c is IPolyCell).ToHashSet();
         while (hash.Count > 0)
         {
             var queue = new Queue<Cell>();
@@ -137,7 +137,7 @@ public static class GeometryExt
                 foreach (var neighbor in c.GetNeighbors(d))
                 {
                     if (hash.Contains(neighbor) == false) continue;
-                    if (neighbor is RiverCell) continue;
+                    if (neighbor is not IPolyCell) continue;
                     hash.Remove(neighbor);
                     queue.Enqueue(neighbor);
                 }
