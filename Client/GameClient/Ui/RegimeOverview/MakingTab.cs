@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Godot;
 
@@ -23,7 +24,8 @@ public partial class MakingTab : ScrollContainer
         var manufacturing = regime.MakeQueue.Queue;
         for (var i = 0; i < manufacturing.Count; i++)
         {
-            var project = manufacturing.ElementAt(i);
+            var project = manufacturing[i];
+            if(project is null) throw new Exception();
             _container.AddChild(project.GetDisplay(client.Data));
         }
     }

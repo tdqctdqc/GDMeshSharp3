@@ -19,7 +19,7 @@ public partial class RegimeAiOverviewWindow : Window
     private RegimeAiOverviewWindow()
     {
         _container = this.MakeScrollContainer<VBoxContainer>(Vector2I.One * 500);
-        this.MakeCloseable();
+        this.MakeHideable();
         AboutToPopup += Draw;
         Size = Vector2I.One * 500;
     }

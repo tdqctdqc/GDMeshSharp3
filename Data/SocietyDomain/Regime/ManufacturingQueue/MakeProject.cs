@@ -3,25 +3,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
+[MessagePack.Union(0, typeof(DefaultMakeProject))]
+[MessagePack.Union(1, typeof(PlayerBuildingMakeProject))]
 
-public class MakeProject
+public abstract class MakeProject : IPolymorph
 {
     public ERef<Regime> Regime { get; private set; }
     public ModelRef<IModel> Making { get; protected set; }
     public float Amount { get; private set; }
-    public float Fulfilled { get; private set; }
+    public float Fulfilled { get; protected set; }
 
-    public static MakeProject Construct<TMakeable>(
-        Regime r,
-        TMakeable t,
-        float amount)
-        where TMakeable : class, IModel, IMakeable
-    {
-        return new MakeProject(r.MakeRef(),
-            ((IModel)t).MakeRef(),
-            amount, 0f);
-    }
-    [SerializationConstructor] private MakeProject(
+    [SerializationConstructor] protected MakeProject(
         ERef<Regime> regime, 
         ModelRef<IModel> making,
         float amount, float fulfilled)
@@ -32,10 +24,9 @@ public class MakeProject
         Fulfilled = fulfilled;
     }
 
-    public void Increment(float amount, ProcedureWriteKey key)
-    {
-        Fulfilled += amount;
-    }
+    public abstract void Increment(float amount, ProcedureWriteKey key);
+
+    public abstract void Finish(ProcedureWriteKey key);
     public Control GetDisplay(Data d)
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;

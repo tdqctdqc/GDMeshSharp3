@@ -137,6 +137,7 @@ public partial class Client : Node, IClient
     {
         var genUi = GeneratorUi.Construct(this, wrapper);
         AddComponent(genUi);
+        
     }
     public void SetupForGameplay(bool host)
     {
@@ -201,6 +202,8 @@ public partial class Client : Node, IClient
         GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow());
         GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(Data));
+        GetComponent<WindowManager>().AddWindow(new MilitaryWindow());
+        
         UiController.ModeOption.Choose<PolyMode>();
     }
 }

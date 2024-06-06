@@ -58,17 +58,22 @@ public partial class ArmyIconGraphic : Node2D
         AddChild(_healthMesh);
 
         _control = new Control();
+        
         _control.Size = _iconSize * Vector2.One;
         _control.Position = -_iconSize * Vector2.One / 2f;
         _control.GuiInput += e =>
         {
-            if (e is InputEventMouseButton mb == false
-                || mb.Pressed) return;
-            if (_army is null) return;
-            var c = Game.I.Client;
-            var mode = c.UiController.Mode;
-            if (mode is ArmyMode am == false) return;
-            am.Select(_army);
+            if (e is InputEventMouseButton mb
+                && mb.Pressed == false
+                && _army is not null 
+                && Game.I.Client.UiController.Mode is ArmyMode am)
+            {
+                am.SelectOrCycle(_army);
+            }
+            else
+            {
+                Game.I.Client.UiController.Mode.HandleInput(e);
+            }
         };
         AddChild(_control);
     }

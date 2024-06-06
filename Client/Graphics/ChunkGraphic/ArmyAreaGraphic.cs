@@ -32,7 +32,7 @@ public partial class ArmyAreaGraphic : Node2D
             army.Regime.Get(c.Data).PrimaryColor.Tint(.25f),
             army.Color, 
             2f, 3f, army.GetHomeCell(c.Data).RelTo, c.Data);
-
+        
         var mesh = mb.GetMesh();
         c.QueuedUpdates.Enqueue(() =>
         {

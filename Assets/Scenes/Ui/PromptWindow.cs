@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PromptWindow : ClosableWindow
+public partial class PromptWindow : Window
 {
     private Container _container;
+
+    public PromptWindow()
+    {
+        this.MakeFreeable();
+    }
     public void Setup(Prompt prompt)
     {
         this.AssignChildNode(ref _container, "Container");
@@ -28,6 +33,5 @@ public partial class PromptWindow : ClosableWindow
             _container.AddChild(btn);
         }
 
-        CloseRequested += QueueFree;
     }
 }

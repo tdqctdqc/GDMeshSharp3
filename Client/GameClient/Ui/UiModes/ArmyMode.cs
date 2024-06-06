@@ -125,8 +125,13 @@ public class ArmyMode : UiMode
         }
     }
 
-    public void Select(Army army)
+    public void SelectOrCycle(Army army)
     {
+        if (Army.Value == army)
+        {
+            Cycle();
+            return;
+        }
         Army.Set(army);
         var armyGraphics = _client.GetComponent<MapGraphics>()
             .GraphicLayerHolder.ArmyGraphics;

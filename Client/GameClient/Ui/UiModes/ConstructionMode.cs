@@ -4,7 +4,7 @@ using Godot;
 
 public class ConstructionMode : UiMode
 {
-    public ListSettingsOption<SettlementBuildingModel> Setting { get; private set; }
+    public ListSettingsOption<SettlementBuildingModel> Building { get; private set; }
     private MouseOverHandler _mouseOver;
     private MeshInstance2D _mesh;
     private Label _errorLabel;
@@ -12,7 +12,7 @@ public class ConstructionMode : UiMode
         "Construction")
     {
         var list = client.Data.Models.Buildings.GetList();
-        Setting = new ListSettingsOption<SettlementBuildingModel>(
+        Building = new ListSettingsOption<SettlementBuildingModel>(
             "Building", list, 
             list.Select(m => m.Name).ToList());
         _mouseOver = new MouseOverHandler(client.Data);
@@ -28,30 +28,11 @@ public class ConstructionMode : UiMode
     {
         var mg = _client.GetComponent<MapGraphics>();
         mg.Highlighter.Clear();
-        _mesh.Texture = Setting.Value.Icon.Texture;
-        var model = Setting.Value;
+        _mesh.Texture = Building.Value.Icon.Texture;
+        var model = Building.Value;
         var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
         var localPlayerRegime = localPlayer.Regime.Get(_client.Data);
         if (localPlayerRegime == null) return;
-        
-        
-        
-        // var proc = StartConstructionProcedure
-        //     .Construct(model.MakeRef(),
-        //         _mouseOver.MouseOverCell.Id,
-        //         localPlayerRegime.MakeRef(),
-        //         _client.Data);
-        //
-        // if (proc.Valid(_client.Data, out string error))
-        // {
-        //     _mesh.Modulate = Colors.White;
-        //     _errorLabel.Text = "";
-        // }
-        // else
-        // {
-        //     _mesh.Modulate = new Color(Colors.White, .5f);
-        //     _errorLabel.Text = error;
-        // }
         
         _client.GetComponent<MapGraphics>().Segmenter
             .AddElement(_mesh, _mouseOver.MouseOverCell.GetCenter());
@@ -59,31 +40,33 @@ public class ConstructionMode : UiMode
     public override void HandleInput(InputEvent e)
     {
         if (e is InputEventMouseButton mb
-            && mb.ButtonIndex == MouseButton.Left
+            && mb.ButtonIndex == MouseButton.Right
             && mb.Pressed == false)
         {
             TryBuild();
         }
     }
-
+    
     private void TryBuild()
     {
-        var model = Setting.Value;
+        var model = Building.Value;
         var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
         var localPlayerRegime = localPlayer.Regime.Get(_client.Data);
-        if (localPlayerRegime is not null)
+        if (model is not null
+            && localPlayerRegime is not null
+            && _mouseOver.MouseOverCell is Cell cell
+            && cell.Controller.RefId == localPlayerRegime.Id
+            && cell.GetSettlement(_client.Data) is Settlement s)
         {
-            // var proc = StartConstructionProcedure
-            //     .Construct(model.MakeRef(),
-            //         _mouseOver.MouseOverCell.Id,
-            //         localPlayerRegime.MakeRef(),
-            //         _client.Data);
-            // var com = new DoProcedureCommand(proc, localPlayer.PlayerGuid);
-            // _client.HandleCommand(com);
+            var project = PlayerBuildingMakeProject.Construct(
+                s, localPlayerRegime, model);
+            var com = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
+            _client.HandleCommand(com);
         }
     }
     public override void Enter()
     {
+        _mesh?.QueueFree();
         _mesh = new MeshInstance2D();
         var q = new QuadMesh();
         q.Size = Vector2.One * 30f;

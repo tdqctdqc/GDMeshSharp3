@@ -4,7 +4,8 @@ using System.Linq;
 using Godot;
 using Ui.RegimeOverview;
 
-public partial class RegimeOverviewWindow : TabWindow
+public partial class RegimeOverviewWindow 
+    : TabWindow
 {
     private GeneralTab _general;
     private PeepsTab _peeps;

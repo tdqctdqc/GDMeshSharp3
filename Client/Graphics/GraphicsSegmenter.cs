@@ -55,7 +55,6 @@ public partial class GraphicsSegmenter : Node2D, IGraphicsSegmenter
     public void Update(float ratio)
     {
         var vec = Vector2.Up.Rotated(Mathf.Pi * 2f * ratio);
-        var dimX = _segWidth * _numSegments;
         foreach (var kvp in _segmentNodes)
         {
             kvp.Value.Position = GetSegmentXDisplace(kvp.Key, vec);
@@ -64,7 +63,6 @@ public partial class GraphicsSegmenter : Node2D, IGraphicsSegmenter
 
     private Vector2 GetSegmentXDisplace(int index, Vector2 vec)
     {
-        var parent = _segmentNodes[index];
         var thisRatio = (float)index / (float)_numSegments;
         var thisVec = Vector2.Up.Rotated(Mathf.Pi * 2f * thisRatio);
         var angle = vec.AngleTo(thisVec);

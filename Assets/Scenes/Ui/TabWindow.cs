@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class TabWindow : ClosableWindow
+public partial class TabWindow : Window
 {
     private TabContainer _container;
 
     public TabWindow()
     {
+        this.MakeHideable();
         _container = new TabContainer();
         _container.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         _container.SetAnchorsPreset(Control.LayoutPreset.FullRect);

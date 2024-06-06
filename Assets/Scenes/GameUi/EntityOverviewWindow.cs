@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-public partial class EntityOverviewWindow : ClosableWindow
+public partial class EntityOverviewWindow : Window
 {
     public static EntityOverviewWindow Get(Data data)
     {
@@ -12,6 +12,11 @@ public partial class EntityOverviewWindow : ClosableWindow
         // eo.Setup(data);
         eo.Hide();
         return eo;
+    }
+
+    public EntityOverviewWindow()
+    {
+        this.MakeHideable();
     }
     // private UIVar<Domain> _domain;
     // private UIVar<Type> _entityType;

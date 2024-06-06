@@ -5,9 +5,14 @@ using Godot;
 
 public static class WindowExt
 {
-    public static void MakeCloseable(this Window w)
+    public static void MakeHideable(this Window w)
     {
         w.CloseRequested += w.Hide;
+    }
+
+    public static void MakeFreeable(this Window w)
+    {
+        w.CloseRequested += w.QueueFree;
     }
 
     public static T MakeScrollContainer<T>(this Window w,

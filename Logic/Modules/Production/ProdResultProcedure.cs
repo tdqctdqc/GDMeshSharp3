@@ -33,6 +33,7 @@ public class ProdResultProcedure : Procedure
                     remainingToMake -= increment;
                     if (p.Fulfilled >= p.Amount)
                     {
+                        p.Finish(key);
                         makeQueue.Queue.Remove(p);
                     }
                 }

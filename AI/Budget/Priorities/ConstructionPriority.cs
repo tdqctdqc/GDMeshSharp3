@@ -25,7 +25,6 @@ public abstract class ConstructionPriority
         BudgetPool pool,
         Dictionary<SettlementBuildingModel, Variable> projVars, Data data)
     {
-        //todo add maintain cost constraints
         solver.SetBuildCostConstraints(data, pool, projVars);
         solver.SetMaintainCostConstraints(data, pool, projVars,
             b =>
@@ -50,20 +49,6 @@ public abstract class ConstructionPriority
                 laborConstraint.SetCoefficient(variable, l.TotalLabor());
                 
             }
-        }
-    }
-
-    protected override void Complete(
-        BudgetPool pool,
-        Regime r, 
-        Dictionary<SettlementBuildingModel, int> toBuild, 
-        LogicWriteKey key)
-    {
-        foreach (var (model, value) in toBuild)
-        {
-            var make = MakeProject.Construct(r, model, value);
-            var proc = new StartMakeProjectProc(r.MakeRef(), make);
-            key.SendMessage(proc);
         }
     }
 }

@@ -1,13 +1,14 @@
 
 using Godot;
 
-public partial class IssueWindow : ClosableWindow
+public partial class IssueWindow : Window
 {
     private Client _client;
     private Container _container;
 
     private IssueWindow()
     {
+        this.MakeHideable();
         Size = Vector2I.One * 500;
         _container = new VBoxContainer();
         _container.AnchorsPreset = (int)Control.LayoutPreset.FullRect;

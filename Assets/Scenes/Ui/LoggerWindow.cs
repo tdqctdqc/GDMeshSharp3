@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class LoggerWindow : ClosableWindow
+public partial class LoggerWindow : Window
 {
     private Container _container;
     private float _timer = 0f;
@@ -20,6 +20,7 @@ public partial class LoggerWindow : ClosableWindow
 
     private LoggerWindow()
     {
+        this.MakeHideable();
         _num = new Dictionary<LogType, int>();
         _innerContainers = new Dictionary<LogType, Node>();
         Hide();

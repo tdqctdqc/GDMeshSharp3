@@ -9,7 +9,7 @@ public partial class FillArmyWindow : Window
     private Action _redraw;
     public FillArmyWindow()
     {
-        this.MakeCloseable();
+        this.MakeHideable();
         Size = new Vector2I(500, 800);
         _inner = this.MakeScrollContainer<VBoxContainer>(
             new Vector2I(500, 800));

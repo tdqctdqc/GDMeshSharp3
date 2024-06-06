@@ -17,7 +17,7 @@ public partial class ConstructBuildingsPanel : Panel
         var list = c.Data.Models.Buildings.GetList();
         var setting = c.UiController.ModeOption.Options
             .OfType<ConstructionMode>()
-            .First().Setting;
+            .First().Building;
         var menu = setting
             .GetControlInterfaceIcon(m => m.Icon.Texture,
             Vector2I.One * 50);

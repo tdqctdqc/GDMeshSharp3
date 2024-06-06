@@ -16,6 +16,7 @@ public class StartMakeProjectProc : Procedure
     public MakeProject Project { get; private set; }
     public override void Enact(ProcedureWriteKey key)
     {
+        GD.Print("enacting proc");
         Regime.Get(key.Data).MakeQueue.Queue.Add(Project);
     }
 
