@@ -5,7 +5,7 @@ using System.Linq;
 public class DefaultLogicModule : LogicModule
 {
     private Func<Procedure> _func;
-
+    
     public DefaultLogicModule(Func<Procedure> func)
     {
         _func = func;

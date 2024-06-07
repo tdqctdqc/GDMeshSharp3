@@ -20,8 +20,8 @@ public abstract class SettingsOption<T> : ISettingsOption
 
     public void Set(T val)
     {
-        if (Value is not null && Value.Equals(val)) return;
-        if (Value is null && val is null) return;
+        // if (Value is not null && Value.Equals(val)) return;
+        // if (Value is null && val is null) return;
         var oldVal = Value;
         Value = val;
         SettingChanged.Invoke((oldVal, val));

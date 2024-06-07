@@ -4,21 +4,30 @@ using Godot;
 
 namespace Ui.RegimeOverview;
 
-public partial class MakingTab : ScrollContainer
+public partial class MakingTab : ScrollContainer, IUiDrawable
 {
     private VBoxContainer _container;
-    public MakingTab()
+    private RegimeOverviewWindow _parent;
+    
+    public MakingTab(RegimeOverviewWindow parent)
     {
+        _parent = parent;
         Name = "Making";
         CustomMinimumSize = new Vector2(200f, 400f);
         _container = new VBoxContainer();
         _container.CustomMinimumSize = CustomMinimumSize;
         AddChild(_container);
     }
-    
-    public void Setup(Regime regime, Client client)
+
+    private MakingTab()
+    {
+    }
+
+    public void Draw(Client client)
     {
         _container.ClearChildren();
+        var regime = _parent.Regime;
+        if (regime is null) return;
         _container.CreateLabelAsChild("MANUFACTURING QUEUE");
 
         var manufacturing = regime.MakeQueue.Queue;

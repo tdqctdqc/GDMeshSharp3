@@ -7,11 +7,11 @@ using Godot;
 public class Models
 {
     private Dictionary<Type, IModelManager> _managers;
-    public IModel this[int id] => _models.TryGetValue(id, out var val) 
+    public IModel this[int id] => ModelsById.TryGetValue(id, out var val) 
         ? (IModel) val
         : null;
     
-    public Dictionary<int, IModel> _models;
+    public Dictionary<int, IModel> ModelsById;
     public Dictionary<string, IModel> _modelsByName;
     public RoadList RoadList { get; private set; }
     public LandformList Landforms { get; private set; }
@@ -32,7 +32,7 @@ public class Models
     public Models(Data data)
     {
         _managers = new Dictionary<Type, IModelManager>();
-        _models = new Dictionary<int, IModel>();
+        ModelsById = new Dictionary<int, IModel>();
         _modelsByName = new Dictionary<string, IModel>();
         _idIter = 0;
         
@@ -96,7 +96,7 @@ public class Models
             {
                 setter.Invoke(model, new object[] {_idIter});
                 _idIter++;
-                _models.Add(model.Id, model);
+                ModelsById.Add(model.Id, model);
             }
             else
             {
@@ -107,7 +107,7 @@ public class Models
     }
     public T GetModel<T>(int id) where T : IModel
     {
-        return (T)_models[id];
+        return (T)ModelsById[id];
     }
 
     public Dictionary<string, TModel> GetModels<TModel>() where TModel : IModel

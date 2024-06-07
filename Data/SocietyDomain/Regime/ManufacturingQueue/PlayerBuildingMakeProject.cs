@@ -1,4 +1,5 @@
 
+using Godot;
 using MessagePack;
 
 public class PlayerBuildingMakeProject : MakeProject
@@ -24,6 +25,37 @@ public class PlayerBuildingMakeProject : MakeProject
             : base(regime, making, amount, fulfilled)
     {
         Settlement = settlement;
+    }
+
+    public override void Start(ProcedureWriteKey key)
+    {
+        var building = (SettlementBuildingModel)Making.Get(key.Data);
+        var settlement = Settlement.Get(key.Data);
+        var regime = Regime.Get(key.Data);
+        var proportion = 1f;
+        foreach (var (model, amt) 
+                 in building.Makeable.BuildCosts
+                     .GetEnumerableModel(key.Data))
+        {
+            var modelStock = regime.Stock.Stock.Get(model);
+            if(modelStock == 0f)
+            {
+                proportion = 0f;
+                break;
+            }
+            var modelProportion = Mathf.Clamp(modelStock / amt, 0f, 1f);
+            proportion = Mathf.Min(proportion, modelProportion);
+        }
+
+        if (proportion > 0f)
+        {
+            Fulfilled = proportion;
+            foreach (var (model, amt) in building.Makeable.BuildCosts.GetEnumerableModel(key.Data))
+            {
+                regime.Stock.Stock.Remove(model, amt * proportion);
+                regime.Stock.SingleTimeCosts.Add(model, amt * proportion);
+            }
+        }
     }
 
     public override void Increment(float amount, ProcedureWriteKey key)

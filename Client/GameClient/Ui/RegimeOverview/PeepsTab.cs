@@ -4,20 +4,29 @@ using System.Linq;
 using Godot;
 namespace Ui.RegimeOverview;
 
-public partial class PeepsTab : ScrollContainer
+public partial class PeepsTab : ScrollContainer, IUiDrawable
 {
     private VBoxContainer _container;
-    public PeepsTab()
+    private RegimeOverviewWindow _parent;
+    public PeepsTab(RegimeOverviewWindow parent)
     {
+        _parent = parent;
         Name = "Peeps";
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         _container.AnchorsPreset = (int)LayoutPreset.FullRect;
         AddChild(_container);
     }
-    public void Setup(Regime regime, Client client)
+
+    private PeepsTab()
+    {
+    }
+
+    public void Draw(Client client)
     {
         _container.ClearChildren();
+        var regime = _parent.Regime;
+        if (regime is null) return;
         var populatedCells = regime.GetCells(client.Data)
             .Where(p => p.HasPeep(client.Data));
         var peeps = populatedCells

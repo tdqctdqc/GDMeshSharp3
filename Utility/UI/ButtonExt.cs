@@ -56,10 +56,11 @@ public static class ButtonExt
         var settingsWindowBtn
             = ButtonExt.GetButton(() =>
             {
-                var w = Game.I.Client
-                    .GetComponent<WindowManager>()
-                    .OpenWindow<T>();
+                var windows = Game.I.Client
+                    .GetComponent<WindowManager>();
+                var w = windows.GetWindow<T>();
                 action?.Invoke(w);
+                windows.OpenWindow<T>();
             });
         settingsWindowBtn.Text = name;
         n.AddChild(settingsWindowBtn);

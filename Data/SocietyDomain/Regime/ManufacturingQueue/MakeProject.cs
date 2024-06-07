@@ -24,6 +24,7 @@ public abstract class MakeProject : IPolymorph
         Fulfilled = fulfilled;
     }
 
+    public abstract void Start(ProcedureWriteKey key);
     public abstract void Increment(float amount, ProcedureWriteKey key);
 
     public abstract void Finish(ProcedureWriteKey key);

@@ -3,22 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class MarketPricesOverview : HBoxContainer
+public partial class MarketPricesOverview : HBoxContainer, IUiDrawable
 {
     private ItemMultiSelect _itemList;
     private Control _chart;
-    public MarketPricesOverview(Data data)
+    public MarketPricesOverview(Client client)
     {
         Name = "Prices";
         var buffer = new Control();
         buffer.CustomMinimumSize = new Vector2(20f, 0f);
         AddChild(buffer);
         _itemList = ItemMultiSelect.ConstructIcon<Item>(
-            data.Models.GetModels<Item>().Values
+            client.Data.Models.GetModels<Item>().Values
                         .Where(i => i is TradeableItem).ToList(), 
                         i => i.Icon, 
             50f,
-            () => Draw(data), 
+            () => Draw(client), 
             i => i.Color);
         _itemList.CustomMinimumSize = new Vector2(60f, 10f);
         
@@ -31,8 +31,9 @@ public partial class MarketPricesOverview : HBoxContainer
         AddChild(_chart);
     }
 
-    public void Draw(Data data)
+    public void Draw(Client client)
     {
+        var data = client.Data;
         _chart.ClearChildren();
         var items = _itemList.GetSelectedItems<Item>().Select(i => (Item) i);        
         var chart = new LineChart(Vector2.One * 400f,

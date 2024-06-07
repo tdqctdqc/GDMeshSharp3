@@ -15,8 +15,10 @@ public static class UiActions
         if (cell.Controller.Fulfilled())
         {
             var r = cell.Controller.Get(client.Data);
-            var w = Game.I.Client.GetComponent<WindowManager>().OpenWindow<RegimeOverviewWindow>();
+            var windows = Game.I.Client.GetComponent<WindowManager>();
+            var w = windows.GetWindow<RegimeOverviewWindow>();
             w.Setup(r, client);
+            windows.OpenWindow<RegimeOverviewWindow>();
         }
     }
     

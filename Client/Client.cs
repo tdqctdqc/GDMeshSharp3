@@ -160,7 +160,7 @@ public partial class Client : Node, IClient
         uiFrame.LeftBar.Add(() =>
             {
                 UiController.ModeOption.Choose<ConstructionMode>();
-                return new ConstructBuildingsPanel(this);
+                return new ConstructionPanel(this);
             },
             "Construct");
         
@@ -199,10 +199,10 @@ public partial class Client : Node, IClient
             },
             "Military Planning");
         
-        GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow());
-        GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow());
-        GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(Data));
-        GetComponent<WindowManager>().AddWindow(new MilitaryWindow());
+        GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow(this));
+        GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow(this));
+        GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(this));
+        GetComponent<WindowManager>().AddWindow(new MilitaryWindow(this));
         
         UiController.ModeOption.Choose<PolyMode>();
     }

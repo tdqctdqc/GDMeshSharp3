@@ -4,21 +4,24 @@ using System.Linq;
 using Godot;
 namespace Ui.RegimeOverview;
 
-public partial class FoodTab : ScrollContainer
+public partial class FoodTab : ScrollContainer, IUiDrawable
 {
     private VBoxContainer _container;
-    public FoodTab()
+    private RegimeOverviewWindow _parent;
+    public FoodTab(RegimeOverviewWindow parent)
     {
+        _parent = parent;
         Name = "Food";
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         _container.AnchorsPreset = (int)LayoutPreset.FullRect;
         AddChild(_container);
     }
-    public void Setup(Regime regime, Client client)
+    public void Draw(Client client)
     {
         _container.ClearChildren();
-        
+        var regime = _parent.Regime;
+        if (regime is null) return;
         // var actualProd = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Produced;
         // var actualCons = regime.History.ItemHistory.GetLatest(client.Data.Models.Items.Food).Consumed;
         // var demand = regime.GetPeeps(client.Data).Sum(p => p.Size)

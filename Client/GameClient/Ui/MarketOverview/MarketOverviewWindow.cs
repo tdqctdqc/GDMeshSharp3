@@ -5,21 +5,12 @@ using Godot;
 
 public partial class MarketOverviewWindow : TabWindow
 {
-    public MarketOverviewWindow(Data data)
+    public MarketOverviewWindow(Client c) : base(c)
     {
-        var prices = new MarketPricesOverview(data);
+        var prices = new MarketPricesOverview(c);
         AddTab(prices);
-        var qs = new MarketQuantitiesOverview(data);
+        var qs = new MarketQuantitiesOverview(c);
         AddTab(qs);
-        AboutToPopup += () =>
-        {
-            prices.Draw(data);
-            qs.Draw(data);
-        };
         MinSize = new Vector2I(700, 500);
-    }
-
-    private MarketOverviewWindow()
-    {
     }
 }

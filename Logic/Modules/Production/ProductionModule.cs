@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Godot;
 
 public class ProductionModule : LogicModule
-{
+{   
     public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
     {
         var results = key.Data.GetAll<Regime>()

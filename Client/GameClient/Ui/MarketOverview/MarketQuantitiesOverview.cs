@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class MarketQuantitiesOverview : HBoxContainer
+public partial class MarketQuantitiesOverview : HBoxContainer, IUiDrawable
 {
     private ItemSelect _itemList;
     private Control _chart;
     private Label _selectedLabel;
-    public MarketQuantitiesOverview(Data data)
+    public MarketQuantitiesOverview(Client client)
     {
         Name = "Quantities";
         var buffer = new Control();
         buffer.CustomMinimumSize = new Vector2(20f, 0f);
         AddChild(buffer);
         _itemList = ItemSelect.ConstructIcon<Item>(
-            data.Models.GetModels<Item>().Values
+            client.Data.Models.GetModels<Item>().Values
                 .Where(i => i is TradeableItem).ToList(), 
             i => i.Icon, 
             50f,
-            i => Draw(data), 
+            i => Draw(client), 
             i => i.Color);
         _itemList.CustomMinimumSize = new Vector2(60f, 10f);
         
@@ -38,8 +38,9 @@ public partial class MarketQuantitiesOverview : HBoxContainer
     {
     }
 
-    public void Draw(Data data)
+    public void Draw(Client client)
     {
+        var data = client.Data;
         _chart.ClearChildren();
         _selectedLabel.Text = "";
         var item = (Item)_itemList.Selected;

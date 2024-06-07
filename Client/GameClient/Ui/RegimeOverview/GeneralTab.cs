@@ -4,25 +4,34 @@ using System.Linq;
 using Godot;
 namespace Ui.RegimeOverview;
 
-public partial class GeneralTab : ScrollContainer
+public partial class GeneralTab : ScrollContainer, IUiDrawable
 {
     private VBoxContainer _container;
+    private RegimeOverviewWindow _parent;
     public override void _Ready()
     {
         base._Ready();
     }
 
-    public GeneralTab()
+    public GeneralTab(RegimeOverviewWindow parent)
     {
+        _parent = parent;
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         AddChild(_container);
         _container.AnchorsPreset = (int)LayoutPreset.FullRect;
     }
-    public void Setup(Regime regime, Client client)
+
+    private GeneralTab()
     {
-        Name = regime.Name;
+    }
+
+    public void Draw(Client client)
+    {
         _container.ClearChildren();
+        var regime = _parent.Regime;
+        if (regime is null) return;
+        Name = regime.Name;
 
         var flag = regime.Template.Get(client.Data).Flag;
         var flagTexture = flag.GetTextureRect(100f);

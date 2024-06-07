@@ -21,7 +21,6 @@ public class StartMakeProjectCommand : Command
 
     public override void Enact(LogicWriteKey key)
     {
-        GD.Print("enacting command");
         var regime = key.Data.BaseDomain
             .PlayerAux.ByGuid[CommandingPlayerGuid].Regime;
         var proc = new StartMakeProjectProc(regime,

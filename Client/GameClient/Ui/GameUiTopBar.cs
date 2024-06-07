@@ -23,7 +23,12 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         general.AddWindowButton<RegimeAiOverviewWindow>("Regime Ais");
         general.AddWindowButton<MarketOverviewWindow>("Market");
         general.AddWindowButton<IssueWindow>("Issues");
-        general.AddWindowButton<MilitaryWindow>("Issues");
+        general.AddWindowButton<MilitaryWindow>("Military",
+            w =>
+            {
+                var regime = client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data);
+                w.Regime = regime;
+            });
         
         
         _submitTurn = general.AddButton("Submit Turn", () =>

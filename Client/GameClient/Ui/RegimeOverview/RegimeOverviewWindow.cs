@@ -7,6 +7,7 @@ using Ui.RegimeOverview;
 public partial class RegimeOverviewWindow 
     : TabWindow
 {
+    public Regime Regime { get; private set; }
     private GeneralTab _general;
     private PeepsTab _peeps;
     private StockTab _stock;
@@ -15,43 +16,44 @@ public partial class RegimeOverviewWindow
     private FlowsTab _flows;
     private MakingTab _manuf;
     private MilitaryTab _troop;
-    public RegimeOverviewWindow()
+    public RegimeOverviewWindow(Client c) : base(c)
     {
         MinSize = new Vector2I(1000, 1000);
 
-        _general = new GeneralTab();
+        _general = new GeneralTab(this);
         AddTab(_general);
 
-        _peeps = new PeepsTab();
+        _peeps = new PeepsTab(this);
         AddTab(_peeps);
 
-        _stock = new StockTab();
+        _stock = new StockTab(this);
         AddTab(_stock);
 
-        _ag = new FoodTab();
+        _ag = new FoodTab(this);
         AddTab(_ag);
 
-        _budget = new BudgetTab();
+        _budget = new BudgetTab(this);
         AddTab(_budget);
 
-        _flows = new FlowsTab();
+        _flows = new FlowsTab(this);
         AddTab(_flows);
 
-        _manuf = new MakingTab();
+        _manuf = new MakingTab(this);
         AddTab(_manuf);
 
-        _troop = new MilitaryTab();
+        _troop = new MilitaryTab(this);
         AddTab(_troop);
     }
     public void Setup(Regime regime, Client client)
     {
-        _general.Setup(regime, client);
-        _peeps.Setup(regime, client);
-        _stock.Setup(regime, client);
-        _ag.Setup(regime, client);
-        _budget.Setup(regime, client);
-        _flows.Setup(regime, client);
-        _manuf.Setup(regime, client);
-        _troop.Setup(regime, client);
+        Regime = regime;
+        // _general.Draw(client);
+        // _peeps.Setup(regime, client);
+        // _stock.Setup(regime, client);
+        // _ag.Setup(regime, client);
+        // _budget.Setup(regime, client);
+        // _flows.Setup(regime, client);
+        // _manuf.Setup(regime, client);
+        // _troop.Setup(regime, client);
     }
 }

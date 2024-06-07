@@ -20,7 +20,6 @@ public partial class MultiBar : Control
     {
         var mb = new MultiBar(new VBoxContainer(),
             new HBoxContainer());
-
         return mb;
     }
     public MultiBar(Container buttonContainer,

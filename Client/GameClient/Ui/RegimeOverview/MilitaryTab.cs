@@ -4,11 +4,13 @@ using Godot;
 
 namespace Ui.RegimeOverview;
 
-public partial class MilitaryTab : ScrollContainer
+public partial class MilitaryTab : ScrollContainer, IUiDrawable
 {
     private VBoxContainer _container;
-    public MilitaryTab()
+    private RegimeOverviewWindow _parent;
+    public MilitaryTab(RegimeOverviewWindow parent)
     {
+        _parent = parent;
         Name = "Military";
 
         CustomMinimumSize = new Vector2(200f, 400f);
@@ -16,9 +18,16 @@ public partial class MilitaryTab : ScrollContainer
         _container.CustomMinimumSize = CustomMinimumSize;
         AddChild(_container);
     }
-    public void Setup(Regime regime, Client client)
+
+    private MilitaryTab()
+    {
+    }
+
+    public void Draw(Client client)
     {
         _container.ClearChildren();
+        var regime = _parent.Regime;
+        if (regime is null) return;
         _container.CreateLabelAsChild("TROOP RESERVE");
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var iconSize = client.Settings.MedIconSize.Value;

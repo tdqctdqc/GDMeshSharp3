@@ -17,6 +17,11 @@ public class DefaultMakeProject : MakeProject
     {
     }
 
+    public override void Start(ProcedureWriteKey key)
+    {
+        
+    }
+
     public override void Increment(float amount, ProcedureWriteKey key)
     {
         Fulfilled += amount;
