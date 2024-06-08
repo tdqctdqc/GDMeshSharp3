@@ -127,7 +127,7 @@ public class CellCombatNode : ICombatGraphNode
                 .MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data)));
             
             var victoriousRegime = max.Key;
-            var victoriousArmies = max.Value.Select(u => u.Unit.GetGroup(key.Data))
+            var victoriousArmies = max.Value.Select(u => u.Unit.GetArmy(key.Data))
                 .Distinct();
             var changeController = ConquerCellProcedure
                 .Construct(Cell, victoriousRegime, victoriousArmies);

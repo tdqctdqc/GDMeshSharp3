@@ -7,7 +7,7 @@ public partial class MilitaryWindow : TabWindow
     public MilitaryWindow(Client c) : base(c)
     {
         MinSize = new Vector2I(1000, 1000);
-        var makeUnits = new MakeUnitsTab();
+        var makeUnits = new MakeUnitsTab(this);
         makeUnits.Name = "Make Units";
         AddTab(makeUnits);
 

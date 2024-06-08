@@ -26,7 +26,7 @@ public static class UnitExt
         return u.Troops.GetEnumerableModel(d)
             .Sum(kvp => kvp.Value * kvp.Key.Hitpoints);
     }
-    public static Army GetGroup(this Unit u, Data d)
+    public static Army GetArmy(this Unit u, Data d)
     {
         return d.Military.UnitAux.UnitByGroup[u];
     }

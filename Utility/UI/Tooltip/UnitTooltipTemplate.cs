@@ -41,7 +41,7 @@ public class UnitTooltipTemplate : TooltipTemplate<Unit>
 
     private static Control GetOrders(Unit u, Data d)
     {
-        var g = u.GetGroup(d);
+        var g = u.GetArmy(d);
         if (g == null) return new Control();
         var vbox = new VBoxContainer();
         vbox.CreateLabelAsChild(g.LineMission.GetDescription(d));

@@ -31,7 +31,7 @@ public class Unit : Entity
 
     public override void CleanUp(StrongWriteKey key)
     {
-        var g = this.GetGroup(key.Data);
+        var g = this.GetArmy(key.Data);
         if (g != null)
         {
             g.Units.Remove(this, key);

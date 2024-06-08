@@ -9,6 +9,10 @@ public class ItemMultiListToken<T>
     public List<T> Selected { get; private set; }
     public ItemList ItemList { get; private set; }
     private List<T> _items;
+    private Func<T, Texture2D> _getTexture;
+    private Vector2I? _textureSize;
+    private Func<T, string> _getLabelText;
+    private Action<List<T>> _selectAction;
     
     public ItemMultiListToken(
         IEnumerable<T> items, 
@@ -27,28 +31,61 @@ public class ItemMultiListToken<T>
             ItemList.FixedIconSize = textureSize.Value;
         }
 
-        _items = new List<T>();
-        
-        foreach (var item in items)
-        {
-            _items.Add(item);
-            ItemList.AddItem(getLabelText(item),
-                getTexture is not null
-                    ? getTexture(item)
-                    : null
-            );
-        }
-
+        _selectAction = selectAction;
+        _getLabelText = getLabelText;
+        _getTexture = getTexture;
+        _textureSize = textureSize;
+        _items = new List<T>(items);
+        SetList();
         ItemList.MultiSelected += (index, selected) =>
         {
-            HandleMultiSelection(selectAction);
+            HandleMultiSelection();
         };
     }
 
-    private void HandleMultiSelection(Action<List<T>> selectAction)
+    private void SetList()
+    {
+        foreach (var item in _items)
+        {
+            AddItemToList(item);
+        }
+    }
+
+    private void AddItemToList(T item)
+    {
+        ItemList.AddItem(_getLabelText(item),
+            _getTexture is not null
+                ? _getTexture(item)
+                : null
+        );
+    }
+
+    public void Add(T t)
+    {
+        _items.Add(t);
+        AddItemToList(t);
+    }
+    public void Remove(IEnumerable<T> toRemove)
+    {
+        foreach (var t in toRemove)
+        {
+            Selected.Remove(t);
+            _items.Remove(t);
+        }
+        ItemList.Clear();
+        SetList();
+        foreach (var t in Selected)
+        {
+            var index = _items.IndexOf(t);
+            ItemList.Select(index);
+        }
+        HandleMultiSelection();
+    }
+
+    private void HandleMultiSelection()
     {
         Selected = ItemList.GetSelectedItems()
             .Select(i => _items[i]).ToList();
-        selectAction(Selected);
+        _selectAction(Selected);
     }
 }
