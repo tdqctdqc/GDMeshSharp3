@@ -34,9 +34,11 @@ public class MessagePackManager
             MessagePack.Resolvers.ContractlessStandardResolver.Instance,
             MessagePack.Resolvers.StandardResolver.Instance,
             // finally use standard (default) resolver
-            StandardResolver.Instance
+            StandardResolver.Instance,
+            MessagePack.Resolvers.TypelessObjectResolver.Instance
         );
         _options = MessagePackSerializerOptions.Standard.WithResolver(resolver);
+        
         // Pass options every time or set as default
         // MessagePackSerializer.DefaultOptions = _options;
     }

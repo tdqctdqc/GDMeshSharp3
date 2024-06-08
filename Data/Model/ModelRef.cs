@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public struct ModelRef<T> : IDRef<T>
+public struct ModelRef<T> : IdRef
     where T : class, IModel
 {
     public int RefId { get; private set; }
@@ -17,7 +17,7 @@ public struct ModelRef<T> : IDRef<T>
     {
         RefId = refId;
     }
-
+    object IdRef.Get(Data data) => Get(data);
     public T Get(Data data)
     {
         if (RefId != -1)

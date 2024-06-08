@@ -40,9 +40,15 @@ public class Data
     public Data()
     {
         Serializer = new Serializer();
+        
+        
+        var cellRef = new CellRef();
+        
         _entityTypeTree = new EntityTypeTree(this);
         Init();
     }
+
+    
     protected virtual void Init()
     {
         Notices = new DataNotices();

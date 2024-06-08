@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using MessagePack;
 
-public struct ERef<TRef> : IDRef<TRef>
+public struct ERef<TRef> : IdRef
     where TRef : Entity
 {
     public int RefId { get; }
@@ -25,6 +25,8 @@ public struct ERef<TRef> : IDRef<TRef>
     {
         RefId = refId;
     }
+
+    object IdRef.Get(Data data) => Get(data);
     public TRef Get(Data data)
     {
         if (RefId == -1) return null;

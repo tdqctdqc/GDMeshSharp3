@@ -22,6 +22,7 @@ public partial class Game : Node
 		Assets.Setup();
 		StartMainMenuSession();
 		// PathFinderTest.Test();
+		
 	}
 	public void StartMainMenuSession()
 	{

@@ -1,5 +1,5 @@
 
-public struct CellRef : IDRef<Cell>
+public struct CellRef : IdRef
 {
     public int RefId { get; }
 
@@ -7,7 +7,7 @@ public struct CellRef : IDRef<Cell>
     {
         RefId = refId;
     }
-
+    object IdRef.Get(Data data) => Get(data);
     public Cell Get(Data d)
     {
         return PlanetDomainExt.GetPolyCell(RefId, d);
