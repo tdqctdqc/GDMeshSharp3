@@ -17,7 +17,7 @@ public struct ModelRef<T> : IdRef
     {
         RefId = refId;
     }
-    object IdRef.Get(Data data) => Get(data);
+    IIdentifiable IdRef.Get(Data data) => Get(data);
     public T Get(Data data)
     {
         if (RefId != -1)

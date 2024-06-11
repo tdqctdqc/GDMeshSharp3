@@ -7,7 +7,7 @@ public struct CellRef : IdRef
     {
         RefId = refId;
     }
-    object IdRef.Get(Data data) => Get(data);
+    IIdentifiable IdRef.Get(Data data) => Get(data);
     public Cell Get(Data d)
     {
         return PlanetDomainExt.GetPolyCell(RefId, d);

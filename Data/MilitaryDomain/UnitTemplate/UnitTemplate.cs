@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
-public class UnitTemplate : Entity
+public class UnitTemplate : Entity, IMakeable
 {
     public string Name { get; private set; }
     public IdCount<Troop> TroopCounts { get; private set; }
     public ERef<Regime> Regime { get; private set; }
     public ModelRef<MoveType> MoveType { get; private set; }
     public TroopDomain Domain { get; private set; }
+    public MakeableAttribute Makeable { get; private set; }
+
     public static UnitTemplate Create(ICreateWriteKey key, 
         string name,
         Dictionary<Troop, float> troopCounts,
@@ -27,17 +29,24 @@ public class UnitTemplate : Entity
                 costs.Add(cost.Key, cost.Value * numTroop);
             }
         }
+
+        var makeable = new MakeableAttribute(
+            costs, 
+            IdCount<IModel>.Construct()
+        );
         var u = new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
             moveType.MakeRef(), regime.MakeRef(),
             key.Data.IdDispenser.TakeId(),
-            domain);
+            domain,
+            makeable);
         key.Create(u);
         return u;
     }
     [SerializationConstructor] private UnitTemplate(string name,
         IdCount<Troop> troopCounts, ModelRef<MoveType> moveType,
         ERef<Regime> regime, int id, 
-        TroopDomain domain) 
+        TroopDomain domain,
+        MakeableAttribute makeable) 
         : base(id)
     {
         MoveType = moveType;
@@ -45,6 +54,7 @@ public class UnitTemplate : Entity
         TroopCounts = troopCounts;
         Regime = regime;
         Domain = domain;
+        Makeable = makeable;
     }
 
     public static void CreateDefaultTemplatesForRegime(Regime r, 
@@ -68,4 +78,5 @@ public class UnitTemplate : Entity
         return TroopCounts.GetEnumerableModel(d)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
     }
+
 }

@@ -26,7 +26,7 @@ public struct ERef<TRef> : IdRef
         RefId = refId;
     }
 
-    object IdRef.Get(Data data) => Get(data);
+    IIdentifiable IdRef.Get(Data data) => Get(data);
     public TRef Get(Data data)
     {
         if (RefId == -1) return null;

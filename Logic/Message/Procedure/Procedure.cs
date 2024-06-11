@@ -27,6 +27,7 @@ using System;
 [MessagePack.Union(22, typeof(CleanUpArmyMissionsProcedure))]
 [MessagePack.Union(23, typeof(SetArmyOccupationProcedure))]
 [MessagePack.Union(24, typeof(DestroyArmyProcedure))]
+[MessagePack.Union(25, typeof(AddBuildingProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

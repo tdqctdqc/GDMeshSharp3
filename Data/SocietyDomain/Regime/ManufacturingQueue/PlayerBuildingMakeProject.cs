@@ -19,7 +19,7 @@ public class PlayerBuildingMakeProject : MakeProject
     [SerializationConstructor] protected PlayerBuildingMakeProject(
         ERef<Settlement> settlement,
         ERef<Regime> regime, 
-        ModelRef<IModel> making,
+        IdRef making,
         float amount,
         float fulfilled) 
             : base(regime, making, amount, fulfilled)
@@ -32,6 +32,7 @@ public class PlayerBuildingMakeProject : MakeProject
         var building = (SettlementBuildingModel)Making.Get(key.Data);
         var settlement = Settlement.Get(key.Data);
         var regime = Regime.Get(key.Data);
+        var population = regime.GetPopulation(key.Data);
         var proportion = 1f;
         foreach (var (model, amt) 
                  in building.Makeable.BuildCosts
@@ -58,17 +59,50 @@ public class PlayerBuildingMakeProject : MakeProject
         }
     }
 
-    public override void Increment(float amount, ProcedureWriteKey key)
+    public override void Increment(float amount, 
+        ProductionResult result,
+        LogicWriteKey key)
     {
         Fulfilled += amount;
     }
 
-    public override void Finish(ProcedureWriteKey key)
+    public override void Finish(LogicWriteKey key)
     {
         var building = (SettlementBuildingModel)Making.Get(key.Data);
         var settlement = Settlement.Get(key.Data);
         var regime = Regime.Get(key.Data);
-        settlement.Buildings.Add(building, 1f);
-        regime.Stock.Produced.Add(Making.RefId, 1f);
+        var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
+        key.SendMessage(proc);
+    }
+    
+    
+    public override Control GetDisplay(Data d)
+    {
+        var size = Game.I.Client.Settings.MedIconSize.Value;
+        var m = (IModel)Making.Get(d);
+        var makeable = (IMakeable)m;
+        var vbox = new VBoxContainer();
+        if (m is IIconed i)
+        {
+            var icon = i.Icon.GetLabeledIcon<HBoxContainer>(
+                $"{m.Name}: {Fulfilled} / {Amount} ",
+                size);
+            vbox.AddChild(icon);
+        }
+        else
+        {
+            vbox.CreateLabelAsChild(m.Name);
+        }
+        
+
+        var costs = makeable.Makeable.BuildCosts.GetEnumerableModel(d);
+        foreach (var (key, value) in costs)
+        {
+            var needed = makeable.Makeable.BuildCosts.Get(key) * Amount;
+            var have = makeable.Makeable.BuildCosts.Get(key) * Fulfilled;
+            vbox.CreateLabelAsChild($"{key.Name}: { have } / { needed }");
+        }
+        
+        return vbox;
     }
 }

@@ -19,25 +19,7 @@ public class ProdResultProcedure : Procedure
         {
             var result = Results[i];
             result.Regime.Get(key.Data).SetStock(result.Stock, key);
-            var makeQueue = result.Regime.Get(key.Data).MakeQueue;
-            foreach (var (making, amtMade) in result.Made)
-            {
-                var remainingToMake = amtMade;
-                while (remainingToMake > 0f
-                       && makeQueue.Queue
-                               .FirstOrDefault(p => p.Making.RefId == making.RefId)
-                           is MakeProject p)
-                {
-                    var increment = Mathf.Min(remainingToMake, p.Amount - p.Fulfilled);
-                    p.Increment(increment, key);
-                    remainingToMake -= increment;
-                    if (p.Fulfilled >= p.Amount)
-                    {
-                        p.Finish(key);
-                        makeQueue.Queue.Remove(p);
-                    }
-                }
-            }
+            result.Regime.Get(key.Data).MakeQueue.SetQueue(result.MakeQueue, key);
         }
     }
 

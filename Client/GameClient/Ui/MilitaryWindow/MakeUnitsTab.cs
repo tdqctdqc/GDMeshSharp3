@@ -8,7 +8,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
     private VBoxContainer _makingUnitsContainer,
         _templatesContainer;
 
-    private ItemListToken<DefaultMakeProject> _makingUnits;
+    private ItemListToken<ModelMakeProject> _makingUnits;
     private ItemListToken<UnitTemplate> _templates;
     
     

@@ -49,7 +49,7 @@ public class Regime : Entity
         var r = new Regime(id, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
-            new CellRef(seed.GetCells(key.Data).First().Id),
+            new CellRef(seed.GetCells(key.Data).OfType<LandCell>().First().Id),
             store,
             regimeTemplate.Culture.MakeRef(),
             regimeTemplate.MakeRef(),

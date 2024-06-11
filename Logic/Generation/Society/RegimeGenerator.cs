@@ -24,22 +24,15 @@ public class RegimeGenerator : Generator
         var report = new GenReport(GetType().Name);
         report.StartSection();
         var polyRegimes = GenerateRegimes();
+ 
 
-        var landCells = _data.Planet.MapAux.CellHolder.Cells.Values.OfType<LandCell>();
-        
-        foreach (var landCell in landCells)
-        {
-            var r = polyRegimes[landCell.Polygon.Get(_data)];
-            landCell.SetController(r, key);
-        }
-        
         _data.Notices.Gen.GeneratedRegimes.Invoke();
-        
+
         report.StopSection("all");
+
         return report;
     }
 
-    
 
     private Dictionary<MapPolygon, Regime> GenerateRegimes()
     {
@@ -55,19 +48,32 @@ public class RegimeGenerator : Generator
                 polyRegimes.AddRange(lmRegimes);
             });
 
-        var remainders = new ConcurrentBag<HashSet<MapPolygon>>();
         
         foreach (var lm in _data.Planet.MapAux.LandSea.Landmasses)
         {
-            var remainder = ExpandRegimes(polyRegimes);
-            remainders.Add(remainder);
+            ExpandRegimes(polyRegimes);
+        }
+        CheckRegimesHaveCells();
+
+        var remainders = _data.GetAll<MapPolygon>()
+            .Where(p => p.IsLand 
+                        && (polyRegimes.ContainsKey(p) == false))
+            .ToHashSet();
+        
+        HandleRemainder(remainders, templates, polyRegimes);
+        
+        foreach (var (poly, regime) in polyRegimes)
+        {
+            foreach (var c in poly.GetCells(_key.Data).OfType<LandCell>())
+            {
+                c.SetController(regime, _key);
+            }
         }
         
-        foreach (var r in remainders)
-        {
-            HandleRemainder(r, templates, polyRegimes);
-        }
-
+        
+        CheckRegimesHaveCells();
+        CheckCellsHaveRegimes();
+        
         var bySize = polyRegimes
             .SortBy(
                 kvp => kvp.Value,
@@ -90,11 +96,30 @@ public class RegimeGenerator : Generator
         }
         
         
+
         
         
         return polyRegimes;
     }
 
+    private void CheckCellsHaveRegimes()
+    {
+
+        if (_key.Data.Planet.MapAux.CellHolder.Cells.Values
+            .OfType<LandCell>().Any(c => c.Controller.IsEmpty()))
+        {
+            throw new Exception();
+        }
+    }
+    
+    private void CheckRegimesHaveCells()
+    {
+        if (_key.Data.GetAll<Regime>().Any(r => r.GetCells(_key.Data).Count() == 0))
+        {
+            throw new Exception();
+        }
+    }
+    
     private Dictionary<MapPolygon, Regime> GenerateLandmassRegimes(HashSet<MapPolygon> lm, int polysPerRegime,
         HashSet<RegimeTemplate> templates)
     {
@@ -108,6 +133,10 @@ public class RegimeGenerator : Generator
             var template = templates.GetRandomElement();
             var regime = Regime.Create(seeds[i], template,
                 false, _key);
+            foreach (var c in seeds[i].GetCells(_data).OfType<LandCell>())
+            {
+                c.SetController(regime, _key);
+            }
             res.Add(seeds[i], regime);
         }
         return res;
@@ -115,7 +144,8 @@ public class RegimeGenerator : Generator
     private HashSet<MapPolygon> ExpandRegimes(Dictionary<MapPolygon, Regime> polyRegimes)
     {
         var free = _key.Data.GetAll<MapPolygon>()
-            .Where(p => p.IsLand).Except(polyRegimes.Keys).ToHashSet();
+            .Where(p => p.IsLand)
+            .Except(polyRegimes.Keys).ToHashSet();
         
         var picker = new WandererPicker(free);
         int iter = 1;
@@ -131,6 +161,8 @@ public class RegimeGenerator : Generator
         
         foreach (var w in picker.Wanderers)
         {
+            if (w.Picked.Count == 0) throw new Exception();
+
             var r = ((RegimeWanderer) w).Regime;
             foreach (var p in w.Picked)
             {
@@ -140,6 +172,7 @@ public class RegimeGenerator : Generator
                 }
             }
         }
+        
         return picker.NotTaken;
     }
 
