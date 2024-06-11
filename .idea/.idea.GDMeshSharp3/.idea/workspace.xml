@@ -5,29 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/AddBuildingProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/UnitMakeProject.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/CancelMakeProjectCommand.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/CancelMakeProjectProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/SolverPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/SolverPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/MakeUnitsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/MakeUnitsTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/ModelRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ModelRef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Ref/CellRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/CellRef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Ref/ERef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/ERef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Ref/IdRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/IdRef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/DefaultMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ModelMakeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeProject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/MakeQueue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ModelMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ModelMakeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/PlayerBuildingMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/PlayerBuildingMakeProject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/StartMakeProjectCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/StartMakeProjectCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/StartMakeProjectProc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/StartMakeProjectProc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/UnitMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/UnitMakeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProdResultProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProdResultProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProductionResult.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionResult.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Serialization/Resolvers/IdRefResolver.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/ItemListToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/ItemListToken.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -663,7 +654,8 @@
       <workItem from="1717770619476" duration="7902000" />
       <workItem from="1717808076419" duration="6198000" />
       <workItem from="1717854856429" duration="5029000" />
-      <workItem from="1718121044217" duration="3251000" />
+      <workItem from="1718121044217" duration="6803000" />
+      <workItem from="1718137290227" duration="711000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -875,14 +867,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00201" summary="more work on fronts, advance fronts, etc">
-      <option name="closed" value="true" />
-      <created>1715648250004</created>
-      <option name="number" value="00201" />
-      <option name="presentableId" value="LOCAL-00201" />
-      <option name="project" value="LOCAL" />
-      <updated>1715648250005</updated>
-    </task>
     <task id="LOCAL-00202" summary="got a good advance into partition solution i think">
       <option name="closed" value="true" />
       <created>1715707362723</created>
@@ -1027,7 +1011,15 @@
       <option name="project" value="LOCAL" />
       <updated>1717812326753</updated>
     </task>
-    <option name="localTasksCounter" value="220" />
+    <task id="LOCAL-00220" summary="fixed regime gen bug, construct cap bug">
+      <option name="closed" value="true" />
+      <created>1718124998444</created>
+      <option name="number" value="00220" />
+      <option name="presentableId" value="LOCAL-00220" />
+      <option name="project" value="LOCAL" />
+      <updated>1718124998445</updated>
+    </task>
+    <option name="localTasksCounter" value="221" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1049,7 +1041,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="changed food prod generation, use constant value instead of cell area" />
     <MESSAGE value="more terrain gen tweaking" />
     <MESSAGE value="removed settlement tier building slot limit" />
     <MESSAGE value="working on advance lines" />
@@ -1074,6 +1065,7 @@
     <MESSAGE value="working on tab window" />
     <MESSAGE value="army window" />
     <MESSAGE value="added typeless resolver" />
-    <option name="LAST_COMMIT_MESSAGE" value="added typeless resolver" />
+    <MESSAGE value="fixed regime gen bug, construct cap bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed regime gen bug, construct cap bug" />
   </component>
 </project>

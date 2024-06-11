@@ -12,13 +12,13 @@ public class ModelMakeProject : MakeProject
     {
         return new ModelMakeProject(r.MakeRef(),
             ((IModel)t).MakeRef(),
-            amount, 0f);
+            amount, 0f, -1);
     }
     [SerializationConstructor] protected ModelMakeProject(
         ERef<Regime> regime, 
         IdRef making, 
-        float amount, float fulfilled) 
-        : base(regime, making, amount, fulfilled)
+        float amount, float fulfilled, int id) 
+        : base(regime, making, amount, fulfilled, id)
     {
     }
 
@@ -40,7 +40,12 @@ public class ModelMakeProject : MakeProject
     {
         
     }
-    
+
+    public override void Cancel(ProcedureWriteKey key)
+    {
+        
+    }
+
     public override Control GetDisplay(Data d)
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;

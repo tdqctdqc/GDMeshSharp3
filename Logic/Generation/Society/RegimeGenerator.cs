@@ -47,13 +47,11 @@ public class RegimeGenerator : Generator
                 var lmRegimes = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);
                 polyRegimes.AddRange(lmRegimes);
             });
-
         
         foreach (var lm in _data.Planet.MapAux.LandSea.Landmasses)
         {
             ExpandRegimes(polyRegimes);
         }
-        CheckRegimesHaveCells();
 
         var remainders = _data.GetAll<MapPolygon>()
             .Where(p => p.IsLand 
@@ -70,9 +68,6 @@ public class RegimeGenerator : Generator
             }
         }
         
-        
-        CheckRegimesHaveCells();
-        CheckCellsHaveRegimes();
         
         var bySize = polyRegimes
             .SortBy(
@@ -102,23 +97,6 @@ public class RegimeGenerator : Generator
         return polyRegimes;
     }
 
-    private void CheckCellsHaveRegimes()
-    {
-
-        if (_key.Data.Planet.MapAux.CellHolder.Cells.Values
-            .OfType<LandCell>().Any(c => c.Controller.IsEmpty()))
-        {
-            throw new Exception();
-        }
-    }
-    
-    private void CheckRegimesHaveCells()
-    {
-        if (_key.Data.GetAll<Regime>().Any(r => r.GetCells(_key.Data).Count() == 0))
-        {
-            throw new Exception();
-        }
-    }
     
     private Dictionary<MapPolygon, Regime> GenerateLandmassRegimes(HashSet<MapPolygon> lm, int polysPerRegime,
         HashSet<RegimeTemplate> templates)

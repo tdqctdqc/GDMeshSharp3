@@ -14,15 +14,15 @@ public class PlayerBuildingMakeProject : MakeProject
         return new PlayerBuildingMakeProject(
             settlement.MakeRef(), regime.MakeRef(),
             making.MakeRef<IModel>(),
-            1f, 0f);
+            1f, 0f, -1);
     }
     [SerializationConstructor] protected PlayerBuildingMakeProject(
         ERef<Settlement> settlement,
         ERef<Regime> regime, 
         IdRef making,
         float amount,
-        float fulfilled) 
-            : base(regime, making, amount, fulfilled)
+        float fulfilled, int id) 
+            : base(regime, making, amount, fulfilled, id)
     {
         Settlement = settlement;
     }
@@ -74,8 +74,23 @@ public class PlayerBuildingMakeProject : MakeProject
         var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
         key.SendMessage(proc);
     }
-    
-    
+
+    public override void Cancel(ProcedureWriteKey key)
+    {
+        var making = MakingBuilding(key.Data);
+        var stock = Regime.Get(key.Data).Stock;
+        foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumerableModel(key.Data))
+        {
+            var spent = Fulfilled * amt;
+            stock.Stock.Add(model, spent);
+        }
+    }
+
+    public SettlementBuildingModel MakingBuilding(Data d)
+    {
+        return (SettlementBuildingModel)Making.Get(d);
+    }
+
     public override Control GetDisplay(Data d)
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;

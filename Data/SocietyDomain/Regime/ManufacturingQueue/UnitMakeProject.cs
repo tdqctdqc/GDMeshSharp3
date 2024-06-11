@@ -8,17 +8,17 @@ public class UnitMakeProject : MakeProject
         UnitTemplate template)
     {
         return new UnitMakeProject(r.MakeRef(), template.MakeRef(),
-            1f, 0f);
+            1f, 0f, -1);
     }
     [SerializationConstructor] private UnitMakeProject(ERef<Regime> regime, 
-        IdRef making, float amount, float fulfilled) 
-            : base(regime, making, amount, fulfilled)
+        IdRef making, float amount, float fulfilled, int id) 
+            : base(regime, making, amount, fulfilled, id)
     {
     }
 
     public override void Start(ProcedureWriteKey key)
     {
-        
+        GD.Print($"starting unit make proj");
     }
 
     public override void Increment(float amount, 
@@ -26,12 +26,25 @@ public class UnitMakeProject : MakeProject
         LogicWriteKey key)
     {
         Fulfilled += amount;
+        GD.Print($"incrementing unit make proj amount {amount}" +
+                 $" to {Fulfilled}");
     }
 
     public override void Finish(LogicWriteKey key)
     {
         Unit.Create((UnitTemplate)Making.Get(key.Data),
             Regime.Get(key.Data), key);
+    }
+
+    public override void Cancel(ProcedureWriteKey key)
+    {
+        var making = MakingTemplate(key.Data);
+        var stock = Regime.Get(key.Data).Stock;
+        foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumerableModel(key.Data))
+        {
+            var spent = Fulfilled * amt;
+            stock.Stock.Add(model, spent);
+        }
     }
 
     public override Control GetDisplay(Data d)
@@ -55,5 +68,10 @@ public class UnitMakeProject : MakeProject
         }
         
         return vbox;
+    }
+
+    public UnitTemplate MakingTemplate(Data d)
+    {
+        return (UnitTemplate)Making.Get(d);
     }
 }

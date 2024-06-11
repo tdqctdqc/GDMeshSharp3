@@ -5,7 +5,13 @@ using MessagePack;
 
 public class StartMakeProjectProc : Procedure
 {
-    [SerializationConstructor] public StartMakeProjectProc(ERef<Regime> regime, 
+    public static StartMakeProjectProc Construct(ERef<Regime> regime, 
+        MakeProject project, LogicWriteKey key)
+    {
+        project.SetId(key);
+        return new StartMakeProjectProc(regime, project);
+    }
+    [SerializationConstructor] private StartMakeProjectProc(ERef<Regime> regime, 
         MakeProject project)
     {
         Regime = regime;
