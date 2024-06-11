@@ -264,7 +264,7 @@ public class ProductionModule : LogicModule
             var costs = ((IMakeable)making).Makeable.BuildCosts;
             var num = proj.Amount;
             var satisfactionIncrement = costs.GetEnumerableModel(d)
-                .Min(kvp => r.Stock.Stock.Get(kvp.Key) / (kvp.Value * num));
+                .Min(kvp => newStock.Stock.Get(kvp.Key) / (kvp.Value * num));
             satisfactionIncrement = Mathf.Clamp(satisfactionIncrement, 0f, 1f);
             
             if (satisfactionIncrement > 0f)
@@ -272,7 +272,7 @@ public class ProductionModule : LogicModule
                 foreach (var (inputModel, inputAmt)
                          in costs.GetEnumerableModel(d))
                 {
-                    r.Stock.Stock.Remove(inputModel,
+                    newStock.Stock.Remove(inputModel,
                         inputAmt * num * satisfactionIncrement);
                     newStock.SingleTimeCosts.Add(inputModel,
                         inputAmt * num * satisfactionIncrement);
@@ -291,4 +291,5 @@ public class ProductionModule : LogicModule
             }
         }
     }
+    
 }
