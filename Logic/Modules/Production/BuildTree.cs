@@ -30,7 +30,7 @@ public class BuildTree
         var made = 0f;
         var increment = DoIter(children, stock, 
             totalToMake - made, d);
-        while (increment > 0f)
+        while (increment > 0f && made < totalToMake)
         {
             made += increment;
             increment = DoIter(children, stock, 
