@@ -7,7 +7,6 @@ public partial class ConstructionPanel : Panel
 {
     private VBoxContainer _info;
     private VBoxContainer _buttons;
-    private Action _redraw;
     private ConstructionPanel()
         : base()
     {
@@ -82,9 +81,10 @@ public partial class ConstructionPanel : Panel
             {
                 var project = PlayerBuildingMakeProject.Construct(
                     s, regime, model);
-                var com = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
+                var inner = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
+                var act = () => Draw(s, c);
+                var com = CallbackCommand.Construct(inner, act, c);
                 c.HandleCommand(com);
-                _redraw = () => Draw(s, c);
             });
             var building = regime.MakeQueue.Queue
                 .OfType<PlayerBuildingMakeProject>()
@@ -95,15 +95,6 @@ public partial class ConstructionPanel : Panel
             button.Text = $"In progress: {buildingFinished} / {buildingTotal}";
             vbox.AddChild(button);
             _buttons.AddChild(vbox);
-        }
-    }
-
-    public override void _Process(double delta)
-    {
-        if (_redraw is not null)
-        {
-            _redraw();
-            _redraw = null;
         }
     }
 

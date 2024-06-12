@@ -12,7 +12,6 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
 
     private ItemMultiListToken<Unit> _freeUnits;
     private ArmyTree _armyTree;
-    private Action _redraw;
     public ArmiesTab(global::MilitaryWindow parent)
     {
         _parent = parent;
@@ -38,14 +37,6 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         
     }
 
-    public override void _Process(double delta)
-    {
-        if (_redraw is not null)
-        {
-            _redraw();
-            _redraw = null;
-        }
-    }
 
     public void Draw(Client c)
     {
@@ -91,12 +82,16 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             {
                 var proc = new SetUnitGroupProcedure(unit.MakeRef(),
                     army.MakeRef());
-                var com = new SendMessageCommand(proc, 
+                var inner = new SendMessageCommand(proc, 
                     c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
-                c.HandleCommand(com);
                 
-                _redraw = () =>
+                var action = () =>
                 {
+                    if (IsInstanceValid(_freeUnits.ItemList) == false
+                        || IsInstanceValid(_armyTree) == false)
+                    {
+                        return;
+                    }
                     if (unit.GetArmy(c.Data) is not null)
                     {
                         _freeUnits.Remove(unit.Yield());
@@ -107,8 +102,10 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
                         _armyTree.AddUnit(unit, c.Data);
                     }
                 };
+                var com = CallbackCommand.Construct(
+                    inner, action, c);
+                c.HandleCommand(com);
             }
-            
         });
         transferFreeUnitBtn.Text = "Transfer To Army";
         _freeUnits.ItemList.SizeFlagsHorizontal = SizeFlags.ExpandFill;

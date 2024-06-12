@@ -4,25 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="doot">
-      <change afterPath="$PROJECT_DIR$/Client/ClientCallbacks.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/DoClientCallbackProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Message/Command/CallbackCommand.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/SendMessagesCommand.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/MakeUnitsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/MakeUnitsTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/PlayerBuildingMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/PlayerBuildingMakeProject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/UnitMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/UnitMakeProject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/BuildTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/BuildTree.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Server/HostServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostServer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Server/HostSyncer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostSyncer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/ItemListToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/ItemListToken.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/FillArmyWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/FillArmyWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/ArmiesTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/ArmiesTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/RiverCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/RiverCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,6 +95,7 @@
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Modules/Production/BuildTree.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Modules/Production/BuildTree.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -658,7 +651,8 @@
       <workItem from="1717808076419" duration="6198000" />
       <workItem from="1717854856429" duration="5029000" />
       <workItem from="1718121044217" duration="6803000" />
-      <workItem from="1718137290227" duration="12587000" />
+      <workItem from="1718137290227" duration="12758000" />
+      <workItem from="1718201680334" duration="4113000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -870,14 +864,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00205" summary="tidying">
-      <option name="closed" value="true" />
-      <created>1715716175539</created>
-      <option name="number" value="00205" />
-      <option name="presentableId" value="LOCAL-00205" />
-      <option name="project" value="LOCAL" />
-      <updated>1715716175539</updated>
-    </task>
     <task id="LOCAL-00206" summary="armies as lines, removed map units">
       <option name="closed" value="true" />
       <created>1716838814931</created>
@@ -1022,7 +1008,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718144461036</updated>
     </task>
-    <option name="localTasksCounter" value="224" />
+    <task id="LOCAL-00224" summary="client callbacks">
+      <option name="closed" value="true" />
+      <created>1718156309973</created>
+      <option name="number" value="00224" />
+      <option name="presentableId" value="LOCAL-00224" />
+      <option name="project" value="LOCAL" />
+      <updated>1718156309973</updated>
+    </task>
+    <option name="localTasksCounter" value="225" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1044,7 +1038,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="optimized front face a bit, removed array allocation" />
     <MESSAGE value="working on advancing fronts" />
     <MESSAGE value="more work on fronts, advance fronts, etc" />
     <MESSAGE value="got a good advance into partition solution i think" />
@@ -1069,6 +1062,7 @@
     <MESSAGE value="make project stuff" />
     <MESSAGE value="made 'build tree' algorithm" />
     <MESSAGE value="doot" />
-    <option name="LAST_COMMIT_MESSAGE" value="doot" />
+    <MESSAGE value="client callbacks" />
+    <option name="LAST_COMMIT_MESSAGE" value="client callbacks" />
   </component>
 </project>

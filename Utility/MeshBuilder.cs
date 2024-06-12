@@ -207,39 +207,45 @@ public class MeshBuilder
             cells, relTo, d);
         foreach (var boundary in boundaries)
         {
-            var insets = Geometry2D.OffsetPolygon(
-                boundary,
-                -insetThickness);
-            foreach (var inset in insets)
+            DrawBorderInset(innerColor, borderColor, borderThickness, insetThickness, boundary);
+        }
+    }
+
+    public void DrawBorderInset(Color innerColor, Color borderColor, float borderThickness, float insetThickness,
+        Vector2[] boundary)
+    {
+        var insets = Geometry2D.OffsetPolygon(
+            boundary,
+            -insetThickness);
+        foreach (var inset in insets)
+        {
+            var poly = new Poly2Tri.Triangulation.Polygon.Polygon(
+                inset.Select(v => new PolygonPoint(v.X, v.Y)));
+            var ctx = new DTSweepContext();
+
+
+            var inners = Geometry2D.OffsetPolygon(
+                inset, -borderThickness);
+            foreach (var inner in inners)
             {
-                var poly = new Poly2Tri.Triangulation.Polygon.Polygon(
-                    inset.Select(v => new PolygonPoint(v.X, v.Y)));
-                var ctx = new DTSweepContext();
-                
+                this.DrawPolygon(inner, innerColor);
+                var hole = new Poly2Tri.Triangulation.Polygon.Polygon(
+                    inner.Select(v => new PolygonPoint(v.X, v.Y)));
+                poly.AddHole(hole);
+            }
 
-                var inners = Geometry2D.OffsetPolygon(
-                    inset, -borderThickness);
-                foreach (var inner in inners)
-                {
-                    this.DrawPolygon(inner, innerColor);
-                    var hole = new Poly2Tri.Triangulation.Polygon.Polygon(
-                        inner.Select(v => new PolygonPoint(v.X, v.Y)));
-                    poly.AddHole(hole);
-                }
-                Poly2Tri.P2T.Triangulate(poly.Yield());
+            Poly2Tri.P2T.Triangulate(poly.Yield());
 
-                foreach (var tri in poly.Triangles)
-                {
-                    var a = new Vector2((float)tri.Points[0].X, (float)tri.Points[0].Y);
-                    var b = new Vector2((float)tri.Points[1].X, (float)tri.Points[1].Y);
-                    var c = new Vector2((float)tri.Points[2].X, (float)tri.Points[2].Y);
-                    AddTri(a, b, c, borderColor);
-                }
-                
+            foreach (var tri in poly.Triangles)
+            {
+                var a = new Vector2((float)tri.Points[0].X, (float)tri.Points[0].Y);
+                var b = new Vector2((float)tri.Points[1].X, (float)tri.Points[1].Y);
+                var c = new Vector2((float)tri.Points[2].X, (float)tri.Points[2].Y);
+                AddTri(a, b, c, borderColor);
             }
         }
     }
-    
+
 
     public void AddLine(Vector2 from, Vector2 to, Color color, float thickness)
     {

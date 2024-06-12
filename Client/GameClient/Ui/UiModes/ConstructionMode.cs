@@ -5,12 +5,29 @@ using Godot;
 public class ConstructionMode : UiMode
 {
     private MouseOverHandler _mouseOver;
+    private MeshInstance2D _selectedCellGraphic;
     public DefaultSettingsOption<Settlement> Settlement { get; private set; }
     public ConstructionMode(Client client) : base(client,
         "Construction")
     {
         Settlement = new DefaultSettingsOption<Settlement>("Settlement", null);
-        
+        Settlement.SettingChanged.Subscribe(v =>
+        {
+            if (v.newVal is null)
+            {
+                _selectedCellGraphic.Mesh = null;
+            }
+            else
+            {
+                var mb = new MeshBuilder();
+                var cell = v.newVal.Cell.Get(client.Data);
+                mb.DrawPolygon(cell.RelBoundary,
+                    Colors.Yellow.Tint(.25f));
+                _selectedCellGraphic.Mesh = mb.GetMesh();
+                client.GetComponent<MapGraphics>().Segmenter
+                    .AddElement(_selectedCellGraphic, cell.RelTo);
+            }
+        });
         var list = client.Data.Models.Buildings.GetList();
         _mouseOver = new MouseOverHandler(client.Data);
         _mouseOver.ChangedCell += c =>
@@ -33,6 +50,8 @@ public class ConstructionMode : UiMode
         var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
         var localPlayerRegime = localPlayer.Regime.Get(_client.Data);
         if (localPlayerRegime == null) return;
+        
+        
     }
     public override void HandleInput(InputEvent e)
     {
@@ -46,18 +65,23 @@ public class ConstructionMode : UiMode
             {
                 Settlement.Set(s);
             }
+            else
+            {
+                Settlement.Set(null);
+            }
         }
     }
     
-    private void TryBuild()
-    {
-        
-    }
     public override void Enter()
     {
+        _selectedCellGraphic?.QueueFree();
+        _selectedCellGraphic = new MeshInstance2D();
+        _selectedCellGraphic.ZIndex = (int)LayerOrder.Highlighter;
+        _selectedCellGraphic.ZAsRelative = false;
     }
 
     public override void Clear()
     {
+        _selectedCellGraphic.QueueFree();
     }
 }

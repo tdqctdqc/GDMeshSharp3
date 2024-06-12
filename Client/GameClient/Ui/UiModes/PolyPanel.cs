@@ -20,14 +20,14 @@ public partial class PolyPanel : Panel
             .OfType<PolyMode>()
             .First();
         mode.Poly.SettingChanged.SubscribeForNode(
-            n => Set(mode, c.Data),
+            n => Set(c, mode, c.Data),
             this);
         mode.Cell.SettingChanged.SubscribeForNode(
-            n => Set(mode, c.Data),
+            n => Set(c, mode, c.Data),
             this);
     }
 
-    private void Set(PolyMode mode, Data d)
+    private void Set(Client c, PolyMode mode, Data d)
     {
         _inner.ClearChildren();
         var poly = mode.Poly.Value;
@@ -38,21 +38,37 @@ public partial class PolyPanel : Panel
         }
         
         _inner.CreateLabelAsChild("Poly " + poly.Id);
-        
         _inner.CreateLabelAsChild("Roughness " + poly.Roughness.RoundTo2Digits());
-        
 
+        var cell = mode.Cell.Value;
+        _inner.CreateLabelAsChild($"Cell: {cell.Id}");
+        _inner.CreateLabelAsChild($"Landform: {cell.Landform.Get(d).Name}");
+        _inner.CreateLabelAsChild($"Vegetation: {cell.Vegetation.Get(d).Name}");
         
-        if (mode.Cell.Value is LandCell l
-                && l.GetSettlement(d) is Settlement s)
+        
+        if (cell is LandCell l)
         {
-            foreach (var (model, count) 
-                     in s.Buildings.GetEnumerableModel(d))
+            var peep = l.GetPeep(d);
+            var med = c.Settings.MedIconSize.Value;
+            _inner.CreateLabelAsChild($"Population: {peep.Size}");
+            foreach (var (key, value) in peep.Employment.Counts)
             {
-                var label = model.Icon
-                    .GetLabeledIcon<HBoxContainer>(
-                        $"{model.Name}: {count}", 40f);
-                _inner.AddChild(label);
+                var job = d.Models.GetModel<PeepJob>(key);
+                var entry = job.Icon.GetLabeledIcon<HBoxContainer>(
+                    $"{job.Name}: {value}", med);
+                _inner.AddChild(entry);
+            }
+            if (l.GetSettlement(d) is Settlement s)
+            {
+                _inner.CreateLabelAsChild($"Settlement: {s.Name}");
+                foreach (var (model, count) 
+                         in s.Buildings.GetEnumerableModel(d))
+                {
+                    var label = model.Icon
+                        .GetLabeledIcon<HBoxContainer>(
+                            $"{model.Name}: {count}", med);
+                    _inner.AddChild(label);
+                }
             }
         }
     }

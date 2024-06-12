@@ -11,7 +11,7 @@ public class RiverCell : Cell, IEdgeCell
         Vector2 relTo,
         Vector2[] relBoundary, GenWriteKey key)
     {
-        var lf = key.Data.Models.Landforms.Sea;
+        var lf = key.Data.Models.Landforms.River;
         var v = key.Data.Models.Vegetations.Barren;
         var id = key.Data.IdDispenser.TakeId();
         var geometry = new CellGeometry(

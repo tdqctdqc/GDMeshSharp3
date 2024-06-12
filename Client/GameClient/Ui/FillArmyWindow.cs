@@ -6,7 +6,6 @@ using Godot;
 public partial class FillArmyWindow : Window
 {
     private VBoxContainer _inner;
-    private Action _redraw;
     public FillArmyWindow()
     {
         this.MakeHideable();
@@ -15,14 +14,6 @@ public partial class FillArmyWindow : Window
             new Vector2I(500, 800));
     }
 
-    public override void _Process(double delta)
-    {
-        if (_redraw is not null)
-        {
-            _redraw();
-            _redraw = null;
-        }
-    }
 
     public void Setup(Army army, Client c)
     {
@@ -75,31 +66,37 @@ public partial class FillArmyWindow : Window
         var takeToArmy = ButtonExt.GetButton(() =>
         {
             if (reserveUnits.Selected.Count == 0) return;
-            
-            foreach (var unit in reserveUnits.Selected)
-            {
-                var proc = new SetUnitGroupProcedure(unit.MakeRef(),
-                    army.MakeRef());
-                var com = new SendMessageCommand(proc, player.PlayerGuid);
-                c.HandleCommand(com);
-            }
-            
-            _redraw = () => Setup(army, c);
+            var procs = reserveUnits.Selected
+                .Select(u => new SetUnitGroupProcedure(u.MakeRef(),
+                    army.MakeRef())).ToArray<Message>();
+            var inner = new SendMessagesCommand(procs, player.PlayerGuid);
+            var cb = CallbackCommand.Construct(
+                inner,
+                () =>
+                {
+                    if (IsInstanceValid(this) == false
+                        || this.Visible == false)
+                    {
+                        return;
+                    }
+                    Setup(army, c);
+                },
+                c);
+            c.HandleCommand(cb);
         });
         takeToArmy.Text = "Take to Army";
         
         var sendToReserve = ButtonExt.GetButton(() =>
         {
             if (armyUnits.Selected.Count == 0) return;
-            foreach (var unit in armyUnits.Selected)
-            {
-                var proc = new SetUnitGroupProcedure(unit.MakeRef(),
-                    ERef<Army>.GetEmpty());
-                var com = new SendMessageCommand(proc, player.PlayerGuid);
-                c.HandleCommand(com);
-            }
-            
-            _redraw = () => Setup(army, c);
+
+            var procs = armyUnits.Selected
+                .Select(u => new SetUnitGroupProcedure(u.MakeRef(),
+                    ERef<Army>.GetEmpty())).ToArray<Message>();
+            var inner = new SendMessagesCommand(procs, player.PlayerGuid);
+            var cb = () => Setup(army, c);
+            var com = CallbackCommand.Construct(inner, cb, c);
+            c.HandleCommand(com);
         });
         sendToReserve.Text = "Send to Reserve";
         
