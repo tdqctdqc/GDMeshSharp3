@@ -12,6 +12,7 @@ public interface IReadOnlyRefCollection
 public interface IReadOnlyRefCollection<TRef> : IReadOnlyRefCollection
 {
     IEnumerable<TRef> Items(Data data);
+    
 }
 public interface IRefCollection<TRef> : IReadOnlyRefCollection<TRef>
 {

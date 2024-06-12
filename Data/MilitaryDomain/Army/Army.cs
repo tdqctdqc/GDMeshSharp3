@@ -136,12 +136,14 @@ public class Army : Entity, ICombatGraphNode
     {
     }
 
-    public void DirectResults(CombatCalculator combat, LogicWriteKey key)
+    public void DirectResults(CombatCalculator combat, 
+        LogicWriteKey key)
     {
         
     }
 
-    public void InvoluntaryResults(CombatCalculator combat, LogicWriteKey key)
+    public void InvoluntaryResults(CombatCalculator combat, 
+        LogicWriteKey key)
     {
         var cells = GetCells(key.Data);
         var alliance = Regime.Get(key.Data).GetAlliance(key.Data);
@@ -162,12 +164,14 @@ public class Army : Entity, ICombatGraphNode
             }
             else
             {
-                var proc = new SetArmyOccupationProcedure(new HashSet<int> { close.Id }, this.MakeRef());
+                var proc = new SetArmyOccupationProcedure(
+                    new HashSet<int> { close.Id }, 
+                    this.MakeRef());
                 key.SendMessage(proc);
                 return;
             }
         }
-        else 
+        else
         {
             var proc = new SetArmyOccupationProcedure(
                 heldCells.Select(c => c.Id).ToHashSet(), this.MakeRef());

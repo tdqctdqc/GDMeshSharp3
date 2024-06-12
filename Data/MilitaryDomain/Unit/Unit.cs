@@ -35,10 +35,6 @@ public class Unit : Entity
         if (g != null)
         {
             g.Units.Remove(this, key);
-            if (g.Units.Count() == 0)
-            {
-                key.Data.RemoveEntity(g.Id, key);
-            }
         }
     }
     

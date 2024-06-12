@@ -42,7 +42,7 @@ public class CombatGraph
             var (n1, n2) = _nodesByEdge[edge];
             var key = n1.GetIdEdgeKey(n2);
             var other = n == n1 ? n2 : n1;
-            _edgesByNode[n2].Remove(edge);
+            _edgesByNode[other].Remove(edge);
             _edgesByEdgeId.Remove(key);
             _nodesByEdge.Remove(edge);
         }
@@ -120,10 +120,8 @@ public class CombatGraph
     }
     private void Do(Action<ICombatGraphNode, CombatCalculator> act)
     {
-        foreach (var (id, node) in _nodesById)
+        foreach (var (id, node) in _nodesById.ToArray())
         {
-            // var n1 = _nodesById[edgeId.X];
-            // var n2 = _nodesById[edgeId.X];
             act(node, _combat);
         }
     }

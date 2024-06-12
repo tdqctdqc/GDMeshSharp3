@@ -112,9 +112,9 @@ public class HoldLineAssignment : GroupAssignment
         if (Frontline.AdvanceInto is null
             || Frontline.AdvanceInto.Count == 0)
         {
-            foreach (var (group, faces) in lineAssignments)
+            foreach (var (group, lineAssignment) in lineAssignments)
             {
-                var order = new LineMission(faces.Select(f => f.Id).ToHashSet(), 
+                var order = new LineMission(lineAssignment.Select(f => f.Id).ToHashSet(), 
                     new HashSet<int>(),
                     false);
                 var proc = new SetUnitOrderProcedure(
@@ -128,14 +128,34 @@ public class HoldLineAssignment : GroupAssignment
             
             
 
-        foreach (var (group, faces) in lineAssignments)
+        foreach (var (group, lineAssignment) in lineAssignments)
         {
-            var order = new LineMission(faces.Select(c => c.Id).ToHashSet(),
-                new HashSet<int>(), false);
+            var order = new LineMission(lineAssignment.Select(c => c.Id).ToHashSet(),
+                getAdvanceInto(lineAssignment), true);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
                 order);
             key.SendMessage(proc);
+        }
+
+        HashSet<int> getAdvanceInto(HashSet<Cell> lineAssignment)
+        {
+            var res = new HashSet<int>();
+            foreach (var cell in lineAssignment)
+            {
+                foreach (var n1 in cell.GetNeighbors(key.Data)
+                             .Where(c => Frontline.AdvanceInto.Contains(c)))
+                {
+                    res.Add(n1.Id);
+                    foreach (var n2 in n1.GetNeighbors(key.Data)
+                                 .Where(c => Frontline.AdvanceInto.Contains(c)))
+                    {
+                        res.Add(n2.Id);
+                    }
+                }
+            }
+
+            return res;
         }
     }
 

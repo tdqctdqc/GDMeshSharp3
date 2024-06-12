@@ -14,7 +14,7 @@ public class Theater
         Data data)
     {
         var frontlines = FrontFinder
-            .FindFront(theaterCells,
+            .FindFrontsLeftToRight(theaterCells,
                 p =>
                 {
                     if (p.Controller.IsEmpty()) return false;

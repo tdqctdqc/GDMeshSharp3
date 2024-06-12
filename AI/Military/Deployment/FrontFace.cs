@@ -167,6 +167,54 @@ public struct FrontFace
     {
         return Native.GetIdEdgeKey(Foreign);
     }
+
+    public (Vector2 leftJoin, Vector2 rightJoin) 
+        GetJoinPoints(Data d)
+    {
+        Vector2 leftJoin = Vector2.Inf;
+        Vector2 rightJoin = Vector2.Inf;
+        var native = PlanetDomainExt.GetPolyCell(Native, d);
+        var foreign = PlanetDomainExt.GetPolyCell(Foreign, d);
+        if (Left != -1)
+        {
+            var left = PlanetDomainExt.GetPolyCell(Left, d);
+            leftJoin = native.AbsBoundary(d)
+                .Intersect(foreign.AbsBoundary(d))
+                .Intersect(left.AbsBoundary(d))
+                .First();
+            if (Right == -1)
+            {
+                rightJoin = native.AbsBoundary(d)
+                    .Intersect(foreign.AbsBoundary(d))
+                    .Where(p => p != leftJoin)
+                    .First();
+            }
+        }
+
+        if (Right != -1)
+        {
+            var right = PlanetDomainExt.GetPolyCell(Right, d);
+            rightJoin = native.AbsBoundary(d)
+                .Intersect(foreign.AbsBoundary(d))
+                .Intersect(right.AbsBoundary(d))
+                .First();
+            if (Left == -1)
+            {
+                leftJoin = native.AbsBoundary(d)
+                    .Intersect(foreign.AbsBoundary(d))
+                    .Where(p => p != rightJoin)
+                    .First();
+            }
+        }
+
+        if (Left == -1 && Right == -1)
+        {
+            GD.Print($"bad edge at {Native} {Foreign} ");
+            return (Vector2.Zero, Vector2.Zero);
+        }
+
+        return (leftJoin, rightJoin);
+    }
 }
 
 public static class FrontFaceExt

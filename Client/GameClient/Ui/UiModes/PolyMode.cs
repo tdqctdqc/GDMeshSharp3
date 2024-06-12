@@ -138,6 +138,8 @@ public class PolyMode : UiMode
         tooltip.Clear();
         
         _selectedCell.QueueFree();
+        _selectedCell = null;
         _selectedPoly.QueueFree();
+        _selectedPoly = null;
     }
 }

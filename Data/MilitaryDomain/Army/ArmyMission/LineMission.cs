@@ -56,14 +56,19 @@ public class LineMission : ArmyMission
         CombatCalculator combat, LogicWriteKey key)
     {
         var d = key.Data;
+        
         if (army.Units.Count() == 0) return;
+        var alliance = army.Regime.Get(d).GetAlliance(d);
 
         var cells = LineCells.Select(i => PlanetDomainExt.GetPolyCell(i, key.Data));
         var adjacentAdvanceCells = cells
             .SelectMany(c => c.Neighbors)
             .Distinct()
-            .Where(n => AdvanceInto.Contains(n))
-            .Select(n => PlanetDomainExt.GetPolyCell(n, key.Data));
+            .Where(n => AdvanceInto.Contains(n)
+                && PlanetDomainExt.GetPolyCell(n, d)
+                    .Controller.Get(d).GetAlliance(d)
+                    .IsAtWar(alliance, d))
+            .Select(n => PlanetDomainExt.GetPolyCell(n, d));
         
         foreach (var advanceCell in adjacentAdvanceCells)
         {
@@ -82,7 +87,7 @@ public class LineMission : ArmyMission
         army.LineMission.LineCells.ExceptWith(lost);
         army.Cells.ExceptWith(lost);
         var conquered = army.LineMission.AdvanceInto
-            .Where(i =>PlanetDomainExt.GetPolyCell(i, key.Data)
+            .Where(i => PlanetDomainExt.GetPolyCell(i, key.Data)
                 .FriendlyControlled(alliance, key.Data))
             .ToArray();
         army.LineMission.LineCells.UnionWith(conquered);
@@ -93,7 +98,6 @@ public class LineMission : ArmyMission
 
     public override string GetDescription(Data d)
     {
-        return $"Deploying on line from {LineCells.First()}" +
-               $" to {LineCells.Last()}";
+        return $"Deploying";
     }
 }

@@ -22,16 +22,17 @@ public partial class ArmyAreaGraphic : Node2D
         
         var chunk = homeCell.GetChunk(c.Data);
         var segmenter = c.GetComponent<MapGraphics>().Segmenter;
-        
+        var cells = army.GetCells(c.Data);
+        if (cells.Count == 0) return;
         c.QueuedUpdates.Enqueue(() => segmenter.AddElement(this, homeCell.RelTo));
         
         var mb = MeshBuilder.GetFromPool();
         var thickness = 10f;
-        var cells = army.GetCells(c.Data);
         mb.DrawCellsBordersInsetLocal(cells, 
             army.Regime.Get(c.Data).PrimaryColor.Tint(.25f),
             army.Color, 
             2f, 3f, army.GetHomeCell(c.Data).RelTo, c.Data);
+
         
         var mesh = mb.GetMesh();
         c.QueuedUpdates.Enqueue(() =>

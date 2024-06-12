@@ -2,6 +2,8 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Poly2Tri.Triangulation.Polygon;
+using Poly2Tri.Utility;
 
 public static class GeometryExt
 {
@@ -112,45 +114,34 @@ public static class GeometryExt
         Vector2 relTo,
         Data d)
     {
+        var hash = cells.Where(c => c is LandCell).ToHashSet();
+        var fronts = FrontFinder.FindFrontsLeftToRight(
+            hash, c => c is IPolyCell
+                && hash.Contains(c) == false,
+            d);
+        
         var res = new List<Vector2[]>();
-        var hash = cells.Where(c => c is IPolyCell).ToHashSet();
-        while (hash.Count > 0)
+        foreach (var front in fronts)
         {
-            var queue = new Queue<Cell>();
-            var first = hash.First();
-            hash.Remove(first);
-            queue.Enqueue(first);
-            Vector2[] boundary = null;
-            while (queue.Count > 0)
+            if (front.Count == 0) continue;
+            var list = new List<Vector2>();
+            
+            for (var i = 0; i < front.Count; i++)
             {
-                var c = queue.Dequeue();
-                if (boundary is null)
+                var face = front[i];
+                var join = face.GetJoinPoints(d);
+                list.Add(join.leftJoin);
+                if (i == front.Count - 1
+                    && join.rightJoin != list[0])
                 {
-                    boundary = getRelRelBoundary(c);
-                }
-                else
-                {
-                    boundary = GeometryExt.UnifyPolygons(boundary,
-                        getRelRelBoundary(c));
-                }
-
-                foreach (var neighbor in c.GetNeighbors(d))
-                {
-                    if (hash.Contains(neighbor) == false) continue;
-                    if (neighbor is not IPolyCell) continue;
-                    hash.Remove(neighbor);
-                    queue.Enqueue(neighbor);
+                    list.Add(join.rightJoin);
                 }
             }
-            res.Add(boundary);
-        }
-        
-        Vector2[] getRelRelBoundary(Cell c)
-        {
-            var offset = relTo.Offset(c.RelTo, d);
-            return c.RelBoundary.Select(v => v + offset).ToArray();
-        }
 
+            res.Add(list
+                .Select(p => relTo.Offset(p, d))
+                .ToArray());
+        }
         return res;
     }
     

@@ -6,7 +6,7 @@ using Godot;
 
 public static class FrontFinder
 {
-    public static List<List<FrontFace>> FindFront(
+    public static List<List<FrontFace>> FindFrontsLeftToRight(
         HashSet<Cell> natives, 
         Func<Cell, bool> isForeign,
         Data d)

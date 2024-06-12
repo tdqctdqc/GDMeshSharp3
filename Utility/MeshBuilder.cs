@@ -207,7 +207,8 @@ public class MeshBuilder
             cells, relTo, d);
         foreach (var boundary in boundaries)
         {
-            DrawBorderInset(innerColor, borderColor, borderThickness, insetThickness, boundary);
+            DrawBorderInset(innerColor, borderColor, 
+                borderThickness, insetThickness, boundary);
         }
     }
 
@@ -222,7 +223,6 @@ public class MeshBuilder
             var poly = new Poly2Tri.Triangulation.Polygon.Polygon(
                 inset.Select(v => new PolygonPoint(v.X, v.Y)));
             var ctx = new DTSweepContext();
-
 
             var inners = Geometry2D.OffsetPolygon(
                 inset, -borderThickness);

@@ -18,7 +18,10 @@ public abstract class Cell : IPolymorph,
     [MessagePack.IgnoreMember] public List<(Vector2 f, Vector2 t)> Edges => Geometry.EdgesRel;
     [MessagePack.IgnoreMember] public Vector2 RelTo => Geometry.RelTo;
     [MessagePack.IgnoreMember] public Vector2[] RelBoundary => Geometry.PointsRel;
-    
+    public IEnumerable<Vector2> 
+        AbsBoundary(Data d) => Geometry.PointsRel
+            .Select(p => (p + RelTo).ClampPosition(d));
+
     public Vegetation GetVegetation(Data d) => Vegetation.Get(d);
     public ModelRef<Vegetation> Vegetation { get; private set; }
     public Landform GetLandform(Data d) => Landform.Get(d);

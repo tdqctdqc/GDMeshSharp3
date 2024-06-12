@@ -18,6 +18,8 @@ public class Assigner
         var res = new List<(TPicker, TPicked, float)>();
         var totalNeed = pickers.Sum(getNeed);
         var totalCapability = toPick.Sum(getCapability);
+        if (totalCapability == 0f) return res;
+        
         var needProportionBookmark = 0f;
         var capabilityProportionBookmark = 0f;
         var pickerIter = 0;

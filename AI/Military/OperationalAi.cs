@@ -65,7 +65,7 @@ public class OperationalAi
                         .Where(f => 
                             f.Controller.Fulfilled()
                             && advanceInto.Contains(f) == false
-                            && f.Controller.Get(_data).GetAlliance(_data).IsRivals(Alliance, _data))))
+                            && f.Controller.Get(_data).GetAlliance(_data).IsAtWar(Alliance, _data))))
                 .ToHashSet();
         }
         f.AdvanceInto.Clear();
