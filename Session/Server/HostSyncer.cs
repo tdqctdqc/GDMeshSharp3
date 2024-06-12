@@ -7,7 +7,8 @@ using Godot;
 public class HostSyncer : Syncer
 {
     private Queue<byte[]> _peerQueue;
-    public HostSyncer(PacketPeerStream packetStream, HostLogic logic, Guid fromGuid) 
+    public HostSyncer(PacketPeerStream packetStream, 
+        HostLogic logic, Guid clientGuid) 
         : base(packetStream, 
             m =>
             {

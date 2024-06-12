@@ -8,6 +8,7 @@ public class ItemListToken<T>
 {
     public T Selected { get; private set; }
     public ItemList ItemList { get; private set; }
+    public IReadOnlyList<T> Items => _items;
     private List<T> _items;
     private Func<T, Texture2D> _getTexture;
     private Vector2I? _textureSize;
@@ -56,7 +57,11 @@ public class ItemListToken<T>
     {
         var selecteds = ItemList.GetSelectedItems();
         if (selecteds.Count() > 1) throw new Exception();
-        if (selecteds.Count() == 0) return;
+        if (selecteds.Count() == 0)
+        {
+            Selected = default;
+            return;
+        }
         var selected = _items[selecteds[0]];
         Selected = selected;
         _selectAction(selected);

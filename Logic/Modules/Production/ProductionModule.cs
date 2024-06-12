@@ -263,24 +263,12 @@ public class ProductionModule : LogicModule
             var making = proj.Making.Get(d);
             var costs = ((IMakeable)making).Makeable.BuildCosts;
             var num = proj.Amount;
-            var satisfactionIncrement = costs.GetEnumerableModel(d)
-                .Min(kvp => newStock.Stock.Get(kvp.Key) / (kvp.Value * num));
-            satisfactionIncrement = Mathf.Clamp(satisfactionIncrement, 0f, 1f);
-            
-            if (satisfactionIncrement > 0f)
+            var made = BuildTree.Increment(proj, r.Stock,
+                key);
+            if (made > 0f)
             {
-                foreach (var (inputModel, inputAmt)
-                         in costs.GetEnumerableModel(d))
-                {
-                    newStock.Stock.Remove(inputModel,
-                        inputAmt * num * satisfactionIncrement);
-                    newStock.SingleTimeCosts.Add(inputModel,
-                        inputAmt * num * satisfactionIncrement);
-                }
-                var amtMade = num * satisfactionIncrement;
-                proj.Increment(amtMade, result, key);
+                proj.Increment(made, result, key);
             }
-            
             if (proj.Fulfilled >= proj.Amount)
             {
                 proj.Finish(key);

@@ -29,6 +29,7 @@ using System;
 [MessagePack.Union(24, typeof(DestroyArmyProcedure))]
 [MessagePack.Union(25, typeof(AddBuildingProcedure))]
 [MessagePack.Union(26, typeof(CancelMakeProjectProcedure))]
+[MessagePack.Union(27, typeof(DoClientCallbackProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using MessagePack;
 
 public class UnitTemplate : Entity, IMakeable
@@ -24,12 +25,9 @@ public class UnitTemplate : Entity, IMakeable
         {
             var troop = kvp.Key;
             var numTroop = kvp.Value;
-            foreach (var cost in troop.Makeable.BuildCosts.Contents)
-            {
-                costs.Add(cost.Key, cost.Value * numTroop);
-            }
+            costs.Add(troop, numTroop);
         }
-
+        
         var makeable = new MakeableAttribute(
             costs, 
             IdCount<IModel>.Construct()
@@ -79,4 +77,23 @@ public class UnitTemplate : Entity, IMakeable
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
     }
 
+    public Control GetDisplay(Data d)
+    {
+        var large = Game.I.Client.Settings.LargeIconSize.Value;
+        var small = Game.I.Client.Settings.SmallIconSize.Value;
+        var vbox = new VBoxContainer();
+        var icon = this.GetMaxPowerTroop(d).Icon.GetLabeledIcon<HBoxContainer>(
+            $"{Name}",
+            large);
+        vbox.AddChild(icon);
+        vbox.CreateLabelAsChild(Name);
+        
+        foreach (var (key, value) in TroopCounts.GetEnumerableModel(d))
+        {
+            vbox.AddChild(key.Icon.GetLabeledIcon<HBoxContainer>
+                ($"{key.Name}: {value.ToString()}", small));
+        }
+        
+        return vbox;
+    }
 }

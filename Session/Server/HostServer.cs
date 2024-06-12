@@ -38,7 +38,8 @@ public partial class HostServer : Node, IServer
         var packet = new PacketPeerStream();
         packet.StreamPeer = peer;
         var newPlayerGuid = Guid.NewGuid();
-        var syncer = new HostSyncer(packet, _logic, newPlayerGuid);
+        var syncer = new HostSyncer(packet, _logic, 
+            newPlayerGuid);
         GD.Print("started syncing");
         syncer.Sync(newPlayerGuid, _key);
         GD.Print("Done syncing");
@@ -56,6 +57,11 @@ public partial class HostServer : Node, IServer
         }
     }
 
+    public void SendMessageToClient(Procedure p, Guid clientGuid)
+    {
+        var bytes = p.Serialize(_key.Data);
+        _peersByGuid[clientGuid].QueuePacket(bytes);
+    }
     public void ReceiveMessage(Message m, HostWriteKey k)
     {
         var bytes = m.Serialize(_key.Data);

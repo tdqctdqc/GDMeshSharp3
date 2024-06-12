@@ -26,7 +26,9 @@ public class HostLogic : ILogic
     {
         _session = session;
         CommandQueue = new ConcurrentQueue<Command>();
-        _logicKey = new LogicWriteKey(HandleMessage, session);
+        _logicKey = new LogicWriteKey(HandleMessage,
+            (m, g) => _server?.SendMessageToClient(m, g),
+            session);
         _hKey = new HostWriteKey(this, session);
         PKey = new ProcedureWriteKey(_session);
         
@@ -126,7 +128,10 @@ public class HostLogic : ILogic
         {
             while (CommandQueue.TryDequeue(out var command))
             {
-                if(command.Valid(_data, out string error)) command.Enact(_logicKey);
+                if (command.Valid(_data, out string error))
+                {
+                    command.Enact(_logicKey);
+                }
             }
         }
         _server.PushPackets(_hKey);

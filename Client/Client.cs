@@ -8,6 +8,7 @@ using Godot;
 public partial class Client : Node, IClient
 {
     public Data Data => Session.Data;
+    public ClientCallbacks Callbacks { get; private set; }
     public ClientNotices Notices { get; private set; }
     public ClientWriteKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
@@ -31,7 +32,7 @@ public partial class Client : Node, IClient
         QueuedUpdates = new ConcurrentQueue<Action>();
         UiTick = new RefAction();
         _uiTickTimer = new TimerAction(.1f, 0f, UiTick.Invoke);
-        
+        Callbacks = new ClientCallbacks();
         Setup();
     }
     private void Setup()

@@ -29,34 +29,8 @@ public class PlayerBuildingMakeProject : MakeProject
 
     public override void Start(ProcedureWriteKey key)
     {
-        var building = (SettlementBuildingModel)Making.Get(key.Data);
-        var settlement = Settlement.Get(key.Data);
         var regime = Regime.Get(key.Data);
-        var population = regime.GetPopulation(key.Data);
-        var proportion = 1f;
-        foreach (var (model, amt) 
-                 in building.Makeable.BuildCosts
-                     .GetEnumerableModel(key.Data))
-        {
-            var modelStock = regime.Stock.Stock.Get(model);
-            if(modelStock == 0f)
-            {
-                proportion = 0f;
-                break;
-            }
-            var modelProportion = Mathf.Clamp(modelStock / amt, 0f, 1f);
-            proportion = Mathf.Min(proportion, modelProportion);
-        }
-
-        if (proportion > 0f)
-        {
-            Fulfilled = proportion;
-            foreach (var (model, amt) in building.Makeable.BuildCosts.GetEnumerableModel(key.Data))
-            {
-                regime.Stock.Stock.Remove(model, amt * proportion);
-                regime.Stock.SingleTimeCosts.Add(model, amt * proportion);
-            }
-        }
+        Fulfilled += BuildTree.Increment(this, regime.Stock, key);
     }
 
     public override void Increment(float amount, 

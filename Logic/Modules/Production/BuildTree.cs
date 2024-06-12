@@ -4,39 +4,36 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class BuildTree
+public static class BuildTree
 {
     public static float Increment(
-        MakeProject proj, RegimeStock stock, LogicWriteKey key)
+        MakeProject proj, RegimeStock stock, StrongWriteKey key)
     {
         var makeable = ((IMakeable)proj.Making.Get(key.Data)).Makeable;
         var children = makeable.BuildCosts.GetEnumerableModel(key.Data)
                 .Select(kvp => (kvp.Key, kvp.Value)).ToDictionary(
                     v => v.Item1, v => v.Item2);;
         var totalToMake = proj.Amount - proj.Fulfilled;
-
-        return Run(children, stock, totalToMake, key.Data);
+        if (totalToMake == 0f) return 0f;
+        var made = Run(children, stock, totalToMake, key.Data);
+        return made;
     }
 
 
-    private BuildTree(float toMake, 
-        IEnumerable<(IModel, float)> unitCosts)
-    {
-        }
+   
 
     private static float Run(Dictionary<IModel, float> children,
         RegimeStock stock, float totalToMake, Data d)
     {
         var made = 0f;
-        var increment = DoIter(children, stock, 
-            totalToMake - made, d);
-        while (increment > 0f && made < totalToMake)
+        var increment = 0f;
+        do
         {
-            made += increment;
             increment = DoIter(children, stock, 
                 totalToMake - made, d);
+            made += increment;
         }
-
+        while (increment > 0f && made < totalToMake);
         return made;
     }
 
@@ -61,6 +58,7 @@ public class BuildTree
             if (unitCost == 0f) continue;
             var used = unitCost * amount;
             stock.Stock.Remove(model, used);
+            stock.SingleTimeCosts.Add(model, used);
         }
         return amount;
     }
@@ -71,7 +69,6 @@ public class BuildTree
         Data d)
     {
         Dictionary<IModel, float> newChildren = null;
-        
         
         foreach (var (model, unitCost) in children)
         {
