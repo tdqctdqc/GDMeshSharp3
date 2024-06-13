@@ -22,7 +22,7 @@ public static class CellExt
     }
     public static bool Controlled(this Cell p, Alliance a, Data d)
     {
-        return a.Members.RefIds.Contains(p.Controller.RefId);
+        return a.Members.Contains(p.Controller);
     }
 
     public static MapChunk GetChunk(this Cell c, Data d)

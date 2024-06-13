@@ -10,7 +10,7 @@ public class DestroyArmyProcedure : Procedure
     public override void Enact(ProcedureWriteKey key)
     {
         var army = Army.Get(key.Data);
-        foreach (var item in army.Units.Items(key.Data))
+        foreach (var item in army.Units.Entities(key.Data))
         {
             key.Data.RemoveEntity(item.Id, key);
         }

@@ -75,7 +75,7 @@ public partial class MilitaryTab : ScrollContainer, IUiDrawable
             foreach (var group in groups)
             {
                 _container.CreateLabelAsChild("Group " + group.Id);
-                var gUnits = group.Units.Items(client.Data);
+                var gUnits = group.Units.Entities(client.Data);
                 foreach (var unit in gUnits)
                 {
                     _container.CreateLabelAsChild("\t" + unit.Template.Get(client.Data).Name);

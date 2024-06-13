@@ -24,7 +24,7 @@ public class StrategicAi
         var alliance = Alliance;
         var cells = _data.Planet.MapAux
             .CellHolder.Cells.Values
-            .Where(c => alliance.Members.RefIds.Contains(c.Controller.RefId))
+            .Where(c => alliance.Members.Contains(c.Controller))
             .ToArray();
         var unions = UnionFind.Find(cells,
             (p, q) => true,

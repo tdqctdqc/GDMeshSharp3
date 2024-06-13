@@ -18,7 +18,7 @@ public class UnitAux
             t => t.Regime.Get(d), d);
         
         UnitByGroup = new ERefColIndexer<Army, Unit>(
-            g => g.Units.Items(d),  
+            g => g.Units.Entities(d),  
             d.GetEntityMeta<Army>().GetRefColMeta<Unit>(nameof(Army.Units)),
             d);
         

@@ -25,11 +25,8 @@ public class MapPolyNexus : Entity
         if (pre.E3 != null) es.Add(pre.E3.Id);
         
         var n = new MapPolyNexus(id, pre.Pos, 
-            ERefSet<MapPolygonEdge>.Construct(
-                nameof(IncidentEdges), id,
-                es),
-            ERefSet<MapPolygon>.Construct(nameof(IncidentPolys), id,
-                ps)
+            ERefSet<MapPolygonEdge>.Construct(es),
+            ERefSet<MapPolygon>.Construct(ps)
             );
         
         key.Create(n);
@@ -41,8 +38,8 @@ public class MapPolyNexus : Entity
         GenWriteKey key)
     {
 
-        var mutual = p1.Neighbors.Items(key.Data)
-            .Intersect(p2.Neighbors.Items(key.Data)).ToArray();
+        var mutual = p1.Neighbors.Entities(key.Data)
+            .Intersect(p2.Neighbors.Entities(key.Data)).ToArray();
         if (mutual.Length != 1) throw new Exception();
         var p3 = mutual[0];
         var e1 = p1.GetEdge(p2, key.Data);
@@ -52,11 +49,9 @@ public class MapPolyNexus : Entity
         var n = new MapPolyNexus(id,
             pos, 
             ERefSet<MapPolygonEdge>.Construct(
-                nameof(IncidentEdges), id,
-                new HashSet<int>{e1.Id, e2.Id, e3.Id}),
+                new HashSet<ERef<MapPolygonEdge>>{e1.MakeRef(), e2.MakeRef(), e3.MakeRef()}),
             
-            ERefSet<MapPolygon>.Construct(nameof(IncidentPolys), id,
-                new HashSet<int>{p1.Id, p2.Id, p3.Id})
+            ERefSet<MapPolygon>.Construct(new HashSet<ERef<MapPolygon>>{p1.MakeRef(), p2.MakeRef(), p3.MakeRef()})
         );
         
         key.Create(n);
@@ -64,23 +59,24 @@ public class MapPolyNexus : Entity
     }
     
     
-    [SerializationConstructor] private MapPolyNexus(int id, Vector2 point, ERefSet<MapPolygonEdge> incidentEdges,
+    [SerializationConstructor] private MapPolyNexus(int id, Vector2 point, 
+        ERefSet<MapPolygonEdge> incidentEdges,
         ERefSet<MapPolygon> incidentPolys) : base(id)
     {
         Point = point;
-        IncidentEdges = ERefSet<MapPolygonEdge>.Construct(incidentEdges);
-        IncidentPolys = ERefSet<MapPolygon>.Construct(incidentPolys);
+        IncidentEdges = ERefSet<MapPolygonEdge>.Construct(incidentEdges.Items);
+        IncidentPolys = ERefSet<MapPolygon>.Construct(incidentPolys.Items);
     }
 
     public MapPolygonEdge GetEdgeWith(MapPolyNexus n, Data data)
     {
-        return IncidentEdges.Items(data).First(e => e.HiNexus.Get(data) == n
+        return IncidentEdges.Entities(data).First(e => e.HiNexus.Get(data) == n
                                     || e.LoNexus.Get(data) == n);
     }
 
     public IEnumerable<MapPolyNexus> GetNeighbors(Data data)
     {
-        return IncidentEdges.Items(data).Select(e =>
+        return IncidentEdges.Entities(data).Select(e =>
         {
             if (e.HiNexus.Get(data) == this) return e.LoNexus.Get(data);
             return e.HiNexus.Get(data);

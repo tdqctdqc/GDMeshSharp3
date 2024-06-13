@@ -161,7 +161,7 @@ public class RegimeGenerator : Generator
         var unions = UnionFind.Find(
             remainder, 
             (p1, p2) => p1.IsLand == p2.IsLand,
-            p => p.Neighbors.Items(_data)
+            p => p.Neighbors.Entities(_data)
         );
         // if (unions.Count > templates.Count) throw new Exception();
         int iter = 0;

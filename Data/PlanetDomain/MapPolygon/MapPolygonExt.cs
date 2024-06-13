@@ -57,9 +57,9 @@ public static class MapPolygonExt
 
         return (closeInt + secondInt) / 2f;
     }
-    public static bool HasNeighbor(this MapPolygon poly, MapPolygon n) => poly.Neighbors.RefIds.Contains(n.Id);
+    public static bool HasNeighbor(this MapPolygon poly, MapPolygon n) => poly.Neighbors.Contains(n);
     public static bool IsWater(this MapPolygon poly) => poly.IsLand == false;
-    public static bool IsCoast(this MapPolygon poly, Data data) => poly.IsLand && poly.Neighbors.Items(data).Any(n => n.IsWater());
+    public static bool IsCoast(this MapPolygon poly, Data data) => poly.IsLand && poly.Neighbors.Entities(data).Any(n => n.IsWater());
     public static MapPolygonEdge GetEdge(this MapPolygon poly, MapPolygon neighbor, Data data) 
         => data.Planet.PolyEdgeAux.GetEdge(poly, neighbor);
     
@@ -79,7 +79,7 @@ public static class MapPolygonExt
     }
     public static IEnumerable<MapPolygonEdge> GetEdges(this MapPolygon p, Data data)
     {
-        return p.Neighbors.Items(data).Select(n => p.GetEdge(n, data));
+        return p.Neighbors.Entities(data).Select(n => p.GetEdge(n, data));
     }
 
 

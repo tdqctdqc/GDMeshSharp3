@@ -15,7 +15,7 @@ public partial class ArmyTree : Tree
 
         root.SetCellMode(1, TreeItem.TreeCellMode.String);
         root.SetText(1, a.Id.ToString());
-        foreach (var unit in a.Units.Items(d))
+        foreach (var unit in a.Units.Entities(d))
         {
             AddUnit(unit, d);
         }

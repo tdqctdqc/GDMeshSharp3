@@ -40,7 +40,7 @@ public sealed class GenCell : IGraphNode<GenCell>
         Polys.Add(p);
         _polyCells[p] = this;
         NeighboringPolyGeos.Remove(p);
-        foreach (var n in p.Neighbors.Items(key.Data))
+        foreach (var n in p.Neighbors.Entities(key.Data))
         {
             if(Polys.Contains(n) == false) NeighboringPolyGeos.Add(n);
         }

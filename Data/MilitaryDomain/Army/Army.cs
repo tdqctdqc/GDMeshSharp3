@@ -13,14 +13,16 @@ public class Army : Entity, ICombatGraphNode
     public LineMission LineMission { get; private set; }
     public HashSet<ArmyMission> OtherOrders { get; private set; }
     public Color Color { get; private set; }
-    public MoveType MoveType(Data d) => Units.Items(d)
+    public MoveType MoveType(Data d) => Units.Entities(d)
         .FirstOrDefault()?.Template.Get(d).MoveType.Get(d);
     public static Army Create(Regime r, 
         Cell startCell,
         IEnumerable<int> unitIds, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
-        var units = ERefSet<Unit>.Construct(nameof(Units), id, unitIds.ToHashSet());
+        var units = ERefSet<Unit>.Construct
+            (unitIds.Select(id => new ERef<Unit>(id))
+                .ToHashSet());
         var u = new Army(id, r.MakeRef(), units,
             new LineMission(new HashSet<int>{startCell.Id},
                 new HashSet<int>(), false),
@@ -76,7 +78,7 @@ public class Army : Entity, ICombatGraphNode
 
     public float GetPowerPoints(Data data)
     {
-        return Units.Items(data).Sum(u => u.GetPowerPoints(data));
+        return Units.Entities(data).Sum(u => u.GetPowerPoints(data));
     }
 
     public override void CleanUp(StrongWriteKey key)
@@ -113,7 +115,7 @@ public class Army : Entity, ICombatGraphNode
         var assigns = 
             Assigner.AssignFractional<ICombatGraphEdge, Unit>(
                 edges,
-                Units.Items(d).ToList(),
+                Units.Entities(d).ToList(),
                 e => edgeNeeds[e],
                 u => u.GetPowerPoints(d)
             );
@@ -186,7 +188,7 @@ public class Army : Entity, ICombatGraphNode
 
     public Vector2 GetHealth(Data d)
     {
-        return Units.Items(d).Select(u => u.GetHealth(d))
+        return Units.Entities(d).Select(u => u.GetHealth(d))
             .Sum();
     }
 }

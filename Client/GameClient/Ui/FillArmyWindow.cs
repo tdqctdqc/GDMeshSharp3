@@ -53,7 +53,7 @@ public partial class FillArmyWindow : Window
         right.CreateLabelAsChild("In Army");
         hbox.AddChild(right);
         var armyUnits = new ItemMultiListToken<Unit>(
-            army.Units.Items(c.Data),
+            army.Units.Entities(c.Data),
             u => u.Template.Get(c.Data).Name,
             u => { },
             new Vector2(200f, 500f),

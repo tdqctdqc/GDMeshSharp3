@@ -122,7 +122,7 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
                                       + regime.GetAlliance(client.Data).Leader.Get(client.Data).Name
                                       + " " + regime.GetAlliance(client.Data).Leader.Get(client.Data).Id);
         _container.CreateLabelAsChild("ALLIANCE MEMBERS");
-        foreach (var ally in regime.GetAlliance(client.Data).Members.Items(client.Data))
+        foreach (var ally in regime.GetAlliance(client.Data).Members.Entities(client.Data))
         {
             if (ally == regime) continue;
             _container.CreateLabelAsChild(ally.Name);

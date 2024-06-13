@@ -129,7 +129,7 @@ public class InfrastructureGenerator : Generator
         {
             var polyNode = kvp.Value;
             var poly = kvp.Key;
-            foreach (var nPoly in poly.Neighbors.Items(_data))
+            foreach (var nPoly in poly.Neighbors.Entities(_data))
             {
                 if (nPoly.Id > poly.Id) continue;
                 if (polyNodes.ContainsKey(nPoly) == false) continue;

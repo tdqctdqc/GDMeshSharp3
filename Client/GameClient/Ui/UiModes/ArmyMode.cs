@@ -163,7 +163,7 @@ public class ArmyMode : UiMode
             {
                 var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
                 var localAlliance = localPlayer.Regime.Get(_client.Data).GetAlliance(_client.Data);
-                return localAlliance.Members.RefIds.Contains(c.Controller.RefId);
+                return localAlliance.Members.Contains(c.Controller);
             });
         makeArmy.MouseReleased += cell =>
         {
@@ -187,7 +187,7 @@ public class ArmyMode : UiMode
                 var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
                 var localAlliance = localPlayer.Regime.Get(_client.Data).GetAlliance(_client.Data);
                 var res = false;
-                if (localAlliance.Members.RefIds.Contains(v.prospect.Controller.RefId))
+                if (localAlliance.Members.Contains(v.prospect.Controller))
                 {
                     return false;
                 }
@@ -242,7 +242,7 @@ public class ArmyMode : UiMode
             {
                 var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
                 var localAlliance = localPlayer.Regime.Get(_client.Data).GetAlliance(_client.Data);
-                return localAlliance.Members.RefIds.Contains(c.prospect.Controller.RefId);
+                return localAlliance.Members.Contains(c.prospect.Controller);
             },
             MouseButtonMask.Right,
             _client.Data

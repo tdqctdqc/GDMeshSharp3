@@ -15,8 +15,8 @@ public class CreateArmyCommand : Command
         var player = data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         var regime = player.Regime.Get(data);
         var cell = Cell.Get(data);
-        if (regime.GetAlliance(data).Members.RefIds
-                .Contains(cell.Controller.RefId) == false)
+        if (regime.GetAlliance(data).Members
+                .Contains(cell.Controller) == false)
         {
             error = "regime alliance does not control cell";
             return false;
@@ -29,6 +29,7 @@ public class CreateArmyCommand : Command
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         var regime = player.Regime.Get(key.Data);
-        Army.Create(regime, Cell.Get(key.Data), new int[] { }, key);
+        Army.Create(regime, Cell.Get(key.Data), 
+            new int[] { }, key);
     }
 }

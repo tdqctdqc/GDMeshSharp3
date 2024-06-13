@@ -6,36 +6,35 @@ using System.Linq;
 using MessagePack;
 
 public class ERefSet<TRef> 
-    : ROERefSet<TRef>, IRefCollection<TRef> where TRef : Entity
+    : RefSet<ERef<TRef>> where TRef : Entity
 {
-    public static ERefSet<TRef> Construct(ROERefSet<TRef> c)
+    public static ERefSet<TRef> Construct(IEnumerable<ERef<TRef>> items)
     {
-        return new ERefSet<TRef>(c.Name, c.OwnerEntityId, c.RefIds.ToHashSet());
-    }
-    public static ERefSet<TRef> Construct(string name, 
-        int ownerId,
-        HashSet<int> refIds)
-    {
-        var col = new ERefSet<TRef>(name, ownerId, refIds);
+        var col = new ERefSet<TRef>(items.ToHashSet());
         return col;
     }
-    [SerializationConstructor] private ERefSet(string name, int ownerEntityId, HashSet<int> refIds) 
-        : base(name, ownerEntityId, refIds)
+    public static ERefSet<TRef> Construct(HashSet<int> items)
+    {
+        var col = new ERefSet<TRef>(items.Select(id => new ERef<TRef>(id)).ToHashSet());
+        return col;
+    }
+    [SerializationConstructor] private ERefSet(
+        HashSet<ERef<TRef>> items) 
+        : base(items)
     {
     }
 
+    public IEnumerable<TRef> Entities(Data d)
+    {
+        return Items.Select(r => r.Get(d));
+    }
     public void Add(List<TRef> ids, StrongWriteKey key)
     {
         ids.ForEach(id => Add(id, key));
     }
     public void Add(TRef t, StrongWriteKey key)
     {
-        var owner = key.Data[OwnerEntityId];
-        if (RefIds.Contains(t.Id)) return;
-        RefIds.Add(t.Id);
-        key.Data.GetEntityMeta(owner.GetType())
-            .GetRefColMeta<TRef>(Name)
-            .RaiseAdded(owner, t);
+        Add(t.MakeRef(), key);
     }
     public void Remove(List<TRef> ids, StrongWriteKey key)
     {
@@ -43,12 +42,16 @@ public class ERefSet<TRef>
     }
     public void Remove(TRef t, StrongWriteKey key)
     {
-        RefIds.Remove(t.Id);
-        if (key.Data.EntitiesById.ContainsKey(OwnerEntityId))
-        {
-            var owner = key.Data[OwnerEntityId];
-            key.Data.GetEntityMeta(key.Data[OwnerEntityId].GetType())
-                .GetRefColMeta<TRef>(Name).RaiseRemoved(owner, t);
-        }
+        Remove(t.MakeRef(), key);
+    }
+    
+    
+    public bool Contains(int id)
+    {
+        return Contains(new ERef<TRef>(id));
+    }
+    public bool Contains(TRef t)
+    {
+        return Contains(t.MakeRef());
     }
 }

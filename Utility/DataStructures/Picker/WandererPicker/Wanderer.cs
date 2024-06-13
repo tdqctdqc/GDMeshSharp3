@@ -32,12 +32,11 @@ public abstract class Wanderer
 
     protected void Add(MapPolygon poly, WandererPicker host, Data data)
     {
-        
         Picked.Add(poly);
         host.NotTaken.Remove(poly);
         ValidAdjacent.Remove(poly);
 
-        var outside = poly.Neighbors.Items(data).Where(Valid).Except(Picked);
+        var outside = poly.Neighbors.Entities(data).Where(Valid).Except(Picked);
         foreach (var p in outside)
         {
             ValidAdjacent.Add(p);

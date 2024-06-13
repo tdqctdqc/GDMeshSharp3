@@ -40,7 +40,7 @@ public class AllianceMergeProposal : Proposal
         {
             var target = Target.Get(key.Data);
             var proposer = Proposer.Get(key.Data);
-            var targetMembers = target.Members.Items(key.Data).ToList();
+            var targetMembers = target.Members.Entities(key.Data).ToList();
             
             for (var i = 0; i < targetMembers.Count; i++)
             {

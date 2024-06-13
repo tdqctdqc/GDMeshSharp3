@@ -87,7 +87,7 @@ public class HoldLineAssignment : GroupAssignment
 
     public override float Suitability(Army g, Data d)
     {
-        return g.GetPowerPoints(d) + g.Units.Items(d).Sum(u => u.GetHitPoints(d));
+        return g.GetPowerPoints(d) + g.Units.Entities(d).Sum(u => u.GetHitPoints(d));
     }
 
     public override Cell GetCharacteristicCell(Data d)
@@ -164,7 +164,7 @@ public class HoldLineAssignment : GroupAssignment
     {
         InsertingGroups = Groups.Where(g =>
         {
-            return g.Units.Items(key.Data)
+            return g.Units.Entities(key.Data)
                 .Any(u => Frontline.Faces.Any(f => g.Cells.Contains(f.Native))) == false;
         }).ToHashSet();
         LineGroups = Groups.Except(InsertingGroups).ToHashSet();

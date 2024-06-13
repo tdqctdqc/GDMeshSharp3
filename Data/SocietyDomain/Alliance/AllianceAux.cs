@@ -11,7 +11,7 @@ public class AllianceAux
             .GetEntityMeta<Alliance>()
             .GetRefColMeta<Regime>(nameof(Alliance.Members));
         RegimeAlliances = new ERefColIndexer<Alliance, Regime>(
-            a => a.Members.Items(data), membersMeta, data);
+            a => a.Members.Entities(data), membersMeta, data);
         membersMeta.Added.Subscribe(data.Notices.Political.AllianceAddedRegime);
         membersMeta.Removed.Subscribe(data.Notices.Political.AllianceRemovedRegime);
         data.SubscribeForDestruction<Alliance>(n => data.Notices.Political.AllianceDissolved.Invoke((Alliance)n.Entity));

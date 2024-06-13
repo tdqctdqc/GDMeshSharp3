@@ -13,8 +13,8 @@ public class Alliance : Entity
     public static Alliance Create(Regime founder, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
-        var members = ERefSet<Regime>.Construct(nameof(Members), id,
-            new HashSet<int>{founder.Id});
+        var members = ERefSet<Regime>.Construct(
+            new HashSet<ERef<Regime>>{founder.MakeRef()});
         
         var a = new Alliance(founder.MakeRef(), members,
             id);

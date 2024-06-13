@@ -73,7 +73,7 @@ public class MoistureGenerator : Generator
             {
                 var oldScore = c.Moisture;
 
-                var newScore = c.Neighbors.Items(Data)
+                var newScore = c.Neighbors.Entities(Data)
                     .Select(n =>
                 {
                     var mult = 1f - (c.Roughness + n.Roughness) / 3f;
@@ -98,7 +98,7 @@ public class MoistureGenerator : Generator
         void doLandmass(Landmass lm)
         {
             var edges = lm.Polys
-                .SelectMany(p => p.Neighbors.Items(Data).Select(n => p.GetEdge(n, Data)))
+                .SelectMany(p => p.Neighbors.Entities(Data).Select(n => p.GetEdge(n, Data)))
                 .Distinct()
                 .Where(e => e.HighPoly.Get(Data).IsLand && e.LowPoly.Get(Data).IsLand);
             var coastEdges = edges.Where(e => e.IsLandToSeaEdge(Data));

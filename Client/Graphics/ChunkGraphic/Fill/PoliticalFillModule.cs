@@ -37,7 +37,7 @@ public partial class PoliticalFillModule : PolyCellFillChunkGraphic
             if (cell.Controller.RefId == playerRegime.Id) return Colors.Green;
             var playerAlliance = playerRegime.GetAlliance(d);
             var polyAlliance = cell.Controller.Get(d).GetAlliance(d);
-            if (playerAlliance.Members.RefIds.Contains(cell.Controller.RefId)) 
+            if (playerAlliance.Members.Contains(cell.Controller)) 
                 return Colors.SkyBlue;
             if (playerAlliance.IsAtWar(polyAlliance, d)) 
                 return Colors.Red;

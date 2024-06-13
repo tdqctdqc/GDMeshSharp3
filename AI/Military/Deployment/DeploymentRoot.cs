@@ -29,7 +29,7 @@ public class DeploymentRoot : DeploymentBranch
 
         var freeGroups =
             key.Data.GetAll<Army>()
-                .Where(g => Alliance.Members.Contains(g.Regime.Get(key.Data)))
+                .Where(g => Alliance.Members.Contains(g.Regime))
             .ToHashSet();
         if (freeGroups.Count == 0) return;
         var taken = GetDescendentAssignments()
@@ -55,7 +55,7 @@ public class DeploymentRoot : DeploymentBranch
 
     public override Vector2 GetMapPosForDisplay(Data d)
     {
-        var polys = Alliance.Members.Items(d)
+        var polys = Alliance.Members.Entities(d)
             .SelectMany(r => r.GetCells(d));
         return d.Planet.GetAveragePosition(polys.Select(p => p.GetCenter()));
     }

@@ -49,8 +49,7 @@ public class MapPolygon : Entity
         
         var p = new MapPolygon(id, mapCenter,
             ERefSet<MapPolygon>
-                .Construct(nameof(Neighbors), 
-                    id, new HashSet<int>()),
+                .Construct(new HashSet<ERef<MapPolygon>>()),
             0f,
             0f,
             0f,

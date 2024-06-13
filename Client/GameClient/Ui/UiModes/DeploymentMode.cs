@@ -138,7 +138,7 @@ public class DeploymentMode : UiMode
         var mg = _client.GetComponent<MapGraphics>();
         var debug = mg.DebugOverlay;
         var cells = _client.Data.Planet.MapAux.CellHolder.Cells.Values
-            .Where(c => alliance.Members.RefIds.Contains(c.Controller.RefId)).ToArray();
+            .Where(c => alliance.Members.Contains(c.Controller)).ToArray();
         
         var relTo = alliance.Leader.Get(_client.Data).GetCells(_client.Data).First().GetCenter();
         
@@ -147,7 +147,7 @@ public class DeploymentMode : UiMode
             for (var i = 0; i < c.Neighbors.Count; i++)
             {
                 var n = PlanetDomainExt.GetPolyCell(c.Neighbors[i], _client.Data);
-                if (alliance.Members.RefIds.Contains(n.Controller.RefId)) continue;
+                if (alliance.Members.Contains(n.Controller)) continue;
                 var edge = c.Edges[i];
                 Color color = Colors.Green;
                 if (n.Controller.IsEmpty())

@@ -22,7 +22,7 @@ public class RiverCellGenerator
             .Where(n => n.IsRiverNexus(key.Data))
             .ToDictionary(
                 n => n,
-                n => n.IncidentEdges.Items(key.Data)
+                n => n.IncidentEdges.Entities(key.Data)
                     .Where(e => e.IsRiver())
                     .Average(e => River.GetWidthFromFlow(e.MoistureFlow)));
         
