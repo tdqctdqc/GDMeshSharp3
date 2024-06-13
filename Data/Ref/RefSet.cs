@@ -13,7 +13,6 @@ public class RefSet<T> where T : IdRef
     protected void Add(T t, StrongWriteKey key)
     {
         Items.Add(t);
-        
     }
     protected void Remove(T t, StrongWriteKey key)
     {

@@ -6,14 +6,14 @@ using MessagePack;
 public class Alliance : Entity
 {
     public ERef<Regime> Leader { get; private set; }
-    public ERefSet<Regime> Members { get; private set; }
+    public ERefSetCallback<Regime> Members { get; private set; }
     public IEnumerable<Proposal> PendingProposals(Data data) =>
         data.Society.Proposals
             .Proposals.Values.Where(p => p.Target.RefId == Id);
     public static Alliance Create(Regime founder, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
-        var members = ERefSet<Regime>.Construct(
+        var members = ERefSetCallback<Regime>.Construct(
             new HashSet<ERef<Regime>>{founder.MakeRef()});
         
         var a = new Alliance(founder.MakeRef(), members,
@@ -23,11 +23,13 @@ public class Alliance : Entity
         return a;
     }
     [SerializationConstructor] private Alliance(ERef<Regime> leader,
-        ERefSet<Regime> members, 
+        ERefSetCallback<Regime> members, 
         int id) : base(id)
     {
         Leader = leader;
         Members = members;
+        Members.SetIndexerCallbacks(this, 
+            d => d.Society.AllianceAux.RegimeAlliances);
     }
 
     public override void CleanUp(StrongWriteKey key)

@@ -180,14 +180,6 @@ public class Data
         return _entityTypeTree.Get<T>().Entities.ToHashSet();
     }
 
-    public EntityMeta<T> GetEntityMeta<T>() where T : Entity
-    {
-        return (EntityMeta<T>)_entityTypeTree.Get(typeof(T)).Meta;
-    }
-    public IEntityMeta GetEntityMeta(Type entityType) 
-    {
-        return _entityTypeTree.Get(entityType).Meta;
-    }
 
     public EntityTypeTreeNode<T> GetEntityTypeNode<T>() where T : Entity
     {

@@ -9,7 +9,6 @@ using Godot;
 public class EntityTypeTreeNode<T> : IEntityTypeTreeNode where T : Entity
 {
     public Type EntityType { get; private set; }
-    public IEntityMeta Meta { get; private set; }
     public IEntityTypeTreeNode Parent { get; private set; }
     public List<IEntityTypeTreeNode> Children { get; private set; }
     public RefAction<EntityCreatedNotice> Created { get; private set; }    
@@ -28,7 +27,6 @@ public class EntityTypeTreeNode<T> : IEntityTypeTreeNode where T : Entity
         Created = new RefAction<EntityCreatedNotice>();
         Destroyed = new RefAction<EntityDestroyedNotice>();
         Entities = new HashSet<T>();
-        Meta = IEntityMeta.ConstructFromType(typeof(T));
     }
     public void Propagate(IEntityTypeTreeNotice n)
     {

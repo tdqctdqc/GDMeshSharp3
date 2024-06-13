@@ -6,7 +6,6 @@ using System.Reflection;
 public interface IEntityTypeTreeNode
 {
     Type EntityType { get; }
-    IEntityMeta Meta { get; }
     IEntityTypeTreeNode Parent { get; }
     List<IEntityTypeTreeNode> Children { get; }
     void RemoveEntity(Entity e);

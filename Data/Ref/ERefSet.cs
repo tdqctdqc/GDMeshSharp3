@@ -44,8 +44,6 @@ public class ERefSet<TRef>
     {
         Remove(t.MakeRef(), key);
     }
-    
-    
     public bool Contains(int id)
     {
         return Contains(new ERef<TRef>(id));

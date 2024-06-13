@@ -19,7 +19,6 @@ public class UnitAux
         
         UnitByGroup = new ERefColIndexer<Army, Unit>(
             g => g.Units.Entities(d),  
-            d.GetEntityMeta<Army>().GetRefColMeta<Unit>(nameof(Army.Units)),
             d);
         
         ArmiesByOccupancy = ManyToManyIndexer.MakeForEntity<Cell, Army>(

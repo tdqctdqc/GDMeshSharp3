@@ -11,12 +11,10 @@ public class ERefColIndexer<TSingle, TKey>
     private Func<TSingle, IEnumerable<TKey>> _get;
     private Dictionary<TKey, TSingle> _dic;
     public ERefColIndexer(Func<TSingle, IEnumerable<TKey>> get,
-        RefColMeta<TSingle, TKey> colMeta, Data data) 
+        Data data) 
     {
         _get = get;
         _dic = new Dictionary<TKey, TSingle>();
-        colMeta.Added.Subscribe(HandleColAdd);
-        colMeta.Removed.Subscribe(HandleColRemove);
         data.SubscribeForCreation<TSingle>
             (n => HandleAdded((TSingle)n.Entity));
         data.SubscribeForDestruction<TSingle>
@@ -44,15 +42,15 @@ public class ERefColIndexer<TSingle, TKey>
         }
     }
 
-    private void HandleColAdd((TSingle e, TKey k) change)
+    public void HandleColAdd(TSingle e, TKey k)
     {
-        _dic[change.k] = change.e;
+        _dic[k] = e;
     }
-    private void HandleColRemove((TSingle e, TKey k) change)
+    public void HandleColRemove(TSingle e, TKey k)
     {
-        if (_dic[change.k] == change.e)
+        if (_dic[k] == e)
         {
-            _dic.Remove(change.k);
+            _dic.Remove(k);
         }
     }
 }

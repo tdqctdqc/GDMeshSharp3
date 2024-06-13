@@ -8,7 +8,7 @@ using MessagePack;
 public class Army : Entity, ICombatGraphNode
 {
     public ERef<Regime> Regime { get; private set; }
-    public ERefSet<Unit> Units { get; private set; }
+    public ERefSetCallback<Unit> Units { get; private set; }
     public HashSet<int> Cells { get; private set; }
     public LineMission LineMission { get; private set; }
     public HashSet<ArmyMission> OtherOrders { get; private set; }
@@ -20,7 +20,7 @@ public class Army : Entity, ICombatGraphNode
         IEnumerable<int> unitIds, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
-        var units = ERefSet<Unit>.Construct
+        var units = ERefSetCallback<Unit>.Construct
             (unitIds.Select(id => new ERef<Unit>(id))
                 .ToHashSet());
         var u = new Army(id, r.MakeRef(), units,
@@ -34,7 +34,7 @@ public class Army : Entity, ICombatGraphNode
     }
     [SerializationConstructor] private Army(int id,
         ERef<Regime> regime, 
-        ERefSet<Unit> units,
+        ERefSetCallback<Unit> units,
         LineMission lineMission,
         HashSet<ArmyMission> otherOrders,
         HashSet<int> cells,
@@ -43,6 +43,9 @@ public class Army : Entity, ICombatGraphNode
     {
         Regime = regime;
         Units = units;
+        Units.SetIndexerCallbacks(this, 
+            d => d.Military.UnitAux.UnitByGroup);
+        
         LineMission = lineMission;
         OtherOrders = otherOrders;
         Color = color;
