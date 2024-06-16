@@ -85,14 +85,12 @@ public class LineMission : ArmyMission
             .ToArray();
         army.LineMission.AdvanceInto.UnionWith(lost);
         army.LineMission.LineCells.ExceptWith(lost);
-        army.Cells.ExceptWith(lost);
         var conquered = army.LineMission.AdvanceInto
             .Where(i => PlanetDomainExt.GetPolyCell(i, key.Data)
                 .FriendlyControlled(alliance, key.Data))
             .ToArray();
         army.LineMission.LineCells.UnionWith(conquered);
         army.LineMission.AdvanceInto.ExceptWith(conquered);
-        army.Cells.UnionWith(army.LineMission.LineCells);
         return true;
     }
 

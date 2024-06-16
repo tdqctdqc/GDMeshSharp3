@@ -7,6 +7,7 @@ using Godot;
 public class ArmyMode : UiMode
 {
     public DefaultSettingsOption<Army> Army { get; private set; }
+    
     private Client _client;
     private Node2D _selectedArmyGraphic;
     private MouseOverHandler _mouseOverHandler;

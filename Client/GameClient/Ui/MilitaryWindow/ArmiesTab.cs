@@ -80,7 +80,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             if (army is null) return;
             foreach (var unit in _freeUnits.Selected)
             {
-                var proc = new SetUnitGroupProcedure(unit.MakeRef(),
+                var proc = new SetUnitArmyProcedure(unit.MakeRef(),
                     army.MakeRef());
                 var inner = new SendMessageCommand(proc, 
                     c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
@@ -131,7 +131,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             
             if (selected is Unit u)
             {
-                var proc = new SetUnitGroupProcedure(u.MakeRef(),
+                var proc = new SetUnitArmyProcedure(u.MakeRef(),
                     ERef<Army>.GetEmpty());
                 var com = new SendMessageCommand(proc, 
                     c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);

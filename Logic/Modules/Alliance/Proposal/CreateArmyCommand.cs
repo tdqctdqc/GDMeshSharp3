@@ -29,7 +29,7 @@ public class CreateArmyCommand : Command
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         var regime = player.Regime.Get(key.Data);
-        Army.Create(regime, Cell.Get(key.Data), 
+        Army.Create(regime, Cell.Get(key.Data).Yield(), 
             new int[] { }, key);
     }
 }

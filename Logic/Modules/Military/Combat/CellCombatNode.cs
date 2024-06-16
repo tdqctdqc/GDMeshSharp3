@@ -56,10 +56,6 @@ public class CellCombatNode : ICombatGraphNode
             return a.GetPowerPoints(d) / numEdges;
         });
     }
-    public void DistributeResources(CombatCalculator combat, Data d)
-    {
-        
-    }
 
     public void CalculateCombat(CombatCalculator combat, Data d)
     {
@@ -107,7 +103,7 @@ public class CellCombatNode : ICombatGraphNode
         }
     }
 
-    public void DirectResults(CombatCalculator combat, LogicWriteKey key)
+    public void SendLosses(LogicWriteKey key)
     {
         foreach (var memo in Defenders)
         {
@@ -116,22 +112,6 @@ public class CellCombatNode : ICombatGraphNode
         foreach (var memo in Attackers)
         {
             sendLosses(memo);
-        }
-        if (DefendersForcedBack)
-        {
-            var victoriousAllianceUnits = Attackers
-                .SortBy(u => u.Unit.Regime.Get(key.Data).GetAlliance(key.Data))
-                .MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data)));
-
-            var max = victoriousAllianceUnits.Value.SortBy(u => u.Unit.Regime.Get(key.Data))
-                .MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data)));
-            
-            var victoriousRegime = max.Key;
-            var victoriousArmies = max.Value.Select(u => u.Unit.GetArmy(key.Data))
-                .Distinct();
-            var changeController = ConquerCellProcedure
-                .Construct(Cell, victoriousRegime, victoriousArmies);
-            key.SendMessage(changeController);
         }
         void sendLosses(UnitCombatMemo memo)
         {
@@ -147,21 +127,50 @@ public class CellCombatNode : ICombatGraphNode
             key.SendMessage(proc);
         }
     }
-
-    public void InvoluntaryResults(CombatCalculator combat, LogicWriteKey key)
+    public void DoAdvanceForVictorious(CombatCalculator combat, 
+        LogicWriteKey key)
     {
+        if (DefendersForcedBack)
+        {
+            var alliancesByStr = Attackers
+                .Where(u => key.Data.HasEntity(u.Unit.Id))
+                .SortBy(u => u.Unit.Regime.Get(key.Data).GetAlliance(key.Data));
+            if (alliancesByStr.Any() == false) return;
+
+            var victoriousAllianceUnits = 
+                alliancesByStr.MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data)));
+            
+            var maxStrengthRegime = victoriousAllianceUnits.Value.SortBy(u => u.Unit.Regime.Get(key.Data))
+                .MaxBy(kvp => kvp.Value.Sum(u => u.Unit.GetPowerPoints(key.Data)));
+            
+            var victoriousRegime = maxStrengthRegime.Key;
+            var victoriousArmies = maxStrengthRegime.Value.Select(u => u.Unit.GetArmy(key.Data))
+                .Distinct();
+            var changeController = ConquerCellProcedure
+                .Construct(Cell, victoriousRegime, victoriousArmies);
+            key.SendMessage(changeController);
+
+            var defeatedArmies = Defenders
+                .Select(m => m.Unit.GetArmy(key.Data))
+                .Distinct();
+            var neighbors = Cell.GetNeighbors(key.Data).ToArray();
+            var defenderAlliance = Cell.Controller.Get(key.Data).GetAlliance(key.Data);
+            var neighborsHeldByAlliance = neighbors
+                .Where(c => c.FriendlyControlled(defenderAlliance, key.Data))
+                .Where(c => combat.Graph.CellCombatNodes.TryGetValue(c, out var n) == false
+                            || n.DefendersForcedBack == false)
+                .ToArray();
+        }
         
     }
 
-    public void VoluntaryResults(CombatCalculator combat, LogicWriteKey key)
-    {
-        
-    }
 
     public class UnitCombatMemo
     {
         public Unit Unit { get; set; }
         public float Proportion { get; set; }
+        
+        //is out of proportion engaged not whole unit
         public float ProportionLosses { get; set; }
 
         public UnitCombatMemo(Unit unit, float proportion)

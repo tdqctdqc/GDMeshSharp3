@@ -39,7 +39,7 @@ public class ForceCompositionAi
                 var took = freeUnits.Take(toTake);
                 foreach (var unit in took)
                 {
-                    var proc = new SetUnitGroupProcedure(unit.MakeRef(), understrengthGroup.MakeRef());
+                    var proc = new SetUnitArmyProcedure(unit.MakeRef(), understrengthGroup.MakeRef());
                     freeUnits.Remove(unit);
                     key.SendMessage(proc);
                 }
@@ -67,7 +67,8 @@ public class ForceCompositionAi
         {
             if (newGroup.Count == 0) continue;
             key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-            Army.Create(regime, regime.Capital.Get(key.Data),
+            Army.Create(regime, 
+                regime.Capital.Get(key.Data).Yield(),
                 newGroup, key);
         }
     }

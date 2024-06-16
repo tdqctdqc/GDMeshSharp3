@@ -12,7 +12,8 @@ public class CombatGraph
     private Dictionary<Vector2I, List<ICombatGraphEdge>> _edgesByEdgeId;
     private Dictionary<ICombatGraphEdge, (ICombatGraphNode, ICombatGraphNode)> _nodesByEdge;
     private Dictionary<ICombatGraphNode, List<ICombatGraphEdge>> _edgesByNode;
-
+    public IEnumerable<ICombatGraphNode> GetNodes() => _edgesByNode.Keys;
+    
     public CombatGraph(CombatCalculator combat)
     {
         _combat = combat;
@@ -89,34 +90,6 @@ public class CombatGraph
         _edgesByNode[node1].Add(edge);
         _edgesByNode[node2].Add(edge);
         _nodesByEdge.Add(edge, (node1, node2));
-    }
-
-    public void DistributeResources(Data d)
-    {
-        Do((e, combat) 
-            => e.DistributeResources(combat, d));
-    }
-    public void CalculateCombat(Data d)
-    {
-        Do((e, combat) 
-            => e.CalculateCombat(combat, d));
-    }
-    public void EnactDirectResults(LogicWriteKey key)
-    {
-        Do((e, combat) 
-            => e.DirectResults(combat, key));
-    }
-    public void EnactInvoluntaryResults(LogicWriteKey key)
-    {
-        Do((e, combat) 
-            => e.InvoluntaryResults(combat, key));
-    }
-    public void EnactVoluntaryResults(LogicWriteKey key)
-    {
-        Do((e, combat) =>
-        {
-            e.VoluntaryResults(combat, key);
-        });
     }
     private void Do(Action<ICombatGraphNode, CombatCalculator> act)
     {

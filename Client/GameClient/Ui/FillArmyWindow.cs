@@ -67,7 +67,7 @@ public partial class FillArmyWindow : Window
         {
             if (reserveUnits.Selected.Count == 0) return;
             var procs = reserveUnits.Selected
-                .Select(u => new SetUnitGroupProcedure(u.MakeRef(),
+                .Select(u => new SetUnitArmyProcedure(u.MakeRef(),
                     army.MakeRef())).ToArray<Message>();
             var inner = new SendMessagesCommand(procs, player.PlayerGuid);
             var cb = CallbackCommand.Construct(
@@ -91,7 +91,7 @@ public partial class FillArmyWindow : Window
             if (armyUnits.Selected.Count == 0) return;
 
             var procs = armyUnits.Selected
-                .Select(u => new SetUnitGroupProcedure(u.MakeRef(),
+                .Select(u => new SetUnitArmyProcedure(u.MakeRef(),
                     ERef<Army>.GetEmpty())).ToArray<Message>();
             var inner = new SendMessagesCommand(procs, player.PlayerGuid);
             var cb = () => Setup(army, c);

@@ -10,6 +10,7 @@ public enum LayerOrder
     Terrain, PolyFill, Rivers, 
     Roads, Icons, Resources,
     ArmyArea, ArmyIcon,
+    ArmyHistory,
     Labels, Debug, Highlighter, Ui
 }
 public class GraphicLayerHolder

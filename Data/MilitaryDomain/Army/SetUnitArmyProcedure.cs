@@ -1,10 +1,10 @@
 
-public class SetUnitGroupProcedure : Procedure
+public class SetUnitArmyProcedure : Procedure
 {
     public ERef<Unit> Unit { get; private set; }
     public ERef<Army> NewGroup { get; private set; }
 
-    public SetUnitGroupProcedure(ERef<Unit> unit, ERef<Army> newGroup)
+    public SetUnitArmyProcedure(ERef<Unit> unit, ERef<Army> newGroup)
     {
         Unit = unit;
         NewGroup = newGroup;

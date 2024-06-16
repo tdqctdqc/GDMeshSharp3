@@ -9,6 +9,8 @@ public class ArmyGraphicManager : ISettinged
 {
     public EntityGraphicReservoir<Army, ArmyAreaGraphic> ArmyAreaGraphics { get; private set; }
     public EntityGraphicReservoir<Army, ArmyIconGraphic> ArmyIconGraphics { get; private set; }
+
+    public EntityGraphicReservoir<Army, ArmyHistoryGraphic> ArmyHistoryGraphics { get; private set; }
     private ConcurrentBag<Cell> _redraw;
     public Dictionary<Cell, List<Army>> ArmiesInOrder { get; private set; }
     public ArmyGraphicManager(Client c)
@@ -31,6 +33,14 @@ public class ArmyGraphicManager : ISettinged
                 _redraw.Add(cell);
                 return g;
             }, c.Data);
+        ArmyHistoryGraphics = new EntityGraphicReservoir<Army, ArmyHistoryGraphic>(
+            a =>
+            {
+                var g = new ArmyHistoryGraphic();
+                g.Draw(a, c);
+                return g;
+            },
+            c.Data);
 
         ArmiesInOrder = new Dictionary<Cell, List<Army>>();
         c.Data.Notices.Ticked.Subscribe(i =>
@@ -49,6 +59,12 @@ public class ArmyGraphicManager : ISettinged
         {
             Redraw(c);
         });
+
+        var armyMode = c.UiController.ModeOption.Options.OfType<ArmyMode>().First();
+        armyMode.Army.SettingChanged.Subscribe(v =>
+        {
+            
+        });
     }
 
     private void DrawAll(Client c)
@@ -59,6 +75,10 @@ public class ArmyGraphicManager : ISettinged
         }
         
         foreach (var (army, graphic) in ArmyIconGraphics.Graphics)
+        {
+            graphic.Draw(army, c);
+        }
+        foreach (var (army, graphic) in ArmyHistoryGraphics.Graphics)
         {
             graphic.Draw(army, c);
         }
@@ -142,6 +162,8 @@ public class ArmyGraphicManager : ISettinged
         var newFirst = list[0];
         var area = ArmyAreaGraphics.Graphics[newFirst];
         area.Draw(newFirst, c);
+        var history = ArmyAreaGraphics.Graphics[newFirst];
+        history.Draw(newFirst, c);
     }
 
     public void SetArmyToTop(Army army, Client c)

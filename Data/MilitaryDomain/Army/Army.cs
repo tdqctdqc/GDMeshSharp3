@@ -16,7 +16,7 @@ public class Army : Entity, ICombatGraphNode
     public MoveType MoveType(Data d) => Units.Entities(d)
         .FirstOrDefault()?.Template.Get(d).MoveType.Get(d);
     public static Army Create(Regime r, 
-        Cell startCell,
+        IEnumerable<Cell> startCells,
         IEnumerable<int> unitIds, ICreateWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
@@ -24,10 +24,10 @@ public class Army : Entity, ICombatGraphNode
             (unitIds.Select(id => new ERef<Unit>(id))
                 .ToHashSet());
         var u = new Army(id, r.MakeRef(), units,
-            new LineMission(new HashSet<int>{startCell.Id},
+            new LineMission(startCells.Select(c => c.Id).ToHashSet(),
                 new HashSet<int>(), false),
             new HashSet<ArmyMission>(),
-            new HashSet<int>{startCell.Id},
+            startCells.Select(c => c.Id).ToHashSet(),
             ColorsExt.GetRandomColor());
         key.Create(u);
         return u;
@@ -63,7 +63,7 @@ public class Army : Entity, ICombatGraphNode
 
     public Cell GetHomeCell(Data d)
     {
-        return PlanetDomainExt.GetPolyCell(Cells.Min(), d);
+        return d.Context.ArmyHomeCells[this];
     }
     public HashSet<Cell> GetCells(Data d)
     {
@@ -137,56 +137,17 @@ public class Army : Entity, ICombatGraphNode
         } 
     }
 
-    public void CalculateCombat(CombatCalculator combat, Data d)
-    {
-    }
-
-    public void DirectResults(CombatCalculator combat, 
+    public void RemoveIfOverrunOrDestroyed(CombatCalculator combat, 
         LogicWriteKey key)
     {
-        
-    }
-
-    public void InvoluntaryResults(CombatCalculator combat, 
-        LogicWriteKey key)
-    {
-        var cells = GetCells(key.Data);
-        var alliance = Regime.Get(key.Data).GetAlliance(key.Data);
-        var heldCells = cells
-            .Where(c => c.FriendlyControlled(alliance, key.Data))
-            .ToArray();
-        
-        if (heldCells.Length == 0)
+        if (Cells.Count == 0)
         {
-            var close = cells.SelectMany(c => c.GetNeighbors(key.Data))
-                .FirstOrDefault(c => c.FriendlyControlled(alliance, key.Data));
-            if (close is null)
-            {
-                combat.Graph.RemoveNode(this);
-                var update = new DestroyArmyProcedure(this.MakeRef());
-                key.SendMessage(update);
-                return;
-            }
-            else
-            {
-                var proc = new SetArmyOccupationProcedure(
-                    new HashSet<int> { close.Id }, 
-                    this.MakeRef());
-                key.SendMessage(proc);
-                return;
-            }
-        }
-        else
-        {
-            var proc = new SetArmyOccupationProcedure(
-                heldCells.Select(c => c.Id).ToHashSet(), this.MakeRef());
-            key.SendMessage(proc);
+            GD.Print($"destroying army {Id}");
+            combat.Graph.RemoveNode(this);
+            var update = new DestroyArmyProcedure(this.MakeRef());
+            key.SendMessage(update);
             return;
         }
-    }
-
-    public void VoluntaryResults(CombatCalculator combat, LogicWriteKey key)
-    {
     }
 
     public Vector2 GetHealth(Data d)
