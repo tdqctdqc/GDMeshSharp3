@@ -12,6 +12,11 @@ public partial class ArmyAreaGraphic : Node2D
     {
         ZAsRelative = false;
         ZIndex = (int)LayerOrder.ArmyArea;
+        
+    }
+
+    public void Initialize()
+    {
         _mesh = new MeshInstance2D();
         AddChild(_mesh);
     }

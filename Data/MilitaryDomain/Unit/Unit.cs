@@ -10,7 +10,7 @@ public class Unit : Entity
     public IdCount<Troop> Troops { get; private set; }
     public static Unit Create(UnitTemplate template, 
         Regime regime,
-        ICreateWriteKey key)
+        IHostWriteKey key)
     {
         var u = new Unit(key.Data.IdDispenser.TakeId(), regime.MakeRef(), template.MakeRef(),
             IdCount<Troop>.Construct(template.TroopCounts));

@@ -7,37 +7,49 @@ using Godot;
 
 public class ArmyGraphicManager : ISettinged
 {
-    public EntityGraphicReservoir<Army, ArmyAreaGraphic> ArmyAreaGraphics { get; private set; }
-    public EntityGraphicReservoir<Army, ArmyIconGraphic> ArmyIconGraphics { get; private set; }
+    public EntityGraphicCache<Army, ArmyAreaGraphic> ArmyAreaGraphics { get; private set; }
+    public EntityGraphicCache<Army, ArmyIconGraphic> ArmyIconGraphics { get; private set; }
 
-    public EntityGraphicReservoir<Army, ArmyHistoryGraphic> ArmyHistoryGraphics { get; private set; }
+    public EntityGraphicCache<Army, ArmyHistoryGraphic> ArmyHistoryGraphics { get; private set; }
     private ConcurrentBag<Cell> _redraw;
     public Dictionary<Cell, List<Army>> ArmiesInOrder { get; private set; }
     public ArmyGraphicManager(Client c)
     {
         _redraw = new ConcurrentBag<Cell>();
-        ArmyAreaGraphics = new EntityGraphicReservoir<Army, ArmyAreaGraphic>(
+        ArmyAreaGraphics = new EntityGraphicCache<Army, ArmyAreaGraphic>(
             a =>
             {
                 var g = new ArmyAreaGraphic();
-                g.Draw(a, c);
+                c.QueuedUpdates.Enqueue(() =>
+                {
+                    g.Initialize();
+                    g.Draw(a, c);
+                });
                 return g;
             }, c.Data);
-        ArmyIconGraphics = new EntityGraphicReservoir<Army, ArmyIconGraphic>(
+        ArmyIconGraphics = new EntityGraphicCache<Army, ArmyIconGraphic>(
             a =>
             {
                 var g = new ArmyIconGraphic();
-                g.Draw(a, c);
+                c.QueuedUpdates.Enqueue(() =>
+                {
+                    g.Initialize();
+                    g.Draw(a, c);
+                });
                 var cell = a.GetHomeCell(c.Data);
                 ArmiesInOrder.AddOrUpdate(cell, a);
                 _redraw.Add(cell);
                 return g;
             }, c.Data);
-        ArmyHistoryGraphics = new EntityGraphicReservoir<Army, ArmyHistoryGraphic>(
+        ArmyHistoryGraphics = new EntityGraphicCache<Army, ArmyHistoryGraphic>(
             a =>
             {
                 var g = new ArmyHistoryGraphic();
-                g.Draw(a, c);
+                c.QueuedUpdates.Enqueue(() =>
+                {
+                    g.Initialize();
+                    g.Draw(a, c);
+                });
                 return g;
             },
             c.Data);
@@ -69,11 +81,11 @@ public class ArmyGraphicManager : ISettinged
 
     private void DrawAll(Client c)
     {
+        PositionAllIcons(c);
         foreach (var (army, graphic) in ArmyAreaGraphics.Graphics)
         {
             graphic.Draw(army, c);
         }
-        
         foreach (var (army, graphic) in ArmyIconGraphics.Graphics)
         {
             graphic.Draw(army, c);
@@ -82,7 +94,6 @@ public class ArmyGraphicManager : ISettinged
         {
             graphic.Draw(army, c);
         }
-        PositionAllIcons(c);
     }
 
     

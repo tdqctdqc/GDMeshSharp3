@@ -13,7 +13,7 @@ public class UnitTemplate : Entity, IMakeable
     public TroopDomain Domain { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
 
-    public static UnitTemplate Create(ICreateWriteKey key, 
+    public static UnitTemplate Create(IHostWriteKey key, 
         string name,
         Dictionary<Troop, float> troopCounts,
         TroopDomain domain,
@@ -56,7 +56,7 @@ public class UnitTemplate : Entity, IMakeable
     }
 
     public static void CreateDefaultTemplatesForRegime(Regime r, 
-        ICreateWriteKey key)
+        IHostWriteKey key)
     {
         var inf = Create(key, "Infantry Division",
             new Dictionary<Troop, float>

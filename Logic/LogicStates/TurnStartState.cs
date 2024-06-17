@@ -8,14 +8,12 @@ public class TurnStartState : TurnState
     {
         _majorModules = new LogicModule[]
         {
-            new DefaultLogicModule(() => new SetContextProcedure()),
             new MigrationModule(),
             new ProductionModule(),
             new DefaultLogicModule(() => new FinishedTurnStartCalcProc())
         };
         _minorModules = new LogicModule[]
         {
-            new DefaultLogicModule(() => new SetContextProcedure()),
             new DefaultLogicModule(() => new FinishedTurnStartCalcProc())
         };
     }

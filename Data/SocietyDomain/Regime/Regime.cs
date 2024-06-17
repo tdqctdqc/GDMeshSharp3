@@ -42,7 +42,7 @@ public class Regime : Entity
 
     public static Regime Create(MapPolygon seed, 
         RegimeTemplate regimeTemplate, bool isMajor, 
-        ICreateWriteKey key)
+        IHostWriteKey key)
     {
         var store = RegimeStock.Construct();
         var id = key.Data.IdDispenser.TakeId();
@@ -64,7 +64,7 @@ public class Regime : Entity
         return r;
     }
 
-    public void SetIsMajor(bool isMajor, ICreateWriteKey key)
+    public void SetIsMajor(bool isMajor, IHostWriteKey key)
     {
         IsMajor = isMajor;
     }

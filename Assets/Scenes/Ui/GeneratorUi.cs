@@ -88,9 +88,6 @@ public partial class GeneratorUi : Node, IClientComponent
                 .Set(.5f);
         });
     }
-    public void GoToGameSession()
-    {
-    }
     private void PressedGenerate()
     {
         if (_logic.Calculating) return;

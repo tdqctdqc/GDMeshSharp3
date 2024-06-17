@@ -19,6 +19,7 @@ public class FinishedStateSyncUpdate : Update
     {
         GD.Print("Finished state sync");
         key.Data.ClientPlayerData.SetLocalPlayerGuid(PlayerGuid);
-        key.Data.Notices.FinishedStateSync?.Invoke();
+        key.Data.Context.Calculate(key.Data);
+        key.Data.Notices.InvokeFinishedStateSync(key.Data);
     }
 }

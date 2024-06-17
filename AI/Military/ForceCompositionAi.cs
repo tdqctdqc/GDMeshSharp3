@@ -67,7 +67,8 @@ public class ForceCompositionAi
         {
             if (newGroup.Count == 0) continue;
             key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-            Army.Create(regime, 
+            Army.Create(
+                regime, 
                 regime.Capital.Get(key.Data).Yield(),
                 newGroup, key);
         }

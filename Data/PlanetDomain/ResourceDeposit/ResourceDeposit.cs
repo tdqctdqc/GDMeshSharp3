@@ -10,7 +10,7 @@ public class ResourceDeposit : Entity
     public ModelRef<ResourceExtractionBuilding> Extraction { get; private set; }
     
     public static ResourceDeposit Create(Item resource,
-        Cell cell, ICreateWriteKey key)
+        Cell cell, IHostWriteKey key)
     {
         var d = new ResourceDeposit(key.Data.IdDispenser.TakeId(),
             resource.MakeRef(), 

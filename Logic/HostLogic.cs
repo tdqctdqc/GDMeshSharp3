@@ -94,7 +94,7 @@ public class HostLogic : ILogic
         }
     }
 
-    private void HandleMessage(Message m)
+    public void HandleMessage(Message m)
     {
         lock (_lock)
         {
@@ -105,11 +105,18 @@ public class HostLogic : ILogic
                 return;
             }
 
-            if (m is Procedure p
-                && p.Valid(_data, out string error))
+            if (m is Procedure p)
             {
-                p.Enact(PKey);
-                _server.ReceiveMessage(m, _hKey);
+                if (p.Valid(_data, out string error))
+                {
+                    p.Enact(PKey);
+                    _server.ReceiveMessage(m, _hKey);
+                }
+                else
+                {
+                    GD.Print($"{p.GetType()} error {error}");
+                }
+                
                 return;
             }
 

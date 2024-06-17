@@ -15,6 +15,7 @@ public class Assigner
             Func<TPicked, float> getCapability
             )
     {
+        
         var res = new List<(TPicker, TPicked, float)>();
         var totalNeed = pickers.Sum(getNeed);
         var totalCapability = toPick.Sum(getCapability);

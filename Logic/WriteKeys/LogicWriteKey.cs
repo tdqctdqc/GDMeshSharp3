@@ -1,7 +1,7 @@
 
 using System;
 
-public class LogicWriteKey : StrongWriteKey, ICreateWriteKey
+public class LogicWriteKey : StrongWriteKey, IHostWriteKey
 {
     private Action<Message> _sendMessage;
     private Action<Procedure, Guid> _sendMessageToClient;

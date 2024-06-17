@@ -7,7 +7,7 @@ public class Player : Entity
     public Guid PlayerGuid { get; private set; }
     public string Name { get; private set; }
     public ERef<Regime> Regime { get; private set; }
-    public static Player Create(Guid guid, string name, ICreateWriteKey key)
+    public static Player Create(Guid guid, string name, IHostWriteKey key)
     {
         var p = new Player(key.Data.IdDispenser.TakeId(), guid, name, new ERef<Regime>(-1));
         key.Create(p);

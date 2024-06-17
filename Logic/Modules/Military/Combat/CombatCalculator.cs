@@ -28,7 +28,6 @@ public class CombatCalculator
         doFor<CellCombatNode>(
             node => node.DoAdvanceForVictorious(this, key));
         HandleSplitArmies(defeatedArmies, key);
-        
 
         var historyProc = new AddCombatHistoryProc(history);
         key.SendMessage(historyProc);
@@ -68,7 +67,9 @@ public class CombatCalculator
                 .Where(c => lostCells.Contains(c) == false)
                 .Select(c => c.MakeRef())
                 .ToArray();
-            var proc = new ArmiesRetreatProcedure(cell.MakeRef(), validNs, armies);
+            GD.Print("number retreat cells");
+            var proc = new ArmiesRetreatProcedure(
+                cell.MakeRef(), validNs, armies);
             key.SendMessage(proc);
         }
 
@@ -98,7 +99,6 @@ public class CombatCalculator
             GD.Print("splitting army");
             var regime = army.Regime.Get(key.Data);
             var alliance = regime.GetAlliance(key.Data);
-
             var armyCellUnions = UnionFind.Find(armyCells,
                 (c, d) => true,
                 c => c.GetNeighbors(key.Data))

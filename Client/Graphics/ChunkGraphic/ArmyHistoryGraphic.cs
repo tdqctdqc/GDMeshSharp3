@@ -9,6 +9,10 @@ public partial class ArmyHistoryGraphic : Node2D
     {
         ZAsRelative = false;
         ZIndex = (int)LayerOrder.ArmyHistory;
+    }
+
+    public void Initialize()
+    {
         _mesh = new MeshInstance2D();
         AddChild(_mesh);
     }

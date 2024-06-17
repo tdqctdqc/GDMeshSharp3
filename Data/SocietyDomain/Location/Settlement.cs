@@ -13,7 +13,7 @@ public class Settlement : Location
     public string Name { get; protected set; }
     
     public static Settlement Create(string name, 
-        Cell cell, int size, ICreateWriteKey key)
+        Cell cell, int size, IHostWriteKey key)
     {
         var tier = key.Data.Models.Settlements.GetTier(size);
         var s = new Settlement(key.Data.IdDispenser.TakeId(),

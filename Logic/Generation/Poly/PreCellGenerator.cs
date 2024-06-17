@@ -437,7 +437,8 @@ public static class PreCellGenerator
     {
         var pointAbsDic = new Dictionary<Vector2I, (PreCell X, PreCell Y, PreCell Z)>();
         var borderCells = cells
-            .Where(c => c.Neighbors.Any(n => n.PrePoly != c.PrePoly));
+            .Where(c => c.Neighbors
+                .Any(n => n.PrePoly != c.PrePoly));
         
         foreach (var cell in borderCells)
         {

@@ -34,7 +34,12 @@ public class DataNotices
         FinishedTurnEndCalc = new RefAction();
         FinishedAiCalc = new RefAction();
         CellChangedController = new RefAction<(Cell, Regime, Regime)>();
-        
+    }
+
+    public void InvokeFinishedStateSync(Data d)
+    {
+        d.Context.Calculate(d);
+        FinishedStateSync.Invoke();
     }
 }
 

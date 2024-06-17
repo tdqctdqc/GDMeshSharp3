@@ -27,6 +27,11 @@ public partial class ArmyIconGraphic : Node2D
         ZAsRelative = false;
         ZIndex = (int)LayerOrder.ArmyIcon;
         
+        
+    }
+
+    public void Initialize()
+    {
         _borderColor = new MeshInstance2D();
         _borderColor.Mesh = _border;
         _borderColor.Modulate = Colors.Black;

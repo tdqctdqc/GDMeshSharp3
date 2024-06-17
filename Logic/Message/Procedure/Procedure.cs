@@ -17,7 +17,7 @@ using System;
 [MessagePack.Union(12, typeof(ProdResultProcedure))]
 [MessagePack.Union(13, typeof(RegimeUseItemsProcedure))]
 [MessagePack.Union(14, typeof(RegimeUseTroopsProcedure))]
-[MessagePack.Union(15, typeof(SetContextProcedure))]
+[MessagePack.Union(15, typeof(ArmiesRetreatProcedure))]
 [MessagePack.Union(16, typeof(SetUnitArmyProcedure))]
 [MessagePack.Union(17, typeof(SetUnitOrderProcedure))]
 [MessagePack.Union(18, typeof(StartMakeProjectProc))]
@@ -31,7 +31,6 @@ using System;
 [MessagePack.Union(26, typeof(CancelMakeProjectProcedure))]
 [MessagePack.Union(27, typeof(DoClientCallbackProcedure))]
 [MessagePack.Union(28, typeof(AddCombatHistoryProc))]
-[MessagePack.Union(29, typeof(ArmiesRetreatProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

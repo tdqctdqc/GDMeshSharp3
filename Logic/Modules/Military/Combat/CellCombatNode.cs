@@ -36,12 +36,13 @@ public class CellCombatNode : ICombatGraphNode
     {
         var defenders = d.Military.UnitAux.ArmiesByOccupancy[Cell];
         if(defenders == null || defenders.Count == 0) return 1f;
-        return defenders.Sum(a =>
+        var val = defenders.Sum(a =>
         {
             var numEdges = combat.Graph.GetNodeEdges(a)
                 .Count(e => e is ArmyAttackEdge || e is ArmyDefendEdge);
             return a.GetPowerPoints(d) / numEdges;
         });
+        return Mathf.Max(1f, val);
     }
     public float GetPotentialAttackingPower(Data d, CombatCalculator combat)
     {
@@ -49,12 +50,13 @@ public class CellCombatNode : ICombatGraphNode
             .OfType<ArmyAttackEdge>()
             .Select(e => e.Army);
 
-        return attackers.Sum(a =>
+        var val = attackers.Sum(a =>
         {
             var numEdges = combat.Graph.GetNodeEdges(a)
                 .Count(e => e is ArmyAttackEdge || e is ArmyDefendEdge);
             return a.GetPowerPoints(d) / numEdges;
         });
+        return Mathf.Max(1f, val);
     }
 
     public void CalculateCombat(CombatCalculator combat, Data d)
@@ -149,19 +151,7 @@ public class CellCombatNode : ICombatGraphNode
             var changeController = ConquerCellProcedure
                 .Construct(Cell, victoriousRegime, victoriousArmies);
             key.SendMessage(changeController);
-
-            var defeatedArmies = Defenders
-                .Select(m => m.Unit.GetArmy(key.Data))
-                .Distinct();
-            var neighbors = Cell.GetNeighbors(key.Data).ToArray();
-            var defenderAlliance = Cell.Controller.Get(key.Data).GetAlliance(key.Data);
-            var neighborsHeldByAlliance = neighbors
-                .Where(c => c.FriendlyControlled(defenderAlliance, key.Data))
-                .Where(c => combat.Graph.CellCombatNodes.TryGetValue(c, out var n) == false
-                            || n.DefendersForcedBack == false)
-                .ToArray();
         }
-        
     }
 
 

@@ -5,38 +5,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ArmiesRetreatProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/AddCombatHistoryProc.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/ArmyCombatHistory.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CellCombatHistory.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistories.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistory.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceCompositionAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceCompositionAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/FillArmyWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/FillArmyWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/ArmiesTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MilitaryWindow/ArmiesTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/GraphicLayerHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/PlayerAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/PlayerAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/DestroyArmyProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/DestroyArmyProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/SetUnitGroupProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/SetUnitArmyProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/MilitaryDomain.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/MilitaryDomain.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Ref/ERef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/ERef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Ref/IdRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/IdRef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/GenData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/GenData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Notices/DataNotices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Notices/DataNotices.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Context/SetContextProcedure.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/WorldGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/CreateArmyCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/CreateArmyCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellCombatNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellCombatNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatGraph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ICombatGraphNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ICombatGraphNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/TickProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/TickProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/FinishedStateSyncUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/FinishedStateSyncUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Serialization/Save/Saver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Save/Saver.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -681,7 +659,9 @@
       <workItem from="1718321915686" duration="6364000" />
       <workItem from="1718408672788" duration="5264000" />
       <workItem from="1718477649396" duration="4429000" />
-      <workItem from="1718489646566" duration="4714000" />
+      <workItem from="1718489646566" duration="5142000" />
+      <workItem from="1718499157549" duration="1788000" />
+      <workItem from="1718581392587" duration="591000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -893,14 +873,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00210" summary="doot before trying to fix map seam bug">
-      <option name="closed" value="true" />
-      <created>1717438664399</created>
-      <option name="number" value="00210" />
-      <option name="presentableId" value="LOCAL-00210" />
-      <option name="project" value="LOCAL" />
-      <updated>1717438664399</updated>
-    </task>
     <task id="LOCAL-00211" summary="fixed map seam bug">
       <option name="closed" value="true" />
       <created>1717440102214</created>
@@ -1045,7 +1017,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718240346817</updated>
     </task>
-    <option name="localTasksCounter" value="229" />
+    <task id="LOCAL-00229" summary="combat graph, army retreating">
+      <option name="closed" value="true" />
+      <created>1718498917962</created>
+      <option name="number" value="00229" />
+      <option name="presentableId" value="LOCAL-00229" />
+      <option name="project" value="LOCAL" />
+      <updated>1718498917962</updated>
+    </task>
+    <option name="localTasksCounter" value="230" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1067,7 +1047,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="fixed line groups/inserting groups not being assigned" />
     <MESSAGE value="tidying" />
     <MESSAGE value="armies as lines, removed map units" />
     <MESSAGE value="reimplementing combat graph" />
@@ -1092,6 +1071,7 @@
     <MESSAGE value="ditto" />
     <MESSAGE value="changing ref sets" />
     <MESSAGE value="removed entity meta, ref col meta, etc" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed entity meta, ref col meta, etc" />
+    <MESSAGE value="combat graph, army retreating" />
+    <option name="LAST_COMMIT_MESSAGE" value="combat graph, army retreating" />
   </component>
 </project>

@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class HostWriteKey : StrongWriteKey, ICreateWriteKey
+public class HostWriteKey : StrongWriteKey, IHostWriteKey
 {
     public HostLogic Logic { get; private set; }
     public HostWriteKey(HostLogic logic, ISession session) : base(session)
@@ -14,4 +14,8 @@ public class HostWriteKey : StrongWriteKey, ICreateWriteKey
         Data.AddEntity(t, this);
     }
 
+    public void SendMessage(Message m)
+    {
+        Logic.HandleMessage(m);
+    }
 }

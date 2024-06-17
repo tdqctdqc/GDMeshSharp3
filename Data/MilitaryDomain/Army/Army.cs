@@ -10,6 +10,7 @@ public class Army : Entity, ICombatGraphNode
     public ERef<Regime> Regime { get; private set; }
     public ERefSetCallback<Unit> Units { get; private set; }
     public HashSet<int> Cells { get; private set; }
+    public RefSetCallback<CellRef> I { get; private set; }
     public LineMission LineMission { get; private set; }
     public HashSet<ArmyMission> OtherOrders { get; private set; }
     public Color Color { get; private set; }
@@ -17,7 +18,7 @@ public class Army : Entity, ICombatGraphNode
         .FirstOrDefault()?.Template.Get(d).MoveType.Get(d);
     public static Army Create(Regime r, 
         IEnumerable<Cell> startCells,
-        IEnumerable<int> unitIds, ICreateWriteKey key)
+        IEnumerable<int> unitIds, IHostWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
         var units = ERefSetCallback<Unit>.Construct
@@ -30,6 +31,7 @@ public class Army : Entity, ICombatGraphNode
             startCells.Select(c => c.Id).ToHashSet(),
             ColorsExt.GetRandomColor());
         key.Create(u);
+        
         return u;
     }
     [SerializationConstructor] private Army(int id,
@@ -45,7 +47,6 @@ public class Army : Entity, ICombatGraphNode
         Units = units;
         Units.SetIndexerCallbacks(this, 
             d => d.Military.UnitAux.UnitByGroup);
-        
         LineMission = lineMission;
         OtherOrders = otherOrders;
         Color = color;
@@ -120,7 +121,7 @@ public class Army : Entity, ICombatGraphNode
                 edges,
                 Units.Entities(d).ToList(),
                 e => edgeNeeds[e],
-                u => u.GetPowerPoints(d)
+                u => Mathf.Max(u.GetPowerPoints(d), 1f)
             );
         for (var i = 0; i < assigns.Count; i++)
         {

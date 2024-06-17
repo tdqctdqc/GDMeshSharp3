@@ -9,7 +9,7 @@ public class Peep : Entity
     public float Size { get; private set; }
     public PeepEmploymentReport Employment { get; private set; }
 
-    public static Peep Create(Cell cell, ICreateWriteKey key)
+    public static Peep Create(Cell cell, IHostWriteKey key)
     {
         var p = new Peep(PeepEmploymentReport.Construct(), 
             cell.MakeRef(), 0, 

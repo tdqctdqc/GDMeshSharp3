@@ -10,7 +10,7 @@ public class Alliance : Entity
     public IEnumerable<Proposal> PendingProposals(Data data) =>
         data.Society.Proposals
             .Proposals.Values.Where(p => p.Target.RefId == Id);
-    public static Alliance Create(Regime founder, ICreateWriteKey key)
+    public static Alliance Create(Regime founder, IHostWriteKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
         var members = ERefSetCallback<Regime>.Construct(

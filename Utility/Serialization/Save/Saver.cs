@@ -48,7 +48,7 @@ public class Saver
                 return e;
             }).ToList();
         data.LoadEntities(entities, null);
-        data.Notices.FinishedStateSync.Invoke();
+        data.Notices.InvokeFinishedStateSync(data);
         Game.I.LoadHostSession(data);
     }
 }

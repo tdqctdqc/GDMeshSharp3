@@ -7,7 +7,7 @@ using MessagePack;
 public class PlanetInfo : Entity
 {
     public Vector2 Dimensions { get; protected set; }
-    public static PlanetInfo Create(Vector2 dimensions, ICreateWriteKey key)
+    public static PlanetInfo Create(Vector2 dimensions, IHostWriteKey key)
     {
         var pi =  new PlanetInfo(key.Data.IdDispenser.TakeId(), dimensions);
         key.Create(pi);
