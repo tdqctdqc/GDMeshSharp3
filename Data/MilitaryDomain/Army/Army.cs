@@ -9,8 +9,7 @@ public class Army : Entity, ICombatGraphNode
 {
     public ERef<Regime> Regime { get; private set; }
     public ERefSetCallback<Unit> Units { get; private set; }
-    public HashSet<int> Cells { get; private set; }
-    public RefSetCallback<CellRef> I { get; private set; }
+    public RefSetCallback<CellRef> Cells { get; private set; }
     public LineMission LineMission { get; private set; }
     public HashSet<ArmyMission> OtherOrders { get; private set; }
     public Color Color { get; private set; }
@@ -28,7 +27,7 @@ public class Army : Entity, ICombatGraphNode
             new LineMission(startCells.Select(c => c.Id).ToHashSet(),
                 new HashSet<int>(), false),
             new HashSet<ArmyMission>(),
-            startCells.Select(c => c.Id).ToHashSet(),
+            RefSetCallback<CellRef>.Construct(startCells.Select(c => c.MakeRef())),
             ColorsExt.GetRandomColor());
         key.Create(u);
         
@@ -39,18 +38,20 @@ public class Army : Entity, ICombatGraphNode
         ERefSetCallback<Unit> units,
         LineMission lineMission,
         HashSet<ArmyMission> otherOrders,
-        HashSet<int> cells,
+        RefSetCallback<CellRef> cells,
         Color color) 
         : base(id)
     {
         Regime = regime;
         Units = units;
-        Units.SetIndexerCallbacks(this, 
+        Units.AddIndexerCallbacks(this, 
             d => d.Military.UnitAux.UnitByGroup);
         LineMission = lineMission;
         OtherOrders = otherOrders;
         Color = color;
         Cells = cells;
+        Cells.AddIndexerCallbacks(this,
+            d => d.Military.UnitAux.ArmiesByOccupancy);
     }
 
     public static void ChangeUnitGroup(Unit u, 
@@ -68,7 +69,7 @@ public class Army : Entity, ICombatGraphNode
     }
     public HashSet<Cell> GetCells(Data d)
     {
-        return Cells.Select(c => PlanetDomainExt.GetPolyCell(c, d)).ToHashSet();
+        return Cells.Refs.Select(c => c.Get(d)).ToHashSet();
     }
 
     public void SetLineOrder(LineMission mission, ProcedureWriteKey key)
@@ -92,7 +93,11 @@ public class Army : Entity, ICombatGraphNode
 
     public void SetCells(IEnumerable<int> cells, ProcedureWriteKey key)
     {
-        Cells = cells.ToHashSet();
+        Cells.Clear(key);
+        foreach (var cell in cells)
+        {
+            Cells.Add(new CellRef(cell), key);
+        }
     }
 
     public void DistributeResources(CombatCalculator combat, Data d)
@@ -141,7 +146,7 @@ public class Army : Entity, ICombatGraphNode
     public void RemoveIfOverrunOrDestroyed(CombatCalculator combat, 
         LogicWriteKey key)
     {
-        if (Cells.Count == 0)
+        if (Cells.Count() == 0)
         {
             GD.Print($"destroying army {Id}");
             combat.Graph.RemoveNode(this);

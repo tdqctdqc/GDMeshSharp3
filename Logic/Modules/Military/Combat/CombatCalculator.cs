@@ -67,7 +67,7 @@ public class CombatCalculator
                 .Where(c => lostCells.Contains(c) == false)
                 .Select(c => c.MakeRef())
                 .ToArray();
-            GD.Print("number retreat cells");
+            GD.Print("number retreat cells " + validNs.Length);
             var proc = new ArmiesRetreatProcedure(
                 cell.MakeRef(), validNs, armies);
             key.SendMessage(proc);
@@ -95,7 +95,7 @@ public class CombatCalculator
             var armyCells = army.GetCells(key.Data);
             var flood = FloodFill<Cell>.GetFloodFill(
                 armyCells.First(), armyCells.Contains, c => c.GetNeighbors(key.Data));
-            if (flood.Count == army.Cells.Count) continue;
+            if (flood.Count == army.Cells.Count()) continue;
             GD.Print("splitting army");
             var regime = army.Regime.Get(key.Data);
             var alliance = regime.GetAlliance(key.Data);

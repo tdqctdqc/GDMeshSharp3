@@ -28,7 +28,7 @@ public class Alliance : Entity
     {
         Leader = leader;
         Members = members;
-        Members.SetIndexerCallbacks(this, 
+        Members.AddIndexerCallbacks(this, 
             d => d.Society.AllianceAux.RegimeAlliances);
     }
 

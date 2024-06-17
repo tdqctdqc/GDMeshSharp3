@@ -4,6 +4,10 @@ public interface IdRef
     int RefId { get; }
     IIdentifiable Get(Data d);
 }
+public interface IdRef<T> : IdRef
+{
+    T Get(Data d);
+}
 
 public static class IdRefExt
 {

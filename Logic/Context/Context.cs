@@ -42,7 +42,7 @@ public class Context
             var pp = army.GetPowerPoints(data);
             foreach (var cell in army.GetCells(data))
             {
-                PowerPoints[cell] += pp / army.Cells.Count;
+                PowerPoints[cell] += pp / army.Cells.Count();
             }
         }
         
@@ -57,7 +57,7 @@ public class Context
     {
         var cells = army.GetCells(data);
 
-        if (army.Cells.Count == 0)
+        if (army.Cells.Count() == 0)
         {
             var r = army.Regime.Get(data);
             GD.Print($"bad army {army.Id} for {r.Name} moving to {r.Capital.RefId}");

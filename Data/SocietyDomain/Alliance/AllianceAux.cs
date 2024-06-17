@@ -4,11 +4,11 @@ using System.Linq;
 
 public class AllianceAux
 {
-    public ERefColIndexer<Alliance, Regime> RegimeAlliances { get; private set; }
+    public ManyToOneIndexer<Alliance, Regime> RegimeAlliances { get; private set; }
     public AllianceAux(Data data)
     {
-        RegimeAlliances = new ERefColIndexer<Alliance, Regime>(
-            a => a.Members.Entities(data), data);
-        data.SubscribeForDestruction<Alliance>(n => data.Notices.Political.AllianceDissolved.Invoke((Alliance)n.Entity));
+        RegimeAlliances = ManyToOneIndexer.MakeForEntity<Alliance, Regime>(
+            r => r.Members,
+            data);
     }
 }

@@ -20,10 +20,10 @@ public class ArmiesRetreatProcedure : Procedure
         foreach (var aRef in Armies)
         {
             var army = aRef.Get(key.Data);
-            army.Cells.Remove(From.RefId);
+            army.Cells.Remove(From, key);
             foreach (var to in Tos)
             {
-                army.Cells.Add(to.RefId);
+                army.Cells.Add(to, key);
             }
         }
     }

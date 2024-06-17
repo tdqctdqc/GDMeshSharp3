@@ -91,6 +91,11 @@ public class LineMission : ArmyMission
             .ToArray();
         army.LineMission.LineCells.UnionWith(conquered);
         army.LineMission.AdvanceInto.ExceptWith(conquered);
+
+        if (army.LineMission.LineCells.Count == 0)
+        {
+            army.LineMission.LineCells = army.Cells.Refs.Select(c => c.RefId).ToHashSet();
+        }
         return true;
     }
 

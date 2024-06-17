@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using MessagePack;
 
-public struct ERef<TRef> : IdRef
-    where TRef : Entity
+public struct ERef<TEntity> : IdRef<TEntity>
+    where TEntity : Entity
 {
     public int RefId { get; }
 
@@ -12,14 +12,14 @@ public struct ERef<TRef> : IdRef
     {
         throw new Exception();
     }
-    public ERef(TRef entity)
+    public ERef(TEntity entity)
     {
         RefId = entity.Id;
     }
 
-    public static ERef<TRef> GetEmpty()
+    public static ERef<TEntity> GetEmpty()
     {
-        return new ERef<TRef>(-1);
+        return new ERef<TEntity>(-1);
     }
     [SerializationConstructor] public ERef(int refId)
     {
@@ -27,10 +27,10 @@ public struct ERef<TRef> : IdRef
     }
 
     IIdentifiable IdRef.Get(Data data) => Get(data);
-    public TRef Get(Data data)
+    public TEntity Get(Data data)
     {
         if (RefId == -1) return null;
-        return data.Get<TRef>(RefId);
+        return data.Get<TEntity>(RefId);
     }
 
     

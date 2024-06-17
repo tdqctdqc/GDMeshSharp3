@@ -36,7 +36,7 @@ public class ConquerCellProcedure : Procedure
         var conqueringArmies = ConqueringArmies.Select(i => key.Data.Get<Army>(i));
         foreach (var army in conqueringArmies)
         {
-            army.Cells.Add(cell.Id);
+            army.Cells.Add(Cell, key);
         }
         key.Data.Notices.CellChangedController.Invoke((cell, oldController, newController));
     }

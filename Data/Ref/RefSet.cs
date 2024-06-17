@@ -4,35 +4,54 @@ using MessagePack;
 
 public class RefSet<TRef> where TRef : IdRef
 {
-    public HashSet<TRef> Items { get; private set; }
+    public HashSet<TRef> Refs { get; private set; }
 
-    [SerializationConstructor] protected RefSet(HashSet<TRef> items)
+    [SerializationConstructor] protected RefSet(HashSet<TRef> refs)
     {
-        Items = items;
+        Refs = refs;
     }
 
     protected void Add(TRef t, StrongWriteKey key)
     {
-        Items.Add(t);
+        Refs.Add(t);
     }
     protected void Remove(TRef t, StrongWriteKey key)
     {
-        Items.Remove(t);
+        Refs.Remove(t);
+    }
+
+    protected void Clear(StrongWriteKey key)
+    {
+        Refs.Clear();
     }
 
     public int Count()
     {
-        return Items.Count;
+        return Refs.Count;
     }
 
     public bool Contains(TRef t)
     {
-        return Items.Contains(t);
+        return Refs.Contains(t);
     }
 }
 
 public static class RefSetExt
 {
+
+    public static IEnumerable<TItem> Get<TItem, TRef>(
+        this RefSet<TRef> set, Data d)
+        where TRef : IdRef<TItem>
+    {
+        return set.Refs.Select(r => r.Get(d));
+    }
+        
+    public static bool Contains
+    (this RefSet<CellRef> set,
+        int id)
+    {
+        return set.Contains(new CellRef(id));
+    }
     public static bool Contains<TEntity>
         (this RefSet<ERef<TEntity>> set,
             TEntity t)
@@ -53,6 +72,6 @@ public static class RefSetExt
         Data d)
             where TEntity : Entity
     {
-        return set.Items.Select(r => r.Get(d));
+        return set.Refs.Select(r => r.Get(d));
     }
 }

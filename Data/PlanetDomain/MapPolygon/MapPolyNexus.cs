@@ -64,8 +64,8 @@ public class MapPolyNexus : Entity
         ERefSet<MapPolygon> incidentPolys) : base(id)
     {
         Point = point;
-        IncidentEdges = ERefSet<MapPolygonEdge>.Construct(incidentEdges.Items);
-        IncidentPolys = ERefSet<MapPolygon>.Construct(incidentPolys.Items);
+        IncidentEdges = ERefSet<MapPolygonEdge>.Construct(incidentEdges.Refs);
+        IncidentPolys = ERefSet<MapPolygon>.Construct(incidentPolys.Refs);
     }
 
     public MapPolygonEdge GetEdgeWith(MapPolyNexus n, Data data)

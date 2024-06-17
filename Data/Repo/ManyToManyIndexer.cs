@@ -55,10 +55,7 @@ public class ManyToManyIndexer<T, TIndex>
     {
         removed.Subscribe(HandleRemoved);
     }
-    public void RegisterChanged(ValChangeAction<T, TIndex> changed)
-    {
-        changed.Subscribe(HandleChanged);
-    }
+    
     
     public void HandleAdded(T added)
     {
@@ -78,16 +75,16 @@ public class ManyToManyIndexer<T, TIndex>
         }
     }
 
-    public void HandleChanged(ValChangeNotice<T, TIndex> notice)
+    public void HandleIndexAdd(T t, TIndex index)
     {
-        var mult = notice.Owner;
-        var oldSingle = notice.OldVal;
-        if (oldSingle is not null)
-        {
-            _dic[oldSingle].Remove(mult);
-        }
-        HandleAdded(mult);
+        _dic.AddOrUpdate(index, t);
     }
+    public void HandleIndexRemove(T t, TIndex index)
+    {
+        _dic[index].Remove(t);
+        if (_dic[index].Any() == false) _dic.Remove(index);
+    }
+    
     
     public void RegisterReCalc(RefAction action)
     {

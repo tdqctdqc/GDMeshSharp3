@@ -26,7 +26,7 @@ public class ERefSet<TRef>
 
     public IEnumerable<TRef> Entities(Data d)
     {
-        return Items.Select(r => r.Get(d));
+        return Refs.Select(r => r.Get(d));
     }
     public void Add(List<TRef> ids, StrongWriteKey key)
     {
@@ -51,5 +51,10 @@ public class ERefSet<TRef>
     public bool Contains(TRef t)
     {
         return Contains(t.MakeRef());
+    }
+
+    public void Clear(StrongWriteKey key)
+    {
+        base.Clear(key);
     }
 }

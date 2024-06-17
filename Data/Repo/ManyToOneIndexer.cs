@@ -3,22 +3,37 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class ERefColIndexer<TSingle, TKey>
-        where TKey : Entity 
-        where TSingle : Entity
+
+
+public class ManyToOneIndexer
+{
+    public static ManyToOneIndexer<TSingle, TKey>
+        MakeForEntity<TSingle, TKey>(
+            Func<TSingle, RefSet<ERef<TKey>>> get,
+            Data data)
+            where TSingle : Entity where TKey : Entity
+    {
+        var indexer = new ManyToOneIndexer<TSingle, TKey>(
+            s => get(s).Get<TKey, ERef<TKey>>(data));
+        
+        data.SubscribeForCreation<TSingle>
+            (n => indexer.HandleAdded((TSingle)n.Entity));
+        data.SubscribeForDestruction<TSingle>
+            (n => indexer.HandleRemoved((TSingle)n.Entity));
+        return indexer;
+    }
+}
+public class ManyToOneIndexer<TSingle, TKey>
+    where TSingle : class
 {
     public TSingle this[TKey k] => _dic.ContainsKey(k) ? _dic[k] : null;
     private Func<TSingle, IEnumerable<TKey>> _get;
     private Dictionary<TKey, TSingle> _dic;
-    public ERefColIndexer(Func<TSingle, IEnumerable<TKey>> get,
-        Data data) 
+    public ManyToOneIndexer(Func<TSingle, IEnumerable<TKey>> get) 
     {
         _get = get;
         _dic = new Dictionary<TKey, TSingle>();
-        data.SubscribeForCreation<TSingle>
-            (n => HandleAdded((TSingle)n.Entity));
-        data.SubscribeForDestruction<TSingle>
-            (n => HandleRemoved((TSingle)n.Entity));
+        
     }
 
     public void HandleAdded(TSingle added)
@@ -42,11 +57,11 @@ public class ERefColIndexer<TSingle, TKey>
         }
     }
 
-    public void HandleColAdd(TSingle e, TKey k)
+    public void HandleSetAdd(TSingle e, TKey k)
     {
         _dic[k] = e;
     }
-    public void HandleColRemove(TSingle e, TKey k)
+    public void HandleSetRemove(TSingle e, TKey k)
     {
         if (_dic[k] == e)
         {

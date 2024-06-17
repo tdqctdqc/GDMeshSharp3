@@ -12,8 +12,8 @@ public class ArmyCombatHistory
         CombatGraph graph)
     {
         var edges = graph.GetNodeEdges(army);
-        var units = army.Units.Items.ToArray();
-        var occupied = army.Cells.Select(c => new CellRef(c)).ToArray();
+        var units = army.Units.Refs.ToArray();
+        var occupied = army.Cells.Refs.ToArray();
         var attacks = edges
             .OfType<ArmyAttackEdge>()
             .Select(e => e.CellCombatNode.Cell.MakeRef())

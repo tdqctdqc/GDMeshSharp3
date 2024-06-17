@@ -5,7 +5,7 @@ using Godot;
 
 public class UnitAux
 {
-    public ERefColIndexer<Army, Unit> UnitByGroup { get; private set; }
+    public ManyToOneIndexer<Army, Unit> UnitByGroup { get; private set; }
     public OneToManyIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
     public ManyToManyIndexer<Army, Cell> ArmiesByOccupancy { get; private set; }
     public OneToManyIndexer<Cell, Army> ArmiesByHomeCell { get; private set; }
@@ -17,12 +17,12 @@ public class UnitAux
         UnitTemplates = OneToManyIndexer.MakeForEntity<Regime, UnitTemplate>(
             t => t.Regime.Get(d), d);
         
-        UnitByGroup = new ERefColIndexer<Army, Unit>(
-            g => g.Units.Entities(d),  
+        UnitByGroup = ManyToOneIndexer.MakeForEntity<Army, Unit>(
+            g => g.Units,  
             d);
         
         ArmiesByOccupancy = ManyToManyIndexer.MakeForEntity<Cell, Army>(
-            a => a.Cells.Select(c => PlanetDomainExt.GetPolyCell(c, d)),
+            a => a.Cells.Get<Cell, CellRef>(d),
             d);
 
         ArmiesByHomeCell = OneToManyIndexer.MakeForEntity<Cell, Army>(
@@ -39,7 +39,6 @@ public class UnitAux
         var sw = new Stopwatch();
         sw.Start();
         var dim = new Vector2(_data.Planet.Width, _data.Planet.Height);
-        ArmiesByOccupancy.ReCalc();
         ArmiesByHomeCell.ReCalc();
         sw.Stop();
         _data.Logger.Log("Make army grid time " + sw.Elapsed.TotalMilliseconds,

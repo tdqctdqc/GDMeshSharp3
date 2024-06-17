@@ -1,5 +1,5 @@
 
-public struct CellRef : IdRef
+public struct CellRef : IdRef, IdRef<Cell>
 {
     public int RefId { get; }
 
