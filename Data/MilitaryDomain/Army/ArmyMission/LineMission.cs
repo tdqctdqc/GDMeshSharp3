@@ -6,11 +6,11 @@ using Godot;
 
 public class LineMission : ArmyMission
 {
-    public HashSet<int> LineCells { get; private set; }
-    public HashSet<int> AdvanceInto { get; private set; }
+    public RefSet<CellRef> LineCells { get; private set; }
+    public RefSet<CellRef> AdvanceInto { get; private set; }
     public bool Advance { get; private set; }
-    public LineMission(HashSet<int> lineCells, 
-        HashSet<int> advanceInto,
+    public LineMission(RefSet<CellRef> lineCells, 
+        RefSet<CellRef> advanceInto,
         bool advance)
     {
         LineCells = lineCells;
@@ -21,7 +21,11 @@ public class LineMission : ArmyMission
     public override void Handle(Army g, LogicWriteKey key,
         HandleUnitMissionsProcedure proc)
     {
-        proc.NewArmyPosesById.TryAdd(g.Id, LineCells.ToHashSet());
+        if (LineCells.Count() == 0)
+        {
+            LineCells.Add(g.Cells.Refs, key);
+        }
+        proc.NewArmyPosesById.TryAdd(g.Id, LineCells);
     }
     
     
@@ -35,7 +39,7 @@ public class LineMission : ArmyMission
         var alliance = group.Regime.Get(d).GetAlliance(d);
 
         var natives = LineCells
-            .Select(f => PlanetDomainExt.GetPolyCell(f, d))
+            .Get<Cell, CellRef>(d)
             .ToArray();
         foreach (var n in natives)
         {
@@ -43,9 +47,8 @@ public class LineMission : ArmyMission
                 new Color(Colors.Blue, .5f));
         }
         
-        foreach (var landCell in AdvanceInto)
+        foreach (var c in AdvanceInto.Get<Cell, CellRef>(d))
         {
-            var c = PlanetDomainExt.GetPolyCell(landCell, d);
             mb.DrawPolygon(c.RelBoundary.Select(p => relTo.Offset(p + c.RelTo, d)).ToArray(),
                 new Color(Colors.Red, .5f));
         }
@@ -60,7 +63,7 @@ public class LineMission : ArmyMission
         if (army.Units.Count() == 0) return;
         var alliance = army.Regime.Get(d).GetAlliance(d);
 
-        var cells = LineCells.Select(i => PlanetDomainExt.GetPolyCell(i, key.Data));
+        var cells = LineCells.Get<Cell, CellRef>(d);
         var adjacentAdvanceCells = cells
             .SelectMany(c => c.Neighbors)
             .Distinct()
@@ -79,22 +82,32 @@ public class LineMission : ArmyMission
     public override bool CleanUp(Army army, ProcedureWriteKey key)
     {
         var alliance = army.Regime.Get(key.Data).GetAlliance(key.Data);
-        var lost = army.LineMission.LineCells
-            .Where(c => PlanetDomainExt.GetPolyCell(c, key.Data)
-                .FriendlyControlled(alliance, key.Data) == false)
+        var lost = army.LineMission.LineCells.Refs
+            .Where(c => c.Get(key.Data).FriendlyControlled(alliance, key.Data) == false)
             .ToArray();
-        army.LineMission.AdvanceInto.UnionWith(lost);
-        army.LineMission.LineCells.ExceptWith(lost);
-        var conquered = army.LineMission.AdvanceInto
-            .Where(i => PlanetDomainExt.GetPolyCell(i, key.Data)
-                .FriendlyControlled(alliance, key.Data))
+        army.LineMission.AdvanceInto.Add(lost, key);
+        army.LineMission.LineCells.Remove(lost, key);
+        var conquered = army.LineMission.AdvanceInto.Refs
+            .Where(i => i.Get(key.Data).FriendlyControlled(alliance, key.Data))
             .ToArray();
-        army.LineMission.LineCells.UnionWith(conquered);
-        army.LineMission.AdvanceInto.ExceptWith(conquered);
+        army.LineMission.LineCells.Add(conquered, key);
+        army.LineMission.AdvanceInto.Remove(conquered, key);
 
-        if (army.LineMission.LineCells.Count == 0)
+        var advanceUnions = 
+            UnionFind.Find(army.LineMission.AdvanceInto
+                .Get<Cell, CellRef>(key.Data),
+                (c,d) => true,
+                c => c.GetNeighbors(key.Data));
+        foreach (var advanceUnion in advanceUnions)
         {
-            army.LineMission.LineCells = army.Cells.Refs.Select(c => c.RefId).ToHashSet();
+            if(advanceUnion.Any(c => c.GetNeighbors(key.Data)
+                   .Any(n => LineCells.Contains(n.MakeRef()))
+                        == false
+               )
+            )
+            {
+                army.LineMission.LineCells.Remove(advanceUnion.Select(u => u.MakeRef()), key);
+            }
         }
         return true;
     }

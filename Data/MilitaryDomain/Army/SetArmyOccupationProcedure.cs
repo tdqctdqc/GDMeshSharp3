@@ -2,10 +2,10 @@ using System.Collections.Generic;
 
 public class SetArmyOccupationProcedure : Procedure
 {
-    public HashSet<int> NewOccupation { get; private set; }
+    public RefSet<CellRef> NewOccupation { get; private set; }
     public ERef<Army> Army { get; private set; }
 
-    public SetArmyOccupationProcedure(HashSet<int> newOccupation, ERef<Army> army)
+    public SetArmyOccupationProcedure(RefSet<CellRef> newOccupation, ERef<Army> army)
     {
         NewOccupation = newOccupation;
         Army = army;

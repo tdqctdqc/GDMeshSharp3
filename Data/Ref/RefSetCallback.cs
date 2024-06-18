@@ -28,22 +28,22 @@ public class RefSetCallback<TRef> : RefSet<TRef>
     {
         ids.ForEach(id => Add(id, key));
     }
-    public void Add(TRef t, StrongWriteKey key)
+    public override void Add(TRef t, StrongWriteKey key)
     {
-        base.Add(t, key);
+        Refs.Add(t);
         _add(t, key.Data);
     }
     public void Remove(List<TRef> ids, StrongWriteKey key)
     {
         ids.ForEach(id => Remove(id, key));
     }
-    public void Remove(TRef t, StrongWriteKey key)
+    public override void Remove(TRef t, StrongWriteKey key)
     {
-        base.Remove(t, key);
+        Refs.Remove(t);
         _remove(t, key.Data);
     }
 
-    public void Clear(StrongWriteKey key)
+    public override void Clear(StrongWriteKey key)
     {
         foreach (var dRef in Refs)
         {

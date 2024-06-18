@@ -24,8 +24,8 @@ public class Army : Entity, ICombatGraphNode
             (unitIds.Select(id => new ERef<Unit>(id))
                 .ToHashSet());
         var u = new Army(id, r.MakeRef(), units,
-            new LineMission(startCells.Select(c => c.Id).ToHashSet(),
-                new HashSet<int>(), false),
+            new LineMission(new RefSet<CellRef>(startCells.Select(c => c.MakeRef()).ToHashSet()),
+                new RefSet<CellRef>(new HashSet<CellRef>()), false),
             new HashSet<ArmyMission>(),
             RefSetCallback<CellRef>.Construct(startCells.Select(c => c.MakeRef())),
             ColorsExt.GetRandomColor());
@@ -91,12 +91,12 @@ public class Army : Entity, ICombatGraphNode
         if (Units.Count() > 0) throw new Exception();
     }
 
-    public void SetCells(IEnumerable<int> cells, ProcedureWriteKey key)
+    public void SetCells(RefSet<CellRef> cells, ProcedureWriteKey key)
     {
         Cells.Clear(key);
-        foreach (var cell in cells)
+        foreach (var cell in cells.Refs)
         {
-            Cells.Add(new CellRef(cell), key);
+            Cells.Add(cell, key);
         }
     }
 

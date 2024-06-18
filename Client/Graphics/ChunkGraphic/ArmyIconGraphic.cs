@@ -69,6 +69,7 @@ public partial class ArmyIconGraphic : Node2D
         _control.GuiInput += e =>
         {
             if (e is InputEventMouseButton mb
+                && mb.ButtonIndex == MouseButton.Left
                 && mb.Pressed == false
                 && _army is not null 
                 && Game.I.Client.UiController.Mode is ArmyMode am)

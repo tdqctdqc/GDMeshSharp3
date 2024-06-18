@@ -25,6 +25,7 @@ public class ArmyMode : UiMode
         Army = new DefaultSettingsOption<Army>("Army",
             null);
         Army.SettingChanged.Subscribe(n => Draw());
+        
     }
     public override void Process(float delta)
     {
@@ -143,9 +144,7 @@ public class ArmyMode : UiMode
     {
         var drawArmyLine = GetDrawArmyOccupancyMouseAction();
 
-
         var drawArmyAdvance = GetDrawArmyAdvanceMouseAction();
-
 
         var makeArmy = GetMakeArmyMouseAction();
 
@@ -198,7 +197,8 @@ public class ArmyMode : UiMode
                     return true;
                 }
 
-                if (army.LineMission.LineCells.Any(c => cell.Neighbors.Contains(c)))
+                if (army.LineMission.LineCells.Get<Cell, CellRef>(_client.Data)
+                    .Any(c => cell.Neighbors.Contains(c.Id)))
                 {
                     return true;
                 }
@@ -211,19 +211,26 @@ public class ArmyMode : UiMode
             var army = Army.Value;
             if (army is null) return;
 
-            var advanceZone = advance.Select(c => c.Id).ToHashSet();
-            var exclusive = advanceZone.Except(army.LineMission.AdvanceInto);
+            var advanceZone = new RefSet<CellRef>(advance
+                .Select(c => c.MakeRef()).ToHashSet());
+            var exclusive = advanceZone.Refs
+                .Except(army.LineMission.AdvanceInto.Refs);
 
             if (exclusive.Any() == false)
             {
-                advanceZone = army.LineMission.AdvanceInto.Except(advanceZone).ToHashSet();
+                advanceZone = new RefSet<CellRef>(
+                    army.LineMission.AdvanceInto
+                    .Refs
+                    .Except(advanceZone.Refs).ToHashSet());
             }
             else
             {
-                advanceZone = army.LineMission.AdvanceInto.Union(advanceZone).ToHashSet();
+                advanceZone = new RefSet<CellRef>(
+                    army.LineMission.AdvanceInto.Refs
+                        .Union(advanceZone.Refs).ToHashSet());
             }
 
-            var order = new LineMission(army.LineMission.LineCells.ToHashSet(),
+            var order = new LineMission(army.LineMission.LineCells,
                 advanceZone, false);
             var proc = new SetUnitOrderProcedure(army.MakeRef(),
                 order);
@@ -253,18 +260,19 @@ public class ArmyMode : UiMode
             var army = Army.Value;
             if (army is null) return;
 
-            HashSet<int> occupy;
-            HashSet<int> advanceInto = army.LineMission.AdvanceInto.ToHashSet();
-            var drawn = l.Select(c => c.Id).ToHashSet();
+            HashSet<CellRef> occupy;
+            HashSet<CellRef> advanceInto = army.LineMission
+                .AdvanceInto.Refs.ToHashSet();
+            var drawn = l.Select(c => c.MakeRef()).ToHashSet();
             var old = army.LineMission.LineCells;
             var exclusive = drawn
                 .Where(c => old.Contains(c) == false);
             if (exclusive.Any())
             {
-                var intersect = drawn.Intersect(old);
+                var intersect = drawn.Intersect(old.Refs);
                 if (intersect.Any())
                 {
-                    occupy = drawn.Concat(old)
+                    occupy = drawn.Concat(old.Refs)
                         .ToHashSet();
                 }
                 else
@@ -274,11 +282,12 @@ public class ArmyMode : UiMode
             }
             else
             {
-                occupy = old.Except(l.Select(c => c.Id)).ToHashSet();
+                occupy = old.Refs.Except(l.Select(c => c.MakeRef())).ToHashSet();
             }
 
-            var order = new LineMission(occupy,
-                advanceInto, false);
+            var order = new LineMission(
+                new RefSet<CellRef>(occupy),
+                new RefSet<CellRef>(advanceInto), false);
             var proc = new SetUnitOrderProcedure(army.MakeRef(),
                 order);
             var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;

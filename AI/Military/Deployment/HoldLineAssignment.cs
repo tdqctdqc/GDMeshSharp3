@@ -114,8 +114,9 @@ public class HoldLineAssignment : GroupAssignment
         {
             foreach (var (group, lineAssignment) in lineAssignments)
             {
-                var order = new LineMission(lineAssignment.Select(f => f.Id).ToHashSet(), 
-                    new HashSet<int>(),
+                var order = new LineMission(
+                    new RefSet<CellRef>(lineAssignment.Select(f => f.MakeRef()).ToHashSet()),
+                    new RefSet<CellRef>(new HashSet<CellRef>()),
                     false);
                 var proc = new SetUnitOrderProcedure(
                     group.MakeRef(), order);
@@ -130,32 +131,37 @@ public class HoldLineAssignment : GroupAssignment
 
         foreach (var (group, lineAssignment) in lineAssignments)
         {
-            var order = new LineMission(lineAssignment.Select(c => c.Id).ToHashSet(),
-                getAdvanceInto(lineAssignment), true);
+            var order = new LineMission(
+                
+                new RefSet<CellRef>(
+                    lineAssignment
+                        .Select(c => c.MakeRef()).ToHashSet()),
+                getAdvanceInto(lineAssignment),
+                true);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(),
                 order);
             key.SendMessage(proc);
         }
 
-        HashSet<int> getAdvanceInto(HashSet<Cell> lineAssignment)
+        RefSet<CellRef> getAdvanceInto(HashSet<Cell> lineAssignment)
         {
-            var res = new HashSet<int>();
+            var res = new HashSet<CellRef>();
             foreach (var cell in lineAssignment)
             {
                 foreach (var n1 in cell.GetNeighbors(key.Data)
                              .Where(c => Frontline.AdvanceInto.Contains(c)))
                 {
-                    res.Add(n1.Id);
+                    res.Add(n1.MakeRef());
                     foreach (var n2 in n1.GetNeighbors(key.Data)
                                  .Where(c => Frontline.AdvanceInto.Contains(c)))
                     {
-                        res.Add(n2.Id);
+                        res.Add(n2.MakeRef());
                     }
                 }
             }
 
-            return res;
+            return  new RefSet<CellRef>(res);
         }
     }
 
@@ -176,8 +182,8 @@ public class HoldLineAssignment : GroupAssignment
         {
             var close = GetInsertPoint(army, key.Data);
             var order = new LineMission(
-                close.Id.Yield().ToHashSet(), 
-                new HashSet<int>(),
+                new RefSet<CellRef>(close.MakeRef().Yield().ToHashSet()), 
+                new RefSet<CellRef>(new HashSet<CellRef>()),
                 false);
             key.SendMessage(new SetUnitOrderProcedure(army.MakeRef(), order));
         }

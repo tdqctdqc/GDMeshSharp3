@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/GeneratorUi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Notices/DataNotices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Notices/DataNotices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Context/SetContextProcedure.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/WorldGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/TickProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/TickProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/Server/FinishedStateSyncUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/FinishedStateSyncUpdate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Serialization/Save/Saver.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Serialization/Save/Saver.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,13 +84,13 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/Army.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/ICreateWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -662,6 +653,7 @@
       <workItem from="1718489646566" duration="5142000" />
       <workItem from="1718499157549" duration="1788000" />
       <workItem from="1718581392587" duration="591000" />
+      <workItem from="1718638854407" duration="12754000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -873,22 +865,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00211" summary="fixed map seam bug">
-      <option name="closed" value="true" />
-      <created>1717440102214</created>
-      <option name="number" value="00211" />
-      <option name="presentableId" value="LOCAL-00211" />
-      <option name="project" value="LOCAL" />
-      <updated>1717440102214</updated>
-    </task>
-    <task id="LOCAL-00212" summary="making inset cell border mesh build method">
-      <option name="closed" value="true" />
-      <created>1717523921322</created>
-      <option name="number" value="00212" />
-      <option name="presentableId" value="LOCAL-00212" />
-      <option name="project" value="LOCAL" />
-      <updated>1717523921322</updated>
-    </task>
     <task id="LOCAL-00213" summary="made army graphic use poly2tri">
       <option name="closed" value="true" />
       <created>1717595996869</created>
@@ -1025,7 +1001,23 @@
       <option name="project" value="LOCAL" />
       <updated>1718498917962</updated>
     </task>
-    <option name="localTasksCounter" value="230" />
+    <task id="LOCAL-00230" summary="fixing army bugs">
+      <option name="closed" value="true" />
+      <created>1718647860312</created>
+      <option name="number" value="00230" />
+      <option name="presentableId" value="LOCAL-00230" />
+      <option name="project" value="LOCAL" />
+      <updated>1718647860312</updated>
+    </task>
+    <task id="LOCAL-00231" summary="ditto, made refcolindexer into Many To One indexer, added hooks for erefsets to it">
+      <option name="closed" value="true" />
+      <created>1718653596322</created>
+      <option name="number" value="00231" />
+      <option name="presentableId" value="LOCAL-00231" />
+      <option name="project" value="LOCAL" />
+      <updated>1718653596322</updated>
+    </task>
+    <option name="localTasksCounter" value="232" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1047,8 +1039,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="tidying" />
-    <MESSAGE value="armies as lines, removed map units" />
     <MESSAGE value="reimplementing combat graph" />
     <MESSAGE value="made army orders 'missions', made so armies can have multiple" />
     <MESSAGE value="more army stuff" />
@@ -1072,6 +1062,8 @@
     <MESSAGE value="changing ref sets" />
     <MESSAGE value="removed entity meta, ref col meta, etc" />
     <MESSAGE value="combat graph, army retreating" />
-    <option name="LAST_COMMIT_MESSAGE" value="combat graph, army retreating" />
+    <MESSAGE value="fixing army bugs" />
+    <MESSAGE value="ditto, made refcolindexer into Many To One indexer, added hooks for erefsets to it" />
+    <option name="LAST_COMMIT_MESSAGE" value="ditto, made refcolindexer into Many To One indexer, added hooks for erefsets to it" />
   </component>
 </project>

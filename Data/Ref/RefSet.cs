@@ -5,22 +5,36 @@ using MessagePack;
 public class RefSet<TRef> where TRef : IdRef
 {
     public HashSet<TRef> Refs { get; private set; }
-
-    [SerializationConstructor] protected RefSet(HashSet<TRef> refs)
+    
+    
+    [SerializationConstructor] public RefSet(HashSet<TRef> refs)
     {
         Refs = refs;
     }
-
-    protected void Add(TRef t, StrongWriteKey key)
+    public virtual void Add(IEnumerable<TRef> ts, StrongWriteKey key)
+    {
+        foreach (var t in ts)
+        {
+            Add(t, key);
+        }
+    }
+    public virtual void Add(TRef t, StrongWriteKey key)
     {
         Refs.Add(t);
     }
-    protected void Remove(TRef t, StrongWriteKey key)
+    public virtual void Remove(IEnumerable<TRef> ts, StrongWriteKey key)
+    {
+        foreach (var t in ts)
+        {
+            Remove(t, key);
+        }
+    }
+    public virtual void Remove(TRef t, StrongWriteKey key)
     {
         Refs.Remove(t);
     }
 
-    protected void Clear(StrongWriteKey key)
+    public virtual void Clear(StrongWriteKey key)
     {
         Refs.Clear();
     }
