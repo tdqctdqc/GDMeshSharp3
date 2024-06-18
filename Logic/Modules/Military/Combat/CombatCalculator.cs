@@ -22,7 +22,10 @@ public class CombatCalculator
         
         doFor<CellCombatNode>(
             node => node.SendLosses(key));
-        var defeatedArmies = CalculateArmyRetreats(key);
+        var defeatedArmies =
+            Graph.GetNodes().OfType<Army>()
+                .Where(a => a.Retreat(this, key))
+                .ToHashSet();
         doFor<Army>(
             army => army.RemoveIfOverrunOrDestroyed(this, key));
         doFor<CellCombatNode>(
@@ -43,41 +46,9 @@ public class CombatCalculator
 
     
 
-    private HashSet<ERef<Army>> CalculateArmyRetreats(LogicWriteKey key)
-    {
-        var lostCells = Graph.CellCombatNodes.Values
-            .OfType<CellCombatNode>()
-            .Where(n => n.DefendersForcedBack)
-            .Select(n => n.Cell)
-            .ToHashSet();
-        var defeatedArmies = new HashSet<ERef<Army>>();
-        foreach (var cell in lostCells)
-        {
-            var alliance = cell.Controller.Get(key.Data)
-                .GetAlliance(key.Data);
-            var node = Graph.CellCombatNodes[cell];
-            
-            var armies = key.Data.Military.UnitAux
-                .ArmiesByOccupancy[cell]
-                ?.Select(a => a.MakeRef()).ToArray();
-            if (armies is null) continue;
-            defeatedArmies.AddRange(armies);
-            
-            
-            var validNs = cell.GetNeighbors(key.Data)
-                .Where(c => c.FriendlyControlled(alliance, key.Data))
-                .Where(c => lostCells.Contains(c) == false)
-                .Select(c => c.MakeRef())
-                .ToArray();
-            var proc = new ArmiesRetreatProcedure(
-                cell.MakeRef(), validNs, armies);
-            key.SendMessage(proc);
-        }
+    
 
-        return defeatedArmies;
-    }
-
-    private void HandleSplitArmies(HashSet<ERef<Army>> defeated,
+    private void HandleSplitArmies(HashSet<Army> defeated,
         LogicWriteKey key)
     {
         if (defeated.Count == 0) return;
@@ -89,10 +60,9 @@ public class CombatCalculator
             c => c.GetNeighbors(key.Data).OfType<LandCell>())
             .Select(u => u.ToHashSet())
             .SortBy(c => c.First().Controller.Get(key.Data).GetAlliance(key.Data));
-        foreach (var eRef in defeated)
+        foreach (var army in defeated)
         {
-            if (key.Data.HasEntity(eRef.RefId) == false) continue;
-            var army = eRef.Get(key.Data);
+            if (key.Data.HasEntity(army.Id) == false) continue;
             var armyCells = army.GetCells(key.Data);
             var flood = FloodFill<Cell>.GetFloodFill(
                 armyCells.First(), armyCells.Contains, c => c.GetNeighbors(key.Data));

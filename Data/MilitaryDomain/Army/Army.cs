@@ -143,6 +143,58 @@ public class Army : Entity, ICombatGraphNode
         } 
     }
 
+    public bool Retreat(CombatCalculator combat, LogicWriteKey key)
+    {
+        var defeated = combat.Graph.GetNodeEdges(this)
+            .OfType<ArmyDefendEdge>()
+            .Where(e => e.CellCombatNode.DefendersForcedBack)
+            .Select(e => e.CellCombatNode.Cell).ToArray();
+        if (defeated.Any() == false) return false;
+        var curr = defeated.ToHashSet();
+        var next = new HashSet<Cell>();
+        var safe = new HashSet<CellRef>();
+        var covered = new HashSet<Cell>(curr);
+        var alliance = Regime.Get(key.Data).GetAlliance(key.Data);
+        while (curr.Any())
+        {
+            foreach (var cell in curr)
+            {
+                foreach (var n in cell.GetNeighbors(key.Data))
+                {
+                    if (covered.Contains(n)) continue;
+                    covered.Add(n);
+                    if (n.FriendlyControlled(alliance, key.Data) 
+                            == false)
+                    {
+                        continue;
+                    }
+                    if (combat.Graph.CellCombatNodes.TryGetValue(n, out var cellNode)
+                        && cellNode.DefendersForcedBack)
+                    {
+                        next.Add(n);
+                    }
+                    else
+                    {
+                        safe.Add(n.MakeRef());
+                    }
+                }
+            }
+
+            if (safe.Any()) break;
+            var temp = curr;
+            curr = next;
+            temp.Clear();
+            next = temp;
+        }
+
+        var proc = new ArmyRetreatProcedure(
+            defeated.Select(c => c.MakeRef()).ToArray(),
+            safe.ToArray(), this.MakeRef());
+        key.SendMessage(proc);
+
+        return true;
+
+    }
     public void RemoveIfOverrunOrDestroyed(CombatCalculator combat, 
         LogicWriteKey key)
     {
