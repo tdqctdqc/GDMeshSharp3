@@ -193,7 +193,6 @@ public class Army : Entity, ICombatGraphNode
         key.SendMessage(proc);
 
         return true;
-
     }
     public void RemoveIfOverrunOrDestroyed(CombatCalculator combat, 
         LogicWriteKey key)

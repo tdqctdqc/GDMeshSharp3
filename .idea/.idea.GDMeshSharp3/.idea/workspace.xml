@@ -5,7 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/UI/CustomArea.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Error/SegmentsExceptionDisplay/GeometryExceptionDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PathFindMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PathFindMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Root.tscn" beforeDir="false" afterPath="$PROJECT_DIR$/Root.tscn" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/GroupInForeignCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/GroupInForeignCellIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Triangulation/TriangleExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/TriangleExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +58,7 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/12b544f3d6604d0c98a8a519e62542912200/05/5ddd39d8/IPool`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/0b/4ac82b1f/MouseButtonMask.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/1c/0fe04ae9/InputEventMouseButton.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/25/e6133dbc/ItemList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/38/fc3bba61/Node.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -84,11 +97,10 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/Army.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -654,6 +666,8 @@
       <workItem from="1718499157549" duration="1788000" />
       <workItem from="1718581392587" duration="591000" />
       <workItem from="1718638854407" duration="12754000" />
+      <workItem from="1718664468614" duration="6957000" />
+      <workItem from="1718805318968" duration="7226000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -865,22 +879,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00213" summary="made army graphic use poly2tri">
-      <option name="closed" value="true" />
-      <created>1717595996869</created>
-      <option name="number" value="00213" />
-      <option name="presentableId" value="LOCAL-00213" />
-      <option name="project" value="LOCAL" />
-      <updated>1717595996869</updated>
-    </task>
-    <task id="LOCAL-00214" summary="army graphics">
-      <option name="closed" value="true" />
-      <created>1717605511951</created>
-      <option name="number" value="00214" />
-      <option name="presentableId" value="LOCAL-00214" />
-      <option name="project" value="LOCAL" />
-      <updated>1717605511951</updated>
-    </task>
     <task id="LOCAL-00215" summary="made army icon selectable w control">
       <option name="closed" value="true" />
       <created>1717607497143</created>
@@ -1017,7 +1015,23 @@
       <option name="project" value="LOCAL" />
       <updated>1718653596322</updated>
     </task>
-    <option name="localTasksCounter" value="232" />
+    <task id="LOCAL-00232" summary="bugfixes, refining refset">
+      <option name="closed" value="true" />
+      <created>1718670443225</created>
+      <option name="number" value="00232" />
+      <option name="presentableId" value="LOCAL-00232" />
+      <option name="project" value="LOCAL" />
+      <updated>1718670443225</updated>
+    </task>
+    <task id="LOCAL-00233" summary="more army retreat tweaks">
+      <option name="closed" value="true" />
+      <created>1718672291148</created>
+      <option name="number" value="00233" />
+      <option name="presentableId" value="LOCAL-00233" />
+      <option name="project" value="LOCAL" />
+      <updated>1718672291148</updated>
+    </task>
+    <option name="localTasksCounter" value="234" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1039,8 +1053,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="reimplementing combat graph" />
-    <MESSAGE value="made army orders 'missions', made so armies can have multiple" />
     <MESSAGE value="more army stuff" />
     <MESSAGE value="doot before trying to fix map seam bug" />
     <MESSAGE value="fixed map seam bug" />
@@ -1064,6 +1076,8 @@
     <MESSAGE value="combat graph, army retreating" />
     <MESSAGE value="fixing army bugs" />
     <MESSAGE value="ditto, made refcolindexer into Many To One indexer, added hooks for erefsets to it" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto, made refcolindexer into Many To One indexer, added hooks for erefsets to it" />
+    <MESSAGE value="bugfixes, refining refset" />
+    <MESSAGE value="more army retreat tweaks" />
+    <option name="LAST_COMMIT_MESSAGE" value="more army retreat tweaks" />
   </component>
 </project>

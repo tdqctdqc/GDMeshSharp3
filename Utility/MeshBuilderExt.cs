@@ -30,7 +30,7 @@ public static class MeshBuilderExt
         {
             var face = seg.Frontline.Faces[0];
             var cell = face.GetNative(d);
-            mb.AddPoint(relTo.Offset(cell.GetCenter(), d),
+            mb.AddSquare(relTo.Offset(cell.GetCenter(), d),
                 markerSize, color);
         }
         for (var i = 0; i < seg.Frontline.Faces.Count - 1; i++)

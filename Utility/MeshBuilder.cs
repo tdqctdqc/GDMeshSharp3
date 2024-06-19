@@ -388,11 +388,11 @@ public class MeshBuilder
     {
         foreach (var p in points)
         {
-            AddPoint(p, markerSize, color);
+            AddSquare(p, markerSize, color);
         }
     }
 
-    public void AddPoint(Vector2 p, float size, Color color)
+    public void AddSquare(Vector2 p, float size, Color color)
     {
         var topLeft = p + Vector2.Up * size / 2f
                         + Vector2.Left * size / 2f;

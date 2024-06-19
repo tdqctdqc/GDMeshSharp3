@@ -21,8 +21,8 @@ public class GroupInForeignCellIssue : Issue
         {
             var groupP = Pos.Offset(_group.GetHomeCell(c.Data).GetCenter(), c.Data);
             var cellP = Pos.Offset(_cell.GetCenter(), c.Data);
-            mb.AddPoint(cellP, 20f, Colors.Black);
-            mb.AddPoint(groupP, 10f, _group.Color);
+            mb.AddSquare(cellP, 20f, Colors.Black);
+            mb.AddSquare(groupP, 10f, _group.Color);
         }, Pos);
     }
 }

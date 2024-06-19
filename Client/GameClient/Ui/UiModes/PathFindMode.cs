@@ -50,14 +50,14 @@ public class PathFindMode : UiMode
         _mouseOverHandler.Highlight();
         if (_from != null)
         {
-            debug.Draw(mb => mb.AddPoint(Vector2.Zero, 
+            debug.Draw(mb => mb.AddSquare(Vector2.Zero, 
                     20f, Colors.Red),
                 _from.GetCenter());
         }
 
         if (_to != null)
         {
-            debug.Draw(mb => mb.AddPoint(Vector2.Zero, 
+            debug.Draw(mb => mb.AddSquare(Vector2.Zero, 
                     20f, Colors.Green),
                 _to.GetCenter());
         }

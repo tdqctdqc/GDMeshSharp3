@@ -85,9 +85,9 @@ public class CantFindPathIssue : Issue
                 isStartOrDest = Colors.Yellow;
                 size = 5f;
             }
-            debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size, canPass), 
+            debugDrawer.Draw(mb => mb.AddSquare(Vector2.Zero, size, canPass), 
                 n.GetCenter());
-            debugDrawer.Draw(mb => mb.AddPoint(Vector2.Zero, size / 2f, isStartOrDest), 
+            debugDrawer.Draw(mb => mb.AddSquare(Vector2.Zero, size / 2f, isStartOrDest), 
                 n.GetCenter());
         }
     }

@@ -75,5 +75,33 @@ public static class TriangleExt
     public static bool ContainsPoint(this Triangle tri, Vector2 p)
     {
         return Geometry2D.IsPointInPolygon(p, new Vector2[] { tri.A, tri.B, tri.C });
+        // return ContainsPoint(tri.A, tri.B, tri.C, p);
+    }
+    
+    
+    public static bool ContainsPoint(Vector2 A, Vector2 B, Vector2 C, Vector2 p)
+    {
+        
+        return Geometry2D.IsPointInPolygon(p, new Vector2[] { A, B, C });
+
+        
+        
+        // Calculate the barycentric coordinates
+        // of point P with respect to triangle ABC
+        double denominator = ((B[1] - C[1]) * (A[0] - C[0]) + (C[0] - B[0]) * (A[1] - C[1]));
+        double a = ((B[1] - C[1]) * (p[0] - C[0]) + (C[0] - B[0]) * (p[1] - C[1])) / denominator;
+        double b = ((C[1] - A[1]) * (p[0] - C[0]) + (A[0] - C[0]) * (p[1] - C[1])) / denominator;
+        double c = 1 - a - b;
+ 
+        // Check if all barycentric coordinates
+        // are non-negative
+        if (a >= 0 && b >= 0 && c >= 0)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
