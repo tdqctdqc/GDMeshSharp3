@@ -38,9 +38,7 @@ public class GraphicLayerHolder
         {
             segmenter.AddElement(kvp.Value, kvp.Key.RelTo.Center);
         }
-
         WholeMapGraphics = new List<ISettinged>();
-
         ArmyGraphics = new ArmyGraphicManager(client);
         WholeMapGraphics.Add(ArmyGraphics);
         if (data is GenData g)

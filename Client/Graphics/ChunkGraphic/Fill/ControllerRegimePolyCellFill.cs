@@ -23,7 +23,7 @@ public partial class ControllerRegimePolyCellFill
 
     public override void RegisterForRedraws(Data d)
     {
-        this.RegisterDrawOnTick(d);
+        this.RegisterDrawOnJustTicked(d);
     }
 
     public override Settings GetSettings(Data d)

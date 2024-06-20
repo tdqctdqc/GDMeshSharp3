@@ -13,7 +13,7 @@ public partial class MapGraphics : Node2D, IClientComponent
     public MapOverlayDrawer Highlighter { get; private set; }
     public MapOverlayDrawer DebugOverlay { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
-    public ConcurrentQueue<Action> UpdateQueue { get; private set; }
+    public MapUiElements UiElements { get; private set; }
     private int _msToProcessUpdates = 50;
     Node IClientComponent.Node => this;
     public Action Disconnect { get; set; }
@@ -23,7 +23,8 @@ public partial class MapGraphics : Node2D, IClientComponent
         var sw = new Stopwatch();
         sw.Start();
 
-        var localPlayerRegime = client.Data.BaseDomain.PlayerAux
+        var localPlayerRegime = client.Data
+            .BaseDomain.PlayerAux
             .LocalPlayer.Regime;
         if (localPlayerRegime.Fulfilled())
         {
@@ -43,14 +44,13 @@ public partial class MapGraphics : Node2D, IClientComponent
                 }
             }, this);
 
-        UpdateQueue = new ConcurrentQueue<Action>();
         
         Segmenter = new GraphicsSegmenter(10, client.Data);
         AddChild(Segmenter);
         GraphicLayerHolder = new GraphicLayerHolder(client, Segmenter, client.Data);
         DebugOverlay = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Debug);
         Highlighter = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Highlighter);
-        
+        UiElements = new MapUiElements(client);
         client.GraphicsLayer.AddChild(this);
         
         sw.Stop();
@@ -62,10 +62,6 @@ public partial class MapGraphics : Node2D, IClientComponent
     }
     public void Process(float delta)
     {
-        while (UpdateQueue.TryDequeue(out var u))
-        {
-            u?.Invoke();
-        }
         if(Game.I.Client?.Cam() is ICameraController c)
         {
             Segmenter.Update(c.XScrollRatio);

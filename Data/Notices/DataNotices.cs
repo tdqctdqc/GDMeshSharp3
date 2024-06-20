@@ -9,6 +9,7 @@ public class DataNotices
 {
     public RefAction FinishedStateSync { get; private set; }
     public RefAction<int> Ticked { get; private set; }
+    public RefAction<int> JustTicked { get; private set; }
     public RefAction FinishedTurnStartCalc { get; private set; }
     public RefAction FinishedTurnEndCalc { get; private set; }
     public RefAction FinishedAiCalc { get; set; }
@@ -30,6 +31,7 @@ public class DataNotices
         
         FinishedStateSync = new RefAction();
         Ticked = new RefAction<int>();
+        JustTicked = new RefAction<int>();
         FinishedTurnStartCalc = new RefAction();
         FinishedTurnEndCalc = new RefAction();
         FinishedAiCalc = new RefAction();

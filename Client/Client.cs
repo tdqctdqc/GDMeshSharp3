@@ -80,6 +80,14 @@ public partial class Client : Node, IClient
     public override void _UnhandledInput(InputEvent e)
     {
         this.Cam()?.HandleInput(e);
+        
+        if (GetComponent<MapGraphics>() is MapGraphics mg
+            && mg.UiElements.HandleInput(e,
+                this.Cam().GetMousePosInMapSpace(),
+                this))
+        {
+            return;
+        }
         UiController.Mode.HandleInput(e);
     }
     public void AddComponent(IClientComponent component)

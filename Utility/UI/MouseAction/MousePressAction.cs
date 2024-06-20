@@ -4,8 +4,9 @@ using MathNet.Numerics;
 
 public abstract class MousePressAction : IMouseAction
 {
-    protected abstract void MouseUp(InputEventMouse m);
     private bool _pressed;
+    private MouseButtonMask _button;
+    protected abstract void MouseUp(InputEventMouse m);
 
     public MousePressAction()
     {
@@ -25,7 +26,7 @@ public abstract class MousePressAction : IMouseAction
     }
 
     public abstract void Highlight(Client c);
-    private MouseButtonMask _button;
+    
 
     protected MousePressAction(MouseButtonMask button)
     {

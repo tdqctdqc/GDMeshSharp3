@@ -52,7 +52,7 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
     }
     public void RegisterForRedraws(Data d)
     {
-        this.RegisterDrawOnTick(d);
+        this.RegisterDrawOnJustTicked(d);
     }
 
     public Settings GetSettings(Data d)

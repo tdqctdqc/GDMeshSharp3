@@ -14,14 +14,14 @@ public partial class RegimePeepsInfoBar : HBoxContainer
             () => GetPopulationCount(data));
         var notices = client.Notices;
         popSize.AddTrigger(notices.ChangedSpectatingRegime.Blank);
-        popSize.AddTrigger(data.Notices.Ticked.Blank);
+        popSize.AddTrigger(data.Notices.JustTicked.Blank);
         popSize.AddTrigger(data.Notices.FinishedTurnStartCalc);
         AddChild(sizeLabel);
         var popGrowth = StatLabel.Construct<int>(client, 
             "Pop Growth", deltaLabel,
             () => GetPeepDelta(data));
         popGrowth.AddTrigger(notices.ChangedSpectatingRegime.Blank);
-        popGrowth.AddTrigger(data.Notices.Ticked.Blank);
+        popGrowth.AddTrigger(data.Notices.JustTicked.Blank);
         popGrowth.AddTrigger(data.Notices.FinishedTurnStartCalc);
 
         AddChild(deltaLabel);

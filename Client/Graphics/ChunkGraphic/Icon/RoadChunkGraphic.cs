@@ -14,7 +14,7 @@ public partial class RoadChunkGraphicNode : Node2D, IChunkGraphicModule
     public Node2D Node => this;
     public void RegisterForRedraws(Data d)
     {
-        this.RegisterDrawOnTick(d);
+        this.RegisterDrawOnJustTicked(d);
     }
 
     public MapChunk Chunk { get; private set; }

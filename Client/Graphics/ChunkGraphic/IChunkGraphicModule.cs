@@ -14,10 +14,10 @@ public interface IChunkGraphicModule
 
 public static class IChunkGraphicExt
 {
-    public static void RegisterDrawOnTick(this IChunkGraphicModule m,
+    public static void RegisterDrawOnJustTicked(this IChunkGraphicModule m,
         Data d)
     {
-        d.Notices.Ticked.SubscribeForNode(i =>
+        d.Notices.JustTicked.SubscribeForNode(i =>
         {
             Game.I.Client.QueuedUpdates.Enqueue(() => m.Draw(d));
         }, m.Node);

@@ -26,6 +26,7 @@ public class GameClock : Entity
     {
         Tick++;
         key.Data.Notices.Ticked.Invoke(Tick);
+        key.Data.Notices.JustTicked.Invoke(Tick);
     }
 
     public override void CleanUp(StrongWriteKey key)

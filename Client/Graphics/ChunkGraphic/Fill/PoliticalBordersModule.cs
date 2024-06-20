@@ -59,6 +59,6 @@ public partial class PoliticalBordersModule : PolyCellBorder
 
     public override void RegisterForRedraws(Data d)
     {
-        this.RegisterDrawOnTick(d);
+        this.RegisterDrawOnJustTicked(d);
     }
 }

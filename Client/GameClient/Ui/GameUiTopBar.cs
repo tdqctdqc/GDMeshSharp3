@@ -46,7 +46,7 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
                 _submitTurn.Disabled = true;
             }
         });
-        data.Notices.Ticked.SubscribeForNode(i =>
+        data.Notices.JustTicked.SubscribeForNode(i =>
         {
             client.QueuedUpdates.Enqueue(
                 () =>

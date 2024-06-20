@@ -40,7 +40,7 @@ public partial class ResourceIcons
 
     public override void RegisterForRedraws(Data d)
     {
-        this.RegisterDrawOnTick(d);
+        this.RegisterDrawOnJustTicked(d);
     }
 
     public override Settings GetSettings(Data d)

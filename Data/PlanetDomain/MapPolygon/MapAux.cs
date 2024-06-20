@@ -44,7 +44,7 @@ public class MapAux
         MapPolyGrid = new PolyGrid<MapPolygon>(
             data.Planet.Info.Dimensions, 
             300f,
-            p => p.BoundaryPoints,
+            p => p.BoundaryPoints.Yield(),
             p => p.Center);
         foreach (var element in data.GetAll<MapPolygon>())
         {
@@ -64,7 +64,7 @@ public class MapAux
         CellGrid = new PolyGrid<Cell>(
             data.Planet.Info.Dimensions, 
             500f,
-            p => p.RelBoundary,
+            p => p.RelBoundary.Yield(),
             p => p.RelTo);
         CellsByPoly = new Dictionary<MapPolygon, List<Cell>>();
         foreach (var element in 

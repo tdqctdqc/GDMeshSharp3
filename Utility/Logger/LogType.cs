@@ -5,5 +5,6 @@ public enum LogType
     Market,
     Graphics,
     Diplomacy,
-    Temp
+    Temp,
+    Ui
 }

@@ -29,6 +29,6 @@ public partial class ControllerPolyCellBorder
 
     public override void RegisterForRedraws(Data d)
     {
-        this.RegisterDrawOnTick(d);
+        this.RegisterDrawOnJustTicked(d);
     }
 }

@@ -15,15 +15,15 @@ public class PolyGrid<TPoly>
     public int NumXPartitions { get; }
     public int NumYPartitions { get; }
     public Vector2 Dimension { get; }
-    private Func<TPoly, Vector2[]> _getRelBoundary;
-    private Func<TPoly, Vector2> _getCenter;
+    private Func<TPoly, IEnumerable<Vector2[]>> _getRelBoundary;
+    private Func<TPoly, Vector2> _getRelTo;
     
     public PolyGrid(Vector2 dim, float maxCellSideLength,
-        Func<TPoly, Vector2[]> getRelBoundary, 
-        Func<TPoly, Vector2> getCenter)
+        Func<TPoly, IEnumerable<Vector2[]>> getRelBoundary, 
+        Func<TPoly, Vector2> getRelTo)
     {
         _getRelBoundary = getRelBoundary;
-        _getCenter = getCenter;
+        _getRelTo = getRelTo;
         NumXPartitions = Mathf.CeilToInt(dim.X / maxCellSideLength);
         CellWidth = dim.X / NumXPartitions;
         NumYPartitions = Mathf.CeilToInt(dim.Y / maxCellSideLength);
@@ -43,21 +43,24 @@ public class PolyGrid<TPoly>
     }
     public void AddElement(TPoly poly)
     {
-        var boundary = _getRelBoundary(poly);
-        var center = _getCenter(poly);
-        if (boundary == null) return;
+        var boundaries = _getRelBoundary(poly);
+        var center = _getRelTo(poly);
+        if (boundaries == null || boundaries.Any() == false) return;
         int minXCell = int.MaxValue;
         int maxXCell = int.MinValue;
         int minYCell = int.MaxValue;
         int maxYCell = int.MinValue;
-        foreach (var relP in boundary)
+        foreach (var boundary in boundaries)
         {
-            var absP = center + relP;
-            var key = GetUnclampedKey(absP);
-            minXCell = Mathf.Min(key.X, minXCell);
-            maxXCell = Mathf.Max(key.X, maxXCell);
-            minYCell = Mathf.Min(key.Y, minYCell);
-            maxYCell = Mathf.Max(key.Y, maxYCell);
+            foreach (var relP in boundary)
+            {
+                var absP = center + relP;
+                var key = GetUnclampedKey(absP);
+                minXCell = Mathf.Min(key.X, minXCell);
+                maxXCell = Mathf.Max(key.X, maxXCell);
+                minYCell = Mathf.Min(key.Y, minYCell);
+                maxYCell = Mathf.Max(key.Y, maxYCell);
+            }
         }
 
         for (int i = minXCell; i <= maxXCell; i++)
@@ -93,6 +96,21 @@ public class PolyGrid<TPoly>
             .FirstOrDefault(p => PointInPolyAbs(p, point, d) && valid(p));
         return found;  
     }
+    
+    public IEnumerable<TPoly> GetAllElementsAtPointWhere(Vector2 point, 
+        Func<TPoly, bool> valid,
+        Data d)
+    {
+        var key = ClampKey(GetKey(point));
+        if (Cells.ContainsKey(key) == false)
+        {
+            throw new Exception($"no key {key}, x partitions {NumXPartitions} y partitions {NumYPartitions}");
+        }
+        
+        return Cells[key]
+            .Where(p => PointInPolyAbs(p, point, d) && valid(p));
+    }
+    
     public TPoly GetElementAtPoint(Vector2 point, Data d)
     {
         var key = ClampKey(GetKey(point));
@@ -111,10 +129,10 @@ public class PolyGrid<TPoly>
 
     private bool PointInPolyAbs(TPoly poly, Vector2 p, Data d)
     {
-        var boundary = _getRelBoundary(poly);
-        var center = _getCenter(poly);
-        var posRel = center.Offset(p, d);
-        return Geometry2D.IsPointInPolygon(posRel, boundary);
+        var boundaries = _getRelBoundary(poly);
+        var relTo = _getRelTo(poly);
+        var posRel = relTo.Offset(p, d);
+        return boundaries.Any(b => Geometry2D.IsPointInPolygon(posRel, b));
     }
     private (TPoly, NoPolyAtPointIssue<TPoly>) ForceGet(Vector2 point, Vector2I key, Data d)
     {
@@ -184,18 +202,22 @@ public class PolyGrid<TPoly>
         TPoly res = null;
         foreach (var p in cell)
         {
-            var center = _getCenter(p);
+            var center = _getRelTo(p);
             var rel = center.Offset(point, d);
             var bps = _getRelBoundary(p);
             var minDist = Mathf.Inf;
-            for (var i = 0; i <= bps.Length; i++)
+            foreach (var boundary in bps)
             {
-                var from = bps.Modulo(i);
-                var to = bps.Modulo(i + 1);
-                var closest = rel
-                    .GetClosestPointOnLineSegment(from, to);
-                minDist = Mathf.Min(minDist, rel.DistanceTo(closest));
+                for (var i = 0; i <= boundary.Length; i++)
+                {
+                    var from = boundary.Modulo(i);
+                    var to = boundary.Modulo(i + 1);
+                    var closest = rel
+                        .GetClosestPointOnLineSegment(from, to);
+                    minDist = Mathf.Min(minDist, rel.DistanceTo(closest));
+                }
             }
+            
 
             if (minDist < dist)
             {

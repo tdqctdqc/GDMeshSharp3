@@ -55,7 +55,7 @@ public class ArmyGraphicManager : ISettinged
             c.Data);
 
         ArmiesInOrder = new Dictionary<Cell, List<Army>>();
-        c.Data.Notices.Ticked.Subscribe(i =>
+        c.Data.Notices.JustTicked.Subscribe(i =>
         {
             DrawAll(c);
         });
@@ -81,7 +81,7 @@ public class ArmyGraphicManager : ISettinged
 
     private void DrawAll(Client c)
     {
-        PositionAllIcons(c);
+        SetOrder(c);
         foreach (var (army, graphic) in ArmyAreaGraphics.Graphics)
         {
             graphic.Draw(army, c);
@@ -97,16 +97,7 @@ public class ArmyGraphicManager : ISettinged
     }
 
     
-    private void PositionAllIcons(Client c)
-    {
-        SetArmiesInCellOrder(c);
-        foreach (var (cell, armies) in ArmiesInOrder)
-        {
-            RedrawCell(cell, c);
-        }
-    }
-
-    private void SetArmiesInCellOrder(Client c)
+    private void SetOrder(Client c)
     {
         ArmiesInOrder.Clear();
         foreach (var army in c.Data.GetAll<Army>())
@@ -114,7 +105,12 @@ public class ArmyGraphicManager : ISettinged
             var homeCell = army.GetHomeCell(c.Data);
             ArmiesInOrder.AddOrUpdate(homeCell, army);
         }
+        foreach (var (cell, armies) in ArmiesInOrder)
+        {
+            SetCellIconPositionsAndOrder(cell, c);
+        }
     }
+
     private void Redraw(Client c)
     {
         var redraw = _redraw.ToArray();
@@ -126,17 +122,18 @@ public class ArmyGraphicManager : ISettinged
             for (var i = 0; i < redraw.Length; i++)
             {
                 var cell = redraw[i];
-                RedrawCell(cell, c);
+                SetCellIconPositionsAndOrder(cell, c);
             }
         });
     }
 
-    private void RedrawCell(
+    private void SetCellIconPositionsAndOrder(
         Cell cell, 
         Client c)
     {
-        var segmenter = c.GetComponent<MapGraphics>()
-            .Segmenter;
+        var mapGraphics = c.GetComponent<MapGraphics>();
+        var segmenter = mapGraphics.Segmenter;
+        var uiElements = mapGraphics.UiElements;
         var armies = ArmiesInOrder[cell];
         var center = cell.GetCenter();
         if (armies.Count == 1)
@@ -166,27 +163,42 @@ public class ArmyGraphicManager : ISettinged
     {
         if (ArmiesInOrder.TryGetValue(cell, out var list) == false
             || list.Count < 2) return;
+        var mapGraphics = c.GetComponent<MapGraphics>();
+        var segmenter = mapGraphics.Segmenter;
+        var uiElements = mapGraphics.UiElements;
         var first = list[0];
         list.RemoveAt(0);
         list.Add(first);
-        RedrawCell(cell, c);
-        var newFirst = list[0];
-        var area = ArmyAreaGraphics.Graphics[newFirst];
-        area.Draw(newFirst, c);
-        var history = ArmyAreaGraphics.Graphics[newFirst];
-        history.Draw(newFirst, c);
+        SetCellIconPositionsAndOrder(cell, c);
+        for (var i = list.Count - 1; i >= 0; i--)
+        {
+            var army = list[i];
+            var area = ArmyAreaGraphics.Graphics[army];
+            segmenter.AddElement(area, area.RelTo);
+            uiElements.MoveToTop(area);
+            var history = ArmyHistoryGraphics.Graphics[army];
+            segmenter.AddElement(history, history.RelTo);
+            uiElements.MoveToTop(history);
+        }
+        
+        
+        
     }
 
     public void SetArmyToTop(Army army, Client c)
     {
+        var mapGraphics = c.GetComponent<MapGraphics>();
+        var uiElements = mapGraphics.UiElements;
         var cell = army.GetHomeCell(c.Data);
         var list = ArmiesInOrder[cell];
         var remove = list.Remove(army);
         if (remove == false) throw new Exception();
         list.Insert(0, army);
-        RedrawCell(cell, c);
+        SetCellIconPositionsAndOrder(cell, c);
         var area = ArmyAreaGraphics.Graphics[army];
         area.Draw(army, c);
+        var history = ArmyHistoryGraphics.Graphics[army];
+        uiElements.MoveToTop(history);
     }
     public Settings GetSettings()
     {

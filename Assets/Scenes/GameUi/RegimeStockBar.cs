@@ -42,7 +42,7 @@ public partial class RegimeStockBar : HBoxContainer
                 }, 
                 10f,
                 Game.I.Client.Notices.ChangedSpectatingRegime.Blank,
-                data.Notices.Ticked.Blank,
+                data.Notices.JustTicked.Blank,
                 data.Notices.FinishedTurnStartCalc
             );
         }
