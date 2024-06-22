@@ -40,7 +40,7 @@ public class ListSettingsOption<T> : SettingsOption<T>
             new Vector2(200f, 200f)
         );
         var list = token.ItemList;
-        list.CustomMinimumSize = list.Size;
+        // list.CustomMinimumSize = list.Size;
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);
         list.Select(Options.IndexOf(Value));

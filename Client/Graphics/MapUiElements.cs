@@ -33,15 +33,15 @@ public class MapUiElements
     {
         // Game.I.Client.Data.Logger.Log("adding map ui element",
         //     LogType.Ui);
-        _order.AddOrUpdate(c.ZIndex, c);
+        _order.AddOrUpdate(c.Z, c);
         _collidables.AddElement(c);
     }
 
     public void MoveToTop(IUiCollidable c)
     {
-        var have = _order[c.ZIndex].Remove(c);
+        var have = _order[c.Z].Remove(c);
         if (have == false) throw new Exception();
-        _order[c.ZIndex].Add(c);
+        _order[c.Z].Add(c);
     }
     public bool HandleInput(InputEvent e, Vector2 mapPos, Client c)
     {
@@ -56,7 +56,7 @@ public class MapUiElements
         var cs = _collidables
             .GetAllElementsAtPointWhere(
                 mapPos,
-                c => c.Active(e),
+                c => c.IsCapturing(),
                 c.Data).ToHashSet();
         if (cs.Any() == false)
         {
@@ -66,15 +66,17 @@ public class MapUiElements
             LogType.Ui);
 
 
-        var z = cs.Max(c => c.ZIndex);
+        var z = cs.Max(c => c.Z);
         
         var top = _order[z]
+            .Intersect(cs)
             .MaxBy(c =>
             {
                 var i = _order[z].IndexOf(c);
                 if (i == -1) throw new Exception();
                 return i;
             });
+        if (top.Captures(e) == false) return false;
         top.Handle(e, mapPos, c);
         return true;
     }

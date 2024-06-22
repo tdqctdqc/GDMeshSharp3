@@ -9,11 +9,11 @@ public partial class ArmyAreaGraphic : CustomClickArea
     private MeshInstance2D _mesh;
 
     public ArmyAreaGraphic()
-        : base(MouseButtonMask.Left, Vector2.Zero)
+        : base(MouseButtonMask.Left, Vector2.Zero,
+            LayerOrder.ArmyArea)
     {
         ZAsRelative = false;
         ZIndex = (int)LayerOrder.ArmyArea;
-        
     }
 
     public void Initialize()
@@ -43,7 +43,14 @@ public partial class ArmyAreaGraphic : CustomClickArea
                 cells, RelTo, c.Data);
         foreach (var boundary in union)
         {
-            Add(boundary, () => GD.Print("clicked army area"));
+            Add(boundary,
+                () =>
+                {
+                    var mapPos = c.Cam().GetMousePosInMapSpace();
+                    var cell = c.Data.Planet.MapAux.CellGrid.GetElementAtPoint(mapPos, c.Data);
+                    c.Notices.Selecting.Invoke(cell);
+                }
+            );
         }
         uiEls.Add(this);
 
@@ -52,7 +59,6 @@ public partial class ArmyAreaGraphic : CustomClickArea
             army.Color, 
             2f, 3f, RelTo, c.Data);
 
-        
         var mesh = mb.GetMesh();
         c.QueuedUpdates.Enqueue(() =>
         {

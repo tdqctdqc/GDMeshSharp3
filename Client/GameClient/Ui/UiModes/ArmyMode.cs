@@ -25,7 +25,6 @@ public class ArmyMode : UiMode
         Army = new DefaultSettingsOption<Army>("Army",
             null);
         Army.SettingChanged.Subscribe(n => Draw());
-        
     }
     public override void Process(float delta)
     {
@@ -36,13 +35,13 @@ public class ArmyMode : UiMode
     {
         if (e is InputEventMouse m)
         {
+            if (e is InputEventMouseButton mb
+                && mb.ButtonIndex == MouseButton.Left
+                && e.IsPressed() == false)
+            {
+                Army.Set(null);
+            }
             MouseActions.Value.Process(m);
-        }
-        if (e is InputEventMouseButton mb 
-            && mb.ButtonIndex == MouseButton.Left 
-            && mb.Pressed == false)
-        {
-            Cycle();
         }
     }
 
@@ -102,43 +101,9 @@ public class ArmyMode : UiMode
             }, Vector2.Zero);
         }
     }
-
-    private void Cycle()
-    {
-        var cell = _mouseOverHandler.MouseOverCell;
-        if (cell != null)
-        {
-            var armyGraphics = _client.GetComponent<MapGraphics>()
-                .GraphicLayerHolder.ArmyGraphics;
-            if (armyGraphics.ArmiesInOrder
-                    .TryGetValue(cell, out var armiesOnCell)
-                        == false
-                    || armiesOnCell.Count() == 0)
-            {
-                Army.Set(null);
-                return;
-            }
-            var selected = Army.Value;
-            if (selected == armiesOnCell[0])
-            {
-                armyGraphics.CycleArmies(cell, _client);
-            }
-            Army.Set(armiesOnCell[0]);
-        }
-    }
-
-    public void SelectOrCycle(Army army)
-    {
-        if (Army.Value == army)
-        {
-            Cycle();
-            return;
-        }
-        Army.Set(army);
-        var armyGraphics = _client.GetComponent<MapGraphics>()
-            .GraphicLayerHolder.ArmyGraphics;
-        armyGraphics.SetArmyToTop(army, _client);
-    }
+    
+    
+    
 
     private void MakeMouseActions()
     {

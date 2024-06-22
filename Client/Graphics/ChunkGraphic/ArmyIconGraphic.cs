@@ -30,7 +30,7 @@ public partial class ArmyIconGraphic : Node2D
         
     }
 
-    public void Initialize()
+    public void Initialize(Client c)
     {
         _borderColor = new MeshInstance2D();
         _borderColor.Mesh = _border;
@@ -70,11 +70,9 @@ public partial class ArmyIconGraphic : Node2D
         {
             if (e is InputEventMouseButton mb
                 && mb.ButtonIndex == MouseButton.Left
-                && mb.Pressed == false
-                && _army is not null 
-                && Game.I.Client.UiController.Mode is ArmyMode am)
+                && mb.Pressed == false)
             {
-                am.SelectOrCycle(_army);
+                c.Notices.Selecting.Invoke(_army);
             }
             else
             {

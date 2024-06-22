@@ -5,7 +5,7 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class Army : Entity, ICombatGraphNode
+public class Army : Entity, ICombatGraphNode, ICelled
 {
     public ERef<Regime> Regime { get; private set; }
     public ERefSetCallback<Unit> Units { get; private set; }
@@ -211,5 +211,10 @@ public class Army : Entity, ICombatGraphNode
     {
         return Units.Entities(d).Select(u => u.GetHealth(d))
             .Sum();
+    }
+
+    public Cell GetCell(Data d)
+    {
+        return GetHomeCell(d);
     }
 }

@@ -5,32 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/Graphics/MapUiElements.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/UI/CustomClickArea.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/UI/IUiCollidable.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimePeepsInfoBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimeStockBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/RegimeStockBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/ClientNotices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientNotices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/GameUiTopBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyAreaGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyAreaGraphic.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/ControllerPolyCellBorder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Border/ControllerPolyCellBorder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/ControllerRegimePolyCellFill.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/ControllerRegimePolyCellFill.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PoliticalBordersModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PoliticalBordersModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PoliticalFillModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PoliticalFillModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/IChunkGraphicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/IChunkGraphicModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ResourceIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/ResourceIcons.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/RoadChunkGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Icon/SettlementIcons.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClock.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Notices/DataNotices.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Notices/DataNotices.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapAux.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/CustomArea.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyIconGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyIconGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapUiElements.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapUiElements.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/CustomClickArea.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/CustomClickArea.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/IUiCollidable.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/IUiCollidable.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -110,7 +95,7 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/Army.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/ArmyAreaGraphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
@@ -684,6 +669,8 @@
       <workItem from="1718814553386" duration="2323000" />
       <workItem from="1718844206212" duration="379000" />
       <workItem from="1718845468226" duration="3099000" />
+      <workItem from="1718891934189" duration="6345000" />
+      <workItem from="1718931619821" duration="4357000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -895,14 +882,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00216" summary="ui stuff, player building make project">
-      <option name="closed" value="true" />
-      <created>1717641694977</created>
-      <option name="number" value="00216" />
-      <option name="presentableId" value="LOCAL-00216" />
-      <option name="project" value="LOCAL" />
-      <updated>1717641694978</updated>
-    </task>
     <task id="LOCAL-00217" summary="working on tab window">
       <option name="closed" value="true" />
       <created>1717773279826</created>
@@ -1047,7 +1026,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718815758919</updated>
     </task>
-    <option name="localTasksCounter" value="235" />
+    <task id="LOCAL-00235" summary="working on custom click area">
+      <option name="closed" value="true" />
+      <created>1718897103254</created>
+      <option name="number" value="00235" />
+      <option name="presentableId" value="LOCAL-00235" />
+      <option name="project" value="LOCAL" />
+      <updated>1718897103254</updated>
+    </task>
+    <option name="localTasksCounter" value="236" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1069,7 +1056,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="doot before trying to fix map seam bug" />
     <MESSAGE value="fixed map seam bug" />
     <MESSAGE value="making inset cell border mesh build method" />
     <MESSAGE value="made army graphic use poly2tri" />
@@ -1094,6 +1080,7 @@
     <MESSAGE value="bugfixes, refining refset" />
     <MESSAGE value="more army retreat tweaks" />
     <MESSAGE value="working on CustomArea control" />
-    <option name="LAST_COMMIT_MESSAGE" value="working on CustomArea control" />
+    <MESSAGE value="working on custom click area" />
+    <option name="LAST_COMMIT_MESSAGE" value="working on custom click area" />
   </component>
 </project>

@@ -14,7 +14,7 @@ public class PolyMode : UiMode
         _mouseOverHandler = new MouseOverHandler(client.Data);
         Poly = new DefaultSettingsOption<MapPolygon>("Poly", null);
         Cell = new DefaultSettingsOption<Cell>("Cell", null);
-        
+        client.Notices.Selecting.Subscribe(v => SelectCell(v.GetCell(client.Data)));
         Poly.SettingChanged.Subscribe(v =>
         {
             var segmenter = client.GetComponent<MapGraphics>()
@@ -55,7 +55,6 @@ public class PolyMode : UiMode
                 _selectedCell.Mesh = null;
             }
         });
-        _mouseOverHandler.ChangedCell += c => Highlight();
     }
 
     public override void Process(float delta)
@@ -74,34 +73,39 @@ public class PolyMode : UiMode
             && mb.ButtonIndex == MouseButton.Left
             && mb.Pressed == false)
         {
-            var cell = _mouseOverHandler.MouseOverCell;
-            Cell.Set(cell);
-            if (cell is IPolyCell pc)
-            {
-                Poly.Set(pc.Polygon.Get(_client.Data));
-            }
-            else if (cell is IEdgeCell ec)
-            {
-                var edge = ec.Edge.Get(_client.Data);
-                var globalMousePos = _client.Cam().GetMousePosInMapSpace();
-                var hi = edge.HighPoly.Get(_client.Data);
-                var lo = edge.LowPoly.Get(_client.Data);
-                if (hi.PointInPolyAbs(globalMousePos, _client.Data))
-                {
-                    Poly.Set(hi);
-                }
-                else if (lo.PointInPolyAbs(globalMousePos, _client.Data))
-                {
-                    Poly.Set(lo);
-                }
-                else
-                {
-                    throw new Exception();
-                }
-            }
+            SelectCell(_mouseOverHandler.MouseOverCell);
         }
         
         Tooltip(mapPos);
+    }
+
+    private void SelectCell(Cell cell)
+    {
+        if (_client.UiController.Mode != this) return;
+        Cell.Set(cell);
+        if (cell is IPolyCell pc)
+        {
+            Poly.Set(pc.Polygon.Get(_client.Data));
+        }
+        else if (cell is IEdgeCell ec)
+        {
+            var edge = ec.Edge.Get(_client.Data);
+            var globalMousePos = _client.Cam().GetMousePosInMapSpace();
+            var hi = edge.HighPoly.Get(_client.Data);
+            var lo = edge.LowPoly.Get(_client.Data);
+            if (hi.PointInPolyAbs(globalMousePos, _client.Data))
+            {
+                Poly.Set(hi);
+            }
+            else if (lo.PointInPolyAbs(globalMousePos, _client.Data))
+            {
+                Poly.Set(lo);
+            }
+            else
+            {
+                throw new Exception();
+            }
+        }
     }
 
     public override void Enter()
@@ -117,9 +121,6 @@ public class PolyMode : UiMode
         _selectedPoly.ZAsRelative = false;
     }
 
-    private void Highlight()
-    {
-    }
     private void Tooltip(Vector2 mapPos)
     {
         var tooltip = _client.GetComponent<TooltipManager>();

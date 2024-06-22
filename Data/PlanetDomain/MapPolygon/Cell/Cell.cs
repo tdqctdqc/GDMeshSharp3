@@ -9,7 +9,7 @@ using MessagePack;
 [MessagePack.Union(1, typeof(RiverCell))]
 [MessagePack.Union(2, typeof(SeaCell))]
 public abstract class Cell : IPolymorph,
-    IIdentifiable
+    IIdentifiable, ICelled
 {
     public int Id { get; private set; }
     public ERef<Regime> Controller { get; private set; }
@@ -127,5 +127,10 @@ public abstract class Cell : IPolymorph,
     public CellRef MakeRef()
     {
         return new CellRef(Id);
+    }
+
+    public Cell GetCell(Data d)
+    {
+        return this;
     }
 }
