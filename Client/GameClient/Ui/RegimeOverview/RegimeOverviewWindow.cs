@@ -47,13 +47,5 @@ public partial class RegimeOverviewWindow
     public void Setup(Regime regime, Client client)
     {
         Regime = regime;
-        // _general.Draw(client);
-        // _peeps.Setup(regime, client);
-        // _stock.Setup(regime, client);
-        // _ag.Setup(regime, client);
-        // _budget.Setup(regime, client);
-        // _flows.Setup(regime, client);
-        // _manuf.Setup(regime, client);
-        // _troop.Setup(regime, client);
     }
 }

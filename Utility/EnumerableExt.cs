@@ -6,7 +6,16 @@ using System.Linq;
 public static class EnumerableExt
 {
     private static RandomNumberGenerator _rand = new RandomNumberGenerator();
-    
+
+    public static int IndexOf<T>(this T[] array, T t)
+    {
+        var res = -1;
+        for (var i = 0; i < array.Length; i++)
+        {
+            if (array[i].Equals(t)) return i;
+        }
+        return res;
+    }
     public static IEnumerable<T> Yield<T>(this T item)
     {
         if (item == null) yield break;

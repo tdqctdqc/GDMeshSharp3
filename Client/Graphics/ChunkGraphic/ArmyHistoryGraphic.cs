@@ -31,27 +31,24 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var histories = client.Data.Military.CombatHistories.Value;
         var mb = new MeshBuilder();
-        if (histories.Histories.TryGetValue(tick, out var history))
+        
+        var history = GetHistory(client);
+        DrawTestMarkers(army, mb, client);
+        if (history is not null)
         {
             if (history.ArmyCombatHistories.TryGetValue(army.MakeRef(), out var armyHistory))
             {
                 DrawHistory(history, armyHistory, client, mb);
             }
         }
-        else if (histories.Histories.TryGetValue(tick - 1, out var prevHistory))
-        {
-            if (prevHistory.ArmyCombatHistories.TryGetValue(army.MakeRef(), out var prevArmyHistory))
-            {
-                DrawHistory(prevHistory, prevArmyHistory, client, mb);
-            }
-        }
-        else
-        {
-            client.QueuedUpdates.Enqueue(() =>
-            {
-                _mesh.Mesh = null;
-            });
-        }
+        // else
+        // {
+        //     client.QueuedUpdates.Enqueue(() =>
+        //     {
+        //         _mesh.Mesh = null;
+        //     });
+        // }
+        
         uiElements.Add(this);
 
         if (mb.TriVertices.Count == 0)
@@ -116,21 +113,69 @@ public partial class ArmyHistoryGraphic : CustomClickArea
             var cellHist = history.CellCombatHistories[cellRef];
             var color = cellHist.ForcedBack ? Colors.Red : Colors.Orange;
             var center = RelTo.Offset(cell.GetCenter(), client.Data);
+            var size = 10f;
             var square = new Vector2[]
             {
-                center + Vector2.Left * 5f + Vector2.Up * 5f,
-                center - Vector2.Left * 5f + Vector2.Up * 5f,
-                center - Vector2.Left * 5f - Vector2.Up * 5f,
-                center + Vector2.Left * 5f - Vector2.Up * 5f
+                center + Vector2.Left * size / 2f + Vector2.Up * size / 2f,
+                center - Vector2.Left * size / 2f + Vector2.Up * size / 2f,
+                center - Vector2.Left * size / 2f - Vector2.Up * size / 2f,
+                center + Vector2.Left * size / 2f - Vector2.Up * size / 2f
             };
             mb.DrawPolygon(square, color);
             Add(square, () => Open(cell, client));
         }
     }
 
+    private void DrawTestMarkers(Army army, MeshBuilder mb,
+        Client client)
+    {
+        foreach (var cellRef in army.Cells.Refs)
+        {
+            var cell = cellRef.Get(client.Data);
+            var center = RelTo.Offset(cell.GetCenter(), 
+                client.Data);
+            var size = 3f;
+            var square = new Vector2[]
+            {
+                center + Vector2.Left * size / 2f + Vector2.Up * size / 2f,
+                center - Vector2.Left * size / 2f + Vector2.Up * size / 2f,
+                center - Vector2.Left * size / 2f - Vector2.Up * size / 2f,
+                center + Vector2.Left * size / 2f - Vector2.Up * size / 2f
+            };
+            mb.DrawPolygon(square, Colors.Yellow);
+            Add(square, () => Open(cell, client));
+        }
+    }
 
+    private CombatHistory GetHistory(Client client)
+    {
+        var tick = client.Data.BaseDomain.GameClock.Tick;
+        var histories = client.Data.Military.CombatHistories.Value;
+        var mb = new MeshBuilder();
+        if (histories.Histories.TryGetValue(tick, out var history))
+        {
+            return history;
+        }
+        else if (histories.Histories.TryGetValue(tick - 1, out var prevHistory))
+        {
+            return prevHistory;
+        }
+
+        return null;
+    }
     private void Open(Cell cell, Client client)
     {
-        GD.Print("opening cell " + cell.Id);
+        var w = client.WindowManager.GetWindow<CellCombatHistoryWindow>();
+        var history = GetHistory(client);
+        if (history is not null
+            && history.CellCombatHistories.TryGetValue(cell.MakeRef(), out var cellHistory))
+        {
+            w.Setup(cellHistory, client);
+        }
+        else
+        {
+            w.Setup(null, client);
+        }
+        client.WindowManager.OpenWindow<CellCombatHistoryWindow>();
     }
 }

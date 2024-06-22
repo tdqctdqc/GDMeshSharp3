@@ -41,5 +41,6 @@ public partial class TabWindow : Window
     protected void Clear()
     {
         _container.ClearChildren();
+        _tabs.Clear();
     }
 }

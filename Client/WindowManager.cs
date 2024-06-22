@@ -22,6 +22,7 @@ public partial class WindowManager : Node, IClientComponent
        AddWindow(new EntityOverviewWindow());
        AddWindow(IssueWindow.Get(client));
        AddWindow(new FillArmyWindow());
+       AddWindow(new CellCombatHistoryWindow(client));
        client.UiLayer.AddChild(this);
     }
     public void AddWindow(Window window)

@@ -15,7 +15,7 @@ public static class WindowExt
         w.CloseRequested += w.QueueFree;
     }
 
-    public static T MakeScrollContainer<T>(this Window w,
+    public static T MakeWholeWindowScrollContainer<T>(this Window w,
         Vector2I size)
         where T : Container, new()
     {

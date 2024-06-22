@@ -10,7 +10,7 @@ public partial class FillArmyWindow : Window
     {
         this.MakeHideable();
         Size = new Vector2I(500, 800);
-        _inner = this.MakeScrollContainer<VBoxContainer>(
+        _inner = this.MakeWholeWindowScrollContainer<VBoxContainer>(
             new Vector2I(500, 800));
     }
 

@@ -9,6 +9,17 @@ public class IdCount<T> : Count<int>
     where T : IIdentifiable
 {
     public float Get(T t) => Get(t.Id);
+
+    public static IdCount<T> Sum(params IdCount<T>[] toSum)
+    {
+        var res = IdCount<T>.Construct();
+        foreach (var idCount in toSum)
+        {
+            res.Add(idCount);
+        }
+
+        return res;
+    }
     public static IdCount<T> Construct()
     {
         return new IdCount<T>(new Dictionary<int, float>(), false);
