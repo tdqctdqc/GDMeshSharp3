@@ -74,9 +74,11 @@ public class CellCombatHistory
         AttackerUnits = attackerUnits;
         AttackerTroops = attackerTroops;
         AttackerLosses = attackerLosses;
+        AttackerKills = attackerKills;
         DefenderUnits = defenderUnits;
         DefenderTroops = defenderTroops;
         DefenderLosses = defenderLosses;
+        DefenderKills = defenderKills;
         ForcedBack = forcedBack;
     }
 

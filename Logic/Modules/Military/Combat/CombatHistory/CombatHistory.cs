@@ -28,8 +28,7 @@ public class CombatHistory
         {
             if (node is CellCombatNode cellNode)
             {
-                var cellHistory = CellCombatHistory.Construct(cellNode);
-                CellCombatHistories.Add(cellNode.Cell.MakeRef(), cellHistory);
+                CellCombatHistories.Add(cellNode.Cell.MakeRef(), cellNode.History);
             }
             else if (node is Army a)
             {

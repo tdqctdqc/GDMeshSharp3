@@ -16,7 +16,7 @@ public class CombatCalculator
         doFor<Army>(
             army => army.DistributeResources(this, key.Data));
         doFor<CellCombatNode>(
-            node => node.CalculateCombat(this, key.Data));
+            node => node.CalculateCombats(this, key.Data));
         
         history.DoCombatStage(Graph);
         

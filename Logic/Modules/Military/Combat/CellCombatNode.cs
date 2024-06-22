@@ -60,7 +60,7 @@ public class CellCombatNode : ICombatGraphNode
         return Mathf.Max(1f, val);
     }
 
-    public void CalculateCombat(CombatCalculator combat, Data d)
+    public void CalculateCombats(CombatCalculator combat, Data d)
     {
         var atkEdges = combat.Graph.GetNodeEdges(this)
             .OfType<ArmyAttackEdge>();
@@ -75,6 +75,7 @@ public class CellCombatNode : ICombatGraphNode
                 .Select(v => new UnitCombatMemo(v.unit, v.proportion)))
             .ToList();
         History = CellCombatHistory.Construct(this);
+        
         if (Attackers == null || Attackers.Any() == false)
         {
             return;
@@ -86,6 +87,11 @@ public class CellCombatNode : ICombatGraphNode
         }
         else
         {
+            var allDefenderTroops = IdCount<Troop>.Sum(
+                Defenders.Select(m => m.Unit.Troops).ToArray());
+            var allAttackerTroops = IdCount<Troop>.Sum(
+                Attackers.Select(m => m.Unit.Troops).ToArray());
+
             foreach (var attacker in Attackers)
             {
                 var atkPower = attacker.Unit.GetAttackPoints(d) 
@@ -100,7 +106,8 @@ public class CellCombatNode : ICombatGraphNode
                     0f, 1f);
                 attacker.ProportionLosses = attackerLossRatio;
             
-                var defenderHp = defender.Unit.GetHitPoints(d) * defender.Proportion;
+                var defenderHp = defender.Unit.GetHitPoints(d) 
+                                 * defender.Proportion;
                 var defenderLossRatio = atkPower / defenderHp;
                 defenderLossRatio = Mathf.Clamp(defenderLossRatio, 0f, 1f);
                 defenderLossRatio = Mathf.Min(1f - defender.ProportionLosses,
@@ -108,7 +115,9 @@ public class CellCombatNode : ICombatGraphNode
                 defender.ProportionLosses += defenderLossRatio;
                 
                 History.AddLossesAndKills(attacker.Unit,
-                    attackerLossRatio, defender.Unit, defenderLossRatio);
+                    attackerLossRatio, 
+                    defender.Unit, 
+                    defenderLossRatio);
             }
             DefendersForcedBack = Defenders
                 .All(memo => memo.ProportionLosses >= LossRatioToForceBack);

@@ -20,27 +20,23 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _parent = parent;
 
         _makingUnitsInfo = new VBoxContainer();
-        _makingUnitsInfo.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _makingUnitsInfo.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _makingUnitsInfo.ExpandFill();
         AddChild(_makingUnitsInfo);
         
         
         
         _makingUnitsContainer = new VBoxContainer();
-        _makingUnitsContainer.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _makingUnitsContainer.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _makingUnitsContainer.ExpandFill();
         AddChild(_makingUnitsContainer);
         
         
         
         _templatesContainer = new VBoxContainer();
-        _templatesContainer.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _templatesContainer.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _templatesContainer.ExpandFill();
         AddChild(_templatesContainer);
         
         _templateInfo = new VBoxContainer();
-        _templateInfo.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _templateInfo.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _templateInfo.ExpandFill();
         AddChild(_templateInfo);
     }
     public void Draw(Client c)
@@ -62,8 +58,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
             Vector2.One * 40f,
             p => p.MakingTemplate(c.Data).GetMaxPowerTroop(c.Data).Icon.Texture,
             Vector2I.One * 40);
-        _makingUnits.ItemList.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _makingUnits.ItemList.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _makingUnits.ItemList.ExpandFill();
         _makingUnitsContainer.AddChild(_makingUnits.ItemList);
 
 
@@ -77,8 +72,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
             t => t.GetMaxPowerTroop(c.Data).Icon.Texture,
             Vector2I.One * 40
         );
-        _templates.ItemList.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _templates.ItemList.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _templates.ItemList.ExpandFill();
         _templatesContainer.AddChild(_templates.ItemList);
     }
 

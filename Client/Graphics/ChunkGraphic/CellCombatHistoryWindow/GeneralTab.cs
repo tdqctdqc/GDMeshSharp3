@@ -27,8 +27,7 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
     private VBoxContainer Info(Client client)
     {
         var res = new VBoxContainer();
-        res.SizeFlagsHorizontal = Control.SizeFlags.ExpandFill;
-        res.SizeFlagsVertical = Control.SizeFlags.ExpandFill;
+        res.ExpandFill();
 
         var history = Parent.History;
         var cell = PlanetDomainExt.GetPolyCell(history.CellId, client.Data);
@@ -46,10 +45,8 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
         var res = new VBoxContainer();
         res.CreateLabelAsChild($"{(attacker ? "Attacker " : "Defender ")} Losses");
         var scroll = new ScrollContainer();
-        res.SizeFlagsVertical = SizeFlags.ExpandFill;
-        res.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        scroll.SizeFlagsVertical = SizeFlags.ExpandFill;
-        scroll.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        res.ExpandFill();
+        scroll.ExpandFill();
         var scrollInner = new VBoxContainer();
         scroll.AddChild(scrollInner);
         res.AddChild(scroll);
@@ -64,9 +61,9 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
 
         var troopsSum = IdCount<Troop>.Sum(troops);
 
-
         var iconSize = client.Settings.SmallIconSize.Value;
-        var e = troopsSum.GetEnumerableModel(client.Data);
+        var e = troopsSum
+            .GetEnumerableModel(client.Data);
         foreach (var (troop, amt) in e)
         {
             var entry = troop.Icon.GetLabeledIcon<HBoxContainer>(

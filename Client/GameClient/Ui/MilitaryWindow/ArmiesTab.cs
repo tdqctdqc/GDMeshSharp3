@@ -17,18 +17,15 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         _parent = parent;
         
         _armyInfoContainer = new VBoxContainer();
-        _armyInfoContainer.SizeFlagsVertical = SizeFlags.ExpandFill;
-        _armyInfoContainer.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        _armyInfoContainer.ExpandFill();
         AddChild(_armyInfoContainer);
 
         _armiesContainer = new VBoxContainer();
-        _armiesContainer.SizeFlagsVertical = SizeFlags.ExpandFill;
-        _armiesContainer.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        _armiesContainer.ExpandFill();
         AddChild(_armiesContainer);
         
         _freeUnitsContainer = new VBoxContainer();
-        _freeUnitsContainer.SizeFlagsVertical = SizeFlags.ExpandFill;
-        _freeUnitsContainer.SizeFlagsHorizontal = SizeFlags.ExpandFill;
+        _freeUnitsContainer.ExpandFill();
         AddChild(_freeUnitsContainer);
     }
 
@@ -58,8 +55,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             a => DrawArmyInfo(a, c),
             Vector2.One * 20f
         );
-        armiesToken.ItemList.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        armiesToken.ItemList.SizeFlagsVertical = SizeFlags.ExpandFill;
+        armiesToken.ItemList.ExpandFill();
         _armiesContainer.AddChild(armiesToken.ItemList);
         
         
@@ -108,8 +104,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             }
         });
         transferFreeUnitBtn.Text = "Transfer To Army";
-        _freeUnits.ItemList.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _freeUnits.ItemList.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _freeUnits.ItemList.ExpandFill();
         _freeUnitsContainer.AddChild(transferFreeUnitBtn);
         _freeUnitsContainer.AddChild(_freeUnits.ItemList);
     }
@@ -121,8 +116,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         if (a is null) return;
         
         _armyTree = a.GetTree(c.Data);
-        _armyTree.SizeFlagsHorizontal = SizeFlags.ExpandFill;
-        _armyTree.SizeFlagsVertical = SizeFlags.ExpandFill;
+        _armyTree.ExpandFill();
         
         
         var sendToReserve = ButtonExt.GetButton(() =>

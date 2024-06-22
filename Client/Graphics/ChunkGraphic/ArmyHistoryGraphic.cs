@@ -33,7 +33,7 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         var mb = new MeshBuilder();
         
         var history = GetHistory(client);
-        DrawTestMarkers(army, mb, client);
+        // DrawTestMarkers(army, mb, client);
         if (history is not null)
         {
             if (history.ArmyCombatHistories.TryGetValue(army.MakeRef(), out var armyHistory))
@@ -41,13 +41,6 @@ public partial class ArmyHistoryGraphic : CustomClickArea
                 DrawHistory(history, armyHistory, client, mb);
             }
         }
-        // else
-        // {
-        //     client.QueuedUpdates.Enqueue(() =>
-        //     {
-        //         _mesh.Mesh = null;
-        //     });
-        // }
         
         uiElements.Add(this);
 

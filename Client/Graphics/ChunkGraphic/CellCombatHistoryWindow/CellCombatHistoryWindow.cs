@@ -11,11 +11,12 @@ public partial class CellCombatHistoryWindow : TabWindow
         Size = new Vector2I(1000, 800);
         var general = new GeneralTab(this);
         AddTab(general);
+        var units = new UnitsTab(this);
+        AddTab(units);
     }
 
     public void Setup(CellCombatHistory history, Client client)
     {
-        if (history == null) return;
         History = history;
     }
 }
