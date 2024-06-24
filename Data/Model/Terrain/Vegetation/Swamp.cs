@@ -15,7 +15,6 @@ public class Swamp : Vegetation
         Landform lf, Data data)
     {
         return base.Allowed(p, moisture, lf, data) 
-               // && p.Altitude < .6f 
             && lf.MinRoughness < .1f;
     }
 }

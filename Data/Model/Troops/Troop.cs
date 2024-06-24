@@ -10,7 +10,11 @@ public class Troop : IModel, IMakeable, IIconed
     public float SoftAttack { get; private set; }
     public float Hitpoints { get; private set; }
     public float Hardness { get; private set; }
+    public float Accuracy { get; private set; }
+    public float Evasion { get; private set; }
+    public float Recon { get; private set; }
     public int Echelon { get; private set; }
+    public float FrontLength { get; private set; }
     public Icon Icon { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
 
@@ -27,6 +31,10 @@ public class Troop : IModel, IMakeable, IIconed
         Hitpoints = res.Hitpoints;
         Hardness = res.Hardness;
         Echelon = res.Echelon;
+        Accuracy = res.Accuracy;
+        Evasion = res.Evasion;
+        Recon = res.Recon;
+        FrontLength = res.FrontLength;
         Domain = domain;
         Makeable = makeable;
         Icon = Icon.Create(name.ToLower(), Vector2I.One);

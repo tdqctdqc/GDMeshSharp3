@@ -12,8 +12,10 @@ public class CellCombatNode : ICombatGraphNode
     public int Id { get; }
     public bool DefendersForcedBack { get; private set; }
     public CellCombatHistory History { get; private set; }
-    public static float LossRatioToForceBack { get; private set; } = .3f;
-    
+    public static float LossRatioToForceBack { get; private set; } 
+        = .3f;
+    public static int BaseFrontLength { get; private set; }
+        = 10;
     public static CellCombatNode GetOrConstruct(CombatGraph g,
         Cell c, Data d)
     {
@@ -87,11 +89,43 @@ public class CellCombatNode : ICombatGraphNode
         }
         else
         {
-            var allDefenderTroops = IdCount<Troop>.Sum(
+            var frontLength = BaseFrontLength
+                              * Cell.GetLandform(d).FrontLengthMult
+                              * Cell.GetVegetation(d).FrontLengthMult;
+            
+            
+            var defenderFrontTroops = IdCount<Troop>.Sum(
                 Defenders.Select(m => m.Unit.Troops).ToArray());
-            var allAttackerTroops = IdCount<Troop>.Sum(
+            var totalDefFrontage = defenderFrontTroops
+                .GetEnumerableModel(d)
+                .Sum(kvp => kvp.Key.FrontLength * kvp.Value);
+            if (totalDefFrontage > frontLength)
+            {
+                var ratio = frontLength / totalDefFrontage;
+                foreach (var (troop, amt) in defenderFrontTroops.GetEnumerableModel(d))
+                {
+                    defenderFrontTroops.Set(troop, ratio * amt);
+                }
+            }
+            
+            var attackerFrontTroops = IdCount<Troop>.Sum(
                 Attackers.Select(m => m.Unit.Troops).ToArray());
-
+            var totalAtkFrontage = attackerFrontTroops
+                .GetEnumerableModel(d)
+                .Sum(kvp => kvp.Key.FrontLength * kvp.Value);
+            
+            if (totalAtkFrontage > frontLength)
+            {
+                var ratio = frontLength / totalAtkFrontage;
+                foreach (var (troop, amt) in attackerFrontTroops.GetEnumerableModel(d))
+                {
+                    attackerFrontTroops.Set(troop, ratio * amt);
+                }
+            }
+            
+            
+            
+            
             foreach (var attacker in Attackers)
             {
                 var atkPower = attacker.Unit.GetAttackPoints(d) 

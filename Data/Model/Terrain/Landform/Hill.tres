@@ -8,5 +8,7 @@ Name = "Hill"
 MinRoughness = 0.4
 FertilityMod = 0.5
 DarkenFactor = 0.3
+FrontLengthMult = 0.8
+MovementCostMult = 1.3
 Color = Color(0.647059, 0.164706, 0.164706, 1)
 IsWater = false

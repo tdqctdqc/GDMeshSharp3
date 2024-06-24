@@ -93,16 +93,16 @@ public class CellCombatHistory
                  in AttackerTroops[attackerIndex].Contents)
         {
             var loss = num * attackerProportionLosses;
-            AttackerLosses[attackerIndex].Add(troop, num);
-            DefenderKills[defenderIndex].Add(troop, num);
+            AttackerLosses[attackerIndex].Add(troop, loss);
+            DefenderKills[defenderIndex].Add(troop, loss);
         }
         
         foreach (var (troop, num) 
                  in DefenderTroops[defenderIndex].Contents)
         {
             var loss = num * defenderProportionLosses;
-            AttackerKills[attackerIndex].Add(troop, num);
-            DefenderLosses[defenderIndex].Add(troop, num);
+            AttackerKills[attackerIndex].Add(troop, loss);
+            DefenderLosses[defenderIndex].Add(troop, loss);
         }
     }
 }

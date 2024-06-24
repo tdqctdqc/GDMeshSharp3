@@ -8,5 +8,7 @@ Name = "Sea"
 MinRoughness = 9999.0
 FertilityMod = 0.0
 DarkenFactor = 0.0
+FrontLengthMult = 1.0
+MovementCostMult = 1.0
 Color = Color(0.0941176, 0.45098, 0.8, 1)
 IsWater = true

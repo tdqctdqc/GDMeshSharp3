@@ -8,5 +8,7 @@ Name = "Urban"
 MinRoughness = 0.0
 FertilityMod = 0.0
 DarkenFactor = 0.0
+FrontLengthMult = 0.5
+MovementCostMult = 1.2
 Color = Color(0.803922, 0.360784, 0.360784, 1)
 IsWater = false

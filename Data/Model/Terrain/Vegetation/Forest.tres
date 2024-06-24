@@ -9,3 +9,4 @@ Color = Color(0.117647, 0.482353, 0.117647, 1)
 MinMoisture = 0.4
 FertilityMod = 0.5
 MovementCostMult = 1.5
+FrontLengthMult = 0.8

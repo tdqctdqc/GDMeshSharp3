@@ -8,6 +8,8 @@ public class Landform : TerrainAspect
     public float MinRoughness { get; private set; }
     public float FertilityMod { get; private set; }
     public float DarkenFactor { get; private set; }
+    public float FrontLengthMult { get; private set; }
+    public float MovementCostMult { get; private set; }
     public bool IsWater { get; private set; }
     public bool IsLand => IsWater == false;
     public Landform(string name)
@@ -16,8 +18,10 @@ public class Landform : TerrainAspect
         IsWater = res.IsWater;
         DarkenFactor = res.DarkenFactor;
         FertilityMod = res.FertilityMod;
+        FrontLengthMult = res.FrontLengthMult;
         Name = res.Name;
         MinRoughness = res.MinRoughness;
+        MovementCostMult = res.MovementCostMult;
         Color = res.Color;
     }
 }

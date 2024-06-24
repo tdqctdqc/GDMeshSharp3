@@ -10,7 +10,7 @@ public class Vegetation : TerrainAspect
     public float MinMoisture { get; private set; }
     public float FertilityMod { get; private set; }
     public float MovementCostMult { get; private set; }
-
+    public float FrontLengthMult { get; private set; }
     public Vegetation(HashSet<Landform> allowedLandforms,
         string name)
     {
@@ -18,6 +18,7 @@ public class Vegetation : TerrainAspect
         FertilityMod = res.FertilityMod;
         AllowedLandforms = allowedLandforms;
         MinMoisture = res.MinMoisture;
+        FrontLengthMult = res.FrontLengthMult;
         Color = res.Color;
         Name = name;
         MovementCostMult = res.MovementCostMult;
