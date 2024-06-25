@@ -4,7 +4,7 @@ using Ui.CellCombatHistoryWindow;
 
 public partial class CellCombatHistoryWindow : TabWindow
 {
-    public CellCombatHistory History { get; private set; }
+    public CellDefenseNode Info { get; private set; }
     public CellCombatHistoryWindow(Client c)
         : base(c)
     {
@@ -15,8 +15,8 @@ public partial class CellCombatHistoryWindow : TabWindow
         AddTab(units);
     }
 
-    public void Setup(CellCombatHistory history, Client client)
+    public void Setup(CellDefenseNode info, Client client)
     {
-        History = history;
+        Info = info;
     }
 }

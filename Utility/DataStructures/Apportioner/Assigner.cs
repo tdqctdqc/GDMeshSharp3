@@ -135,6 +135,59 @@ public class Assigner
         }
     }
     
+    
+    
+    
+    public static void AssignDiscrete<TPicker, TPicked>(IEnumerable<TPicker> pickers,
+        Func<TPicker, float> getPriority,
+        Func<TPicker, IEnumerable<TPicked>> getExisting,
+        Func<TPicked, float> getValue, 
+        HashSet<TPicked> toPick,
+        Action<TPicker, TPicked> assign)
+    {
+        if (pickers.Any() == false) return;
+        
+        var totalPriority = pickers.Sum(getPriority);
+        var priorities = pickers.ToDictionary(
+            p => p,
+            p => new Vector2(getExisting(p).Sum(getValue), 
+                getPriority(p) / totalPriority)
+        );
+        while (toPick.Count > 0)
+        {
+            var picker = priorities
+                .MinBy(kvp =>
+                {
+                    var v2 = kvp.Value;
+                    return v2.X / v2.Y;
+                }).Key;
+            var preferred = toPick.MaxBy(pick => getValue(pick));
+            assign(picker, preferred);
+            var value = priorities[picker];
+            priorities[picker] = new Vector2(value.X + getValue(preferred), value.Y);
+            toPick.Remove(preferred);
+        }
+    }
+    
+    
+    
+    public static void AssignSingle<TPicker, TPicked>(
+        IEnumerable<TPicker> pickers,
+        Func<TPicker, float> getPriority,
+        Func<TPicked, float> getValue, 
+        HashSet<TPicked> toPick,
+        Action<TPicker, TPicked> assign)
+    {
+        if (pickers.Any() == false) return;
+        foreach (var picker in pickers.OrderByDescending(getPriority))
+        {
+            if (toPick.Any() == false) break;
+            var preferred = toPick.MaxBy(pick => getValue(pick));
+            assign(picker, preferred);
+            toPick.Remove(preferred);
+        }
+    }
+    
     public static void AssignAllAlongLine<TPoint, TUnit>(
         List<TPoint> points,
         List<TUnit> units,

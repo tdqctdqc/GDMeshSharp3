@@ -3,97 +3,89 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MessagePack;
 
 public class CombatGraph
 {
     private CombatCalculator _combat;
-    public Dictionary<Cell, CellCombatNode> CellCombatNodes { get; private set; }
-    private Dictionary<int, ICombatGraphNode> _nodesById;
-    private Dictionary<Vector2I, List<ICombatGraphEdge>> _edgesByEdgeId;
-    private Dictionary<ICombatGraphEdge, (ICombatGraphNode, ICombatGraphNode)> _nodesByEdge;
-    private Dictionary<ICombatGraphNode, List<ICombatGraphEdge>> _edgesByNode;
-    public IEnumerable<ICombatGraphNode> GetNodes() => _edgesByNode.Keys;
+    public Dictionary<CellRef, int> CellDefNodes { get; private set; }
+    public Dictionary<Vector2I, int> CellAtkNodes { get; private set; }
+    public Dictionary<int, ICombatGraphNode> NodesById { get; private set; }
+    public Dictionary<ICombatGraphNode, List<int>> NodeNeighbors { get; private set; }
+    public IEnumerable<ICombatGraphNode> GetNodes() => NodesById.Values;
     
-    public CombatGraph(CombatCalculator combat)
+    public CombatGraph()
     {
-        _combat = combat;
-        _nodesById = new Dictionary<int, ICombatGraphNode>();
-        _edgesByEdgeId = new Dictionary<Vector2I, List<ICombatGraphEdge>>();
-        _edgesByNode = new Dictionary<ICombatGraphNode, List<ICombatGraphEdge>>();
-        _nodesByEdge = new Dictionary<ICombatGraphEdge, (ICombatGraphNode, ICombatGraphNode)>();
-        CellCombatNodes = new Dictionary<Cell, CellCombatNode>();
+        NodesById = new Dictionary<int, ICombatGraphNode>();
+        NodeNeighbors = new Dictionary<ICombatGraphNode, List<int>>();
+        CellDefNodes = new Dictionary<CellRef, int>();
+        CellAtkNodes = new Dictionary<Vector2I, int>();
     }
 
-    public bool HasNode(ICombatGraphNode n)
+    [SerializationConstructor] private CombatGraph( 
+        Dictionary<int, ICombatGraphNode> nodesById, 
+        Dictionary<ICombatGraphNode, List<int>> nodeNeighbors, 
+        Dictionary<CellRef, int> cellDefNodes, 
+        Dictionary<Vector2I, int> cellAtkNodes)
     {
-        return _edgesByNode.ContainsKey(n);
+        NodesById = nodesById;
+        NodeNeighbors = nodeNeighbors;
+        CellDefNodes = cellDefNodes;
+        CellAtkNodes = cellAtkNodes;
     }
+
     public void AddNode(ICombatGraphNode n)
     {
-        if (_edgesByNode.ContainsKey(n)) return;
-        _nodesById.Add(n.Id, n);
-        _edgesByNode.Add(n, new List<ICombatGraphEdge>());
+        if (NodesById.ContainsKey(n.Id)) return;
+        NodesById.Add(n.Id, n);
+        NodeNeighbors.Add(n, new List<int>());
     }
 
-    public void RemoveNode(ICombatGraphNode n)
+    public void RemoveNode(ICombatGraphNode node)
     {
-        var edges = _edgesByNode[n];
-        foreach (var edge in edges)
+        var neighbors = NodeNeighbors[node];
+        foreach (var nId in neighbors)
         {
-            var (n1, n2) = _nodesByEdge[edge];
-            var key = n1.GetIdEdgeKey(n2);
-            var other = n == n1 ? n2 : n1;
-            _edgesByNode[other].Remove(edge);
-            _edgesByEdgeId.Remove(key);
-            _nodesByEdge.Remove(edge);
+            var neighbor = NodesById[nId];
+            NodeNeighbors[neighbor].Remove(node.Id);
         }
 
-        _edgesByNode.Remove(n);
-
-        if (n is CellCombatNode c)
+        NodesById.Remove(node.Id);
+        NodeNeighbors.Remove(node);
+        if (node is CellDefenseNode d)
         {
-            CellCombatNodes.Remove(c.Cell);
+            CellDefNodes.Remove(d.Cell);
         }
 
-        _nodesById.Remove(n.Id);
+        if (node is CellAttackNode a)
+        {
+            var key = new Vector2I(a.From.RefId, a.Target.RefId);
+            CellAtkNodes.Remove(key);
+        }
      }
 
+    
 
-    public IReadOnlyList<ICombatGraphEdge> GetEdgesBetween(
-        ICombatGraphNode n1,
-        ICombatGraphNode n2)
+    public IEnumerable<ICombatGraphNode> GetNeighbors(ICombatGraphNode node)
     {
-        if (_edgesByEdgeId.TryGetValue(n1.GetIdEdgeKey(n2), out var edges))
+        var ns = NodeNeighbors[node];
+        for (var i = 0; i < ns.Count; i++)
         {
-            return edges;
+            yield return NodesById[ns[i]];
         }
-
-        return null;
-    }
-
-    public IReadOnlyList<ICombatGraphEdge> GetNodeEdges
-        (ICombatGraphNode n)
-    {
-        AddNode(n);
-        return _edgesByNode[n];
     }
 
     public void AddEdge(ICombatGraphNode node1,
-        ICombatGraphNode node2,
-        ICombatGraphEdge edge, Data d)
+        ICombatGraphNode node2)
     {
         AddNode(node1);
         AddNode(node2);
-        var edgeId = node1.GetIdEdgeKey(node2);
-        _edgesByEdgeId.GetOrAdd(edgeId, e => new List<ICombatGraphEdge>())
-            .Add(edge);
-        _edgesByNode[node1].Add(edge);
-        _edgesByNode[node2].Add(edge);
-        _nodesByEdge.Add(edge, (node1, node2));
+        NodeNeighbors[node1].Add(node2.Id);
+        NodeNeighbors[node2].Add(node1.Id);
     }
     private void Do(Action<ICombatGraphNode, CombatCalculator> act)
     {
-        foreach (var (id, node) in _nodesById.ToArray())
+        foreach (var (id, node) in NodesById.ToArray())
         {
             act(node, _combat);
         }

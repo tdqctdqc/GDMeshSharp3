@@ -1,17 +1,21 @@
 
+using Godot;
+
 public class AddCombatHistoryProc : Procedure
 {
-    public CombatHistory History { get; private set; }
-
-    public AddCombatHistoryProc(CombatHistory history)
+    public int Tick { get; private set; }
+    public CombatGraph History { get; private set; }
+    
+    public AddCombatHistoryProc(int tick, CombatGraph history)
     {
+        Tick = tick;
         History = history;
     }
 
     public override void Enact(ProcedureWriteKey key)
     {
         key.Data.Military.CombatHistories.Value.Histories
-            .Add(History.Tick, History);
+            .Add(Tick, History);
     }
 
     public override bool Valid(Data data, out string error)

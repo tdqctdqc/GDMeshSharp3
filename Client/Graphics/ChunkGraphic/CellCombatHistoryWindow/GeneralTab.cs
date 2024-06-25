@@ -29,19 +29,19 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
         var res = new VBoxContainer();
         res.ExpandFill();
 
-        var history = Parent.History;
-        var cell = PlanetDomainExt.GetPolyCell(history.CellId, client.Data);
+        var history = Parent.Info;
+        var cell = PlanetDomainExt.GetPolyCell(history.Cell.RefId, client.Data);
         res.CreateLabelAsChild($"Cell: {cell.Id}");
         res.CreateLabelAsChild($"Landform: {cell.Landform.Get(client.Data).Name}");
         res.CreateLabelAsChild($"Vegetation: {cell.Vegetation.Get(client.Data).Name}");
-        res.CreateLabelAsChild($"Attackers {(history.ForcedBack ? "victorious" : "defeated")}");
+        res.CreateLabelAsChild($"Attackers {(history.DefendersForcedBack ? "victorious" : "defeated")}");
         
         return res;
     }
 
     private VBoxContainer Losses(bool attacker, Client client)
     {
-        var history = Parent.History;
+        var history = Parent.Info;
         var res = new VBoxContainer();
         res.CreateLabelAsChild($"{(attacker ? "Attacker " : "Defender ")} Losses");
         var scroll = new ScrollContainer();
@@ -50,27 +50,27 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
         var scrollInner = new VBoxContainer();
         scroll.AddChild(scrollInner);
         res.AddChild(scroll);
-        var troops = attacker 
-            ? history.AttackerTroops 
-            : history.DefenderTroops;
-
-        var losses = attacker 
-            ? history.AttackerLosses 
-            : history.DefenderLosses;
-        var lossesSum = IdCount<Troop>.Sum(losses);
-
-        var troopsSum = IdCount<Troop>.Sum(troops);
-
-        var iconSize = client.Settings.SmallIconSize.Value;
-        var e = troopsSum
-            .GetEnumerableModel(client.Data);
-        foreach (var (troop, amt) in e)
-        {
-            var entry = troop.Icon.GetLabeledIcon<HBoxContainer>(
-                $"Losses: {lossesSum.Get(troop)} / {amt}",
-                iconSize);
-            scrollInner.AddChild(entry);
-        }
+        // var troops = attacker 
+        //     ? history.AttackerTroops 
+        //     : history.DefenderTroops;
+        //
+        // var losses = attacker 
+        //     ? history.AttackerLosses 
+        //     : history.DefenderLosses;
+        // var lossesSum = IdCount<Troop>.Sum(losses);
+        //
+        // var troopsSum = IdCount<Troop>.Sum(troops);
+        //
+        // var iconSize = client.Settings.SmallIconSize.Value;
+        // var e = troopsSum
+        //     .GetEnumerableModel(client.Data);
+        // foreach (var (troop, amt) in e)
+        // {
+        //     var entry = troop.Icon.GetLabeledIcon<HBoxContainer>(
+        //         $"Losses: {lossesSum.Get(troop)} / {amt}",
+        //         iconSize);
+        //     scrollInner.AddChild(entry);
+        // }
 
         return res;
     }

@@ -5,33 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellAttackNode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellDefenseNode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CellCombatInfo.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/IUnitNode.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitCombatInfo.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Hill.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Hill.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Landform.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Landform.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformRes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformRes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Mountain.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Mountain.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Peak.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Peak.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Plain.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Plain.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Sea.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Sea.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Barren.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Barren.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Desert.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Desert.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Forest.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Forest.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Grassland.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Grassland.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Tundra.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Tundra.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Vegetation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Vegetation.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationRes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationRes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle1.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Rifle1.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/TroopRes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/TroopRes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellCombatNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellCombatNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CellCombatHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CellCombatHistory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/CellCombatHistoryWindow/CellCombatHistoryWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/CellCombatHistoryWindow/CellCombatHistoryWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/CellCombatHistoryWindow/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/CellCombatHistoryWindow/GeneralTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/CellCombatHistoryWindow/UnitsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/CellCombatHistoryWindow/UnitsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ArmyAttackEdge.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ArmyDefendEdge.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellCombatNode.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/AddCombatHistoryProc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/AddCombatHistoryProc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/ArmyCombatHistory.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CellCombatHistory.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistories.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistories.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistory.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ICombatGraphEdge.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Apportioner/Assigner.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -112,14 +109,11 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/HoldLineAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/MilitaryWindow/ArmiesTab.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/CellCombatHistoryWindow/GeneralTab.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/Army.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Modules/Military/Combat/CombatHistory/CellCombatHistory.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -694,6 +688,10 @@
       <workItem from="1718983305047" duration="11783000" />
       <workItem from="1719020406947" duration="11682000" />
       <workItem from="1719089547473" duration="5400000" />
+      <workItem from="1719272255630" duration="4502000" />
+      <workItem from="1719332493178" duration="5592000" />
+      <workItem from="1719340510191" duration="5678000" />
+      <workItem from="1719349765108" duration="1783000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -905,14 +903,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00220" summary="fixed regime gen bug, construct cap bug">
-      <option name="closed" value="true" />
-      <created>1718124998444</created>
-      <option name="number" value="00220" />
-      <option name="presentableId" value="LOCAL-00220" />
-      <option name="project" value="LOCAL" />
-      <updated>1718124998445</updated>
-    </task>
     <task id="LOCAL-00221" summary="make project stuff">
       <option name="closed" value="true" />
       <created>1718138429050</created>
@@ -1057,7 +1047,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719091701147</updated>
     </task>
-    <option name="localTasksCounter" value="239" />
+    <task id="LOCAL-00239" summary="added combat modifiers to terrain">
+      <option name="closed" value="true" />
+      <created>1719272784865</created>
+      <option name="number" value="00239" />
+      <option name="presentableId" value="LOCAL-00239" />
+      <option name="project" value="LOCAL" />
+      <updated>1719272784866</updated>
+    </task>
+    <option name="localTasksCounter" value="240" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1079,7 +1077,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="made army graphic use poly2tri" />
     <MESSAGE value="army graphics" />
     <MESSAGE value="made army icon selectable w control" />
     <MESSAGE value="ui stuff, player building make project" />
@@ -1104,6 +1101,7 @@
     <MESSAGE value="more army graphic work" />
     <MESSAGE value="combat history window" />
     <MESSAGE value="doot" />
-    <option name="LAST_COMMIT_MESSAGE" value="doot" />
+    <MESSAGE value="added combat modifiers to terrain" />
+    <option name="LAST_COMMIT_MESSAGE" value="added combat modifiers to terrain" />
   </component>
 </project>

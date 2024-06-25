@@ -36,9 +36,9 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         // DrawTestMarkers(army, mb, client);
         if (history is not null)
         {
-            if (history.ArmyCombatHistories.TryGetValue(army.MakeRef(), out var armyHistory))
+            if (history.NodesById.ContainsKey(army.Id))
             {
-                DrawHistory(history, armyHistory, client, mb);
+                DrawHistory(army, history, client, mb);
             }
         }
         
@@ -61,50 +61,47 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         }
     }
 
-    private void DrawHistory(CombatHistory history,
-        ArmyCombatHistory armyHistory,
+    private void DrawHistory(Army army, CombatGraph graph,
         Client client, MeshBuilder mb)
     {
-        foreach (var cellRef in armyHistory.Attacked)
+        var neighbors = graph
+            .GetNeighbors(army);
+        
+        foreach (var atkNode in neighbors.OfType<CellAttackNode>())
         {
-            var cell = cellRef.Get(client.Data);
-            var cellHist = history.CellCombatHistories[cellRef];
-            var attackedFrom = armyHistory.Occupied
-                .Where(c => cell.Neighbors.Contains(c.RefId))
-                .Select(c => c.Get(client.Data));
-            foreach (var from in attackedFrom)
+            var from = atkNode.From.Get(client.Data);
+            var target = atkNode.Target.Get(client.Data);
+            var def = (CellDefenseNode)graph.NodesById[graph.CellDefNodes[target.MakeRef()]];
+            
+            if (def.DefendersForcedBack)
             {
-                if (cellHist.ForcedBack)
-                {
-                    var arrow = ShapeBuilder.GetArrow(
-                        RelTo.Offset(from.GetCenter(), client.Data),
-                        RelTo.Offset(cell.GetCenter(), client.Data),
-                        3f);
-                    mb.DrawPolygon(arrow, Colors.Green);
-                    mb.AddArrowRel(from.GetCenter(),
-                        cell.GetCenter(),
-                        3f, Colors.Green, RelTo, client.Data);
-                    Add(arrow, () => Open(cell, client));
-                }
-                else
-                {
-                    var mid = from.GetCenter() 
-                              + from.GetCenter().Offset(cell.GetCenter(), client.Data) / 2f;
-                    var arrow = ShapeBuilder.GetArrow(
-                        RelTo.Offset(from.GetCenter(), client.Data),
-                        RelTo.Offset(mid, client.Data),
-                        3f);
-                    mb.DrawPolygon(arrow, Colors.Blue);
-                    Add(arrow, () => Open(cell, client));
-                }
+                var arrow = ShapeBuilder.GetArrow(
+                    RelTo.Offset(from.GetCenter(), client.Data),
+                    RelTo.Offset(target.GetCenter(), client.Data),
+                    3f);
+                mb.DrawPolygon(arrow, Colors.Green);
+                mb.AddArrowRel(from.GetCenter(),
+                    target.GetCenter(),
+                    3f, Colors.Green, RelTo, client.Data);
+                Add(arrow, () => Open(target, client));
+            }
+            else
+            {
+                var mid = from.GetCenter() 
+                          + from.GetCenter().Offset(target.GetCenter(), client.Data) / 2f;
+                var arrow = ShapeBuilder.GetArrow(
+                    RelTo.Offset(from.GetCenter(), client.Data),
+                    RelTo.Offset(mid, client.Data),
+                    3f);
+                mb.DrawPolygon(arrow, Colors.Blue);
+                Add(arrow, () => Open(target, client));
             }
         }
 
-        foreach (var cellRef in armyHistory.Defended)
+        foreach (var defNode in neighbors.OfType<CellDefenseNode>())
         {
-            var cell = cellRef.Get(client.Data);
-            var cellHist = history.CellCombatHistories[cellRef];
-            var color = cellHist.ForcedBack ? Colors.Red : Colors.Orange;
+            var cell = defNode.Cell.Get(client.Data);
+            var color = defNode.DefendersForcedBack ? Colors.Red : Colors.Orange;
             var center = RelTo.Offset(cell.GetCenter(), client.Data);
             var size = 10f;
             var square = new Vector2[]
@@ -140,7 +137,7 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         }
     }
 
-    private CombatHistory GetHistory(Client client)
+    private CombatGraph GetHistory(Client client)
     {
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var histories = client.Data.Military.CombatHistories.Value;
@@ -161,9 +158,10 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         var w = client.WindowManager.GetWindow<CellCombatHistoryWindow>();
         var history = GetHistory(client);
         if (history is not null
-            && history.CellCombatHistories.TryGetValue(cell.MakeRef(), out var cellHistory))
+            && history.CellDefNodes.TryGetValue(cell.MakeRef(), out var cellDefId))
         {
-            w.Setup(cellHistory, client);
+            var node = (CellDefenseNode)history.NodesById[cellDefId];
+            w.Setup(node, client);
         }
         else
         {

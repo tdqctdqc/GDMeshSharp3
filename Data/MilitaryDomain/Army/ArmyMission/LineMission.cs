@@ -64,18 +64,27 @@ public class LineMission : ArmyMission
         var alliance = army.Regime.Get(d).GetAlliance(d);
 
         var cells = LineCells.Get<Cell, CellRef>(d);
-        var adjacentAdvanceCells = cells
-            .SelectMany(c => c.Neighbors)
-            .Distinct()
-            .Where(n => AdvanceInto.Contains(n)
-                && PlanetDomainExt.GetPolyCell(n, d)
-                    .Controller.Get(d).GetAlliance(d)
-                    .IsAtWar(alliance, d))
-            .Select(n => PlanetDomainExt.GetPolyCell(n, d));
         
-        foreach (var advanceCell in adjacentAdvanceCells)
+        
+        foreach (var cell in cells)
         {
-            ArmyAttackEdge.ConstructAndAddToGraph(army, advanceCell, combat, key.Data);
+            foreach (var neighbor in cell.GetNeighbors(d))
+            {
+                if (AdvanceInto.Contains(neighbor.Id) == false)
+                {
+                    continue;
+                }
+
+                if (neighbor.Controller.Get(d).GetAlliance(d)
+                        .IsAtWar(alliance, d) == false)
+                {
+                    continue;
+                }
+
+                CellAttackNode.GetOrConstruct(army, 
+                    cell, neighbor,
+                    combat, d);
+            }
         }
     }
 

@@ -4,17 +4,16 @@ using MessagePack;
 
 public class CombatHistories : Entity
 {
-    public Dictionary<int, CombatHistory> Histories { get; private set; }
-
+    public Dictionary<int, CombatGraph> Histories { get; private set; }
     public static CombatHistories Construct(GenWriteKey key)
     {
         var h = new CombatHistories(key.Data.IdDispenser.TakeId(),
-            new Dictionary<int, CombatHistory>());
+            new Dictionary<int, CombatGraph>());
         key.Create(h);
         return h;
     }
     [SerializationConstructor] private CombatHistories(int id,
-        Dictionary<int, CombatHistory> histories) : base(id)
+        Dictionary<int, CombatGraph> histories) : base(id)
     {
         Histories = histories;
     }

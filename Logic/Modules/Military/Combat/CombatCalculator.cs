@@ -8,31 +8,46 @@ public class CombatCalculator
     public CombatGraph Graph { get; private set; }
     public void Calculate(LogicWriteKey key)
     {
-        var history = CombatHistory.Construct(key.Data.BaseDomain.GameClock.Tick);
-        Graph = new CombatGraph(this);
+        Graph = new CombatGraph();
         key.Data.HostLogicData.CombatGraphIds.Reset();
         SetupGraph(key);
+
+
+        var distributions = key.Data.GetAll<Army>()
+            .Where(a => Graph.NodesById.ContainsKey(a.Id))
+            .AsParallel()
+            .Select(army => army.DistributeResources(this, key.Data))
+            .ToArray();
+        foreach (var distribution in distributions)
+        {
+            foreach (var (node, units) in distribution)
+            {
+                foreach (var unit in units)
+                {
+                    node.Add(unit, key.Data);
+                }
+            }
+        }
         
-        doFor<Army>(
-            army => army.DistributeResources(this, key.Data));
-        doFor<CellCombatNode>(
+        
+        
+        doFor<CellDefenseNode>(
             node => node.CalculateCombats(this, key.Data));
-        
-        history.DoCombatStage(Graph);
-        
-        doFor<CellCombatNode>(
-            node => node.SendLosses(key));
+        doFor<CellDefenseNode>(
+            node => node.SendLosses(this, key));
         var defeatedArmies =
             Graph.GetNodes().OfType<Army>()
                 .Where(a => a.Retreat(this, key))
                 .ToHashSet();
         doFor<Army>(
             army => army.RemoveIfOverrunOrDestroyed(this, key));
-        doFor<CellCombatNode>(
+        doFor<CellDefenseNode>(
             node => node.DoAdvanceForVictorious(this, key));
         HandleSplitArmies(defeatedArmies, key);
 
-        var historyProc = new AddCombatHistoryProc(history);
+        var historyProc = new AddCombatHistoryProc(
+            key.Data.BaseDomain.GameClock.Tick,
+            Graph);
         key.SendMessage(historyProc);
 
         void doFor<TType>(Action<TType> act)

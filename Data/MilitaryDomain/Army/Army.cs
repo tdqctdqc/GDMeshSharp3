@@ -100,55 +100,69 @@ public class Army : Entity, ICombatGraphNode, ICelled
         }
     }
 
-    public void DistributeResources(CombatCalculator combat, Data d)
+    public Dictionary<IUnitNode, List<Unit>> DistributeResources(CombatCalculator combat, Data d)
     {
-        var edges = combat.Graph
-            .GetNodeEdges(this);
-        var edgeNeeds = edges
+        var nodes = combat.Graph
+            .GetNeighbors(this).OfType<IUnitNode>();
+        var nodeNeeds = nodes
             .ToDictionary(e => e, 
                 e =>
                 {
                     float demand = 0f;
-                    if (e is ArmyAttackEdge atk)
+                    if (e is CellAttackNode atk)
                     {
-                        demand = atk.CellCombatNode.GetPotentialDefendingPower(d, combat);
+                        var targetId = combat.Graph.CellDefNodes[atk.Target];
+                        var target = (CellDefenseNode)combat.Graph.NodesById[targetId];
+                        demand = target.GetPotentialDefendingPower(d, combat);
                     }
-                    else if (e is ArmyDefendEdge def)
+                    else if (e is CellDefenseNode def)
                     {
-                        demand = def.CellCombatNode.GetPotentialAttackingPower(d, combat);
+                        demand = def.GetPotentialAttackingPower(d, combat);
                     }
                     else throw new Exception();
 
                     return demand;
                 });
-        var assigns = 
-            Assigner.AssignFractional<ICombatGraphEdge, Unit>(
-                edges,
-                Units.Entities(d).ToList(),
-                e => edgeNeeds[e],
-                u => Mathf.Max(u.GetPowerPoints(d), 1f)
-            );
-        for (var i = 0; i < assigns.Count; i++)
-        {
-            var (edge, unit, proportion) = assigns[i];
-            if (edge is ArmyAttackEdge atk)
+        var assgns = nodes.ToDictionary(
+            n => n, n => new List<Unit>());
+        
+        var toPick = Units.Entities(d).ToHashSet();
+        
+        Assigner.AssignSingle(
+            nodes.OfType<CellDefenseNode>(),
+            def => nodeNeeds[def],
+            u => u.GetPowerPoints(d),
+            toPick,
+            (n, u) =>
             {
-                atk.Attackers.Add((unit, proportion));
+                assgns[n].Add(u);
             }
-            else if (edge is ArmyDefendEdge def)
+        );
+        
+        Assigner.AssignDiscrete<IUnitNode, Unit>(
+            nodes,
+            n => nodeNeeds[n],
+            n =>
             {
-                def.Defenders.Add((unit, proportion));
+                return assgns[n];
+            },
+            u => Mathf.Max(u.GetPowerPoints(d), 1f),
+            toPick,
+            (n, u) =>
+            {
+                assgns[n].Add(u);
             }
-            else throw new Exception();
-        } 
+        );
+
+        return assgns;
     }
 
     public bool Retreat(CombatCalculator combat, LogicWriteKey key)
     {
-        var defeated = combat.Graph.GetNodeEdges(this)
-            .OfType<ArmyDefendEdge>()
-            .Where(e => e.CellCombatNode.DefendersForcedBack)
-            .Select(e => e.CellCombatNode.Cell).ToArray();
+        var defeated = combat.Graph.GetNeighbors(this)
+            .OfType<CellDefenseNode>()
+            .Where(e => e.DefendersForcedBack)
+            .Select(e => e.Cell.Get(key.Data)).ToArray();
         if (defeated.Any() == false) return false;
         var curr = defeated.ToHashSet();
         var next = new HashSet<Cell>();
@@ -168,8 +182,8 @@ public class Army : Entity, ICombatGraphNode, ICelled
                     {
                         continue;
                     }
-                    if (combat.Graph.CellCombatNodes.TryGetValue(n, out var cellNode)
-                        && cellNode.DefendersForcedBack)
+                    if (combat.Graph.CellDefNodes.TryGetValue(n.MakeRef(), out var cellNodeId)
+                        && ((CellDefenseNode)combat.Graph.NodesById[cellNodeId]).DefendersForcedBack)
                     {
                         next.Add(n);
                     }
