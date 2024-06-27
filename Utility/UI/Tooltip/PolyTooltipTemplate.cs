@@ -65,7 +65,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         var bs = s.Buildings;
         var control = new VBoxContainer();
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
-        foreach (var kvp in bs.GetEnumerableModel(d))
+        foreach (var kvp in bs.GetEnumModel(d))
         {
             var box = NodeExt.GetLabeledIcon<HBoxContainer>(
                 kvp.Key.Icon, kvp.Value.ToString(), iconSize);
@@ -86,7 +86,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         var control = new VBoxContainer();
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
         
-        foreach (var (model, num) in l.FoodProd.Nums.GetEnumerableModel(d))
+        foreach (var (model, num) in l.FoodProd.Nums.GetEnumModel(d))
         {
             var box = NodeExt.GetLabeledIcon<HBoxContainer>(
                 model.Icon, 

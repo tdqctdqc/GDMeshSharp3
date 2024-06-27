@@ -37,5 +37,4 @@ public class Unit : Entity
             g.Units.Remove(this, key);
         }
     }
-    
 }

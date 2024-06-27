@@ -33,7 +33,6 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         var mb = new MeshBuilder();
         
         var history = GetHistory(client);
-        // DrawTestMarkers(army, mb, client);
         if (history is not null)
         {
             if (history.NodesById.ContainsKey(army.Id))
@@ -50,7 +49,6 @@ public partial class ArmyHistoryGraphic : CustomClickArea
             {
                 _mesh.Mesh = null;
             });
-            // return;
         }
         else
         {
@@ -116,26 +114,6 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         }
     }
 
-    private void DrawTestMarkers(Army army, MeshBuilder mb,
-        Client client)
-    {
-        foreach (var cellRef in army.Cells.Refs)
-        {
-            var cell = cellRef.Get(client.Data);
-            var center = RelTo.Offset(cell.GetCenter(), 
-                client.Data);
-            var size = 3f;
-            var square = new Vector2[]
-            {
-                center + Vector2.Left * size / 2f + Vector2.Up * size / 2f,
-                center - Vector2.Left * size / 2f + Vector2.Up * size / 2f,
-                center - Vector2.Left * size / 2f - Vector2.Up * size / 2f,
-                center + Vector2.Left * size / 2f - Vector2.Up * size / 2f
-            };
-            mb.DrawPolygon(square, Colors.Yellow);
-            Add(square, () => Open(cell, client));
-        }
-    }
 
     private CombatGraph GetHistory(Client client)
     {
@@ -161,11 +139,11 @@ public partial class ArmyHistoryGraphic : CustomClickArea
             && history.CellDefNodes.TryGetValue(cell.MakeRef(), out var cellDefId))
         {
             var node = (CellDefenseNode)history.NodesById[cellDefId];
-            w.Setup(node, client);
+            w.Setup(node, history, client);
         }
         else
         {
-            w.Setup(null, client);
+            w.Setup(null, history, client);
         }
         client.WindowManager.OpenWindow<CellCombatHistoryWindow>();
     }

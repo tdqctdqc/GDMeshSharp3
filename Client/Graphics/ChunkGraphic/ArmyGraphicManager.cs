@@ -102,20 +102,33 @@ public class ArmyGraphicManager : ISettinged
                 HistoryGraphics.Graphics[v.newVal].Visible = true;
             }
         });
+        
+        c.Data.SubscribeForDestruction<Army>(n =>
+        {
+            ArmyGraphicOrder.Remove((Army)n.Entity);
+        });
     }
 
     private void DrawAll(Client c)
     {
         var iconIter = new Dictionary<Cell, int>();
         var segmenter = c.GetComponent<MapGraphics>().Segmenter;
-        for (var i = 0; i < ArmyGraphicOrder.Count; i++)
-        {
-            var army = ArmyGraphicOrder[i];
-            Areas.Graphics[army].Draw(army, c);
-            HistoryGraphics.Graphics[army].Draw(army, c);
-            Icons.Graphics[army].Draw(army, c);
-            positionIcon(army);
-        }
+        
+        c.Data.Logger.RunAndLogTime("drawing army graphics",
+            LogType.Graphics,
+            () =>
+            {
+                for (var i = 0; i < ArmyGraphicOrder.Count; i++)
+                {
+                    var army = ArmyGraphicOrder[i];
+                    Areas.Graphics[army].Draw(army, c);
+                    HistoryGraphics.Graphics[army].Draw(army, c);
+                    Icons.Graphics[army].Draw(army, c);
+                    positionIcon(army);
+                }
+            });
+        
+        
 
 
         void positionIcon(Army army)

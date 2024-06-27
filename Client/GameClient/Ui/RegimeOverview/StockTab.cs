@@ -26,7 +26,7 @@ public partial class StockTab : ScrollContainer, IUiDrawable
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var iconSize = client.Settings.MedIconSize.Value;
 
-        foreach (var entry in regime.Stock.Stock.GetEnumerableModel(client.Data))
+        foreach (var entry in regime.Stock.Stock.GetEnumModel(client.Data))
         {
             var model = entry.Key;
             var amt = entry.Value;

@@ -61,23 +61,8 @@ public class IdCount<T> : Count<int>
         : base(contents, canBeNegative)
     {
     }
-    public IEnumerable<KeyValuePair<T, float>> GetEnumerableModel(Data d)
-    {
-        if (typeof(IModel).IsAssignableFrom(typeof(T)) == false) throw new Exception();
-        
-        return Contents.Select(kvp => 
-            new KeyValuePair<T, float>((T)d.Models.GetModel<IModel>(kvp.Key), 
-                kvp.Value));
-    }
-    public IEnumerable<KeyValuePair<TSub, float>> 
-        GetEnumerableModelOfType<TSub>(Data d)
-            where TSub : T
-    {
-        if (typeof(IModel).IsAssignableFrom(typeof(T)) == false) throw new Exception();
-        
-        return GetEnumerableModel(d).Where(kvp => kvp.Key is TSub)
-            .Select(kvp => new KeyValuePair<TSub, float>((TSub)kvp.Key, kvp.Value));
-    }
+    
+    
     public IEnumerable<KeyValuePair<T, float>> GetEnumerable(Data d, Func<int, Data, T> get)
     {
         return Contents.Select(kvp => 
@@ -108,6 +93,10 @@ public class IdCount<T> : Count<int>
     public void Set(T model, float amount)
     {
         Contents[model.Id] = amount;
+    }
+    public void Set(int id, float amount)
+    {
+        Contents[id] = amount;
     }
     public void Remove(T model, float amount)
     {

@@ -43,7 +43,7 @@ public static class RegimeExt
         
         foreach (var c in cells)
         {
-            var foodProd = c.FoodProd.Nums.GetEnumerableModel(d);
+            var foodProd = c.FoodProd.Nums.GetEnumModel(d);
             foreach (var (key, value) in foodProd)
             {
                 res.AddOrSum(key.Labor, value);
@@ -57,7 +57,7 @@ public static class RegimeExt
             if (c.HasSettlement(d))
             {
                 var s = c.GetSettlement(d);
-                foreach (var (key, value) in s.Buildings.GetEnumerableModel(d))
+                foreach (var (key, value) in s.Buildings.GetEnumModel(d))
                 {
                     if (key.HasComponent<LaborComponent>())
                     {

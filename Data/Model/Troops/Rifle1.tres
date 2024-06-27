@@ -6,12 +6,12 @@
 script = ExtResource("1_6ccax")
 DisplayName = "Musket"
 HardAttack = 1.0
-SoftAttack = 5.0
+SoftAttack = 25.0
 Hitpoints = 100.0
 Hardness = 0.0
 Echelon = 0
 Accuracy = 0.1
-Evasion = 0.2
+Evasion = 0.1
 Recon = 0.3
 MilitaryCapCost = 1.0
 FrontLength = 1.0

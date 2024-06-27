@@ -79,7 +79,7 @@ public static class CellExt
         if (c.FoodProd.Nums.Contents.Count > 0)
         {
             var foodProdLabor = c.FoodProd.Nums
-                .GetEnumerableModel(d)
+                .GetEnumModel(d)
                 .Sum(kvp => kvp.Key.Labor.TotalLabor() * kvp.Value);
             laborDemand += foodProdLabor;
         }
@@ -93,7 +93,7 @@ public static class CellExt
         if (c.GetSettlement(d) is Settlement s
             && s.Buildings.Contents.Count > 0)
         {
-            laborDemand += s.Buildings.GetEnumerableModel(d)
+            laborDemand += s.Buildings.GetEnumModel(d)
                 .Sum(kvp =>
                 {
                     if (kvp.Key.GetComponent<LaborComponent>() is LaborComponent l)

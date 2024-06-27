@@ -62,7 +62,7 @@ public partial class PolyPanel : Panel
             {
                 _inner.CreateLabelAsChild($"Settlement: {s.Name}");
                 foreach (var (model, count) 
-                         in s.Buildings.GetEnumerableModel(d))
+                         in s.Buildings.GetEnumModel(d))
                 {
                     var label = model.Icon
                         .GetLabeledIcon<HBoxContainer>(

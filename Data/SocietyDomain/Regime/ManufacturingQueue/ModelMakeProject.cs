@@ -31,6 +31,7 @@ public class ModelMakeProject : MakeProject
         ProductionResult result,
         LogicWriteKey key)
     {
+        GD.Print($"made {amount} {((IModel)Making.Get(key.Data)).Name}");
         Fulfilled += amount;
         result.Stock.Stock.Add(Making.RefId, amount);
         result.Stock.Produced.Add(Making.RefId, amount);
@@ -65,7 +66,7 @@ public class ModelMakeProject : MakeProject
         }
         
 
-        var costs = makeable.Makeable.BuildCosts.GetEnumerableModel(d);
+        var costs = makeable.Makeable.BuildCosts.GetEnumModel(d);
         foreach (var (key, value) in costs)
         {
             var needed = makeable.Makeable.BuildCosts.Get(key) * Amount;

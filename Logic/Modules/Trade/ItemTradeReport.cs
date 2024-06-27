@@ -15,7 +15,7 @@ public class ItemTradeReport
 
     public static ItemTradeReport Construct(Item item, Data data)
     {
-        return new ItemTradeReport(data.Tick, data.Society.Market.Prices[item.Id], 0f, 0f, 0f,
+        return new ItemTradeReport(data.GetTick(), data.Society.Market.Prices[item.Id], 0f, 0f, 0f,
             0f, 0f);
     }
     [SerializationConstructor] private ItemTradeReport(int tick, float price, float totalOffered, float totalDemanded, float totalTraded, 

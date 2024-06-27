@@ -73,7 +73,7 @@ public class UnitTemplate : Entity, IMakeable
 
     public float GetPowerPoints(Data d)
     {
-        return TroopCounts.GetEnumerableModel(d)
+        return TroopCounts.GetEnumModel(d)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
     }
 
@@ -88,7 +88,7 @@ public class UnitTemplate : Entity, IMakeable
         vbox.AddChild(icon);
         vbox.CreateLabelAsChild(Name);
         
-        foreach (var (key, value) in TroopCounts.GetEnumerableModel(d))
+        foreach (var (key, value) in TroopCounts.GetEnumModel(d))
         {
             vbox.AddChild(key.Icon.GetLabeledIcon<HBoxContainer>
                 ($"{key.Name}: {value.ToString()}", small));

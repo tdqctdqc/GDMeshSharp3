@@ -62,9 +62,7 @@ public class LineMission : ArmyMission
         
         if (army.Units.Count() == 0) return;
         var alliance = army.Regime.Get(d).GetAlliance(d);
-
         var cells = LineCells.Get<Cell, CellRef>(d);
-        
         
         foreach (var cell in cells)
         {

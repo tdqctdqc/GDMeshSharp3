@@ -37,7 +37,7 @@ public class RegimeStock
 
     public IEnumerable<KeyValuePair<T, float>> GetStockOfType<T>(Data d)
     {
-        return Stock.GetEnumerableModel(d)
+        return Stock.GetEnumModel(d)
             .Where(kvp => kvp.Key is T)
             .Select(kvp => new KeyValuePair<T, float>((T)kvp.Key, kvp.Value));
     }

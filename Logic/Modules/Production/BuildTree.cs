@@ -10,7 +10,7 @@ public static class BuildTree
         MakeProject proj, RegimeStock stock, StrongWriteKey key)
     {
         var makeable = ((IMakeable)proj.Making.Get(key.Data)).Makeable;
-        var children = makeable.BuildCosts.GetEnumerableModel(key.Data)
+        var children = makeable.BuildCosts.GetEnumModel(key.Data)
                 .Select(kvp => (kvp.Key, kvp.Value)).ToDictionary(
                     v => v.Item1, v => v.Item2);;
         var totalToMake = proj.Amount - proj.Fulfilled;
@@ -94,7 +94,7 @@ public static class BuildTree
                 }
                 
                 foreach (var (m2, unitCost2) 
-                         in makeable.Makeable.BuildCosts.GetEnumerableModel(d))
+                         in makeable.Makeable.BuildCosts.GetEnumModel(d))
                 {
                     var feasible = checkEntry(m2, unitCost2);
                     if (feasible == false) return false;

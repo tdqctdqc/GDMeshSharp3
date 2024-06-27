@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Godot;
 
 public class CombatCalculator
@@ -10,46 +12,73 @@ public class CombatCalculator
     {
         Graph = new CombatGraph();
         key.Data.HostLogicData.CombatGraphIds.Reset();
+        var logger = key.Data.Logger;
         SetupGraph(key);
+        DistributeResources(key, logger);
+        PruneEmptyNodes(logger);
+        CalculateCombats(key, logger);
+        HandleCombatResults(key, logger);
 
-
-        var distributions = key.Data.GetAll<Army>()
-            .Where(a => Graph.NodesById.ContainsKey(a.Id))
-            .AsParallel()
-            .Select(army => army.DistributeResources(this, key.Data))
-            .ToArray();
-        foreach (var distribution in distributions)
-        {
-            foreach (var (node, units) in distribution)
-            {
-                foreach (var unit in units)
-                {
-                    node.Add(unit, key.Data);
-                }
-            }
-        }
-        
-        
-        
-        doFor<CellDefenseNode>(
-            node => node.CalculateCombats(this, key.Data));
-        doFor<CellDefenseNode>(
-            node => node.SendLosses(this, key));
-        var defeatedArmies =
-            Graph.GetNodes().OfType<Army>()
-                .Where(a => a.Retreat(this, key))
-                .ToHashSet();
-        doFor<Army>(
-            army => army.RemoveIfOverrunOrDestroyed(this, key));
-        doFor<CellDefenseNode>(
-            node => node.DoAdvanceForVictorious(this, key));
-        HandleSplitArmies(defeatedArmies, key);
 
         var historyProc = new AddCombatHistoryProc(
             key.Data.BaseDomain.GameClock.Tick,
             Graph);
         key.SendMessage(historyProc);
+    }
 
+    private void CalculateCombats(LogicWriteKey key, Logger logger)
+    {
+        logger.RunAndLogTime("Combat calcs", LogType.Logic,
+            () =>
+            {
+                Parallel.ForEach(Graph.GetNodes().OfType<CellDefenseNode>(),
+                    n => { n.CalculateCombats(this, key.Data); });
+            });
+    }
+
+    private void HandleCombatResults(LogicWriteKey key, Logger logger)
+    {
+        logger.RunAndLogTime("sending losses", LogType.Logic,
+            () =>
+            {
+                doFor<CellDefenseNode>(
+                    node => node.SendLosses(this, key));
+            });
+
+        logger.RunAndLogTime("handling retreats overruns and advances",
+            LogType.Logic, () =>
+            {
+                var defeatedArmies =
+                    Graph.GetNodes().OfType<Army>()
+                        .Where(a => a.Retreat(this, key))
+                        .ToHashSet();
+                doFor<Army>(
+                    army => army.RemoveIfOverrunOrDestroyed(this, key));
+                doFor<CellDefenseNode>(
+                    node => node.DoAdvanceForVictorious(this, key));
+                HandleSplitArmies(defeatedArmies, key);
+            });
+
+
+        logger.RunAndLogTime("Removing empty units", LogType.Logic,
+        () =>
+        {
+            foreach (var army in Graph.NodesById.Values.OfType<Army>())
+            {
+                var empty = army.Units.Entities(key.Data)
+                    .Where(u => u.Troops.Contents.Keys.All(k => k == 0));
+                if (empty.Any())
+                {
+                    foreach (var unit in empty.ToArray())
+                    {
+                        GD.Print("removing unit");
+                        key.Data.RemoveEntity(unit.Id, key);
+                    }
+                }
+            }
+        });
+        
+        
         void doFor<TType>(Action<TType> act)
         {
             foreach (var t in Graph.GetNodes().OfType<TType>())
@@ -59,9 +88,61 @@ public class CombatCalculator
         }
     }
 
-    
+    private void DistributeResources(LogicWriteKey key, Logger logger)
+    {
+        logger.RunAndLogTime("Distributing resources",
+            LogType.Logic,
+            () =>
+            {
+                var distributions = key.Data.GetAll<Army>()
+                    .Where(a => Graph.NodesById.ContainsKey(a.Id))
+                    .AsParallel()
+                    .Select(army => army.DistributeResources(this, key.Data))
+                    .ToArray();
+                foreach (var distribution in distributions)
+                {
+                    foreach (var (node, units) in distribution)
+                    {
+                        foreach (var unit in units)
+                        {
+                            node.Add(unit, key.Data);
+                        }
+                    }
+                }
+            });
+    }
 
-    
+    private void PruneEmptyNodes(Logger logger)
+    {
+        logger.RunAndLogTime("Pruning empty combat nodes", LogType.Logic,
+            () =>
+            {
+                var emptyAttack = Graph.NodesById
+                    .Values.OfType<CellAttackNode>()
+                    .Where(atk => atk.UnitInfos.Count == 0).ToArray();
+                foreach (var atk in emptyAttack)
+                {
+                    Graph.RemoveNode(atk);
+                }
+
+                var emptyDefend = Graph.NodesById
+                    .Values.OfType<CellDefenseNode>()
+                    .Where(def => Graph.GetNeighbors(def).OfType<CellAttackNode>().Count() == 0)
+                    .ToArray();
+                foreach (var def in emptyDefend)
+                {
+                    Graph.RemoveNode(def);
+                }
+
+                var emptyArmy = Graph.NodesById.Values.OfType<Army>()
+                    .Where(a => Graph.GetNeighbors(a).Any() == false).ToArray();
+                foreach (var army in emptyArmy)
+                {
+                    Graph.RemoveNode(army);
+                }
+            });
+    }
+
 
     private void HandleSplitArmies(HashSet<Army> defeated,
         LogicWriteKey key)

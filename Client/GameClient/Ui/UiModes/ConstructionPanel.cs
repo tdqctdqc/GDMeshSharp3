@@ -47,7 +47,7 @@ public partial class ConstructionPanel : Panel
         _info.CreateLabelAsChild("Cell: " + s.Cell.RefId.ToString());
         var population = s.Cell.Get(c.Data).GetPeep(c.Data).Size;
         _info.CreateLabelAsChild("Population: " + population);
-        var usedLabor = s.Buildings.GetEnumerableModel(c.Data)
+        var usedLabor = s.Buildings.GetEnumModel(c.Data)
             .Where(kvp => kvp.Key.HasComponent<LaborComponent>())
             .Sum(kvp => kvp.Key.GetComponent<LaborComponent>().TotalLabor() * kvp.Value);
         var inProgress = regime.MakeQueue.Queue
@@ -71,7 +71,7 @@ public partial class ConstructionPanel : Panel
             {
                 text += $"\n Labor: {model.GetComponent<LaborComponent>().TotalLabor()}";
             }
-            foreach (var (buildMaterial, amt) in model.Makeable.BuildCosts.GetEnumerableModel(c.Data))
+            foreach (var (buildMaterial, amt) in model.Makeable.BuildCosts.GetEnumModel(c.Data))
             {
                 text += $"\n {buildMaterial.Name}: {regime.Stock.Stock.Get(buildMaterial)}/{amt}";
             }

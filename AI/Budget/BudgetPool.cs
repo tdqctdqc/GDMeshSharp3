@@ -12,12 +12,12 @@ public class BudgetPool
         stock.Add(r.Stock.Stock);
         var net = IdCount<IModel>.ConstructNegative();
         foreach (var (model, value) 
-                 in r.Stock.Produced.GetEnumerableModel(d))
+                 in r.Stock.Produced.GetEnumModel(d))
         {
             net.Add(model, value);
         }
         foreach (var (model, value) 
-                 in r.Stock.RecurringCosts.GetEnumerableModel(d))
+                 in r.Stock.RecurringCosts.GetEnumModel(d))
         {
             net.Remove(model, value);
         }
@@ -43,12 +43,12 @@ public class BudgetPool
                     inQueue += l
                         .TotalLabor();
                     foreach (var (model, value) 
-                        in l.Inputs.GetEnumerableModel(d))
+                        in l.Inputs.GetEnumModel(d))
                     {
                         net.Remove(model, value);
                     }
                     foreach (var (model, value) 
-                             in l.Outputs.GetEnumerableModel(d))
+                             in l.Outputs.GetEnumModel(d))
                     {
                         net.Add(model, value);
                     }

@@ -39,7 +39,7 @@ public class UnitMakeProject : MakeProject
     {
         var making = MakingTemplate(key.Data);
         var stock = Regime.Get(key.Data).Stock;
-        foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumerableModel(key.Data))
+        foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumModel(key.Data))
         {
             var spent = Fulfilled * amt;
             stock.Stock.Add(model, spent);
@@ -59,7 +59,7 @@ public class UnitMakeProject : MakeProject
         vbox.AddChild(icon);
         vbox.CreateLabelAsChild(m.Name);
         
-        var costs = makeable.Makeable.BuildCosts.GetEnumerableModel(d);
+        var costs = makeable.Makeable.BuildCosts.GetEnumModel(d);
         foreach (var (key, value) in costs)
         {
             var needed = makeable.Makeable.BuildCosts.Get(key) * Amount;

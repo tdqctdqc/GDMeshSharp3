@@ -25,33 +25,93 @@ public class OperationalAi
     {
         foreach (var frontline in theater.Frontlines)
         {
-            var rival = frontline.Faces
+            var hostiles = frontline.Faces
                 .Select(f => f.GetForeign(_data))
                 .Distinct()
                 .Where(f => f.Controller.Get(_data)
-                        .GetAlliance(_data).IsRivals(Alliance, _data))
+                        .GetAlliance(_data).IsAtWar(Alliance, _data))
+                .ToHashSet();
+            var friendlies = frontline.Faces.Select(f => f.GetNative(_data))
                 .ToHashSet();
             
-            if (rival.Count == 0)
+            if (hostiles.Count == 0)
             {
                 continue;
             }
             
-            var enemyPowerPoints = rival
+            
+            var enemyPowerPoints = hostiles
                 .Sum(c => _data.Context.PowerPoints[c]);
             var friendly = frontline.Faces
                 .Select(f => f.GetNative(_data)).Distinct().ToArray();
             var friendlyPowerPoints = friendly
                 .Sum(c => _data.Context.PowerPoints[c]);;
-
-            if (
-                // true || 
-                friendlyPowerPoints > 1.5f * enemyPowerPoints
-                )
+            
+            // if (
+            //     // true || 
+            //     friendlyPowerPoints > 1.5f * enemyPowerPoints
+            //     )
+            // {
+            //     GeneralAdvance(frontline, hostile);
+            // }
+            
+            var availablePowerForOffense = friendlyPowerPoints - enemyPowerPoints * .8f;
+            var toHandle = hostiles.ToHashSet();
+            var hostileUnions = FindHostileUnions(hostiles);
+            var maxPocketSize = 10;
+            var pockets = hostileUnions.Where(u => u.Count <= maxPocketSize);
+            foreach (var pocket in pockets.OrderBy(p => p.Count))
             {
-                GeneralAdvance(frontline, rival);
+                if (availablePowerForOffense <= 0f) return;
+                var pocketPower = pocket.Sum(c => _data.Context.PowerPoints[c]);
+                availablePowerForOffense -= pocketPower;
+                frontline.AdvanceInto.UnionWith(pocket);
+                toHandle.ExceptWith(pocket);
+            }
+            
+            if (availablePowerForOffense <= 0f) return;
+
+            //find 'necks' 
+
+            float getAtkScore(Cell hCell)
+            {
+                var pp = _data.Context.PowerPoints[hCell];
+                var adj = hCell.GetNeighbors(_data)
+                    .Count(friendlies.Contains);
+                return pp / adj;
+            }
+            
+            
+            foreach (var cell in toHandle.OrderBy(getAtkScore))
+            {
+                if (availablePowerForOffense <= 0f) return;
+                var pp = _data.Context.PowerPoints[cell];
+                availablePowerForOffense -= pp;
+                frontline.AdvanceInto.Add(cell);
             }
         }
+    }
+    
+    private List<HashSet<Cell>> FindHostileUnions(HashSet<Cell> hostile)
+    {
+        var seeds = hostile.ToHashSet();
+        var unions = new List<HashSet<Cell>>();
+        while (seeds.Any())
+        {
+            var seed = seeds.First();
+            var alliance = seed.Controller.Get(_data).GetAlliance(_data);
+            seeds.Remove(seed);
+            var flood = FloodFill<Cell>
+                .GetFloodFill(seed,
+                c => c.Controller.Fulfilled()
+                    && c.Controller.Get(_data)
+                        .GetAlliance(_data) == alliance,
+                c => c.GetNeighbors(_data));
+            seeds.ExceptWith(flood);
+            unions.Add(flood);
+        }
+
+        return unions;
     }
 
     private void GeneralAdvance(Frontline f, 

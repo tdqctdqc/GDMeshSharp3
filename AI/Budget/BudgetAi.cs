@@ -6,19 +6,20 @@ using Godot;
 public class BudgetAi
 {
     private Regime _regime;
-    private BudgetRoot _root;
+    public BudgetRoot Root { get; private set; }
     public BudgetAi(RegimeMilitaryAi milAi, Data data, Regime regime)
     {
         _regime = regime;
-        _root = new BudgetRoot(data);
+        Root = new BudgetRoot(data);
     }
 
     public void Calculate(LogicWriteKey key, MajorTurnOrders orders)
     {
-        _root.Calculate(_regime, key);
+        Root.Calculate(_regime, key);
     }
 
-    private void Manufacture(Data data, Dictionary<Item, int> wishlist, BudgetPool pool,
+    private void Manufacture(Data data, 
+        Dictionary<Item, int> wishlist, BudgetPool pool,
          LogicWriteKey key)
      {
          // var ip = data.Models.Flows.IndustrialPower;

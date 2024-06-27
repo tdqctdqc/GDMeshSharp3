@@ -63,7 +63,7 @@ public class ProductionModule : LogicModule
         var milCapCost = 0f;
         foreach (var unit in units)
         {
-            foreach (var (troop, amt) in unit.Troops.GetEnumerableModel(d))
+            foreach (var (troop, amt) in unit.Troops.GetEnumModel(d))
             {
                 milCapCost += troop.Makeable.MaintainCosts.Get(milCap) * amt;
             }
@@ -106,7 +106,7 @@ public class ProductionModule : LogicModule
         var foodProds = cells.SelectMany(c =>
         {
             return c.FoodProd
-                .Nums.GetEnumerableModel(d)
+                .Nums.GetEnumModel(d)
                 .Select(kvp =>
                     new ProdEntry(kvp.Key.Labor, kvp.Value, c));
         }).ToArray();
@@ -127,7 +127,7 @@ public class ProductionModule : LogicModule
             { 
                 if (c.GetSettlement(d) is Settlement s == false) return null;
                 return s.Buildings
-                    .GetEnumerableModel(d)
+                    .GetEnumModel(d)
                     .Where(kvp => kvp.Key.HasComponent<LaborComponent>())
                     .Select(kvp =>
                         new ProdEntry(kvp.Key.GetComponent<LaborComponent>(), kvp.Value, c));
@@ -263,10 +263,11 @@ public class ProductionModule : LogicModule
             var making = proj.Making.Get(d);
             var costs = ((IMakeable)making).Makeable.BuildCosts;
             var num = proj.Amount;
-            var made = BuildTree.Increment(proj, r.Stock,
+            var made = BuildTree.Increment(proj, newStock,
                 key);
             if (made > 0f)
             {
+                GD.Print("progressing on proj " + proj);
                 proj.Increment(made, result, key);
             }
             if (proj.Fulfilled >= proj.Amount)

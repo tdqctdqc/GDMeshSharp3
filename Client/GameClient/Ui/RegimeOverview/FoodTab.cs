@@ -50,7 +50,7 @@ public partial class FoodTab : ScrollContainer, IUiDrawable
 
         var techniqueCounts = 
             populatedCells
-            .SelectMany(p => p.FoodProd.Nums.GetEnumerableModel(client.Data))
+            .SelectMany(p => p.FoodProd.Nums.GetEnumModel(client.Data))
             .SortInto(p => p.Key, p => p.Value);
         
         var iconSize = client.Settings.MedIconSize.Value;

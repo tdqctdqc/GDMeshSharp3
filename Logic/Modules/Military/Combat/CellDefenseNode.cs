@@ -34,7 +34,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         );
         g.AddNode(node);
         g.CellDefNodes.Add(c.MakeRef(), node.Id);
-
+        
         var armies = d.Military.UnitAux.ArmiesByOccupancy[c];
         if (armies is not null && armies.Any())
         {
@@ -85,7 +85,6 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
                         .Count(e => e is IUnitNode);
                     return a.GetPowerPoints(d) / numEdges;
                 });
-
         });
         return Mathf.Max(1f, val);
     }
@@ -96,7 +95,8 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
             .OfType<CellAttackNode>().ToArray();
         
         if (attackNodes == null 
-            || attackNodes.Any() == false)
+            || attackNodes.Any() == false
+            || attackNodes.Any(n => n.UnitInfos.Any()) == false)
         {
             return;
         }
@@ -120,7 +120,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         {
             var targetUnit = getTargetUnit(targets);
             if (targetUnit == null) return;
-            foreach (var (troop, amt) in unit.Active.GetEnumerableModel(d))
+            foreach (var (troop, amt) in unit.Active.GetEnumModel(d))
             {
                 var ceil = Mathf.CeilToInt(amt);
                 for (var i = 0; i < ceil; i++)
@@ -192,7 +192,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
             if (targetUnit.ActiveFrontSize <= 0f) return (null, 0f);
             var sample = Game.I.Random.RandfRange(0f, targetUnit.ActiveFrontSize - .01f);
             var soFar = 0f;
-            foreach (var (troop, amt) in targetUnit.Active.GetEnumerableModel(d))
+            foreach (var (troop, amt) in targetUnit.Active.GetEnumModel(d))
             {
                 soFar += amt * troop.FrontLength;
                 if (soFar >= sample) return (troop, Mathf.Min(1f, amt));
@@ -200,11 +200,26 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
 
             throw new Exception();
         }
-        
-        DefendersForcedBack = UnitInfos
-            .All(info => 
-                info.ActiveFrontSize <= 0f
-                || info.ProportionLosses(d) >= LossRatioToForceBack);
+
+        if (UnitInfos.All(info => info.ActiveFrontSize <= 0f))
+        {
+            DefendersForcedBack = true;
+            return;
+        }
+
+        var defPower = UnitInfos.Sum(i => i.InitialPowerPoints(d));
+        var lostDefPower = UnitInfos.Sum(i => i.LostPowerPoints(d));
+        var defLossRatio = lostDefPower / defPower;
+        if (lostDefPower / defPower >= LossRatioToForceBack)
+        {
+            var atkPower = attackNodes.Sum(a => a.UnitInfos.Sum(i => i.InitialPowerPoints(d)));
+            var lostAtkPower = attackNodes.Sum(a => a.UnitInfos.Sum(i => i.LostPowerPoints(d)));
+            var atkLossRatio = lostAtkPower / atkPower;
+            if (atkLossRatio < defLossRatio)
+            {
+                DefendersForcedBack = true;
+            }
+        }
     }
     
 
@@ -224,11 +239,11 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         }
         void sendLosses(UnitCombatInfo info)
         {
-            var unit = info.Unit.Get(key.Data);
+            var unit = key.Data.Get<Unit>(info.Id);
             var proc = TroopLossesProcedure.Construct(unit);
             foreach (var (troop, amt) in info
                          .Active
-                         .GetEnumerableModel(key.Data))
+                         .GetEnumModel(key.Data))
             {
                 var initial = unit.Troops.Get(troop);
                 proc.Losses.Add((troop.Id, initial - amt));
@@ -244,7 +259,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
             var attackerInfos = combat.Graph.GetNeighbors(this)
                 .OfType<CellAttackNode>()
                 .SelectMany(n => n.UnitInfos)
-                .Select(i => i.Unit.Get(key.Data));
+                .Select(i => key.Data.Get<Unit>(i.Id));
             
             var alliancesByStr = attackerInfos
                 .Where(u => key.Data.HasEntity(u.Id))

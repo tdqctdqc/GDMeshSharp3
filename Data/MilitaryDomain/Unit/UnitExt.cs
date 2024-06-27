@@ -8,7 +8,7 @@ public static class UnitExt
     public static float GetPowerPoints(this Unit u, Data d)
     {
         if (u.Troops.Contents.Count == 0) return 0f; 
-        return u.Troops.GetEnumerableModel(d)
+        return u.Troops.GetEnumModel(d)
             .Sum(kvp =>
             {
                 var v = kvp.Value * kvp.Key.GetPowerPoints();
@@ -18,12 +18,12 @@ public static class UnitExt
     }
     public static float GetAttackPoints(this Unit u, Data d)
     {
-        return u.Troops.GetEnumerableModel(d)
+        return u.Troops.GetEnumModel(d)
             .Sum(kvp => kvp.Value * kvp.Key.GetAttackPoints());
     }
     public static float GetHitPoints(this Unit u, Data d)
     {
-        return u.Troops.GetEnumerableModel(d)
+        return u.Troops.GetEnumModel(d)
             .Sum(kvp => kvp.Value * kvp.Key.Hitpoints);
     }
     public static Army GetArmy(this Unit u, Data d)
@@ -60,9 +60,9 @@ public static class UnitExt
     }
     public static Vector2 GetHealth(this Unit unit, Data data)
     {
-        var totalPp = unit.Troops.GetEnumerableModel(data)
+        var totalPp = unit.Troops.GetEnumModel(data)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-        var templatePp = unit.Template.Get(data).TroopCounts.GetEnumerableModel(data)
+        var templatePp = unit.Template.Get(data).TroopCounts.GetEnumModel(data)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
         return new Vector2(totalPp, templatePp);
     }

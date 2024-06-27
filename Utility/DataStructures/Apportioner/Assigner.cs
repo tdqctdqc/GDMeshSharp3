@@ -171,6 +171,47 @@ public class Assigner
     
     
     
+    public static void AssignToLimit<TPicker, TPicked>(IEnumerable<TPicker> pickers,
+        Func<TPicker, float> getPriority,
+        Func<TPicker, float> getLimit,
+        Func<TPicker, IEnumerable<TPicked>> getExisting,
+        Func<TPicked, float> getValue, 
+        HashSet<TPicked> toPick,
+        Action<TPicker, TPicked> assign)
+    {
+        if (pickers.Any() == false) return;
+        
+        var totalPriority = pickers.Sum(getPriority);
+        var priorities = pickers.ToDictionary(
+            p => p,
+            p => new Vector3(getExisting(p).Sum(getValue), 
+                getPriority(p) / totalPriority,
+                getLimit(p))
+        );
+        while (toPick.Count > 0)
+        {
+            var validPriorities = priorities
+                .Where(p => p.Value.X < p.Value.Z);
+            if (validPriorities.Any() == false) break;
+            var picker = validPriorities
+                .MinBy(kvp =>
+                {
+                    var v2 = kvp.Value;
+                    return v2.X / v2.Y;
+                }).Key;
+            var preferred = toPick.MaxBy(pick => getValue(pick));
+            assign(picker, preferred);
+            var value = priorities[picker];
+            priorities[picker] = new Vector3(value.X + getValue(preferred), value.Y, value.Z);
+            toPick.Remove(preferred);
+        }
+    }
+    
+    
+    
+    
+    
+    
     public static void AssignSingle<TPicker, TPicked>(
         IEnumerable<TPicker> pickers,
         Func<TPicker, float> getPriority,
@@ -188,105 +229,7 @@ public class Assigner
         }
     }
     
-    public static void AssignAllAlongLine<TPoint, TUnit>(
-        List<TPoint> points,
-        List<TUnit> units,
-        Func<TUnit, float> getStrength,
-        Func<TPoint, TPoint, float> getSegCost,
-        Func<TPoint, Vector2> getPos,
-        Func<Vector2, Vector2, Vector2> getOffset,
-        Action<TUnit, List<Vector2>> assign
-    )
-    {
-        if (points.Count < 2) return;
-        var totalCost = 0f;
-        for (var i = 0; i < points.Count - 1; i++)
-        {
-            totalCost += getSegCost(points[i], points[i + 1]);
-        }
-
-        if (totalCost == 0f) throw new Exception();
-        if (float.IsNaN(totalCost)) throw new Exception();
-
-
-        if (totalCost == 0f) throw new Exception();
-        var totalStrength = units.Sum(getStrength);
-        if (totalStrength == 0f) throw new Exception();
-        var unitProportions = new Queue<(TUnit unit, float startProp, float endProp)>();
-
-        var runningStrength = 0f;
-        for (var i = 0; i < units.Count; i++)
-        {
-            var unit = units[i];
-            var startProp = runningStrength / totalStrength;
-            runningStrength += getStrength(unit);
-            if (float.IsNaN(runningStrength)) throw new Exception();
-            var endProp = runningStrength / totalStrength;
-            unitProportions.Enqueue((unit, startProp, endProp));
-        }
-
-        var pointProportions = new List<float>{0};
-        var runningCost = 0f;
-        for (var i = 1; i < points.Count; i++)
-        {
-            runningCost += getSegCost(points[i - 1], points[i]);
-            if (float.IsNaN(runningCost)) throw new Exception();
-            pointProportions.Add(runningCost / totalCost);
-        }
-
-        var startEndPoints = new Dictionary<TUnit, (float cumulProp, Vector2 start, Vector2 end)>();
-
-        while (unitProportions.TryDequeue(out var info))
-        {
-            var (unit, startProp, endProp) = info;
-            var line = new List<Vector2>();
-            var start = getPointAtProportion(startProp);
-            line.Add(start);
-            var firstIndexBetween = pointProportions
-                .FindIndex(p => p > startProp && p < endProp);
-            var lastIndexBetween = pointProportions
-                .FindLastIndex(p => p > startProp && p < endProp);
-            if (firstIndexBetween != -1 && lastIndexBetween != -1)
-            {
-                for (int i = firstIndexBetween; i <= lastIndexBetween; i++)
-                {
-                    line.Add(getPos(points[i]));
-                }
-            }
-            
-
-            var end = getPointAtProportion(endProp);
-            line.Add(end);
-            assign(unit, line);
-        }
-
-        Vector2 getPointAtProportion(float prop)
-        {
-            if (prop == 0f) return getPos(points[0]);
-            if (prop == 1f) return getPos(points[points.Count - 1]);
-            var lowerBoundIndex = pointProportions
-                .FindLastIndex(f => prop >= f);
-            if (lowerBoundIndex == -1)
-            {
-                throw new Exception();
-            }
-            if (lowerBoundIndex == points.Count - 1)
-            {
-                return getPos(points[points.Count - 1]);
-            }
-
-            var lowerPoint = points[lowerBoundIndex];
-            var upperPoint = points[lowerBoundIndex + 1];
-            var lowerPointProportion = pointProportions[lowerBoundIndex];
-            var upperPointProportion = pointProportions[lowerBoundIndex + 1];
-
-            var ratioAlongSeg = (prop - lowerPointProportion) / (upperPointProportion - lowerPointProportion);
-
-            var offset = getOffset(getPos(lowerPoint), getPos(upperPoint));
-            return getPos(lowerPoint) + offset * ratioAlongSeg;
-        }
-    }
-
+    
     public static Dictionary<TUnit, TFace> 
         PickBestAndAssignAlongFacesSingle<TUnit, TFace>(
         List<TFace> faces,
@@ -357,12 +300,6 @@ public class Assigner
             return faces.Count - 1;
         }
     }
-    
-    
-    
-    
-    
-    
     public static Dictionary<TUnit, Vector2I> 
         PickInOrderAndAssignAlongFaces<TUnit, TFace>(
         IReadOnlyList<TFace> faces,
@@ -425,9 +362,9 @@ public class Assigner
         
         int getFaceAtProportion(float prop)
         {
-            if (prop < 0 || prop > 1f) throw new Exception();
+            if (prop < 0) throw new Exception();
             if (prop == 0f) return 0;
-            if (prop == 1f) return faces.Count - 1;
+            if (prop >= 1f) return faces.Count - 1;
             for (var i = 0; i < faceProportions.Length; i++)
             {
                 var faceProps = faceProportions[i];
@@ -439,5 +376,69 @@ public class Assigner
 
             return faces.Count - 1;
         }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    public static Dictionary<TUnit, Vector2I> 
+        PickInOrderAndAssignAlongFaces2<TUnit, TFace>(
+        IReadOnlyList<TFace> faces,
+        IReadOnlyList<TUnit> units,
+        Func<TUnit, float> getStrength,
+        Func<TFace, float> getFaceCost)
+    {
+        if (faces.Count == 0) throw new Exception();
+        if (faces.Count == 1) return units.ToDictionary(u => u, 
+            u => new Vector2I(0, 0));
+
+        var totalCost = faces.Sum(getFaceCost);
+        if (totalCost <= 0f) throw new Exception();
+        if (float.IsNaN(totalCost)) throw new Exception();
+        
+        var totalStrength = units.Sum(getStrength);
+        if (totalStrength < 0f) throw new Exception();
+        if (totalStrength == 0f)
+        {
+            totalStrength = units.Count();
+            getStrength = u => 1f;
+        }
+        if (float.IsNaN(totalStrength)) throw new Exception();
+
+        var res = new Dictionary<TUnit, Vector2I>();
+        var currUnitIndex = 0;
+        var currFaceStartIndex = 0;
+        var currFaceEndIndex = 0;
+        var runningStrProp = getStrength(units[currUnitIndex]) / totalStrength;
+        var runningCostProp = getFaceCost(faces[currFaceEndIndex]) / totalCost;
+        while (currUnitIndex < units.Count())
+        {
+            while (runningCostProp < runningStrProp
+                   && currFaceEndIndex < faces.Count - 1)
+            {
+                currFaceEndIndex++;
+                runningCostProp += getFaceCost(faces[currFaceEndIndex]) / totalCost;
+            }
+
+            var span = new Vector2I(currFaceStartIndex, currFaceEndIndex);
+            res.Add(units[currUnitIndex], span);
+            
+            currFaceStartIndex = currFaceEndIndex;
+            
+            currUnitIndex++;
+            if (currUnitIndex > units.Count - 1) break;
+            runningStrProp += getStrength(units[currUnitIndex]) / totalStrength;
+        }
+
+        return res;
     }
 }

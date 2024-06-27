@@ -59,7 +59,7 @@ public partial class ArmyTree : Tree
 
         unitBranch.SetCellMode(2, TreeItem.TreeCellMode.String);
         unitBranch.SetText(2, $"{unit.Template.Get(d).Name} {unit.Id}");
-        foreach (var (troop, amt) in unit.Troops.GetEnumerableModel(d))
+        foreach (var (troop, amt) in unit.Troops.GetEnumModel(d))
         {
             var troopBranch = unitBranch.CreateChild();
             troopBranch.SetCellMode(2, TreeItem.TreeCellMode.Icon);

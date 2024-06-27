@@ -99,7 +99,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
             Cells.Add(cell, key);
         }
     }
-
+        
     public Dictionary<IUnitNode, List<Unit>> DistributeResources(CombatCalculator combat, Data d)
     {
         var nodes = combat.Graph
@@ -128,30 +128,23 @@ public class Army : Entity, ICombatGraphNode, ICelled
         
         var toPick = Units.Entities(d).ToHashSet();
         
-        Assigner.AssignSingle(
+        Assigner.AssignToLimit(
             nodes.OfType<CellDefenseNode>(),
             def => nodeNeeds[def],
+            def => nodeNeeds[def] * 1.5f,
+            def => assgns[def],
             u => u.GetPowerPoints(d),
             toPick,
-            (n, u) =>
-            {
-                assgns[n].Add(u);
-            }
+            (n, u) => assgns[n].Add(u)
         );
         
         Assigner.AssignDiscrete<IUnitNode, Unit>(
             nodes,
             n => nodeNeeds[n],
-            n =>
-            {
-                return assgns[n];
-            },
+            n => assgns[n],
             u => Mathf.Max(u.GetPowerPoints(d), 1f),
             toPick,
-            (n, u) =>
-            {
-                assgns[n].Add(u);
-            }
+            (n, u) => assgns[n].Add(u)
         );
 
         return assgns;
@@ -213,7 +206,6 @@ public class Army : Entity, ICombatGraphNode, ICelled
     {
         if (Cells.Count() == 0)
         {
-            GD.Print($"destroying army {Id}");
             combat.Graph.RemoveNode(this);
             var update = new DestroyArmyProcedure(this.MakeRef());
             key.SendMessage(update);

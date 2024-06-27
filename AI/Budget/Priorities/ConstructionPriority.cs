@@ -31,7 +31,7 @@ public abstract class ConstructionPriority
             {
                 if (b.GetComponent<LaborComponent>() is LaborComponent l)
                 {
-                    return l.Inputs.GetEnumerableModel(data)
+                    return l.Inputs.GetEnumModel(data)
                         .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
                 }
 

@@ -7,8 +7,13 @@ using Godot;
 public class BudgetRoot : BudgetBranch
 {
     private BudgetBranch _construct, _military;
+    public Dictionary<IModel, float> Prices { get; private set; }
+    public Dictionary<PriorityNode, (float spent, int tick)> LastSpending { get; private set; }
+    
     public BudgetRoot(Data d)
     {
+        Prices = new Dictionary<IModel, float>();
+        LastSpending = new Dictionary<PriorityNode, (float spent, int tick)>();
         _construct = new ConstructBuildingsBudgetBranch(d);
         Children.Add(_construct);
 
@@ -21,20 +26,19 @@ public class BudgetRoot : BudgetBranch
         SetWeights(1f, r, key.Data);
         Bid(r, key);
     }
-
+    
     private void Bid(Regime r, LogicWriteKey key)
     {
         var leaves = GetLeaves().ToArray();
+        var buildCostPool = BudgetPool.ConstructForRegime(r, key.Data);
+        SetPrices(r, key.Data, leaves, buildCostPool);
         
         foreach (var priorityNode in leaves)
         {
             var weight = priorityNode.GetTreeWeight(key.Data);
             priorityNode.Credit.AddCreditToCurrent(weight);
         }
-
-        var buildCostPool = BudgetPool.ConstructForRegime(r, key.Data);
         
-        var modelPrices = GetPrices(r, key.Data, leaves, buildCostPool);
         var valid = leaves.ToHashSet();
         var iter = 0;
         while (valid.Count > 0 && iter < 10)
@@ -44,21 +48,42 @@ public class BudgetRoot : BudgetBranch
                 .MaxBy(v => v.Credit.GetCredit());
             var stillValid = most.Priority.Calculate(buildCostPool, r, key,
                 out var modelCosts);
-            if (stillValid == false) valid.Remove(most);
-            var price = modelCosts.Sum(
-                kvp => kvp.Value * getModelPrice(kvp.Key));
-            most.Credit.AddSpendingToCurrent(price);
+            if (stillValid == false)
+            {
+                valid.Remove(most);
+            }
+            else
+            {
+                var price = modelCosts.Sum(
+                    kvp => kvp.Value * getModelPrice(kvp.Key));
+                most.Credit.AddSpendingToCurrent(price);
+                addSpending(most, price);
+            }
         }
 
         float getModelPrice(IModel m)
         {
-            if (modelPrices.TryGetValue(m, out var price)) return price;
+            if (Prices.TryGetValue(m, out var price)) return price;
             return 0f;
         }
-    }
 
-    private Dictionary<IModel, float>
-        GetPrices(Regime r,
+        void addSpending(PriorityNode priority, float spent)
+        {
+            var tick = key.Data.GetTick();
+            if (LastSpending.TryGetValue(priority, out var v)
+                && v.tick == tick)
+            {
+                LastSpending[priority] = (v.spent + spent, tick);
+            }
+            else
+            {
+                LastSpending[priority] = (spent, tick);
+            }
+        }
+    }
+    
+    public void
+        SetPrices(Regime r,
         Data d,
         PriorityNode[] nodes,
         BudgetPool pool)
@@ -91,13 +116,13 @@ public class BudgetRoot : BudgetBranch
                 modelPrices[model] /= totalPrice;
             }
 
-            var test = totalModelDemand.GetEnumerableModel(d)
+            var test = totalModelDemand.GetEnumModel(d)
                            .Sum(kvp => kvp.Value * modelPrices[kvp.Key]);
             
             if (Mathf.Abs(test - 1f) > .1f) throw new Exception("Total price is " + test);
         }
 
-        return modelPrices;
+        Prices = modelPrices;
     }
 
     public override void SetWeights(float selfWeight, Regime r, Data d)

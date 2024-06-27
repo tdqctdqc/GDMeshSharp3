@@ -278,7 +278,7 @@ public class SocietyGenerator : Generator
         {
             var cell = (LandCell)settlement.Cell.Get(_data);
             var foodLabor = cell.FoodProd.Nums
-                .GetEnumerableModel(_data)
+                .GetEnumModel(_data)
                 .Sum(v => v.Key.BaseLabor * v.Value);
             var freeLabor = cell.GetPeep(_data).Size - foodLabor;
             

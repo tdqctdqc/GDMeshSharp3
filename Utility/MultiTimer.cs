@@ -18,7 +18,7 @@ public class MultiTimer
     {
         _sws.Add(name, new ConcurrentBag<Stopwatch>());
     }
-
+    
     public void RunAndTime(Action a, string name)
     {
         var sw = new Stopwatch();

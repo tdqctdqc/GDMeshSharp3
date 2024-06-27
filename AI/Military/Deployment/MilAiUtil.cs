@@ -86,7 +86,8 @@ public static class MilAiUtil
         var groupsInOrder = GetLineGroupsInOrder(faces,
             groups, d);
         var faceCosts = GetFaceCosts(alliance, faces, d);
-        var lineOrders = Assigner.PickInOrderAndAssignAlongFaces(
+        var lineOrders = Assigner
+            .PickInOrderAndAssignAlongFaces2(
             faces, 
             groupsInOrder, 
             u => u.GetPowerPoints(d),

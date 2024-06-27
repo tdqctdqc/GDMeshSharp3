@@ -32,7 +32,7 @@ public static class BudgetConstrainer
         foreach (var (build, variable) in vars)
         {
             var costs = build.Makeable
-                .BuildCosts.GetEnumerableModel(data);
+                .BuildCosts.GetEnumModel(data);
             foreach (var (model, amount) in costs)
             {
                 if (constraints.TryGetValue(model.Id, 
@@ -80,7 +80,7 @@ public static class BudgetConstrainer
         foreach (var kvp in vars)
         {
             var projVar = kvp.Value;
-            var buildCosts = kvp.Key.Makeable.BuildCosts.GetEnumerableModel(data);
+            var buildCosts = kvp.Key.Makeable.BuildCosts.GetEnumModel(data);
             var projPrice = buildCosts
                 .Where(kvp => kvp.Key is TradeableItem)
                 .Sum(kvp => prices[kvp.Key] * kvp.Value);

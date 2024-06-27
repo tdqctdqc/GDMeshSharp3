@@ -1,15 +1,14 @@
 
-using System;
+
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
 using Google.OrTools.LinearSolver;
 
-public class MakeReinforcementTroopsPriority
-    : SolverPriority<Troop>
+public class MakeReserveTroopsPriority : SolverPriority<Troop>
 {
     private Dictionary<Troop, float> _needed; 
-    public MakeReinforcementTroopsPriority(
+    public MakeReserveTroopsPriority(
         string name) 
             : base(name, d => d.Models.Troops.GetList())
     {
@@ -30,22 +29,35 @@ public class MakeReinforcementTroopsPriority
     {
         _needed.Clear();
         var units = r.GetUnits(d);
+        var desired = IdCount<Troop>.Construct();
+        var reserveRatio = .2f;
+        var templateCounts = IdCount<UnitTemplate>.Construct();
         foreach (var unit in units)
         {
-            var template = unit.Template.Get(d);
-            foreach (var (troop, amt) in unit.Troops.GetEnumModel(d))
+            templateCounts.Add(unit.Template.RefId, 1);
+        }
+        foreach (var (template, num) in templateCounts
+                     .GetEnumEntity(d))
+        {
+            foreach (var (troop, amt) in template.TroopCounts.GetEnumModel(d))
             {
-                var diff = template.TroopCounts.Get(troop) - amt;
-                var stock = r.Stock.Stock.Get(troop);
-                diff -= stock;
-                var producing = r.MakeQueue.Queue.OfType<ModelMakeProject>()
-                    .Where(p => p.Making.RefId == troop.Id)
-                    .Sum(p => p.Amount);
-                diff -= producing;
-                if (diff > 0f)
-                {
-                    _needed.AddOrSum(troop, diff);
-                }
+                desired.Add(troop, amt * num * reserveRatio);
+            }
+        }
+        
+        foreach (var (troop, amt) in desired.GetEnumModel(d))
+        {
+            var stock = r.Stock.Stock.Get(troop);
+            var diff = amt - stock;
+            
+            //'double counting' this w/ reinforcement priority?
+            var producing = r.MakeQueue.Queue.OfType<ModelMakeProject>()
+                .Where(p => p.Making.RefId == troop.Id)
+                .Sum(p => p.Amount);
+            diff -= producing;
+            if (diff > 0f)
+            {
+                _needed.AddOrSum(troop, diff);
             }
         }
     }

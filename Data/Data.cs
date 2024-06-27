@@ -24,9 +24,8 @@ public class Data
     public Context Context { get; private set; }
     private EntityTypeTree _entityTypeTree;
 
-    public int Tick => GetTick();
 
-    private int GetTick()
+    public int GetTick()
     {
         if (BaseDomain.GameClock != null)
         {

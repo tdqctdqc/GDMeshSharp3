@@ -33,7 +33,7 @@ public partial class MilitaryTab : ScrollContainer, IUiDrawable
         var iconSize = client.Settings.MedIconSize.Value;
 
         foreach (var kvp in regime.Stock.Stock
-                     .GetEnumerableModel(client.Data)
+                     .GetEnumModel(client.Data)
                      .Where(k => k.Key is Troop t))
         {
             var amt = kvp.Value;
@@ -49,7 +49,7 @@ public partial class MilitaryTab : ScrollContainer, IUiDrawable
         var troopsDeployed = new Dictionary<Troop, float>();
         foreach (var unit in units)
         {
-            foreach (var kvp in unit.Troops.GetEnumerableModel(client.Data))
+            foreach (var kvp in unit.Troops.GetEnumModel(client.Data))
             {
                 troopsDeployed.AddOrSum(kvp.Key, kvp.Value);
             }

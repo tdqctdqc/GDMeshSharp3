@@ -24,9 +24,9 @@ public class Logger
     }
     private void Loop()
     {
-        var tick = _data.Tick;
         while (true)
         {
+            var tick = _data.GetTick();
             while (_queue.TryDequeue(out var res))
             {
                 var entries = Entries.GetOrAdd(res.Item1, i => new Dictionary<int, LogEntry>());
@@ -48,5 +48,16 @@ public class Logger
         sw.Stop();
         var ms = sw.Elapsed.TotalMilliseconds;
         Log($"{name}: {ms} ms", type);
+    }
+    
+    public T RunAndLogTime<T>(string name, LogType type, Func<T> a)
+    {
+        var sw = new Stopwatch();
+        sw.Start();
+        var t = a.Invoke();
+        sw.Stop();
+        var ms = sw.Elapsed.TotalMilliseconds;
+        Log($"{name}: {ms} ms", type);
+        return t;
     }
 }

@@ -1,3 +1,4 @@
+using System.Linq;
 using Godot;
 
 namespace Ui.CellCombatHistoryWindow;
@@ -39,9 +40,9 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
         return res;
     }
 
-    private VBoxContainer Losses(bool attacker, Client client)
+    private VBoxContainer Losses(bool attacker, 
+        Client client)
     {
-        var history = Parent.Info;
         var res = new VBoxContainer();
         res.CreateLabelAsChild($"{(attacker ? "Attacker " : "Defender ")} Losses");
         var scroll = new ScrollContainer();
@@ -50,27 +51,25 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
         var scrollInner = new VBoxContainer();
         scroll.AddChild(scrollInner);
         res.AddChild(scroll);
-        // var troops = attacker 
-        //     ? history.AttackerTroops 
-        //     : history.DefenderTroops;
-        //
-        // var losses = attacker 
-        //     ? history.AttackerLosses 
-        //     : history.DefenderLosses;
-        // var lossesSum = IdCount<Troop>.Sum(losses);
-        //
-        // var troopsSum = IdCount<Troop>.Sum(troops);
-        //
-        // var iconSize = client.Settings.SmallIconSize.Value;
-        // var e = troopsSum
-        //     .GetEnumerableModel(client.Data);
-        // foreach (var (troop, amt) in e)
-        // {
-        //     var entry = troop.Icon.GetLabeledIcon<HBoxContainer>(
-        //         $"Losses: {lossesSum.Get(troop)} / {amt}",
-        //         iconSize);
-        //     scrollInner.AddChild(entry);
-        // }
+        var infos = attacker 
+            ? Parent.Graph.GetNeighbors(Parent.Info)
+                .OfType<CellAttackNode>().SelectMany(n => n.UnitInfos)
+            : Parent.Info.UnitInfos;
+        
+        var lossesSum = IdCount<Troop>.Sum(infos.Select(i => i.GetLosses()).ToArray());
+        
+        var troopsSum = IdCount<Troop>.Sum(infos.Select(i => i.Initial).ToArray());
+        
+        var iconSize = client.Settings.SmallIconSize.Value;
+        var e = troopsSum
+            .GetEnumModel(client.Data);
+        foreach (var (troop, amt) in e)
+        {
+            var entry = troop.Icon.GetLabeledIcon<HBoxContainer>(
+                $"Deployed: {amt} Losses: {lossesSum.Get(troop)}",
+                iconSize);
+            scrollInner.AddChild(entry);
+        }
 
         return res;
     }

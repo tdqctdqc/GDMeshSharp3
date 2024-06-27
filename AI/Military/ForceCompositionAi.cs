@@ -12,7 +12,6 @@ public class ForceCompositionAi
     {
         
     }
-
     public void Calculate(Regime regime, LogicWriteKey key)
     {
         ReinforceUnits(regime, key);
@@ -82,7 +81,7 @@ public class ForceCompositionAi
         foreach (var unit in units)
         {
             var template = unit.Template.Get(key.Data);
-            foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
+            foreach (var (troop, value) in unit.Troops.GetEnumModel(key.Data))
             {
                 var shouldHave = template.TroopCounts.Get(troop);
                 if (value < shouldHave)
@@ -97,7 +96,7 @@ public class ForceCompositionAi
         foreach (var unit in regime.GetUnits(key.Data))
         {
             var template = unit.Template.Get(key.Data);
-            foreach (var (troop, value) in unit.Troops.GetEnumerableModel(key.Data))
+            foreach (var (troop, value) in unit.Troops.GetEnumModel(key.Data))
             {
                 if (needCounts.ContainsKey(troop) == false) continue;
                 if (reserve.Stock.Contents.ContainsKey(troop.Id) == false) continue;
@@ -107,6 +106,7 @@ public class ForceCompositionAi
                     var need = shouldHave - value;
                     var receiveRatio = reserve.Stock.Get(troop) / needCounts[troop];
                     receiveRatio = Mathf.Clamp(receiveRatio, 0f, 1f);
+                    
                     proc.ReinforceCounts.Add((unit.Id, troop.Id, need * receiveRatio));
                 }
             }

@@ -5,6 +5,7 @@ using Ui.CellCombatHistoryWindow;
 public partial class CellCombatHistoryWindow : TabWindow
 {
     public CellDefenseNode Info { get; private set; }
+    public CombatGraph Graph { get; private set; }
     public CellCombatHistoryWindow(Client c)
         : base(c)
     {
@@ -15,8 +16,10 @@ public partial class CellCombatHistoryWindow : TabWindow
         AddTab(units);
     }
 
-    public void Setup(CellDefenseNode info, Client client)
+    public void Setup(CellDefenseNode info, CombatGraph graph,
+        Client client)
     {
+        Graph = graph;
         Info = info;
     }
 }
