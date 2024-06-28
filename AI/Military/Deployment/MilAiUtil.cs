@@ -41,57 +41,21 @@ public static class MilAiUtil
         return val;
     }
     
-    
-    
-    public static Dictionary<FrontFace, float> GetFaceCosts(
-        Alliance alliance,
-        List<FrontFace> toCover,
-        Data d)
-    {
-        if (toCover.Count == 0) return new Dictionary<FrontFace, float>();
-        var totalEnemyCost = toCover.Sum(f => MilAiUtil.GetFaceEnemyCost(alliance, f, d));
-        var totalLengthCost = toCover.Count;
-        var enemyCostWeight = CoverOpposingWeight;
-        var lengthCostWeight = CoverLengthWeight;
-        return toCover
-            .ToDictionary(f => f,
-                f =>
-                {
-                    float enemyCost;
-                    if (totalEnemyCost == 0f)
-                    {
-                        enemyCost = 0f;
-                    }
-                    else
-                    {
-                        enemyCost = enemyCostWeight * MilAiUtil.GetFaceEnemyCost(alliance, f, d) / totalEnemyCost;
-                    }
-                    var lengthCost = lengthCostWeight / totalLengthCost;
-                    if (float.IsNaN(lengthCost))
-                    {
-                        throw new Exception($"length cost weight {lengthCostWeight} total length cost {totalLengthCost}");
-                    }
-                    var totalCost = enemyCost + lengthCost;
-                    if (float.IsNaN(totalCost)) throw new Exception();
-                    return totalCost;
-                });
-    }
-    
     public static Dictionary<Army, HashSet<Cell>> 
         GetGroupLineAssignments(Alliance alliance,
             IEnumerable<Army> groups,
             List<FrontFace> faces,
+            Func<FrontFace, float> getFaceCost,
             Data d)
     {
         var groupsInOrder = GetLineGroupsInOrder(faces,
             groups, d);
-        var faceCosts = GetFaceCosts(alliance, faces, d);
         var lineOrders = Assigner
             .PickInOrderAndAssignAlongFaces2(
             faces, 
             groupsInOrder, 
             u => u.GetPowerPoints(d),
-            f => faceCosts[f]);
+            getFaceCost);
         return lineOrders.ToDictionary(kvp => kvp.Key,
             kvp => faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1)
                 .Select(f => f.GetNative(d)).ToHashSet());

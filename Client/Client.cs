@@ -187,12 +187,6 @@ public partial class Client : Node, IClient
             },
             "Poly");
         
-        uiFrame.LeftBar.Add(() =>
-            {
-                UiController.ModeOption.Choose<DeploymentMode>();
-                return new Control();
-            },
-            "Deployment");
         
         uiFrame.LeftBar.Add(() =>
             {

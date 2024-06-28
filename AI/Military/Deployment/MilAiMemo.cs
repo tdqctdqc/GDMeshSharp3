@@ -16,7 +16,7 @@ public class MilAiMemo
         {
             return;
         }
-        var segments = root.GetDescendentAssignmentsOfType<HoldLineAssignment>().ToArray();
+        var segments = root.GetDescendentAssignmentsOfType<FrontlineAssignment>().ToArray();
         foreach (var seg in segments)
         {
             FrontSegmentGroups.AddRange(seg.Groups);
@@ -25,10 +25,10 @@ public class MilAiMemo
     public void Finish(DeploymentAi ai, DeploymentRoot root, LogicWriteKey key)
     {
         var d = key.Data;
-        var theaterSegs = new Dictionary<TheaterBranch, HoldLineAssignment[]>();
+        var theaterSegs = new Dictionary<TheaterBranch, FrontlineAssignment[]>();
         foreach (var theater in root.SubBranches.OfType<TheaterBranch>())
         {
-            theaterSegs.Add(theater, theater.GetDescendentAssignmentsOfType<HoldLineAssignment>().ToArray());
+            theaterSegs.Add(theater, theater.GetDescendentAssignmentsOfType<FrontlineAssignment>().ToArray());
         }
         var validGroups = FrontSegmentGroups.Where(g => d.HasEntity(g.Id)).ToArray();
         foreach (var group in validGroups)

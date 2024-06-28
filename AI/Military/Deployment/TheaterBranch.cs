@@ -21,7 +21,7 @@ public class TheaterBranch : DeploymentBranch
     {
         foreach (var frontline in Theater.Frontlines)
         {
-            var holdLine = new HoldLineAssignment(ai.Deployment,
+            var holdLine = new FrontlineAssignment(ai.Deployment,
                 this, frontline, key);
             Assignments.Add(holdLine);
         }

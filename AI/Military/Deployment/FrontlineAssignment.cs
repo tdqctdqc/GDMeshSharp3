@@ -6,13 +6,13 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class HoldLineAssignment : GroupAssignment
+public class FrontlineAssignment : GroupAssignment
 {
     public Frontline Frontline { get; private set; }
     public Color Color { get; private set; }
     public HashSet<Army> LineGroups { get; private set; }
     public HashSet<Army> InsertingGroups { get; private set; }
-    public HoldLineAssignment(
+    public FrontlineAssignment(
         DeploymentAi ai,
         DeploymentBranch parent,
         Frontline frontline,
@@ -47,16 +47,7 @@ public class HoldLineAssignment : GroupAssignment
 
     public override float GetPowerPointNeed(Data d)
     {
-        var ai = d.HostLogicData.AllianceAis[Alliance]
-            .Military.Deployment;
-        
-        var opposing = GetOpposingPowerPoints(d);
-        var length = GetLength(d);
-
-        var oppNeed = opposing * MilAiUtil.DesiredOpposingPpRatio;
-        var lengthNeed = length * MilAiUtil.PowerPointsPerCellFaceToCover;
-
-        return Mathf.Max(oppNeed, lengthNeed);
+        return Frontline.AttackWeight + Frontline.DefendWeight;
     }
     public override Army PullGroup(DeploymentAi ai, 
         Func<Army, float> suitability, 
@@ -99,12 +90,19 @@ public class HoldLineAssignment : GroupAssignment
         LogicWriteKey key)
     {
         SetLineAndInsertingGroups(key);
-        var frontlineFaceCosts 
-            = MilAiUtil.GetFaceCosts(Alliance, Frontline.Faces, key.Data);
         HandleInsertingGroupsOrders(key);
         if (LineGroups.Count == 0) return;
         var lineAssignments = MilAiUtil
-            .GetGroupLineAssignments(Alliance, LineGroups, Frontline.Faces, key.Data);
+            .GetGroupLineAssignments(Alliance, LineGroups, 
+                Frontline.Faces,
+                f =>
+                {
+                    var atkWeight = Frontline.FaceAttackWeights.TryGetValue(f, out var w)
+                        ? w
+                        : 0f;
+                    return atkWeight + Frontline.FaceDefendWeights[f];
+                },
+                key.Data);
         
         var toTake = Frontline.AdvanceInto.ToHashSet();
 
@@ -193,19 +191,5 @@ public class HoldLineAssignment : GroupAssignment
     {
         return Frontline.Faces.Select(f => f.GetNative(d))
             .MinBy(c => c.GetCenter().Offset(army.GetHomeCell(d).GetCenter(), d).Length());
-    }
-    public float GetOpposingPowerPoints(Data data)
-    {
-        return Frontline.Faces.Select(f => f.GetNative(data))
-            .Distinct()
-            .SelectMany(c => c.GetNeighbors(data))
-            .Distinct()
-            .Where(n => n.RivalControlled(Alliance, data))
-            .Sum(c => data.Context.PowerPoints[c]);
-    }
-
-    public int GetLength(Data d)
-    {
-        return Frontline.Faces.Count;
     }
 }

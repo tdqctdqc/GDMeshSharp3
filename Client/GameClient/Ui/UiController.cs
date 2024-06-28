@@ -20,9 +20,6 @@ public partial class UiController : Node, IClientComponent
             new BlankMode(client),
             new ArmyMode(client),
             new PolyMode(client),
-            // new TacticalMode(client),
-            new DeploymentMode(client),
-            // new HighlightCellsMode(client),
             new PathFindMode(client),
             new MilPlanningMode(client),
             new ConstructionMode(client)

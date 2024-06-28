@@ -18,61 +18,7 @@ public static class MeshBuilderExt
                 relTo.Offset(to, d), thickness, color);
         }
     }
-    public static void DrawFrontAssignment(this MeshBuilder mb,
-        Vector2 relTo,
-        HoldLineAssignment seg, 
-        Data d)
-    {
-        
-        var markerSize = 5f;
-        var color = seg.Color;
-        if (seg.Frontline.Faces.Count == 1)
-        {
-            var face = seg.Frontline.Faces[0];
-            var cell = face.GetNative(d);
-            mb.AddSquare(relTo.Offset(cell.GetCenter(), d),
-                markerSize, color);
-        }
-        for (var i = 0; i < seg.Frontline.Faces.Count - 1; i++)
-        {
-            var face = seg.Frontline.Faces[i];
-            var nextFace = seg.Frontline.Faces[i + 1];
-            var from = face.GetNative(d);
-            var to = nextFace.GetNative(d);
-            
-            mb.AddLine(relTo.Offset(from.GetCenter(),d),
-                relTo.Offset(to.GetCenter(), d),
-                color, markerSize);
-        }
-
-        foreach (var kvp in 
-                 MilAiUtil.GetGroupLineAssignments(seg.Alliance, seg.Groups,
-                     seg.Frontline.Faces, d))
-        {
-            var held = kvp.Value;
-            var group = kvp.Key;
-            for (var i = 0; i < held.Count; i++)
-            {
-                var face = seg.Frontline.Faces[i];
-                var native = face.GetNative(d);
-                var foreign = face.GetForeign(d);
-                mb.AddArrow(relTo.Offset(native.GetCenter(),d),
-                    relTo.Offset(foreign.GetCenter(), d),
-                    markerSize / 5f, group.Color);
-            }
-            foreach (var cell in held)
-            {
-                foreach (var neighbor in cell.GetNeighbors(d))
-                {
-                    if (cell.Id < neighbor.Id) continue;
-                    if (held.Contains(neighbor) == false) continue;
-                    mb.AddLine(relTo.Offset(cell.GetCenter(), d),
-                        relTo.Offset(neighbor.GetCenter(), d),
-                        group.Color, markerSize / 2f);
-                }
-            }
-        }
-    }
+    
     
     public static void DrawPolygonOutline(this MeshBuilder mb,
         Vector2[] boundaryPoints, float thickness, Color color)

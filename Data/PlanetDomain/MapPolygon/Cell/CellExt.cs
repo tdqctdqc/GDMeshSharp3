@@ -116,4 +116,15 @@ public static class CellExt
     {
         return d.Military.UnitAux.ArmiesByHomeCell[c];
     }
+
+    public static float GetLandDefendScore(this LandCell c, Data d)
+    {
+        var lf = c.Landform.Get(d);
+        var v = c.Vegetation.Get(d);
+        var def = lf.MinRoughness 
+               + lf.MovementCostMult
+               + v.MovementCostMult;
+        if (float.IsNaN(def) || float.IsFinite(def) == false) throw new Exception();
+        return def;
+    }
 }

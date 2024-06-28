@@ -7,7 +7,7 @@ public class Theater
 {
     public HashSet<Cell> Cells { get; private set; }
     public HashSet<Frontline> Frontlines { get; private set; }
-
+    
     public static Theater Construct(
         Alliance alliance,
         HashSet<Cell> theaterCells,
@@ -34,4 +34,5 @@ public class Theater
         Cells = cells;
         Frontlines = frontlines;
     }
+
 }

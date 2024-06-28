@@ -129,7 +129,7 @@ public abstract class Cell : IPolymorph,
         return new CellRef(Id);
     }
 
-    public Cell GetCell(Data d)
+    Cell ICelled.GetCell(Data d)
     {
         return this;
     }

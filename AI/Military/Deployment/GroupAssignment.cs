@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-[MessagePack.Union(0, typeof(HoldLineAssignment))]
+[MessagePack.Union(0, typeof(FrontlineAssignment))]
 public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
 {
     public int Id { get; private set; }
