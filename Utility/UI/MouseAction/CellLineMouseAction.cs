@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public class CellLineMouseAction : MouseHoldAction
+public class CellLineMouseAction : MouseAction
 {
     private Func<Cell, bool> _valid;
     private List<Cell> _cells;

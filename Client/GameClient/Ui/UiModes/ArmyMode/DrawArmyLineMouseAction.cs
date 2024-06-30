@@ -11,16 +11,17 @@ public class DrawArmyLineMouseAction : CellHashMouseAction
     public DrawArmyLineMouseAction(global::ArmyMode armyMode,
         MouseOverHandler mouseOverHandler,
         Client client) 
-        : base(mouseOverHandler, v => Valid(v, client),
+        : base(mouseOverHandler, v 
+                => Valid(v, client),
             MouseButtonMask.Right, client.Data)
     {
         _mode = armyMode;
-        AddDefaultAction(l => DrawNewLine(l, client));
-        AddShiftAction(l => AddToLine(l, client));
-        AddCtrlAction(l => TrimLine(l, client));
+        AddDefaultAction(() => DrawNewLine(_cells, client));
+        AddShiftAction(() => AddToLine(_cells, client));
+        AddCtrlAction(() => TrimLine(_cells, client));
     }
 
-    private static bool Valid((Cell prospect, HashSet<Cell> already, MouseAuxButton aux) v,
+    private static bool Valid((Cell prospect, HashSet<Cell> already) v,
         Client client)
     {
         var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;

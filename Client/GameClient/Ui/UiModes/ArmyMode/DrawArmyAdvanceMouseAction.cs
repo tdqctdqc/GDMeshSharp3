@@ -15,11 +15,11 @@ public class DrawArmyAdvanceMouseAction : CellHashMouseAction
             client.Data)
     {
         _mode = mode;
-        AddDefaultAction(a => DrawAdvance(a, client));
-        AddCtrlAction(a => TrimAdvance(a, client));
+        AddDefaultAction(() => DrawAdvance(_cells, client));
+        AddCtrlAction(() => TrimAdvance(_cells, client));
     }
 
-    private static bool Valid((Cell prospect, HashSet<Cell> already, MouseAuxButton aux) v,
+    private static bool Valid((Cell prospect, HashSet<Cell> already) v,
         global::ArmyMode mode, 
         Client client)
     {

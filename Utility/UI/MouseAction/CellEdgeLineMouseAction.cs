@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 
-public class CellEdgeLineMouseAction : MouseHoldAction
+public class CellEdgeLineMouseAction : MouseAction
 {
     private Func<Cell, Cell, bool> _valid;
     private List<Vector2I> _edges;
