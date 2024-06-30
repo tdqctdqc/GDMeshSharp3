@@ -31,7 +31,6 @@ public class ModelMakeProject : MakeProject
         ProductionResult result,
         LogicWriteKey key)
     {
-        GD.Print($"made {amount} {((IModel)Making.Get(key.Data)).Name}");
         Fulfilled += amount;
         result.Stock.Stock.Add(Making.RefId, amount);
         result.Stock.Produced.Add(Making.RefId, amount);

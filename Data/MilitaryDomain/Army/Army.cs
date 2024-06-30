@@ -23,9 +23,13 @@ public class Army : Entity, ICombatGraphNode, ICelled
         var units = ERefSetCallback<Unit>.Construct
             (unitIds.Select(id => new ERef<Unit>(id))
                 .ToHashSet());
+        var line = new LineMission(
+            new RefSet<CellRef>(startCells.Select(c => c.MakeRef()).ToHashSet()),
+            new RefSet<CellRef>(new HashSet<CellRef>()), 
+            false);
+        
         var u = new Army(id, r.MakeRef(), units,
-            new LineMission(new RefSet<CellRef>(startCells.Select(c => c.MakeRef()).ToHashSet()),
-                new RefSet<CellRef>(new HashSet<CellRef>()), false),
+            line,
             new HashSet<ArmyMission>(),
             RefSetCallback<CellRef>.Construct(startCells.Select(c => c.MakeRef())),
             ColorsExt.GetRandomColor());

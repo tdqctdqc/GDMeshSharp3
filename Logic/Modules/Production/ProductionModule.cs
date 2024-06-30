@@ -267,7 +267,6 @@ public class ProductionModule : LogicModule
                 key);
             if (made > 0f)
             {
-                GD.Print("progressing on proj " + proj);
                 proj.Increment(made, result, key);
             }
             if (proj.Fulfilled >= proj.Amount)
