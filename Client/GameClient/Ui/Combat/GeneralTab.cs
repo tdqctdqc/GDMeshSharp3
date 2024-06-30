@@ -1,15 +1,14 @@
 using System.Linq;
 using Godot;
 
-namespace Ui.CellCombatHistoryWindow;
+namespace Ui.Combat;
 
 public partial class GeneralTab : HBoxContainer, IUiDrawable
 {
-    public global::CellCombatHistoryWindow Parent { get; private set; }
-
-    public GeneralTab(global::CellCombatHistoryWindow parent)
+    private CombatInfo _info;
+    public GeneralTab(CombatInfo info)
     {
-        Parent = parent;
+        _info = info;
         Name = "General";
     }
     private GeneralTab()
@@ -30,12 +29,9 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
         var res = new VBoxContainer();
         res.ExpandFill();
 
-        var history = Parent.Info;
-        var cell = PlanetDomainExt.GetPolyCell(history.Cell.RefId, client.Data);
-        res.CreateLabelAsChild($"Cell: {cell.Id}");
-        res.CreateLabelAsChild($"Landform: {cell.Landform.Get(client.Data).Name}");
-        res.CreateLabelAsChild($"Vegetation: {cell.Vegetation.Get(client.Data).Name}");
-        res.CreateLabelAsChild($"Attackers {(history.DefendersForcedBack ? "victorious" : "defeated")}");
+        res.CreateLabelAsChild($"Landform: {_info.Landform}");
+        res.CreateLabelAsChild($"Vegetation: {_info.Vegetation}");
+        res.CreateLabelAsChild($"Attackers {(_info.DefendersForcedBack ? "victorious" : "defeated")}");
         
         return res;
     }
@@ -52,9 +48,8 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
         scroll.AddChild(scrollInner);
         res.AddChild(scroll);
         var infos = attacker 
-            ? Parent.Graph.GetNeighbors(Parent.Info)
-                .OfType<CellAttackNode>().SelectMany(n => n.UnitInfos)
-            : Parent.Info.UnitInfos;
+            ? _info.Attackers
+            : _info.Defenders;
         
         var lossesSum = IdCount<Troop>.Sum(infos.Select(i => i.GetLosses()).ToArray());
         

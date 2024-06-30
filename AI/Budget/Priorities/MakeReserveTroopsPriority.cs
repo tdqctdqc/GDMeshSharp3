@@ -10,7 +10,7 @@ public class MakeReserveTroopsPriority : SolverPriority<Troop>
     private Dictionary<Troop, float> _needed; 
     public MakeReserveTroopsPriority(
         string name) 
-            : base(name, d => d.Models.Troops.GetList())
+            : base(name, d => d.Models.GetModels<Troop>().Values)
     {
         _needed = new Dictionary<Troop, float>();
     }

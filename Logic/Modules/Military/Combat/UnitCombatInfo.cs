@@ -1,4 +1,5 @@
 
+using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 
@@ -20,7 +21,17 @@ public class UnitCombatInfo
         ActiveFrontSize = Active.GetEnumModel(d)
             .Sum(v => v.Key.FrontLength * v.Value);
     }
-
+    public UnitCombatInfo(IdCount<Troop> troops,
+        Data d)
+    {
+        Id = -1;
+        Active = IdCount<Troop>.Construct(troops);
+        Initial = IdCount<Troop>.Construct(troops);
+        Kills = IdCount<Troop>.Construct();
+        Template = new ERef<UnitTemplate>(-1);
+        ActiveFrontSize = Active.GetEnumModel(d)
+            .Sum(v => v.Key.FrontLength * v.Value);
+    }
     [SerializationConstructor] private UnitCombatInfo(
         int id, IdCount<Troop> active, 
         IdCount<Troop> initial, 

@@ -1,0 +1,191 @@
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using Godot;
+
+public static class MilUtil
+{
+    public static float CoverOpposingWeight { get; private set; }
+        = .5f;
+    public static float CoverLengthWeight { get; private set; }
+        = 1f;
+    public static float DesiredOpposingPpRatio { get; private set; }
+        = 2f;
+    public static float PowerPointsPerCellFaceToCover { get; private set; }
+        = 100f;
+    public static float LossRatioToForceBack { get; private set; } 
+        = .3f;
+
+    public static bool CalculateCombat(
+        UnitCombatInfo[] attackers,
+        UnitCombatInfo[] defenders,
+        Landform lf, Vegetation veg, Data d)
+    {
+        foreach (var unitCombatInfo in attackers)
+        {
+            doFights(unitCombatInfo, defenders);
+        }
+        
+        void doFights(UnitCombatInfo unit, 
+            UnitCombatInfo[] targets)
+        {
+            var targetUnit = getTargetUnit(targets);
+            if (targetUnit == null) return;
+            foreach (var (troop, amt) in unit.Active.GetEnumModel(d))
+            {
+                var ceil = Mathf.CeilToInt(amt);
+                for (var i = 0; i < ceil; i++)
+                {
+                    if (targetUnit.ActiveFrontSize <= 0f)
+                    {
+                        targetUnit = getTargetUnit(targets);
+                        if (targetUnit == null) return;
+                    }
+
+                    var (targetTroop, targetTroopAmt) = getTargetTroop(targetUnit);
+                    
+                    if (getHit(troop, targetTroop, true))
+                    {
+                        var kill = getKillAmt(troop, targetTroop, targetTroopAmt);
+                        unit.AddKill(targetTroop, kill);
+                        targetUnit.AddLoss(targetTroop, kill);
+                    }
+                    
+                    if (getHit(targetTroop, troop, false))
+                    {
+                        var kill = getKillAmt(targetTroop, troop, 1f);
+                        unit.AddLoss(troop, kill);
+                        targetUnit.AddKill(troop, kill);
+                    }
+                }
+            }
+        }
+        
+        bool getHit(Troop troop, Troop target, bool targetIsDefending)
+        {
+            var toHit = Random.Shared.NextSingle()
+                        * troop.Accuracy;
+            var evadeMult = targetIsDefending
+                ? lf.EvasionMult * veg.EvasionMult
+                : 1f;
+            var toEvade = Random.Shared.NextSingle()
+                          * target.Evasion * evadeMult;
+            return toHit > toEvade;
+        }
+
+        float getKillAmt(Troop troop, Troop target, float targetAmt)
+        {
+            var dmg = getDamage(troop, target);
+            return Mathf.Min(targetAmt, dmg / target.Hitpoints);
+        }
+        float getDamage(Troop troop, Troop target)
+        {
+            var softDmg = troop.SoftAttack * (1f - target.Hardness);
+            var hardDmg = troop.HardAttack * target.Hardness;
+            return softDmg + hardDmg;
+        }
+
+        UnitCombatInfo getTargetUnit(UnitCombatInfo[] targets)
+        {
+            var totalLength = targets.Sum(t => t.ActiveFrontSize);
+            if (totalLength == 0f) return null;
+            var s = Game.I.Random.RandfRange(0, totalLength - .01f);
+
+            var i = 0;
+            while (s > targets[i].ActiveFrontSize)
+            {
+                s -= targets[i].ActiveFrontSize;
+                i++;
+            }
+
+            return targets[i];
+        }
+
+        (Troop troop, float amt) getTargetTroop(UnitCombatInfo targetUnit)
+        {
+            if (targetUnit.ActiveFrontSize <= 0f) return (null, 0f);
+            var sample = Game.I.Random.RandfRange(0f, targetUnit.ActiveFrontSize - .01f);
+            var soFar = 0f;
+            foreach (var (troop, amt) in targetUnit.Active.GetEnumModel(d))
+            {
+                soFar += amt * troop.FrontLength;
+                if (soFar >= sample) return (troop, Mathf.Min(1f, amt));
+            }
+
+            throw new Exception();
+        }
+
+        if (defenders.All(info => info.ActiveFrontSize <= 0f))
+        {
+            return true;
+        }
+
+        var defPower = defenders.Sum(i => i.InitialPowerPoints(d));
+        var lostDefPower = defenders.Sum(i => i.LostPowerPoints(d));
+        var defLossRatio = lostDefPower / defPower;
+        if (lostDefPower / defPower >= LossRatioToForceBack)
+        {
+            var atkPower = attackers.Sum(i => i.InitialPowerPoints(d));
+            var lostAtkPower = attackers.Sum(i => i.LostPowerPoints(d));
+            var atkLossRatio = lostAtkPower / atkPower;
+            if (atkLossRatio < defLossRatio)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    
+    public static Dictionary<Army, HashSet<Cell>> 
+        GetGroupLineAssignments(Alliance alliance,
+            IEnumerable<Army> groups,
+            List<FrontFace> faces,
+            Func<FrontFace, float> getFaceCost,
+            Data d)
+    {
+        var groupsInOrder = GetLineGroupsInOrder(faces,
+            groups, d);
+        var lineOrders = Assigner
+            .PickInOrderAndAssignAlongFaces2(
+            faces, 
+            groupsInOrder, 
+            u => u.GetPowerPoints(d),
+            getFaceCost);
+        return lineOrders.ToDictionary(kvp => kvp.Key,
+            kvp => faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1)
+                .Select(f => f.GetNative(d)).ToHashSet());
+    }
+    public static List<Army> GetLineGroupsInOrder(List<FrontFace> faces,
+        IEnumerable<Army> lineGroups,
+        Data d)
+    {
+        var list = lineGroups.ToList();
+        list.Sort((g, f) =>
+        {
+            var boundsG = g.GetCells(d);
+            var gFirst = faces
+                .FindIndex(f => boundsG.Contains(f.GetNative(d)));
+            var gLast = faces
+                .FindLastIndex(f => boundsG.Contains(f.GetNative(d)));
+
+            var boundsF = f.GetCells(d);
+            var fFirst = faces
+                .FindIndex(f => boundsF.Contains(f.GetNative(d)));
+            var fLast = faces
+                .FindLastIndex(f => boundsF.Contains(f.GetNative(d)));
+
+            if (gFirst == -1 || gLast == -1 || fFirst == -1 || fLast == -1)
+            {
+                return 0;
+            }
+            if (gFirst < fFirst) return -1;
+            if (fFirst < gFirst) return 1;
+            if (gLast < fLast) return -1;
+            if (fLast < gLast) return 1;
+            return 0;
+        });
+        return list;
+    }
+}

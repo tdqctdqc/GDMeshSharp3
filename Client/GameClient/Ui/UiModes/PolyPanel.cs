@@ -15,7 +15,6 @@ public partial class PolyPanel : Panel
         _inner = this.MakeScroll<VBoxContainer>(new Vector2(300f, 600f));
         SelfModulate = Colors.Black;
         
-        var list = c.Data.Models.Buildings.GetList();
         var mode = c.UiController.ModeOption.Options
             .OfType<PolyMode>()
             .First();

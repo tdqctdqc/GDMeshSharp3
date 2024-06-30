@@ -5,15 +5,33 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/DrawArmyAdvanceMouseAction.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/DrawArmyLineMouseAction.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/MakeArmyMouseAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ModelMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ManufacturingQueue/ModelMakeProject.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/CellHashMouseAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/CellHashMouseAction.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Client/GameClient/Ui/CombatSim/CombatSimWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilAiUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Hill.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Hill.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Landform.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Landform.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformRes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/LandformRes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Mountain.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Mountain.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Peak.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Peak.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Plain.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Plain.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/River.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Sea.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Sea.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Landform/Urban.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Arid.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Barren.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Barren.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Desert.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Desert.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Forest.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Forest.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Grassland.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Grassland.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Jungle.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Steppe.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Swamp.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Tundra.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Tundra.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Vegetation.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/Vegetation.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationRes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Terrain/Vegetation/VegetationRes.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellDefenseNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellDefenseNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/WindowExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/WindowExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,13 +106,13 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8b78e83a7fcb41b463a82a2c615d0eb9a82f63e6fe93ffd1fe6781e6349d9b/HashSet.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/AllianceMilitaryAi.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/Army.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
@@ -102,6 +120,7 @@
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/UI/MouseAction/CellEdgeLineMouseAction.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -681,6 +700,7 @@
       <workItem from="1719445782358" duration="10727000" />
       <workItem from="1719511304749" duration="7566000" />
       <workItem from="1719591039950" duration="6909000" />
+      <workItem from="1719760596769" duration="2472000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -892,22 +912,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00224" summary="client callbacks">
-      <option name="closed" value="true" />
-      <created>1718156309973</created>
-      <option name="number" value="00224" />
-      <option name="presentableId" value="LOCAL-00224" />
-      <option name="project" value="LOCAL" />
-      <updated>1718156309973</updated>
-    </task>
-    <task id="LOCAL-00225" summary="Ui stuff">
-      <option name="closed" value="true" />
-      <created>1718205888597</created>
-      <option name="number" value="00225" />
-      <option name="presentableId" value="LOCAL-00225" />
-      <option name="project" value="LOCAL" />
-      <updated>1718205888597</updated>
-    </task>
     <task id="LOCAL-00226" summary="ditto">
       <option name="closed" value="true" />
       <created>1718236793839</created>
@@ -1044,7 +1048,23 @@
       <option name="project" value="LOCAL" />
       <updated>1719592862865</updated>
     </task>
-    <option name="localTasksCounter" value="243" />
+    <task id="LOCAL-00243" summary="working on mouse actions">
+      <option name="closed" value="true" />
+      <created>1719760707610</created>
+      <option name="number" value="00243" />
+      <option name="presentableId" value="LOCAL-00243" />
+      <option name="project" value="LOCAL" />
+      <updated>1719760707611</updated>
+    </task>
+    <task id="LOCAL-00244" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1719761426243</created>
+      <option name="number" value="00244" />
+      <option name="presentableId" value="LOCAL-00244" />
+      <option name="project" value="LOCAL" />
+      <updated>1719761426243</updated>
+    </task>
+    <option name="localTasksCounter" value="245" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1066,7 +1086,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="ui stuff, player building make project" />
     <MESSAGE value="working on tab window" />
     <MESSAGE value="army window" />
     <MESSAGE value="added typeless resolver" />
@@ -1090,6 +1109,7 @@
     <MESSAGE value="added combat modifiers to terrain" />
     <MESSAGE value="reworked combat graph, units are committed totally now not fractional" />
     <MESSAGE value="fixing reinforcement, make project bugs, added reserve troop build priority" />
+    <MESSAGE value="working on mouse actions" />
     <MESSAGE value="ditto" />
     <option name="LAST_COMMIT_MESSAGE" value="ditto" />
   </component>

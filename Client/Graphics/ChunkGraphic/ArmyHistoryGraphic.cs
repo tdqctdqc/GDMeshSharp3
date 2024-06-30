@@ -120,11 +120,11 @@ public partial class ArmyHistoryGraphic : CustomClickArea
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var histories = client.Data.Military.CombatHistories.Value;
         var mb = new MeshBuilder();
-        if (histories.Histories.TryGetValue(tick, out var history))
+        if (histories.Graphs.TryGetValue(tick, out var history))
         {
             return history;
         }
-        else if (histories.Histories.TryGetValue(tick - 1, out var prevHistory))
+        else if (histories.Graphs.TryGetValue(tick - 1, out var prevHistory))
         {
             return prevHistory;
         }
@@ -133,18 +133,6 @@ public partial class ArmyHistoryGraphic : CustomClickArea
     }
     private void Open(Cell cell, Client client)
     {
-        var w = client.WindowManager.GetWindow<CellCombatHistoryWindow>();
-        var history = GetHistory(client);
-        if (history is not null
-            && history.CellDefNodes.TryGetValue(cell.MakeRef(), out var cellDefId))
-        {
-            var node = (CellDefenseNode)history.NodesById[cellDefId];
-            w.Setup(node, history, client);
-        }
-        else
-        {
-            w.Setup(null, history, client);
-        }
-        client.WindowManager.OpenWindow<CellCombatHistoryWindow>();
+        CellCombatHistoryWindow.Open(cell, GetHistory(client), client);
     }
 }

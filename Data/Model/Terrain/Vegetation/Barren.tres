@@ -10,3 +10,4 @@ MinMoisture = 0.0
 FertilityMod = 0.0
 MovementCostMult = 1.0
 FrontLengthMult = 1.0
+EvasionMult = 1.0

@@ -10,5 +10,6 @@ FertilityMod = 0.0
 DarkenFactor = 0.5
 FrontLengthMult = 0.5
 MovementCostMult = 1.75
+EvasionMult = 1.5
 Color = Color(0.411765, 0.411765, 0.411765, 1)
 IsWater = false

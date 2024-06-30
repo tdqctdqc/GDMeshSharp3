@@ -1,14 +1,14 @@
 using System.Linq;
 using Godot;
 
-namespace Ui.CellCombatHistoryWindow;
+namespace Ui.Combat;
 
 public partial class UnitsTab : HBoxContainer, IUiDrawable
 {
-    public global::CellCombatHistoryWindow Parent { get; private set; }
-    public UnitsTab(global::CellCombatHistoryWindow parent)
+    private CombatInfo _info;
+    public UnitsTab(CombatInfo info)
     {
-        Parent = parent;
+        _info = info;
         Name = "Units";
     }
 
@@ -25,15 +25,19 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         
         var size = c.Settings.MedIconSize.Value * Vector2.One;
 
-        var atkInfos = Parent.Graph.GetNeighbors(Parent.Info)
-            .OfType<CellAttackNode>().SelectMany(n => n.UnitInfos);
+        var atkInfos = _info.Attackers;
         
         var attackers = new VBoxContainer();
         attackers.ExpandFill();
         attackers.CreateLabelAsChild("Attackers");
         var attackersList = new ItemListToken<UnitCombatInfo>(
             atkInfos,
-            u => u.Template.Get(c.Data).Name + " " + u.Id,
+            u =>
+            {
+                return u.Template.Fulfilled()
+                    ? u.Template.Get(c.Data).Name + " " + u.Id
+                    : "None";
+            },
             u => DrawInfo(u, true, info, c),
             size
         );
@@ -45,8 +49,13 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         defenders.ExpandFill();
         defenders.CreateLabelAsChild("Defenders");
         var defendersList = new ItemListToken<UnitCombatInfo>(
-            Parent.Info.UnitInfos,
-            u => u.Template.Get(c.Data).Name + " " + u.Id,
+            _info.Defenders,
+            u =>
+            {
+                return u.Template.Fulfilled()
+                    ? u.Template.Get(c.Data).Name + " " + u.Id
+                    : "None";
+            },
             u => DrawInfo(u, false, info, c),
             size
         );
@@ -66,10 +75,11 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         
         var large = c.Settings.LargeIconSize.Value;
         var med = c.Settings.MedIconSize.Value;
+        
         var template = u.Template.Get(c.Data);
-        var icon = template.GetMaxPowerTroop(c.Data).Icon
+        var icon = u.Initial.GetMaxPowerTroop(c.Data).Icon
             .GetLabeledIcon<HBoxContainer>(
-                $"{template.Name} {u.Id}",
+                $"{(template is not null ? template.Name : "None")} {u.Id}",
                 large);
         info.AddChild(icon);
         info.CreateLabelAsChild($"{(attacker ? "Attacker" : "Defender")}");

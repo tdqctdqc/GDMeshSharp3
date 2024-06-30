@@ -92,7 +92,7 @@ public class FrontlineAssignment : GroupAssignment
         SetLineAndInsertingGroups(key);
         HandleInsertingGroupsOrders(key);
         if (LineGroups.Count == 0) return;
-        var lineAssignments = MilAiUtil
+        var lineAssignments = MilUtil
             .GetGroupLineAssignments(Alliance, LineGroups, 
                 Frontline.Faces,
                 f =>

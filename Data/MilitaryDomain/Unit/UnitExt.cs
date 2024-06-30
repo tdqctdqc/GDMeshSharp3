@@ -58,6 +58,17 @@ public static class UnitExt
             }).Key;
         return data.Models.GetModel<Troop>(maxPowerId);
     }
+    public static Troop GetMaxPowerTroop(this IdCount<Troop> troops, Data data)
+    {
+        var maxPowerId = troops.Contents
+            .MaxBy(kvp =>
+            {
+                var unit = data.Models.GetModel<Troop>(kvp.Key);
+                var power = kvp.Value * unit.GetPowerPoints();
+                return power;
+            }).Key;
+        return data.Models.GetModel<Troop>(maxPowerId);
+    }
     public static Vector2 GetHealth(this Unit unit, Data data)
     {
         var totalPp = unit.Troops.GetEnumModel(data)

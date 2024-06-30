@@ -8,5 +8,6 @@ public partial class VegetationRes : Resource
     [Export] public float FertilityMod { get; set; }
     [Export] public float MovementCostMult { get; set; }
     [Export] public float FrontLengthMult { get; set; }
+    [Export] public float EvasionMult { get; set; }
     
 }

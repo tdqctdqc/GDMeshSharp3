@@ -8,6 +8,7 @@ public partial class LandformRes : Resource
     [Export] public float DarkenFactor { get; set; }
     [Export] public float FrontLengthMult { get; set; }
     [Export] public float MovementCostMult { get; set; }
+    [Export] public float EvasionMult { get; set; }
     [Export] public Color Color { get; set; }
     [Export] public bool IsWater { get; set; }
 }

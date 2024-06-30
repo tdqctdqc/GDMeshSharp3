@@ -11,6 +11,7 @@ public class Vegetation : TerrainAspect
     public float FertilityMod { get; private set; }
     public float MovementCostMult { get; private set; }
     public float FrontLengthMult { get; private set; }
+    public float EvasionMult { get; private set; }
     public Vegetation(HashSet<Landform> allowedLandforms,
         string name)
     {
@@ -22,6 +23,7 @@ public class Vegetation : TerrainAspect
         Color = res.Color;
         Name = name;
         MovementCostMult = res.MovementCostMult;
+        EvasionMult = res.EvasionMult;
     }
     
     public virtual bool Allowed(MapPolygon p, float moisture, Landform lf, Data data)

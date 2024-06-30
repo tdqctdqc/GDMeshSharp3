@@ -14,7 +14,7 @@ public class AddCombatHistoryProc : Procedure
 
     public override void Enact(ProcedureWriteKey key)
     {
-        key.Data.Military.CombatHistories.Value.Histories
+        key.Data.Military.CombatHistories.Value.Graphs
             .Add(Tick, History);
     }
 

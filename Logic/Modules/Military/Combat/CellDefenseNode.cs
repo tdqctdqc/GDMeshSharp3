@@ -16,8 +16,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
     }
 
     public bool DefendersForcedBack { get; private set; }
-    public static float LossRatioToForceBack { get; private set; } 
-        = .3f;
+    
     public static int BaseFrontLength { get; private set; }
         = 1000;
     public static CellDefenseNode GetOrConstruct(CombatGraph g,
@@ -58,8 +57,18 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         DefendersForcedBack = defendersForcedBack;
     }
 
+    public IEnumerable<CellAttackNode> GetAttackNodes(CombatGraph graph)
+    {
+        return graph.GetNeighbors(this).OfType<CellAttackNode>();
+    }
+    public IEnumerable<UnitCombatInfo> GetAttackers(CombatGraph graph)
+    {
+        return GetAttackNodes(graph)
+            .SelectMany(n => n.UnitInfos);
+    }
 
-    public float GetPotentialDefendingPower(Data d, CombatCalculator combat)
+    public float GetPotentialDefendingPower(Data d, 
+        CombatCalculator combat)
     {
         var defenders = d.Military.UnitAux.ArmiesByOccupancy[Cell.Get(d)];
         if(defenders == null || defenders.Count == 0) return 1f;
@@ -73,8 +82,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
     }
     public float GetPotentialAttackingPower(Data d, CombatCalculator combat)
     {
-        var attackers = combat.Graph.GetNeighbors(this)
-            .OfType<CellAttackNode>();
+        var attackers = GetAttackNodes(combat.Graph);
 
         var val = attackers.Sum(a =>
         {
@@ -88,11 +96,11 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         });
         return Mathf.Max(1f, val);
     }
-
-    public void CalculateCombats(CombatCalculator combat, Data d)
+    
+    public void CalculateCombats(CombatCalculator combat, 
+        Data d)
     {
-        var attackNodes = combat.Graph.GetNeighbors(this)
-            .OfType<CellAttackNode>().ToArray();
+        var attackNodes = GetAttackNodes(combat.Graph);
         
         if (attackNodes == null 
             || attackNodes.Any() == false
@@ -107,119 +115,16 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
             return;
         }
 
-        var attackers = attackNodes.SelectMany(n => n.UnitInfos)
+        var cell = Cell.Get(d);
+        var lf = cell.Landform.Get(d);
+        var veg = cell.Vegetation.Get(d);
+
+        var attackers = GetAttackers(combat.Graph)
             .ToArray();
-        foreach (var unitCombatInfo in attackers)
-        {
-            doFights(unitCombatInfo, UnitInfos);
-        }
-        
-        
-        
-        void doFights(UnitCombatInfo unit, List<UnitCombatInfo> targets)
-        {
-            var targetUnit = getTargetUnit(targets);
-            if (targetUnit == null) return;
-            foreach (var (troop, amt) in unit.Active.GetEnumModel(d))
-            {
-                var ceil = Mathf.CeilToInt(amt);
-                for (var i = 0; i < ceil; i++)
-                {
-                    if (targetUnit.ActiveFrontSize <= 0f)
-                    {
-                        targetUnit = getTargetUnit(targets);
-                        if (targetUnit == null) return;
-                    }
 
-                    var (targetTroop, targetTroopAmt) = getTargetTroop(targetUnit);
-                    
-                    if (getHit(troop, targetTroop))
-                    {
-                        var kill = getKillAmt(troop, targetTroop, targetTroopAmt);
-                        unit.AddKill(targetTroop, kill);
-                        targetUnit.AddLoss(targetTroop, kill);
-                    }
-
-                    if (getHit(targetTroop, troop))
-                    {
-                        var kill = getKillAmt(targetTroop, troop, 1f);
-                        unit.AddLoss(troop, kill);
-                        targetUnit.AddKill(troop, kill);
-                    }
-                }
-            }
-        }
-        
-        bool getHit(Troop troop, Troop target)
-        {
-            var toHit = Random.Shared.NextSingle()
-                        * troop.Accuracy;
-            var toEvade = Random.Shared.NextSingle()
-                          * target.Evasion;
-            return toHit > toEvade;
-        }
-
-        float getKillAmt(Troop troop, Troop target, float targetAmt)
-        {
-            var dmg = getDamage(troop, target);
-            return Mathf.Min(targetAmt, dmg / target.Hitpoints);
-        }
-        float getDamage(Troop troop, Troop target)
-        {
-            var softDmg = troop.SoftAttack * (1f - target.Hardness);
-            var hardDmg = troop.HardAttack * target.Hardness;
-            return softDmg + hardDmg;
-        }
-
-        UnitCombatInfo getTargetUnit(List<UnitCombatInfo> targets)
-        {
-            var totalLength = targets.Sum(t => t.ActiveFrontSize);
-            if (totalLength == 0f) return null;
-            var s = Game.I.Random.RandfRange(0, totalLength - .01f);
-
-            var i = 0;
-            while (s > targets[i].ActiveFrontSize)
-            {
-                s -= targets[i].ActiveFrontSize;
-                i++;
-            }
-
-            return targets[i];
-        }
-
-        (Troop troop, float amt) getTargetTroop(UnitCombatInfo targetUnit)
-        {
-            if (targetUnit.ActiveFrontSize <= 0f) return (null, 0f);
-            var sample = Game.I.Random.RandfRange(0f, targetUnit.ActiveFrontSize - .01f);
-            var soFar = 0f;
-            foreach (var (troop, amt) in targetUnit.Active.GetEnumModel(d))
-            {
-                soFar += amt * troop.FrontLength;
-                if (soFar >= sample) return (troop, Mathf.Min(1f, amt));
-            }
-
-            throw new Exception();
-        }
-
-        if (UnitInfos.All(info => info.ActiveFrontSize <= 0f))
-        {
-            DefendersForcedBack = true;
-            return;
-        }
-
-        var defPower = UnitInfos.Sum(i => i.InitialPowerPoints(d));
-        var lostDefPower = UnitInfos.Sum(i => i.LostPowerPoints(d));
-        var defLossRatio = lostDefPower / defPower;
-        if (lostDefPower / defPower >= LossRatioToForceBack)
-        {
-            var atkPower = attackNodes.Sum(a => a.UnitInfos.Sum(i => i.InitialPowerPoints(d)));
-            var lostAtkPower = attackNodes.Sum(a => a.UnitInfos.Sum(i => i.LostPowerPoints(d)));
-            var atkLossRatio = lostAtkPower / atkPower;
-            if (atkLossRatio < defLossRatio)
-            {
-                DefendersForcedBack = true;
-            }
-        }
+        DefendersForcedBack = MilUtil.CalculateCombat(
+            attackers, UnitInfos.ToArray(),
+            lf, veg, d);
     }
     
 

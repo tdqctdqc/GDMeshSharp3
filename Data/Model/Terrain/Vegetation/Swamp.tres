@@ -10,3 +10,4 @@ MinMoisture = 0.7
 FertilityMod = 0.25
 MovementCostMult = 1.75
 FrontLengthMult = 0.6
+EvasionMult = 1.2

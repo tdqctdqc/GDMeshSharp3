@@ -64,8 +64,8 @@ public class StrategicAi
             var rivalPp = report.RivalOnFront.Sum(
                 c => d.Context.PowerPoints[c]) * 5f;
             var opposing = hostilePp + rivalPp;
-            var oppNeed = opposing * MilAiUtil.DesiredOpposingPpRatio;
-            var lengthNeed = length * MilAiUtil.PowerPointsPerCellFaceToCover;
+            var oppNeed = opposing * MilUtil.DesiredOpposingPpRatio;
+            var lengthNeed = length * MilUtil.PowerPointsPerCellFaceToCover;
             
             frontline.AddDefendWeightAlongWholeLine(oppNeed + lengthNeed, d);
         }

@@ -28,7 +28,6 @@ public class ConstructionMode : UiMode
                     .AddElement(_selectedCellGraphic, cell.RelTo);
             }
         });
-        var list = client.Data.Models.Buildings.GetList();
         _mouseOver = new MouseOverHandler(client.Data);
         _mouseOver.ChangedCell += c =>
         {

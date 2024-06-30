@@ -19,7 +19,6 @@ public class CombatCalculator
         CalculateCombats(key, logger);
         HandleCombatResults(key, logger);
 
-
         var historyProc = new AddCombatHistoryProc(
             key.Data.BaseDomain.GameClock.Tick,
             Graph);
@@ -32,7 +31,7 @@ public class CombatCalculator
             () =>
             {
                 Parallel.ForEach(Graph.GetNodes().OfType<CellDefenseNode>(),
-                    n => { n.CalculateCombats(this, key.Data); });
+                    n => n.CalculateCombats(this, key.Data));
             });
     }
 

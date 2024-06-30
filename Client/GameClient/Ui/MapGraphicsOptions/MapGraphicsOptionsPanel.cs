@@ -38,13 +38,6 @@ public partial class MapGraphicsOptionsPanel : Panel
                 vbox.AddChild(setting.GetControlInterface());
             }
         }
-        
-    }
-
-    public override void _GuiInput(InputEvent @event)
-    {
-        _scroll._GuiInput(@event);
-        GetViewport().SetInputAsHandled();
     }
 
 }

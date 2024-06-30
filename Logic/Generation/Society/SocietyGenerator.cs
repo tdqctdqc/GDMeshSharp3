@@ -138,7 +138,7 @@ public class SocietyGenerator : Generator
     {
         var developmentScale = _data.GenMultiSettings.SocietySettings.DevelopmentScale.Value;
         var cells = r.GetCells(_data);
-        var extractionBuildings = _data.Models.ResourceExtractions.GetList();
+        var extractionBuildings = _data.Models.GetModels<ResourceExtractionBuilding>().Values;
         foreach (var cell in cells)
         {
             if (_data.Planet.ResourceDepositAux.ByCell[cell] is ResourceDeposit rd)

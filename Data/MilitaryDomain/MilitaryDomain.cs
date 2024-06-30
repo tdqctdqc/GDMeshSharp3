@@ -4,7 +4,7 @@ using Godot;
 public class MilitaryDomain
 {
     public UnitAux UnitAux { get; private set; }
-    public SingletonCache<CombatHistories> CombatHistories { get; private set; }
+    public SingletonCache<CombatHistory> CombatHistories { get; private set; }
     public MilitaryDomain()
     {
     }
@@ -12,6 +12,6 @@ public class MilitaryDomain
     public void Setup(Data data)
     {
         UnitAux = new UnitAux(data);
-        CombatHistories = new SingletonCache<CombatHistories>(data);
+        CombatHistories = new SingletonCache<CombatHistory>(data);
     }
 }

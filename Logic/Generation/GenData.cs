@@ -28,7 +28,7 @@ public class GenData : Data
         ClientPlayerData.SetLocalPlayerGuid(new Guid());
         Player.Create(ClientPlayerData.LocalPlayerGuid, "Doot", key);
         DiplomacyGraph.Create(key);
-        CombatHistories.Construct(key);
+        CombatHistory.Construct(key);
     }
     public void ClearAuxData()
     {
