@@ -43,17 +43,14 @@ public partial class GeneratorUi : Node, IClientComponent
             }
         });
         
-        topBar.AddWindowButton<GeneratorSettingsWindow>("Gen Settings");
-            
+        topBar.AddWindowButton<GeneratorSettingsWindow>(
+            "Gen Settings",
+            () => GeneratorSettingsWindow.Get(wrapper.Data.GenMultiSettings));
+        
         AddQuickSets(topBar);
-        var genSettingsWindow = GeneratorSettingsWindow.Get(wrapper.Data.GenMultiSettings);
-        var windows = client.GetComponent<WindowManager>();
-        windows.AddWindow(genSettingsWindow);
-
         
         Disconnect += () =>
         {
-            windows.RemoveWindow(genSettingsWindow);
             topBar.QueueFree();
         };
     }

@@ -12,8 +12,15 @@ public partial class AllianceOverviewWindow : TabWindow
         _proposals = new ProposalsTab(this);
         AddTab(_proposals);
     }
-    public void Setup(Alliance alliance, Client client)
+    public void Setup(Alliance alliance)
     {
         Alliance = alliance;
+    }
+
+    public static void Open(Alliance alliance, Client client)
+    {
+        var w = new AllianceOverviewWindow(client);
+        w.Setup(alliance);
+        client.WindowHolder.OpenWindow(w);
     }
 }

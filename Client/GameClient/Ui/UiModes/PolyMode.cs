@@ -67,7 +67,7 @@ public class PolyMode : UiMode
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         if(e.IsAction("Open Regime Overview"))
         {
-            _client.TryOpenRegimeOverview(_mouseOverHandler.MouseOverCell);
+            RegimeOverviewWindow.Open(_mouseOverHandler.MouseOverCell, _client);
         }
         if (e is InputEventMouseButton mb
             && mb.ButtonIndex == MouseButton.Left

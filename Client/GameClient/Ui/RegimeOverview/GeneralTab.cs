@@ -39,9 +39,7 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
         
         var seeAlliance = ButtonExt.GetButton(() =>
         {
-            var alliance = regime.GetAlliance(client.Data);
-            var w = client.WindowManager.OpenWindow<AllianceOverviewWindow>();
-            w.Setup(alliance, client);
+            AllianceOverviewWindow.Open(regime.GetAlliance(client.Data), client);
         });
         seeAlliance.Text = "See Alliance";
         _container.AddChild(seeAlliance);

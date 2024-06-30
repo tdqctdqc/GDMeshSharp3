@@ -11,14 +11,12 @@ public partial class PromptManager : Node, IClientComponent
         
     }
 
-    private Dictionary<Prompt, PromptWindow> _windows;
     private float _timer;
     private float _period = 1f;
     private Client _client;
     public PromptManager(Client client)
     {
         _client = client;
-        _windows = new Dictionary<Prompt, PromptWindow>();
         client.Data.Notices.Gen.ExitedGen.SubscribeForNode(
             () =>
             {
@@ -39,11 +37,9 @@ public partial class PromptManager : Node, IClientComponent
     }
     public void OpenPromptWindow(Prompt prompt)
     {
-        var w = Game.I.Client.GetComponent<WindowManager>()
-            .GetWindow<PromptWindow>();
+        var w = new PromptWindow();
         w.Setup(prompt);
-        w.PopupCentered();
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
-
     Node IClientComponent.Node => this;
 }

@@ -5,23 +5,6 @@ using Godot;
 
 public static class UiActions
 {
-    public static void TryOpenRegimeOverview(this Client client, 
-        Cell cell)
-    {
-        if (cell == null)
-        {
-            throw new Exception();
-        }
-        if (cell.Controller.Fulfilled())
-        {
-            var r = cell.Controller.Get(client.Data);
-            var windows = Game.I.Client.GetComponent<WindowManager>();
-            var w = windows.GetWindow<RegimeOverviewWindow>();
-            w.Setup(r, client);
-            windows.OpenWindow<RegimeOverviewWindow>();
-        }
-    }
-    
     public static void HighlightPoly(this Client client, MapPolygon poly, float thickness)
     {
         var highlighter = client.GetComponent<MapGraphics>().Highlighter;

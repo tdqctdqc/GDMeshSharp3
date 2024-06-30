@@ -21,7 +21,7 @@ public partial class Client : Node, IClient
     public RefAction UiTick { get; private set; }
     private TimerAction _uiTickTimer;
     public ISession Session { get; private set; }
-    public WindowManager WindowManager => GetComponent<WindowManager>();
+    public WindowHolder WindowHolder => GetComponent<WindowHolder>();
     public Dictionary<Type, IClientComponent> Components { get; private set; }
     
     public Client(ISession session)
@@ -53,14 +53,10 @@ public partial class Client : Node, IClient
         var cam = WorldCameraController.Construct(Data);
         AddComponent(cam);
         AddChild(cam);
-        
-        AddComponent(new WindowManager(this));
-        GetComponent<WindowManager>().AddWindow(ClientSettingsWindow.Get(Settings));
-        
+        AddComponent(new WindowHolder(this));
         AddComponent(new PromptManager(this));
         AddComponent(new ClientTopBar(this));
         AddComponent(new TooltipManager(Data, this));
-        
         UiController = new UiController(this); 
         AddComponent(UiController);
     }
@@ -153,8 +149,6 @@ public partial class Client : Node, IClient
         RemoveComponent<GeneratorUi>();
         var gameUi = new GameplayUi(this, Data, host);
         AddComponent(gameUi);
-        var windows = GetComponent<WindowManager>();
-        windows.AddWindow(RegimeAiOverviewWindow.Get(Data));
     }
 
     public void SetupForGameData()
@@ -201,12 +195,6 @@ public partial class Client : Node, IClient
                 return new Control();
             },
             "Military Planning");
-        
-        GetComponent<WindowManager>().AddWindow(new RegimeOverviewWindow(this));
-        GetComponent<WindowManager>().AddWindow(new AllianceOverviewWindow(this));
-        GetComponent<WindowManager>().AddWindow(new MarketOverviewWindow(this));
-        GetComponent<WindowManager>().AddWindow(new MilitaryWindow(this));
-        
         UiController.ModeOption.Choose<PolyMode>();
     }
 }

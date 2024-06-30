@@ -8,7 +8,7 @@ public partial class IssueWindow : Window
 
     private IssueWindow()
     {
-        this.MakeHideable();
+        this.MakeFreeable();
         Size = Vector2I.One * 500;
         _container = new VBoxContainer();
         _container.AnchorsPreset = (int)Control.LayoutPreset.FullRect;

@@ -16,7 +16,7 @@ public partial class EntityOverviewWindow : Window
 
     public EntityOverviewWindow()
     {
-        this.MakeHideable();
+        this.MakeFreeable();
     }
     // private UIVar<Domain> _domain;
     // private UIVar<Type> _entityType;

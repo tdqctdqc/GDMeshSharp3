@@ -9,6 +9,7 @@ public partial class CellCombatHistoryWindow : TabWindow
     public CellCombatHistoryWindow(Client c)
         : base(c)
     {
+        this.MakeFreeable();
         Size = new Vector2I(1000, 800);
         Info = new CombatInfo();
         var general = new GeneralTab(Info);
@@ -26,7 +27,8 @@ public partial class CellCombatHistoryWindow : TabWindow
 
     public static void Open(Cell cell, CombatGraph graph, Client client)
     {
-        var w = client.WindowManager.GetWindow<CellCombatHistoryWindow>();
+        var holder = client.WindowHolder;
+        var w = new CellCombatHistoryWindow(client);
         if (graph is not null
             && graph.CellDefNodes.TryGetValue(cell.MakeRef(), out var cellDefId))
         {
@@ -37,6 +39,6 @@ public partial class CellCombatHistoryWindow : TabWindow
         {
             w.Setup(null, graph, client);
         }
-        client.WindowManager.OpenWindow<CellCombatHistoryWindow>();
+        holder.OpenWindow(w);
     }
 }

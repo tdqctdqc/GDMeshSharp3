@@ -6,14 +6,21 @@ using Godot;
 public partial class FillArmyWindow : Window
 {
     private VBoxContainer _inner;
-    public FillArmyWindow()
+    
+    private FillArmyWindow()
     {
-        this.MakeHideable();
+        this.MakeFreeable();
         Size = new Vector2I(500, 800);
         _inner = this.MakeWholeWindowScrollContainer<VBoxContainer>(
             new Vector2I(500, 800));
     }
 
+    public static FillArmyWindow Get(Army army, Client c)
+    {
+        var w = new FillArmyWindow();
+        w.Setup(army, c);
+        return w;
+    }
 
     public void Setup(Army army, Client c)
     {

@@ -115,24 +115,6 @@ public class SocietyGenerator : Generator
         var score = 2f * (cell.Vegetation.Get(_data).MinMoisture
                           + (1f - cell.Landform.Get(_data).MinRoughness * .5f));
         return score;
-        
-        //
-        //
-        //
-        //
-        // if (cell.GetNeighbors(_key.Data)
-        //     .Any(e => e is LandCell l 
-        //         && l.Polygon.RefId != cell.Polygon.RefId
-        //         && l.Polygon.Get(_data).GetEdge(cell.Polygon.Get(_data), _data).IsRiver()))
-        // {
-        //     score *= 1.5f;
-        // }
-        // if (cell.GetNeighbors(_key.Data)
-        //     .Any(n => n is SeaCell))
-        // {
-        //     score *= 1.5f;
-        // }
-        // return score;
     }
     private float GenerateExtractionBuildings(float popSurplus, Regime r)
     {

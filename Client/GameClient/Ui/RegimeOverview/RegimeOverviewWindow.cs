@@ -44,8 +44,23 @@ public partial class RegimeOverviewWindow
         _troop = new MilitaryTab(this);
         AddTab(_troop);
     }
-    public void Setup(Regime regime, Client client)
+    public void Setup(Regime regime)
     {
         Regime = regime;
+    }
+
+    public static void Open(Cell cell, Client client)
+    {
+        if (cell == null)
+        {
+            throw new Exception();
+        }
+        if (cell.Controller.Fulfilled())
+        {
+            var r = cell.Controller.Get(client.Data);
+            var w = new RegimeOverviewWindow(client);
+            w.Setup(r);
+            client.WindowHolder.OpenWindow(w);
+        }
     }
 }

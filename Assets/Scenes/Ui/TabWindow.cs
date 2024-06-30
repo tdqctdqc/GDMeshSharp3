@@ -9,7 +9,7 @@ public partial class TabWindow : Window
     protected List<IUiDrawable> _tabs;
     public TabWindow(Client c)
     {
-        this.MakeHideable();
+        this.MakeFreeable();
         _container = new TabContainer();
         _container.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         _container.SetAnchorsPreset(Control.LayoutPreset.FullRect);

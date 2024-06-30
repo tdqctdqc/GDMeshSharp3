@@ -20,16 +20,15 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         general.AddChild(regimeInfoBar);
         AddChild(general);
 
-        general.AddWindowButton<RegimeAiOverviewWindow>("Regime Ais");
-        general.AddWindowButton<MarketOverviewWindow>("Market");
-        general.AddWindowButton<IssueWindow>("Issues");
+        general.AddWindowButton<RegimeAiOverviewWindow>("Regime Ais",
+            () => RegimeAiOverviewWindow.Get(client.Data));
+        general.AddWindowButton<MarketOverviewWindow>("Market",
+            () => new MarketOverviewWindow(client));
+        general.AddWindowButton<IssueWindow>("Issues",
+            () => IssueWindow.Get(client));
         general.AddWindowButton<MilitaryWindow>("Military",
-            w =>
-            {
-                var regime = client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data);
-                w.Regime = regime;
-            });
-        
+            () => MilitaryWindow.Get(client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data),
+                client));
         
         _submitTurn = general.AddButton("Submit Turn", () =>
         {

@@ -20,7 +20,7 @@ public partial class LoggerWindow : Window
 
     private LoggerWindow()
     {
-        this.MakeHideable();
+        this.MakeFreeable();
         _num = new Dictionary<LogType, int>();
         _innerContainers = new Dictionary<LogType, Node>();
         Hide();

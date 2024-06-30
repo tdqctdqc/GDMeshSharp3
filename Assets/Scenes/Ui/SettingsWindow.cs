@@ -8,14 +8,8 @@ public partial class SettingsWindow : ConfirmationDialog
 {
     protected SettingsWindow()
     {
-        Size = Vector2I.One * 500;
-        Hide();
-    }
-    public static SettingsWindow Get(ISettings settings)
-    {
-        var w = new SettingsWindow();
-        w.Setup(settings);
-        return w;
+        Size = Vector2I.One * 800;
+        this.MakeFreeable();
     }
     public static SettingsWindow Get(MultiSettings multi)
     {

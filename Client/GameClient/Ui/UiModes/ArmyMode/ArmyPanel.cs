@@ -37,7 +37,8 @@ public partial class ArmyPanel : Panel
                 _inner.CreateLabelAsChild(order.GetDescription(c.Data));
             }
             _inner.AddWindowButton<FillArmyWindow>(
-                "Fill Army", w => w.Setup(army, c));
+                "Fill Army", 
+                () => FillArmyWindow.Get(army, c));
             foreach (var unit in army.Units.Entities(c.Data))
             {
                 var display = unit.GetUnitDisplay(c.Data);

@@ -51,16 +51,15 @@ public static class ButtonExt
     }
     public static Button AddWindowButton<T>(this Node n, 
         string name,
-        Action<T> action = null) where T : Window
+        Func<T> getWindow) where T : Window
     {
         var settingsWindowBtn
             = ButtonExt.GetButton(() =>
             {
                 var windows = Game.I.Client
-                    .GetComponent<WindowManager>();
-                var w = windows.GetWindow<T>();
-                action?.Invoke(w);
-                windows.OpenWindow<T>();
+                    .WindowHolder;
+                var w = getWindow();
+                windows.OpenWindow(w);
             });
         settingsWindowBtn.Text = name;
         n.AddChild(settingsWindowBtn);
