@@ -4,7 +4,3 @@
 
 [node name="Node2D" type="Node"]
 script = ExtResource("1_hosj4")
-
-[node name="TextureButton" type="TextureButton" parent="."]
-offset_right = 40.0
-offset_bottom = 40.0

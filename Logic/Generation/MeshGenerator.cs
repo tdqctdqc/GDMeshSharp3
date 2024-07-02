@@ -20,7 +20,7 @@ public static class MeshGenerator
         triPoints.Add(toOut);
         triPoints.Add(fromIn);
     }
-    public static MeshInstance2D GetLinesMesh(List<Vector2> froms,
+    public static Mesh GetLinesMesh(List<Vector2> froms,
         List<Vector2> tos, float thickness)
     {
         var triPoints = new List<Vector2>();
@@ -28,10 +28,7 @@ public static class MeshGenerator
         {
             JoinLinePoints(froms[i], tos[i], triPoints, thickness);
         }
-        var meshInstance = new MeshInstance2D();
-        var mesh = GetArrayMesh(triPoints.ToArray());
-        meshInstance.Mesh = mesh;
-        return meshInstance;
+        return GetArrayMesh(triPoints.ToArray());
     }
     public static MeshInstance2D GetLineMesh(Vector2 from, Vector2 to, float thickness)
     {
@@ -41,6 +38,21 @@ public static class MeshGenerator
         var mesh = GetArrayMesh(triPoints.ToArray());
         meshInstance.Mesh = mesh;
         return meshInstance;
+    }
+
+    public static Mesh GetSquareMesh(float size, Color color)
+    {
+        var triPoints = new Vector2[]
+        {
+            (Vector2.Left + Vector2.Up) * size / 2f,
+            (Vector2.Right + Vector2.Up) * size / 2f,
+            (Vector2.Left + Vector2.Down) * size / 2f,
+            (Vector2.Right + Vector2.Up) * size / 2f,
+            (Vector2.Right + Vector2.Down) * size / 2f,
+            (Vector2.Left + Vector2.Down) * size / 2f,
+        };
+        var triColors = triPoints.Select(t => color).ToArray();
+        return GetArrayMesh(triPoints, triColors);
     }
 
     public static MeshInstance2D GetCircleMesh(Vector2 center, float radius, int resolution)
@@ -117,19 +129,5 @@ public static class MeshGenerator
         arrayMesh.AddSurfaceFromArrays(Mesh.PrimitiveType.Triangles, arrays);
 
         return arrayMesh; 
-    }
-
-    public static Color[] ConvertTriToVertexColors(Color[] triColors)
-    {
-        if (triColors == null) return null;
-        var vertexColors = new Color[triColors.Length * 3];
-        for (int i = 0; i < triColors.Length; i++)
-        {
-            vertexColors[3 * i] = triColors[i];
-            vertexColors[3 * i + 1] = triColors[i];
-            vertexColors[3 * i + 2] = triColors[i];
-        }
-
-        return vertexColors;
     }
 }

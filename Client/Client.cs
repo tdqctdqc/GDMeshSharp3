@@ -14,6 +14,7 @@ public partial class Client : Node, IClient
     public ClientSettings Settings { get; private set; }
     public UiController UiController { get; private set; }
     public ConcurrentQueue<Action> QueuedUpdates { get; }
+    public CanvasLayer UiCanvas { get; private set; }
     public Control UiLayer { get; private set; }
     public Node2D GraphicsLayer { get; private set; }
     public IServer Server => Session.Server;
@@ -39,12 +40,12 @@ public partial class Client : Node, IClient
     {
         GraphicsLayer = new Node2D();
         AddChild(GraphicsLayer);
-        var ui = new CanvasLayer();
+        UiCanvas = new CanvasLayer();
         UiLayer = new Control();
         UiLayer.MouseFilter = Control.MouseFilterEnum.Pass;
-        ui.AddChild(UiLayer);
+        UiCanvas.AddChild(UiLayer);
         UiLayer.FocusMode = Control.FocusModeEnum.None;
-        AddChild(ui);
+        AddChild(UiCanvas);
         
         Components = new Dictionary<Type, IClientComponent>();
         Settings = ClientSettings.Load();

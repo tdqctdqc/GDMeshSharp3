@@ -6,12 +6,10 @@ using System.Linq;
 
 public partial class EntityOverviewWindow : Window
 {
-    public static EntityOverviewWindow Get(Data data)
+    public static void Open(Data data)
     {
-        var eo = SceneManager.Instance<EntityOverviewWindow>();
-        // eo.Setup(data);
-        eo.Hide();
-        return eo;
+        var w = SceneManager.Instance<EntityOverviewWindow>();
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
 
     public EntityOverviewWindow()

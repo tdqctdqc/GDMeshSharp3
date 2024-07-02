@@ -4,27 +4,17 @@ using Ui.Combat;
 
 public partial class CombatSimWindow : TabWindow
 {
-    public CombatInfo Info { get; private set; }
     public CombatSimWindow(Client c)
         : base(c)
     {
         Size = new Vector2I(1000, 800);
-        Info = new CombatInfo();
-        var sim = new SimTab(Info);
+        var sim = new SimTab(c);
         AddTab(sim);
-        var general = new GeneralTab(Info);
-        AddTab(general);
-        var units = new UnitsTab(Info);
-        AddTab(units);
     }
 
-    public void Setup(Client client)
+    public static void Open(Client client)
     {
-        Info.Setup(
-            client.Data.Models.Landforms.Plain,
-            client.Data.Models.Vegetations.Barren,
-            new UnitCombatInfo[]{},
-            new UnitCombatInfo[]{},
-            false);
+        var w = new CombatSimWindow(client);
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
 }

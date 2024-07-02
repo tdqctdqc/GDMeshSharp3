@@ -13,4 +13,10 @@ public partial class MarketOverviewWindow : TabWindow
         AddTab(qs);
         MinSize = new Vector2I(700, 500);
     }
+
+    public static void Open(Client c)
+    {
+        var w = new MarketOverviewWindow(c);
+        Game.I.Client.WindowHolder.OpenWindow(w);
+    }
 }

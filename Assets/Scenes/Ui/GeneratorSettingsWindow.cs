@@ -5,11 +5,12 @@ using Godot;
 
 public partial class GeneratorSettingsWindow : SettingsWindow
 {
-    public static GeneratorSettingsWindow Get(GenerationMultiSettings settings)
+    public static void Open(
+        GenerationMultiSettings settings)
     {
         var w = new GeneratorSettingsWindow();
         w.Setup(settings);
-        return w;
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
 
     private GeneratorSettingsWindow()

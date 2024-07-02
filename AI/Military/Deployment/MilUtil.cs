@@ -16,6 +16,8 @@ public static class MilUtil
         = 100f;
     public static float LossRatioToForceBack { get; private set; } 
         = .3f;
+    public static int BaseFrontLength { get; private set; }
+        = 1000;
 
     public static bool CalculateCombat(
         UnitCombatInfo[] attackers,
@@ -62,13 +64,11 @@ public static class MilUtil
             }
         }
         
-        bool getHit(Troop troop, Troop target, bool targetIsDefending)
+        bool getHit(Troop troop, Troop target, bool targetIsDefense)
         {
             var toHit = Random.Shared.NextSingle()
                         * troop.Accuracy;
-            var evadeMult = targetIsDefending
-                ? lf.EvasionMult * veg.EvasionMult
-                : 1f;
+            var evadeMult = GetEvasionMult(lf, veg, targetIsDefense);
             var toEvade = Random.Shared.NextSingle()
                           * target.Evasion * evadeMult;
             return toHit > toEvade;
@@ -187,5 +187,19 @@ public static class MilUtil
             return 0;
         });
         return list;
+    }
+
+
+
+    public static float GetEvasionMult(Landform lf, Vegetation veg, bool defending)
+    {
+        var evadeMult = lf.EvasionMult * veg.EvasionMult;
+        if (defending == false)
+        {
+            evadeMult *= .5f;
+            evadeMult = Mathf.Max(1f, evadeMult);
+        }
+
+        return evadeMult;
     }
 }

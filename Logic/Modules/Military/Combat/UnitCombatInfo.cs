@@ -5,7 +5,7 @@ using MessagePack;
 
 public class UnitCombatInfo
 {
-    public int Id { get; private set; }
+    public ERef<Unit> Unit { get; private set; }
     public ERef<UnitTemplate> Template { get; private set; }
     public IdCount<Troop> Active { get; private set; }
     public IdCount<Troop> Initial { get; private set; }
@@ -13,7 +13,7 @@ public class UnitCombatInfo
     public float ActiveFrontSize { get; private set; }
     public UnitCombatInfo(Unit u, Data d)
     {
-        Id = u.Id;
+        Unit = u.MakeRef();
         Active = IdCount<Troop>.Construct(u.Troops);
         Initial = IdCount<Troop>.Construct(u.Troops);
         Kills = IdCount<Troop>.Construct();
@@ -24,7 +24,7 @@ public class UnitCombatInfo
     public UnitCombatInfo(IdCount<Troop> troops,
         Data d)
     {
-        Id = -1;
+        Unit = new ERef<Unit>(-1);
         Active = IdCount<Troop>.Construct(troops);
         Initial = IdCount<Troop>.Construct(troops);
         Kills = IdCount<Troop>.Construct();
@@ -33,13 +33,13 @@ public class UnitCombatInfo
             .Sum(v => v.Key.FrontLength * v.Value);
     }
     [SerializationConstructor] private UnitCombatInfo(
-        int id, IdCount<Troop> active, 
+        ERef<Unit> unit, IdCount<Troop> active, 
         IdCount<Troop> initial, 
         IdCount<Troop> kills,
         ERef<UnitTemplate> template,
         float activeFrontSize)
     {
-        Id = id;
+        Unit = unit;
         Active = active;
         Initial = initial;
         Kills = kills;
@@ -99,5 +99,23 @@ public class UnitCombatInfo
         }
 
         return losses;
+    }
+
+    public void ClearLossesKills()
+    {
+        Active.Clear();
+        Kills.Clear();
+        foreach (var (key, value) in Initial.Contents)
+        {
+            Active.Set(key, value);
+        }
+    }
+
+    public void SetInitial(Troop troop, float amt, Data d)
+    {
+        Initial.Set(troop, amt);
+        ClearLossesKills();
+        ActiveFrontSize = Active.GetEnumModel(d)
+            .Sum(v => v.Key.FrontLength * v.Value);
     }
 }

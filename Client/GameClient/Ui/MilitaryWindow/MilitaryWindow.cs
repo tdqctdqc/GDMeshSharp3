@@ -16,10 +16,10 @@ public partial class MilitaryWindow : TabWindow
         AddTab(armies);
     }
 
-    public static MilitaryWindow Get(Regime r, Client client)
+    public static void Open(Regime r, Client client)
     {
         var w = new MilitaryWindow(client);
         w.Regime = r;
-        return w;
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
 }

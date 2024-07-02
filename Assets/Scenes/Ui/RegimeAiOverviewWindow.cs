@@ -8,12 +8,12 @@ public partial class RegimeAiOverviewWindow : Window
     private Cache<Regime, RegimeAi> _aiRegimes;
     private VBoxContainer _container;
     private Data _data;
-    public static RegimeAiOverviewWindow Get(Data data)
+    public static void Open(Data data)
     {
-        var res = new RegimeAiOverviewWindow();
-        res._data = data;
-        res._aiRegimes = data.HostLogicData.RegimeAis;
-        return res;
+        var w = new RegimeAiOverviewWindow();
+        w._data = data;
+        w._aiRegimes = data.HostLogicData.RegimeAis;
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
 
     private RegimeAiOverviewWindow()

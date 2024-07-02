@@ -9,6 +9,7 @@ public partial class SettingsWindow : ConfirmationDialog
     protected SettingsWindow()
     {
         Size = Vector2I.One * 800;
+        
         this.MakeFreeable();
     }
     public static SettingsWindow Get(MultiSettings multi)

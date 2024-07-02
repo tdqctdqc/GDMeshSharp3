@@ -80,27 +80,27 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
     {
         var regime = _parent.Regime;
         _makingUnitsInfo.ClearChildren();
-        if (_makingUnits.Selected == null) return;
+        if (_makingUnits.Value == null) return;
         
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
 
-        _makingUnitsInfo.AddChild(_makingUnits.Selected.GetDisplay(c.Data));
+        _makingUnitsInfo.AddChild(_makingUnits.Value.GetDisplay(c.Data));
         
         var cancelMakeBtn = _makingUnitsInfo.AddButton(
             "Cancel", () =>
             {
-                if (_makingUnits is null || _makingUnits.Selected is null)
+                if (_makingUnits is null || _makingUnits.Value is null)
                 {
                     return;
                 }
                 var inner = new CancelMakeProjectCommand(regime.MakeRef(),
-                    _makingUnits.Selected.Id, player);
+                    _makingUnits.Value.Id, player);
                 var com = CallbackCommand.Construct(
                     inner, () =>
                     {
                         if (IsInstanceValid(_makingUnits.ItemList))
                         {
-                            _makingUnits.Remove(_makingUnits.Selected);
+                            _makingUnits.Remove(_makingUnits.Value);
                             SetMakingUnitsInfo(c);
                         }
                         
@@ -114,7 +114,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         var regime = _parent.Regime;
         _templateInfo.ClearChildren();
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
-        var template = _templates.Selected;
+        var template = _templates.Value;
         if (template is null) return;
         _templateInfo.AddChild(template.GetDisplay(c.Data));
         
@@ -122,13 +122,13 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
             "Make", () =>
             {
                 if (_templates is null 
-                    || _templates.Selected is null)
+                    || _templates.Value is null)
                 {
                     return;
                 }
 
                 var proj = UnitMakeProject.Construct(regime,
-                    _templates.Selected);
+                    _templates.Value);
                 var inner = new StartMakeProjectCommand(proj, player);
                 var com = CallbackCommand.Construct(
                     inner, () =>

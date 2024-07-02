@@ -72,7 +72,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         var transferFreeUnitBtn = ButtonExt.GetButton(() =>
         {
             if (_freeUnits.Selected.Count == 0) return;
-            var army = armiesToken.Selected;
+            var army = armiesToken.Value;
             if (army is null) return;
             foreach (var unit in _freeUnits.Selected)
             {

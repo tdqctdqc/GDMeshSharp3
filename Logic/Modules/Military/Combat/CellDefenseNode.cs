@@ -17,8 +17,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
 
     public bool DefendersForcedBack { get; private set; }
     
-    public static int BaseFrontLength { get; private set; }
-        = 1000;
+    
     public static CellDefenseNode GetOrConstruct(CombatGraph g,
         Cell c, Data d)
     {
@@ -144,7 +143,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         }
         void sendLosses(UnitCombatInfo info)
         {
-            var unit = key.Data.Get<Unit>(info.Id);
+            var unit = info.Unit.Get(key.Data);
             var proc = TroopLossesProcedure.Construct(unit);
             foreach (var (troop, amt) in info
                          .Active
@@ -164,7 +163,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
             var attackerInfos = combat.Graph.GetNeighbors(this)
                 .OfType<CellAttackNode>()
                 .SelectMany(n => n.UnitInfos)
-                .Select(i => key.Data.Get<Unit>(i.Id));
+                .Select(i => i.Unit.Get(key.Data));
             
             var alliancesByStr = attackerInfos
                 .Where(u => key.Data.HasEntity(u.Id))

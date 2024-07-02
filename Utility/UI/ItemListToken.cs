@@ -6,7 +6,8 @@ using Godot;
 
 public class ItemListToken<T>
 {
-    public T Selected { get; private set; }
+    public T Value { get; private set; }
+    public event Action<T> JustSelected;
     public ItemList ItemList { get; private set; }
     public IReadOnlyList<T> Items => _items;
     private List<T> _items;
@@ -37,12 +38,13 @@ public class ItemListToken<T>
         _textureSize = textureSize;
         
         SetList();
-
+        ItemList.AllowReselect = true;
         ItemList.ItemSelected += i =>
         {
             HandleSelection();
         };
     }
+    
     
     
     private void SetList()
@@ -59,12 +61,13 @@ public class ItemListToken<T>
         if (selecteds.Count() > 1) throw new Exception();
         if (selecteds.Count() == 0)
         {
-            Selected = default;
+            Value = default;
             return;
         }
         var selected = _items[selecteds[0]];
-        Selected = selected;
+        Value = selected;
         _selectAction(selected);
+        JustSelected?.Invoke(selected);
     }
     private void AddItemToList(T item)
     {
@@ -86,6 +89,23 @@ public class ItemListToken<T>
         if (selecteds.Count() > 1) throw new Exception();
         ItemList.RemoveItem(index);
         _items.Remove(t);
+        HandleSelection();
+    }
+
+    public void AddOrReplace(Func<T, bool> pred, T replacement)
+    {
+        if (_items.Any(pred))
+        {
+            var toReplace = _items.FirstOrDefault(pred);
+            Remove(toReplace);
+        }
+        
+        Add(replacement);
+    }
+
+    public void SelectAt(int index)
+    {
+        ItemList.Select(index);
         HandleSelection();
     }
 }

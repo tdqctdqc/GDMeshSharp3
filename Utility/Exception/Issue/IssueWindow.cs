@@ -20,11 +20,11 @@ public partial class IssueWindow : Window
         AboutToPopup += Draw;
     }
     
-    public static IssueWindow Get(Client c)
+    public static void Open(Client c)
     {
         var w = new IssueWindow();
         w._client = c;
-        return w;
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
 
     private void Draw()

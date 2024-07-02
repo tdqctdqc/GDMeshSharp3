@@ -12,4 +12,11 @@ public abstract class TerrainAspect : IModel
     {
     }
 
+    public MeshTexture GetColorTexture(float size)
+    {
+        var mesh = MeshGenerator.GetSquareMesh(size, Color);
+        var texture = new MeshTexture();
+        texture.Mesh = mesh;
+        return texture;
+    }
 }

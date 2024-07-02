@@ -4,11 +4,11 @@ using System.Linq;
 
 public partial class ClientSettingsWindow : SettingsWindow
 {
-    public static ClientSettingsWindow Get(ClientSettings s)
+    public static void Open(ClientSettings s)
     {
         var w = new ClientSettingsWindow();
         w.Setup(s);
-        return w;
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
     private ClientSettingsWindow()
     {

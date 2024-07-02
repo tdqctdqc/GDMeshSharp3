@@ -43,9 +43,8 @@ public partial class GeneratorUi : Node, IClientComponent
             }
         });
         
-        topBar.AddWindowButton<GeneratorSettingsWindow>(
-            "Gen Settings",
-            () => GeneratorSettingsWindow.Get(wrapper.Data.GenMultiSettings));
+        topBar.AddButton("Gen Settings",
+            () => GeneratorSettingsWindow.Open(wrapper.Data.GenMultiSettings));
         
         AddQuickSets(topBar);
         

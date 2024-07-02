@@ -35,7 +35,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
             u =>
             {
                 return u.Template.Fulfilled()
-                    ? u.Template.Get(c.Data).Name + " " + u.Id
+                    ? u.Template.Get(c.Data).Name + " " + u.Unit
                     : "None";
             },
             u => DrawInfo(u, true, info, c),
@@ -53,7 +53,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
             u =>
             {
                 return u.Template.Fulfilled()
-                    ? u.Template.Get(c.Data).Name + " " + u.Id
+                    ? u.Template.Get(c.Data).Name + " " + u.Unit
                     : "None";
             },
             u => DrawInfo(u, false, info, c),
@@ -79,7 +79,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         var template = u.Template.Get(c.Data);
         var icon = u.Initial.GetMaxPowerTroop(c.Data).Icon
             .GetLabeledIcon<HBoxContainer>(
-                $"{(template is not null ? template.Name : "None")} {u.Id}",
+                $"{(template is not null ? template.Name : "None")} {u.Unit}",
                 large);
         info.AddChild(icon);
         info.CreateLabelAsChild($"{(attacker ? "Attacker" : "Defender")}");

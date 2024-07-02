@@ -11,11 +11,11 @@ public partial class LoggerWindow : Window
     private Dictionary<LogType, int> _num;
     private Dictionary<LogType, Node> _innerContainers;
     private Data _data;
-    public static LoggerWindow Get(Data data)
+    public static void Open(Data data)
     {
-        var l = SceneManager.Instance<LoggerWindow>();
-        l._data = data;
-        return l;
+        var w = SceneManager.Instance<LoggerWindow>();
+        w._data = data;
+        Game.I.Client.WindowHolder.OpenWindow(w);
     }
 
     private LoggerWindow()
