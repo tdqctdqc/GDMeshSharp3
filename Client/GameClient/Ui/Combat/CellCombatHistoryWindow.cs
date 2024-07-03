@@ -9,13 +9,10 @@ public partial class CellCombatHistoryWindow : TabWindow
     public CellCombatHistoryWindow(Client c)
         : base(c)
     {
-        this.MakeFreeable();
         Size = new Vector2I(1000, 800);
         Info = new CombatInfo();
-        var general = new GeneralTab(Info);
+        var general = new GeneralTab(Info, c);
         AddTab(general);
-        var units = new UnitsTab(Info);
-        AddTab(units);
     }
 
     public void Setup(CellDefenseNode info, CombatGraph graph,

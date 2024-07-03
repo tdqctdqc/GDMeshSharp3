@@ -9,7 +9,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 {
     private Landform _landform;
     private Vegetation _vegetation;
-    private UnitCombatInfo _attackers, _defenders;
+    private List<UnitCombatInfo> _attackers, _defenders;
     private ItemListToken<Landform> _lf;
     private ItemListToken<Vegetation> _veg;
     private ItemListToken<Troop> _troops;
@@ -17,15 +17,25 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     private VBoxContainer _selectedTroopInfo;
     private CheckBox _chooseIfDef;
     private VBoxContainer _terrainInfo;
-    private CombatResultsGraphic _defendersGraphic;
-    private CombatResultsGraphic _attackersGraphic;
+    
+    
+    
+    
+    private CombatResultsGraphic _defendersGraphic, 
+        _attackersGraphic, _attackerTotalsGraphic, _defenderTotalsGraphic;
     private FloatSettingsOption _numSetting;
 
     public SimTab(Client c)
     {
         Name = "Simulation Settings";
-        _attackers = new UnitCombatInfo(IdCount<Troop>.Construct(), c.Data);
-        _defenders = new UnitCombatInfo(IdCount<Troop>.Construct(), c.Data);
+        _attackers = new List<UnitCombatInfo>
+        {
+            new (IdCount<Troop>.Construct(), c.Data)
+        };
+        _defenders = new List<UnitCombatInfo>
+        {
+            new (IdCount<Troop>.Construct(), c.Data)
+        };
         
         MakeModel(c);
         ConnectSignals();
@@ -46,7 +56,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         _terrainInfo.ExpandFill();
 
         var sliderOuter = _numSetting.GetControlInterface();
-        sliderOuter.ExpandFill();
 
         var set = ButtonExt.GetButton(SetTroop);
         set.Text = "Set";
@@ -55,13 +64,26 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         var calc = ButtonExt.GetButton(() => Calculate(c.Data));
         calc.Text = "Calculate";
         
+        var addNewUnit = ButtonExt.GetButton(() => AddNewUnit(c.Data));
+        addNewUnit.Text = "Add New Unit";
+        
         var left = new VBoxContainer();
         left.ExpandFill();
         left.SizeFlagsStretchRatio = 1f;
 
-        var middle = new HBoxContainer();
+        
+        
+        var middle = new TabContainer();
         middle.ExpandFill();
         middle.SizeFlagsStretchRatio = 3f;
+        var byUnitTab = new HBoxContainer();
+        byUnitTab.Name = "By Unit";
+        byUnitTab.ExpandFill();
+        var totalsTab = new HBoxContainer();
+        totalsTab.Name = "Totals";
+        totalsTab.ExpandFill();
+        middle.AddChild(byUnitTab);
+        middle.AddChild(totalsTab);
 
         var right = new VBoxContainer();
         right.ExpandFill();
@@ -71,21 +93,53 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         left.AddChild(_troops.ItemList);
         left.AddChild(chooseIfDefOuter);
         left.AddChild(sliderOuter);
+        left.AddChild(addNewUnit);
         left.AddChild(calc);        
         AddChild(left);
-
+        
         _attackersGraphic = new CombatResultsGraphic();
         _attackersGraphic.ExpandFill();
-        middle.AddChild(_attackersGraphic);
+        _attackersGraphic.Draw(_attackers, c.Data);
+        byUnitTab.AddChild(_attackersGraphic);
         _defendersGraphic = new CombatResultsGraphic();
         _defendersGraphic.ExpandFill();
-        middle.AddChild(_defendersGraphic);
+        _attackersGraphic.Draw(_defenders, c.Data);
+        byUnitTab.AddChild(_defendersGraphic);
         AddChild(middle);
+
+        _attackerTotalsGraphic = new CombatResultsGraphic();
+        _attackerTotalsGraphic.ExpandFill();
+        totalsTab.AddChild(_attackerTotalsGraphic);
+        _defenderTotalsGraphic = new CombatResultsGraphic();
+        _defendersGraphic.ExpandFill();
+        totalsTab.AddChild(_defenderTotalsGraphic);
         
         right.AddChild(_terrainInfo);
         right.AddChild(_lf.ItemList);
         right.AddChild(_veg.ItemList);
         AddChild(right);
+    }
+
+    private void AddNewUnit(Data data)
+    {
+        var unit = new UnitCombatInfo(IdCount<Troop>.Construct(), data);
+        if (_chooseIfDef.ButtonPressed)
+        {
+            _defenders.Add(unit);
+        }
+        else
+        {
+            _attackers.Add(unit);
+        }
+        foreach (var i in _attackers)
+        {
+            i.ClearLossesKills();
+        }
+        foreach (var i in _defenders)
+        {
+            i.ClearLossesKills();
+        }
+        DrawCenter();
     }
 
     private void ConnectSignals()
@@ -147,13 +201,19 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         var amt = _numSetting.Value;
         if (_chooseIfDef.ButtonPressed)
         {
-            _defenders.SetInitial(troop, amt, Game.I.Client.Data);
-            _attackers.ClearLossesKills();
+            _defendersGraphic.Selected.SetInitial(troop, amt, Game.I.Client.Data);
         }
         else
         {
-            _attackers.SetInitial(troop, amt, Game.I.Client.Data);
-            _defenders.ClearLossesKills();
+            _attackersGraphic.Selected.SetInitial(troop, amt, Game.I.Client.Data);
+        }
+        foreach (var i in _attackers)
+        {
+            i.ClearLossesKills();
+        }
+        foreach (var i in _defenders)
+        {
+            i.ClearLossesKills();
         }
         DrawCenter();
     }
@@ -166,8 +226,8 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
     private void Calculate(Data d)
     {
-        MilUtil.CalculateCombat(_attackers.Yield().ToArray(),
-            _defenders.Yield().ToArray(),
+        MilUtil.CalculateCombat(_attackers.ToArray(),
+            _defenders.ToArray(),
             _lf.Value, _veg.Value, d);
         DrawCenter();
     }
@@ -234,8 +294,13 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
     private void DrawCenter()
     {
-        _attackersGraphic.Draw(_attackers.Yield(), Game.I.Client.Data);
-        _defendersGraphic.Draw(_defenders.Yield(), Game.I.Client.Data);
+        _attackersGraphic.Draw(_attackers, Game.I.Client.Data);
+        _defendersGraphic.Draw(_defenders, Game.I.Client.Data);
+
+        var attackerTotals = UnitCombatInfo.Sum(_attackers, Game.I.Client.Data);
+        var defenderTotals = UnitCombatInfo.Sum(_defenders, Game.I.Client.Data);
+        _attackerTotalsGraphic.Draw(attackerTotals.Yield(), Game.I.Client.Data);
+        _defenderTotalsGraphic.Draw(defenderTotals.Yield(), Game.I.Client.Data);
     }
     
 }

@@ -14,7 +14,10 @@ public class Troop : IModel, IMakeable, IIconed
     public float Evasion { get; private set; }
     public float Recon { get; private set; }
     public int Echelon { get; private set; }
+    public int Range { get; private set; }
+    public int TargetEchelon { get; private set; }
     public float FrontLength { get; private set; }
+    public float BreakthroughMult { get; private set; }
     public Icon Icon { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
 
@@ -35,6 +38,8 @@ public class Troop : IModel, IMakeable, IIconed
         Evasion = res.Evasion;
         Recon = res.Recon;
         FrontLength = res.FrontLength;
+        Range = res.Range;
+        TargetEchelon = res.TargetEchelon;
         Domain = domain;
         Makeable = makeable;
         Icon = Icon.Create(name.ToLower(), Vector2I.One);

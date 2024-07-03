@@ -6,77 +6,77 @@ namespace Ui.Combat;
 
 public partial class CombatResultsGraphic : ScrollContainer
 {
-    private VBoxContainer _inner;
-
+    public UnitCombatInfo Selected => _token.Value;
+    private SelectableControlListToken<UnitCombatInfo> _token;
     public void Draw(IEnumerable<UnitCombatInfo> infos, Data d)
     {
         this.ClearChildren();
         this.ExpandFill();
+
+        var inner = new VBoxContainer();
+        inner.AnchorsPreset = (int)LayoutPreset.HcenterWide;
+        AddChild(inner);
         
-        _inner = new VBoxContainer();
-        _inner.AnchorsPreset = (int)LayoutPreset.HcenterWide;
-        AddChild(_inner);
+        _token = new SelectableControlListToken<UnitCombatInfo>(
+            i => GetEntry(
+                i.Template.Fulfilled() 
+                    ? $"{i.Template.Get(d).Name} {i.Unit.RefId}" 
+                    : "Anonymous",
+                i.Initial,
+                i.Active, i.Kills, d),
+            i => { }
+        );
         
+        _token.Node.ExpandFill();
+        inner.AddChild(_token.Node);
         foreach (var unitCombatInfo in infos)
         {
-            var entry = GetEntry(unitCombatInfo.Initial,
-                unitCombatInfo.Active, unitCombatInfo.Kills, d);
-            _inner.AddChild(entry);
-        }
-        
-        if (infos.Count() > 1)
-        {
-            this.CreateLabelAsChild("TOTALS");
-            var initials = IdCount<Troop>.Sum(infos.Select(i => i.Initial).ToArray());
-            var actives = IdCount<Troop>.Sum(infos.Select(i => i.Initial).ToArray());
-            var kills = IdCount<Troop>.Sum(infos.Select(i => i.Initial).ToArray());
-            var entry = GetEntry(initials, actives, kills, d);
-            _inner.AddChild(entry);
+            _token.Add(unitCombatInfo);
         }
     }
 
-    private VBoxContainer GetEntry(IdCount<Troop> initials, 
+    private Control GetEntry(string unitName, IdCount<Troop> initials, 
         IdCount<Troop> actives, IdCount<Troop> kills, Data d)
     {
         var res = new VBoxContainer();
+        var l = res.CreateLabelAsChild(unitName);
+        l.CustomMinimumSize = new Vector2(100f, 10f);
         res.SetAnchorsPreset(LayoutPreset.HcenterWide);
         foreach (var (troop, amt) in initials.GetEnumModel(d))
         {
-            var line = new VBoxContainer();
-            line.SetAnchorsPreset(LayoutPreset.HcenterWide);
             var label = new Label();
-            label.Text = troop.Name;
+            var active = actives.Get(troop);
+            label.Text = $"{troop.DisplayName}: {active.RoundTo2Digits()}/{amt.RoundTo2Digits()}";
             label.SetAnchorsPreset(LayoutPreset.HcenterWide);
-            line.AddChild(label);
-            res.AddChild(line);
-            var initialLine = GetSubEntry(troop, amt, "Initial");
-            var activeLine = GetSubEntry(troop, actives.Get(troop), "Active");
-            line.AddChild(initialLine);
-            line.AddChild(activeLine);
+            label.ExpandFill();
+            res.AddChild(label);
+            var pics = GetSubEntry(troop, active, amt, "Active");
+            pics.ExpandFill();
+            res.AddChild(pics);
         }
-
+        res.ExpandFill();
         return res;
     }
 
-    private VBoxContainer GetSubEntry(Troop t, float amt, string text)
+    private Control GetSubEntry(Troop t, float active, float initial, string text)
     {
-        var box = new VBoxContainer();
-        box.SetAnchorsPreset(LayoutPreset.HcenterWide);
         var size = Game.I.Client.Settings.MedIconSize.Value;
-        var label = new Label();
-        label.Text = $"{text}: {amt}";
-        box.AddChild(label);
-        box.SetAnchorsPreset(LayoutPreset.HcenterWide);
         var maxRows = 5;
 
         var pics = new FlexIconDisplay(this,
             Vector2.One * size,
-            new Vector2(_inner.Size.X, maxRows * size));
-        box.AddChild(pics);
-        var icons = Enumerable.Range(0, Mathf.CeilToInt(amt))
-            .Select(i => t.Icon.GetTextureRect(size));
-        pics.SetChildren(icons.ToList<Control>());
-        return box;
+            new Vector2(_token.Node.Size.X, maxRows * size));
+
+        var activeCap = Mathf.CeilToInt(active);
+        var initialCap = Mathf.CeilToInt(initial);
+        var icons = Enumerable.Range(0, initialCap)
+            .Select(i => t.Icon.GetTextureRect(size)).ToList<Control>();
+        for (var i = activeCap; i < initialCap; i++)
+        {
+            icons[i].Modulate = Colors.Red;
+        }
+        pics.SetChildren(icons);
+        return pics;
     }
     
     

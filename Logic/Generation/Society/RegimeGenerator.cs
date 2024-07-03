@@ -90,10 +90,6 @@ public class RegimeGenerator : Generator
             }
         }
         
-        
-
-        
-        
         return polyRegimes;
     }
 

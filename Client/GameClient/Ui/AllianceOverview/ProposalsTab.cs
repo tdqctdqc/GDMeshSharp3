@@ -13,7 +13,7 @@ public partial class ProposalsTab : ScrollContainer, IUiDrawable
         Name = "Proposals";
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
-        _container.AnchorsPreset = (int)LayoutPreset.FullRect;
+        _container.FullRect();
         AddChild(_container);
     }
 

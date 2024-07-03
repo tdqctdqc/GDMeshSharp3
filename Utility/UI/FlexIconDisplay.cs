@@ -3,10 +3,11 @@ using Godot;
 
 public partial class FlexIconDisplay : Control
 {
-    private List<Control> _children;
+    public List<Control> Children { get; private set; }
     private Control _control;
     private Vector2 _iconDim;
     private Vector2 _maxSize;
+    private float _margin;
 
     public FlexIconDisplay(Control control, 
         Vector2 iconDim, Vector2 maxSize)
@@ -27,8 +28,8 @@ public partial class FlexIconDisplay : Control
 
     public void SetChildren(List<Control> children)
     {
-        _children = children;
-        foreach (var control in _children)
+        Children = children;
+        foreach (var control in Children)
         {
             AddChild(control);
         }
@@ -38,7 +39,7 @@ public partial class FlexIconDisplay : Control
 
     public void SetMaxSize()
     {
-        _maxSize = new Vector2(_control.Size.X, _maxSize.Y);
+        _maxSize = new Vector2(_control.Size.X * .8f, _maxSize.Y);
         Arrange();
     }
     public void SetMaxSize(Vector2 maxSize)
@@ -48,32 +49,36 @@ public partial class FlexIconDisplay : Control
     }
     public void Arrange()
     {
-        if (_children is null)
+        if (Children is null)
         {
             Size = Vector2.Zero;
             CustomMinimumSize = Vector2.Zero;
             return;
         }
-        var fitColumns = Mathf.FloorToInt(_maxSize.X / _iconDim.X);
-        var fitRows = Mathf.FloorToInt(_maxSize.Y / _iconDim.Y);
+        var fitColumns = Mathf.FloorToInt(_maxSize.X / _iconDim.X) 
+                         - 2;
+        var fitRows = Mathf.FloorToInt(_maxSize.Y / _iconDim.Y) 
+                      - 2;
+        fitColumns = Mathf.Max(1, fitColumns);
+        fitRows = Mathf.Max(1, fitRows);
         var fit = fitColumns * fitRows;
         Vector2 bounds;
-        if (_children.Count <= fit)
+        if (Children.Count <= fit)
         {
             var boundsX = 0f;
             var boundsY = 0f;
             var row = 0;
             var column = 0;
-            for (var i = 0; i < _children.Count; i++)
+            for (var i = 0; i < Children.Count; i++)
             {
-                var c = _children[i];
+                var c = Children[i];
                 var y = row * _iconDim.Y;
                 boundsY = Mathf.Max(y, boundsY);
                 
                 var x = column * _iconDim.X;
                 boundsX = Mathf.Max(x, boundsX);
                 c.Position = new Vector2(x, y);
-
+                
                 column++;
                 if (column >= fitColumns)
                 {
@@ -82,18 +87,18 @@ public partial class FlexIconDisplay : Control
                 }
             }
 
-            bounds = new Vector2(boundsX, boundsY);
+            bounds = new Vector2(boundsX, boundsY) + _iconDim;
         }
         else
         {
-            var numInRow = Mathf.CeilToInt(_children.Count / fitRows);
+            var numInRow = Mathf.CeilToInt(Children.Count / fitRows);
             var xWidth = _maxSize.X / numInRow;
 
-            for (var i = 0; i < _children.Count; i++)
+            for (var i = 0; i < Children.Count; i++)
             {
                 var column = i % numInRow;
                 var row = i / numInRow;
-                var c = _children[i];
+                var c = Children[i];
                 var y = row * _iconDim.Y;
                 var x = column * xWidth;
                 c.Position = new Vector2(x, y);

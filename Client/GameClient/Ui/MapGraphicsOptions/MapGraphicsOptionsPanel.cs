@@ -14,7 +14,8 @@ public partial class MapGraphicsOptionsPanel : Panel
     public MapGraphicsOptionsPanel(Client client)
     {
         SelfModulate = Colors.Black;
-        var vbox = this.MakeScroll<VBoxContainer>(new Vector2(300f, 600f));
+        var vbox = this.MakeScroll<VBoxContainer>();
+        vbox.FullRect();
         _scroll = (ScrollContainer)vbox.GetParent();
         var first = client.GetComponent<MapGraphics>()
             .GraphicLayerHolder.Chunks.First().Value;

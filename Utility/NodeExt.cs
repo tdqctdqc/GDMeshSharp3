@@ -50,6 +50,18 @@ public static class NodeExt
             () => (flow, client.GetComponent<MapGraphics>().SpectatingRegime));
         return h;
     }
+
+    public static IEnumerable<Node> GetDescendents(this Node n)
+    {
+        foreach (var child in n.GetChildren())
+        {
+            yield return child;
+            foreach (var descendent in child.GetDescendents())
+            {
+                yield return descendent;
+            }
+        }
+    }
     
     public static void RegisterTooltip<T>(this Control c, TooltipTemplate<T> template, Func<T> getObject)
     {

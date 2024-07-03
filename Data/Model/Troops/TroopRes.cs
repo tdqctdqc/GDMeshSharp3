@@ -14,5 +14,8 @@ public partial class TroopRes : Resource
     [Export] public float Recon { get; set; }
     [Export] public float MilitaryCapCost { get; set; }
     [Export] public float FrontLength { get; set; }
+    [Export] public int Range { get; private set; }
+    [Export] public int TargetEchelon { get; private set; }
+    [Export] public float BreakthroughMult { get; private set; }
     
 }

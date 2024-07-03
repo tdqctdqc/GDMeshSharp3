@@ -19,7 +19,7 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         AddChild(_container);
-        _container.AnchorsPreset = (int)LayoutPreset.FullRect;
+        _container.FullRect();
     }
 
     private GeneralTab()

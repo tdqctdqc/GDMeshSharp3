@@ -10,12 +10,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         _parent = parent;
         Name = "Budget";
         AnchorsPreset = (int)LayoutPreset.FullRect;
-        _container = ContainerExt.MakeScroll<VBoxContainer>(this,
-            new Vector2(500f, 500f));
-        
-        
-        // AddChild(_container);
-        // _container.AnchorsPreset = (int)LayoutPreset.FullRect;
+        _container = ContainerExt.MakeScroll<VBoxContainer>(this);
     }
 
     private BudgetTab()

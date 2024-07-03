@@ -15,19 +15,15 @@ public static class ContainerExt
         c.AddChild(inner);
         return inner;
     }
-    public static T MakeScroll<T>(this Control c,
-        Vector2 size)
+    public static T MakeScroll<T>(this Control c)
             where T : Container, new()
     {
-        c.CustomMinimumSize = size;
-        c.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
         var scroll = new ScrollContainer();
-        scroll.AnchorsPreset =  (int)Control.LayoutPreset.FullRect;
+        scroll.FullRect();
         c.MouseFilter = Control.MouseFilterEnum.Stop;
-        scroll.CustomMinimumSize = size;
         c.AddChild(scroll);
         var inner = new T();
-        inner.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
+        inner.FullRect();
         scroll.AddChild(inner);
         c.GuiInput += e =>
         {

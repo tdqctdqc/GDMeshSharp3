@@ -40,7 +40,7 @@ public class MapUiElements
     public void MoveToTop(IUiCollidable c)
     {
         var have = _order[c.Z].Remove(c);
-        if (have == false) throw new Exception();
+        if (have == false) return;
         _order[c.Z].Add(c);
     }
     public bool HandleInput(InputEvent e, Vector2 mapPos, Client c)

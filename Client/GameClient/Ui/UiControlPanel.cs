@@ -20,7 +20,7 @@ public partial class UiControlPanel : Panel
         _scroll.CustomMinimumSize = new Vector2(300f, 600f);
         AddChild(_scroll);
         var vbox = new VBoxContainer();
-        vbox.AnchorsPreset = (int)LayoutPreset.FullRect;
+        vbox.FullRect();
         vbox.CustomMinimumSize = new Vector2(300f, 600f);
         _scroll.AddChild(vbox);
         var options = client.UiController.ModeOption

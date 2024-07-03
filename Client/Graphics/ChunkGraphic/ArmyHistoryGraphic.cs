@@ -109,8 +109,8 @@ public partial class ArmyHistoryGraphic : CustomClickArea
                 center - Vector2.Left * size / 2f - Vector2.Up * size / 2f,
                 center + Vector2.Left * size / 2f - Vector2.Up * size / 2f
             };
-            mb.DrawPolygon(square, color);
-            Add(square, () => Open(cell, client));
+            // mb.DrawPolygon(square, color);
+            // Add(square, () => Open(cell, client));
         }
     }
 

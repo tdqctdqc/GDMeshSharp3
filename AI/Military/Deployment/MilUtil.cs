@@ -26,44 +26,98 @@ public static class MilUtil
     {
         foreach (var unitCombatInfo in attackers)
         {
-            doFights(unitCombatInfo, defenders);
+            doFights(unitCombatInfo, defenders, attackers);
         }
         
         void doFights(UnitCombatInfo unit, 
-            UnitCombatInfo[] targets)
+            UnitCombatInfo[] targets,
+            UnitCombatInfo[] comrades)
         {
-            var targetUnit = getTargetUnit(targets);
-            if (targetUnit == null) return;
             foreach (var (troop, amt) in unit.Active.GetEnumModel(d))
             {
                 var ceil = Mathf.CeilToInt(amt);
                 for (var i = 0; i < ceil; i++)
                 {
-                    if (targetUnit.ActiveFrontSize <= 0f)
-                    {
-                        targetUnit = getTargetUnit(targets);
-                        if (targetUnit == null) return;
-                    }
-
-                    var (targetTroop, targetTroopAmt) = getTargetTroop(targetUnit);
+                    var targetEchelon = getTargetEchelon(troop, targets, comrades);
+                    if (targetEchelon == -1) return;
+                    var targetUnit = getTargetUnit(targets, targetEchelon);
+                    if (targetUnit == null) return;
+                    var (targetTroop, targetTroopAmt) = getTargetTroop(targetUnit,
+                        targetEchelon);
+                    if (targetTroop == null) return;
                     
                     if (getHit(troop, targetTroop, true))
                     {
-                        var kill = getKillAmt(troop, targetTroop, targetTroopAmt);
+                        var kill = getKillAmt(troop, 
+                            targetTroop, targetTroopAmt);
                         unit.AddKill(targetTroop, kill);
                         targetUnit.AddLoss(targetTroop, kill);
                     }
                     
                     if (getHit(targetTroop, troop, false))
                     {
-                        var kill = getKillAmt(targetTroop, troop, 1f);
+                        var kill = getKillAmt(targetTroop, troop, 
+                            unit.Active.Get(targetTroop));
                         unit.AddLoss(troop, kill);
                         targetUnit.AddKill(troop, kill);
                     }
                 }
             }
         }
-        
+        int getTargetEchelon(Troop troop, UnitCombatInfo[] targets,
+            UnitCombatInfo[] comrades)
+        {
+            if (targets.Length == 0) return -1;
+            if (targets.Any(t => t.ActiveFrontSize > 0f)
+                == false)
+            {
+                return -1;
+            }
+            if (troop.Range >= troop.TargetEchelon
+                && targets.Sum(t => 
+                    t.GetEchelonFrontage(troop.TargetEchelon, d))
+                > 0f)
+            {
+                return troop.TargetEchelon;
+            }
+
+            var maxEchelon = targets
+                .Where(t => t.ActiveFrontSize > 0f)
+                .Max(t => t.GetMaxEchelon(d));
+            var minEchelon = targets
+                .Where(t => t.ActiveFrontSize > 0f)
+                .Min(t => t.GetMinEchelon(d));
+
+            var start = Mathf.Clamp(troop.Range, minEchelon, maxEchelon);
+            
+            var carryOver = 0f;
+            var carryMult = .5f;
+            for (var i = 0; i <= maxEchelon; i++)
+            {
+                var enemyFrontage = targets.Sum(c => c.GetEchelonFrontage(i, d));
+                if (enemyFrontage == 0f) continue;
+                
+                if (i == troop.TargetEchelon || i == maxEchelon)
+                {
+                    return i;
+                }
+                
+                var frontage = comrades.Sum(c => c.GetEchelonFrontage(i, d));
+                frontage += carryOver;
+                
+                carryOver = Mathf.Max(0f, (frontage - enemyFrontage) * carryOver);
+
+                var breakthrough = Game.I.Random.RandfRange(0f, frontage * troop.BreakthroughMult);
+                if (breakthrough > enemyFrontage)
+                {
+                    continue;
+                }
+
+                return i;
+            }
+
+            return -1;
+        }
         bool getHit(Troop troop, Troop target, bool targetIsDefense)
         {
             var toHit = Random.Shared.NextSingle()
@@ -86,31 +140,36 @@ public static class MilUtil
             return softDmg + hardDmg;
         }
 
-        UnitCombatInfo getTargetUnit(UnitCombatInfo[] targets)
+        
+        UnitCombatInfo getTargetUnit(UnitCombatInfo[] targets, 
+            int echelon)
         {
-            var totalLength = targets.Sum(t => t.ActiveFrontSize);
+            var totalLength = targets
+                .Sum(t => t.GetEchelonFrontage(echelon, d));
             if (totalLength == 0f) return null;
             var s = Game.I.Random.RandfRange(0, totalLength - .01f);
-
+            
             var i = 0;
-            while (s > targets[i].ActiveFrontSize)
+            while (s > targets[i].GetEchelonFrontage(echelon, d))
             {
-                s -= targets[i].ActiveFrontSize;
+                s -= targets[i].GetEchelonFrontage(echelon, d);
                 i++;
             }
 
             return targets[i];
         }
 
-        (Troop troop, float amt) getTargetTroop(UnitCombatInfo targetUnit)
+        (Troop troop, float amt) getTargetTroop(UnitCombatInfo targetUnit,
+            int targetEchelon)
         {
-            if (targetUnit.ActiveFrontSize <= 0f) return (null, 0f);
-            var sample = Game.I.Random.RandfRange(0f, targetUnit.ActiveFrontSize - .01f);
+            var echelonFrontage = targetUnit.GetEchelonFrontage(targetEchelon, d);
+            if (echelonFrontage <= 0f) return (null, 0f);
+            var sample = Game.I.Random.RandfRange(0f, echelonFrontage);
             var soFar = 0f;
             foreach (var (troop, amt) in targetUnit.Active.GetEnumModel(d))
             {
                 soFar += amt * troop.FrontLength;
-                if (soFar >= sample) return (troop, Mathf.Min(1f, amt));
+                if (soFar >= sample - .01f) return (troop, Mathf.Min(1f, amt));
             }
 
             throw new Exception();

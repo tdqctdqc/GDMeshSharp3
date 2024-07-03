@@ -122,6 +122,16 @@ public class BudgetRoot : BudgetBranch
             if (Mathf.Abs(test - 1f) > .1f) throw new Exception("Total price is " + test);
         }
 
+        if (modelPrices.Count > 0)
+        {
+            var min = modelPrices.Min(kvp => kvp.Value);
+            if (min > 0f)
+            {
+                Prices = modelPrices.ToDictionary(kvp => kvp.Key,
+                    kvp => kvp.Value / min);
+                return;
+            }
+        }
         Prices = modelPrices;
     }
 

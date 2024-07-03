@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
@@ -11,6 +12,19 @@ public class UnitCombatInfo
     public IdCount<Troop> Initial { get; private set; }
     public IdCount<Troop> Kills { get; private set; }
     public float ActiveFrontSize { get; private set; }
+
+    public static UnitCombatInfo Sum(IEnumerable<UnitCombatInfo> infos,
+        Data d)
+    {
+        var active = IdCount<Troop>.Sum(infos.Select(i => i.Active).ToArray());
+        var initial = IdCount<Troop>.Sum(infos.Select(i => i.Initial).ToArray());
+        var kills = IdCount<Troop>.Sum(infos.Select(i => i.Kills).ToArray());
+        var activeFrontSize = active.GetEnumModel(d)
+            .Sum(v => v.Key.FrontLength * v.Value);
+        return new UnitCombatInfo(new ERef<Unit>(-1),
+            active, initial, kills, new ERef<UnitTemplate>(-1),
+            activeFrontSize);
+    }
     public UnitCombatInfo(Unit u, Data d)
     {
         Unit = u.MakeRef();
@@ -32,7 +46,7 @@ public class UnitCombatInfo
         ActiveFrontSize = Active.GetEnumModel(d)
             .Sum(v => v.Key.FrontLength * v.Value);
     }
-    [SerializationConstructor] private UnitCombatInfo(
+    [SerializationConstructor] public UnitCombatInfo(
         ERef<Unit> unit, IdCount<Troop> active, 
         IdCount<Troop> initial, 
         IdCount<Troop> kills,
@@ -117,5 +131,38 @@ public class UnitCombatInfo
         ClearLossesKills();
         ActiveFrontSize = Active.GetEnumModel(d)
             .Sum(v => v.Key.FrontLength * v.Value);
+    }
+
+    public float GetEchelonFrontage(int echelon, Data d)
+    {
+        var res = 0f;
+        foreach (var (troop, amt) in Active.GetEnumModel(d))
+        {
+            if (troop.Echelon != echelon) continue;
+            res += troop.FrontLength * amt;
+        }
+        return res;
+    }
+
+    public int GetMinEchelon(Data d)
+    {
+        var actives = Active.GetEnumModel(d)
+            .Where(kvp => kvp.Value > 0f);
+        if (actives.Any())
+        {
+            return actives.Min(kvp => kvp.Key.Echelon);
+        }
+        return -1;
+    }
+    public int GetMaxEchelon(Data d)
+    {
+        var actives = Active.GetEnumModel(d)
+            .Where(kvp => kvp.Value > 0f);
+        if (actives.Any())
+        {
+            return actives.Max(kvp => kvp.Key.Echelon);
+        }
+
+        throw new Exception();
     }
 }

@@ -61,7 +61,8 @@ public class UnitTemplate : Entity, IMakeable
         var inf = Create(key, "Infantry Division",
             new Dictionary<Troop, float>
                 {
-                    {key.Data.Models.Troops.Rifle1, 100f}
+                    {key.Data.Models.Troops.Rifle1, 100f},
+                    {key.Data.Models.Troops.Artillery1, 10f}
                 }, TroopDomain.Land, key.Data.Models.MoveTypes.InfantryMove,
             r);
     }

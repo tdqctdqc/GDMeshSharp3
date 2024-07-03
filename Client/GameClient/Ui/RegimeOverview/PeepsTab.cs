@@ -14,7 +14,7 @@ public partial class PeepsTab : ScrollContainer, IUiDrawable
         Name = "Peeps";
         AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
-        _container.AnchorsPreset = (int)LayoutPreset.FullRect;
+        _container.FullRect();
         AddChild(_container);
     }
 
