@@ -33,11 +33,16 @@ public partial class TabWindow : Window
     protected void AddTab<T>(T tab)
             where T : Control, IUiDrawable
     {
-        tab.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
+        tab.FullRect();
         _container.AddChild(tab);
         _tabs.Add(tab);
     }
-
+    public T OpenTab<T>()
+    {
+        var index = _tabs.FindIndex(t => t is T);
+        _container.CurrentTab = index;
+        return (T)_tabs[index];
+    }
     protected void Clear()
     {
         _container.ClearChildren();

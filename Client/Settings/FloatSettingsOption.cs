@@ -21,25 +21,13 @@ public class FloatSettingsOption : SettingsOption<float>
 
     public override Control GetControlInterface()
     {
-        var hbox = new VBoxContainer();
-        var l = new Label();
-        l.Text = Name + ": " + Value.ToString().PadDecimals(2);
-        hbox.AddChild(l);
-        var slider = new HSlider();
-        slider.MinValue = Min;
-        slider.MaxValue = Max;
-        slider.Step = Step;
-        slider.Rounded = Integer;
-        slider.Value = Value;
-        hbox.AddChild(slider);
-        slider.ValueChanged += t =>
+        var ctrl = new NumSliderAndEntry(Name, Value, Min, Max, Step);
+        ctrl.ValueChanged += t =>
         {
-            Set((float)t);
-            l.Text = Name + ": " + Value.ToString().PadDecimals(2);
+            Set(t);
         };
-        SettingChanged.Subscribe(v => slider.Value = v.newVal);
-        hbox.CustomMinimumSize = hbox.Size;
-        return hbox;
+        SettingChanged.Subscribe(v => ctrl.SetValue(v.newVal));
+        return ctrl;
     }
     
 }

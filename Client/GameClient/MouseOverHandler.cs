@@ -108,6 +108,12 @@ public class MouseOverHandler
 
     private void SetCell(Data data, Vector2 mousePosMapSpace)
     {
+        var h = data.Planet.Height;
+        if (mousePosMapSpace.Y < 0 || mousePosMapSpace.Y > h)
+        {
+            MouseOverCell = null;
+            return;
+        }
         var c = data.Planet.MapAux
             .CellGrid.GetElementAtPointWhere(mousePosMapSpace, 
                 c => c is RiverCell && _validCell(c),
@@ -125,8 +131,12 @@ public class MouseOverHandler
     {
         var client = Game.I.Client;
         var highlight = client.GetComponent<MapGraphics>().Highlighter;
-        client.HighlightCell(MouseOverCell, 2f);
-        client.HighlightCellNeighbors(MouseOverCell, 1f);
+
+        if (MouseOverCell is not null)
+        {
+            client.HighlightCell(MouseOverCell, 2f);
+            client.HighlightCellNeighbors(MouseOverCell, 1f);
+        }
         if (SecondClosest is not null)
         {
             var edge = MouseOverCell
@@ -134,10 +144,6 @@ public class MouseOverHandler
             highlight.Draw(mb => mb.AddLine(edge.Item1,
                 edge.Item2, Colors.Blue, 2f), 
                 MouseOverCell.RelTo);
-        }
-        else
-        {
-            GD.Print("Couldnt find any");
         }
     }
 }

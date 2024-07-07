@@ -20,12 +20,10 @@ public class ItemListToken<T>
         IEnumerable<T> items, 
         Func<T, string> getLabelText, 
         Action<T> selectAction,
-        Vector2 size,
         Func<T, Texture2D> getTexture = null,
         Vector2I? textureSize = null)
     {
         ItemList = new ItemList();
-        ItemList.CustomMinimumSize = size;
         if (textureSize.HasValue)
         {
             ItemList.FixedIconSize = textureSize.Value;
@@ -107,5 +105,12 @@ public class ItemListToken<T>
     {
         ItemList.Select(index);
         HandleSelection();
+    }
+
+    public void Select(T t)
+    {
+        var index = _items.IndexOf(t);
+        if (index == -1) return;
+        SelectAt(index);
     }
 }

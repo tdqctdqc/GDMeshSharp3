@@ -36,15 +36,15 @@ public class ListSettingsOption<T> : SettingsOption<T>
         var token = new ItemListToken<T>(
             Options,
             t => _names[t],
-            t =>  Set(t),
-            new Vector2(200f, 200f)
+            t =>  Set(t)
         );
         var list = token.ItemList;
-        // list.CustomMinimumSize = list.Size;
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);
         list.Select(Options.IndexOf(Value));
         list.FocusMode = Control.FocusModeEnum.None;
+        list.FullRect();
+        list.ExpandFill();
         return list;
     }
     
@@ -56,7 +56,6 @@ public class ListSettingsOption<T> : SettingsOption<T>
             Options,
             m => _names[m],
             m => Set(m),
-            new Vector2(200f, 500f),
             getTexture);
         var list = token.ItemList;
         list.FixedIconSize = iconSize;

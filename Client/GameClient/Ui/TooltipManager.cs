@@ -7,7 +7,7 @@ using Godot;
 public partial class TooltipManager : Control, IClientComponent
 {
     private TooltipPanel _panel;
-    private ITooltipTemplate _currTemplate;
+    private object _element;
     private Vector2 _offsetFromMouse = new Vector2(20f, 20f);
     private Data _data;
     
@@ -25,27 +25,36 @@ public partial class TooltipManager : Control, IClientComponent
 
     public void Clear()
     {
-        _currTemplate = null;
         _panel.Visible = false;
     }
     public void Process(float delta)
     {
-        if(_currTemplate != null) _panel.Move(GetLocalMousePosition() + _offsetFromMouse);
+        if(_element != null) _panel.Move(GetLocalMousePosition() + _offsetFromMouse);
     }
-    public void PromptTooltip<TElement>
+    public void Prompt<TElement>
         (TooltipTemplate<TElement> template, TElement element)
     {
         _panel.Visible = true;
-        _panel.Setup(template, element, _data);
-        _currTemplate = template;
+        _element = element;
+        
+        _panel.Setup(template.GetFastContainer(element, _data),
+            template.GetSlowContainer(element, _data), 
+            element, _data);
     }
-    
-    public void HideTooltip(ITooltipTemplate template)
+    public void Prompt<TElement>
+        (VBoxContainer fast, VBoxContainer slow, TElement element)
     {
-        if (template == _currTemplate)
+        _panel.Visible = true;
+        _element = element;
+        _panel.Setup(fast, slow, element, _data);
+    }
+
+    public void HideTooltip(object element)
+    {
+        if (_element == element)
         {
             _panel.Visible = false;
-            _currTemplate = null;
+            _element = null;
         }
     }
 }

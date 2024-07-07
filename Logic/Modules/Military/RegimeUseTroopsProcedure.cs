@@ -30,7 +30,7 @@ public class RegimeUseTroopsProcedure : Procedure
 
     public void AddTroopCosts(UnitTemplate template, int num, Data d)
     {
-        foreach (var (troop, numTroop) in template.TroopCounts
+        foreach (var (troop, numTroop) in template.Troops
                                                         .GetEnumModel(d))
         {
             UsageByTroopId.AddOrSum(troop.Id, numTroop * num);

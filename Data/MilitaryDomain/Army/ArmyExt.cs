@@ -4,10 +4,9 @@ using Godot;
 
 public static class ArmyExt
 {
-    public static ArmyTree GetTree(this Army a, Data d)
+    public static ArmyTree GetTree(this Army a, int startColumn,
+        Data d)
     {
-        var tree = new ArmyTree();
-        tree.Setup(a, d);
-        return tree;
+        return new ArmyTree(a, 0, d);
     }
 }

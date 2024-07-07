@@ -8,6 +8,7 @@ public class BudgetRoot : BudgetBranch
 {
     private BudgetBranch _construct, _military;
     public Dictionary<IModel, float> Prices { get; private set; }
+    
     public Dictionary<PriorityNode, (float spent, int tick)> LastSpending { get; private set; }
     
     public BudgetRoot(Data d)
@@ -122,17 +123,22 @@ public class BudgetRoot : BudgetBranch
             if (Mathf.Abs(test - 1f) > .1f) throw new Exception("Total price is " + test);
         }
 
-        if (modelPrices.Count > 0)
+        
+        Prices = modelPrices;
+    }
+
+    public Dictionary<IModel, float> RelativePrices()
+    {
+        if (Prices.Count > 0)
         {
-            var min = modelPrices.Min(kvp => kvp.Value);
+            var min = Prices.Min(kvp => kvp.Value);
             if (min > 0f)
             {
-                Prices = modelPrices.ToDictionary(kvp => kvp.Key,
+                return Prices.ToDictionary(kvp => kvp.Key,
                     kvp => kvp.Value / min);
-                return;
             }
         }
-        Prices = modelPrices;
+        return new Dictionary<IModel, float>();
     }
 
     public override void SetWeights(float selfWeight, Regime r, Data d)

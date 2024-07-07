@@ -83,7 +83,7 @@ public class ForceCompositionAi
             var template = unit.Template.Get(key.Data);
             foreach (var (troop, value) in unit.Troops.GetEnumModel(key.Data))
             {
-                var shouldHave = template.TroopCounts.Get(troop);
+                var shouldHave = template.Troops.Get(troop);
                 if (value < shouldHave)
                 {
                     needCounts.AddOrSum(troop, shouldHave - value);
@@ -91,7 +91,7 @@ public class ForceCompositionAi
             }
         }
         
-        var proc = ReinforceUnitProcedure.Construct(regime);
+        var proc = ReinforceRegimeProcedure.Construct(regime);
         var reserve = regime.Stock;
         foreach (var unit in regime.GetUnits(key.Data))
         {
@@ -100,7 +100,7 @@ public class ForceCompositionAi
             {
                 if (needCounts.ContainsKey(troop) == false) continue;
                 if (reserve.Stock.Contents.ContainsKey(troop.Id) == false) continue;
-                var shouldHave = template.TroopCounts.Get(troop);
+                var shouldHave = template.Troops.Get(troop);
                 if (value < shouldHave)
                 {
                     var need = shouldHave - value;

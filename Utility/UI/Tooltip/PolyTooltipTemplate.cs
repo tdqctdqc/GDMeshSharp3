@@ -56,13 +56,14 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
     {
         if (t.cell is LandCell l is false)
         {
-            return new Control();
+            return null;
         }
 
-        if (l.GetSettlement(d) is not Settlement s) return new Control();
+        if (l.GetSettlement(d) is not Settlement s) return null;
         
         
         var bs = s.Buildings;
+        if (bs.Contents.Count == 0) return null;
         var control = new VBoxContainer();
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
         foreach (var kvp in bs.GetEnumModel(d))
@@ -76,12 +77,12 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
     }
     private static Control GetFoodProd((MapPolygon poly, Cell cell) t, Data d)
     {
-        if (t.cell is LandCell l == false) return new Control();
+        if (t.cell is LandCell l == false) return null;
         var polyFoodCounts = t.poly
             .GetCells(d).OfType<LandCell>()
             .Select(c => c.FoodProd.Nums.Contents)
             .MergeCounts();
-        
+        if (polyFoodCounts.Count == 0) return null;
         var bs = t.cell;
         var control = new VBoxContainer();
         var iconSize = Game.I.Client.Settings.MedIconSize.Value;
@@ -134,7 +135,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
     }
     private static Control GetPeeps((MapPolygon poly, Cell cell) t, Data d)
     {
-        return new Control();
+        return null;
     }
     
     private static Control GetPolyId((MapPolygon poly, Cell cell) t, Data d)
@@ -152,7 +153,8 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         var rs = t.poly
             .GetResourceDeposits(d)
             .GetCountsBy(rd => rd.Item.Get(d));
-        if (rs != null)
+        
+        if (rs is not null && rs.Count > 0)
         {
             var label = new Label();
             int iter = 0;

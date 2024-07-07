@@ -49,7 +49,7 @@ public static class UnitExt
     }
     public static Troop GetMaxPowerTroop(this UnitTemplate unit, Data data)
     {
-        var maxPowerId = unit.TroopCounts.Contents
+        var maxPowerId = unit.Troops.Contents
             .MaxBy(kvp =>
             {
                 var unit = data.Models.GetModel<Troop>(kvp.Key);
@@ -73,7 +73,7 @@ public static class UnitExt
     {
         var totalPp = unit.Troops.GetEnumModel(data)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-        var templatePp = unit.Template.Get(data).TroopCounts.GetEnumModel(data)
+        var templatePp = unit.Template.Get(data).Troops.GetEnumModel(data)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
         return new Vector2(totalPp, templatePp);
     }

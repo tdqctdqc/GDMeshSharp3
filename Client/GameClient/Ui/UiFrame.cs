@@ -22,9 +22,10 @@ public partial class UiFrame : VBoxContainer, IClientComponent
     public UiFrame(Client client)
     {
         MouseFilter = MouseFilterEnum.Ignore;
-        AnchorsPreset = (int)LayoutPreset.FullRect;
+        this.FullRect();
         
         TopBars = new VBoxContainer();
+        TopBars.MouseFilter = MouseFilterEnum.Stop;
         AddChild(TopBars);
         var sidebars = new HBoxContainer();
         sidebars.MouseFilter = MouseFilterEnum.Ignore;
@@ -35,6 +36,7 @@ public partial class UiFrame : VBoxContainer, IClientComponent
             
         LeftBar = MultiBar.MakeVertical();
         LeftBar.SetAnchorsPreset(LayoutPreset.LeftWide);
+        LeftBar.MouseFilter = MouseFilterEnum.Stop;
         sidebars.AddChild(LeftBar);
         var filler = new Control();
         filler.GrowHorizontal = GrowDirection.Both;
@@ -45,9 +47,8 @@ public partial class UiFrame : VBoxContainer, IClientComponent
         
         RightSidebar = new VBoxContainer();
         RightSidebar.SetAnchorsPreset(LayoutPreset.RightWide);
+        RightSidebar.MouseFilter = MouseFilterEnum.Stop;
         sidebars.AddChild(RightSidebar);
-        
-
         client.UiLayer.AddChild(this);
     }
 

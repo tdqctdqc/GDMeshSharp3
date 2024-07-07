@@ -14,6 +14,13 @@ public abstract class UiMode
 
     public abstract void Process(float delta);
     public abstract void HandleInput(InputEvent e);
+
     public abstract void Enter();
     public abstract void Clear();
+
+    public virtual void Tooltip()
+    {
+        _client.GetComponent<TooltipManager>()
+            .Clear();
+    }
 }

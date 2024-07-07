@@ -18,8 +18,6 @@ public partial class RegimeOverviewWindow
     private MilitaryTab _troop;
     public RegimeOverviewWindow(Client c) : base(c)
     {
-        MinSize = new Vector2I(1000, 1000);
-
         _general = new GeneralTab(this);
         AddTab(_general);
 
@@ -41,7 +39,7 @@ public partial class RegimeOverviewWindow
         _manuf = new MakingTab(this);
         AddTab(_manuf);
 
-        _troop = new MilitaryTab(this);
+        _troop = new MilitaryTab(() => Regime, c);
         AddTab(_troop);
     }
     public void Setup(Regime regime)
@@ -49,18 +47,11 @@ public partial class RegimeOverviewWindow
         Regime = regime;
     }
 
-    public static void Open(Cell cell, Client client)
+    public static RegimeOverviewWindow Open(Regime r, Client client)
     {
-        if (cell == null)
-        {
-            throw new Exception();
-        }
-        if (cell.Controller.Fulfilled())
-        {
-            var r = cell.Controller.Get(client.Data);
-            var w = new RegimeOverviewWindow(client);
-            w.Setup(r);
-            client.WindowHolder.OpenWindow(w);
-        }
+        var w = new RegimeOverviewWindow(client);
+        w.Setup(r);
+        client.WindowHolder.OpenWindow(w);
+        return w;
     }
 }

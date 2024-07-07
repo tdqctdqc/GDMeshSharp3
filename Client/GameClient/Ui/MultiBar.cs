@@ -6,12 +6,13 @@ public partial class MultiBar : Control
 {
     private ButtonGroup _group;
     private List<Func<Control>> _controlFuncs;
+    private List<Button> _buttons;
     private Control _showing;
     private int _showingIndex = -1;
     
-    private Container _buttonContainer;
     private Label _label;
-    private Container _outerContainer;
+    private Container _container;
+    private Vector2 _showingSize;
     private MultiBar()
     {
     }
@@ -19,21 +20,20 @@ public partial class MultiBar : Control
     public static MultiBar MakeVertical()
     {
         var mb = new MultiBar(new VBoxContainer(),
-            new HBoxContainer());
+            new Vector2(300f, 600f));
         return mb;
     }
-    public MultiBar(Container buttonContainer,
-        Container outerContainer)
+    public MultiBar(Container container, 
+        Vector2 showingSize)
     {
         _label = new Label();
-        _outerContainer = outerContainer;
-        _outerContainer.AddChild(buttonContainer);
-        _buttonContainer = buttonContainer;
-        _buttonContainer.AddChild(_label);
+        _showingSize = showingSize;
+        _container = container;
         _controlFuncs = new List<Func<Control>>();
+        _buttons = new List<Button>();
         _group = new ButtonGroup();
         _group.AllowUnpress = true;
-        AddChild(_outerContainer);
+        AddChild(_container);
     }
 
     public void Add(Func<Control> func, string name)
@@ -50,7 +50,8 @@ public partial class MultiBar : Control
             });
         button.Text = name;
         button.ButtonGroup = _group;
-        _buttonContainer.AddChild(button);
+        _buttons.Add(button);
+        _container.AddChild(button);
     }
     private void Show(int index)
     {
@@ -60,7 +61,10 @@ public partial class MultiBar : Control
         }
         _showingIndex = index;
         _showing = _controlFuncs[index]();
-        _outerContainer.AddChild(_showing);
+        _showing.CustomMinimumSize = _showingSize;
+        _showing.Size = _showingSize;
+        AddChild(_showing);
+        _showing.Position = Vector2.Right * _container.Size.X;
     }
 
     private void Hide(int index)
@@ -69,6 +73,7 @@ public partial class MultiBar : Control
         {
             _showingIndex = -1;
             _showing?.QueueFree();
+            _showing = null;
         }
     }
 

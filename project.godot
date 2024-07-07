@@ -27,6 +27,10 @@ window/stretch/mode="canvas_items"
 
 project/assembly_name="GDMeshSharp3"
 
+[gui]
+
+theme/custom="res://Assets/Themes/DefaultTheme.tres"
+
 [input]
 
 "Scroll Left"={

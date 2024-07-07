@@ -18,9 +18,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     private CheckBox _chooseIfDef;
     private VBoxContainer _terrainInfo;
     
-    
-    
-    
     private CombatResultsGraphic _defendersGraphic, 
         _attackersGraphic, _attackerTotalsGraphic, _defenderTotalsGraphic;
     private FloatSettingsOption _numSetting;
@@ -160,7 +157,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             c.Data.Models.GetModels<Landform>().Values,
             lf => lf.Name,
             lf => _landform = lf,
-            new Vector2(100f, 100f),
             lf => lf.GetColorTexture(med),
             (int)med * Vector2I.One
         );
@@ -171,7 +167,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             c.Data.Models.GetModels<Vegetation>().Values,
             v => v.Name,
             v => _vegetation = v,
-            new Vector2(100f, 100f),
             v => v.GetColorTexture(med),
             (int)med * Vector2I.One
         );
@@ -183,7 +178,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             c.Data.Models.GetModels<Troop>().Values,
             t => t.Name,
             v => { },
-            med * Vector2.One,
             t => t.Icon.Texture,
             (int)med * Vector2I.One
         );

@@ -6,20 +6,31 @@ namespace Ui.MilitaryWindow;
 
 public partial class ArmiesTab : HBoxContainer, IUiDrawable
 {
-    private global::MilitaryWindow _parent;
-    private VBoxContainer _armyInfoContainer, 
+    private Func<Regime> _getRegime;
+    private VBoxContainer 
+        _armyButtonsContainer,
+        _armyInfoContainer, 
         _armiesContainer, _freeUnitsContainer;
 
     private ItemMultiListToken<Unit> _freeUnits;
+    private ItemListToken<Army> _armies;
     private ArmyTree _armyTree;
-    public ArmiesTab(global::MilitaryWindow parent)
+    public ArmiesTab(Func<Regime> getRegime)
     {
-        _parent = parent;
+        Name = "Armies";
+        _getRegime = getRegime;
+        var left = new VBoxContainer();
+        left.ExpandFill();
+        AddChild(left);
         
         _armyInfoContainer = new VBoxContainer();
-        _armyInfoContainer.ExpandFill();
-        AddChild(_armyInfoContainer);
+        _armyInfoContainer.ExpandFill(3);
+        left.AddChild(_armyInfoContainer);
 
+        _armyButtonsContainer = new VBoxContainer();
+        _armyButtonsContainer.ExpandFill(1);
+        left.AddChild(_armyButtonsContainer);
+        
         _armiesContainer = new VBoxContainer();
         _armiesContainer.ExpandFill();
         AddChild(_armiesContainer);
@@ -33,30 +44,29 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
     {
         
     }
-
+    
 
     public void Draw(Client c)
     {
         _armiesContainer.ClearChildren();
+        _armyButtonsContainer.ClearChildren();
         _armyInfoContainer.ClearChildren();
         _freeUnitsContainer.ClearChildren();
-        
-        var r = _parent.Regime;
+
+        var r = _getRegime();
         if (r is null) return;
-        
-        
         
         var armies = c.Data.GetAll<Army>()
             .Where(a => a.Regime.RefId == r.Id);
         
-        var armiesToken =  new ItemListToken<Army>(
+        _armies =  new ItemListToken<Army>(
             armies, 
             a => a.Id.ToString(),
             a => DrawArmyInfo(a, c),
-            Vector2.One * 20f
+            a => a.Regime.Get(c.Data).Template.Get(c.Data).Flag.Texture
         );
-        armiesToken.ItemList.ExpandFill();
-        _armiesContainer.AddChild(armiesToken.ItemList);
+        _armies.ItemList.ExpandFill();
+        _armiesContainer.AddChild(_armies.ItemList);
         
         
         _freeUnits = new ItemMultiListToken<Unit>(
@@ -72,7 +82,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         var transferFreeUnitBtn = ButtonExt.GetButton(() =>
         {
             if (_freeUnits.Selected.Count == 0) return;
-            var army = armiesToken.Value;
+            var army = _armies.Value;
             if (army is null) return;
             foreach (var unit in _freeUnits.Selected)
             {
@@ -109,15 +119,20 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         _freeUnitsContainer.AddChild(_freeUnits.ItemList);
     }
 
+    public void SelectArmy(Army a)
+    {
+        _armies.Select(a);
+    }
+
     private void DrawArmyInfo(Army a, 
         Client c)
     {
         _armyInfoContainer.ClearChildren();
+        _armyButtonsContainer.ClearChildren();
         if (a is null) return;
         
-        _armyTree = a.GetTree(c.Data);
+        _armyTree = a.GetTree(0, c.Data);
         _armyTree.ExpandFill();
-        
         
         var sendToReserve = ButtonExt.GetButton(() =>
         {
@@ -135,10 +150,46 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             }
         });
         sendToReserve.Text = "Send to Reserve";
+
+        var reinforceUnit = ButtonExt.GetButton(() =>
+        {
+            var unit = _armyTree.GetSelectedUnit(c.Data);
+            if (unit is null) return;
+            var proc = new ReinforceUnitProcedure(unit.MakeRef());
+            var com = new SendMessageCommand(proc, c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
+            var outer = CallbackCommand.Construct(
+                com, () =>
+                {
+                    if (IsInstanceValid(this))
+                    {
+                        SelectArmy(a);
+                    }
+                }, c);
+            c.HandleCommand(outer);
+        });
+        reinforceUnit.Text = "Reinforce Unit";
+        
+        var reinforceArmy = ButtonExt.GetButton(() =>
+        {
+            var proc = new ReinforceArmyProcedure(a.MakeRef());
+            var com = new SendMessageCommand(proc, c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
+            var outer = CallbackCommand.Construct(
+                com, () =>
+                {
+                    if (IsInstanceValid(this))
+                    {
+                        SelectArmy(a);
+                    }
+                }, c);
+            c.HandleCommand(outer);
+        });
+        reinforceArmy.Text = "Reinforce Army";
         
         
-        _armyInfoContainer.AddChild(sendToReserve);
         _armyInfoContainer.AddChild(_armyTree);
+        _armyButtonsContainer.AddChild(sendToReserve);
+        _armyButtonsContainer.AddChild(reinforceUnit);
+        _armyButtonsContainer.AddChild(reinforceArmy);
     }
     
 }

@@ -3,7 +3,7 @@ using System;
 using System.Linq;
 using Godot;
 
-public partial class ConstructionPanel : Panel
+public partial class ConstructionPanel : PanelContainer
 {
     private VBoxContainer _info;
     private VBoxContainer _buttons;
@@ -13,15 +13,18 @@ public partial class ConstructionPanel : Panel
     }
     public ConstructionPanel(Client c) 
     {
-        var inner = this.MakeContainer<VBoxContainer>(new Vector2(300f, 600f));
+        var margin = new MarginContainer();
+        AddChild(margin);
+        var inner = margin.MakeContainer<VBoxContainer>();
+        inner.FullRect();
         this.SelfModulate = Colors.Black;
 
         var info = new Control();
-        _info = info.MakeScroll<VBoxContainer>(new Vector2(300f, 200f));
+        _info = info.MakeScroll<VBoxContainer>();
         inner.AddChild(info);
 
         var buttons = new Control();
-        _buttons = buttons.MakeScroll<VBoxContainer>(new Vector2(300f, 400f));
+        _buttons = buttons.MakeScroll<VBoxContainer>();
         inner.AddChild(buttons);
 
         var mode = c.UiController.ModeOption.Options

@@ -13,7 +13,8 @@ public class ConstructionMode : UiMode
         Settlement = new DefaultSettingsOption<Settlement>("Settlement", null);
         Settlement.SettingChanged.Subscribe(v =>
         {
-            if (v.newVal is null)
+            if (v.newVal is null
+                && _selectedCellGraphic is not null)
             {
                 _selectedCellGraphic.Mesh = null;
             }
@@ -82,5 +83,6 @@ public class ConstructionMode : UiMode
     public override void Clear()
     {
         _selectedCellGraphic.QueueFree();
+        _selectedCellGraphic = null;
     }
 }

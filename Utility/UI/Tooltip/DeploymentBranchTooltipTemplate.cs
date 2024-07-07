@@ -19,7 +19,6 @@ public class DeploymentBranchTooltipTemplate : TooltipTemplate<DeploymentBranch>
 
     private static Control Get(DeploymentBranch branch, Data d)
     {
-
         var panel = new VBoxContainer();
         panel.CreateLabelAsChild(branch.GetType().Name);
         foreach (var c in branch.Assignments)

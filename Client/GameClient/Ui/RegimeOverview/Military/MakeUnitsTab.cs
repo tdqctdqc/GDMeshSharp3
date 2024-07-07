@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using Godot;
 
@@ -12,24 +13,21 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
 
     private ItemListToken<UnitMakeProject> _makingUnits;
     private ItemListToken<UnitTemplate> _templates;
+    private Func<Regime> _getRegime;
     
     
-    private global::MilitaryWindow _parent;
-    public MakeUnitsTab(global::MilitaryWindow parent)
+    public MakeUnitsTab(Func<Regime> getRegime)
     {
-        _parent = parent;
+        Name = "Make Units";
+        _getRegime = getRegime;
 
         _makingUnitsInfo = new VBoxContainer();
         _makingUnitsInfo.ExpandFill();
         AddChild(_makingUnitsInfo);
         
-        
-        
         _makingUnitsContainer = new VBoxContainer();
         _makingUnitsContainer.ExpandFill();
         AddChild(_makingUnitsContainer);
-        
-        
         
         _templatesContainer = new VBoxContainer();
         _templatesContainer.ExpandFill();
@@ -45,30 +43,25 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _makingUnitsInfo.ClearChildren();
         _templatesContainer.ClearChildren();
         _templateInfo.ClearChildren();
-        var regime = _parent.Regime;
+        var regime = _getRegime();
         if (regime is null) return;
 
-        
         var unitProjects = regime.MakeQueue.Queue
             .OfType<UnitMakeProject>();
         _makingUnits = new ItemListToken<UnitMakeProject>(
             unitProjects,
             p => $"{p.MakingTemplate(c.Data).Name} {p.Fulfilled} / {p.Amount}",
             p => SetMakingUnitsInfo(c),
-            Vector2.One * 40f,
             p => p.MakingTemplate(c.Data).GetMaxPowerTroop(c.Data).Icon.Texture,
             Vector2I.One * 40);
         _makingUnits.ItemList.ExpandFill();
         _makingUnitsContainer.AddChild(_makingUnits.ItemList);
-
-
 
         var templates = regime.GetUnitTemplates(c.Data);
         _templates = new ItemListToken<UnitTemplate>(
             templates,
             t => t.Name,
             t => SetTemplateInfo(c),
-            Vector2.One * 40f,
             t => t.GetMaxPowerTroop(c.Data).Icon.Texture,
             Vector2I.One * 40
         );
@@ -78,7 +71,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
 
     private void SetMakingUnitsInfo(Client c)
     {
-        var regime = _parent.Regime;
+        var regime = _getRegime();
         _makingUnitsInfo.ClearChildren();
         if (_makingUnits.Value == null) return;
         
@@ -111,7 +104,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
 
     private void SetTemplateInfo(Client c)
     {
-        var regime = _parent.Regime;
+        var regime = _getRegime();
         _templateInfo.ClearChildren();
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
         var template = _templates.Value;

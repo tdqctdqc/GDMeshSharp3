@@ -5,14 +5,20 @@ using Godot;
 
 public partial class GraphicsSegmenter : Node2D, IGraphicsSegmenter
 {
+    private Control _control;
     private Dictionary<int, Node2D> _segmentNodes;
     private int _center;
     private int _numSegments;
     private float _dimX;
     private float _segWidth;
-    public GraphicsSegmenter(int numSegments, Data data)
+    public GraphicsSegmenter(Client c, int numSegments)
     {
-        _dimX = data.Planet.Width;
+        _control = new MapGraphicsControl(c);
+        _control.MouseFilter = Control.MouseFilterEnum.Pass;
+        _control.Size = c.Data.Planet.Dim * 2f;
+        _control.Position = -c.Data.Planet.Dim / 2f;
+        AddChild(_control);
+        _dimX = c.Data.Planet.Width;
         _numSegments = numSegments;
         _segmentNodes = new Dictionary<int, Node2D>();
         _segWidth = _dimX / _numSegments;

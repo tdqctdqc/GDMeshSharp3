@@ -5,39 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Utility/UI/SelectableControl.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/UI/SelectableControlList.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Utility/UI/SelectableControlListToken.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/PromptSidebar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/PromptSidebar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/TabWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/TabWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Themes/DefaultTheme.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Themes/DefaultTheme.tres" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/AllianceOverview/ProposalsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/AllianceOverview/ProposalsTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/CellCombatHistoryWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/CellCombatHistoryWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/CombatResultsGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/CombatResultsGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/GeneralTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/SimTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/SimTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/FillArmyWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/FillArmyWindow.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MultiBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MultiBar.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/BudgetTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/BudgetTab.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/FoodTab.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/GeneralTab.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/PeepsTab.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiControlPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiControlPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapUiElements.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapUiElements.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/ClientSettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle1.tres" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Rifle1.tres" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/TroopRes.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/TroopRes.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troops.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troops.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitCombatInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitCombatInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiFrame.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiFrame.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkLabelGraphics.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/FloatSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/FloatSettingsOption.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/ContainerExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/ContainerExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/ControlExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/ControlExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/NodeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/NodeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/FlexIconDisplay.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/FlexIconDisplay.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/WindowExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/WindowExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/project.godot" beforeDir="false" afterPath="$PROJECT_DIR$/project.godot" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,6 +71,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/0b/4ac82b1f/MouseButtonMask.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/1c/0fe04ae9/InputEventMouseButton.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/25/e6133dbc/ItemList.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/2d/df82060a/ProjectSettings.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/38/fc3bba61/Node.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/51/6d3003d9/CanvasItem.cs" root0="SKIP_HIGHLIGHTING" />
@@ -117,11 +109,10 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/MilitaryWindow/ArmiesTab.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Graphics/ChunkGraphic/ArmyHistoryGraphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Data/Model/Troops/Rifle/Rifle1.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -710,7 +701,7 @@
       <workItem from="1719768560953" duration="17021000" />
       <workItem from="1719878917423" duration="27801000" />
       <workItem from="1720024920593" duration="12214000" />
-      <workItem from="1720049803898" duration="1133000" />
+      <workItem from="1720049803898" duration="9900000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -922,14 +913,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00229" summary="combat graph, army retreating">
-      <option name="closed" value="true" />
-      <created>1718498917962</created>
-      <option name="number" value="00229" />
-      <option name="presentableId" value="LOCAL-00229" />
-      <option name="project" value="LOCAL" />
-      <updated>1718498917962</updated>
-    </task>
     <task id="LOCAL-00230" summary="fixing army bugs">
       <option name="closed" value="true" />
       <created>1718647860312</created>
@@ -1074,7 +1057,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719957807864</updated>
     </task>
-    <option name="localTasksCounter" value="248" />
+    <task id="LOCAL-00248" summary="added echelon to combat calcs">
+      <option name="closed" value="true" />
+      <created>1720050977026</created>
+      <option name="number" value="00248" />
+      <option name="presentableId" value="LOCAL-00248" />
+      <option name="project" value="LOCAL" />
+      <updated>1720050977026</updated>
+    </task>
+    <option name="localTasksCounter" value="249" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1096,7 +1087,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="fixed regime gen bug, construct cap bug" />
     <MESSAGE value="make project stuff" />
     <MESSAGE value="made 'build tree' algorithm" />
     <MESSAGE value="client callbacks" />
@@ -1121,6 +1111,7 @@
     <MESSAGE value="making combat sim" />
     <MESSAGE value="changing windows to freeable, dont keep them in window manager" />
     <MESSAGE value="reworked combat sim window" />
-    <option name="LAST_COMMIT_MESSAGE" value="reworked combat sim window" />
+    <MESSAGE value="added echelon to combat calcs" />
+    <option name="LAST_COMMIT_MESSAGE" value="added echelon to combat calcs" />
   </component>
 </project>

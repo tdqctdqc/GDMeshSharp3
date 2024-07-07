@@ -7,7 +7,7 @@ using MessagePack;
 public class UnitTemplate : Entity, IMakeable
 {
     public string Name { get; private set; }
-    public IdCount<Troop> TroopCounts { get; private set; }
+    public IdCount<Troop> Troops { get; private set; }
     public ERef<Regime> Regime { get; private set; }
     public ModelRef<MoveType> MoveType { get; private set; }
     public TroopDomain Domain { get; private set; }
@@ -41,7 +41,7 @@ public class UnitTemplate : Entity, IMakeable
         return u;
     }
     [SerializationConstructor] private UnitTemplate(string name,
-        IdCount<Troop> troopCounts, ModelRef<MoveType> moveType,
+        IdCount<Troop> troops, ModelRef<MoveType> moveType,
         ERef<Regime> regime, int id, 
         TroopDomain domain,
         MakeableAttribute makeable) 
@@ -49,7 +49,7 @@ public class UnitTemplate : Entity, IMakeable
     {
         MoveType = moveType;
         Name = name;
-        TroopCounts = troopCounts;
+        Troops = troops;
         Regime = regime;
         Domain = domain;
         Makeable = makeable;
@@ -74,7 +74,7 @@ public class UnitTemplate : Entity, IMakeable
 
     public float GetPowerPoints(Data d)
     {
-        return TroopCounts.GetEnumModel(d)
+        return Troops.GetEnumModel(d)
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
     }
 
@@ -89,7 +89,7 @@ public class UnitTemplate : Entity, IMakeable
         vbox.AddChild(icon);
         vbox.CreateLabelAsChild(Name);
         
-        foreach (var (key, value) in TroopCounts.GetEnumModel(d))
+        foreach (var (key, value) in Troops.GetEnumModel(d))
         {
             vbox.AddChild(key.Icon.GetLabeledIcon<HBoxContainer>
                 ($"{key.Name}: {value.ToString()}", small));

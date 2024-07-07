@@ -7,6 +7,7 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
 {
     public string Name => "Labels";
     public Node2D Node => this;
+    private static Font _font = new Label().GetThemeDefaultFont();
     public ChunkGraphicModuleVisibility Visibility { get; }
     public MapChunk Chunk { get; set; }
     private Data _data;
@@ -29,10 +30,8 @@ public partial class ChunkLabelGraphics : Node2D, IChunkGraphicModule
         {
             foreach (var (text, pos) in GetLabels(_data))
             {
-                DrawString(UiThemes.DefaultTheme.DefaultFont, pos,
-                    text);
+                DrawString(_font, pos, text);
             }
-
             _drawn = true;
         }
     }

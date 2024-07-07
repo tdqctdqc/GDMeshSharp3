@@ -35,7 +35,7 @@ public class MakeReinforcementTroopsPriority
             var template = unit.Template.Get(d);
             foreach (var (troop, amt) in unit.Troops.GetEnumModel(d))
             {
-                var diff = template.TroopCounts.Get(troop) - amt;
+                var diff = template.Troops.Get(troop) - amt;
                 var stock = r.Stock.Stock.Get(troop);
                 diff -= stock;
                 var producing = r.MakeQueue.Queue.OfType<ModelMakeProject>()

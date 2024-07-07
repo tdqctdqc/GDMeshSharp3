@@ -3,18 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public partial class PolyPanel : Panel
+public partial class PolyPanel : PanelContainer
 {
     private VBoxContainer _inner;
     private PolyPanel()
         : base()
     {
     }
-    public PolyPanel(Client c) 
+    public PolyPanel(Client c)
     {
-        _inner = this.MakeScroll<VBoxContainer>(new Vector2(300f, 600f));
+        var margin = new MarginContainer();
+        AddChild(margin);
+        _inner = margin.MakeScroll<VBoxContainer>();
         SelfModulate = Colors.Black;
-        
         var mode = c.UiController.ModeOption.Options
             .OfType<PolyMode>()
             .First();

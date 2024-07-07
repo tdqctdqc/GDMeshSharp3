@@ -34,22 +34,6 @@ public static class NodeExt
         container.AddChild(label);
         return container;
     }
-    public static HBoxContainer MakeFlowStatDisplay(Client client, Flow flow, Data data, float height,
-        params RefAction[] triggers)
-    {
-        var h = flow.Icon.MakeIconStatDisplay(client, data,
-            () =>
-            {
-                var regime = client.GetComponent<MapGraphics>().SpectatingRegime;
-                var f = regime.Stock.Stock.Get(flow);
-                return $"{f}";
-            },
-            height, triggers);
-        var tooltipTemplate = new FlowTooltipTemplate();
-        h.RegisterTooltip(tooltipTemplate, 
-            () => (flow, client.GetComponent<MapGraphics>().SpectatingRegime));
-        return h;
-    }
 
     public static IEnumerable<Node> GetDescendents(this Node n)
     {
@@ -68,7 +52,7 @@ public static class NodeExt
         var hash = c.GetHashCode();
         c.MouseEntered += () =>
         {
-            Game.I.Client.GetComponent<TooltipManager>().PromptTooltip(template, getObject());
+            Game.I.Client.GetComponent<TooltipManager>().Prompt(template, getObject());
         };
         c.MouseExited += () =>
         {
@@ -76,13 +60,13 @@ public static class NodeExt
         };
         c.MouseFilter = Control.MouseFilterEnum.Stop;
     }
-    public static HBoxContainer MakeIconStatDisplay(this Icon icon, 
+    public static HBoxContainer MakeIconStatDisplay(
+        this Icon icon, 
+        HBoxContainer hBox,
         Client client,
-        Data data, 
         Func<string> getStat, float height,
         params RefAction[] triggers)
     {
-        var hBox = new HBoxContainer();
         var amount = new Label();
         var iconRect = icon.GetTextureRect(height);
         iconRect.CustomMinimumSize = iconRect.Size;
@@ -100,12 +84,11 @@ public static class NodeExt
         return hBox;
     }
     public static HBoxContainer MakeStatDisplay(
+        HBoxContainer hBox,
         Client client,
-        Data data, 
         Func<string> getStat, float height,
         params RefAction[] triggers)
     {
-        var hBox = new HBoxContainer();
         var amount = new Label();
         hBox.AddChild(amount);
         var stat = StatLabel.Construct<string>(

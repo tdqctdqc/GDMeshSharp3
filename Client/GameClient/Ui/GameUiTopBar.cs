@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using Ui.RegimeOverview;
 
 public partial class GameUiTopBar : VBoxContainer, IClientComponent
 {
@@ -15,7 +16,7 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         var frame = client.GetComponent<UiFrame>();
         frame.AddTopBar(this);
         
-        var regimeInfoBar = new SpectatingRegimeInfoBar(client, data, host);
+        var regimeInfoBar = new RegimeInfoBar(client, data, host);
         var general = new HBoxContainer();
         general.AddChild(regimeInfoBar);
         AddChild(general);
@@ -27,8 +28,12 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         general.AddButton("Issues",
             () => IssueWindow.Open(client));
         general.AddButton("Military",
-            () => MilitaryWindow.Open(client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data),
-                client));
+            () =>
+            {
+                var w =RegimeOverviewWindow.Open(client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data),
+                    client);
+                w.OpenTab<MilitaryTab>();
+            });
         general.AddButton("Combat Sim",
             () => CombatSimWindow.Open(client));
         
@@ -57,11 +62,11 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
                 }
             );
         }, this);
-        AddChild(new RegimeStockBar(client, data));
+        AddChild(new StockBar(client, data));
         if (host)
         {
             var ordersReadyLabel = NodeExt.MakeStatDisplay(
-                client, client.Data, () =>
+                new HBoxContainer(), client, () =>
                 {
                     if (client.Logic is HostLogic log)
                     {

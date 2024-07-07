@@ -66,19 +66,10 @@ public partial class ArmyIconGraphic : Node2D
         
         _control.Size = _iconSize * Vector2.One;
         _control.Position = -_iconSize * Vector2.One / 2f;
-        _control.GuiInput += e =>
-        {
-            if (e is InputEventMouseButton mb
-                && mb.ButtonIndex == MouseButton.Left
-                && mb.Pressed == false)
-            {
-                c.Notices.Selecting.Invoke(_army);
-            }
-            else
-            {
-                Game.I.Client.UiController.Mode.HandleInput(e);
-            }
-        };
+        _control.AddClickUpAction(MouseButton.Left, 
+            () => c.Notices.Selecting.Invoke(_army)
+        );
+        
         AddChild(_control);
     }
     public void Draw(Army army, Client c)

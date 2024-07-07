@@ -31,12 +31,13 @@ public static class WindowExt
         };
     }
 
-    public static T MakeWholeWindowScrollContainer<T>(this Window w,
-        Vector2I size)
+    public static T MakeScroll<T>(this Window w)
         where T : Container, new()
     {
         var panel = new Panel();
-        var t = panel.MakeScroll<T>(size);
+        panel.FullRect();
+        panel.ExpandFill();
+        var t = panel.MakeScroll<T>();
         w.AddChild(panel);
         return t;
     }

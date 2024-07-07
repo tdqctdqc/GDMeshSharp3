@@ -1,34 +1,34 @@
 
-using System.Collections.Generic;
 using Godot;
-using MessagePack;
 
 public class ReinforceUnitProcedure : Procedure
 {
-    public static ReinforceUnitProcedure Construct(Regime regime)
+    public ERef<Unit> Unit { get; private set; }
+
+    public ReinforceUnitProcedure(ERef<Unit> unit)
     {
-        return new ReinforceUnitProcedure(regime.MakeRef(), new List<(int unitId, int troopId, float count)>());
-    }
-    [SerializationConstructor] private ReinforceUnitProcedure(ERef<Regime> regime, List<(int unitId, int troopId, float count)> reinforceCounts)
-    {
-        Regime = regime;
-        ReinforceCounts = reinforceCounts;
+        Unit = unit;
     }
 
-    public ERef<Regime> Regime { get; private set; }
-    public List<(int unitId, int troopId, float count)> 
-        ReinforceCounts { get; private set; }
     public override void Enact(ProcedureWriteKey key)
     {
-        var regime = Regime.Get(key.Data);
+        var unit = Unit.Get(key.Data);
+        var template = unit.Template.Get(key.Data);
+        var regime = unit.Regime.Get(key.Data);
         var reserve = regime.Stock;
-        foreach (var (unitId, troopId, count) in ReinforceCounts)
+
+        foreach (var (troop, count) in unit.Troops.GetEnumModel(key.Data))
         {
-            if (key.Data.HasEntity(unitId) == false) continue;
-            var unit = key.Data.Get<Unit>(unitId);
-            var troop = key.Data.Models.GetModel<Troop>(troopId);
-            if (reserve.Stock.Contents.ContainsKey(troop.Id) == false) continue;
-            var transfer = Mathf.Clamp(count, 0f, reserve.Stock.Get(troop));
+            if (reserve.Stock.Contents.ContainsKey(troop.Id) == false)
+            {
+                continue;
+            }
+
+            var need = template.Troops.Get(troop);
+            if (count >= need) continue;
+
+            var transfer = Mathf.Clamp(need - count, 
+                0f, reserve.Stock.Get(troop));
             if (transfer > 0)
             {
                 reserve.Stock.Remove(troop, transfer);
@@ -37,9 +37,15 @@ public class ReinforceUnitProcedure : Procedure
         }
     }
 
+
     public override bool Valid(Data data, out string error)
     {
         error = "";
+        if (data.HasEntity(Unit.RefId) == false)
+        {
+            error = "unit not found";
+            return false;
+        }
         return true;
     }
 }

@@ -67,7 +67,12 @@ public class PolyMode : UiMode
         var mapPos = _client.Cam().GetMousePosInMapSpace();
         if(e.IsAction("Open Regime Overview"))
         {
-            RegimeOverviewWindow.Open(_mouseOverHandler.MouseOverCell, _client);
+            var cell = _mouseOverHandler.MouseOverCell;
+            if (cell.Controller.Get(_client.Data)
+                is Regime r)
+            {
+                RegimeOverviewWindow.Open(r, _client);
+            }
         }
         if (e is InputEventMouseButton mb
             && mb.ButtonIndex == MouseButton.Left
@@ -75,8 +80,6 @@ public class PolyMode : UiMode
         {
             SelectCell(_mouseOverHandler.MouseOverCell);
         }
-        
-        Tooltip(mapPos);
     }
 
     private void SelectCell(Cell cell)
@@ -121,18 +124,25 @@ public class PolyMode : UiMode
         _selectedPoly.ZAsRelative = false;
     }
 
-    private void Tooltip(Vector2 mapPos)
+    public override void Tooltip()
     {
+        var mapPos = _client.Cam().GetMousePosInMapSpace();
         var tooltip = _client.GetComponent<TooltipManager>();
         tooltip.Clear();
         if (_mouseOverHandler.MouseOverPoly != null
             && _mouseOverHandler.MouseOverCell != null)
         {
             var template = new PolyTooltipTemplate();
-            _client.GetComponent<TooltipManager>()
-                .PromptTooltip(template, (_mouseOverHandler.MouseOverPoly, _mouseOverHandler.MouseOverCell));
+            tooltip.Prompt(template, 
+                (_mouseOverHandler.MouseOverPoly, 
+                    _mouseOverHandler.MouseOverCell));
+        }
+        else
+        {
+            tooltip.Clear();
         }
     }
+
     public override void Clear()
     {
         var tooltip = _client.GetComponent<TooltipManager>();

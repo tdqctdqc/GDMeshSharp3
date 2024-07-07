@@ -45,7 +45,7 @@ public partial class MapGraphics : Node2D, IClientComponent
             }, this);
 
         
-        Segmenter = new GraphicsSegmenter(10, client.Data);
+        Segmenter = new GraphicsSegmenter(client, 10);
         AddChild(Segmenter);
         GraphicLayerHolder = new GraphicLayerHolder(client, Segmenter, client.Data);
         DebugOverlay = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Debug);

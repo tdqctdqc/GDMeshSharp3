@@ -75,4 +75,9 @@ public class ModelMakeProject : MakeProject
         
         return vbox;
     }
+
+    public IModel Model(Data d)
+    {
+        return (IModel)Making.Get(d);
+    }
 }

@@ -42,9 +42,10 @@ public partial class Client : Node, IClient
         AddChild(GraphicsLayer);
         UiCanvas = new CanvasLayer();
         UiLayer = new Control();
-        UiLayer.MouseFilter = Control.MouseFilterEnum.Pass;
+        UiLayer.MouseFilter = Control.MouseFilterEnum.Stop;
         UiCanvas.AddChild(UiLayer);
         UiLayer.FocusMode = Control.FocusModeEnum.None;
+        
         AddChild(UiCanvas);
         
         Components = new Dictionary<Type, IClientComponent>();
@@ -186,14 +187,14 @@ public partial class Client : Node, IClient
         uiFrame.LeftBar.Add(() =>
             {
                 UiController.ModeOption.Choose<PathFindMode>();
-                return new Control();
+                return new PanelContainer();
             },
             "Pathfind");
         
         uiFrame.LeftBar.Add(() =>
             {
                 UiController.ModeOption.Choose<MilPlanningMode>();
-                return new Control();
+                return new PanelContainer();
             },
             "Military Planning");
         UiController.ModeOption.Choose<PolyMode>();

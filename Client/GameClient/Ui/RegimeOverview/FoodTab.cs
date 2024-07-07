@@ -12,7 +12,6 @@ public partial class FoodTab : ScrollContainer, IUiDrawable
     {
         _parent = parent;
         Name = "Food";
-        AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         _container.FullRect();
         AddChild(_container);

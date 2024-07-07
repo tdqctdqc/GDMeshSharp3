@@ -13,7 +13,7 @@ public class Unit : Entity
         IHostWriteKey key)
     {
         var u = new Unit(key.Data.IdDispenser.TakeId(), regime.MakeRef(), template.MakeRef(),
-            IdCount<Troop>.Construct(template.TroopCounts));
+            IdCount<Troop>.Construct(template.Troops));
         key.Create(u);
         return u;
     }

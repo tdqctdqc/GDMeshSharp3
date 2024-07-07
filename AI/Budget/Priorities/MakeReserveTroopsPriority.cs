@@ -39,7 +39,7 @@ public class MakeReserveTroopsPriority : SolverPriority<Troop>
         foreach (var (template, num) in templateCounts
                      .GetEnumEntity(d))
         {
-            foreach (var (troop, amt) in template.TroopCounts.GetEnumModel(d))
+            foreach (var (troop, amt) in template.Troops.GetEnumModel(d))
             {
                 desired.Add(troop, amt * num * reserveRatio);
             }

@@ -38,8 +38,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
                     ? u.Template.Get(c.Data).Name + " " + u.Unit
                     : "None";
             },
-            u => DrawInfo(u, true, info, c),
-            size
+            u => DrawInfo(u, true, info, c)
         );
         attackers.AddChild(attackersList.ItemList);
         attackersList.ItemList.ExpandFill();
@@ -56,8 +55,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
                     ? u.Template.Get(c.Data).Name + " " + u.Unit
                     : "None";
             },
-            u => DrawInfo(u, false, info, c),
-            size
+            u => DrawInfo(u, false, info, c)
         );
         defendersList.ItemList.ExpandFill();
         defenders.AddChild(defendersList.ItemList);

@@ -3,7 +3,7 @@ using System;
 
 
 [MessagePack.Union(0, typeof(ConquerCellProcedure))]
-[MessagePack.Union(1, typeof(ReinforceUnitProcedure))]
+[MessagePack.Union(1, typeof(ReinforceRegimeProcedure))]
 [MessagePack.Union(2, typeof(DecideOnProposalProcedure))]
 [MessagePack.Union(3, typeof(DeclareRivalProcedure))]
 [MessagePack.Union(4, typeof(DeclareWarProcedure))]
@@ -31,6 +31,8 @@ using System;
 [MessagePack.Union(26, typeof(CancelMakeProjectProcedure))]
 [MessagePack.Union(27, typeof(DoClientCallbackProcedure))]
 [MessagePack.Union(28, typeof(AddCombatHistoryProc))]
+[MessagePack.Union(29, typeof(ReinforceUnitProcedure))]
+[MessagePack.Union(30, typeof(ReinforceArmyProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

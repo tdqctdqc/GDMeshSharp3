@@ -9,8 +9,9 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
     {
         _parent = parent;
         Name = "Budget";
-        AnchorsPreset = (int)LayoutPreset.FullRect;
-        _container = ContainerExt.MakeScroll<VBoxContainer>(this);
+        this.FullRect();
+        _container = new VBoxContainer();
+        AddChild(_container);
     }
 
     private BudgetTab()
@@ -42,7 +43,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         _container.AddSpacer(false);
 
         _container.CreateLabelAsChild("PRICES");
-        foreach (var (model, price) in budget.Root.Prices)
+        foreach (var (model, price) in budget.Root.RelativePrices())
         {
             if (model is IIconed i)
             {

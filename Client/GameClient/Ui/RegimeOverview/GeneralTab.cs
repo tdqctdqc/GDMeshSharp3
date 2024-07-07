@@ -16,7 +16,6 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
     public GeneralTab(RegimeOverviewWindow parent)
     {
         _parent = parent;
-        AnchorsPreset = (int)LayoutPreset.FullRect;
         _container = new VBoxContainer();
         AddChild(_container);
         _container.FullRect();
