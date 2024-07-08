@@ -11,7 +11,7 @@ public class BudgetRoot : BudgetBranch
     
     public Dictionary<PriorityNode, (float spent, int tick)> LastSpending { get; private set; }
     
-    public BudgetRoot(Data d)
+    public BudgetRoot(Data d) : base("Root")
     {
         Prices = new Dictionary<IModel, float>();
         LastSpending = new Dictionary<PriorityNode, (float spent, int tick)>();
@@ -24,7 +24,7 @@ public class BudgetRoot : BudgetBranch
 
     public void Calculate(Regime r, LogicWriteKey key)
     {
-        SetWeights(1f, r, key.Data);
+        SetWeights(r, key.Data);
         Bid(r, key);
     }
     
@@ -141,9 +141,8 @@ public class BudgetRoot : BudgetBranch
         return new Dictionary<IModel, float>();
     }
 
-    public override void SetWeights(float selfWeight, Regime r, Data d)
+    protected override float GetWeight(Regime r, Data d)
     {
-        _construct.SetWeights(.75f, r, d);
-        _military.SetWeights(.25f, r, d);
+        return 1f;
     }
 }

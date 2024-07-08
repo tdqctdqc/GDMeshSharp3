@@ -21,6 +21,7 @@ public class MakeArmyMouseAction : CellMousePressAction
 
     private static bool Valid(Cell c, Client client)
     {
+        if (c is LandCell == false) return false;
         var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;
         var localAlliance = localPlayer.Regime.Get(client.Data).GetAlliance(client.Data);
         return localAlliance.Members.Contains(c.Controller);

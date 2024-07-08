@@ -10,10 +10,8 @@ public class MakeProductionBuildingsPriority
     public IModel Model { get; private set; }
     public BudgetBranch Parent { get; }
 
-    public MakeProductionBuildingsPriority(IModel model,
-        string name, 
-        Func<Data, Regime, float> getWeight) 
-        : base(name, getWeight)
+    public MakeProductionBuildingsPriority(IModel model, string name) 
+        : base(name)
     {
         Model = model;
     }

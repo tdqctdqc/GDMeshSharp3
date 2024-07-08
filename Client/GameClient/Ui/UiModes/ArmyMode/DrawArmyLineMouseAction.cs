@@ -24,6 +24,7 @@ public class DrawArmyLineMouseAction : CellHashMouseAction
     private static bool Valid((Cell prospect, HashSet<Cell> already) v,
         Client client)
     {
+        if (v.prospect is LandCell == false) return false;
         var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;
         var localAlliance = localPlayer.Regime.Get(client.Data).GetAlliance(client.Data);
         return localAlliance.Members.Contains(v.prospect.Controller);

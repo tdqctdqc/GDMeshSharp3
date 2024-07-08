@@ -40,6 +40,7 @@ public static class MilUtil
                 var ceil = Mathf.CeilToInt(amt);
                 for (var i = 0; i < ceil; i++)
                 {
+                    var troopAmt = Mathf.Min(1f, unit.Active.Get(troop));
                     var targetEchelon = getTargetEchelon(troop, targets, comrades);
                     if (targetEchelon == -1) return;
                     var targetUnit = getTargetUnit(targets, targetEchelon);
@@ -59,14 +60,16 @@ public static class MilUtil
                     if (getHit(targetTroop, troop, false))
                     {
                         var kill = getKillAmt(targetTroop, troop, 
-                            unit.Active.Get(targetTroop));
+                            troopAmt);
+                        
                         unit.AddLoss(troop, kill);
                         targetUnit.AddKill(troop, kill);
                     }
                 }
             }
         }
-        int getTargetEchelon(Troop troop, UnitCombatInfo[] targets,
+        int getTargetEchelon(Troop troop, 
+            UnitCombatInfo[] targets,
             UnitCombatInfo[] friendlies)
         {
             if (targets.Length == 0) return -1;
@@ -86,7 +89,7 @@ public static class MilUtil
                 if (enemyFrontage <= 0f) continue;
                 
                 var baseChance = troop.TargetChances[i];
-                var chance = baseChance;
+                var chance = baseChance * enemyFrontage;
                 var friendlyFrontage = friendlies.Sum(c => c.ActiveFrontSizes[i]);
                 if (i > troop.Range)
                 {
@@ -254,7 +257,7 @@ public static class MilUtil
         if (defending == false)
         {
             evadeMult *= .5f;
-            evadeMult = Mathf.Max(1f, evadeMult);
+            // evadeMult = Mathf.Max(1f, evadeMult);
         }
 
         return evadeMult;

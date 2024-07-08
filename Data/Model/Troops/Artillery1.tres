@@ -16,5 +16,5 @@ Recon = 0.1
 MilitaryCapCost = 5.0
 FrontLength = 2.0
 Range = 1
-TargetEchelon = 1
+TargetChances = PackedFloat32Array(1, 1, 0.25)
 BreakthroughMult = 0.25

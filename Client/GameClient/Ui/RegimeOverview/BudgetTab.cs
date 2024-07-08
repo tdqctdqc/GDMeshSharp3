@@ -6,7 +6,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
 {
     private Container _container, _priorityInfo;
     private RegimeOverviewWindow _parent;
-    private ItemListToken<PriorityNode> _priorities;
+    // private ItemListToken<PriorityNode> _priorities;
     public BudgetTab(RegimeOverviewWindow parent)
     {
         _parent = parent;
@@ -31,7 +31,6 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         if (ais.Dic.ContainsKey(regime) == false) return;
         var ai = ais[regime];
         var budget = ai.Budget;
-        var leaves = budget.Root.GetLeaves();
 
         var leftScroll = new ScrollContainer();
         leftScroll.ExpandFill(1);
@@ -47,23 +46,17 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         _priorityInfo.ExpandFill();
         priorityScroll.AddChild(_priorityInfo);
         
-        left.CreateLabelAsChild("Priorities");
-        _priorities = new ItemListToken<PriorityNode>(
-            leaves,
-            node =>
+        // left.CreateLabelAsChild("Priorities");
+        var budgetTree = new BudgetTree(budget.Root, client.Data);
+        budgetTree.SelectedBudgetNode += n =>
+        {
+            if (n is PriorityNode p)
             {
-                var s = $"{node.Priority.Name}" +
-                    $"\n     Weight: {node.GetTreeWeight(client.Data)}" +
-                    $"\n    Credit: {node.Credit.GetCredit().RoundTo2Digits()}";
-                
-
-                return s;
-            },
-            p => DrawPriorityInfo(client)
-        );
-        if(leaves.Count() > 0) _priorities.SelectAt(0);
-        _priorities.ItemList.ExpandFill();
-        left.AddChild(_priorities.ItemList);
+                DrawPriorityInfo(p, client);
+            }
+        };
+        budgetTree.ExpandFill();
+        left.AddChild(budgetTree);
         
         left.CreateLabelAsChild("Prices");
 
@@ -85,14 +78,11 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
                 priceContainer.CreateLabelAsChild($"{model.Name}: {price}");
             }
         }
-        
-        DrawPriorityInfo(client);
     }
 
-    private void DrawPriorityInfo(Client c)
+    private void DrawPriorityInfo(PriorityNode node, Client c)
     {
         _priorityInfo.ClearChildren();
-        var node = _priorities.Value;
         var priority = node.Priority;
         if (priority == null) return;
         var regime = _parent.Regime;

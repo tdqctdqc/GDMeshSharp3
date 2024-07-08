@@ -8,8 +8,7 @@ using Google.OrTools.LinearSolver;
 public abstract class ConstructionPriority 
     : SolverPriority<SettlementBuildingModel>
 {
-    public ConstructionPriority(string name, 
-        Func<Data, Regime, float> getWeight) 
+    public ConstructionPriority(string name) 
         : base(name, 
             d => d.Models.GetModels<SettlementBuildingModel>().Values)
     {

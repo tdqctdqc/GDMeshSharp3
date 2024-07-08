@@ -7,9 +7,11 @@ public abstract class BudgetBranch : IBudgetNode
 {
     public List<IBudgetNode> Children { get; }
     public BudgetBranch Parent { get; }
-    public ZeroToOne Weight { get; protected set; }
-    protected BudgetBranch()
+    public float Weight { get; protected set; }
+    public string Name { get; private set; }
+    protected BudgetBranch(string name)
     {
+        Name = name;
         Children = new List<IBudgetNode>();
     }
 
@@ -20,5 +22,15 @@ public abstract class BudgetBranch : IBudgetNode
             .SelectMany(b => b.GetLeaves());
         return selfLeaves.Concat(childLeaves);
     }
-    public abstract void SetWeights(float selfWeight, Regime r, Data d);
+
+    public void SetWeights(Regime r, Data d)
+    {
+        Weight = GetWeight(r, d);
+        foreach (var child in Children)
+        {
+            child.SetWeights(r, d);
+        }
+    }
+
+    protected abstract float GetWeight(Regime r, Data d);
 }
