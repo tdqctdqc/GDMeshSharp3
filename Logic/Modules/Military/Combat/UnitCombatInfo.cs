@@ -11,7 +11,7 @@ public class UnitCombatInfo
     public IdCount<Troop> Active { get; private set; }
     public IdCount<Troop> Initial { get; private set; }
     public IdCount<Troop> Kills { get; private set; }
-    public float ActiveFrontSize { get; private set; }
+    public float[] ActiveFrontSizes { get; private set; }
 
     public static UnitCombatInfo Sum(IEnumerable<UnitCombatInfo> infos,
         Data d)
@@ -19,11 +19,12 @@ public class UnitCombatInfo
         var active = IdCount<Troop>.Sum(infos.Select(i => i.Active).ToArray());
         var initial = IdCount<Troop>.Sum(infos.Select(i => i.Initial).ToArray());
         var kills = IdCount<Troop>.Sum(infos.Select(i => i.Kills).ToArray());
-        var activeFrontSize = active.GetEnumModel(d)
-            .Sum(v => v.Key.FrontLength * v.Value);
+
+        var activeFrontSizes = SetFrontSizes(active, d);
+        
         return new UnitCombatInfo(new ERef<Unit>(-1),
             active, initial, kills, new ERef<UnitTemplate>(-1),
-            activeFrontSize);
+            activeFrontSizes);
     }
     public UnitCombatInfo(Unit u, Data d)
     {
@@ -32,8 +33,8 @@ public class UnitCombatInfo
         Initial = IdCount<Troop>.Construct(u.Troops);
         Kills = IdCount<Troop>.Construct();
         Template = u.Template;
-        ActiveFrontSize = Active.GetEnumModel(d)
-            .Sum(v => v.Key.FrontLength * v.Value);
+
+        ActiveFrontSizes = SetFrontSizes(u.Troops, d);
     }
     public UnitCombatInfo(IdCount<Troop> troops,
         Data d)
@@ -43,21 +44,33 @@ public class UnitCombatInfo
         Initial = IdCount<Troop>.Construct(troops);
         Kills = IdCount<Troop>.Construct();
         Template = new ERef<UnitTemplate>(-1);
-        ActiveFrontSize = Active.GetEnumModel(d)
-            .Sum(v => v.Key.FrontLength * v.Value);
+        ActiveFrontSizes = SetFrontSizes(troops, d);
     }
+
+    private static float[] SetFrontSizes(IdCount<Troop> troops, Data d)
+    {
+        var activeFrontSizes = new float[MilUtil.NumEchelons];
+        foreach (var (key, value) in troops.GetEnumModel(d))
+        {
+            var echelon = key.Echelon;
+            activeFrontSizes[echelon] += key.FrontLength * value;
+        }
+
+        return activeFrontSizes;
+    }
+
     [SerializationConstructor] public UnitCombatInfo(
         ERef<Unit> unit, IdCount<Troop> active, 
         IdCount<Troop> initial, 
         IdCount<Troop> kills,
         ERef<UnitTemplate> template,
-        float activeFrontSize)
+        float[] activeFrontSizes)
     {
         Unit = unit;
         Active = active;
         Initial = initial;
         Kills = kills;
-        ActiveFrontSize = activeFrontSize;
+        ActiveFrontSizes = activeFrontSizes;
         Template = template;
     }
 
@@ -97,7 +110,7 @@ public class UnitCombatInfo
     public void AddLoss(Troop troop, float amt)
     {
         Active.Remove(troop, amt);
-        ActiveFrontSize -= troop.FrontLength * amt;
+        ActiveFrontSizes[troop.Echelon] -= troop.FrontLength * amt;
     }
 
     public IdCount<Troop> GetLosses()
@@ -129,40 +142,33 @@ public class UnitCombatInfo
     {
         Initial.Set(troop, amt);
         ClearLossesKills();
-        ActiveFrontSize = Active.GetEnumModel(d)
-            .Sum(v => v.Key.FrontLength * v.Value);
+        ActiveFrontSizes = SetFrontSizes(Active, d);
     }
 
-    public float GetEchelonFrontage(int echelon, Data d)
-    {
-        var res = 0f;
-        foreach (var (troop, amt) in Active.GetEnumModel(d))
-        {
-            if (troop.Echelon != echelon) continue;
-            res += troop.FrontLength * amt;
-        }
-        return res;
-    }
 
     public int GetMinEchelon(Data d)
     {
-        var actives = Active.GetEnumModel(d)
-            .Where(kvp => kvp.Value > 0f);
-        if (actives.Any())
+        for (var i = 0; i < ActiveFrontSizes.Length; i++)
         {
-            return actives.Min(kvp => kvp.Key.Echelon);
+            if (ActiveFrontSizes[i] > 0f)
+            {
+                return i;
+            }
         }
+
         return -1;
     }
     public int GetMaxEchelon(Data d)
     {
-        var actives = Active.GetEnumModel(d)
-            .Where(kvp => kvp.Value > 0f);
-        if (actives.Any())
+        for (var i = ActiveFrontSizes.Length - 1;
+             i >= 0; i++)
         {
-            return actives.Max(kvp => kvp.Key.Echelon);
+            if (ActiveFrontSizes[i] > 0f)
+            {
+                return i;
+            }
         }
 
-        throw new Exception();
+        return -1;
     }
 }

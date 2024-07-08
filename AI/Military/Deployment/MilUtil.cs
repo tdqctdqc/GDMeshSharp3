@@ -6,6 +6,8 @@ using Godot;
 
 public static class MilUtil
 {
+    public static int NumEchelons { get; private set; }
+        = 3;
     public static float CoverOpposingWeight { get; private set; }
         = .5f;
     public static float CoverLengthWeight { get; private set; }
@@ -65,58 +67,54 @@ public static class MilUtil
             }
         }
         int getTargetEchelon(Troop troop, UnitCombatInfo[] targets,
-            UnitCombatInfo[] comrades)
+            UnitCombatInfo[] friendlies)
         {
             if (targets.Length == 0) return -1;
-            if (targets.Any(t => t.ActiveFrontSize > 0f)
+            if (targets.Any(t => t.ActiveFrontSizes.Sum() > 0f)
                 == false)
             {
                 return -1;
             }
-            if (troop.Range >= troop.TargetEchelon
-                && targets.Sum(t => 
-                    t.GetEchelonFrontage(troop.TargetEchelon, d))
-                > 0f)
-            {
-                return troop.TargetEchelon;
-            }
 
-            var maxEchelon = targets
-                .Where(t => t.ActiveFrontSize > 0f)
-                .Max(t => t.GetMaxEchelon(d));
-            var minEchelon = targets
-                .Where(t => t.ActiveFrontSize > 0f)
-                .Min(t => t.GetMinEchelon(d));
-
-            var start = Mathf.Clamp(troop.Range, minEchelon, maxEchelon);
-            
             var carryOver = 0f;
             var carryMult = .5f;
-            for (var i = 0; i <= maxEchelon; i++)
+
+            var chances = new float[NumEchelons];
+            for (int i = 0; i < NumEchelons; i++)
             {
-                var enemyFrontage = targets.Sum(c => c.GetEchelonFrontage(i, d));
-                if (enemyFrontage == 0f) continue;
+                var enemyFrontage = targets.Sum(c => c.ActiveFrontSizes[i]);
+                if (enemyFrontage <= 0f) continue;
                 
-                if (i == troop.TargetEchelon || i == maxEchelon)
+                var baseChance = troop.TargetChances[i];
+                var chance = baseChance;
+                var friendlyFrontage = friendlies.Sum(c => c.ActiveFrontSizes[i]);
+                if (i > troop.Range)
+                {
+                    var movementMult = lf.MovementCostMult * veg.MovementCostMult;
+                    var frontageMod = (friendlyFrontage + carryOver) * troop.BreakthroughMult 
+                                      / (enemyFrontage * movementMult);
+                    frontageMod = Mathf.Clamp(frontageMod, 0f, 1f);
+                    chance *= frontageMod;
+                }
+                
+                carryOver = Mathf.Max(0f, (friendlyFrontage + carryOver - enemyFrontage) * carryMult);
+
+                chances[i] = chance;
+            }
+
+            var totalChance = chances.Sum();
+            var score = Game.I.Random.RandfRange(0f, totalChance);
+            var cumul = 0f;
+            for (var i = 0; i < chances.Length; i++)
+            {
+                cumul += chances[i];
+                if (cumul >= score)
                 {
                     return i;
                 }
-                
-                var frontage = comrades.Sum(c => c.GetEchelonFrontage(i, d));
-                frontage += carryOver;
-                
-                carryOver = Mathf.Max(0f, (frontage - enemyFrontage) * carryOver);
-
-                var breakthrough = Game.I.Random.RandfRange(0f, frontage * troop.BreakthroughMult);
-                if (breakthrough > enemyFrontage)
-                {
-                    continue;
-                }
-
-                return i;
             }
 
-            return -1;
+            throw new Exception();
         }
         bool getHit(Troop troop, Troop target, bool targetIsDefense)
         {
@@ -145,14 +143,14 @@ public static class MilUtil
             int echelon)
         {
             var totalLength = targets
-                .Sum(t => t.GetEchelonFrontage(echelon, d));
+                .Sum(t => t.ActiveFrontSizes[echelon]);
             if (totalLength == 0f) return null;
             var s = Game.I.Random.RandfRange(0, totalLength - .01f);
             
             var i = 0;
-            while (s > targets[i].GetEchelonFrontage(echelon, d))
+            while (s > targets[i].ActiveFrontSizes[echelon])
             {
-                s -= targets[i].GetEchelonFrontage(echelon, d);
+                s -= targets[i].ActiveFrontSizes[echelon];
                 i++;
             }
 
@@ -162,7 +160,7 @@ public static class MilUtil
         (Troop troop, float amt) getTargetTroop(UnitCombatInfo targetUnit,
             int targetEchelon)
         {
-            var echelonFrontage = targetUnit.GetEchelonFrontage(targetEchelon, d);
+            var echelonFrontage = targetUnit.ActiveFrontSizes[targetEchelon];
             if (echelonFrontage <= 0f) return (null, 0f);
             var sample = Game.I.Random.RandfRange(0f, echelonFrontage);
             var soFar = 0f;
@@ -175,7 +173,7 @@ public static class MilUtil
             throw new Exception();
         }
 
-        if (defenders.All(info => info.ActiveFrontSize <= 0f))
+        if (defenders.All(info => info.ActiveFrontSizes.Sum() <= 0f))
         {
             return true;
         }
