@@ -1,42 +1,60 @@
+using System.Collections.Generic;
 using Godot;
 
 public partial class UnitTree : Tree
 {
     private int _startColumn;
 
-    public UnitTree(Unit unit, 
-        int startColumn,
-        Data d)
+    public UnitTree(int startColumn)
     {
-        var i = CreateItem(GetRoot());
         _startColumn = startColumn;
         Columns = 3 + _startColumn;
+        CreateItem();
+    }
 
-        Setup(i, unit, startColumn, d);
+    public static void Add(Tree tree,
+        Unit unit,
+        int startColumn, Client c)
+    {
+        var i = tree.CreateItem(tree.GetRoot());
+        Setup(i, unit, startColumn, c);
+    }
+    public static void Add(Tree tree,
+        IEnumerable<Unit> units, 
+        int startColumn,
+        Client c)
+    {
+        var r = tree.GetRoot();
+        foreach (var unit in units)
+        {
+            var item = tree.CreateItem(r);
+            Setup(item, unit, startColumn, c);
+        }
     }
     public static void Setup(
         TreeItem item,
         Unit unit, 
         int startColumn,
-        Data d)
+        Client c)
     {
+        var d = c.Data;
         Setup(item, unit.Troops, unit.Template.Get(d).Troops,
             unit.GetMaxPowerTroop(d).Icon.Texture,
             $"{unit.Template.Get(d).Name} {unit.Id}",
-            unit.Id, startColumn, d);
+            unit.Id, startColumn, c);
     }
     
     public static void Setup(
         TreeItem item,
         UnitTemplate template, 
         int startColumn,
-        Data d)
+        Client c)
     {
         Setup(item, template.Troops,
             template.Troops,
-            template.GetMaxPowerTroop(d).Icon.Texture,
+            template.GetMaxPowerTroop(c.Data).Icon.Texture,
             $"{template.Name}",
-            template.Id, startColumn, d);
+            template.Id, startColumn, c);
     }
     
     public static void Setup(
@@ -47,7 +65,7 @@ public partial class UnitTree : Tree
         string descr,
         int metadata,
         int startColumn,
-        Data d)
+        Client c)
     {
         item.SetMetadata(0, metadata);
         item.SetCellMode(0 + startColumn, TreeItem.TreeCellMode.Icon);
@@ -55,13 +73,18 @@ public partial class UnitTree : Tree
         item.SetIconRegion(0 + startColumn, new Rect2(0f, 0f, 20f, 20f));
         item.SetCellMode(1 + startColumn, TreeItem.TreeCellMode.String);
         item.SetText(1 + startColumn, descr);
+        var small = c.Settings.SmallIconSize.Value;
+        var d = c.Data;
         foreach (var (troop, amt) in troops.GetEnumModel(d))
         {
+            var iconSize = troop.Icon.Texture.GetSize();
+            iconSize /= iconSize.Y;
+            iconSize *= small;
             var troopBranch = item.CreateChild();
             troopBranch.SetMetadata(0, troop.Id);
             troopBranch.SetCellMode(1 + startColumn, TreeItem.TreeCellMode.Icon);
             troopBranch.SetIcon(1 + startColumn, troop.Icon.Texture);
-            troopBranch.SetIconRegion(1 + startColumn, new Rect2(0f, 0f, 20f, 20f));
+            troopBranch.SetIconRegion(1 + startColumn, new Rect2(0f, 0f, iconSize.X, iconSize.Y));
             troopBranch.SetCellMode(2 + startColumn, TreeItem.TreeCellMode.String);
             troopBranch.SetText(2 + startColumn, 
                 troops == troopsIdeal
@@ -69,19 +92,5 @@ public partial class UnitTree : Tree
                 : $"{amt} / {troopsIdeal.Get(troop)}");
         }
     }
-    
-    
-    public Troop GetSelectedTroop(Data d)
-    {
-        var selected = GetSelected();
-        var metaData = selected.GetMetadata(0)
-            .AsInt32();
-        if (d.Models.ModelsById.TryGetValue(metaData, out var m)
-            && m is Troop t)
-        {
-            return t;
-        }
 
-        return null;
-    }
 }

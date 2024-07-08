@@ -6,28 +6,34 @@ public partial class ArmyTree : Tree
 
     public ArmyTree(Army a, 
         int startColumn,
-        Data d)
+        Client c)
     {
         _startColumn = startColumn;
         Columns = 4 + _startColumn;
         var root = CreateItem();
-        Setup(root, a, _startColumn, d);
+        Setup(root, a, _startColumn, c);
     }
     public static void Setup(
         TreeItem item,
         Army a, 
         int startColumn,
-        Data d)
+        Client c)
     {
+        var d = c.Data;
+        var small = c.Settings.SmallIconSize.Value;
+        var flagSize = (Vector2)Regime.FlagAspectRatio;
+        flagSize /= flagSize.Y;
+        flagSize *= small;
         item.SetMetadata(0, a.Id);
         item.SetCellMode(0 + startColumn, TreeItem.TreeCellMode.Icon);
         item.SetIcon(0 + startColumn, a.Regime.Get(d).Template.Get(d).Flag.Texture);
-        item.SetIconRegion(0 + startColumn, new Rect2(0f, 0f, 20f, 20f));
+        item.SetIconRegion(0 + startColumn, 
+            new Rect2(0f, 0f, flagSize.X, flagSize.Y));
         item.SetCellMode(1 + startColumn, TreeItem.TreeCellMode.String);
         item.SetText(1 + startColumn, a.Id.ToString());
         foreach (var unit in a.Units.Entities(d))
         {
-            AddUnit(item, unit, d);
+            AddUnit(item, unit, c);
         }
     }
 
@@ -37,36 +43,18 @@ public partial class ArmyTree : Tree
         if (d.HasEntity(id) && d.Get<Entity>(id) is Army a) return a;
         return null;
     }
-    public Unit GetSelectedUnit(Data d)
-    {
-        var selected = GetSelected();
-        var metaData = selected.GetMetadata(0)
-            .AsInt32();
-        if (d.HasEntity(metaData)
-            && d.Get<Entity>(metaData) is Unit u)
-        {
-            return u;
-        }
 
-        return null;
-    }
-
-    public void RemoveUnit(Unit u)
-    {
-        var unitItem = this.GetFirstChildWhere(
-            t => t.GetMetadata(0 + _startColumn).AsInt32() == u.Id);
-        unitItem?.Free();
-    }
+    
 
     public static void AddUnit(TreeItem parent,
-        Unit unit, Data d)
+        Unit unit, Client c)
     {
         var i = parent.CreateChild();
-        UnitTree.Setup(i, unit, 1, d);
+        UnitTree.Setup(i, unit, 1, c);
     }
-    public void AddUnit(Unit unit, Data d)
+    public void AddUnit(Unit unit, Client c)
     {
         var i = CreateItem(GetRoot());
-        UnitTree.Setup(i, unit, 1, d);
+        UnitTree.Setup(i, unit, 1, c);
     }
 }

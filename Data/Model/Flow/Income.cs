@@ -14,8 +14,8 @@ public class Income : Flow
         var fromPeeps = r.GetCells(d)
             .Select(p => p.GetPeep(d))
             .Select(p => p.Employment)
-            .Sum(p => p.Counts
-                .Sum(kvp => ((PeepJob)d.Models[kvp.Key]).Income * kvp.Value));
+            .Sum(p => p.Counts.GetEnumModel(d)
+                .Sum(kvp => kvp.Key.Income * kvp.Value));
         var tradeBalance = r.Finance.LastTradeBalance;
         return fromPeeps + tradeBalance;
     }

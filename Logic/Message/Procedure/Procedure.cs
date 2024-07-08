@@ -33,6 +33,8 @@ using System;
 [MessagePack.Union(28, typeof(AddCombatHistoryProc))]
 [MessagePack.Union(29, typeof(ReinforceUnitProcedure))]
 [MessagePack.Union(30, typeof(ReinforceArmyProcedure))]
+[MessagePack.Union(31, typeof(ReinforceUnitTroopProcedure))]
+[MessagePack.Union(32, typeof(AggregateProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

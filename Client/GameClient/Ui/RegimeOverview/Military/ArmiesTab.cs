@@ -12,9 +12,10 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         _armyInfoContainer, 
         _armiesContainer, _freeUnitsContainer;
 
-    private ItemMultiListToken<Unit> _freeUnits;
+    private Tree _freeUnits;
     private ItemListToken<Army> _armies;
     private ArmyTree _armyTree;
+    private Label _freeUnitsLabel;
     public ArmiesTab(Func<Regime> getRegime)
     {
         Name = "Armies";
@@ -58,65 +59,74 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         
         var armies = c.Data.GetAll<Army>()
             .Where(a => a.Regime.RefId == r.Id);
+        var med = c.Settings.MedIconSize.Value;
         
         _armies =  new ItemListToken<Army>(
             armies, 
-            a => a.Id.ToString(),
+            a => $"Army {a.Id.ToString()} Units: {a.Units.Count()} " +
+                 $"Strength: {a.GetPowerPoints(c.Data)} / {a.Units.Entities(c.Data).Sum(u => u.Template.Get(c.Data).GetPowerPoints(c.Data))}",
             a => DrawArmyInfo(a, c),
-            a => a.Regime.Get(c.Data).Template.Get(c.Data).Flag.Texture
+            a => a.Regime.Get(c.Data).Template.Get(c.Data).Flag.Texture,
+            (int)med 
         );
-        _armies.ItemList.ExpandFill();
+        _armiesContainer.CreateLabelAsChild("Armies");
         _armiesContainer.AddChild(_armies.ItemList);
+        _armies.ItemList.ExpandFill();
         
-        
-        _freeUnits = new ItemMultiListToken<Unit>(
-            r
-                .GetUnits(c.Data)
-                .Where(u => c.Data.Military.UnitAux.UnitByGroup[u] == null),
-            u => u.Template.Get(c.Data).Name,
-            u => { },
-            new Vector2(200f, 500f),
-            u => u.GetMaxPowerTroop(c.Data).Icon.Texture,
-            new Vector2I(20, 20)
+        _freeUnits = new UnitTree(0);
+        _freeUnits.ExpandFill();
+        _freeUnits.SelectMode = Tree.SelectModeEnum.Multi;
+        var freeUnits = r
+            .GetUnits(c.Data)
+            .Where(u => c.Data.Military.UnitAux.UnitByGroup[u] == null);
+        UnitTree.Add(_freeUnits, 
+            freeUnits,
+            0,
+            c
         );
+        _freeUnitsLabel = new Label();
+        _freeUnitsLabel.Text = $"Available Units: {freeUnits.Count()}";
         var transferFreeUnitBtn = ButtonExt.GetButton(() =>
         {
-            if (_freeUnits.Selected.Count == 0) return;
+            var selected = _freeUnits.GetSelectedEntities<Unit>(c.Data);
+            if (selected.Count == 0) return;
             var army = _armies.Value;
             if (army is null) return;
-            foreach (var unit in _freeUnits.Selected)
+            foreach (var unit in selected)
             {
                 var proc = new SetUnitArmyProcedure(unit.MakeRef(),
                     army.MakeRef());
                 var inner = new SendMessageCommand(proc, 
                     c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
                 
-                var action = () =>
+                var callback = () =>
                 {
-                    if (IsInstanceValid(_freeUnits.ItemList) == false
-                        || IsInstanceValid(_armyTree) == false)
+                    if (IsInstanceValid(this) == false)
                     {
                         return;
                     }
                     if (unit.GetArmy(c.Data) is not null)
                     {
-                        _freeUnits.Remove(unit.Yield());
+                        _freeUnits.Remove(unit);
                     }
                     if (_armyTree.GetArmy(c.Data) == army
                         && army.Units.Contains(unit))
                     {
-                        _armyTree.AddUnit(unit, c.Data);
+                        _armyTree.AddUnit(unit, c);
                     }
+                    _armies.RefreshText();
+                    SetFreeUnitsLabel(c);
                 };
                 var com = CallbackCommand.Construct(
-                    inner, action, c);
+                    inner, callback, c);
                 c.HandleCommand(com);
             }
         });
         transferFreeUnitBtn.Text = "Transfer To Army";
-        _freeUnits.ItemList.ExpandFill();
+        _freeUnitsContainer.AddChild(_freeUnitsLabel);
+        _freeUnitsContainer.AddChild(_freeUnits);
         _freeUnitsContainer.AddChild(transferFreeUnitBtn);
-        _freeUnitsContainer.AddChild(_freeUnits.ItemList);
+        
     }
 
     public void SelectArmy(Army a)
@@ -131,38 +141,50 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         _armyButtonsContainer.ClearChildren();
         if (a is null) return;
         
-        _armyTree = a.GetTree(0, c.Data);
+        _armyTree = a.GetTree(0, c);
+        _armyTree.SelectMode = Tree.SelectModeEnum.Multi;
         _armyTree.ExpandFill();
         
         var sendToReserve = ButtonExt.GetButton(() =>
         {
-            var selected = _armyTree.GetSelectedUnit(c.Data);
-            
-            if (selected is Unit u)
-            {
-                var proc = new SetUnitArmyProcedure(u.MakeRef(),
-                    ERef<Army>.GetEmpty());
-                var com = new SendMessageCommand(proc, 
-                    c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
-                c.HandleCommand(com);
-                _armyTree.RemoveUnit(u);
-                _freeUnits.Add(u);
-            }
+            var selected = _armyTree.GetSelectedEntities<Unit>(c.Data);
+
+            var procs = selected.Select(u => new SetUnitArmyProcedure(u.MakeRef(),
+                ERef<Army>.GetEmpty())).ToArray();
+            var proc = new AggregateProcedure(procs);
+            var com = new SendMessageCommand(proc, 
+                c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
+            var outer = CallbackCommand.Construct(
+                com, () =>
+                {
+                    if (IsInstanceValid(this) == false) return;
+                    foreach (var u in selected)
+                    {
+                        _armyTree.Remove(u);
+                        UnitTree.Add(_freeUnits, u, 0, c);
+                    }
+                    _armies.RefreshText();
+                    SetFreeUnitsLabel(c);
+                }, c);
+            c.HandleCommand(outer);
         });
         sendToReserve.Text = "Send to Reserve";
 
         var reinforceUnit = ButtonExt.GetButton(() =>
         {
-            var unit = _armyTree.GetSelectedUnit(c.Data);
-            if (unit is null) return;
-            var proc = new ReinforceUnitProcedure(unit.MakeRef());
-            var com = new SendMessageCommand(proc, c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
+            var selected = _armyTree.GetSelectedEntities<Unit>(c.Data);
+            var procs = selected.Select(unit => new ReinforceUnitProcedure(unit.MakeRef()))
+                .ToArray();
+            var proc = new AggregateProcedure(procs);
+            var com = new SendMessageCommand(proc, 
+                c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(
                 com, () =>
                 {
                     if (IsInstanceValid(this))
                     {
                         SelectArmy(a);
+                        _armies.RefreshText();
                     }
                 }, c);
             c.HandleCommand(outer);
@@ -179,17 +201,49 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
                     if (IsInstanceValid(this))
                     {
                         SelectArmy(a);
+                        _armies.RefreshText();
                     }
                 }, c);
             c.HandleCommand(outer);
         });
         reinforceArmy.Text = "Reinforce Army";
-        
+
+
+
+        var reinforceTroop = ButtonExt.GetButton(() =>
+        {
+            var v = _armyTree.GetSelectedTroopAndUnit(c.Data);
+            if (v.HasValue == false) return;
+            var (u, t) = v.Value;
+            var proc = new ReinforceUnitTroopProcedure(u.MakeRef(),
+                t.MakeRef());
+            var com = new SendMessageCommand(proc,
+                c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
+            var outer = CallbackCommand.Construct(
+                com, () =>
+                {
+                    if (IsInstanceValid(this))
+                    {
+                        SelectArmy(a);                       
+                        _armies.RefreshText();
+                    }
+                }, c);
+            c.HandleCommand(outer);
+        });
+        reinforceTroop.Text = "Reinforce Troop";
         
         _armyInfoContainer.AddChild(_armyTree);
         _armyButtonsContainer.AddChild(sendToReserve);
         _armyButtonsContainer.AddChild(reinforceUnit);
         _armyButtonsContainer.AddChild(reinforceArmy);
+    }
+
+    private void SetFreeUnitsLabel(Client c)
+    {
+        var freeUnits = _getRegime()
+            .GetUnits(c.Data)
+            .Where(u => c.Data.Military.UnitAux.UnitByGroup[u] == null);
+        _freeUnitsLabel.Text = $"Available Units: {freeUnits.Count()}";
     }
     
 }

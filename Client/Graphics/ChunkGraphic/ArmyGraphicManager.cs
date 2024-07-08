@@ -260,7 +260,6 @@ public class ArmyGraphicManager : ISettinged
             }
             var area = Areas.Graphics[army];
             segmenter.AddElement(area, area.RelTo);
-            uiElements.MoveToTop(area);
             var history = HistoryGraphics.Graphics[army];
             segmenter.AddElement(history, history.RelTo);
             uiElements.MoveToTop(history);
@@ -307,7 +306,6 @@ public class ArmyGraphicManager : ISettinged
             }
             var area = Areas.Graphics[army];
             segmenter.AddElement(area, area.RelTo);
-            uiElements.MoveToTop(area);
             var history = HistoryGraphics.Graphics[army];
             segmenter.AddElement(history, history.RelTo);
             uiElements.MoveToTop(history);

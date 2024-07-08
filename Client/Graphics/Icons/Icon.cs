@@ -6,13 +6,11 @@ public class Icon
 {
     public string Name { get; private set; }
     public Texture2D Texture { get; private set; }
-    public Vector2I AspectRatio { get; private set; }
     public static Icon Create(string textureName, Vector2I ratio)
     {
         var i = new Icon();
         i.Name = textureName;
         i.Texture = TextureManager.Textures[textureName];
-        i.AspectRatio = ratio;
         return i;
     }
     private Icon()
@@ -22,7 +20,8 @@ public class Icon
 
     public Vector2 GetDim(float height)
     {
-        return (Vector2)AspectRatio * height / AspectRatio.Y;
+        var s = Texture.GetSize();
+        return s * height / s.Y;
     }
     public TextureRect GetTextureRect(float height)
     {

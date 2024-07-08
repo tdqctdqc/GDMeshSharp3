@@ -40,11 +40,14 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
     public void Draw(Client c)
     {
         _makingUnitsContainer.ClearChildren();
+        _makingUnitsContainer.CreateLabelAsChild("Units in Progress");
         _makingUnitsInfo.ClearChildren();
         _templatesContainer.ClearChildren();
+        _templatesContainer.CreateLabelAsChild("Unit Templates");
         _templateInfo.ClearChildren();
         var regime = _getRegime();
         if (regime is null) return;
+        var med = c.Settings.MedIconSize.Value;
 
         var unitProjects = regime.MakeQueue.Queue
             .OfType<UnitMakeProject>();
@@ -53,7 +56,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
             p => $"{p.MakingTemplate(c.Data).Name} {p.Fulfilled} / {p.Amount}",
             p => SetMakingUnitsInfo(c),
             p => p.MakingTemplate(c.Data).GetMaxPowerTroop(c.Data).Icon.Texture,
-            Vector2I.One * 40);
+            (int)med);
         _makingUnits.ItemList.ExpandFill();
         _makingUnitsContainer.AddChild(_makingUnits.ItemList);
 
@@ -63,7 +66,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
             t => t.Name,
             t => SetTemplateInfo(c),
             t => t.GetMaxPowerTroop(c.Data).Icon.Texture,
-            Vector2I.One * 40
+            (int)med
         );
         _templates.ItemList.ExpandFill();
         _templatesContainer.AddChild(_templates.ItemList);
@@ -86,8 +89,10 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
                 {
                     return;
                 }
-                var inner = new CancelMakeProjectCommand(regime.MakeRef(),
-                    _makingUnits.Value.Id, player);
+
+                var proc = new CancelMakeProjectProcedure(regime.MakeRef(),
+                    _makingUnits.Value.Id);
+                var inner = new SendMessageCommand(proc, player);
                 var com = CallbackCommand.Construct(
                     inner, () =>
                     {
@@ -110,7 +115,8 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         var template = _templates.Value;
         if (template is null) return;
         _templateInfo.AddChild(template.GetDisplay(c.Data));
-        
+        var num = new NumSliderAndEntry("Amount", 1f, 1f, 100f, 1f);
+        _templateInfo.AddChild(num);
         var makeBtn = _templateInfo.AddButton(
             "Make", () =>
             {
@@ -119,9 +125,9 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
                 {
                     return;
                 }
-
+                
                 var proj = UnitMakeProject.Construct(regime,
-                    _templates.Value);
+                    _templates.Value, (int)num.Value);
                 var inner = new StartMakeProjectCommand(proj, player);
                 var com = CallbackCommand.Construct(
                     inner, () =>

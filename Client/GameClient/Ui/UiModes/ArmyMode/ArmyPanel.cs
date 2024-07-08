@@ -49,11 +49,9 @@ public partial class ArmyPanel : PanelContainer
                     var a = m.OpenTab<ArmiesTab>();
                     a.SelectArmy(army);
                 });
-            foreach (var unit in army.Units.Entities(c.Data))
-            {
-                var display = unit.GetUnitDisplay(c.Data);
-                _inner.AddChild(display);
-            }
+            var tree = army.GetTree(0, c);
+            tree.ExpandFill();
+            _inner.AddChild(tree);
         }
     }
 }

@@ -31,6 +31,7 @@ public class CellHashMouseAction : MouseAction
         {
             return;
         }
+
         _cells.Add(cell);
     }
 

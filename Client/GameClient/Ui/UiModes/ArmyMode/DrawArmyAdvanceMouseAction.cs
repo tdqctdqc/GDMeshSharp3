@@ -15,7 +15,8 @@ public class DrawArmyAdvanceMouseAction : CellHashMouseAction
             client.Data)
     {
         _mode = mode;
-        AddDefaultAction(() => DrawAdvance(_cells, client));
+        AddDefaultAction(() => SetAdvance(_cells, client));
+        AddShiftAction(() => AddToAdvance(_cells, client));
         AddCtrlAction(() => TrimAdvance(_cells, client));
     }
 
@@ -52,8 +53,23 @@ public class DrawArmyAdvanceMouseAction : CellHashMouseAction
         return false;
     }
 
+    private void SetAdvance(HashSet<Cell> advance, Client client)
+    {
+        var army = _mode.Army.Value;
+        if (army is null) return;
 
-    private void DrawAdvance(HashSet<Cell> advance, Client client)
+        var advanceZone = new RefSet<CellRef>(advance
+            .Select(c => c.MakeRef()).ToHashSet());
+            
+        var order = new LineMission(army.LineMission.LineCells,
+            advanceZone, false);
+        var proc = new SetUnitOrderProcedure(army.MakeRef(),
+            order);
+        var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;
+        var com = new SendMessageCommand(proc, localPlayer.PlayerGuid);
+        client.HandleCommand(com);
+    }
+    private void AddToAdvance(HashSet<Cell> advance, Client client)
     {
         var army = _mode.Army.Value;
         if (army is null) return;
@@ -83,7 +99,9 @@ public class DrawArmyAdvanceMouseAction : CellHashMouseAction
                 .Refs.ToHashSet();
             
         var advanceUnions =
-            UnionFind.Find(advanceZone.Select(r => r.Get(client.Data)),
+            UnionFind.Find(advanceZone
+                    .Where(c => advance.Contains(c.Get(client.Data)) == false)
+                    .Select(r => r.Get(client.Data)),
                 (c, d) => true,
                 c => c.GetNeighbors(client.Data));
 
@@ -94,7 +112,7 @@ public class DrawArmyAdvanceMouseAction : CellHashMouseAction
                         n => army.LineMission.LineCells.Contains(n.MakeRef()))))
             .SelectMany(u => u)
             .Select(c => c.MakeRef()).ToHashSet();
-
+        
         var order = new LineMission(army.LineMission.LineCells,
             new RefSet<CellRef>(advanceZone), 
             false);

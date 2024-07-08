@@ -1,17 +1,19 @@
+using System.Linq;
 using Godot;
 namespace Ui.RegimeOverview;
 
 public partial class BudgetTab : ScrollContainer, IUiDrawable
 {
-    private VBoxContainer _container;
+    private Container _container, _priorityInfo;
     private RegimeOverviewWindow _parent;
+    private ItemListToken<PriorityNode> _priorities;
     public BudgetTab(RegimeOverviewWindow parent)
     {
         _parent = parent;
         Name = "Budget";
-        this.FullRect();
-        _container = new VBoxContainer();
+        _container = new HBoxContainer();
         AddChild(_container);
+        _container.FullRect();
     }
 
     private BudgetTab()
@@ -21,7 +23,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
     public void Draw(Client client)
     {
         _container.ClearChildren();
-        _container.CreateLabelAsChild("PRIORITIES");
+        _container.ExpandFill();
         var small = client.Settings.SmallIconSize.Value;
         var regime = _parent.Regime;
         if (regime is null) return;
@@ -30,32 +32,137 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         var ai = ais[regime];
         var budget = ai.Budget;
         var leaves = budget.Root.GetLeaves();
-        foreach (var priority in leaves)
-        {
-            _container.CreateLabelAsChild($"{priority.Priority.Name}");
-            _container.CreateLabelAsChild($"    Weight: {priority.GetTreeWeight(client.Data)}");
-            _container.CreateLabelAsChild($"    Credit: {priority.Credit.GetCredit().RoundTo2Digits()}");
-            if (budget.Root.LastSpending.TryGetValue(priority, out var v))
-            {
-                _container.CreateLabelAsChild($"    Last spending: {v.spent} on tick {v.tick}");
-            }
-        }
-        _container.AddSpacer(false);
 
-        _container.CreateLabelAsChild("PRICES");
+        var leftScroll = new ScrollContainer();
+        leftScroll.ExpandFill(1);
+        var left = new VBoxContainer();
+        left.ExpandFill();
+        leftScroll.AddChild(left);
+        _container.AddChild(leftScroll);
+
+        var priorityScroll = new ScrollContainer();
+        priorityScroll.ExpandFill(1);
+        _container.AddChild(priorityScroll);
+        _priorityInfo = new VBoxContainer();
+        _priorityInfo.ExpandFill();
+        priorityScroll.AddChild(_priorityInfo);
+        
+        left.CreateLabelAsChild("Priorities");
+        _priorities = new ItemListToken<PriorityNode>(
+            leaves,
+            node =>
+            {
+                var s = $"{node.Priority.Name}" +
+                    $"\n     Weight: {node.GetTreeWeight(client.Data)}" +
+                    $"\n    Credit: {node.Credit.GetCredit().RoundTo2Digits()}";
+                
+
+                return s;
+            },
+            p => DrawPriorityInfo(client)
+        );
+        if(leaves.Count() > 0) _priorities.SelectAt(0);
+        _priorities.ItemList.ExpandFill();
+        left.AddChild(_priorities.ItemList);
+        
+        left.CreateLabelAsChild("Prices");
+
+        var priceScroll = new ScrollContainer();
+        priceScroll.ExpandFill();
+        left.AddChild(priceScroll);
+        var priceContainer = new VBoxContainer();
+        priceScroll.AddChild(priceContainer);
         foreach (var (model, price) in budget.Root.RelativePrices())
         {
             if (model is IIconed i)
             {
                 var entry = i.Icon.GetLabeledIcon<HBoxContainer>(
                     $"{model.Name}: {price}", small);
-                _container.AddChild(entry);
+                priceContainer.AddChild(entry);
             }
             else
             {
-                _container.CreateLabelAsChild($"{model.Name}: {price}");
+                priceContainer.CreateLabelAsChild($"{model.Name}: {price}");
             }
         }
+        
+        DrawPriorityInfo(client);
+    }
 
+    private void DrawPriorityInfo(Client c)
+    {
+        _priorityInfo.ClearChildren();
+        var node = _priorities.Value;
+        var priority = node.Priority;
+        if (priority == null) return;
+        var regime = _parent.Regime;
+        var ais = c.Data.HostLogicData.RegimeAis;
+        if (ais.Dic.ContainsKey(regime) == false) return;
+        var ai = ais[regime];
+        var budget = ai.Budget;
+        
+        
+        var wishlist = priority.GetWishlist(regime, c.Data);
+        var small = c.Settings.SmallIconSize.Value;
+        var med = c.Settings.MedIconSize.Value;
+        
+        
+        _priorityInfo.CreateLabelAsChild($"Credit: {node.Credit.GetCredit()}");
+        _priorityInfo.CreateLabelAsChild($"Weight: {node.GetTreeWeight(c.Data)}");
+        _priorityInfo.CreateLabelAsChild($"Wishlist");
+        if (budget.Root.LastSpending.TryGetValue(node, out var v))
+        {
+            _priorityInfo.CreateLabelAsChild($"\n    Last spending: {v.spent} on tick {v.tick}");
+        }
+
+        var wishlistContainer = new HBoxContainer();
+
+        var wishlistInfoScroll = new ScrollContainer();
+        wishlistInfoScroll.ExpandFill();
+        var wishlistInfo = new VBoxContainer();
+        wishlistInfoScroll.AddChild(wishlistInfo);
+        
+        
+        var wishlistItems = new ItemListToken<IModel>(
+            wishlist.Keys,
+            m => $"{m.Name}: {wishlist[m]}",
+            m => { },
+            m => m is IIconed i ? i.Icon.Texture : new Texture2D(),
+            (int)med
+        );
+        wishlistContainer.AddChild(wishlistItems.ItemList);
+        wishlistContainer.AddChild(wishlistInfoScroll);
+
+        void drawWishlistItemInfo(IModel model)
+        {
+            wishlistInfo.ClearChildren();
+            var amt = wishlist[model];
+            if (model is IIconed i)
+            {
+                wishlistInfo.AddChild(i.Icon.GetLabeledIcon<HBoxContainer>(
+                    $"{model.Name}: {amt}",
+                    med));
+            }
+            else
+            {
+                wishlistInfo.CreateLabelAsChild($"{model.Name}: {amt}");
+            }
+            
+            wishlistInfo.CreateLabelAsChild("Costs");
+            var makeable = (IMakeable)model;
+            foreach (var (costModel, costAmt) in makeable.Makeable.BuildCosts.GetEnumModel(c.Data))
+            {
+                if (costModel is IIconed iCost)
+                {
+                    wishlistInfo.AddChild(iCost.Icon.GetLabeledIcon<HBoxContainer>(
+                        $"{costModel.Name}: {costAmt * amt}",
+                        med));
+                }
+                else
+                {
+                    wishlistInfo.CreateLabelAsChild($"{costModel.Name}: {costAmt * amt}");
+                }
+            }
+        }
     }
 }

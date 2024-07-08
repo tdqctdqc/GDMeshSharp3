@@ -6,6 +6,8 @@ using MessagePack;
 
 public class Regime : Entity
 {
+    public static Vector2I FlagAspectRatio { get; private set; }
+        = new Vector2I(3, 2);
     public CellRef Capital { get; protected set; }
     public ModelRef<Culture> Culture { get; private set; }
     public ModelRef<RegimeTemplate> Template { get; private set; }

@@ -77,7 +77,7 @@ public static class UnitExt
             .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
         return new Vector2(totalPp, templatePp);
     }
-
+    
     public static Control GetUnitDisplay(this Unit u, Data d)
     {
         return u.GetMaxPowerTroop(d).Icon

@@ -5,10 +5,11 @@ using MessagePack;
 public class UnitMakeProject : MakeProject
 {
     public static UnitMakeProject Construct(Regime r,
-        UnitTemplate template)
+        UnitTemplate template,
+        int amount)
     {
         return new UnitMakeProject(r.MakeRef(), template.MakeRef(),
-            1f, 0f, -1);
+            amount, 0f, -1);
     }
     [SerializationConstructor] private UnitMakeProject(ERef<Regime> regime, 
         IdRef making, float amount, float fulfilled, int id) 
@@ -31,8 +32,11 @@ public class UnitMakeProject : MakeProject
 
     public override void Finish(LogicWriteKey key)
     {
-        Unit.Create((UnitTemplate)Making.Get(key.Data),
-            Regime.Get(key.Data), key);
+        for (var i = 0; i < Mathf.FloorToInt(Amount); i++)
+        {
+            Unit.Create((UnitTemplate)Making.Get(key.Data),
+                Regime.Get(key.Data), key);
+        }
     }
 
     public override void Cancel(ProcedureWriteKey key)

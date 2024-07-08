@@ -24,6 +24,6 @@ public class RegimeTemplate : IModel
         PrimaryColor = d[nameof(PrimaryColor)];
         SecondaryColor = d[nameof(SecondaryColor)];
         FlagPath = d[nameof(FlagPath)];
-        Flag = Icon.Create(FlagPath, new Vector2I(3, 2));
+        Flag = Icon.Create(FlagPath, Regime.FlagAspectRatio);
     }
 }

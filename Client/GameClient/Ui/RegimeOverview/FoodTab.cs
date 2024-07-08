@@ -44,7 +44,7 @@ public partial class FoodTab : ScrollContainer, IUiDrawable
         var peepSize = peeps.Sum(p => p.Size);
         var jobs = populatedCells
             .Select(p => p.GetPeep(client.Data))
-            .SelectMany(p => p.Employment.Counts)
+            .SelectMany(p => p.Employment.Counts.GetEnumModel(client.Data))
             .SortInto(kvp => kvp.Key, kvp => kvp.Value);
 
         var techniqueCounts = 
@@ -63,7 +63,7 @@ public partial class FoodTab : ScrollContainer, IUiDrawable
             _container.AddChild(box);
 
             var needed = technique.BaseLabor * num;
-            var have = jobs.ContainsKey(technique.JobType.Id) ? jobs[technique.JobType.Id] : 0;
+            var have = jobs.ContainsKey(technique.JobType) ? jobs[technique.JobType] : 0;
             var ratio = have / needed;
             _container.CreateLabelAsChild($"Labor: {have} / {needed}");
             _container.CreateLabelAsChild($"Expected output: {ratio * num * technique.BaseProd}");

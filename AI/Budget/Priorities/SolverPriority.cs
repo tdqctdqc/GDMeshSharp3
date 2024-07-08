@@ -18,14 +18,20 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         _getAll = getAll;
     }
 
-    public Dictionary<IModel, float> GetWishlistCosts(
-        Regime regime, 
+    Dictionary<IModel, float> IBudgetPriority.GetWishlist(Regime regime, Data d)
+        => GetWishlist(regime, d)
+            .ToDictionary(kvp => (IModel)kvp.Key,
+                kvp => (float)kvp.Value);
+    public Dictionary<TBuild, int> GetWishlist(
+        Regime regime,
         Data d)
     {
+        var all = _getAll(d);
+        
         var expandedPool = BudgetPool.ConstructForRegime(regime, d);
         foreach (var i in expandedPool.Stock.Contents.Keys.ToList())
         {
-            expandedPool.Stock.Contents[i] *= 2f;
+            expandedPool.Stock.Contents[i] *= 10f;
         }
         SetCalcData(regime, d);
         var solver = MakeSolver();
@@ -33,10 +39,15 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         SetConstraints(solver, regime, expandedPool, projVars, d);
         var success = Solve(solver, projVars);
         
-        var toBuild = projVars
+        return projVars
             .Where(v => v.Value.SolutionValue() > 0f)
             .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
-        return GetCosts(toBuild, d);
+    }
+    public Dictionary<IModel, float> GetWishlistCosts(
+        Regime regime, 
+        Data d)
+    {
+        return GetCosts(GetWishlist(regime, d), d);
     }
     public bool Calculate(BudgetPool pool, 
         Regime regime, 

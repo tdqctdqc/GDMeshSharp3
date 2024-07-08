@@ -43,22 +43,22 @@ public class ListSettingsOption<T> : SettingsOption<T>
             list);
         list.Select(Options.IndexOf(Value));
         list.FocusMode = Control.FocusModeEnum.None;
-        list.FullRect();
         list.ExpandFill();
+        list.CustomMinimumSize = new Vector2(100f, 100f);
         return list;
     }
     
     public Control GetControlInterfaceIcon(
         Func<T, Texture2D> getTexture,
-        Vector2I iconSize)
+        int iconHeight)
     {
         var token = new ItemListToken<T>(
             Options,
             m => _names[m],
             m => Set(m),
-            getTexture);
+            getTexture,
+            iconHeight);
         var list = token.ItemList;
-        list.FixedIconSize = iconSize;
 
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);

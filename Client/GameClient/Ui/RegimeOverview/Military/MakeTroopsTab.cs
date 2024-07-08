@@ -39,7 +39,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
                  $"Reserve: {reserve.Get(t)}",
             t => { },
             t => t.Icon.Texture,
-            Vector2I.One * (int)med);
+            (int)med);
         _troops.ItemList.ExpandFill();
 
         var projects = regime.MakeQueue.Queue
@@ -51,7 +51,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
             p => $"{p.Model(client.Data).Name}: {p.Fulfilled} / {p.Amount}",
             p => { },
             t => ((Troop)t.Model(client.Data)).Icon.Texture,
-            Vector2I.One * (int)med);
+            (int)med);
         _projects.ItemList.ExpandFill();
         
         var left = new VBoxContainer();
@@ -60,7 +60,8 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         var right = new VBoxContainer();
         right.ExpandFill();
         AddChild(right);
-        
+
+        left.CreateLabelAsChild("Troop Types");
         left.AddChild(_troops.ItemList);
 
         _num = new NumSliderAndEntry(
@@ -115,8 +116,9 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         {
             var proj = _projects.Value;
             if (proj == null) return;
-            var com = new CancelMakeProjectCommand(regime.MakeRef(),
-                proj.Id, client.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
+            var proc = new CancelMakeProjectProcedure(regime.MakeRef(),
+                proj.Id);
+            var com = new SendMessageCommand(proc, client.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(com,
                 () =>
                 {
@@ -125,7 +127,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
                         Draw(client);
                     }
                 }, client);
-            client.HandleCommand(com);
+            client.HandleCommand(outer);
         });
         cancel.Text = "Cancel Project";
         right.AddChild(cancel);

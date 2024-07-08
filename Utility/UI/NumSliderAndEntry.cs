@@ -19,6 +19,7 @@ public partial class NumSliderAndEntry : HBoxContainer
         
         _slider = new HSlider();
         _slider.ExpandFill();
+        _slider.CustomMinimumSize = new Vector2(50f, 0f);
         _slider.Step = step;
         _slider.Value = Value;
         _spin = new SpinBox();
@@ -60,7 +61,8 @@ public partial class NumSliderAndEntry : HBoxContainer
 
     public void SetValue(float value)
     {
-        if (Mathf.Clamp(value, MinValue, MaxValue) != value) throw new Exception();
+        Value = Mathf.Clamp(value, MinValue, MaxValue);
+        
         if (value == Value) return;
         _slider.Value = value;
         _spin.Value = value;

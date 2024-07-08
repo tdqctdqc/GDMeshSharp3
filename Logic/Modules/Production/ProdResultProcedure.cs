@@ -20,6 +20,16 @@ public class ProdResultProcedure : Procedure
             var result = Results[i];
             result.Regime.Get(key.Data).SetStock(result.Stock, key);
             result.Regime.Get(key.Data).MakeQueue.SetQueue(result.MakeQueue, key);
+            foreach (var (peepId, growth) in result.PeepGrowths)
+            {
+                var peep = key.Data.Get<Peep>(peepId);
+                peep.GrowSize(growth, key);
+            }
+            foreach (var (peepId, employment) in result.Employment)
+            {
+                var peep = key.Data.Get<Peep>(peepId);
+                peep.SetEmploymentReport(employment, key);
+            }
         }
     }
 

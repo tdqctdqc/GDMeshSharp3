@@ -51,9 +51,8 @@ public partial class PolyPanel : PanelContainer
             var peep = l.GetPeep(d);
             var med = c.Settings.MedIconSize.Value;
             _inner.CreateLabelAsChild($"Population: {peep.Size}");
-            foreach (var (key, value) in peep.Employment.Counts)
+            foreach (var (job, value) in peep.Employment.Counts.GetEnumModel(d))
             {
-                var job = d.Models.GetModel<PeepJob>(key);
                 var entry = job.Icon.GetLabeledIcon<HBoxContainer>(
                     $"{job.Name}: {value}", med);
                 _inner.AddChild(entry);

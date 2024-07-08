@@ -158,7 +158,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             lf => lf.Name,
             lf => _landform = lf,
             lf => lf.GetColorTexture(med),
-            (int)med * Vector2I.One
+            (int)med
         );
         _lf.ItemList.ExpandFill();
         _lf.SelectAt(0);
@@ -168,7 +168,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             v => v.Name,
             v => _vegetation = v,
             v => v.GetColorTexture(med),
-            (int)med * Vector2I.One
+            (int)med
         );
         _veg.ItemList.ExpandFill();
         _veg.SelectAt(0);
@@ -179,7 +179,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             t => t.Name,
             v => { },
             t => t.Icon.Texture,
-            (int)med * Vector2I.One
+            (int)med
         );
         _troops.ItemList.ExpandFill();
         _troops.SelectAt(0);

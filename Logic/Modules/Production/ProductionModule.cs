@@ -33,31 +33,43 @@ public class ProductionModule : LogicModule
         }
         var newStock = RegimeStock.Construct();
         newStock.Stock.Add(r.Stock.Stock);
+
+        var employments = r.GetPeeps(d)
+            .ToDictionary(p => p.Id, 
+                p => PeepEmploymentReport.Construct());
         
         var result = new ProductionResult(r.MakeRef(), 
             newStock, new Dictionary<int, int>(), 
-            new List<MakeProject>());
+            new List<MakeProject>(),
+            employments);
 
         var constructCap = d.Models.Flows.ConstructionCap;
         var constructCapProduced = r.GetPopulation(d);
         var pop = r.GetPopulation(d);
-        // constructCapProduced = Mathf.FloorToInt(constructCapProduced);
         if (constructCapProduced < 0f) throw new Exception();
         
         newStock.Stock.Set(constructCap, constructCapProduced);
         newStock.Produced.Set(constructCap, constructCapProduced);
         
-        DoProd(r, d, newStock);
-        TroopMaintenance(r, d, newStock);
-        DoMake(r, newStock, result, key);
+        DoProd(r, d, result);
+        foreach (var (id, employment) in result.Employment)
+        {
+            var peep = d.Get<Peep>(id);
+            var total = employment.Counts.Contents.Values.Sum();
+            var unemployed = peep.Size - total;
+            employment.Counts.Set(d.Models.PeepJobs.Unemployed, unemployed);
+        }
+        TroopMaintenance(r, d, result);
+        DoMake(r, result, key);
         HandleFoodConsumption(r, newStock, result, d);
         
         return result;
     }
 
     private static void TroopMaintenance(Regime r, Data d, 
-        RegimeStock newStock)
+        ProductionResult result)
     {
+        var newStock = result.Stock;
         var units = r.GetUnits(d);
         var milCap = d.Models.Flows.MilitaryCap;
         var milCapCost = 0f;
@@ -91,14 +103,11 @@ public class ProductionModule : LogicModule
         }
     }
     private static void DoProd(Regime r,
-        Data d, RegimeStock newStock)
+        Data d, ProductionResult result)
     {
         var cells = r
             .GetCells(d).OfType<LandCell>().ToArray();
-        foreach (var cell in cells)
-        {
-            newStock.EmploymentReports.Add(cell.Id, PeepEmploymentReport.Construct());
-        }
+        var newStock = result.Stock;
         var cellFreeLabor = cells
             .ToDictionary(c => c,
                 c => c.GetPeep(d).Size);
@@ -186,10 +195,10 @@ public class ProductionModule : LogicModule
                 newStock.Produced.Add(id, outputAmt);
             }
 
-            var employment = newStock.EmploymentReports[entry.Cell.Id];
+            var employment = result.Employment[entry.Cell.GetPeep(d).Id];
             foreach (var (id, amt) in entry.Labor.Jobs.Contents)
             {
-                employment.Counts.AddOrSum(id, amt * num * ratio * unsatisfied);
+                employment.Counts.Add(id, amt * num * ratio * unsatisfied);
             }
         }
     }
@@ -252,11 +261,12 @@ public class ProductionModule : LogicModule
         }
     }
 
-    private static void DoMake(Regime r, RegimeStock newStock, 
+    private static void DoMake(Regime r, 
             ProductionResult result,
             LogicWriteKey key)
     {
         var d = key.Data;
+        var newStock = result.Stock;
         var queue = r.MakeQueue.Queue;
         foreach (var proj in queue)
         {

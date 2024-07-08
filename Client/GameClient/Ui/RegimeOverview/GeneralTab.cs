@@ -28,20 +28,89 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
     public void Draw(Client client)
     {
         _container.ClearChildren();
+        _container.ExpandFill();
         var regime = _parent.Regime;
         if (regime is null) return;
         Name = regime.Name;
 
+        var top = new HBoxContainer();
+        _container.AddChild(top);
+        
+        var flagContainer = new VBoxContainer();
         var flag = regime.Template.Get(client.Data).Flag;
         var flagTexture = flag.GetTextureRect(100f);
-        _container.AddChild(flagTexture);
+        flagContainer.AddChild(flagTexture);
+        flagContainer.CreateLabelAsChild(regime.Name);
+        flagContainer.CreateLabelAsChild($"{(regime.IsMajor ? "Major" : "Minor")} Power");
+        top.AddChild(flagContainer);
+
+        var middle = new HBoxContainer();
+        middle.ExpandFill();
+        _container.AddChild(middle);
         
+        var left = new VBoxContainer();
+        left.ExpandFill();
+        middle.AddChild(left);
+        var right = new VBoxContainer();
+        right.ExpandFill();
+        middle.AddChild(right);
+        var alliance = regime.GetAlliance(client.Data);
+        var allies = alliance.Members.Entities(client.Data);
+        
+        if (allies.Count() > 1)
+        {
+            right.CreateLabelAsChild("Allies");
+            var alliesScroll = new ScrollContainer();
+            alliesScroll.ExpandFill();
+            var alliesContainer = new HBoxContainer();
+            alliesScroll.AddChild(alliesContainer);
+            foreach (var ally in allies)
+            {
+                if (ally == regime) continue;
+                var allyContainer = new VBoxContainer();
+                var allyFlag = ally.Template.Get(client.Data).Flag;
+                var allyFlagTexture = allyFlag.GetTextureRect(50f);
+                allyFlagTexture.AddClickUpAction(MouseButton.Left,
+                    () => RegimeOverviewWindow.Open(ally, client));
+                allyContainer.AddChild(allyFlagTexture);
+                allyContainer.CreateLabelAsChild(ally.Name);
+                alliesContainer.AddChild(allyContainer);
+            }
+            right.AddChild(alliesScroll);
+        }
         var seeAlliance = ButtonExt.GetButton(() =>
         {
             AllianceOverviewWindow.Open(regime.GetAlliance(client.Data), client);
         });
         seeAlliance.Text = "See Alliance";
-        _container.AddChild(seeAlliance);
+        right.AddChild(seeAlliance);
+        
+        var rivals = regime
+            .GetAlliance(client.Data).GetRivals(client.Data);
+        if (rivals.Count() > 0)
+        {
+            right.CreateLabelAsChild("Rivals");
+            var rivalsScroll = new ScrollContainer();
+            var rivalsContainer = new HBoxContainer();
+            rivalsScroll.AddChild(rivalsContainer);
+            rivalsScroll.ExpandFill();
+            foreach (var rival in rivals)
+            {
+                var rivalContainer = new VBoxContainer();
+                var leader = rival.Leader.Get(client.Data);
+                var rivalFlag = leader.Template.Get(client.Data).Flag;
+                var rivalFlagTexture = rivalFlag.GetTextureRect(50f);
+                rivalFlagTexture.AddClickUpAction(MouseButton.Left,
+                    () => AllianceOverviewWindow.Open(rival, client));
+                rivalContainer.AddChild(rivalFlagTexture);
+                rivalContainer.CreateLabelAsChild(leader.Name);
+                rivalContainer.CreateLabelAsChild($"{(alliance.IsAtWar(rival, client.Data) ? "At War" : "At Peace")}");
+                rivalsContainer.AddChild(rivalContainer);
+            }
+            right.AddChild(rivalsScroll);
+        }
+        
+        
         var spectating = client.GetComponent<MapGraphics>()
             .SpectatingRegime;
         var localPlayerRegime = client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data);
@@ -52,7 +121,7 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
                 client.GetComponent<MapGraphics>().SpectateRegime(regime);
             });
             spectateRegime.Text = "Spectate Regime";
-            _container.AddChild(spectateRegime);
+            left.AddChild(spectateRegime);
         }
         
         
@@ -67,7 +136,7 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
                     client.HandleCommand(com);
                 });
                 chooseRegime.Text = "Choose Regime";
-                _container.AddChild(chooseRegime);
+                left.AddChild(chooseRegime);
             }
         }
 
@@ -90,10 +159,16 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
                         regimeAlliance.Id);
                     var com = new SendMessageCommand(proc, 
                         client.Data.ClientPlayerData.LocalPlayerGuid);
-                    client.Server.QueueCommandLocal(com);
+                    var outer = CallbackCommand.Construct(
+                        com, () =>
+                        {
+                            if(IsInstanceValid(this)) Draw(client);
+                        }, client);
+                    
+                    client.Server.QueueCommandLocal(outer);
                 });
                 declareRival.Text = "Declare Rival";
-                _container.AddChild(declareRival);
+                left.AddChild(declareRival);
             }
             else if(spectatingAlliance.IsAtWar(regimeAlliance, client.Data)
                     == false)
@@ -105,36 +180,48 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
                         spectatingAlliance.Id);
                     var com = new SendMessageCommand(proc, 
                         client.Data.ClientPlayerData.LocalPlayerGuid);
-                    client.Server.QueueCommandLocal(com);
+                    var outer = CallbackCommand.Construct(
+                        com, () =>
+                        {
+                            if(IsInstanceValid(this)) Draw(client);
+                        }, client);
+                    client.Server.QueueCommandLocal(outer);
                 });
                 declareRival.Text = "Declare War";
-                _container.AddChild(declareRival);
+                left.AddChild(declareRival);
             }
-            
-        }
-        
-
-        _container.CreateLabelAsChild("ALLIANCE: " + regime.GetAlliance(client.Data).Id);
-        _container.CreateLabelAsChild("ALLIANCE LEADER: " 
-                                      + regime.GetAlliance(client.Data).Leader.Get(client.Data).Name
-                                      + " " + regime.GetAlliance(client.Data).Leader.Get(client.Data).Id);
-        _container.CreateLabelAsChild("ALLIANCE MEMBERS");
-        foreach (var ally in regime.GetAlliance(client.Data).Members.Entities(client.Data))
-        {
-            if (ally == regime) continue;
-            _container.CreateLabelAsChild(ally.Name);
-        }
-        _container.CreateLabelAsChild("RIVALS");
-        foreach (var rival in regime.GetAlliance(client.Data).GetRivals(client.Data))
-        {
-            _container.CreateLabelAsChild(rival.Leader.Get(client.Data).Name);
         }
 
+        left.AddChild(new VSeparator());
+
+        var territory = regime
+            .GetCells(client.Data).ToArray();
+        left.CreateLabelAsChild($"Number of cells: {territory.Count()}");
+        var settlements = territory.Where(c => c.HasSettlement(client.Data))
+            .Select(c => c.GetSettlement(client.Data));
+        left.CreateLabelAsChild($"Number of settlements: {settlements.Count()}");
+        var numBuildings = settlements.Sum(s => s.Buildings.Contents.Sum(kvp => kvp.Value));
+        left.CreateLabelAsChild($"Number of buildings: {numBuildings}");
+
+        left.AddChild(new VSeparator());
         
-        _container.CreateLabelAsChild("AT WAR");
-        foreach (var rival in regime.GetAlliance(client.Data).GetAtWar(client.Data))
-        {
-            _container.CreateLabelAsChild(rival.Leader.Get(client.Data).Name);
-        }
+        var peeps = regime.GetPeeps(client.Data);
+        var pop = peeps.Sum(p => p.Size);
+        left.CreateLabelAsChild($"Population: {pop}");
+        var urban = settlements.Sum(s => s.Cell.Get(client.Data).GetPeep(client.Data).Size);
+        var rural = pop - urban;
+        left.CreateLabelAsChild($"Urban: {urban}");
+        left.CreateLabelAsChild($"Rural: {rural}");
+
+        left.AddChild(new VSeparator());
+        
+        var units = regime.GetUnits(client.Data).ToArray();
+        var armies = client.Data.GetAll<Army>()
+            .Count(a => a.Regime.RefId == regime.Id);
+        var totalPower = units.Sum(u => u.GetPowerPoints(client.Data));
+        left.CreateLabelAsChild($"Armies: {armies}");
+        left.CreateLabelAsChild($"Units: {units.Count()}");
+        left.CreateLabelAsChild($"Total Military Power: {totalPower}");
+        
     }
 }

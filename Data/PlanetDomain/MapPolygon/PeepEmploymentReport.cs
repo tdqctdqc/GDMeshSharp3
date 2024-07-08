@@ -5,26 +5,30 @@ using MessagePack;
 
 public class PeepEmploymentReport
 {
-    public Dictionary<int, float> Counts { get; private set; }
+    public IdCount<PeepJob> Counts { get; private set; }
     public static PeepEmploymentReport Construct()
     {
-        return new PeepEmploymentReport(new Dictionary<int, float>());
+        var counts = IdCount<PeepJob>.Construct();
+        return new PeepEmploymentReport(counts);
     }
-    [SerializationConstructor] private PeepEmploymentReport(Dictionary<int, float> counts)
+    [SerializationConstructor] private PeepEmploymentReport(
+        IdCount<PeepJob> counts)
     {
-        Counts = new Dictionary<int, float>();
+        Counts = counts;
     }
 
     public void Copy(PeepEmploymentReport toCopy, ProcedureWriteKey key)
     {
         Counts.Clear();
-        Counts.AddRange(toCopy.Counts);
+        foreach (var (peepJob, value) in toCopy.Counts.GetEnumModel(key.Data))
+        {
+            Counts.Set(peepJob, value);
+        }
     }
 
     public float NumUnemployed(Data data)
     {
-        if (Counts.ContainsKey(data.Models.PeepJobs.Unemployed.Id) == false) return 0;
-        return Counts[data.Models.PeepJobs.Unemployed.Id];
+        return Counts.Get(data.Models.PeepJobs.Unemployed);
     }
     public void Clear()
     {

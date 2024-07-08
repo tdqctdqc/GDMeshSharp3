@@ -12,28 +12,24 @@ public class ItemListToken<T>
     public IReadOnlyList<T> Items => _items;
     private List<T> _items;
     private Func<T, Texture2D> _getTexture;
-    private Vector2I? _textureSize;
+    private int _textureHeight;
     private Func<T, string> _getLabelText;
     private Action<T> _selectAction;
-    
+    private int _textureWidthRatio = 1;
     public ItemListToken(
         IEnumerable<T> items, 
         Func<T, string> getLabelText, 
         Action<T> selectAction,
-        Func<T, Texture2D> getTexture = null,
-        Vector2I? textureSize = null)
+        Func<T, Texture2D> getTexture,
+        int textureHeight)
     {
         ItemList = new ItemList();
-        if (textureSize.HasValue)
-        {
-            ItemList.FixedIconSize = textureSize.Value;
-        }
-
+        ItemList.FixedIconSize = textureHeight * Vector2I.One;
         _items = items.ToList();
         _selectAction = selectAction;
         _getLabelText = getLabelText;
         _getTexture = getTexture;
-        _textureSize = textureSize;
+        _textureHeight = textureHeight;
         
         SetList();
         ItemList.AllowReselect = true;
@@ -44,6 +40,32 @@ public class ItemListToken<T>
     }
     
     
+    
+    public ItemListToken(
+        IEnumerable<T> items, 
+        Func<T, string> getLabelText, 
+        Action<T> selectAction)
+    {
+        ItemList = new ItemList();
+
+        _items = items.ToList();
+        _selectAction = selectAction;
+        _getLabelText = getLabelText;
+        SetList();
+        ItemList.AllowReselect = true;
+        ItemList.ItemSelected += i =>
+        {
+            HandleSelection();
+        };
+    }
+
+    public void RefreshText()
+    {
+        for (var i = 0; i < _items.Count; i++)
+        {
+            ItemList.SetItemText(i, _getLabelText(_items[i]));
+        }
+    }
     
     private void SetList()
     {
@@ -69,11 +91,30 @@ public class ItemListToken<T>
     }
     private void AddItemToList(T item)
     {
-        ItemList.AddItem(_getLabelText(item),
-            _getTexture is not null
-                ? _getTexture(item)
-                : null
-        );
+        if (_getTexture is not null)
+        {
+            var texture = _getTexture(item);
+            var i = ItemList.AddItem(_getLabelText(item),
+                texture);
+            var size = texture.GetSize();
+            size /= size.Y;
+            var w = (int)size.X;
+            if (w > _textureWidthRatio)
+            {
+                _textureWidthRatio = w;
+                ItemList.FixedIconSize = new Vector2I(w * _textureHeight,
+                    _textureHeight);
+            }
+            // ItemList.SetItemIconTransposed(i, true);
+            // ItemList.SetItemIconRegion(i,
+            //     new Rect2(0f, 0f, 
+            //         size.X * _textureHeight,
+            //         size.Y * _textureHeight));
+        }
+        else
+        {
+            ItemList.AddItem(_getLabelText(item));
+        }
     }
     public void Add(T t)
     {
