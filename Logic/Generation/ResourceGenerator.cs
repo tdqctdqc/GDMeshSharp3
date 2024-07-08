@@ -39,7 +39,8 @@ public class ResourceGenerator : Generator
     }
     private void MakeSureMajorRegimesHaveResources()
     {
-        var majors = _data.GetAll<Regime>().Where(r => r.IsMajor);
+        var majors = _data.GetAll<Regime>()
+            .Where(r => r.IsMajor);
         foreach (var regime in majors)
         {
             addResource(regime, _data.Models.Items.Iron);
@@ -52,14 +53,14 @@ public class ResourceGenerator : Generator
             var has = regime.GetCells(_data).Any(p =>
             {
                 if (p.HasResourceDeposit(_data) == false) return false;
-                
                 var dep = p.GetResourceDeposit(_data);
                 if (dep == null) return false;
                 return dep.Item.Get(_data) == res;
             });
             if (has) return;
             var cell = regime.GetCells(_key.Data)
-                .OrderBy(p => res.GetDepositScore(p, _data)).First();
+                .Where(p => p.HasResourceDeposit(_data) == false)
+                .OrderBy(p => res.GetDepositChance(p, _data)).First();
             ResourceDeposit.Create(res, cell, _key);
         }
     }

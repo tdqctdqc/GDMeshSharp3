@@ -17,14 +17,12 @@ public abstract class NaturalResource : TradeableItem
         var scores = new Dictionary<MapPolygon, int>();
         foreach (var p in cells)
         {
-            var score = GetDepositScore(p, data);
-            var chance = DepositChanceFunction.Calc(score);
-            if (Game.I.Random.Randf() > chance) continue;
+            var score = GetDepositChance(p, data);
+            if (Game.I.Random.Randf() > score) continue;
             deps.Add(p);
         }
         return deps;
     }
-    protected abstract IFunction<float, float> DepositChanceFunction { get; }
-    public abstract int GetDepositScore(Cell c, Data d);
+    public abstract float GetDepositChance(Cell c, Data d);
 
 }

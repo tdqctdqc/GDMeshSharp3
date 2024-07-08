@@ -12,5 +12,6 @@ public interface IBudgetPriority
         Data d);
     bool Calculate(BudgetPool pool, Regime regime,
             LogicWriteKey key,
-            out Dictionary<IModel, float> modelCosts);
+            out Dictionary<IModel, float> modelCosts,
+            out Dictionary<IModel, float> built);
 }

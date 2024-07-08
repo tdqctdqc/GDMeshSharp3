@@ -116,14 +116,15 @@ public class SocietyGenerator : Generator
                           + (1f - cell.Landform.Get(_data).MinRoughness * .5f));
         return score;
     }
-    private float GenerateExtractionBuildings(float popSurplus, Regime r)
+    private float GenerateExtractionBuildings(float popSurplus, 
+        Regime r)
     {
         var developmentScale = _data.GenMultiSettings.SocietySettings.DevelopmentScale.Value;
         var cells = r.GetCells(_data);
         var extractionBuildings = _data.Models.GetModels<ResourceExtractionBuilding>().Values;
         foreach (var cell in cells)
         {
-            if (_data.Planet.ResourceDepositAux.ByCell[cell] is ResourceDeposit rd)
+            if (cell.GetResourceDeposit(_data) is ResourceDeposit rd)
             {
                 var rand = Game.I.Random.Randf();
                 if (rand > developmentScale) continue;

@@ -3,9 +3,10 @@ public class ConstructBuildingsBudgetBranch
     : BudgetBranch
 {
     private PriorityNode _industrial, _income;
-    public ConstructBuildingsBudgetBranch(Data d)
+    public ConstructBuildingsBudgetBranch(BudgetBranch parent, Data d)
         : base("Construct Buildings")
     {
+        Parent = parent;
         var industrial =
             new MakeProductionBuildingsPriority(
                 d.Models.Flows.IndustrialPower,

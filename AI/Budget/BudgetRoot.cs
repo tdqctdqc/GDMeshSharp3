@@ -9,16 +9,14 @@ public class BudgetRoot : BudgetBranch
     private BudgetBranch _construct, _military;
     public Dictionary<IModel, float> Prices { get; private set; }
     
-    public Dictionary<PriorityNode, (float spent, int tick)> LastSpending { get; private set; }
     
     public BudgetRoot(Data d) : base("Root")
     {
         Prices = new Dictionary<IModel, float>();
-        LastSpending = new Dictionary<PriorityNode, (float spent, int tick)>();
-        _construct = new ConstructBuildingsBudgetBranch(d);
+        _construct = new ConstructBuildingsBudgetBranch(this, d);
         Children.Add(_construct);
 
-        _military = new MilitaryBudgetBranch(d);
+        _military = new MilitaryBudgetBranch(this, d);
         Children.Add(_military);
     }
 
@@ -30,6 +28,7 @@ public class BudgetRoot : BudgetBranch
     
     private void Bid(Regime r, LogicWriteKey key)
     {
+        var tick = key.Data.GetTick();
         var leaves = GetLeaves().ToArray();
         var buildCostPool = BudgetPool.ConstructForRegime(r, key.Data);
         SetPrices(r, key.Data, leaves, buildCostPool);
@@ -48,7 +47,8 @@ public class BudgetRoot : BudgetBranch
             var most = valid
                 .MaxBy(v => v.Credit.GetCredit());
             var stillValid = most.Priority.Calculate(buildCostPool, r, key,
-                out var modelCosts);
+                out var modelCosts,
+                out var built);
             if (stillValid == false)
             {
                 valid.Remove(most);
@@ -58,7 +58,14 @@ public class BudgetRoot : BudgetBranch
                 var price = modelCosts.Sum(
                     kvp => kvp.Value * getModelPrice(kvp.Key));
                 most.Credit.AddSpendingToCurrent(price);
-                addSpending(most, price);
+                if (most.MadeByTick.ContainsKey(tick) == false)
+                {
+                    most.MadeByTick.Add(tick, IdCount<IModel>.Construct());
+                }
+                foreach (var (model, amt) in built)
+                {
+                    most.MadeByTick[tick].Add(model, amt);
+                }
             }
         }
 
@@ -68,19 +75,7 @@ public class BudgetRoot : BudgetBranch
             return 0f;
         }
 
-        void addSpending(PriorityNode priority, float spent)
-        {
-            var tick = key.Data.GetTick();
-            if (LastSpending.TryGetValue(priority, out var v)
-                && v.tick == tick)
-            {
-                LastSpending[priority] = (v.spent + spent, tick);
-            }
-            else
-            {
-                LastSpending[priority] = (spent, tick);
-            }
-        }
+        
     }
     
     public void

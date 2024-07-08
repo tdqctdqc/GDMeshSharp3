@@ -54,8 +54,8 @@ public class WorldGenerator
         RunGenerator(new GeologyGenerator());
         RunGenerator(new MoistureGenerator());
         RunGenerator(new PolyCellGenerator());
-        // RunGenerator(new ResourceGenerator());
         RunGenerator(new RegimeGenerator());
+        RunGenerator(new ResourceGenerator());
         RunGenerator(new SocietyGenerator());
         RunGenerator(new InfrastructureGenerator());
 

@@ -6,9 +6,10 @@ public class MilitaryBudgetBranch
     : BudgetBranch
 {
     private PriorityNode _recruitBuildings, _reinforcements, _reserve;
-    public MilitaryBudgetBranch(Data d)
+    public MilitaryBudgetBranch(BudgetBranch parent, Data d)
         : base("Military")
     {
+        Parent = parent;
         var recruits = new MakeProductionBuildingsPriority(
             d.Models.Items.Recruits,
             "Make Recruit Buildings");
@@ -66,7 +67,7 @@ public class MilitaryBudgetBranch
                 return rival.GetPowerScore(d) * mult;
             });
         var score = rivalStr * 1.5f / allianceStr;
-        
-        return 1f;
+        score = Mathf.Max(score, .5f);
+        return score;
     }
 }

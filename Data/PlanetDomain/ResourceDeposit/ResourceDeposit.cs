@@ -14,7 +14,7 @@ public class ResourceDeposit : Entity
     {
         var d = new ResourceDeposit(key.Data.IdDispenser.TakeId(),
             resource.MakeRef(), 
-            new ModelRef<ResourceExtractionBuilding>(),
+            new ModelRef<ResourceExtractionBuilding>(-1),
             cell.MakeRef());
         key.Create(d);
         return d;

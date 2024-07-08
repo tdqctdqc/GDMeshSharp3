@@ -60,7 +60,7 @@ public class MakeReinforcementTroopsPriority
     }
 
     protected override Dictionary<IModel, float> GetCosts
-        (Dictionary<Troop, int> toBuild, Data d)
+        (Dictionary<Troop, float> toBuild, Data d)
     {
         var res = new Dictionary<IModel, float>();
 

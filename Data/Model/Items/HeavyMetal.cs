@@ -10,12 +10,11 @@ public class HeavyMetal : NaturalResource
             25f)
     {
     }
-    protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    public override int GetDepositScore(Cell p, Data d)
+    public override float GetDepositChance(Cell p, Data d)
     {
-        var score = 3;
-        score = Mathf.FloorToInt(score + p.Landform.Get(d).MinRoughness * 10);
-        if (p is SeaCell || p is RiverCell) score /= 10;
+        if (p is not LandCell) return 0f;
+        var score = 0f;
+        score += p.Landform.Get(d).MinRoughness / 50f;
         return score;
     }
 }

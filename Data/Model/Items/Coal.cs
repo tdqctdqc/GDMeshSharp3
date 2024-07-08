@@ -11,13 +11,13 @@ public class Coal : NaturalResource
     {
     }
 
-    protected override IFunction<float, float> DepositChanceFunction { get; }  = new ArctanFunction(100f);
-    public override int GetDepositScore(Cell p, Data d)
+    public override float GetDepositChance(Cell p, Data d)
     {
-        var score = 15;
-        score = Mathf.FloorToInt(score + p.Landform.Get(d).MinRoughness * 30);
-        if (p is LandCell == false) score /= 5;
-        if(p is LandCell && p.Vegetation.Get(d).MinMoisture >= d.Models.Vegetations.Swamp.MinMoisture * .75f) score += 40;
+        if (p is not LandCell) return 0f;
+        var score = 0f;
+        score += p.Landform.Get(d).MinRoughness / 5f;
+        if(p.Vegetation.Get(d).MinMoisture >= d.Models.Vegetations.Swamp.MinMoisture * .75f) 
+            score *= 1.5f;
         return score;
     }
 }

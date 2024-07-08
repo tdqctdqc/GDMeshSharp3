@@ -38,7 +38,7 @@ public class MakeProductionBuildingsPriority
     }
 
     protected override Dictionary<IModel, float> GetCosts(
-        Dictionary<SettlementBuildingModel, int> toBuild, 
+        Dictionary<SettlementBuildingModel, float> toBuild, 
         Data d)
     {
         var res = new Dictionary<IModel, float>();

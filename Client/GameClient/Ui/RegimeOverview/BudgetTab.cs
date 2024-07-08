@@ -6,7 +6,6 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
 {
     private Container _container, _priorityInfo;
     private RegimeOverviewWindow _parent;
-    // private ItemListToken<PriorityNode> _priorities;
     public BudgetTab(RegimeOverviewWindow parent)
     {
         _parent = parent;
@@ -46,7 +45,6 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         _priorityInfo.ExpandFill();
         priorityScroll.AddChild(_priorityInfo);
         
-        // left.CreateLabelAsChild("Priorities");
         var budgetTree = new BudgetTree(budget.Root, client.Data);
         budgetTree.SelectedBudgetNode += n =>
         {
@@ -91,7 +89,6 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         var ai = ais[regime];
         var budget = ai.Budget;
         
-        
         var wishlist = priority.GetWishlist(regime, c.Data);
         var small = c.Settings.SmallIconSize.Value;
         var med = c.Settings.MedIconSize.Value;
@@ -99,11 +96,34 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         
         _priorityInfo.CreateLabelAsChild($"Credit: {node.Credit.GetCredit()}");
         _priorityInfo.CreateLabelAsChild($"Weight: {node.GetTreeWeight(c.Data)}");
-        _priorityInfo.CreateLabelAsChild($"Wishlist");
-        if (budget.Root.LastSpending.TryGetValue(node, out var v))
+        var made = node.MadeByTick;
+
+        var madeScroll = new ScrollContainer();
+        madeScroll.ExpandFill();
+        var madeBox = new VBoxContainer();
+        madeScroll.AddChild(madeBox);
+        _priorityInfo.AddChild(madeScroll);
+        
+        foreach (var (tick, tickMade) in made.OrderByDescending(kvp => kvp.Key))
         {
-            _priorityInfo.CreateLabelAsChild($"\n    Last spending: {v.spent} on tick {v.tick}");
+            madeBox.CreateLabelAsChild("Tick " + tick);
+            foreach (var (model, amtMade) in tickMade.GetEnumModel(c.Data))
+            {
+                if (model is IIconed i)
+                {
+                    madeBox.AddChild(i.Icon.GetLabeledIcon<HBoxContainer>(
+                        $"{model.Name}: {amtMade}",
+                        med));
+                }
+                else
+                {
+                    madeBox.CreateLabelAsChild($"{model.Name}: {amtMade}");
+                }
+            }
         }
+        
+        
+        _priorityInfo.CreateLabelAsChild($"Wishlist");
 
         var wishlistContainer = new HBoxContainer();
 

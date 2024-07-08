@@ -18,6 +18,7 @@ public static class IBudgetNodeExt
         var weight = n.Weight;
         while (parent != null)
         {
+            if (weight == 0f) return 0f;
             var children = parent.Children;
             var parentChildWeightSum = children.Sum(c => c.Weight);
             var ratio = weight / parentChildWeightSum;

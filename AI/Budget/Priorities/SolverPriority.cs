@@ -22,7 +22,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         => GetWishlist(regime, d)
             .ToDictionary(kvp => (IModel)kvp.Key,
                 kvp => (float)kvp.Value);
-    public Dictionary<TBuild, int> GetWishlist(
+    public Dictionary<TBuild, float> GetWishlist(
         Regime regime,
         Data d)
     {
@@ -41,7 +41,8 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         
         return projVars
             .Where(v => v.Value.SolutionValue() > 0f)
-            .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
+            .ToDictionary(v => v.Key, 
+                v => (float)v.Value.SolutionValue());
     }
     public Dictionary<IModel, float> GetWishlistCosts(
         Regime regime, 
@@ -52,7 +53,8 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     public bool Calculate(BudgetPool pool, 
         Regime regime, 
         LogicWriteKey key,
-        out Dictionary<IModel, float> modelCosts)
+        out Dictionary<IModel, float> modelCosts,
+        out Dictionary<IModel, float> built)
     {
         SetCalcData(regime, key.Data);
         var solver = MakeSolver();
@@ -62,7 +64,8 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         var success = Solve(solver, projVars);
         var toBuild = projVars
             .Where(v => v.Value.SolutionValue() > 0f)
-            .ToDictionary(v => v.Key, v => (int)v.Value.SolutionValue());
+            .ToDictionary(v => v.Key, 
+                v => (float)v.Value.SolutionValue());
 
         if (success != Solver.ResultStatus.OPTIMAL
             && success != Solver.ResultStatus.FEASIBLE)
@@ -71,6 +74,8 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         }
         Complete(pool, regime, toBuild, key);
         modelCosts = GetCosts(toBuild, key.Data);
+        built = toBuild.ToDictionary(kvp => (IModel)kvp.Key,
+            kvp => kvp.Value);
         return toBuild.Count > 0;
     }
 
@@ -84,7 +89,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         Data data);
 
     protected abstract Dictionary<IModel, float>
-        GetCosts(Dictionary<TBuild, int> toBuild, Data d);
+        GetCosts(Dictionary<TBuild, float> toBuild, Data d);
     
     private Solver.ResultStatus Solve(Solver solver, 
         Dictionary<TBuild, Variable> projVars)
@@ -131,7 +136,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     protected virtual void Complete(
         BudgetPool pool,
         Regime r,
-        Dictionary<TBuild, int> toBuild,
+        Dictionary<TBuild, float> toBuild,
         LogicWriteKey key)
     {
         foreach (var (model, value) in toBuild)

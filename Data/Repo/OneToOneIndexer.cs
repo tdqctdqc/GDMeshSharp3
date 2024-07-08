@@ -28,7 +28,8 @@ public class OneToOneIndexer<TIndex, T>
     private Dictionary<TIndex, T> _dic;
     public T this[TIndex key] => 
         _dic.ContainsKey(key) 
-            ? _dic[key] : null;
+            ? _dic[key] 
+            : null;
 
     public OneToOneIndexer(Func<IEnumerable<T>> getAll,
         Func<T, TIndex> getKey)

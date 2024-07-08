@@ -6,7 +6,7 @@ using System.Linq;
 public abstract class BudgetBranch : IBudgetNode
 {
     public List<IBudgetNode> Children { get; }
-    public BudgetBranch Parent { get; }
+    public BudgetBranch Parent { get; protected set; }
     public float Weight { get; protected set; }
     public string Name { get; private set; }
     protected BudgetBranch(string name)

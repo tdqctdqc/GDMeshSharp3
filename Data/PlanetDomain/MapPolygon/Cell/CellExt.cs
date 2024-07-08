@@ -83,11 +83,13 @@ public static class CellExt
                 .Sum(kvp => kvp.Key.Labor.TotalLabor() * kvp.Value);
             laborDemand += foodProdLabor;
         }
-
-        if (c.GetResourceDeposit(d) is ResourceDeposit r
-            && r.Extraction.Get(d) is ResourceExtractionBuilding b)
+        
+        if (c.GetResourceDeposit(d) is ResourceDeposit r)
         {
-            laborDemand += b.BaseLabor;
+            if (r.Extraction.Get(d) is ResourceExtractionBuilding b)
+            {
+                laborDemand += b.BaseLabor;
+            }
         }
 
         if (c.GetSettlement(d) is Settlement s

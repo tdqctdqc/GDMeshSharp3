@@ -49,7 +49,8 @@ public static class RegimeExt
                 res.AddOrSum(key.Labor, value);
             }
 
-            if (c.HasResourceDeposit(d))
+            if (c.GetResourceDeposit(d) is ResourceDeposit rd
+                && rd.Extraction.Fulfilled())
             {
                 res.AddOrSum(c.GetResourceDeposit(d).Extraction.Get(d).Labor, 1f);
             }
