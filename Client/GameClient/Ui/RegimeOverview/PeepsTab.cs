@@ -12,12 +12,10 @@ public partial class PeepsTab : ScrollContainer, IUiDrawable
     {
         _parent = parent;
         Name = "Peeps";
-        var scroll = new ScrollContainer();
-        scroll.ExpandFill();
-        AddChild(scroll);
-        _container = new HBoxContainer();
+        _container = this.MakeScrollChild<HBoxContainer>(
+            out var scroll);
         _container.ExpandFill();
-        scroll.AddChild(_container);
+        scroll.ExpandFill();
     }
 
     private PeepsTab()
@@ -30,19 +28,15 @@ public partial class PeepsTab : ScrollContainer, IUiDrawable
         var regime = _parent.Regime;
         if (regime is null) return;
 
-        var left = new VBoxContainer();
-        var leftScroll = new ScrollContainer();
+        var left = _container.MakeScrollChild<VBoxContainer>(
+            out var leftScroll);
+        left.ExpandFill();
         leftScroll.ExpandFill();
-        leftScroll.AddChild(left);
-        _container.AddChild(leftScroll);
-        
-        
-        var right = new VBoxContainer();
-        var rightScroll = new ScrollContainer();
+
+        var right = _container.MakeScrollChild<VBoxContainer>(
+            out var rightScroll);
+        right.ExpandFill();
         rightScroll.ExpandFill();
-        rightScroll.AddChild(right);
-        _container.AddChild(rightScroll);
-        
         var populatedCells = regime.GetCells(client.Data)
             .Where(p => p.HasPeep(client.Data));
         var settlements = populatedCells.Where(c => c.HasSettlement(client.Data))

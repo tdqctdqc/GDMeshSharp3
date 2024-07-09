@@ -27,25 +27,31 @@ public class UnitMakeProject : MakeProject
         ProductionResult result,
         LogicWriteKey key)
     {
+        var before = Mathf.FloorToInt(Fulfilled);
         Fulfilled += amount;
-    }
-
-    public override void Finish(LogicWriteKey key)
-    {
-        for (var i = 0; i < Mathf.FloorToInt(Amount); i++)
+        var after = Mathf.FloorToInt(Fulfilled);
+        var made = after - before;
+        for (var i = 0; i < made; i++)
         {
             Unit.Create((UnitTemplate)Making.Get(key.Data),
                 Regime.Get(key.Data), key);
         }
     }
 
+    public override void Finish(LogicWriteKey key)
+    {
+        
+    }
+
     public override void Cancel(ProcedureWriteKey key)
     {
         var making = MakingTemplate(key.Data);
         var stock = Regime.Get(key.Data).Stock;
+        var numMade = Mathf.FloorToInt(Fulfilled);
+        var diff = Fulfilled - numMade;
         foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumModel(key.Data))
         {
-            var spent = Fulfilled * amt;
+            var spent = diff * amt;
             stock.Stock.Add(model, spent);
         }
     }

@@ -35,6 +35,7 @@ using System;
 [MessagePack.Union(30, typeof(ReinforceArmyProcedure))]
 [MessagePack.Union(31, typeof(ReinforceUnitTroopProcedure))]
 [MessagePack.Union(32, typeof(AggregateProcedure))]
+[MessagePack.Union(33, typeof(ChangeMakeProjectPriorityProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

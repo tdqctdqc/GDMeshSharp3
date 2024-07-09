@@ -30,20 +30,16 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         if (ais.Dic.ContainsKey(regime) == false) return;
         var ai = ais[regime];
         var budget = ai.Budget;
-
-        var leftScroll = new ScrollContainer();
+        
+        var left = _container.MakeScrollChild<VBoxContainer>(
+            out var leftScroll);
         leftScroll.ExpandFill(1);
-        var left = new VBoxContainer();
         left.ExpandFill();
-        leftScroll.AddChild(left);
-        _container.AddChild(leftScroll);
 
-        var priorityScroll = new ScrollContainer();
+        _priorityInfo = _container.MakeScrollChild<VBoxContainer>(
+            out var priorityScroll);
         priorityScroll.ExpandFill(1);
-        _container.AddChild(priorityScroll);
-        _priorityInfo = new VBoxContainer();
         _priorityInfo.ExpandFill();
-        priorityScroll.AddChild(_priorityInfo);
         
         var budgetTree = new BudgetTree(budget.Root, client.Data);
         budgetTree.SelectedBudgetNode += n =>
@@ -57,12 +53,10 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         left.AddChild(budgetTree);
         
         left.CreateLabelAsChild("Prices");
-
-        var priceScroll = new ScrollContainer();
+        var priceContainer = left.MakeScrollChild<VBoxContainer>(
+            out var priceScroll);
         priceScroll.ExpandFill();
-        left.AddChild(priceScroll);
-        var priceContainer = new VBoxContainer();
-        priceScroll.AddChild(priceContainer);
+        
         foreach (var (model, price) in budget.Root.RelativePrices())
         {
             if (model is IIconed i)
@@ -98,11 +92,9 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         _priorityInfo.CreateLabelAsChild($"Weight: {node.GetTreeWeight(c.Data)}");
         var made = node.MadeByTick;
 
-        var madeScroll = new ScrollContainer();
+        var madeBox = _priorityInfo.MakeScrollChild<VBoxContainer>(
+            out var madeScroll);
         madeScroll.ExpandFill();
-        var madeBox = new VBoxContainer();
-        madeScroll.AddChild(madeBox);
-        _priorityInfo.AddChild(madeScroll);
         
         foreach (var (tick, tickMade) in made.OrderByDescending(kvp => kvp.Key))
         {
@@ -126,11 +118,10 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         _priorityInfo.CreateLabelAsChild($"Wishlist");
 
         var wishlistContainer = new HBoxContainer();
-
-        var wishlistInfoScroll = new ScrollContainer();
-        wishlistInfoScroll.ExpandFill();
-        var wishlistInfo = new VBoxContainer();
-        wishlistInfoScroll.AddChild(wishlistInfo);
+        
+        
+        
+        
         
         
         var wishlistItems = new ItemListToken<IModel>(
@@ -139,9 +130,11 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
             m => { },
             m => m is IIconed i ? i.Icon.Texture : new Texture2D(),
             (int)med
-        );
+        );        
         wishlistContainer.AddChild(wishlistItems.ItemList);
-        wishlistContainer.AddChild(wishlistInfoScroll);
+        var wishlistInfo = wishlistContainer.MakeScrollChild<VBoxContainer>(
+            out var wishlistInfoScroll);
+        wishlistInfoScroll.ExpandFill();
 
         void drawWishlistItemInfo(IModel model)
         {

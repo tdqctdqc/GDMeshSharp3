@@ -60,10 +60,10 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
         if (allies.Count() > 1)
         {
             right.CreateLabelAsChild("Allies");
-            var alliesScroll = new ScrollContainer();
+            var alliesContainer = right.MakeScrollChild<HBoxContainer>(
+                out var alliesScroll);
             alliesScroll.ExpandFill();
-            var alliesContainer = new HBoxContainer();
-            alliesScroll.AddChild(alliesContainer);
+
             foreach (var ally in allies)
             {
                 if (ally == regime) continue;
@@ -76,7 +76,6 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
                 allyContainer.CreateLabelAsChild(ally.Name);
                 alliesContainer.AddChild(allyContainer);
             }
-            right.AddChild(alliesScroll);
         }
         var seeAlliance = ButtonExt.GetButton(() =>
         {
@@ -90,10 +89,11 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
         if (rivals.Count() > 0)
         {
             right.CreateLabelAsChild("Rivals");
-            var rivalsScroll = new ScrollContainer();
-            var rivalsContainer = new HBoxContainer();
-            rivalsScroll.AddChild(rivalsContainer);
+
+            var rivalsContainer = right.MakeScrollChild<HBoxContainer>(
+                out var rivalsScroll);
             rivalsScroll.ExpandFill();
+            
             foreach (var rival in rivals)
             {
                 var rivalContainer = new VBoxContainer();
@@ -107,7 +107,6 @@ public partial class GeneralTab : ScrollContainer, IUiDrawable
                 rivalContainer.CreateLabelAsChild($"{(alliance.IsAtWar(rival, client.Data) ? "At War" : "At Peace")}");
                 rivalsContainer.AddChild(rivalContainer);
             }
-            right.AddChild(rivalsScroll);
         }
         
         

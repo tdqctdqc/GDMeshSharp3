@@ -14,7 +14,7 @@ public partial class PolyPanel : PanelContainer
     {
         var margin = new MarginContainer();
         AddChild(margin);
-        _inner = margin.MakeScroll<VBoxContainer>();
+        _inner = margin.MakeScrollChild<VBoxContainer>(out var scroll);
         SelfModulate = Colors.Black;
         var mode = c.UiController.ModeOption.Options
             .OfType<PolyMode>()

@@ -37,7 +37,7 @@ public static class WindowExt
         var panel = new Panel();
         panel.FullRect();
         panel.ExpandFill();
-        var t = panel.MakeScroll<T>();
+        var t = panel.MakeScrollChild<T>(out var scroll);
         w.AddChild(panel);
         return t;
     }

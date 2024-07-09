@@ -47,14 +47,10 @@ public partial class LoggerWindow : Window
     private void AddTab(LogType lt, Dictionary<int, LogEntry> entries)
     {
         var name = Enum.GetName(typeof(LogType), lt);
-        var scroll = new ScrollContainer();
-        _container.AddChild(scroll);
+        var vbox = _container.MakeScrollChild<VBoxContainer>(out var scroll);
         scroll.Name = name;
-
-        var vbox = new VBoxContainer();
         _innerContainers.Add(lt, vbox);
         _num.Add(lt, entries.Count);
-        scroll.AddChild(vbox);
 
         var entriesInOrder = entries.Values
             .OrderBy(v => v.Tick).ToList();

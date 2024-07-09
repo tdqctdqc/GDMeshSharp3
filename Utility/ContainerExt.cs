@@ -13,10 +13,12 @@ public static class ContainerExt
         c.AddChild(inner);
         return inner;
     }
-    public static T MakeScroll<T>(this Control c)
+    public static T MakeScrollChild<T>(this Control c,
+        out ScrollContainer scroll)
             where T : Container, new()
     {
-        var scroll = new ScrollContainer();
+        var s = new ScrollContainer();
+        scroll = s;
         c.AddChild(scroll);
         var inner = new T();
         scroll.AddChild(inner);
@@ -24,9 +26,20 @@ public static class ContainerExt
         c.MouseFilter = Control.MouseFilterEnum.Stop;
         c.GuiInput += e =>
         {
-            scroll._GuiInput(e);
+            s._GuiInput(e);
             c.GetViewport().SetInputAsHandled();
         };
+        
+        return inner;
+    }
+    
+    public static T MakeScroll<T>(out ScrollContainer scroll)
+        where T : Container, new()
+    {
+        var s = new ScrollContainer();
+        scroll = s;
+        var inner = new T();
+        scroll.AddChild(inner);
         
         return inner;
     }

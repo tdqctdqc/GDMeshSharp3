@@ -19,13 +19,15 @@ public partial class ConstructionPanel : PanelContainer
         inner.FullRect();
         this.SelfModulate = Colors.Black;
 
-        var info = new Control();
-        _info = info.MakeScroll<VBoxContainer>();
-        inner.AddChild(info);
+        
+        _info = inner.MakeScrollChild<VBoxContainer>(
+            out var s1);
+        _info.ExpandFill();
+        s1.ExpandFill();
 
-        var buttons = new Control();
-        _buttons = buttons.MakeScroll<VBoxContainer>();
-        inner.AddChild(buttons);
+        _buttons = inner.MakeScrollChild<VBoxContainer>(out var s2);
+        _buttons.ExpandFill();
+        s2.ExpandFill();
 
         var mode = c.UiController.ModeOption.Options
             .OfType<ConstructionMode>()
@@ -69,6 +71,7 @@ public partial class ConstructionPanel : PanelContainer
         foreach (var model in list)
         {
             var vbox = new VBoxContainer();
+            vbox.ExpandFill();
             var text = $"{model.Name} x {s.Buildings.Get(model).ToString()}";
             if (model.GetComponent<LaborComponent>() is LaborComponent l)
             {

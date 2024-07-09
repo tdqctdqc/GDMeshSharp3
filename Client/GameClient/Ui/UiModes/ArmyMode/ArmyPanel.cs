@@ -12,7 +12,7 @@ public partial class ArmyPanel : PanelContainer
         var margin = new MarginContainer();
         AddChild(margin);
         SelfModulate = Colors.Black;
-        _inner = margin.MakeScroll<VBoxContainer>();
+        _inner = margin.MakeScrollChild<VBoxContainer>(out var scroll);
         _inner.ExpandFill();
         var mode = c.UiController.ModeOption.Options
             .OfType<ArmyMode>().First();

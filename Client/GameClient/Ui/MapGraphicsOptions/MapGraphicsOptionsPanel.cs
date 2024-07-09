@@ -16,7 +16,7 @@ public partial class MapGraphicsOptionsPanel
     {
         var margin = new MarginContainer();
         AddChild(margin);
-        var vbox = margin.MakeScroll<VBoxContainer>();
+        var vbox = margin.MakeScrollChild<VBoxContainer>(out var scroll);
         var first = client.GetComponent<MapGraphics>()
             .GraphicLayerHolder.Chunks.First().Value;
         foreach (var module in first.GetModules())

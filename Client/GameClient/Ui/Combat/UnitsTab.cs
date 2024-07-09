@@ -86,12 +86,11 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         
         info.CreateLabelAsChild("Troops engaged and lost");
         
-        var troopsScroll = new ScrollContainer();
+        var troopsScrollInner = info.MakeScrollChild<VBoxContainer>(
+            out var troopsScroll);
         troopsScroll.CustomMinimumSize = Vector2.One * 200f;
         troopsScroll.SizeFlagsVertical = SizeFlags.ExpandFill;
-        var troopsScrollInner = new VBoxContainer();
         troopsScrollInner.ExpandFill();
-        info.AddChild(troopsScrollInner);
         foreach (var (troop, amt) in u.Initial.GetEnumModel(c.Data))
         {
             var entry = troop.Icon.GetLabeledIcon<HBoxContainer>(
@@ -101,12 +100,13 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         }
         
         info.CreateLabelAsChild("Troops killed");
-        var killsScroll = new ScrollContainer();
+        var killsScrollInner = info.MakeScrollChild<VBoxContainer>(
+            out var killsScroll);
         killsScroll.CustomMinimumSize = Vector2.One * 200f;
         killsScroll.SizeFlagsVertical = SizeFlags.ExpandFill;
-        var killsScrollInner = new VBoxContainer();
-        killsScrollInner.ExpandFill();
-        info.AddChild(killsScrollInner);
+        
+        
+        
         foreach (var (troop, amt) in u.Kills.GetEnumModel(c.Data))
         {
             var entry = troop.Icon.GetLabeledIcon<HBoxContainer>(
