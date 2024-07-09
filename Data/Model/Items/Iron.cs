@@ -15,7 +15,8 @@ public class Iron : NaturalResource
     {
         var score = 0f;
         if (p is not LandCell) return 0f;
-        score += p.Landform.Get(d).MinRoughness / 5f;
+        score += p.Landform.Get(d).MinRoughness 
+                 / 20f;
         if(p.Vegetation.Get(d).MinMoisture 
             >= d.Models.Vegetations.Swamp.MinMoisture * .75f) 
                 score *= 1.5f;

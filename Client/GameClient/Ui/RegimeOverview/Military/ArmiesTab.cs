@@ -65,10 +65,12 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             armies, 
             a => $"Army {a.Id.ToString()} Units: {a.Units.Count()} " +
                  $"Strength: {a.GetPowerPoints(c.Data)} / {a.Units.Entities(c.Data).Sum(u => u.Template.Get(c.Data).GetPowerPoints(c.Data))}",
-            a => DrawArmyInfo(a, c),
             a => a.Regime.Get(c.Data).Template.Get(c.Data).Flag.Texture,
-            (int)med 
+            (int)med, 
+            false
         );
+
+        _armies.JustSelected += () => DrawArmyInfo(c);
         _armiesContainer.CreateLabelAsChild("Armies");
         _armiesContainer.AddChild(_armies.ItemList);
         _armies.ItemList.ExpandFill();
@@ -90,7 +92,8 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         {
             var selected = _freeUnits.GetSelectedEntities<Unit>(c.Data);
             if (selected.Count == 0) return;
-            var army = _armies.Value;
+            var army = _armies.Values.Count == 1
+                ? _armies.Values.First() : null;
             if (army is null) return;
             foreach (var unit in selected)
             {
@@ -134,12 +137,12 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         _armies.Select(a);
     }
 
-    private void DrawArmyInfo(Army a, 
-        Client c)
+    private void DrawArmyInfo(Client c)
     {
         _armyInfoContainer.ClearChildren();
         _armyButtonsContainer.ClearChildren();
-        if (a is null) return;
+        if (_armies.Values.Count != 1) return;
+        var a = _armies.Values.First();
         
         _armyTree = a.GetTree(0, c);
         _armyTree.SelectMode = Tree.SelectModeEnum.Multi;

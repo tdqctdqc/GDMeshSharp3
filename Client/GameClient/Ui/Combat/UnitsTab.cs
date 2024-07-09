@@ -6,6 +6,7 @@ namespace Ui.Combat;
 public partial class UnitsTab : HBoxContainer, IUiDrawable
 {
     private CombatInfo _info;
+    private ItemListToken<UnitCombatInfo> _defendersList, _attackersList;
     public UnitsTab(CombatInfo info)
     {
         _info = info;
@@ -30,7 +31,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         var attackers = new VBoxContainer();
         attackers.ExpandFill();
         attackers.CreateLabelAsChild("Attackers");
-        var attackersList = new ItemListToken<UnitCombatInfo>(
+        _attackersList = new ItemListToken<UnitCombatInfo>(
             atkInfos,
             u =>
             {
@@ -38,16 +39,19 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
                     ? u.Template.Get(c.Data).Name + " " + u.Unit
                     : "None";
             },
-            u => DrawInfo(u, true, info, c)
+            false
         );
-        attackers.AddChild(attackersList.ItemList);
-        attackersList.ItemList.ExpandFill();
-
+        attackers.AddChild(_attackersList.ItemList);
+        _attackersList.ItemList.ExpandFill();
+        _attackersList.JustSelected += () =>
+        {
+            DrawInfo(true, info, c);
+        };
         
         var defenders = new VBoxContainer();
         defenders.ExpandFill();
         defenders.CreateLabelAsChild("Defenders");
-        var defendersList = new ItemListToken<UnitCombatInfo>(
+        _defendersList = new ItemListToken<UnitCombatInfo>(
             _info.Defenders,
             u =>
             {
@@ -55,21 +59,29 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
                     ? u.Template.Get(c.Data).Name + " " + u.Unit
                     : "None";
             },
-            u => DrawInfo(u, false, info, c)
+            false
         );
-        defendersList.ItemList.ExpandFill();
-        defenders.AddChild(defendersList.ItemList);
+        _defendersList.JustSelected += () =>
+        {
+            DrawInfo(false, info, c);
+        };
+        _defendersList.ItemList.ExpandFill();
+        defenders.AddChild(_defendersList.ItemList);
         scrolls.AddChild(attackers);
         scrolls.AddChild(defenders);
         AddChild(scrolls);
         AddChild(info);
     }
 
-    private void DrawInfo(UnitCombatInfo u, bool attacker,
+    private void DrawInfo(bool attacker,
         Control info,
         Client c)
     {
         info.ClearChildren();
+
+        var list = attacker ? _attackersList : _defendersList;
+        if (list.Values.Count != 1) return;
+        var u = list.Values.First();
         
         var large = c.Settings.LargeIconSize.Value;
         var med = c.Settings.MedIconSize.Value;

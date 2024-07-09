@@ -23,8 +23,7 @@ public class StartMakeProjectCommand : Command
     {
         var regime = key.Data.BaseDomain
             .PlayerAux.ByGuid[CommandingPlayerGuid].Regime;
-        var proc = StartMakeProjectProc.Construct(regime,
-            Project, key);
+        var proc = new StartOrConsolidateMakeProject(Project);
         key.SendMessage(proc);
     }
 }

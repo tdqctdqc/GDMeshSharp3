@@ -142,7 +142,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         foreach (var (model, value) in toBuild)
         {
             var make = ModelMakeProject.Construct(r, model, value);
-            var proc = StartMakeProjectProc.Construct(r.MakeRef(), make, key);
+            var proc = new StartOrConsolidateMakeProject(make);
             key.SendMessage(proc);
         }
     }

@@ -119,17 +119,12 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
 
         var wishlistContainer = new HBoxContainer();
         
-        
-        
-        
-        
-        
         var wishlistItems = new ItemListToken<IModel>(
             wishlist.Keys,
             m => $"{m.Name}: {wishlist[m]}",
-            m => { },
             m => m is IIconed i ? i.Icon.Texture : new Texture2D(),
-            (int)med
+            (int)med,
+            false
         );        
         wishlistContainer.AddChild(wishlistItems.ItemList);
         var wishlistInfo = wishlistContainer.MakeScrollChild<VBoxContainer>(

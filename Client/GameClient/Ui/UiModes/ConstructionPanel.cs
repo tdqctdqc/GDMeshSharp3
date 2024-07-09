@@ -86,7 +86,7 @@ public partial class ConstructionPanel : PanelContainer
             var button = ButtonExt.GetButton(() =>
             {
                 var project = PlayerBuildingMakeProject.Construct(
-                    s, regime, model);
+                    1, s, regime, model);
                 var inner = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
                 var act = () => Draw(s, c);
                 var com = CallbackCommand.Construct(inner, act, c);

@@ -8,12 +8,17 @@ public struct ModelRef<T> : IdRef
     where T : class, IModel
 {
     public int RefId { get; private set; }
+
+    public ModelRef()
+    {
+        RefId = -1;
+    }
     public ModelRef(T model, IHostWriteKey key)
     {
         RefId = model.Id;
     }
 
-    public ModelRef(int refId)
+    [SerializationConstructor] public ModelRef(int refId)
     {
         RefId = refId;
     }

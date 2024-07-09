@@ -141,12 +141,12 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
     private void ConnectSignals()
     {
-        _troops.JustSelected += v => DrawSelectedTroopInfo();
-        _veg.JustSelected += v => DrawSelectedTroopInfo();
-        _lf.JustSelected += v => DrawSelectedTroopInfo();
+        _troops.JustSelected += DrawSelectedTroopInfo;
+        _veg.JustSelected += DrawSelectedTroopInfo;
+        _lf.JustSelected += DrawSelectedTroopInfo;
         _chooseIfDef.Pressed += DrawSelectedTroopInfo;
-        _lf.JustSelected += v => DrawTerrainInfo();
-        _veg.JustSelected += v => DrawTerrainInfo();
+        _lf.JustSelected += DrawTerrainInfo;
+        _veg.JustSelected += DrawTerrainInfo;
     }
 
     private void MakeModel(Client c)
@@ -156,20 +156,22 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         _lf = new ItemListToken<Landform>(
             c.Data.Models.GetModels<Landform>().Values,
             lf => lf.Name,
-            lf => _landform = lf,
             lf => lf.GetColorTexture(med),
-            (int)med
+            (int)med,
+            false
         );
+        _lf.JustSelected += () => _landform = _lf.Values.First();
         _lf.ItemList.ExpandFill();
         _lf.SelectAt(0);
         
         _veg = new ItemListToken<Vegetation>(
             c.Data.Models.GetModels<Vegetation>().Values,
             v => v.Name,
-            v => _vegetation = v,
             v => v.GetColorTexture(med),
-            (int)med
+            (int)med,
+            false
         );
+        _veg.JustSelected += () => _vegetation = _veg.Values.First();
         _veg.ItemList.ExpandFill();
         _veg.SelectAt(0);
         
@@ -177,9 +179,9 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         _troops = new ItemListToken<Troop>(
             c.Data.Models.GetModels<Troop>().Values,
             t => t.Name,
-            v => { },
             t => t.Icon.Texture,
-            (int)med
+            (int)med,
+            false
         );
         _troops.ItemList.ExpandFill();
         _troops.SelectAt(0);
@@ -190,8 +192,8 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
     private void SetTroop()
     {
-        var troop = _troops.Value;
-        if (troop is null) return;
+        if (_troops.Values.Count != 1) return;
+        var troop = _troops.Values.First();
         var amt = _numSetting.Value;
         if (_chooseIfDef.ButtonPressed)
         {
@@ -222,19 +224,20 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     {
         MilUtil.CalculateCombat(_attackers.ToArray(),
             _defenders.ToArray(),
-            _lf.Value, _veg.Value, d);
+            _lf.Values.First(), _veg.Values.First(), d);
         DrawCenter();
     }
 
     private void DrawSelectedTroopInfo()
     {
-        var large = Game.I.Client.Settings.LargeIconSize.Value;
-        var troop = _troops.Value;
-        var def = _chooseIfDef.ButtonPressed;
-        var evasionMult = MilUtil.GetEvasionMult(_lf.Value,
-            _veg.Value, def);
-        
         _selectedTroopInfo.ClearChildren();
+        if (_troops.Values.Count != 1) return;
+        var large = Game.I.Client.Settings.LargeIconSize.Value;
+        var troop = _troops.Values.First();
+        var def = _chooseIfDef.ButtonPressed;
+        var evasionMult = MilUtil.GetEvasionMult(_lf.Values.First(),
+            _veg.Values.First(), def);
+        
         var icon = troop.Icon.GetLabeledIcon<HBoxContainer>(
             $"{troop.Name}", large);
         _selectedTroopInfo.AddChild(icon);
@@ -258,31 +261,32 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     private void DrawTerrainInfo()
     {
         _terrainInfo.ClearChildren();
-
+        var lf = _lf.Values.First();
+        var veg = _veg.Values.First();
         _terrainInfo.CreateLabelAsChild
-            ($"Front length: {MilUtil.BaseFrontLength * _lf.Value.FrontLengthMult * _veg.Value.FrontLengthMult} ");
+            ($"Front length: {MilUtil.BaseFrontLength * lf.FrontLengthMult * veg.FrontLengthMult} ");
         _terrainInfo.CreateLabelAsChild
-            ($"Movement mult: {_lf.Value.MovementCostMult * _veg.Value.MovementCostMult}");
+            ($"Movement mult: {lf.MovementCostMult * veg.MovementCostMult}");
         _terrainInfo.CreateLabelAsChild
-            ($"Evasion mult: {_lf.Value.EvasionMult * _veg.Value.EvasionMult}");
+            ($"Evasion mult: {lf.EvasionMult * veg.EvasionMult}");
         
         _terrainInfo.CreateLabelAsChild
-            ($"Landform: {_lf.Value.Name}");
+            ($"Landform: {lf.Name}");
         _terrainInfo.CreateLabelAsChild
-            ($"Front length mult: {_lf.Value.FrontLengthMult}");
+            ($"Front length mult: {lf.FrontLengthMult}");
         _terrainInfo.CreateLabelAsChild
-            ($"Movement mult: {_lf.Value.MovementCostMult}");
+            ($"Movement mult: {lf.MovementCostMult}");
         _terrainInfo.CreateLabelAsChild
-            ($"Evasion mult: {_lf.Value.EvasionMult}");
+            ($"Evasion mult: {lf.EvasionMult}");
         
         _terrainInfo.CreateLabelAsChild
-            ($"Vegetation: {_veg.Value.Name}");
+            ($"Vegetation: {veg.Name}");
         _terrainInfo.CreateLabelAsChild
-            ($"Front length mult: {_veg.Value.FrontLengthMult}");
+            ($"Front length mult: {veg.FrontLengthMult}");
         _terrainInfo.CreateLabelAsChild
-            ($"Movement mult: {_veg.Value.MovementCostMult}");
+            ($"Movement mult: {veg.MovementCostMult}");
         _terrainInfo.CreateLabelAsChild
-            ($"Evasion mult: {_veg.Value.EvasionMult}");
+            ($"Evasion mult: {veg.EvasionMult}");
     }
 
 

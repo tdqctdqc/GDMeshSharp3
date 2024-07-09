@@ -22,18 +22,19 @@ public class ModelMakeProject : MakeProject
     {
     }
 
-    public override void Start(ProcedureWriteKey key)
+
+    public override void Start(LogicWriteKey key)
     {
         
     }
 
     public override void Increment(float amount, 
-        ProductionResult result,
+        RegimeStock stock,
         LogicWriteKey key)
     {
         Fulfilled += amount;
-        result.Stock.Stock.Add(Making.RefId, amount);
-        result.Stock.Produced.Add(Making.RefId, amount);
+        stock.Stock.Add(Making.RefId, amount);
+        stock.Produced.Add(Making.RefId, amount);
     }
 
     public override void Finish(LogicWriteKey key)
@@ -74,6 +75,19 @@ public class ModelMakeProject : MakeProject
         }
         
         return vbox;
+    }
+
+    public override bool Consolidate(MakeProject next, LogicWriteKey key)
+    {
+        if (next is ModelMakeProject p == false
+            || p.Making.RefId != Making.RefId)
+        {
+            return false;
+        }
+
+        Fulfilled += p.Fulfilled;
+        Amount += p.Amount;
+        return true;
     }
 
     public IModel Model(Data d)

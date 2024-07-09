@@ -7,8 +7,8 @@ public partial class MarketOverviewWindow : TabWindow
 {
     public MarketOverviewWindow(Client c) : base(c)
     {
-        var prices = new MarketPricesOverview(c);
-        AddTab(prices);
+        // var prices = new MarketPricesOverview(c);
+        // AddTab(prices);
         var qs = new MarketQuantitiesOverview(c);
         AddTab(qs);
         MinSize = new Vector2I(700, 500);

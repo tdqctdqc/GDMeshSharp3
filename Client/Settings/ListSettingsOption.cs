@@ -36,8 +36,13 @@ public class ListSettingsOption<T> : SettingsOption<T>
         var token = new ItemListToken<T>(
             Options,
             t => _names[t],
-            t =>  Set(t)
+            false
         );
+        token.JustSelected += () =>
+        {
+            if (token.Values.Count != 1) return;
+            Set(token.Values.First());
+        };
         var list = token.ItemList;
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);
@@ -55,11 +60,15 @@ public class ListSettingsOption<T> : SettingsOption<T>
         var token = new ItemListToken<T>(
             Options,
             m => _names[m],
-            m => Set(m),
             getTexture,
-            iconHeight);
+            iconHeight,
+            false);
         var list = token.ItemList;
-
+        token.JustSelected += () =>
+        {
+            if (token.Values.Count != 1) return;
+            Set(token.Values.First());
+        };
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);
         list.Select(Options.IndexOf(Value));

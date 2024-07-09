@@ -37,9 +37,9 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
                  $"Deployed: {totalDeployed.Get(t)} " +
                  $"Authorized: {totalAuthorized.Get(t)} " +
                  $"Reserve: {reserve.Get(t)}",
-            t => { },
             t => t.Icon.Texture,
-            (int)med);
+            (int)med,
+            false);
         _troops.ItemList.ExpandFill();
 
         var projects = regime.MakeQueue.Queue
@@ -49,9 +49,9 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         _projects = new ItemListToken<ModelMakeProject>(
             projects,
             p => $"{p.Model(client.Data).Name}: {p.Fulfilled} / {p.Amount}",
-            p => { },
             t => ((Troop)t.Model(client.Data)).Icon.Texture,
-            (int)med);
+            (int)med,
+            true);
         _projects.ItemList.ExpandFill();
         
         var left = new VBoxContainer();
@@ -68,8 +68,17 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
             "Amount", 100, 0, 10_000, 1);
         
         left.AddChild(_num);
-        _troops.JustSelected += t =>
+        _troops.JustSelected += () =>
         {
+            var selected = _troops.Values;
+            if (selected.Count != 1)
+            {
+                _num.SetRange(0, 0);
+                _num.SetValue(0);
+                return;
+            }
+
+            var t = selected.First();
             var have = totalDeployed.Get(t);
             var authorized = totalAuthorized.Get(t);
             var need = authorized - (have + reserve.Get(t));
@@ -80,7 +89,14 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
 
         var makeBtn = ButtonExt.GetButton(() =>
         {
-            var troop = _troops.Value;
+            var selected = _troops.Values;
+            if (selected.Count != 1)
+            {
+                _num.SetRange(0, 0);
+                _num.SetValue(0);
+                return;
+            }
+            var troop = selected.First();
             var num = _num.Value;
             var proj = ModelMakeProject.Construct(
                 regime, troop, num);
@@ -102,7 +118,14 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
 
         var setToNeed = ButtonExt.GetButton(() =>
         {
-            var troop = _troops.Value;
+            var selected = _troops.Values;
+            if (selected.Count != 1)
+            {
+                _num.SetRange(0, 0);
+                _num.SetValue(0);
+                return;
+            }
+            var troop = selected.First();
             var need = totalAuthorized.Get(troop)
                        - (reserve.Get(troop) + totalDeployed.Get(troop));
             if (need <= 0f) return;
@@ -114,10 +137,11 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         right.AddChild(_projects.ItemList);
         var cancel = ButtonExt.GetButton(() =>
         {
-            var proj = _projects.Value;
-            if (proj == null) return;
-            var proc = new CancelMakeProjectProcedure(regime.MakeRef(),
-                proj.Id);
+            var projs = _projects.Values;
+            if (projs.Count == 0) return;
+            var proc = new AggregateProcedure(
+                projs.Select(p => new CancelMakeProjectProcedure(regime.MakeRef(), p.Id)).ToArray());
+            
             var com = new SendMessageCommand(proc, client.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(com,
                 () =>

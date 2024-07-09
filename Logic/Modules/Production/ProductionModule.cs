@@ -277,7 +277,7 @@ public class ProductionModule : LogicModule
                 key);
             if (made > 0f)
             {
-                proj.Increment(made, result, key);
+                proj.Increment(made, newStock, key);
             }
             if (proj.Fulfilled >= proj.Amount)
             {

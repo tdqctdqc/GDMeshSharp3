@@ -2,37 +2,44 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using Godot;
 
 public class ItemListToken<T>
 {
-    public T Value { get; private set; }
-    public event Action<T> JustSelected;
+    public HashSet<T> Values { get; private set; }
+    public event Action JustSelected;
     public ItemList ItemList { get; private set; }
     public IReadOnlyList<T> Items => _items;
     private List<T> _items;
     private Func<T, Texture2D> _getTexture;
     private int _textureHeight;
     private Func<T, string> _getLabelText;
-    private Action<T> _selectAction;
     private int _textureWidthRatio = 1;
     public ItemListToken(
         IEnumerable<T> items, 
         Func<T, string> getLabelText, 
-        Action<T> selectAction,
         Func<T, Texture2D> getTexture,
-        int textureHeight)
+        int textureHeight,
+        bool multiSelect)
     {
         ItemList = new ItemList();
+        ItemList.SelectMode = multiSelect
+            ? ItemList.SelectModeEnum.Multi
+            : ItemList.SelectModeEnum.Single;
+        Values = new HashSet<T>();
         ItemList.FixedIconSize = textureHeight * Vector2I.One;
         _items = items.ToList();
-        _selectAction = selectAction;
         _getLabelText = getLabelText;
         _getTexture = getTexture;
         _textureHeight = textureHeight;
         
         SetList();
         ItemList.AllowReselect = true;
+        ItemList.MultiSelected += (index, selected) =>
+        {
+            HandleSelection();
+        };
         ItemList.ItemSelected += i =>
         {
             HandleSelection();
@@ -44,12 +51,13 @@ public class ItemListToken<T>
     public ItemListToken(
         IEnumerable<T> items, 
         Func<T, string> getLabelText, 
-        Action<T> selectAction)
+        bool multiSelect)
     {
         ItemList = new ItemList();
-
+        ItemList.SelectMode = multiSelect
+            ? ItemList.SelectModeEnum.Multi
+            : ItemList.SelectModeEnum.Single;
         _items = items.ToList();
-        _selectAction = selectAction;
         _getLabelText = getLabelText;
         SetList();
         ItemList.AllowReselect = true;
@@ -57,8 +65,18 @@ public class ItemListToken<T>
         {
             HandleSelection();
         };
+        ItemList.MultiSelected += (index, selected) =>
+        {
+            HandleSelection();
+        };
     }
 
+    public void Reset(IEnumerable<T> items)
+    {
+        _items = items.ToList();
+        ItemList.Clear();
+        SetList();
+    }
     public void RefreshText()
     {
         for (var i = 0; i < _items.Count; i++)
@@ -78,16 +96,9 @@ public class ItemListToken<T>
     private void HandleSelection()
     {
         var selecteds = ItemList.GetSelectedItems();
-        if (selecteds.Count() > 1) throw new Exception();
-        if (selecteds.Count() == 0)
-        {
-            Value = default;
-            return;
-        }
-        var selected = _items[selecteds[0]];
-        Value = selected;
-        _selectAction(selected);
-        JustSelected?.Invoke(selected);
+        Values.Clear();
+        Values.UnionWith(selecteds.Select(s => _items[s]));
+        JustSelected?.Invoke();
     }
     private void AddItemToList(T item)
     {

@@ -14,7 +14,8 @@ public class HeavyMetal : NaturalResource
     {
         if (p is not LandCell) return 0f;
         var score = 0f;
-        score += p.Landform.Get(d).MinRoughness / 50f;
+        score += p.Landform.Get(d).MinRoughness 
+                 / 100f;
         return score;
     }
 }

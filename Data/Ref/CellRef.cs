@@ -3,6 +3,10 @@ public struct CellRef : IdRef, IdRef<Cell>
 {
     public int RefId { get; }
 
+    public CellRef()
+    {
+        RefId = -1;
+    }
     public CellRef(int refId)
     {
         RefId = refId;

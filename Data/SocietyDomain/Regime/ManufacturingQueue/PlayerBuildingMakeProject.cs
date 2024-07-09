@@ -5,8 +5,9 @@ using MessagePack;
 public class PlayerBuildingMakeProject : MakeProject
 {
     public ERef<Settlement> Settlement { get; private set; }
-
+    
     public static PlayerBuildingMakeProject Construct(
+        int amount,
         Settlement settlement,
         Regime regime,
         SettlementBuildingModel making)
@@ -14,7 +15,7 @@ public class PlayerBuildingMakeProject : MakeProject
         return new PlayerBuildingMakeProject(
             settlement.MakeRef(), regime.MakeRef(),
             making.MakeRef<IModel>(),
-            1f, 0f, -1);
+            amount, 0f, -1);
     }
     [SerializationConstructor] protected PlayerBuildingMakeProject(
         ERef<Settlement> settlement,
@@ -26,27 +27,50 @@ public class PlayerBuildingMakeProject : MakeProject
     {
         Settlement = settlement;
     }
-
-    public override void Start(ProcedureWriteKey key)
+    
+    public override void Start(LogicWriteKey key)
     {
         var regime = Regime.Get(key.Data);
-        Fulfilled += BuildTree.Increment(this, regime.Stock, key);
+        var before = Mathf.FloorToInt(Fulfilled);
+        var increment = BuildTree.Increment(this, regime.Stock, key);
+        if(increment == 0f) return;
+        Fulfilled += increment;
+        var after = Mathf.FloorToInt(Fulfilled);
+        
+        var diff = after - before;
+        for (var i = 0; i < diff; i++)
+        {
+            var building = (SettlementBuildingModel)Making.Get(key.Data);
+            var settlement = Settlement.Get(key.Data);
+            var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
+            key.SendMessage(proc);
+        }
+        var setStock = new SetStockProcedure(regime.MakeRef(),
+            regime.Stock);
+        key.SendMessage(setStock);
     }
 
     public override void Increment(float amount, 
-        ProductionResult result,
+        RegimeStock stock,
         LogicWriteKey key)
     {
+        var before = Mathf.FloorToInt(Fulfilled);
         Fulfilled += amount;
+        var after = Mathf.FloorToInt(Fulfilled);
+        var diff = after - before;
+        for (var i = 0; i < diff; i++)
+        {
+            var building = (SettlementBuildingModel)Making.Get(key.Data);
+            var settlement = Settlement.Get(key.Data);
+            var regime = Regime.Get(key.Data);
+            var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
+            key.SendMessage(proc);
+        }
     }
 
     public override void Finish(LogicWriteKey key)
     {
-        var building = (SettlementBuildingModel)Making.Get(key.Data);
-        var settlement = Settlement.Get(key.Data);
-        var regime = Regime.Get(key.Data);
-        var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
-        key.SendMessage(proc);
+        
     }
 
     public override void Cancel(ProcedureWriteKey key)
@@ -93,5 +117,34 @@ public class PlayerBuildingMakeProject : MakeProject
         }
         
         return vbox;
+    }
+
+    public override bool Consolidate(MakeProject next, 
+        LogicWriteKey key)
+    {
+        if (next is not PlayerBuildingMakeProject p
+            || p.Settlement.Equals(Settlement) == false
+            || p.Making.RefId != Making.RefId)
+        {
+            return false;
+        }
+
+        Amount += p.Amount;
+        var before1 = Mathf.FloorToInt(Fulfilled);
+        var before2 = Mathf.FloorToInt(next.Fulfilled);
+        var before = before1 + before2;
+        var after = Mathf.FloorToInt(Fulfilled + next.Fulfilled);
+        var diff = after - before;
+        for (var i = 0; i < diff; i++)
+        {
+            var building = (SettlementBuildingModel)Making.Get(key.Data);
+            var settlement = Settlement.Get(key.Data);
+            var regime = Regime.Get(key.Data);
+            var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
+            key.SendMessage(proc);
+        }
+
+        Fulfilled += next.Fulfilled;
+        return true;
     }
 }

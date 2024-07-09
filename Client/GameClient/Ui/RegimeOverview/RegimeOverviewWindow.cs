@@ -8,39 +8,13 @@ public partial class RegimeOverviewWindow
     : TabWindow
 {
     public Regime Regime { get; private set; }
-    private GeneralTab _general;
-    private PeepsTab _peeps;
-    private StockTab _stock;
-    private FoodTab _ag;
-    private BudgetTab _budget;
-    private FlowsTab _flows;
-    private MakingTab _manuf;
-    private MilitaryTab _troop;
     public RegimeOverviewWindow(Client c) : base(c)
     {
-        _general = new GeneralTab(this);
-        AddTab(_general);
-
-        _peeps = new PeepsTab(this);
-        AddTab(_peeps);
-
-        _stock = new StockTab(this);
-        AddTab(_stock);
-
-        _ag = new FoodTab(this);
-        AddTab(_ag);
-
-        _budget = new BudgetTab(this);
-        AddTab(_budget);
-
-        _flows = new FlowsTab(this);
-        AddTab(_flows);
-
-        _manuf = new MakingTab(this);
-        AddTab(_manuf);
-
-        _troop = new MilitaryTab(() => Regime, c);
-        AddTab(_troop);
+        AddTab(new GeneralTab(this));
+        AddTab(new PeepsTab(this));
+        AddTab(new BudgetTab(this));
+        AddTab(new EconomyTab(this, c));
+        AddTab(new MilitaryTab(() => Regime, c));
     }
     public void Setup(Regime regime)
     {

@@ -10,7 +10,7 @@ public struct ERef<TEntity> : IdRef<TEntity>
 
     public ERef()
     {
-        throw new Exception();
+        RefId = -1;
     }
     public ERef(TEntity entity)
     {

@@ -1,7 +1,8 @@
 
 using System.Linq;
 
-public class ChangeMakeProjectPriorityProcedure : Procedure
+public class ChangeMakeProjectPriorityProcedure 
+    : Procedure
 {
     public ERef<Regime> Regime { get; private set; }
     public int ProjectId { get; private set; }

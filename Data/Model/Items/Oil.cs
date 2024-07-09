@@ -14,7 +14,8 @@ public class Oil : NaturalResource
     {
         if (p is not LandCell) return .01f;
         var score = 0f;
-        score = (1f - p.Landform.Get(d).MinRoughness) / 100f;
+        score = (1f - p.Landform.Get(d).MinRoughness) 
+                / 200f;
         return score;
     }
 

@@ -42,7 +42,6 @@ public partial class NumSliderAndEntry : HBoxContainer
             ValueChanged?.Invoke((float)v);
         };
         _spin.UpdateOnTextChanged = true;
-        
         this.CreateLabelAsChild(name);
         AddChild(_spin);
         AddChild(_slider);

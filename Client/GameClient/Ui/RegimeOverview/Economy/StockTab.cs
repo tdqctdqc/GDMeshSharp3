@@ -25,8 +25,28 @@ public partial class StockTab : ScrollContainer, IUiDrawable
         if (regime is null) return;
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var iconSize = client.Settings.MedIconSize.Value;
+        var items = regime.Stock.Stock.GetEnumModel(client.Data)
+            .Where(kvp => kvp.Key is Item);
+        
+        var flows = regime.Stock.Stock.GetEnumModel(client.Data)
+            .Where(kvp => kvp.Key is Flow);
+        
+        
+        _container.CreateLabelAsChild("Flows");
+        
+        foreach (var entry in flows)
+        {
+            makeEntry(entry);
+        }
 
-        foreach (var entry in regime.Stock.Stock.GetEnumModel(client.Data))
+        _container.CreateLabelAsChild("Items");
+        
+        foreach (var entry in items)
+        {
+            makeEntry(entry);
+        }
+
+        void makeEntry(KeyValuePair<IModel, float> entry)
         {
             var model = entry.Key;
             var amt = entry.Value;

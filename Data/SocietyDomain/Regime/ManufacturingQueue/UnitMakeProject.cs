@@ -17,14 +17,27 @@ public class UnitMakeProject : MakeProject
     {
     }
 
-    public override void Start(ProcedureWriteKey key)
+    public override void Start(LogicWriteKey key)
     {
         var regime = Regime.Get(key.Data);
-        Fulfilled += BuildTree.Increment(this, regime.Stock, key);
+        var before = Mathf.FloorToInt(Fulfilled);
+        var increment = BuildTree.Increment(this, regime.Stock, key);
+        if (increment == 0f) return;
+        Fulfilled += increment;
+        var after = Mathf.FloorToInt(Fulfilled);
+        var diff = after - before;
+        for (var i = 0; i < diff; i++)
+        {
+            Unit.Create((UnitTemplate)Making.Get(key.Data),
+                Regime.Get(key.Data), key);
+        }
+        var setStock = new SetStockProcedure(regime.MakeRef(),
+            regime.Stock);
+        key.SendMessage(setStock);
     }
 
     public override void Increment(float amount, 
-        ProductionResult result,
+        RegimeStock stock,
         LogicWriteKey key)
     {
         var before = Mathf.FloorToInt(Fulfilled);
@@ -51,7 +64,7 @@ public class UnitMakeProject : MakeProject
         var diff = Fulfilled - numMade;
         foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumModel(key.Data))
         {
-            var spent = diff * amt;
+            var spent = numMade * amt;
             stock.Stock.Add(model, spent);
         }
     }
@@ -87,6 +100,32 @@ public class UnitMakeProject : MakeProject
         }
         
         return vbox;
+    }
+
+    public override bool Consolidate(MakeProject next, LogicWriteKey key)
+    {
+        if (next is not UnitMakeProject p
+            || p.MakingTemplate(key.Data) != MakingTemplate(key.Data))
+        {
+            return false;
+        }
+
+        Amount += p.Amount;
+        var before1 = Mathf.FloorToInt(Fulfilled);
+        var before2 = Mathf.FloorToInt(next.Fulfilled);
+        var before = before1 + before2;
+        var after = Mathf.FloorToInt(Fulfilled + next.Fulfilled);
+        var diff = after - before;
+        var template = MakingTemplate(key.Data);
+        var regime = Regime.Get(key.Data);
+
+        for (var i = 0; i < diff; i++)
+        {
+            Unit.Create(template, regime, key);
+        }
+
+        Fulfilled += next.Fulfilled;
+        return true;
     }
 
     public UnitTemplate MakingTemplate(Data d)

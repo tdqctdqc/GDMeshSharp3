@@ -42,25 +42,22 @@ public partial class MakingTab : ScrollContainer, IUiDrawable
         _projectsList = new ItemListToken<MakeProject>(
             projects,
             p => $"{p.Making.Get(client.Data).GetType().Name} {p.Fulfilled.RoundTo2Digits()}/{p.Amount.RoundTo2Digits()}",
-            p => DrawProjectInfo(p, client),
-            p =>
-            {
-                if (p.Making.Get(client.Data) is IIconed i)
-                {
-                    return i.Icon.Texture;
-                }
-
-                return new Texture2D();
-            },
-            (int)med
+            p => p.Making.Get(client.Data) is IIconed i
+                    ? i.Icon.Texture
+                    : new Texture2D(),
+            (int)med,
+            true
         );
+        _projectsList.JustSelected += () => DrawProjectInfo(client);
         _projectsList.ItemList.ExpandFill(1);
         left.AddChild(_projectsList.ItemList);
     }
 
-    private void DrawProjectInfo(MakeProject project, Client client)
+    private void DrawProjectInfo(Client client)
     {
         _projectInfo.ClearChildren();
+        if (_projectsList.Values.Count != 1) return;
+        var project = _projectsList.Values.First();
         var med = client.Settings.MedIconSize.Value;
         var large = client.Settings.LargeIconSize.Value;
         var title = project.Making.Get(client.Data).GetType().Name;

@@ -116,7 +116,7 @@ public class HostLogic : ILogic
                 {
                     GD.Print($"{p.GetType()} error {error}");
                 }
-                
+
                 return;
             }
 
@@ -126,7 +126,21 @@ public class HostLogic : ILogic
                 return;
             }
 
-            throw new Exception($"message of type {m.GetType()} not handled");
+            if (m is HostProcedure h)
+            {
+                if (h.Valid(_data, out string error))
+                {
+                    h.Enact(_logicKey);
+                }
+                else
+                {
+                    GD.Print($"{h.GetType()} error {error}");
+                }
+
+                return;
+            }
+
+        throw new Exception($"message of type {m.GetType()} not handled");
         }
     }
     private void DoCommands()

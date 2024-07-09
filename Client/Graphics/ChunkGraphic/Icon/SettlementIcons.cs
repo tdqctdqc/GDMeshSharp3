@@ -13,6 +13,7 @@ public partial class SettlementIcons
         : base("Settlements", zoomVisibilityRange,
             chunk, MeshExt.GetQuadMesh(Vector2.One * 35f))
     {
+        ZIndex = (int)LayerOrder.Icons;
     }
     protected override IEnumerable<Cell> GetElements(Data data)
     {

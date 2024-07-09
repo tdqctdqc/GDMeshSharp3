@@ -54,9 +54,10 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _makingUnits = new ItemListToken<UnitMakeProject>(
             unitProjects,
             p => $"{p.MakingTemplate(c.Data).Name} {p.Fulfilled} / {p.Amount}",
-            p => SetMakingUnitsInfo(c),
             p => p.MakingTemplate(c.Data).GetMaxPowerTroop(c.Data).Icon.Texture,
-            (int)med);
+            (int)med,
+            true);
+        _makingUnits.JustSelected += () => SetMakingUnitsInfo(c);
         _makingUnits.ItemList.ExpandFill();
         _makingUnitsContainer.AddChild(_makingUnits.ItemList);
 
@@ -64,10 +65,11 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _templates = new ItemListToken<UnitTemplate>(
             templates,
             t => t.Name,
-            t => SetTemplateInfo(c),
             t => t.GetMaxPowerTroop(c.Data).Icon.Texture,
-            (int)med
+            (int)med,
+            false
         );
+        _templates.JustSelected += () => SetTemplateInfo(c);
         _templates.ItemList.ExpandFill();
         _templatesContainer.AddChild(_templates.ItemList);
     }
@@ -76,29 +78,33 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
     {
         var regime = _getRegime();
         _makingUnitsInfo.ClearChildren();
-        if (_makingUnits.Value == null) return;
-        
+        if (_makingUnits.Values.Count != 1) return;
+        var value = _makingUnits.Values.First();
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
 
-        _makingUnitsInfo.AddChild(_makingUnits.Value.GetDisplay(c.Data));
+        _makingUnitsInfo.AddChild(value.GetDisplay(c.Data));
         
         var cancelMakeBtn = _makingUnitsInfo.AddButton(
             "Cancel", () =>
             {
-                if (_makingUnits is null || _makingUnits.Value is null)
+                if (_makingUnits is null || _makingUnits.Values.Count == 0)
                 {
                     return;
                 }
 
-                var proc = new CancelMakeProjectProcedure(regime.MakeRef(),
-                    _makingUnits.Value.Id);
+                var proc = new AggregateProcedure(
+                    _makingUnits.Values.Select(p =>
+                        new CancelMakeProjectProcedure(regime.MakeRef(),
+                            p.Id)).ToArray());
                 var inner = new SendMessageCommand(proc, player);
                 var com = CallbackCommand.Construct(
                     inner, () =>
                     {
                         if (IsInstanceValid(_makingUnits.ItemList))
                         {
-                            _makingUnits.Remove(_makingUnits.Value);
+                            var unitProjects = regime.MakeQueue.Queue
+                                .OfType<UnitMakeProject>();
+                            _makingUnits.Reset(unitProjects);
                             SetMakingUnitsInfo(c);
                         }
                         
@@ -112,7 +118,9 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         var regime = _getRegime();
         _templateInfo.ClearChildren();
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
-        var template = _templates.Value;
+        var template = _templates.Values.Count == 1
+            ? _templates.Values.First()
+            : null;
         if (template is null) return;
         _templateInfo.AddChild(template.GetDisplay(c.Data));
         var num = new NumSliderAndEntry("Amount", 1f, 1f, 100f, 1f);
@@ -120,28 +128,27 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         var makeBtn = _templateInfo.AddButton(
             "Make", () =>
             {
-                if (_templates is null 
-                    || _templates.Value is null)
+                if (_templates is null)
                 {
                     return;
                 }
+
+                var template = _templates.Values.Count == 1
+                    ? _templates.Values.First()
+                    : null;
+                if (template is null) return;
                 
                 var proj = UnitMakeProject.Construct(regime,
-                    _templates.Value, (int)num.Value);
+                    template, (int)num.Value);
                 var inner = new StartMakeProjectCommand(proj, player);
                 var com = CallbackCommand.Construct(
                     inner, () =>
                     {
                         if (IsInstanceValid(_makingUnits.ItemList))
                         {
-                            var newMaking = regime.MakeQueue.Queue
-                                .OfType<UnitMakeProject>()
-                                .Where(p => _makingUnits.Items.Contains(p) == false)
-                                .ToList();
-                            foreach (var p in newMaking)
-                            {
-                                _makingUnits.Add(p);
-                            }
+                            var unitProjects = regime.MakeQueue.Queue
+                                .OfType<UnitMakeProject>();
+                            _makingUnits.Reset(unitProjects);
                         }
                     }, c);
                 c.HandleCommand(com);
