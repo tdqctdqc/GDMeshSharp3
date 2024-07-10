@@ -42,12 +42,21 @@ public static class MilUtil
                 {
                     var troopAmt = Mathf.Min(1f, unit.Active.Get(troop));
                     var targetEchelon = getTargetEchelon(troop, targets, comrades);
-                    if (targetEchelon == -1) return;
+                    if (targetEchelon == -1)
+                    {
+                        return;
+                    }
                     var targetUnit = getTargetUnit(targets, targetEchelon);
-                    if (targetUnit == null) return;
+                    if (targetUnit == null)
+                    {
+                        return;
+                    }
                     var (targetTroop, targetTroopAmt) = getTargetTroop(targetUnit,
                         targetEchelon);
-                    if (targetTroop == null) return;
+                    if (targetTroop == null)
+                    {
+                        return;
+                    }
                     
                     if (getHit(troop, targetTroop, true))
                     {
@@ -81,30 +90,34 @@ public static class MilUtil
 
             var carryOver = 0f;
             var carryMult = .5f;
-
+            
             var chances = new float[NumEchelons];
             for (int i = 0; i < NumEchelons; i++)
             {
                 var enemyFrontage = targets.Sum(c => c.ActiveFrontSizes[i]);
-                if (enemyFrontage <= 0f) continue;
-                
-                var baseChance = troop.TargetChances[i];
-                var chance = baseChance * enemyFrontage;
                 var friendlyFrontage = friendlies.Sum(c => c.ActiveFrontSizes[i]);
-                if (i > troop.Range)
+                var chance = 0f;
+                if (enemyFrontage > 0f)
                 {
-                    var movementMult = lf.MovementCostMult * veg.MovementCostMult;
-                    var frontageMod = (friendlyFrontage + carryOver) * troop.BreakthroughMult 
-                                      / (enemyFrontage * movementMult);
-                    frontageMod = Mathf.Clamp(frontageMod, 0f, 1f);
-                    chance *= frontageMod;
-                }
-                
-                carryOver = Mathf.Max(0f, (friendlyFrontage + carryOver - enemyFrontage) * carryMult);
+                    var baseChance = troop.TargetChances[i];
+                    chance = baseChance * enemyFrontage;
+                    if (i > troop.Range)
+                    {
+                        var movementMult = lf.MovementCostMult * veg.MovementCostMult;
 
+                        var frontageModTop = (friendlyFrontage + carryOver) * troop.BreakthroughMult;
+                        var frontageModBottom = (enemyFrontage * movementMult);
+                        
+                        
+                        var frontageMod = frontageModTop / frontageModBottom;
+                        frontageMod = Mathf.Clamp(frontageMod, 0f, 1f);
+                        chance *= frontageMod;
+                    }
+                }
+                carryOver = Mathf.Max(0f, (friendlyFrontage + carryOver - enemyFrontage) * carryMult);
                 chances[i] = chance;
             }
-
+            
             var totalChance = chances.Sum();
             var score = Game.I.Random.RandfRange(0f, totalChance);
             var cumul = 0f;
@@ -147,7 +160,10 @@ public static class MilUtil
         {
             var totalLength = targets
                 .Sum(t => t.ActiveFrontSizes[echelon]);
-            if (totalLength == 0f) return null;
+            if (totalLength == 0f)
+            {
+                return null;
+            }
             var s = Game.I.Random.RandfRange(0, totalLength - .01f);
             
             var i = 0;

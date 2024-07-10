@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_6ccax")
-DisplayName = "Musket"
+DisplayName = "Musket Infantry"
 HardAttack = 1.0
 SoftAttack = 10.0
 Hitpoints = 100.0

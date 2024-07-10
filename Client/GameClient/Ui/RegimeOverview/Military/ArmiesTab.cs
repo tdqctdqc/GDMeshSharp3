@@ -47,7 +47,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
     }
     
 
-    public void Draw(Client c)
+    public void Draw(Client client)
     {
         _armiesContainer.ClearChildren();
         _armyButtonsContainer.ClearChildren();
@@ -57,20 +57,20 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         var r = _getRegime();
         if (r is null) return;
         
-        var armies = c.Data.GetAll<Army>()
+        var armies = client.Data.GetAll<Army>()
             .Where(a => a.Regime.RefId == r.Id);
-        var med = c.Settings.MedIconSize.Value;
+        var med = client.Settings.MedIconSize.Value;
         
         _armies =  new ItemListToken<Army>(
             armies, 
             a => $"Army {a.Id.ToString()} Units: {a.Units.Count()} " +
-                 $"Strength: {a.GetPowerPoints(c.Data)} / {a.Units.Entities(c.Data).Sum(u => u.Template.Get(c.Data).GetPowerPoints(c.Data))}",
-            a => a.Regime.Get(c.Data).Template.Get(c.Data).Flag.Texture,
+                 $"Strength: {a.GetPowerPoints(client.Data)} / {a.Units.Entities(client.Data).Sum(u => u.Template.Get(client.Data).GetPowerPoints(client.Data))}",
+            a => a.Regime.Get(client.Data).Template.Get(client.Data).Flag.Texture,
             (int)med, 
             false
         );
 
-        _armies.JustSelected += () => DrawArmyInfo(c);
+        _armies.JustSelected += () => DrawArmyInfo(client);
         _armiesContainer.CreateLabelAsChild("Armies");
         _armiesContainer.AddChild(_armies.ItemList);
         _armies.ItemList.ExpandFill();
@@ -79,18 +79,18 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         _freeUnits.ExpandFill();
         _freeUnits.SelectMode = Tree.SelectModeEnum.Multi;
         var freeUnits = r
-            .GetUnits(c.Data)
-            .Where(u => c.Data.Military.UnitAux.UnitByGroup[u] == null);
+            .GetUnits(client.Data)
+            .Where(u => client.Data.Military.UnitAux.UnitByGroup[u] == null);
         UnitTree.Add(_freeUnits, 
             freeUnits,
             0,
-            c
+            client
         );
         _freeUnitsLabel = new Label();
         _freeUnitsLabel.Text = $"Available Units: {freeUnits.Count()}";
         var transferFreeUnitBtn = ButtonExt.GetButton(() =>
         {
-            var selected = _freeUnits.GetSelectedEntities<Unit>(c.Data);
+            var selected = _freeUnits.GetSelectedEntities<Unit>(client.Data);
             if (selected.Count == 0) return;
             var army = _armies.Values.Count == 1
                 ? _armies.Values.First() : null;
@@ -100,7 +100,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
                 var proc = new SetUnitArmyProcedure(unit.MakeRef(),
                     army.MakeRef());
                 var inner = new SendMessageCommand(proc, 
-                    c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
+                    client.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
                 
                 var callback = () =>
                 {
@@ -108,21 +108,21 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
                     {
                         return;
                     }
-                    if (unit.GetArmy(c.Data) is not null)
+                    if (unit.GetArmy(client.Data) is not null)
                     {
                         _freeUnits.Remove(unit);
                     }
-                    if (_armyTree.GetArmy(c.Data) == army
+                    if (_armyTree.GetArmy(client.Data) == army
                         && army.Units.Contains(unit))
                     {
-                        _armyTree.AddUnit(unit, c);
+                        _armyTree.AddUnit(unit, client);
                     }
                     _armies.RefreshText();
-                    SetFreeUnitsLabel(c);
+                    SetFreeUnitsLabel(client);
                 };
                 var com = CallbackCommand.Construct(
-                    inner, callback, c);
-                c.HandleCommand(com);
+                    inner, callback, client);
+                client.HandleCommand(com);
             }
         });
         transferFreeUnitBtn.Text = "Transfer To Army";

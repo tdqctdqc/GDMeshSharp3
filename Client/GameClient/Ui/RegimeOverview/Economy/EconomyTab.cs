@@ -9,6 +9,7 @@ public partial class EconomyTab : DrawTabContainer
         AddTab(new StockTab(parent));
         AddTab(new FoodTab(parent));
         AddTab(new MakingTab(parent));
+        AddTab(new BuildingsTab(parent));
     }
     
 }

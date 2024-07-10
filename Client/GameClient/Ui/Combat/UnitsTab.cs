@@ -13,7 +13,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         Name = "Units";
     }
 
-    public void Draw(Client c)
+    public void Draw(Client client)
     {
         this.ClearChildren();
 
@@ -24,7 +24,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         info.ExpandFill();
         
         
-        var size = c.Settings.MedIconSize.Value * Vector2.One;
+        var size = client.Settings.MedIconSize.Value * Vector2.One;
 
         var atkInfos = _info.Attackers;
         
@@ -36,7 +36,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
             u =>
             {
                 return u.Template.Fulfilled()
-                    ? u.Template.Get(c.Data).Name + " " + u.Unit
+                    ? u.Template.Get(client.Data).Name + " " + u.Unit
                     : "None";
             },
             false
@@ -45,7 +45,7 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         _attackersList.ItemList.ExpandFill();
         _attackersList.JustSelected += () =>
         {
-            DrawInfo(true, info, c);
+            DrawInfo(true, info, client);
         };
         
         var defenders = new VBoxContainer();
@@ -56,14 +56,14 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
             u =>
             {
                 return u.Template.Fulfilled()
-                    ? u.Template.Get(c.Data).Name + " " + u.Unit
+                    ? u.Template.Get(client.Data).Name + " " + u.Unit
                     : "None";
             },
             false
         );
         _defendersList.JustSelected += () =>
         {
-            DrawInfo(false, info, c);
+            DrawInfo(false, info, client);
         };
         _defendersList.ItemList.ExpandFill();
         defenders.AddChild(_defendersList.ItemList);

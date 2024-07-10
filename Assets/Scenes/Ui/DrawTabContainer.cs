@@ -15,9 +15,9 @@ public partial class DrawTabContainer : TabContainer, IUiDrawable
             _tabs[(int)i].Draw(c);
         };
     }
-    public void Draw(Client c)
+    public void Draw(Client client)
     {
-        _tabs[CurrentTab].Draw(c);
+        _tabs[CurrentTab].Draw(client);
     }
     public void AddTab<T>(T tab)
         where T : Control, IUiDrawable

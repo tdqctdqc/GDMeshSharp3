@@ -1,5 +1,5 @@
 
 public interface IUiDrawable
 {
-    void Draw(Client c);
+    void Draw(Client client);
 }

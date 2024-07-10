@@ -40,6 +40,7 @@ public class Troop : IModel, IMakeable, IIconed
         FrontLength = res.FrontLength;
         Range = res.Range;
         TargetChances = res.TargetChances;
+        BreakthroughMult = res.BreakthroughMult;
         Domain = domain;
         Makeable = makeable;
         Icon = Icon.Create(name.ToLower(), Vector2I.One);

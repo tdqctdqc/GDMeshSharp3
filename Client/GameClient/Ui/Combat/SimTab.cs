@@ -13,6 +13,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     private ItemListToken<Landform> _lf;
     private ItemListToken<Vegetation> _veg;
     private ItemListToken<Troop> _troops;
+    private ItemListToken<UnitTemplate> _templates;
     
     private VBoxContainer _selectedTroopInfo;
     private CheckBox _chooseIfDef;
@@ -44,7 +45,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         var chooseIfDefOuter = new HBoxContainer();
         chooseIfDefOuter.CreateLabelAsChild("Defender: ");
         chooseIfDefOuter.AddChild(_chooseIfDef);
-        chooseIfDefOuter.ExpandFill();
+        // chooseIfDefOuter.ExpandFill();
         
         _selectedTroopInfo = new VBoxContainer();
         _selectedTroopInfo.ExpandFill();
@@ -61,8 +62,16 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         var calc = ButtonExt.GetButton(() => Calculate(c.Data));
         calc.Text = "Calculate";
         
-        var addNewUnit = ButtonExt.GetButton(() => AddNewUnit(c.Data));
+        var addNewUnit = ButtonExt.GetButton(
+            () => AddNewUnit(new UnitCombatInfo(IdCount<Troop>.Construct(), c.Data),
+                c.Data));
         addNewUnit.Text = "Add New Unit";
+
+        var removeUnit = ButtonExt.GetButton(() => RemoveUnit(c));
+        removeUnit.Text = "Remove Unit";
+
+        var addTemplate = ButtonExt.GetButton(() => AddTemplate(c));
+        addTemplate.Text = "Add Template";
         
         var left = new VBoxContainer();
         left.ExpandFill();
@@ -87,10 +96,14 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         right.SizeFlagsStretchRatio = 1f;
         
         left.AddChild(_selectedTroopInfo);
-        left.AddChild(_troops.ItemList);
         left.AddChild(chooseIfDefOuter);
+
+        left.AddChild(_templates.ItemList);
+        left.AddChild(addTemplate);
+        left.AddChild(_troops.ItemList);
         left.AddChild(sliderOuter);
         left.AddChild(addNewUnit);
+        left.AddChild(removeUnit);
         left.AddChild(calc);        
         AddChild(left);
         
@@ -117,9 +130,37 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         AddChild(right);
     }
 
-    private void AddNewUnit(Data data)
+    private void AddTemplate(Client client)
     {
-        var unit = new UnitCombatInfo(IdCount<Troop>.Construct(), data);
+        if (_templates.Values.Count != 1) return;
+        var template = _templates.Values.First();
+        var u = new UnitCombatInfo(template.Troops, client.Data);
+        AddNewUnit(u, client.Data);
+    }
+
+    private void RemoveUnit(Client client)
+    {
+        var (graphic, list) = _chooseIfDef.ButtonPressed
+            ? (_defendersGraphic, _defenders)
+            : (_attackersGraphic, _attackers);
+        var unit = graphic.Selected;
+        if (unit is null) return;
+        list.Remove(unit);
+        foreach (var i in _attackers)
+        {
+            i.ClearLossesKills();
+        }
+        foreach (var i in _defenders)
+        {
+            i.ClearLossesKills();
+        }
+        DrawCenter();
+    }
+
+    private void AddNewUnit(UnitCombatInfo unit,
+        Data data)
+    {
+        // var unit = new UnitCombatInfo(IdCount<Troop>.Construct(), data);
         if (_chooseIfDef.ButtonPressed)
         {
             _defenders.Add(unit);
@@ -178,7 +219,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         
         _troops = new ItemListToken<Troop>(
             c.Data.Models.GetModels<Troop>().Values,
-            t => t.Name,
+            t => t.DisplayName,
             t => t.Icon.Texture,
             (int)med,
             false
@@ -188,6 +229,17 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         
         _numSetting = new FloatSettingsOption(
             "Amount", 100f, 0f, 1000f, 1f, true);
+
+        var regime = c.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(c.Data);
+        _templates = new ItemListToken<UnitTemplate>(
+            regime.GetUnitTemplates(c.Data),
+            t => $"{t.Name}",
+            t => t.GetMaxPowerTroop(c.Data).Icon.Texture,
+            (int)med,
+            false
+        );
+        _templates.ItemList.ExpandFill();
+        _templates.SelectAt(0);
     }
 
     private void SetTroop()
@@ -195,14 +247,12 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         if (_troops.Values.Count != 1) return;
         var troop = _troops.Values.First();
         var amt = _numSetting.Value;
-        if (_chooseIfDef.ButtonPressed)
-        {
-            _defendersGraphic.Selected.SetInitial(troop, amt, Game.I.Client.Data);
-        }
-        else
-        {
-            _attackersGraphic.Selected.SetInitial(troop, amt, Game.I.Client.Data);
-        }
+        var unit = _chooseIfDef.ButtonPressed
+            ? _defendersGraphic.Selected
+            : _attackersGraphic.Selected;
+        if (unit is null) return;
+        unit.SetInitial(troop, amt, Game.I.Client.Data);
+
         foreach (var i in _attackers)
         {
             i.ClearLossesKills();
@@ -214,7 +264,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         DrawCenter();
     }
 
-    public void Draw(Client c)
+    public void Draw(Client client)
     {
         DrawSelectedTroopInfo();
         DrawTerrainInfo();
@@ -239,7 +289,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             _veg.Values.First(), def);
         
         var icon = troop.Icon.GetLabeledIcon<HBoxContainer>(
-            $"{troop.Name}", large);
+            $"{troop.DisplayName}", large);
         _selectedTroopInfo.AddChild(icon);
 
         _selectedTroopInfo.CreateLabelAsChild

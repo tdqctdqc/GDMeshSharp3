@@ -37,7 +37,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _templateInfo.ExpandFill();
         AddChild(_templateInfo);
     }
-    public void Draw(Client c)
+    public void Draw(Client client)
     {
         _makingUnitsContainer.ClearChildren();
         _makingUnitsContainer.CreateLabelAsChild("Units in Progress");
@@ -47,29 +47,29 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _templateInfo.ClearChildren();
         var regime = _getRegime();
         if (regime is null) return;
-        var med = c.Settings.MedIconSize.Value;
+        var med = client.Settings.MedIconSize.Value;
 
         var unitProjects = regime.MakeQueue.Queue
             .OfType<UnitMakeProject>();
         _makingUnits = new ItemListToken<UnitMakeProject>(
             unitProjects,
-            p => $"{p.MakingTemplate(c.Data).Name} {p.Fulfilled} / {p.Amount}",
-            p => p.MakingTemplate(c.Data).GetMaxPowerTroop(c.Data).Icon.Texture,
+            p => $"{p.MakingTemplate(client.Data).Name} {p.Fulfilled} / {p.Amount}",
+            p => p.MakingTemplate(client.Data).GetMaxPowerTroop(client.Data).Icon.Texture,
             (int)med,
             true);
-        _makingUnits.JustSelected += () => SetMakingUnitsInfo(c);
+        _makingUnits.JustSelected += () => SetMakingUnitsInfo(client);
         _makingUnits.ItemList.ExpandFill();
         _makingUnitsContainer.AddChild(_makingUnits.ItemList);
 
-        var templates = regime.GetUnitTemplates(c.Data);
+        var templates = regime.GetUnitTemplates(client.Data);
         _templates = new ItemListToken<UnitTemplate>(
             templates,
             t => t.Name,
-            t => t.GetMaxPowerTroop(c.Data).Icon.Texture,
+            t => t.GetMaxPowerTroop(client.Data).Icon.Texture,
             (int)med,
             false
         );
-        _templates.JustSelected += () => SetTemplateInfo(c);
+        _templates.JustSelected += () => SetTemplateInfo(client);
         _templates.ItemList.ExpandFill();
         _templatesContainer.AddChild(_templates.ItemList);
     }

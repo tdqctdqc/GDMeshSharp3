@@ -59,7 +59,7 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
 
     
 
-    public void Draw(Client c)
+    public void Draw(Client client)
     {
         
         DrawTerrainInfo();
