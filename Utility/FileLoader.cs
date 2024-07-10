@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class FileLoader<T>
 {
-    public static List<T> Setup(string folder,
+    public static List<T> LoadFromJson(string folder,
         string fileEnding, Func<string, T> construct)
     {
         var res = new List<T>();

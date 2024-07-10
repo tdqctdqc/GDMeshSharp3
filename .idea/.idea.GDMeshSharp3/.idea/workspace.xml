@@ -4,16 +4,41 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="fixed combat front length not carry over bug, troops not taking breakthroughMult value from res bug">
-      <change afterPath="$PROJECT_DIR$/Data/Model/Troops/Artillery2.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Model/Troops/Artillery3.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Model/Troops/MachineGun1.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Model/Troops/MachineGun2.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Model/Troops/MachineGun3.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/Model/Troops/MachineGun4.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Artillery1.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Artillery1.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/FileLoader.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/FileLoader.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Cultures/CultureManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Cultures/CultureManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Models.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Models.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Artillery1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Artillery1.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Artillery2.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Artillery2.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Artillery3.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Artillery3.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun1.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun2.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun2.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun3.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun3.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun4.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/MachineGun4.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle1.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle1.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle2.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle2.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle3.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle3.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle4.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle4.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle5.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Rifle5.tres" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/TroopRes.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troops.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troops.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Game.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/GodotFileExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/GodotFileExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,6 +124,7 @@
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/Troops/Artillery1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -690,7 +716,10 @@
       <workItem from="1720049803898" duration="9900000" />
       <workItem from="1720125858823" duration="55114000" />
       <workItem from="1720475404549" duration="19595000" />
-      <workItem from="1720561998690" duration="7254000" />
+      <workItem from="1720561998690" duration="8234000" />
+      <workItem from="1720631088768" duration="1684000" />
+      <workItem from="1720632820619" duration="3043000" />
+      <workItem from="1720649400083" duration="5012000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -902,14 +931,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00238" summary="doot">
-      <option name="closed" value="true" />
-      <created>1719091701146</created>
-      <option name="number" value="00238" />
-      <option name="presentableId" value="LOCAL-00238" />
-      <option name="project" value="LOCAL" />
-      <updated>1719091701147</updated>
-    </task>
     <task id="LOCAL-00239" summary="added combat modifiers to terrain">
       <option name="closed" value="true" />
       <created>1719272784865</created>
@@ -1054,7 +1075,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720575926909</updated>
     </task>
-    <option name="localTasksCounter" value="257" />
+    <task id="LOCAL-00257" summary="adding more troops">
+      <option name="closed" value="true" />
+      <created>1720577394860</created>
+      <option name="number" value="00257" />
+      <option name="presentableId" value="LOCAL-00257" />
+      <option name="project" value="LOCAL" />
+      <updated>1720577394860</updated>
+    </task>
+    <option name="localTasksCounter" value="258" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1076,7 +1105,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="ditto, made refcolindexer into Many To One indexer, added hooks for erefsets to it" />
     <MESSAGE value="bugfixes, refining refset" />
     <MESSAGE value="more army retreat tweaks" />
     <MESSAGE value="working on CustomArea control" />
@@ -1101,6 +1129,7 @@
     <MESSAGE value="make project ui" />
     <MESSAGE value="more ui stuff, resource icons, host procedures" />
     <MESSAGE value="fixed combat front length not carry over bug, troops not taking breakthroughMult value from res bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed combat front length not carry over bug, troops not taking breakthroughMult value from res bug" />
+    <MESSAGE value="adding more troops" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding more troops" />
   </component>
 </project>

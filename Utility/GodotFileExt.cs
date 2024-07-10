@@ -6,6 +6,41 @@ using Godot;
 
 public class GodotFileExt
 {
+
+    public static Dictionary<string, Dictionary<string, string>>
+        ReadCsvGrid(string path)
+    {
+        var res = new Dictionary<string, Dictionary<string, string>>();
+        
+        using (var f = FileAccess.Open(path, FileAccess.ModeFlags.Read))
+        {
+            string[] fieldNames = null;
+            while (f.EofReached() == false)
+            {
+                var line = f.GetCsvLine("\t");
+                if (fieldNames == null)
+                {
+                    fieldNames = line;
+                }
+                else
+                {
+                    var name = line[0];
+                    if (name == "") continue;
+                    var fields = new Dictionary<string, string>();
+                    res.Add(name, fields);
+                    for (var i = 1; i < line.Length; i++)
+                    {
+                        var fieldName = fieldNames[i];
+                        if (fieldName == "") continue;
+                        var value = line[i];
+                        fields.Add(fieldName, value);
+                    }
+                }
+            }
+        }
+
+        return res;
+    }
     public static void SaveFile<T>(T t, string path, string name, string ext, Data data)
     {
         var bytes = data.Serializer.MP.Serialize(t);

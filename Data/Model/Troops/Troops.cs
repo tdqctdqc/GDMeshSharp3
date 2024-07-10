@@ -1,5 +1,9 @@
 
-using GDMeshSharp3.Data.Model.Troops;
+using System.Collections.Generic;
+using System.IO;
+using Godot;
+using Microsoft.VisualBasic.FileIO;
+using FileAccess = Godot.FileAccess;
 
 public class Troops : ModelList<Troop>
 {
@@ -15,19 +19,36 @@ public class Troops : ModelList<Troop>
     public Troop MachineGun2 { get; private set; }
     public Troop MachineGun3 { get; private set; }
     public Troop MachineGun4 { get; private set; }
-    public Troops(Items items, FlowList flows)
+    public Troops(Dictionary<string, IModel> modelsByName)
     {
-        Rifle1 = new Rifle1(items, flows);
-        Rifle2 = new Rifle2(items, flows);
-        Rifle3 = new Rifle3(items, flows);
-        Rifle4 = new Rifle4(items, flows);
-        Rifle5 = new Rifle5(items, flows);
-        Artillery1 = new Artillery1(items, flows);
-        Artillery2 = new Artillery2(items, flows);
-        Artillery3 = new Artillery3(items, flows);
-        MachineGun1 = new MachineGun1(items, flows);
-        MachineGun2 = new MachineGun2(items, flows);
-        MachineGun3 = new MachineGun3(items, flows);
-        MachineGun4 = new MachineGun4(items, flows);
+        string filePath = Directory.GetCurrentDirectory();
+        filePath += "\\Data\\Model\\Troops\\TroopsSource.csv";
+
+        var info =
+            GodotFileExt.ReadCsvGrid(filePath);
+        Rifle1 = new Troop(nameof(Rifle1), TroopDomain.Land,
+            modelsByName, info);
+        Rifle2 = new Troop(nameof(Rifle2), TroopDomain.Land,
+            modelsByName, info);
+        Rifle3 = new Troop(nameof(Rifle3), TroopDomain.Land,
+            modelsByName, info);
+        Rifle4 = new Troop(nameof(Rifle4), TroopDomain.Land,
+            modelsByName, info);
+        Rifle5 = new Troop(nameof(Rifle5), TroopDomain.Land,
+            modelsByName, info);
+        Artillery1 = new Troop(nameof(Artillery1), TroopDomain.Land,
+            modelsByName, info);
+        Artillery2 = new Troop(nameof(Artillery2), TroopDomain.Land,
+            modelsByName, info);
+        Artillery3 = new Troop(nameof(Artillery3), TroopDomain.Land,
+            modelsByName, info);
+        MachineGun1 = new Troop(nameof(MachineGun1), TroopDomain.Land,
+            modelsByName, info);
+        MachineGun2 = new Troop(nameof(MachineGun2), TroopDomain.Land,
+            modelsByName, info);
+        MachineGun3 = new Troop(nameof(MachineGun3), TroopDomain.Land,
+            modelsByName, info);
+        MachineGun4 = new Troop(nameof(MachineGun4), TroopDomain.Land,
+            modelsByName, info);
     }
 }

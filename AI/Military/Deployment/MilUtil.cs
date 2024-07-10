@@ -99,7 +99,7 @@ public static class MilUtil
                 var chance = 0f;
                 if (enemyFrontage > 0f)
                 {
-                    var baseChance = troop.TargetChances[i];
+                    var baseChance = troop.TargetChance[i];
                     chance = baseChance * enemyFrontage;
                     if (i > troop.Range)
                     {

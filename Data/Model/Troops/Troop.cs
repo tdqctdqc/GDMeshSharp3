@@ -1,5 +1,6 @@
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Troop : IModel, IMakeable, IIconed
 {
@@ -12,10 +13,9 @@ public class Troop : IModel, IMakeable, IIconed
     public float Hardness { get; private set; }
     public float Accuracy { get; private set; }
     public float Evasion { get; private set; }
-    public float Recon { get; private set; }
     public int Echelon { get; private set; }
     public int Range { get; private set; }
-    public float[] TargetChances { get; private set; }
+    public float[] TargetChance { get; private set; }
     public float FrontLength { get; private set; }
     public float BreakthroughMult { get; private set; }
     public Icon Icon { get; private set; }
@@ -24,25 +24,57 @@ public class Troop : IModel, IMakeable, IIconed
     public TroopDomain Domain { get; private set; }
     public Troop(string name, 
         TroopDomain domain,
-        MakeableAttribute makeable)
+        Dictionary<string, IModel> modelsByName,
+        Dictionary<string, Dictionary<string, string>> info)
     {
-        var res = GD.Load<TroopRes>($"res://Data/Model/Troops/{name}.tres");
         Name = name;
-        DisplayName = res.DisplayName;
-        HardAttack = res.HardAttack;
-        SoftAttack = res.SoftAttack;
-        Hitpoints = res.Hitpoints;
-        Hardness = res.Hardness;
-        Echelon = res.Echelon;
-        Accuracy = res.Accuracy;
-        Evasion = res.Evasion;
-        Recon = res.Recon;
-        FrontLength = res.FrontLength;
-        Range = res.Range;
-        TargetChances = res.TargetChances;
-        BreakthroughMult = res.BreakthroughMult;
+        var thisInfo = info[name];
+        
+        DisplayName = thisInfo[nameof(DisplayName)];
+        HardAttack = thisInfo[nameof(HardAttack)].ToFloat();
+        SoftAttack = thisInfo[nameof(SoftAttack)].ToFloat();
+        Hitpoints = thisInfo[nameof(Hitpoints)].ToFloat();
+        Hardness = thisInfo[nameof(Hardness)].ToFloat();
+        Echelon = thisInfo[nameof(Echelon)].ToInt();
+        Accuracy = thisInfo[nameof(Accuracy)].ToFloat();
+        Evasion = thisInfo[nameof(Evasion)].ToFloat();
+        FrontLength = thisInfo[nameof(FrontLength)].ToFloat();
+        Range = thisInfo[nameof(Range)].ToInt();;
+        BreakthroughMult = thisInfo[nameof(BreakthroughMult)].ToFloat();;
         Domain = domain;
-        Makeable = makeable;
+
+        TargetChance = new float[MilUtil.NumEchelons];
+        for (var i = 0; i < MilUtil.NumEchelons; i++)
+        {
+            var value = thisInfo[nameof(TargetChance) + i];
+            TargetChance[i] = value.ToFloat();
+        }
+
+        var buildCosts = IdCount<IModel>.Construct();
+        var maintainCosts = IdCount<IModel>.Construct();
+
+        var buildCostEntries = thisInfo.Where(kvp => kvp.Key.StartsWith("BuildCost"));
+        var maintainCostEntries = thisInfo.Where(kvp => kvp.Key.StartsWith("MaintainCost"));
+        
+        foreach (var (entryName, valueString) in buildCostEntries)
+        {
+            var modelName = entryName.TrimPrefix("BuildCost");
+            var model = modelsByName[modelName];
+            var value = valueString.ToFloat();
+            GD.Print($"{modelName} {value}");
+
+            buildCosts.Set(model, value);
+        }
+        foreach (var (entryName, valueString) in maintainCostEntries)
+        {
+            var modelName = entryName.TrimPrefix("MaintainCost");
+            var model = modelsByName[modelName];
+            var value = valueString.ToFloat();
+            maintainCosts.Set(model, value);
+        }
+        
+        Makeable = new MakeableAttribute(buildCosts, maintainCosts);
+
         Icon = Icon.Create(name.ToLower(), Vector2I.One);
     }
 }

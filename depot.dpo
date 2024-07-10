@@ -1,0 +1,345 @@
+{
+    "sheets": [
+        {
+            "name": "Troops",
+            "description": "Troop data",
+            "displayColumn": "Name",
+            "guid": "4613b504-367c-4d2e-96a1-c08f4a496a33",
+            "columns": [
+                {
+                    "typeStr": "text",
+                    "guid": "6ecd8673-dced-4b3d-8bd9-81d99cbf4576",
+                    "name": "Name",
+                    "description": "text field",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "129eb45f-9e31-4937-a168-313ad82b0c2e",
+                    "description": "float field",
+                    "name": "HardAttack",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "c57a6780-8f68-402f-ab0e-586d57039796",
+                    "description": "float field",
+                    "name": "SoftAttack",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "fa69f25e-293c-4fe9-91e3-065284db0a8e",
+                    "description": "float field",
+                    "name": "Hitpoints",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "a7c03104-4eae-40d5-bb3d-81c709092081",
+                    "description": "float field",
+                    "name": "Hardness",
+                    "min": 0,
+                    "max": 1,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "int",
+                    "guid": "9b6396e0-1b49-4841-a844-8961f16e0827",
+                    "description": "int field",
+                    "name": "Echelon",
+                    "min": 0,
+                    "max": 2,
+                    "defaultValue": 0,
+                    "iconName": "newInt",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "int",
+                        "max": "int",
+                        "defaultValue": "int"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "a66342dd-8fb6-46eb-bfc2-cd32a3d356c9",
+                    "description": "float field",
+                    "name": "Accuracy",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "a432ce23-99e2-40d0-bcbb-2eba03e786a1",
+                    "description": "float field",
+                    "name": "Evasion",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "e298f937-35fd-45c3-a01d-174942312ed2",
+                    "description": "float field",
+                    "name": "FrontLength",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "int",
+                    "guid": "0bffdc2d-0495-4f2c-9854-18b8272c6b80",
+                    "description": "int field",
+                    "name": "Range",
+                    "min": 0,
+                    "max": 3,
+                    "defaultValue": 0,
+                    "iconName": "newInt",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "int",
+                        "max": "int",
+                        "defaultValue": "int"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "9a8cf90b-da0d-4ce0-b151-76d962c07014",
+                    "description": "float field",
+                    "name": "BreakthroughMult",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "a2c5fe2a-ca9e-416c-ab50-65c171c8c0de",
+                    "name": "BuildCosts",
+                    "description": "new list field",
+                    "sheet": "6dd36e7b-4717-4590-a4a2-e253c1ab7afe",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "c7a7ae3f-adb8-4276-b456-6223a3af3073",
+                    "id": "0",
+                    "Name": "",
+                    "HardAttack": 0,
+                    "SoftAttack": 0,
+                    "Hitpoints": 0,
+                    "Hardness": 0,
+                    "Echelon": 0,
+                    "Accuracy": 0,
+                    "Evasion": 0,
+                    "FrontLength": 0,
+                    "Range": 0,
+                    "BreakthroughMult": 0,
+                    "BuildCosts": []
+                },
+                {
+                    "guid": "46c2272e-bc0c-44d8-ac19-18469235bb09",
+                    "id": "1",
+                    "Name": "",
+                    "HardAttack": 0,
+                    "SoftAttack": 0,
+                    "Hitpoints": 0,
+                    "Hardness": 0,
+                    "Echelon": 0,
+                    "Accuracy": 0,
+                    "Evasion": 0,
+                    "FrontLength": 0,
+                    "Range": 0,
+                    "BreakthroughMult": 0,
+                    "BuildCosts": []
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Items",
+            "description": "description of what the sheet is",
+            "displayColumn": "Name",
+            "guid": "05393b69-ba6b-4e5e-af76-a146982f7ffa",
+            "columns": [
+                {
+                    "typeStr": "text",
+                    "guid": "183a0ff4-0c83-4099-8a33-da3c6838fbe4",
+                    "name": "Name",
+                    "description": "text field",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "c5f0cdbc-2c82-400e-b21f-8c2d07982af1",
+                    "id": "0",
+                    "Name": "Recruits"
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "BuildCosts",
+            "description": "list@4613b504-367c-4d2e-96a1-c08f4a496a33",
+            "displayColumn": "id",
+            "guid": "6dd36e7b-4717-4590-a4a2-e253c1ab7afe",
+            "columns": [
+                {
+                    "typeStr": "lineReference",
+                    "guid": "f0c8ae40-4d0b-4cc1-8606-fa75d26bbdd1",
+                    "name": "Item",
+                    "description": "new line reference field",
+                    "sheet": "05393b69-ba6b-4e5e-af76-a146982f7ffa",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "9e387c83-8a36-456f-afaf-d996c5498403",
+                    "description": "float field",
+                    "name": "Amount",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "4613b504-367c-4d2e-96a1-c08f4a496a33",
+            "columnGUID": "a2c5fe2a-ca9e-416c-ab50-65c171c8c0de"
+        }
+    ]
+}

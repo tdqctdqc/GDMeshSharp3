@@ -75,7 +75,7 @@ public class Models
         MoveTypes = new MoveTypes();
         AddManager(MoveTypes);
         
-        Troops = new Troops(Items, Flows);
+        Troops = new Troops(_modelsByName);
         AddManager(Troops);
 
         ResourceExtractions = new ResourceExtractionList(Items, Flows, PeepJobs);
