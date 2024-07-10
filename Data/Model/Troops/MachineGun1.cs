@@ -1,12 +1,10 @@
-using Godot;
-using System;
 using System.Collections.Generic;
 
-public class Artillery1 : Troop
+public class MachineGun1 : Troop
 {
-    public Artillery1(Items items, FlowList flows) 
+    public MachineGun1(Items items, FlowList flows) 
         : base(
-            nameof(Artillery1),
+            nameof(MachineGun1),
             TroopDomain.Land,
             new MakeableAttribute(
                 IdCount<IModel>.Construct(
@@ -18,7 +16,7 @@ public class Artillery1 : Troop
                 IdCount<IModel>.Construct(
                     new Dictionary<IModel, float>
                     {
-                        {flows.MilitaryCap, 3f}
+                        {flows.MilitaryCap, 2f}
                     })
             )
         )

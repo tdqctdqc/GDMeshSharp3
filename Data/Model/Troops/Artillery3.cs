@@ -2,18 +2,18 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public class Artillery1 : Troop
+public class Artillery3 : Troop
 {
-    public Artillery1(Items items, FlowList flows) 
+    public Artillery3(Items items, FlowList flows) 
         : base(
-            nameof(Artillery1),
+            nameof(Artillery3),
             TroopDomain.Land,
             new MakeableAttribute(
                 IdCount<IModel>.Construct(
                     new Dictionary<IModel, float>
                     {
                         {items.Recruits, 2},
-                        {flows.IndustrialPower, 5f}
+                        {flows.IndustrialPower, 25f}
                     }),
                 IdCount<IModel>.Construct(
                     new Dictionary<IModel, float>

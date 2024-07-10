@@ -1,0 +1,20 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://c3eorlhjga1d0"]
+
+[ext_resource type="Script" path="res://Data/Model/Troops/TroopRes.cs" id="1_uu85f"]
+
+[resource]
+script = ExtResource("1_uu85f")
+DisplayName = "Gatling Gun"
+HardAttack = 1.0
+SoftAttack = 25.0
+Hitpoints = 25.0
+Hardness = 0.0
+Echelon = 0
+Accuracy = 0.1
+Evasion = 0.05
+Recon = 0.1
+MilitaryCapCost = 5.0
+FrontLength = 2.0
+Range = 0
+TargetChances = PackedFloat32Array(1, 0.5, 0.25)
+BreakthroughMult = 0.5
