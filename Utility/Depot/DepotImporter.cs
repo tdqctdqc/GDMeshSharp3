@@ -48,7 +48,9 @@ public class DepotImporter
 
     public void MakeSheetObjectsDefault<T>(Func<T> get)
     {
-        var sheet = Sheets[typeof(T).Name];
+        var sheetName = typeof(T).Name;
+        GD.Print($"making objects for {sheetName}");
+        var sheet = Sheets[sheetName];
         sheet.MakeObjectsDefault<T>(get, this);
     }
     public void FillProperties<T>(string lineName, T t)

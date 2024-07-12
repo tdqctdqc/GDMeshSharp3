@@ -43,6 +43,8 @@ public class DepotSheet
     {
         foreach (var (lineName, line) in Lines)
         {
+            GD.Print($"making object for {lineName}");
+
             var t = get();
             var lineGuid = LineGuids[lineName];
             importer.LineObjects.Add(lineGuid, t);

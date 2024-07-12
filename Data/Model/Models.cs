@@ -40,7 +40,7 @@ public class Models
             () => new MakeableAttribute(null, null));
         _depot.MakeSheetObjectsDefault<LaborComponent>(
             () => new LaborComponent(null, null, null));
-
+        
         
         _managers = new Dictionary<Type, IModelManager>();
         ModelsById = new Dictionary<int, IModel>();
