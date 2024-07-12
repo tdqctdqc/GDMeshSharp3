@@ -8,12 +8,18 @@ public class LandformList : ModelList<Landform>
 {
     public Landform Peak { get; private set; } 
         = new Peak();
-    public Landform Mountain { get; private set; } = new Mountain();
-    public Landform Hill { get; private set; } = new Hill();
-    public Landform Plain  { get; private set; } = new Landform(nameof(Plain));
-    public Landform Sea  { get; private set; } = new Landform(nameof(Sea));
-    public Landform River { get; private set; } = new River();
-    public Landform Urban { get; private set; } = new Urban();
+    public Landform Mountain { get; private set; } 
+        = new Mountain();
+    public Landform Hill { get; private set; } 
+        = new Hill();
+    public Landform Plain  { get; private set; } 
+        = new Landform(nameof(Plain));
+    public Landform Sea  { get; private set; } 
+        = new Landform(nameof(Sea));
+    public Landform River { get; private set; } 
+        = new River();
+    public Landform Urban { get; private set; } 
+        = new Urban();
     public List<Landform> ByPriority { get; private set; }
     public LandformList()
     {

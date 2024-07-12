@@ -6,8 +6,7 @@ public class StoneRoad : RoadModel
 {
     public StoneRoad() 
         : base(nameof(StoneRoad), 
-            .15f, false, 0f,
-            Colors.Black.Lightened(.5f))
+            .15f, false, 0f)
     {
     }
 
@@ -15,7 +14,7 @@ public class StoneRoad : RoadModel
     {
         var stoneColor = Colors.Black.Lightened(.3f);
         var stoneWidth = width / 6f;
-        mb.AddLine(from, to, Color, width);
+        mb.AddLine(from, to, Colors.Black.Lightened(.5f), width);
         var perp = (to - from).Orthogonal().Normalized();
         
         mb.AddDashedLine(from, to, stoneColor, 

@@ -34,21 +34,19 @@ public class BudgetPool
                 if (making is ResourceExtractionBuilding r)
                 {
                     inQueue += r.BaseLabor;
-                    net.Add(r.Resource, r.BaseProd);
+                    net.Add(r.Resource(d), r.BaseProd);
                 }
-                else if (making is SettlementBuildingModel b
-                         && b.GetComponent<LaborComponent>() 
-                             is LaborComponent l)
+                else if (making is SettlementBuilding b)
                 {
-                    inQueue += l
+                    inQueue += b.Labor
                         .TotalLabor();
                     foreach (var (model, value) 
-                        in l.Inputs.GetEnumModel(d))
+                        in b.Labor.Inputs.GetEnumModel(d))
                     {
                         net.Remove(model, value);
                     }
                     foreach (var (model, value) 
-                             in l.Outputs.GetEnumModel(d))
+                             in b.Labor.Outputs.GetEnumModel(d))
                     {
                         net.Add(model, value);
                     }

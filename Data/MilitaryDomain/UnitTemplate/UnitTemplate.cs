@@ -20,7 +20,7 @@ public class UnitTemplate : Entity, IMakeable
         MoveType moveType,
         Regime regime)
     {
-        var costs = IdCount<IModel>.Construct();
+        var costs = IdCount<Item>.Construct();
         foreach (var kvp in troopCounts)
         {
             var troop = kvp.Key;
@@ -30,7 +30,7 @@ public class UnitTemplate : Entity, IMakeable
         
         var makeable = new MakeableAttribute(
             costs, 
-            IdCount<IModel>.Construct()
+            IdCount<Item>.Construct()
         );
         var u = new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
             moveType.MakeRef(), regime.MakeRef(),

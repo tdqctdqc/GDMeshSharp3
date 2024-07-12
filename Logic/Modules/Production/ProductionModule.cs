@@ -137,9 +137,8 @@ public class ProductionModule : LogicModule
                 if (c.GetSettlement(d) is Settlement s == false) return null;
                 return s.Buildings
                     .GetEnumModel(d)
-                    .Where(kvp => kvp.Key.HasComponent<LaborComponent>())
                     .Select(kvp =>
-                        new ProdEntry(kvp.Key.GetComponent<LaborComponent>(), kvp.Value, c));
+                        new ProdEntry(kvp.Key.Labor, kvp.Value, c));
             })
             .Where(v => v is not null).ToArray();
         var allProds = foodProds

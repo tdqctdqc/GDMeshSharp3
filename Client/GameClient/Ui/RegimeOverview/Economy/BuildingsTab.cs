@@ -9,7 +9,7 @@ public partial class BuildingsTab : ScrollContainer, IUiDrawable
     private RegimeOverviewWindow _parent;
     private Container _container, _info;
     private ItemListToken<Settlement> _settlementList;
-    private ItemListToken<SettlementBuildingModel> _settlementBuildingList;
+    private ItemListToken<SettlementBuilding> _settlementBuildingList;
     private ItemListToken<ResourceExtractionBuilding> _resourceExtractionList;
     
     public BuildingsTab(RegimeOverviewWindow parent)
@@ -65,7 +65,7 @@ public partial class BuildingsTab : ScrollContainer, IUiDrawable
         left.CreateLabelAsChild("Settlements");
         left.AddChild(_settlementList.ItemList);
 
-        _settlementBuildingList = new ItemListToken<SettlementBuildingModel>(
+        _settlementBuildingList = new ItemListToken<SettlementBuilding>(
             settlementBuildings.Keys,
             m => $"{m.Name}: {settlementBuildings[m]}",
             s => s.Icon.Texture,

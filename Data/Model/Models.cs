@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Godot;
@@ -29,8 +30,18 @@ public class Models
     public MoveTypes MoveTypes { get; private set; }
     public ResourceExtractionList ResourceExtractions { get; private set; }
     private int _idIter;
+    private DepotImporter _depot;
     public Models(Data data)
     {
+        string filePath = Directory.GetCurrentDirectory();
+        filePath += "\\depot.dpo";
+        _depot = new DepotImporter(filePath);
+        _depot.MakeSheetObjectsDefault<MakeableAttribute>(
+            () => new MakeableAttribute(null, null));
+        _depot.MakeSheetObjectsDefault<LaborComponent>(
+            () => new LaborComponent(null, null, null));
+
+        
         _managers = new Dictionary<Type, IModelManager>();
         ModelsById = new Dictionary<int, IModel>();
         _modelsByName = new Dictionary<string, IModel>();
@@ -118,7 +129,8 @@ public class Models
     {
         return (IModelManager<TModel>)_managers[typeof(TModel)];
     }
-    private void AddManager<T>(IModelManager<T> manager) where T : IModel
+    private void AddManager<T>(IModelManager<T> manager) 
+        where T : IModel
     {
         _managers.Add(typeof(T), manager);
         foreach (var keyValuePair in manager.Models)
@@ -127,15 +139,10 @@ public class Models
             SetId(keyValuePair.Value);
         }
     }
-    private void AddManager<T>(ModelList<T> list) where T : IModel
+    private void AddManager<T>(ModelList<T> list) 
+        where T : IModel
     {
         var manager = new ModelManager<T>(list);
-        _managers.Add(typeof(T), manager);
-        foreach (var keyValuePair in manager.Models.OrderBy(kvp => kvp.Key))
-        {
-            var model = keyValuePair.Value;
-            _modelsByName.Add(keyValuePair.Key, keyValuePair.Value);
-            SetId(model);
-        }
+        AddManager(manager);
     }
 }

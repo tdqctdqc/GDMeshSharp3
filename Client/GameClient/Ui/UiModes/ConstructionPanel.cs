@@ -53,30 +53,27 @@ public partial class ConstructionPanel : PanelContainer
         var population = s.Cell.Get(c.Data).GetPeep(c.Data).Size;
         _info.CreateLabelAsChild("Population: " + population);
         var usedLabor = s.Buildings.GetEnumModel(c.Data)
-            .Where(kvp => kvp.Key.HasComponent<LaborComponent>())
-            .Sum(kvp => kvp.Key.GetComponent<LaborComponent>().TotalLabor() * kvp.Value);
+            .Sum(kvp => kvp.Key.Labor.TotalLabor() * kvp.Value);
         var inProgress = regime.MakeQueue.Queue
             .OfType<PlayerBuildingMakeProject>()
             .Where(p => p.Settlement.RefId == s.Id);
         var expectedLabor = inProgress
-            .Select(p => (SettlementBuildingModel)p.Making.Get(c.Data))
-            .Where(b => b.HasComponent<LaborComponent>())
-            .Sum(b => b.GetComponent<LaborComponent>().TotalLabor());
+            .Select(p => (SettlementBuilding)p.Making.Get(c.Data))
+            .Sum(b => b.Labor.TotalLabor());
 
         var freeLabor = population - (usedLabor + expectedLabor);
         _info.CreateLabelAsChild($"Free Labor: {freeLabor}");
         
         var list = c.Data.Models.ModelsById
-            .Values.OfType<SettlementBuildingModel>();
+            .Values.OfType<SettlementBuilding>();
         foreach (var model in list)
         {
             var vbox = new VBoxContainer();
             vbox.ExpandFill();
             var text = $"{model.Name} x {s.Buildings.Get(model).ToString()}";
-            if (model.GetComponent<LaborComponent>() is LaborComponent l)
-            {
-                text += $"\n Labor: {model.GetComponent<LaborComponent>().TotalLabor()}";
-            }
+            
+            text += $"\n Labor: {model.Labor.TotalLabor()}";
+
             foreach (var (buildMaterial, amt) in model.Makeable.BuildCosts.GetEnumModel(c.Data))
             {
                 text += $"\n {buildMaterial.Name}: {regime.Stock.Stock.Get(buildMaterial)}/{amt}";

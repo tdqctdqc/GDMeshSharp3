@@ -6,8 +6,7 @@ using Godot;
 public class Coal : NaturalResource
 {
     public Coal() 
-        : base(nameof(Coal), Colors.Black, 
-            5)
+        : base(nameof(Coal), 5)
     {
     }
 

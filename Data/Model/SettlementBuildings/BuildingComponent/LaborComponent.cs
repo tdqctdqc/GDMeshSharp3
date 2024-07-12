@@ -6,12 +6,12 @@ using Godot;
 
 public class LaborComponent : BuildingModelComponent
 {
-    public IdCount<IModel> Inputs { get; private set; }
-    public IdCount<IModel> Outputs { get; private set; }
+    public IdCount<Item> Inputs { get; private set; }
+    public IdCount<Item> Outputs { get; private set; }
     public IdCount<PeepJob> Jobs { get; private set; }
 
-    public LaborComponent(IdCount<IModel> inputs,
-        IdCount<IModel> outputs,
+    public LaborComponent(IdCount<Item> inputs,
+        IdCount<Item> outputs,
         IdCount<PeepJob> jobs)
     {
         Inputs = inputs;

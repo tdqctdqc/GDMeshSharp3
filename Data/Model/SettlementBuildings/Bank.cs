@@ -2,31 +2,29 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Bank : SettlementBuildingModel
+public class Bank : SettlementBuilding
 {
     public Bank(Items items, PeepJobList jobs, FlowList flows) 
         : base(nameof(Bank), 
-            new List<BuildingModelComponent>
-            {
-                new LaborComponent(
-                    IdCount<IModel>.Construct(
-                    ),
+            new LaborComponent(
+                IdCount<Item>.Construct(
+                ),
                     
-                    IdCount<IModel>.Construct(
-                        (flows.Income, 100)
-                    ), 
+                IdCount<Item>.Construct(
+                    (flows.Income, 100)
+                ), 
                     
-                    IdCount<PeepJob>.Construct(
-                        (jobs.Bureaucrat, 500)
-                    ))
-            },
+                IdCount<PeepJob>.Construct(
+                    (jobs.Bureaucrat, 500)
+                )
+            ),
             new MakeableAttribute(
-                IdCount<IModel>.Construct(new Dictionary<IModel, float>
+                IdCount<Item>.Construct(new Dictionary<Item, float>
                 {
                     { items.FinancialPower, 10_000 },
                     { flows.ConstructionCap, 5_000 },
                 }),
-              IdCount<IModel>.Construct(new Dictionary<IModel, float>
+              IdCount<Item>.Construct(new Dictionary<Item, float>
                 {
                 })
             )  

@@ -5,8 +5,7 @@ using Godot;
 public class Oil : NaturalResource
 {
     public Oil() 
-        : base(nameof(Oil), Colors.Purple, 
-            5)
+        : base(nameof(Oil), 5)
     {
     }
 

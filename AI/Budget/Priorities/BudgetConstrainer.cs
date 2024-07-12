@@ -50,7 +50,7 @@ public static class BudgetConstrainer
         this Solver solver, 
         Data data, BudgetPool pool, 
         Dictionary<TBuild, Variable> vars,
-        Func<TBuild, Dictionary<IModel, float>?> getMaintainCosts)
+        Func<TBuild, Dictionary<Item, float>?> getMaintainCosts)
             where TBuild : IMakeable
     {
         var constraints = new Dictionary<int, Constraint>();

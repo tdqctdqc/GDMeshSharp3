@@ -10,7 +10,7 @@ public class PlayerBuildingMakeProject : MakeProject
         int amount,
         Settlement settlement,
         Regime regime,
-        SettlementBuildingModel making)
+        SettlementBuilding making)
     {
         return new PlayerBuildingMakeProject(
             settlement.MakeRef(), regime.MakeRef(),
@@ -40,7 +40,7 @@ public class PlayerBuildingMakeProject : MakeProject
         var diff = after - before;
         for (var i = 0; i < diff; i++)
         {
-            var building = (SettlementBuildingModel)Making.Get(key.Data);
+            var building = (SettlementBuilding)Making.Get(key.Data);
             var settlement = Settlement.Get(key.Data);
             var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
             key.SendMessage(proc);
@@ -60,7 +60,7 @@ public class PlayerBuildingMakeProject : MakeProject
         var diff = after - before;
         for (var i = 0; i < diff; i++)
         {
-            var building = (SettlementBuildingModel)Making.Get(key.Data);
+            var building = (SettlementBuilding)Making.Get(key.Data);
             var settlement = Settlement.Get(key.Data);
             var regime = Regime.Get(key.Data);
             var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
@@ -84,9 +84,9 @@ public class PlayerBuildingMakeProject : MakeProject
         }
     }
 
-    public SettlementBuildingModel MakingBuilding(Data d)
+    public SettlementBuilding MakingBuilding(Data d)
     {
-        return (SettlementBuildingModel)Making.Get(d);
+        return (SettlementBuilding)Making.Get(d);
     }
 
     public override Control GetDisplay(Data d)
@@ -137,7 +137,7 @@ public class PlayerBuildingMakeProject : MakeProject
         var diff = after - before;
         for (var i = 0; i < diff; i++)
         {
-            var building = (SettlementBuildingModel)Making.Get(key.Data);
+            var building = (SettlementBuilding)Making.Get(key.Data);
             var settlement = Settlement.Get(key.Data);
             var regime = Regime.Get(key.Data);
             var proc = new AddBuildingProcedure(Settlement, building.MakeRef());

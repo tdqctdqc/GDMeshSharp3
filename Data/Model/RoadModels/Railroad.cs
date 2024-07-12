@@ -7,8 +7,8 @@ public class Railroad : RoadModel
 {
     public Railroad() 
         : base(nameof(Railroad), 
-            .01f, true, 100f,
-            Colors.Black)
+            .01f, 
+            true, 100f)
     {
     }
 

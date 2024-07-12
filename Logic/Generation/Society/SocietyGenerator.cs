@@ -129,7 +129,7 @@ public class SocietyGenerator : Generator
                 var rand = Game.I.Random.Randf();
                 if (rand > developmentScale) continue;
                 var item = rd.Item.Get(_data);
-                if (extractionBuildings.FirstOrDefault(b => b.Resource == item)
+                if (extractionBuildings.FirstOrDefault(b => b.Resource(_data) == item)
                     is ResourceExtractionBuilding xb)
                 {
                     rd.SetExtraction(xb.MakeRef());
@@ -249,7 +249,7 @@ public class SocietyGenerator : Generator
         var factory = _data.Models.Buildings.Factory;
         var barracks = _data.Models.Buildings.Barracks;
 
-        var weights = new Dictionary<SettlementBuildingModel, float>
+        var weights = new Dictionary<SettlementBuilding, float>
         {
             {factory, 4},
             {barracks, 1}
@@ -267,7 +267,7 @@ public class SocietyGenerator : Generator
             
             foreach (var (model, weight) in weights)
             {
-                var laborNeed = model.GetComponent<LaborComponent>()
+                var laborNeed = model.Labor
                     .TotalLabor();
                 var laborAvail = freeLabor * weight / totalWeight;
                 var num = Mathf.FloorToInt(laborAvail / laborNeed);

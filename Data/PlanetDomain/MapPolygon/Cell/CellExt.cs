@@ -98,12 +98,7 @@ public static class CellExt
             laborDemand += s.Buildings.GetEnumModel(d)
                 .Sum(kvp =>
                 {
-                    if (kvp.Key.GetComponent<LaborComponent>() is LaborComponent l)
-                    {
-                        return l.TotalLabor();
-                    }
-
-                    return 0f;
+                    return kvp.Key.Labor.TotalLabor();
                 });
         }
 

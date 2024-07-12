@@ -7,6 +7,15 @@ public static class EnumerableExt
 {
     private static RandomNumberGenerator _rand = new RandomNumberGenerator();
 
+    public static T GetOnly<T>(this IEnumerable<T> get)
+    {
+        var en = get.GetEnumerator();
+        var haveFirst = en.MoveNext();
+        if(haveFirst == false) throw new Exception();
+        var t = en.Current;
+        if (en.MoveNext()) throw new Exception();
+        return t;
+    }
     public static int IndexOf<T>(this T[] array, T t)
     {
         var res = -1;

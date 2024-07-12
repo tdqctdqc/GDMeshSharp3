@@ -2,30 +2,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class TownHall : SettlementBuildingModel
+public class TownHall : SettlementBuilding
 {
     public TownHall(Items items, PeepJobList jobs, FlowList flows) 
         : base(nameof(TownHall), 
-            new List<BuildingModelComponent>
-            {
-                new LaborComponent(
-                    IdCount<IModel>.Construct(
-                    ), 
-                    IdCount<IModel>.Construct(
-                    ), 
-                    IdCount<PeepJob>.Construct(
-                        (jobs.Bureaucrat, 100)
-                    )
+            new LaborComponent(
+                IdCount<Item>.Construct(
+                ), 
+                IdCount<Item>.Construct(
+                ), 
+                IdCount<PeepJob>.Construct(
+                    (jobs.Bureaucrat, 100)
                 )
-            },
+            ),
             new MakeableAttribute(
-                IdCount<IModel>.Construct(
-                    new Dictionary<IModel, float>
+                IdCount<Item>.Construct(
+                    new Dictionary<Item, float>
                     {
                         { flows.ConstructionCap, 20_000 },
                     }),
-                IdCount<IModel>.Construct(
-                    new Dictionary<IModel, float> {})
+                IdCount<Item>.Construct(
+                    new Dictionary<Item, float> {})
                 ))
     {
     }

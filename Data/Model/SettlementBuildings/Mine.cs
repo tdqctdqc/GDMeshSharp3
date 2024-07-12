@@ -10,12 +10,12 @@ public class Mine : ResourceExtractionBuilding
         : base(name, prodItem, 20, 500, 
             100, jobs.Miner,
             new MakeableAttribute(
-                IdCount<IModel>.Construct(new Dictionary<IModel, float>
+                IdCount<Item>.Construct(new Dictionary<Item, float>
                 {
                     {items.Iron, 1000},
                     { flows.ConstructionCap, 200_000 },
                 }),
-                IdCount<IModel>.Construct(new Dictionary<IModel, float>
+                IdCount<Item>.Construct(new Dictionary<Item, float>
                 {
                 }))
         )
@@ -24,6 +24,7 @@ public class Mine : ResourceExtractionBuilding
     public override bool CanBuildInCell(Cell t, Data data)
     {
         return t is LandCell
-            && data.Planet.ResourceDepositAux.ByCell[t].Item.Get(data) == Resource;
+            && data.Planet.ResourceDepositAux.ByCell[t].Item
+                .Get(data) == Resource(data);
     }
 }

@@ -12,7 +12,7 @@ public class Landform : TerrainAspect
     public float MovementCostMult { get; private set; }
     public float EvasionMult { get; private set; }
     public bool IsWater { get; private set; }
-    public bool IsLand => IsWater == false;
+    public bool IsLand() => IsWater == false;
     public Landform(string name)
     {
         var res = GD.Load<LandformRes>($"Data/Model/Terrain/Landform/{name}.tres");

@@ -11,4 +11,5 @@ public class Items : ModelList<Item>
     public FinancialPower FinancialPower { get; private set; } = new ();
     public Coal Coal { get; private set; } = new ();
     public HeavyMetal HeavyMetal { get; private set; } = new ();
+
 }

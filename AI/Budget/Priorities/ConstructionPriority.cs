@@ -6,11 +6,11 @@ using Godot;
 using Google.OrTools.LinearSolver;
 
 public abstract class ConstructionPriority 
-    : SolverPriority<SettlementBuildingModel>
+    : SolverPriority<SettlementBuilding>
 {
     public ConstructionPriority(string name) 
         : base(name, 
-            d => d.Models.GetModels<SettlementBuildingModel>().Values)
+            d => d.Models.GetModels<SettlementBuilding>().Values)
     {
     }
 
@@ -22,19 +22,15 @@ public abstract class ConstructionPriority
     protected override void SetConstraints(Solver solver, 
         Regime r,
         BudgetPool pool,
-        Dictionary<SettlementBuildingModel, Variable> projVars, Data data)
+        Dictionary<SettlementBuilding, Variable> projVars, Data data)
     {
         solver.SetBuildCostConstraints(data, pool, projVars);
         solver.SetMaintainCostConstraints(data, pool, projVars,
             b =>
             {
-                if (b.GetComponent<LaborComponent>() is LaborComponent l)
-                {
-                    return l.Inputs.GetEnumModel(data)
-                        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
-                }
+                return b.Labor.Inputs.GetEnumModel(data)
+                    .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
-                return null;
             });
         // solver.SetBuildingSlotConstraints(r, projVars, data);
         
@@ -43,11 +39,7 @@ public abstract class ConstructionPriority
         
         foreach (var (b, variable) in projVars)
         {
-            if (b.GetComponent<LaborComponent>() is LaborComponent l)
-            {
-                laborConstraint.SetCoefficient(variable, l.TotalLabor());
-                
-            }
+            laborConstraint.SetCoefficient(variable, b.Labor.TotalLabor());
         }
     }
 }

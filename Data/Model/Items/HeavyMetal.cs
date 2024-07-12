@@ -6,7 +6,8 @@ using Godot;
 public class HeavyMetal : NaturalResource
 {
     public HeavyMetal() 
-        : base(nameof(HeavyMetal), new Color("#0047AB"),
+        : base(nameof(HeavyMetal), 
+            // new Color("#0047AB"),
             25f)
     {
     }

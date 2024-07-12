@@ -11,5 +11,5 @@ DarkenFactor = 0.0
 FrontLengthMult = 1.0
 MovementCostMult = 1.0
 EvasionMult = 1.0
-Color = Color(0.647059, 0.164706, 0.164706, 1)
+Color = Color(0.835294, 0.529412, 0.45098, 1)
 IsWater = false

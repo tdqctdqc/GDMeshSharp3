@@ -123,7 +123,7 @@ public class PolyCellGenerator : Generator
         void irrigate(MapPolygon poly, Cell cell)
         {
             if (poly.DistFromEquatorRatio(_data) >= tundra.MinDistFromEquatorRatio) return;
-            if (cell.GetLandform(_data).IsLand
+            if (cell.GetLandform(_data).IsLand()
                 && cell.GetVegetation(_data).MinMoisture < _data.Models.Vegetations.Grassland.MinMoisture
                 && _data.Models.Vegetations.Grassland.AllowedLandforms.Contains(cell.GetLandform(_data))
                 && cell.AnyNeighbor(n => n.GetLandform(_data).IsWater, _data))
@@ -131,7 +131,7 @@ public class PolyCellGenerator : Generator
                 cell.SetVegetation(_data.Models.Vegetations.Grassland, key);
                 cell.ForEachNeighbor(nCell =>
                 {
-                    if (nCell.GetLandform(_data).IsLand
+                    if (nCell.GetLandform(_data).IsLand()
                         && nCell.GetVegetation(_data).MinMoisture < _data.Models.Vegetations.Steppe.MinMoisture
                         && _data.Models.Vegetations.Steppe.AllowedLandforms.Contains(nCell.GetLandform(_data)))
                     {
@@ -170,13 +170,13 @@ public class PolyCellGenerator : Generator
 
         void mountainRidging(MapPolygon poly, Cell cell)
         {
-            if (cell.GetLandform(_data).IsLand && cell.GetLandform(_data).MinRoughness >= _data.Models.Landforms.Peak.MinRoughness)
+            if (cell.GetLandform(_data).IsLand() && cell.GetLandform(_data).MinRoughness >= _data.Models.Landforms.Peak.MinRoughness)
             {
                 var globalPos = cell.GetCenter();
                 var noise = mountainNoise.GetNoise2D(globalPos.X, globalPos.Y);
                 if(noise < .2f) cell.SetLandform(_data.Models.Landforms.Mountain, key);
             }
-            else if (cell.GetLandform(_data).IsLand && cell.GetLandform(_data).MinRoughness >= _data.Models.Landforms.Mountain.MinRoughness)
+            else if (cell.GetLandform(_data).IsLand() && cell.GetLandform(_data).MinRoughness >= _data.Models.Landforms.Mountain.MinRoughness)
             {
                 var globalPos = cell.GetCenter();
                 var noise = mountainNoise.GetNoise2D(globalPos.X, globalPos.Y);

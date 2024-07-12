@@ -7,14 +7,13 @@ public class PavedRoad : RoadModel
 {
     public PavedRoad() 
         : base(nameof(PavedRoad), 
-            .1f, false, 0f, 
-            Colors.Black.Lightened(.2f))
+            .1f, false, 0f)
     {
     }
 
     public override void Draw(MeshBuilder mb, Vector2 from, Vector2 to, float width)
     {
-        mb.AddLine(from, to, Color, width);
+        mb.AddLine(from, to, Colors.Black.Lightened(.2f), width);
         mb.AddDashedLine(from, to, Colors.White, width / 4f, width / 2f, width / 3f);
     }
 }

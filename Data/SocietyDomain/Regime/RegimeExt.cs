@@ -60,10 +60,7 @@ public static class RegimeExt
                 var s = c.GetSettlement(d);
                 foreach (var (key, value) in s.Buildings.GetEnumModel(d))
                 {
-                    if (key.HasComponent<LaborComponent>())
-                    {
-                        res.AddOrSum(key.GetComponent<LaborComponent>(), value);
-                    }
+                    res.AddOrSum(key.Labor, value);
                 }
             }
         }

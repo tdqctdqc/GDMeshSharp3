@@ -13,7 +13,7 @@ public class TextureManager
         scenePaths.ForEach(path =>
         {
             var text = (Texture2D) GD.Load(path);
-            var textureName = GodotFileExt.GetFileName(path);
+            var textureName = GodotFileExt.GetFileName(path.ToLower());
             Textures.Add(textureName, text);
         });
     }

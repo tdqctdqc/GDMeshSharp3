@@ -6,15 +6,13 @@ using Godot;
 public abstract class Item : IModel, IIconed
 {
     public string Name { get; private set; }
-    public Color Color { get; private set; }
     public int Id { get; private set; }
     public Icon Icon { get; }
     
-    protected Item(string name, Color color, 
+    protected Item(string name, 
         params IItemAttribute[] attributes)
     {
         Name = name;
-        Color = color;
         Icon = Icon.Create(Name, Vector2I.One);
     }
 }

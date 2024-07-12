@@ -22,7 +22,7 @@ public static class BuildTree
 
    
 
-    private static float Run(Dictionary<IModel, float> children,
+    private static float Run(Dictionary<Item, float> children,
         RegimeStock stock, float totalToMake, Data d)
     {
         var made = 0f;
@@ -37,7 +37,7 @@ public static class BuildTree
         return made;
     }
 
-    private static float DoIter(Dictionary<IModel, float> children,
+    private static float DoIter(Dictionary<Item, float> children,
         RegimeStock stock, float leftToMake,
         Data d)
     {
@@ -63,12 +63,12 @@ public static class BuildTree
         return amount;
     }
 
-    private static Dictionary<IModel, float> MakeChildren(
-        Dictionary<IModel, float> children,
+    private static Dictionary<Item, float> MakeChildren(
+        Dictionary<Item, float> children,
         RegimeStock stock,
         Data d)
     {
-        Dictionary<IModel, float> newChildren = null;
+        Dictionary<Item, float> newChildren = null;
         
         foreach (var (model, unitCost) in children)
         {
@@ -79,7 +79,7 @@ public static class BuildTree
         if (newChildren is null) return children;
         return newChildren;
 
-        bool checkEntry(IModel m, float unitCost)
+        bool checkEntry(Item m, float unitCost)
         {
             if (stock.Stock.Get(m) == 0f)
             {
@@ -90,7 +90,7 @@ public static class BuildTree
                 
                 if (newChildren is null)
                 {
-                    newChildren = new Dictionary<IModel, float>();
+                    newChildren = new Dictionary<Item, float>();
                 }
                 
                 foreach (var (m2, unitCost2) 

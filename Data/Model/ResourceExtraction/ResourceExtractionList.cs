@@ -6,6 +6,7 @@ public class ResourceExtractionList : ModelList<ResourceExtractionBuilding>
     public ResourceExtractionList(Items items, FlowList flows, 
         PeepJobList jobs)
     {
-        IronMine = new Mine(nameof(IronMine), items.Iron, items, jobs, flows);
+        IronMine = new Mine(nameof(IronMine), items.Iron, 
+            items, jobs, flows);
     }
 }

@@ -16,20 +16,14 @@ public class MakeProductionBuildingsPriority
         Model = model;
     }
 
-    protected override float Utility(SettlementBuildingModel t)
+    protected override float Utility(SettlementBuilding t)
     {
-        return t.GetComponent<LaborComponent>().Outputs.Contents[Model.Id];
+        return t.Labor.Outputs.Contents[Model.Id];
     }
 
-    protected override bool Relevant(SettlementBuildingModel t, Data d)
+    protected override bool Relevant(SettlementBuilding t, Data d)
     {
-        if (t.HasComponent<LaborComponent>() == false)
-        {
-            return false;
-        }
-
-        var prod = t.GetComponent<LaborComponent>();
-        if (prod.Outputs.Contents.ContainsKey(Model.Id) == false)
+        if (t.Labor.Outputs.Contents.ContainsKey(Model.Id) == false)
         {
             return false;
         }
@@ -38,7 +32,7 @@ public class MakeProductionBuildingsPriority
     }
 
     protected override Dictionary<IModel, float> GetCosts(
-        Dictionary<SettlementBuildingModel, float> toBuild, 
+        Dictionary<SettlementBuilding, float> toBuild, 
         Data d)
     {
         var res = new Dictionary<IModel, float>();

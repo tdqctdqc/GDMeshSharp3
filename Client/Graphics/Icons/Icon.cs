@@ -4,13 +4,11 @@ using Godot;
 
 public class Icon
 {
-    public string Name { get; private set; }
     public Texture2D Texture { get; private set; }
     public static Icon Create(string textureName, Vector2I ratio)
     {
         var i = new Icon();
-        i.Name = textureName;
-        i.Texture = TextureManager.Textures[textureName];
+        i.Texture = TextureManager.Textures[textureName.ToLower()];
         return i;
     }
     private Icon()

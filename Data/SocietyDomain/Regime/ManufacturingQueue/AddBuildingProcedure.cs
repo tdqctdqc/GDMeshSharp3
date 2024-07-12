@@ -2,9 +2,9 @@
 public class AddBuildingProcedure : Procedure
 {
     public ERef<Settlement> Settlement { get; private set; }
-    public ModelRef<SettlementBuildingModel> Building { get; private set; }
+    public ModelRef<SettlementBuilding> Building { get; private set; }
 
-    public AddBuildingProcedure(ERef<Settlement> settlement, ModelRef<SettlementBuildingModel> building)
+    public AddBuildingProcedure(ERef<Settlement> settlement, ModelRef<SettlementBuilding> building)
     {
         Settlement = settlement;
         Building = building;

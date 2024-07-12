@@ -6,8 +6,8 @@ using Godot;
 public class TradeableItem : Item
 {
     public float DefaultPrice { get; private set; }
-    public TradeableItem(string name, Color color, float defaultPrice) 
-        : base(name, color)
+    public TradeableItem(string name, float defaultPrice) 
+        : base(name)
     {
         DefaultPrice = defaultPrice;
     }

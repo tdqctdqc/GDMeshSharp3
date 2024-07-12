@@ -21,9 +21,9 @@ public abstract class FoodProdTechnique
         BaseProd = baseProd;
         BaseLabor = baseLabor;
         Labor = new LaborComponent(
-            IdCount<IModel>.Construct(new Dictionary<IModel, float>()), 
-            IdCount<IModel>.Construct(
-                new Dictionary<IModel, float>
+            IdCount<Item>.Construct(new Dictionary<Item, float>()), 
+            IdCount<Item>.Construct(
+                new Dictionary<Item, float>
                 {
                     { items.Food, baseProd }
                 }), 

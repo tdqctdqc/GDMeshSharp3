@@ -23,8 +23,6 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
 
         general.AddButton("Regime Ais",
             () => RegimeAiOverviewWindow.Open(client.Data));
-        general.AddButton("Market",
-            () => MarketOverviewWindow.Open(client));
         general.AddButton("Issues",
             () => IssueWindow.Open(client));
         general.AddButton("Military",

@@ -117,7 +117,6 @@ public class GodotFileExt
 
     public static string ReadFileAsString(string path)
     {
-        
         var f = FileAccess.Open(path, FileAccess.ModeFlags.Read);
         var sb = new StringBuilder();
         while (f.EofReached() == false)

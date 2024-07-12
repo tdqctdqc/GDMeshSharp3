@@ -7,8 +7,7 @@ using Godot;
 public class Iron : NaturalResource
 {
     public Iron() 
-        : base(nameof(Iron), Colors.DarkRed,
-            5f)
+        : base(nameof(Iron), 5f)
     {
     }
     public override float GetDepositChance(Cell p, Data d)
