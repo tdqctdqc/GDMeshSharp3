@@ -23,7 +23,7 @@ public class Models
     public CultureManager Cultures { get; private set; }
     public RegimeTemplateManager RegimeTemplates { get; private set; }
     public FoodProdTechniqueList FoodProdTechniques { get; private set; }
-    public InfraList Infras { get; private set; }
+    // public InfraList Infras { get; private set; }
     public FlowList Flows { get; private set; }
     public Troops Troops { get; private set; }
     public MoveTypes MoveTypes { get; private set; }
@@ -62,7 +62,7 @@ public class Models
         Flows = new FlowList();
         AddManager(Flows, _depot);
 
-        Buildings = new BuildingList(Items, Flows, PeepJobs);
+        Buildings = new BuildingList();
         AddManager(Buildings, _depot);
 
         RoadList = new RoadList();
@@ -79,9 +79,9 @@ public class Models
         
         FoodProdTechniques = new FoodProdTechniqueList(PeepJobs, Items);
         AddManager(FoodProdTechniques, _depot);
-
-        Infras = new InfraList(PeepJobs, Items);
-        AddManager(Infras, _depot);
+        //
+        // Infras = new InfraList(PeepJobs, Items);
+        // AddManager(Infras, _depot);
         
         MoveTypes = new MoveTypes();
         AddManager(MoveTypes, _depot);
@@ -139,9 +139,17 @@ public class Models
     {
         _managers.Add(typeof(T), manager);
         _depot.MakeSheetObjectsModels(manager);
-        foreach (var t in manager.Models)
+        foreach (var (name, model) in manager.ByName)
         {
-            SetId(t);
+            try
+            {
+                SetId(model);
+            }
+            catch (Exception e)
+            {
+                GD.Print($"couldnt set id for {typeof(T).Name} {name}");
+                throw;
+            }
         }
     }
     
