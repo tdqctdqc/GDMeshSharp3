@@ -14,7 +14,7 @@ public class PeepJob : IModel, IIconed
     {
     }
 
-    public void SetIcon()
+    public void CreateIcon()
     {
         Icon = Icon.Create(Name, new Vector2I(1, 2));
     }

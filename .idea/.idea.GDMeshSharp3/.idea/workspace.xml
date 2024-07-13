@@ -4,8 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="depot">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/Icons/IIconed.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/Icons/IIconed.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Infrastructure/Port.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Infrastructure/Port.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Items/Item.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/Item.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Model/Models.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Models.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionBuilding.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementBuildings/SettlementBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementBuildings/SettlementBuilding.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTier.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/TroopDomains.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/TroopDomains.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Job/PeepJob.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Job/PeepJob.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Depot/DepotImporter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Depot/DepotImporter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Depot/DepotSheet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Depot/DepotSheet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/depot.dpo" beforeDir="false" afterPath="$PROJECT_DIR$/depot.dpo" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -75,9 +94,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7641a1a0695522e81971758464776ba68659afdcd53575f6917f7593181d9345/Dictionary.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/76a7b4387866adc31f9e317277cff4e5a723e96e76b52dd8afe066edf1abf9c3/Array.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/86c2101b66b89b7ebd422e325139db459361d0b5d898ecc545e1b585b3b6fd4/ConcurrentBag.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8b59fa60d15ea79167bca4aee77af3ed6b93648c61b472b7a8381c62977ddfdb/Type.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8be73ec14cdbb4d3b59b395937d47ef7cf72e9398e7189c8be8861f9efd/MessagePackWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/99b062cddd6fcedfc32673e6f0e231847b57f81083133c375e06fe39affa8f2/Reverse.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9f6eb4020bb69f92834e6525579fb08899521b2d8dbaf42dbb6eda2ba15d3/MessagePackSerializer.NonGeneric.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c1392dcec8fbf06e88494e16d596717b5b19153ad1426cd1ab14675469194781/PropertyInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c13e9ef0c99a8e8b306bbef1e24dea53bf8660b9c1cb4724e3b57133a73db580/Enum.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d3b35aba78af8938342254c9ab4da7b7362a691ccc71b3decaabd322fea44/Int32.cs" root0="SKIP_HIGHLIGHTING" />
@@ -93,6 +114,7 @@
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/Models.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/SettlementBuildings/BuildingList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -142,6 +164,15 @@
   }
 }</component>
   <component name="RunManager" selected="Start and Debug.Player">
+    <configuration name="Attach to Player" type="ConnectRemote" factoryName="Mono Remote" show_console_on_std_err="false" show_console_on_std_out="false" port="23685" address="localhost">
+      <option name="allowRunningInParallel" value="false" />
+      <option name="listenPortForConnections" value="false" />
+      <option name="projectPathOnTarget" />
+      <option name="selectedOptions">
+        <list />
+      </option>
+      <method v="2" />
+    </configuration>
     <configuration name="Editor" type="GODOT_DEBUG_RUN_CONFIGURATION" factoryName="Start and Debug">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.1.1-stable_mono_win64/Godot_v4.1.1-stable_mono_win64.exe" />
       <option name="PROGRAM_PARAMETERS" value="--path &quot;$PROJECT_DIR$&quot; --editor" />
@@ -692,7 +723,8 @@
       <workItem from="1720746202133" duration="5461000" />
       <workItem from="1720793325414" duration="3737000" />
       <workItem from="1720826096165" duration="6605000" />
-      <workItem from="1720875307331" duration="1952000" />
+      <workItem from="1720875307331" duration="5947000" />
+      <workItem from="1720881533482" duration="3239000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -904,14 +936,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00243" summary="working on mouse actions">
-      <option name="closed" value="true" />
-      <created>1719760707610</created>
-      <option name="number" value="00243" />
-      <option name="presentableId" value="LOCAL-00243" />
-      <option name="project" value="LOCAL" />
-      <updated>1719760707611</updated>
-    </task>
     <task id="LOCAL-00244" summary="ditto">
       <option name="closed" value="true" />
       <created>1719761426243</created>
@@ -1056,7 +1080,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720876997869</updated>
     </task>
-    <option name="localTasksCounter" value="262" />
+    <task id="LOCAL-00262" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1720877397064</created>
+      <option name="number" value="00262" />
+      <option name="presentableId" value="LOCAL-00262" />
+      <option name="project" value="LOCAL" />
+      <updated>1720877397064</updated>
+    </task>
+    <option name="localTasksCounter" value="263" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1101,8 +1133,8 @@
     <MESSAGE value="fixed combat front length not carry over bug, troops not taking breakthroughMult value from res bug" />
     <MESSAGE value="adding more troops" />
     <MESSAGE value="doing depot" />
-    <MESSAGE value="ditto" />
     <MESSAGE value="depot" />
-    <option name="LAST_COMMIT_MESSAGE" value="depot" />
+    <MESSAGE value="ditto" />
+    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
   </component>
 </project>

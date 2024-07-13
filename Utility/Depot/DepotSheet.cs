@@ -13,12 +13,13 @@ public class DepotSheet
     public JsonObject Sheet { get; private set; }
     public Dictionary<string, JsonObject> Lines { get; private set; }
     public Dictionary<string, Guid> LineGuids { get; private set; }
-
+    public Type Type { get; set; }
+    public string Name { get; private set; }
     public DepotSheet(JsonObject sheet, DepotImporter importer)
     {
-        var sheetName = JsonSerializer.Deserialize<string>(sheet["name"]);
+        Name = JsonSerializer.Deserialize<string>(sheet["name"]);
         var sheetGuid = JsonSerializer.Deserialize<Guid>(sheet["guid"]);
-        importer.Sheets.Add(sheetName, this);
+        importer.Sheets.Add(Name, this);
         importer.SheetsByGuid.Add(sheetGuid, this);
         Columns = sheet["columns"].AsArray()
             .Select(a => a.AsObject())
@@ -50,11 +51,17 @@ public class DepotSheet
         }
     }
 
-    public void MakeObjectsModels<T>(IModelManager<T> manager, DepotImporter importer)
+    public void MakeObjectsModels<T>(IReadOnlyDictionary<string, object> models, 
+        DepotImporter importer)
         where T : IModel
     {
-        foreach (var (name, value) in manager.ByName)
+        foreach (var (name, value) in models)
         {
+            if (value is T == false)
+            {
+                GD.Print($"{name} is not {typeof(T).Name}");
+                throw new Exception();
+            }
             var guid = LineGuids[name];
             importer.LineObjects[guid] = value;
             importer.LineObjectsByName[name] = value;

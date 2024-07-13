@@ -33,8 +33,8 @@ public class BudgetPool
                 var making = m.Making.Get(d);
                 if (making is ResourceExtractionBuilding r)
                 {
-                    inQueue += r.BaseLabor;
-                    net.Add(r.Resource(d), r.BaseProd);
+                    inQueue += r.BaseLabor();
+                    net.Add(r.Resource(d), r.BaseProd());
                 }
                 else if (making is SettlementBuilding b)
                 {

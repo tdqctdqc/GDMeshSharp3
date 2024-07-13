@@ -21,7 +21,7 @@ public abstract class FoodProdTechnique
         
     }
 
-    public void MakeIcon()
+    public void CreateIcon()
     {
         Icon = Icon.Create(Name, Vector2I.One);
     }

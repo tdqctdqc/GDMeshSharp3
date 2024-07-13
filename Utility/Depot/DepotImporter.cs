@@ -36,6 +36,11 @@ public class DepotImporter
         foreach (var n in sheets)
         {
             var sheet = n.AsObject();
+            if (sheet.ContainsKey("hidden")
+                && JsonSerializer.Deserialize<bool>(sheet["hidden"]) == true)
+            {
+                continue;
+            }
             UnpackSheetJsonObjects(sheet);
         }
         
@@ -43,6 +48,7 @@ public class DepotImporter
     public void UnpackSheetJsonObjects(JsonObject sheetObject)
     {
         var sheetName = JsonSerializer.Deserialize<string>(sheetObject["name"]);
+        GD.Print($"adding sheet {sheetName}");
         var sheet = new DepotSheet(sheetObject, this);
     }
 
@@ -50,19 +56,66 @@ public class DepotImporter
     {
         var sheetName = typeof(T).Name;
         var sheet = Sheets[sheetName];
+        sheet.Type = typeof(T);
         sheet.MakeObjectsDefault<T>(get, this);
     }
 
-    public void MakeSheetObjectsModels<T>(IModelManager<T> manager)
+    public void MakeSheetObjectsModels<T>(
+        IReadOnlyDictionary<string, object> models)
         where T : IModel
     {
-        
+        var name = typeof(T).Name;
+        if (Sheets.ContainsKey(name) == false)
+        {
+            GD.Print("no sheet " + name);
+            var baseType = typeof(T).BaseType;
+            if (baseType == null 
+                || typeof(IModel).IsAssignableFrom(baseType) == false)
+            {
+                GD.Print($"couldn't resolve {typeof(T).Name}");
+                return;
+            }
+            var mi = GetType().GetMethod(nameof(MakeSheetObjectsModels));
+            mi.InvokeGeneric(this, new Type[] { baseType },
+                new object[] { models });
+            return;
+        }
+
+        var sheet = Sheets[name];
+        sheet.Type = typeof(T);
+        sheet.MakeObjectsModels<T>(models, this);
     }
-    public void FillProperties<T>(string lineName, T t)
+
+    public void FillAllProperties()
+    {
+        var mi = this.GetType()
+            .GetMethod(nameof(FillSheetProperties), BindingFlags.NonPublic | BindingFlags.Instance);
+        if (mi is null) throw new Exception();
+        foreach (var sheet in Sheets.Values)
+        {
+            if (sheet.Type is null)
+            {
+                throw new Exception($"no type for {sheet.Name}");
+            }
+            mi.InvokeGeneric(this, 
+                new Type[] { sheet.Type },
+                new object[] { sheet });
+        }
+    }
+
+    private void FillSheetProperties<T>(DepotSheet sheet)
+    {
+        foreach (var (name, line) in sheet.Lines)
+        {
+            FillLineProperties<T>(name, (T)LineObjectsByName[name]);
+        }
+    }
+    private void FillLineProperties<T>(string lineName, T t)
     {
         var type = typeof(T);
-        var setPropMethod = this.GetType().GetMethod(
-            nameof(FillProperty));
+        var fillProperty = this.GetType().GetMethod(
+            nameof(FillProperty),
+            BindingFlags.NonPublic | BindingFlags.Instance);
         
         while (type is not null)
         {
@@ -73,10 +126,13 @@ public class DepotImporter
                 var properties = type.GetProperties();
                 foreach (var propertyInfo in properties)
                 {
-                    setPropMethod.InvokeGeneric(t, 
+                    fillProperty.InvokeGeneric(this, 
                         propertyInfo.PropertyType.Yield().ToArray(),
-                        new object[]{sheet, line, propertyInfo, t});
+                        new object[]{sheet, line, 
+                            propertyInfo, t});
                 }
+
+                break;
             }
 
             type = type.BaseType;
@@ -100,15 +156,15 @@ public class DepotImporter
                 (column["typeStr"]);
             var columnValue = line[propertyName];
             object value = null;
-            if (columnType == "float")
+            if (propertyType == typeof(float))
             {
                 value = UnpackFloat(columnValue);
             }
-            else if (columnType == "int")
+            else if (propertyType == typeof(int))
             {
                 value = UnpackInt(columnValue);
             }
-            else if (columnType == "text")
+            else if (propertyType == typeof(string))
             {
                 value = UnpackString(columnValue);
             }
@@ -120,15 +176,35 @@ public class DepotImporter
             {
                 value = UnpackLineReference<TProperty>(columnValue);
             }
+            else if (propertyType == typeof(bool))
+            {
+                value = UnpackBool(columnValue);
+            }
+            else if (propertyType == typeof(Color))
+            {
+                var colorString = UnpackString(columnValue);
+                value = new Color(colorString);
+            }
             else
             {
+                GD.Print($"couldnt unpack column type {columnType}");
                 throw new Exception();
             }
-            propertyInfo.SetValue(o, value);
+
+            try
+            {
+                propertyInfo.SetValue(o, value);
+            }
+            catch (Exception e)
+            {
+                GD.Print($"couldn't set {propertyName} for {sheet.Type.Name}");
+                throw;
+            }
         }
         else
         {
-             throw new Exception();
+            GD.Print($"couldn't find column {propertyName} for {sheet.Type.Name}");
+            throw new Exception();
         }
         
     }
@@ -137,7 +213,10 @@ public class DepotImporter
     {
         return JsonSerializer.Deserialize<string>(columnValue);
     }
-
+    private static bool UnpackBool(JsonNode columnValue)
+    {
+        return JsonSerializer.Deserialize<bool>(columnValue);
+    }
     private static int UnpackInt(JsonNode columnValue)
     {
         return JsonSerializer.Deserialize<int>(columnValue);
@@ -160,48 +239,62 @@ public class DepotImporter
     }
 
     private TProperty UnpackList<TProperty>(JsonObject column,
-        JsonArray list)
+        JsonArray value)
     {
         var propertyType = typeof(TProperty);
-        if (typeof(IdCount<>).IsAssignableFrom(propertyType))
+        if (propertyType.IsGenericType 
+            && propertyType.GetGenericTypeDefinition() 
+                == typeof(IdCount<>))
         {
             var idCountType = propertyType.GetGenericArguments()[0];
-            return (TProperty)this.GetType().GetMethod(nameof(UnpackIdCount))
-                .InvokeGeneric(this, idCountType.Yield().ToArray(),
-                    new object[] { column, list });
+            var mi = this.GetType().GetMethod(nameof(UnpackIdCount),
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            return (TProperty)mi.InvokeGeneric(this, idCountType.Yield().ToArray(),
+                    new object[] { column, value });
         }
-        else if (typeof(HashSet<>).IsAssignableFrom(propertyType))
+        else if (propertyType.IsGenericType 
+                 && propertyType.GetGenericTypeDefinition() 
+                    == typeof(HashSet<>))
         {
             var entryType = propertyType.GetGenericArguments()[0];
-            return (TProperty) this.GetType().GetMethod(nameof(UnpackHashSet))
+            var mi = this.GetType().GetMethod(nameof(UnpackHashSet),
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            return (TProperty) mi
                 .InvokeGeneric(this, entryType.Yield().ToArray(),
-                    new object[] { list, "Value" });
+                    new object[] { value, "Value" });
         }
         else if (typeof(Array).IsAssignableFrom(propertyType))
         {
-            var entryType = propertyType.GetGenericArguments()[0];
-            return (TProperty) this.GetType().GetMethod(nameof(UnpackArray))
+            var entryType = propertyType.GetElementType();
+            var mi = this.GetType().GetMethod(nameof(UnpackArray),
+                BindingFlags.NonPublic | BindingFlags.Instance);
+            return (TProperty) mi
                 .InvokeGeneric(this, entryType.Yield().ToArray(),
-                    new object[] { list, "Value" });
+                    new object[] { value, "Value" });
         }
         else
         {
-            throw new Exception("no way to import " + propertyType.Name);
+            GD.Print($"no way to import {propertyType.Name} {UnpackString(column["name"])}");
+            // GD.Print($"{propertyType.Name} assignable from {typeof(IdCount<>)} {typeof(IdCount<>).IsAssignableFrom(propertyType)}");
+            var genericTypeDef = propertyType.GetGenericTypeDefinition();
+            GD.Print($"is generic type of {typeof(IdCount<>).Name} {genericTypeDef == typeof(IdCount<>)}");
+            throw new Exception();
         }
 
         return default;
     }
 
-    private IdCount<TValue> UnpackIdCount<TValue>(JsonObject column,
-        JsonArray list)
+    private IdCount<TValue> UnpackIdCount<TValue>(
+        JsonObject column,
+        JsonArray value)
         where TValue : IIdentifiable
     {
         var res = IdCount<TValue>.Construct();
-        for (var i = 0; i < list.Count; i++)
+        for (var i = 0; i < value.Count; i++)
         {
-            var entryName = UnpackString(list[i]["Name"]);
-            var entryOb = (TValue)LineObjectsByName[entryName];
-            var entryValue = UnpackFloat(list[i]["Value"]);
+            var entryGuid = UnpackGuid(value[i]["Name"]);
+            var entryOb = (TValue)LineObjects[entryGuid];
+            var entryValue = UnpackFloat(value[i]["Value"]);
             res.Add(entryOb, entryValue);
         }
 
@@ -242,7 +335,6 @@ public class DepotImporter
         {
             get = a => (TValue)LineObjects[UnpackGuid(a)];
         }
-
         for (var i = 0; i < list.Count; i++)
         {
             yield return get(list[i][columnName]);

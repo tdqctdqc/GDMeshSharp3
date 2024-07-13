@@ -192,7 +192,7 @@
                 {
                     "typeStr": "list",
                     "guid": "c8409875-d419-4b2b-a62d-b3572538b43c",
-                    "name": "TargetChances",
+                    "name": "TargetChance",
                     "description": "new list field",
                     "sheet": "f88c9b52-df7c-408d-b013-9c75bb4438ce",
                     "defaultValue": [],
@@ -261,7 +261,10 @@
                     "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1,
-                    "TargetChances": [
+                    "DisplayName": "Musket Infantry",
+                    "Makeable": "ec7029a0-eb30-472a-b902-77ac424f8214",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "cb6637e4-0556-40d9-8092-f5ff5e8712f8",
                             "id": "0",
@@ -277,10 +280,7 @@
                             "id": "2",
                             "Value": 0.25
                         }
-                    ],
-                    "DisplayName": "Musket Infantry",
-                    "Makeable": "ec7029a0-eb30-472a-b902-77ac424f8214",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "a2e59d2c-d83c-4149-aa41-285d46f05695",
@@ -296,7 +296,10 @@
                     "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1,
-                    "TargetChances": [
+                    "DisplayName": "Breechloader Infantry",
+                    "Makeable": "ec984de5-7ac0-4db3-a95f-89a82ca94bd1",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "f9b7af40-014a-4308-81d6-35e53527d0c2",
                             "Value": 1,
@@ -312,10 +315,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Breechloader Infantry",
-                    "Makeable": "ec984de5-7ac0-4db3-a95f-89a82ca94bd1",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "7a376708-801b-461c-8389-a671d0231398",
@@ -331,7 +331,10 @@
                     "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1.25,
-                    "TargetChances": [
+                    "DisplayName": "Bolt Action Infantry",
+                    "Makeable": "40ec873c-a4b8-4d04-ad32-a1de123eba98",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "29803141-3c97-4260-8725-065bcbd4c034",
                             "Value": 1,
@@ -347,10 +350,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Bolt Action Infantry",
-                    "Makeable": "40ec873c-a4b8-4d04-ad32-a1de123eba98",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "dbdf1b5a-4120-43e4-a4b3-c152a692554e",
@@ -366,7 +366,10 @@
                     "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1.5,
-                    "TargetChances": [
+                    "DisplayName": "Semi Auto Infantry",
+                    "Makeable": "4521811d-858f-4aec-9cfa-5cfe296c48e4",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "a51d5f1e-970f-4fd0-bf6d-83152f93ac99",
                             "Value": 1,
@@ -382,10 +385,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Semi Auto Infantry",
-                    "Makeable": "4521811d-858f-4aec-9cfa-5cfe296c48e4",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "b31b60d4-247f-467a-8e0e-5830369b8d5b",
@@ -401,7 +401,10 @@
                     "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 2,
-                    "TargetChances": [
+                    "DisplayName": "Assault Infantry",
+                    "Makeable": "47991f4b-dd08-446d-9246-c244e1a2b1f8",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "69b6357d-3e36-474f-8f4f-1bbad1b47ce8",
                             "Value": 1,
@@ -417,10 +420,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Assault Infantry",
-                    "Makeable": "47991f4b-dd08-446d-9246-c244e1a2b1f8",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "41f9dea8-746b-4252-8de5-608d9c25b763",
@@ -436,7 +436,10 @@
                     "FrontLength": 2,
                     "Range": 1,
                     "BreakthroughMult": 0.25,
-                    "TargetChances": [
+                    "DisplayName": "Cannon",
+                    "Makeable": "14be419b-bc2e-410c-848c-b16a13d58819",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "cf47753f-43de-4235-94fb-9ddae27cdf7c",
                             "Value": 1,
@@ -452,10 +455,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Cannon",
-                    "Makeable": "14be419b-bc2e-410c-848c-b16a13d58819",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "d01735ac-4d6e-4ae7-a5d2-e68dad390685",
@@ -471,7 +471,10 @@
                     "FrontLength": 2,
                     "Range": 1,
                     "BreakthroughMult": 0.35,
-                    "TargetChances": [
+                    "DisplayName": "Field Gun",
+                    "Makeable": "ad10280f-6c7c-4c76-a04f-0145d3e1bd62",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "726f2943-ecf5-4cb3-9c03-aceddb90acde",
                             "Value": 1,
@@ -487,10 +490,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Field Gun",
-                    "Makeable": "ad10280f-6c7c-4c76-a04f-0145d3e1bd62",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "44137df2-5d47-4380-b859-5df76a71e2c6",
@@ -506,7 +506,10 @@
                     "FrontLength": 2,
                     "Range": 1,
                     "BreakthroughMult": 0.5,
-                    "TargetChances": [
+                    "DisplayName": "Field Howitzer",
+                    "Makeable": "b8214767-a22e-4726-8bed-39a87d995c53",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "97e70a9a-cce3-4a12-8f3e-13345603d6cd",
                             "Value": 1,
@@ -522,10 +525,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Field Howitzer",
-                    "Makeable": "b8214767-a22e-4726-8bed-39a87d995c53",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "57df813b-40fe-4aa0-b8dd-9cd05e1a4f68",
@@ -541,7 +541,10 @@
                     "FrontLength": 2,
                     "Range": 0,
                     "BreakthroughMult": 0.25,
-                    "TargetChances": [
+                    "DisplayName": "Gatling Gun",
+                    "Makeable": "cf1161a9-c58c-4196-b87c-0ed15a765113",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "2a4205b6-7ffd-4a77-bd72-83c8d91d766b",
                             "Value": 1,
@@ -557,10 +560,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Gatling Gun",
-                    "Makeable": "cf1161a9-c58c-4196-b87c-0ed15a765113",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "2e6e5059-83b6-406d-a772-5bae36862f84",
@@ -576,7 +576,10 @@
                     "FrontLength": 2,
                     "Range": 0,
                     "BreakthroughMult": 0.5,
-                    "TargetChances": [
+                    "DisplayName": "Maxim Gun",
+                    "Makeable": "f21bb613-6969-4fb0-a58d-e91c6dd62523",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "7570f8c2-2455-4d39-88aa-8bbe8c86c214",
                             "Value": 1,
@@ -592,10 +595,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Maxim Gun",
-                    "Makeable": "f21bb613-6969-4fb0-a58d-e91c6dd62523",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "a2a4aeeb-d102-42e6-bbd6-afd68f6b4440",
@@ -611,7 +611,10 @@
                     "FrontLength": 2,
                     "Range": 0,
                     "BreakthroughMult": 1,
-                    "TargetChances": [
+                    "DisplayName": "General Machinegun",
+                    "Makeable": "cebcf67b-a3c5-4799-82d4-a087358cf538",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "1b8f047a-2efb-45cc-a681-d2d6d55c7b71",
                             "Value": 1,
@@ -627,10 +630,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "General Machinegun",
-                    "Makeable": "cebcf67b-a3c5-4799-82d4-a087358cf538",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 },
                 {
                     "guid": "0d43c0d5-2935-49f4-8688-17be015625e0",
@@ -646,7 +646,10 @@
                     "FrontLength": 2,
                     "Range": 0,
                     "BreakthroughMult": 1.25,
-                    "TargetChances": [
+                    "DisplayName": "Squad Machinegun",
+                    "Makeable": "77aeff06-15ff-421f-a76c-67e0062e3abe",
+                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "TargetChance": [
                         {
                             "guid": "16675e73-0fc8-4ae3-9e5c-2ffdcb12a37b",
                             "Value": 1,
@@ -662,10 +665,7 @@
                             "Value": 0.25,
                             "id": "2"
                         }
-                    ],
-                    "DisplayName": "Squad Machinegun",
-                    "Makeable": "77aeff06-15ff-421f-a76c-67e0062e3abe",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    ]
                 }
             ],
             "hidden": false,
@@ -878,23 +878,23 @@
                     "BuildCosts": [
                         {
                             "guid": "231915f9-dade-44e1-9510-1a3eeb634e23",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 1
                         },
                         {
                             "guid": "e2540270-b347-4f75-8634-f82d0bf70229",
-                            "Amount": 1,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 1
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "18ff1743-8df6-4d24-bcf8-4b6c9b99d4cc",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1
                         }
                     ]
                 },
@@ -905,23 +905,23 @@
                     "BuildCosts": [
                         {
                             "guid": "deb8f09b-23e9-4038-8fb8-5e329d0c82b7",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 1
                         },
                         {
                             "guid": "13caa831-f940-44cb-b356-9c1240afabac",
-                            "Amount": 2,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 2
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "b9b1a6f9-7f33-485c-8018-9089ffb049a9",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1
                         }
                     ]
                 },
@@ -932,23 +932,23 @@
                     "BuildCosts": [
                         {
                             "guid": "6bdff195-d822-4e3d-8a4b-07d5a3af7d70",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 1
                         },
                         {
                             "guid": "7bd8a63d-35b1-49bc-992b-cc0d3da93c31",
-                            "Amount": 3,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 3
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "75e27fca-e77d-48e9-b35d-978518125359",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1
                         }
                     ]
                 },
@@ -959,23 +959,23 @@
                     "BuildCosts": [
                         {
                             "guid": "663856f4-a644-4f1b-917d-5637f84fbbf4",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 1
                         },
                         {
                             "guid": "96b6abbb-27f2-4ed8-931a-9440518fa445",
-                            "Amount": 5,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 5
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "0fc99571-712e-40f0-8ea0-b742e18ce86e",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1
                         }
                     ]
                 },
@@ -986,23 +986,23 @@
                     "BuildCosts": [
                         {
                             "guid": "a6175f73-918a-4633-ba35-4b336518f803",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 1
                         },
                         {
                             "guid": "cf7592a4-3aa8-4a83-92cb-1f269de00253",
-                            "Amount": 8,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 8
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "e1a24780-751b-482f-82bd-a985e6859951",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1
                         }
                     ]
                 },
@@ -1013,23 +1013,23 @@
                     "BuildCosts": [
                         {
                             "guid": "ad83c2e7-eb0b-4f5c-a3fe-c4ace35dc7be",
-                            "Amount": 3,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 3
                         },
                         {
                             "guid": "91d2dbae-ed13-4d3d-931e-ffe18d4ca1ee",
-                            "Amount": 5,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 5
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "adc7f5b6-5081-4b72-813e-0925b0ee6735",
-                            "Amount": 3,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 3
                         }
                     ]
                 },
@@ -1040,23 +1040,23 @@
                     "BuildCosts": [
                         {
                             "guid": "49b953ee-0270-4bb9-84b7-5bb0cb5e1114",
-                            "Amount": 3,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 3
                         },
                         {
                             "guid": "4b70d345-6b7f-47dd-b3d9-3b7caa3c7138",
-                            "Amount": 15,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 15
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "25c0cbfe-e994-4b18-bc9b-ad6488fec718",
-                            "Amount": 3,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 3
                         }
                     ]
                 },
@@ -1067,23 +1067,23 @@
                     "BuildCosts": [
                         {
                             "guid": "385dafd9-e269-405a-a2a8-2338e3adda18",
-                            "Amount": 3,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 3
                         },
                         {
                             "guid": "02516c7f-76ad-4303-9ed3-556957da904e",
-                            "Amount": 25,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 25
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "a0137df1-172f-450a-8f79-0d7a873a5942",
-                            "Amount": 3,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 3
                         }
                     ]
                 },
@@ -1094,23 +1094,23 @@
                     "BuildCosts": [
                         {
                             "guid": "0e77d219-c319-4844-a5b4-7ae2416a641f",
-                            "Amount": 2,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 2
                         },
                         {
                             "guid": "4d7504ab-6f5e-443b-8161-f111baabcad7",
-                            "Amount": 5,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 5
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "08f286ea-08cd-4410-9e65-1c70177d77c7",
-                            "Amount": 2,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 2
                         }
                     ]
                 },
@@ -1121,23 +1121,23 @@
                     "BuildCosts": [
                         {
                             "guid": "e9d4b4bd-4ec4-4a07-bc38-97dcbaa10469",
-                            "Amount": 2,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 2
                         },
                         {
                             "guid": "515418cb-1dd8-4d6f-9e1e-3e5231eb0b5c",
-                            "Amount": 7.5,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 7.5
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "ed86005f-c705-45d1-8e5f-6975e022d9a3",
-                            "Amount": 2,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 2
                         }
                     ]
                 },
@@ -1148,23 +1148,23 @@
                     "BuildCosts": [
                         {
                             "guid": "1c10d9c3-ad0d-4747-b02f-94ad1cd53553",
-                            "Amount": 2,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 2
                         },
                         {
                             "guid": "859cc4c2-c1a8-4243-8f1c-1c0384706b13",
-                            "Amount": 8.5,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 8.5
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "0632b127-a1d1-4db8-8e09-d21670b48418",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1
                         }
                     ]
                 },
@@ -1175,23 +1175,23 @@
                     "BuildCosts": [
                         {
                             "guid": "4316f5c5-3523-40f4-a00e-cf5f70bbd73b",
-                            "Amount": 2,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 2
                         },
                         {
                             "guid": "c3e01c1f-d178-44bc-aaf9-70f85a51c259",
-                            "Amount": 10,
                             "id": "1",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 10
                         }
                     ],
                     "MaintainCosts": [
                         {
                             "guid": "c4913f98-39d9-4dc6-a69f-b0d6a6e45044",
-                            "Amount": 1,
                             "id": "0",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1
                         }
                     ]
                 },
@@ -1202,15 +1202,15 @@
                     "BuildCosts": [
                         {
                             "guid": "83747236-d90b-462a-835b-ba13d6a40d67",
-                            "Amount": 1000,
                             "id": "0",
-                            "Name": "347ce84f-55e0-4ff6-89ac-b1256cf35413"
+                            "Name": "347ce84f-55e0-4ff6-89ac-b1256cf35413",
+                            "Value": 1000
                         },
                         {
                             "guid": "11f5577b-81f9-4c8d-be3a-bbe6f59ddebc",
-                            "Amount": 20000,
                             "id": "1",
-                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee"
+                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee",
+                            "Value": 20000
                         }
                     ],
                     "MaintainCosts": []
@@ -1222,15 +1222,15 @@
                     "BuildCosts": [
                         {
                             "guid": "cdb8e893-0de1-4849-a55e-23c5eb4714a8",
-                            "Amount": 10000,
                             "id": "0",
-                            "Name": "7aa0a0f1-bd25-4875-93ad-3aecee06516e"
+                            "Name": "7aa0a0f1-bd25-4875-93ad-3aecee06516e",
+                            "Value": 10000
                         },
                         {
                             "guid": "a2bb5085-7a11-4355-856b-fc0fce06a554",
-                            "Amount": 5000,
                             "id": "1",
-                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee"
+                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee",
+                            "Value": 5000
                         }
                     ],
                     "MaintainCosts": []
@@ -1242,9 +1242,9 @@
                     "BuildCosts": [
                         {
                             "guid": "fd4f089f-aff3-48b7-9776-d821233a47b0",
-                            "Amount": 10000,
                             "id": "0",
-                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee"
+                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee",
+                            "Value": 10000
                         }
                     ],
                     "MaintainCosts": []
@@ -1256,15 +1256,15 @@
                     "BuildCosts": [
                         {
                             "guid": "064f0564-5765-440c-89ef-21f58d724d75",
-                            "Amount": 500,
                             "id": "0",
-                            "Name": "347ce84f-55e0-4ff6-89ac-b1256cf35413"
+                            "Name": "347ce84f-55e0-4ff6-89ac-b1256cf35413",
+                            "Value": 500
                         },
                         {
                             "guid": "87f84da3-6c32-4cc1-8d6f-565a25244e03",
-                            "Amount": 100000,
                             "id": "1",
-                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee"
+                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee",
+                            "Value": 100000
                         }
                     ],
                     "MaintainCosts": []
@@ -1276,9 +1276,9 @@
                     "BuildCosts": [
                         {
                             "guid": "8329ef20-46ae-4bcc-98da-9111ccc25654",
-                            "Amount": 20000,
                             "id": "0",
-                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee"
+                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee",
+                            "Value": 20000
                         }
                     ],
                     "MaintainCosts": []
@@ -1325,7 +1325,7 @@
                     "typeStr": "float",
                     "guid": "0448fed6-b93c-469d-af80-fc10a43b0608",
                     "description": "float field",
-                    "name": "Amount",
+                    "name": "Value",
                     "min": 0,
                     "max": 100000,
                     "defaultValue": 0,
@@ -1370,7 +1370,7 @@
                     "typeStr": "float",
                     "guid": "0e5da925-1aff-4118-ae50-949d47e87936",
                     "description": "float field",
-                    "name": "Amount",
+                    "name": "Value",
                     "min": 0,
                     "max": 100000,
                     "defaultValue": 0,
@@ -1554,17 +1554,17 @@
                     "Outputs": [
                         {
                             "guid": "8894bef3-d201-4bd8-b9c4-64d13352bb07",
-                            "Amount": 20,
                             "id": "0",
-                            "Name": "347ce84f-55e0-4ff6-89ac-b1256cf35413"
+                            "Name": "347ce84f-55e0-4ff6-89ac-b1256cf35413",
+                            "Value": 20
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "969de889-69b5-4218-bfd2-ad9c513dd764",
-                            "Amount": 500,
                             "id": "0",
-                            "Name": "f6fc06d1-a185-42da-9094-aa655fe0a311"
+                            "Name": "f6fc06d1-a185-42da-9094-aa655fe0a311",
+                            "Value": 500
                         }
                     ],
                     "Name": "IronMineLaborComponent"
@@ -1576,17 +1576,17 @@
                     "Outputs": [
                         {
                             "guid": "eb1660c4-e64a-4db1-ac69-0b534c63086a",
-                            "Amount": 20,
                             "id": "0",
-                            "Name": "075f9309-f655-46eb-b3b5-16d6a79e6798"
+                            "Name": "075f9309-f655-46eb-b3b5-16d6a79e6798",
+                            "Value": 20
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "c37945c9-5a2f-4b2b-951d-8a751c11a861",
-                            "Amount": 500,
                             "id": "0",
-                            "Name": "f6fc06d1-a185-42da-9094-aa655fe0a311"
+                            "Name": "f6fc06d1-a185-42da-9094-aa655fe0a311",
+                            "Value": 500
                         }
                     ],
                     "Name": "CoalMineLaborComponent"
@@ -1598,17 +1598,17 @@
                     "Outputs": [
                         {
                             "guid": "58bff28c-d2c1-4219-95d1-2be2206d0601",
-                            "Amount": 100,
                             "id": "0",
-                            "Name": "6a63a0a7-c0a0-4442-91ab-e1876a510e52"
+                            "Name": "6a63a0a7-c0a0-4442-91ab-e1876a510e52",
+                            "Value": 100
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "5e7066e7-4f5d-49f3-905d-a6aee443e869",
-                            "Amount": 500,
                             "id": "0",
-                            "Name": "3b4c2839-d38d-4750-80ee-6633a67702d8"
+                            "Name": "3b4c2839-d38d-4750-80ee-6633a67702d8",
+                            "Value": 500
                         }
                     ],
                     "Name": "BankLaborComponent"
@@ -1620,23 +1620,23 @@
                     "Outputs": [
                         {
                             "guid": "132ae77f-c8bb-411a-8736-98cd25b5b046",
-                            "Amount": 100,
                             "id": "0",
-                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46"
+                            "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
+                            "Value": 100
                         },
                         {
                             "guid": "f84b348c-25d3-46b0-8219-4c5cfe37033a",
-                            "Amount": 1000,
                             "id": "1",
-                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06"
+                            "Name": "3faef990-1599-4474-b7f0-9fe791779b06",
+                            "Value": 1000
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "2d04d027-5b36-4b82-89d4-92b1be6c42c7",
-                            "Amount": 100,
                             "id": "0",
-                            "Name": "3b4c2839-d38d-4750-80ee-6633a67702d8"
+                            "Name": "3b4c2839-d38d-4750-80ee-6633a67702d8",
+                            "Value": 100
                         }
                     ],
                     "Name": "BarracksLaborComponent"
@@ -1648,17 +1648,17 @@
                     "Outputs": [
                         {
                             "guid": "5f0ca409-377e-4dc8-9c5b-fda3c2970a49",
-                            "Amount": 100,
                             "id": "0",
-                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3"
+                            "Name": "34215ea3-6dde-47d5-9d1e-c2f3d1cc47b3",
+                            "Value": 100
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "18c23313-b22b-490d-9823-9443775fc16f",
-                            "Amount": 500,
                             "id": "0",
-                            "Name": "8affa58d-712f-4995-8afe-8fa58b5992a8"
+                            "Name": "8affa58d-712f-4995-8afe-8fa58b5992a8",
+                            "Value": 500
                         }
                     ],
                     "Name": "FactoryLaborComponent"
@@ -1671,9 +1671,9 @@
                     "Jobs": [
                         {
                             "guid": "0224c918-213a-49fe-80ba-96de81f9f36e",
-                            "Amount": 100,
                             "id": "0",
-                            "Name": "3b4c2839-d38d-4750-80ee-6633a67702d8"
+                            "Name": "3b4c2839-d38d-4750-80ee-6633a67702d8",
+                            "Value": 100
                         }
                     ],
                     "Name": "TownHallLaborComponent"
@@ -1685,17 +1685,17 @@
                     "Outputs": [
                         {
                             "guid": "905d168d-9369-492c-a163-7c96ee5dc55a",
-                            "Amount": 1500,
                             "id": "0",
-                            "Name": "60e32d2f-6f88-4486-8bf1-2cc463f1541d"
+                            "Name": "60e32d2f-6f88-4486-8bf1-2cc463f1541d",
+                            "Value": 1500
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "1d69c7ed-067a-4ddf-a68f-fad26f0a4b8e",
-                            "Amount": 500,
                             "id": "0",
-                            "Name": "d3a4051d-2d2c-43f8-ad7b-841df6c6c49e"
+                            "Name": "d3a4051d-2d2c-43f8-ad7b-841df6c6c49e",
+                            "Value": 500
                         }
                     ],
                     "Name": "FarmLaborComponent"
@@ -1707,17 +1707,17 @@
                     "Outputs": [
                         {
                             "guid": "d4cd9907-6c37-4f41-a2d7-fdd6c0f955f4",
-                            "Amount": 1000,
                             "id": "0",
-                            "Name": "60e32d2f-6f88-4486-8bf1-2cc463f1541d"
+                            "Name": "60e32d2f-6f88-4486-8bf1-2cc463f1541d",
+                            "Value": 1000
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "c52a2e19-1608-49f0-96db-176ee76df511",
-                            "Amount": 100,
                             "id": "0",
-                            "Name": "c6f781ce-047a-4d64-88d9-9787fe3b7a1e"
+                            "Name": "c6f781ce-047a-4d64-88d9-9787fe3b7a1e",
+                            "Value": 100
                         }
                     ],
                     "Name": "RanchLaborComponent"
@@ -1729,17 +1729,17 @@
                     "Outputs": [
                         {
                             "guid": "baea9eb9-ca83-4f29-ad10-b9cbb35e8940",
-                            "Amount": 1000,
                             "id": "0",
-                            "Name": "60e32d2f-6f88-4486-8bf1-2cc463f1541d"
+                            "Name": "60e32d2f-6f88-4486-8bf1-2cc463f1541d",
+                            "Value": 1000
                         }
                     ],
                     "Jobs": [
                         {
                             "guid": "286916e1-d475-42ad-b492-0ded82c677c6",
-                            "Amount": 200,
                             "id": "0",
-                            "Name": "be5bfa6a-eaf6-47bf-b756-cdfc4feae749"
+                            "Name": "be5bfa6a-eaf6-47bf-b756-cdfc4feae749",
+                            "Value": 200
                         }
                     ],
                     "Name": "FisheryLaborComponent"
@@ -1786,7 +1786,7 @@
                     "typeStr": "float",
                     "guid": "02276023-34a9-44fa-ab27-c673336e43a3",
                     "description": "float field",
-                    "name": "Amount",
+                    "name": "Value",
                     "min": 0,
                     "max": 100000,
                     "defaultValue": 0,
@@ -1831,7 +1831,7 @@
                     "typeStr": "float",
                     "guid": "094ef92b-1673-47e9-be8d-cce115e44331",
                     "description": "float field",
-                    "name": "Amount",
+                    "name": "Value",
                     "min": 0,
                     "max": 100000,
                     "defaultValue": 0,
@@ -1876,7 +1876,7 @@
                     "typeStr": "float",
                     "guid": "78dbcc3e-3216-4e5b-89a8-b00a58179540",
                     "description": "float field",
-                    "name": "Amount",
+                    "name": "Value",
                     "min": 0,
                     "max": 100000,
                     "defaultValue": 0,
@@ -1950,14 +1950,14 @@
                 {
                     "guid": "583bd046-5a05-46ba-ae14-b563633bc9cf",
                     "id": "0",
-                    "Name": "InfantryMoveType",
+                    "Name": "InfantryMove",
                     "UseRoads": true,
                     "BaseSpeed": 200
                 },
                 {
                     "guid": "23304210-2416-4837-abbf-73e7a3f51511",
                     "id": "1",
-                    "Name": "StrategicMoveType",
+                    "Name": "StrategicMove",
                     "UseRoads": true,
                     "BaseSpeed": 200
                 }
@@ -2822,12 +2822,12 @@
                         {
                             "guid": "3b0b9ae5-ce3a-4dce-b3aa-d2cf34f93189",
                             "id": "0",
-                            "Name": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
+                            "Value": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
                         },
                         {
                             "guid": "67c965c4-21ce-4ca2-9704-dbdfbea51d99",
                             "id": "1",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0.075,
@@ -2845,27 +2845,27 @@
                         {
                             "guid": "913a200b-0152-42ba-be02-1ce2b99370a9",
                             "id": "0",
-                            "Name": "0478ad01-b2e5-424d-9193-79fe666aa6b7"
+                            "Value": "0478ad01-b2e5-424d-9193-79fe666aa6b7"
                         },
                         {
                             "guid": "77953810-e740-4462-857f-d89a693d29d9",
                             "id": "1",
-                            "Name": "65f614e6-75f5-4d3b-b844-f79c0aa64cf5"
+                            "Value": "65f614e6-75f5-4d3b-b844-f79c0aa64cf5"
                         },
                         {
                             "guid": "7f498fd3-f905-4c2f-a9d4-b8e0cd3901c3",
                             "id": "2",
-                            "Name": "6af6967d-bd4a-4a10-b861-fe423b16370a"
+                            "Value": "6af6967d-bd4a-4a10-b861-fe423b16370a"
                         },
                         {
                             "guid": "e4dd4a18-1997-416c-98de-db5a61a39765",
                             "id": "3",
-                            "Name": "e48b4017-085e-497a-8d81-0ab8a5b7c41c"
+                            "Value": "e48b4017-085e-497a-8d81-0ab8a5b7c41c"
                         },
                         {
                             "guid": "39b86047-5af2-409c-bffd-1ccfb2da5ec2",
                             "id": "4",
-                            "Name": "8b1543cc-9b9c-47a7-93ae-9769d96a4330"
+                            "Value": "8b1543cc-9b9c-47a7-93ae-9769d96a4330"
                         }
                     ],
                     "MinMoisture": 0,
@@ -2883,12 +2883,12 @@
                         {
                             "guid": "fe0f6e26-aaea-4e6b-b1e5-7b3fe53014bb",
                             "id": "0",
-                            "Name": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
+                            "Value": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
                         },
                         {
                             "guid": "602888ae-fba2-4f6f-934b-5413455f6fd5",
                             "id": "1",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0,
@@ -2906,12 +2906,12 @@
                         {
                             "guid": "d6e6291f-f3a0-4c1e-9c43-69cca5f48655",
                             "id": "0",
-                            "Name": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
+                            "Value": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
                         },
                         {
                             "guid": "3f3045b8-c220-490f-8947-7c18445e3664",
                             "id": "1",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0.4,
@@ -2929,12 +2929,12 @@
                         {
                             "guid": "1ec8d493-261f-4f5b-8a05-548ae3581de8",
                             "id": "0",
-                            "Name": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
+                            "Value": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
                         },
                         {
                             "guid": "f65acc80-7326-47e1-8ea6-50f3304de5d3",
                             "id": "1",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0.15,
@@ -2952,12 +2952,12 @@
                         {
                             "guid": "7a4bd935-1bd2-4453-9cfc-88246fe41de8",
                             "id": "0",
-                            "Name": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
+                            "Value": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
                         },
                         {
                             "guid": "d07b9967-cdf6-4332-b6a3-e5679eee452e",
                             "id": "1",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0.5,
@@ -2975,12 +2975,12 @@
                         {
                             "guid": "2b49c1ab-04b8-41d4-8e82-f9f146a672b0",
                             "id": "0",
-                            "Name": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
+                            "Value": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
                         },
                         {
                             "guid": "2f32fd9d-9940-44c7-9fc8-cb3df830dec4",
                             "id": "1",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0.125,
@@ -2998,7 +2998,7 @@
                         {
                             "guid": "54b00bb5-22d7-4faf-a2e4-32b89dd62764",
                             "id": "0",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0.7,
@@ -3016,12 +3016,12 @@
                         {
                             "guid": "0485a585-8dc5-4b38-b1b1-bf3a94559b2f",
                             "id": "0",
-                            "Name": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
+                            "Value": "5cb98d32-aa8c-4ad9-a29c-8874ec38579b"
                         },
                         {
                             "guid": "a0c62ec5-9c33-4efb-b3c6-29732ffc6326",
                             "id": "1",
-                            "Name": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
+                            "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
                     "MinMoisture": 0,
@@ -3057,8 +3057,8 @@
                 {
                     "typeStr": "lineReference",
                     "guid": "e5104140-2b10-4cea-b0f7-e8e708f22afd",
-                    "name": "Name",
-                    "description": "Name",
+                    "name": "Value",
+                    "description": "Value",
                     "sheet": "457e514a-a1a2-4e6e-8645-6a6ce9fa961f",
                     "defaultValue": "",
                     "iconName": "newLineLink",

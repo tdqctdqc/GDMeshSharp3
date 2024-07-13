@@ -133,8 +133,8 @@ public class SocietyGenerator : Generator
                     is ResourceExtractionBuilding xb)
                 {
                     rd.SetExtraction(xb.MakeRef());
-                    cell.GetPeep(_data).GrowSize(xb.BaseLabor, _key);
-                    popSurplus -= xb.BaseLabor;
+                    cell.GetPeep(_data).GrowSize(xb.BaseLabor(), _key);
+                    popSurplus -= xb.BaseLabor();
                 }
             }
         }

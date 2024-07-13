@@ -5,7 +5,7 @@ using Godot;
 
 public abstract class Item : IModel, IIconed
 {
-    public string Name { get; private set; }
+    public string Name { get; protected set; }
     public int Id { get; private set; }
     public Icon Icon { get; private set; }
     

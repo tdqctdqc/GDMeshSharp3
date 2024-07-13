@@ -88,7 +88,7 @@ public static class CellExt
         {
             if (r.Extraction.Get(d) is ResourceExtractionBuilding b)
             {
-                laborDemand += b.BaseLabor;
+                laborDemand += b.BaseLabor();
             }
         }
 

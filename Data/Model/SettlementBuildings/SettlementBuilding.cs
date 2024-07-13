@@ -17,9 +17,11 @@ public abstract class SettlementBuilding : IModel, IMakeable, IIconed
 
     public void MakeIcon()
     {
+    }
+    public void CreateIcon()
+    {
         Icon = Icon.Create(Name, Vector2I.One);
     }
-    
     public abstract bool CanBuildInCell(Cell t, Data data);
     public abstract bool CanBuildInPoly(MapPolygon p, Data data);
     

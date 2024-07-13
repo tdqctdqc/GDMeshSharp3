@@ -41,11 +41,9 @@ public class Models
         _depot.MakeSheetObjectsDefault<LaborComponent>(
             () => new LaborComponent(null, null, null));
         
-        
         _managers = new Dictionary<Type, IModelManager>();
         ModelsById = new Dictionary<int, IModel>();
         _idIter = 0;
-        
         
         Items = new Items();
         AddManager(Items, _depot);
@@ -95,6 +93,12 @@ public class Models
         TroopDomains = new TroopDomains();
         AddManager(TroopDomains, _depot);
         
+        _depot.FillAllProperties();
+        
+        foreach (var m in ModelsById.Values.OfType<IIconed>())
+        {
+            m.CreateIcon();
+        }
     }
 
     private void SetId(IModel model)
@@ -138,18 +142,11 @@ public class Models
         where T : IModel
     {
         _managers.Add(typeof(T), manager);
-        _depot.MakeSheetObjectsModels(manager);
+        _depot.MakeSheetObjectsModels<T>(manager.ByName
+            .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value));
         foreach (var (name, model) in manager.ByName)
         {
-            try
-            {
-                SetId(model);
-            }
-            catch (Exception e)
-            {
-                GD.Print($"couldnt set id for {typeof(T).Name} {name}");
-                throw;
-            }
+            SetId(model);
         }
     }
     

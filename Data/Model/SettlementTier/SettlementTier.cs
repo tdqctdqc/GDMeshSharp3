@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class SettlementTier : IModel
+public class SettlementTier : IModel, IIconed
 {
-    public string Name { get; }
+    public string Name { get; private set; }
     public int Id { get; private set; }
     public int MinSize { get; private set; }
     public Icon Icon { get; private set; }
@@ -14,7 +14,7 @@ public class SettlementTier : IModel
     {
     }
 
-    public void MakeIcon()
+    public void CreateIcon()
     {
         Icon = Icon.Create(Name, Vector2I.One);
     }
