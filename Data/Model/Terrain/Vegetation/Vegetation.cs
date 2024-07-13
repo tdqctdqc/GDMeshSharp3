@@ -12,23 +12,21 @@ public class Vegetation : TerrainAspect
     public float MovementCostMult { get; private set; }
     public float FrontLengthMult { get; private set; }
     public float EvasionMult { get; private set; }
-    public Vegetation(HashSet<Landform> allowedLandforms,
-        string name)
+    public Vegetation()
     {
-        var res = GD.Load<VegetationRes>($"Data/Model/Terrain/Vegetation/{name}.tres");
-        FertilityMod = res.FertilityMod;
-        AllowedLandforms = allowedLandforms;
-        MinMoisture = res.MinMoisture;
-        FrontLengthMult = res.FrontLengthMult;
-        Color = res.Color;
-        Name = name;
-        MovementCostMult = res.MovementCostMult;
-        EvasionMult = res.EvasionMult;
+        // var res = GD.Load<VegetationRes>($"Data/Model/Terrain/Vegetation/{name}.tres");
+        // FertilityMod = res.FertilityMod;
+        // AllowedLandforms = allowedLandforms;
+        // MinMoisture = res.MinMoisture;
+        // FrontLengthMult = res.FrontLengthMult;
+        // Color = res.Color;
+        // Name = name;
+        // MovementCostMult = res.MovementCostMult;
+        // EvasionMult = res.EvasionMult;
     }
     
     public virtual bool Allowed(MapPolygon p, float moisture, Landform lf, Data data)
     {
-        // if (p.IsWater()) return false;
         return AllowedLandforms.Contains(lf) && moisture >= MinMoisture;
     }
 }

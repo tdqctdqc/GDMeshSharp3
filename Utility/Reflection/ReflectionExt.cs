@@ -20,12 +20,18 @@ public static class ReflectionExt
          .Select(p => (T)p.GetValue(null))
          .ToList();
     }
+    public static Dictionary<string, T> GetPropertiesOfTypeByName<T>(this object instance)
+    {
+        return instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(p => typeof(T).IsAssignableFrom(p.PropertyType))
+            .ToDictionary(p => p.Name, p => (T)p.GetValue(instance));
+    }
     public static List<T> GetPropertiesOfType<T>(this object instance)
     {
-     return instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
-         .Where(p => typeof(T).IsAssignableFrom(p.PropertyType))
-         .Select(p => (T)p.GetValue(instance))
-         .ToList();
+         return instance.GetType().GetProperties(BindingFlags.Instance | BindingFlags.Public)
+             .Where(p => typeof(T).IsAssignableFrom(p.PropertyType))
+             .Select(p => (T)p.GetValue(instance))
+             .ToList();
     }
     public static List<Type> GetTypesOfType<TAbstract>(this Assembly assembly)
     {

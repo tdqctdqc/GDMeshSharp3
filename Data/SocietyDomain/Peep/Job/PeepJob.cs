@@ -7,13 +7,15 @@ public class PeepJob : IModel, IIconed
 {
     public string Name { get; private set; }
     public int Id { get; private set; }
-    public Icon Icon { get; }
+    public Icon Icon { get; private set; }
     public float Income { get; private set; }
     
-    public PeepJob(string name, float income)
+    public PeepJob()
     {
-        Name = name;
+    }
+
+    public void SetIcon()
+    {
         Icon = Icon.Create(Name, new Vector2I(1, 2));
-        Income = income;
     }
 }

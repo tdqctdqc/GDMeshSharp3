@@ -6,9 +6,6 @@ using Godot;
 public class DirtRoad : RoadModel
 {
     public DirtRoad() 
-        : base(nameof(DirtRoad), 
-            .25f, 
-            false, 0f)
     {
     }
 

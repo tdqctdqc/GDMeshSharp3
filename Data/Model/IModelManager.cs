@@ -5,8 +5,8 @@ using Godot;
 
 public interface IModelManager<T> : IModelManager where T : IModel
 {
-    Dictionary<string, T> Models { get; }
-    
+    List<T> Models { get; }
+    Dictionary<string, T> ByName { get; }
 }
 
 public interface IModelManager

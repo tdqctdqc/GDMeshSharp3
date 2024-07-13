@@ -2,25 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class SettlementTierList : ModelList<SettlementTier>
+public class SettlementTierList : ModelManager<SettlementTier>
 {
     public List<SettlementTier> TiersBySize { get; private set; }
 
     public SettlementTier Village { get; private set; } 
-        = new SettlementTier(nameof(Village), 
-            2000);
+        = new SettlementTier();
     public SettlementTier Town { get; private set; } 
-        = new SettlementTier(nameof(Town), 
-            5000);
+        = new SettlementTier();
     public SettlementTier City { get; private set; } 
-        = new SettlementTier(nameof(City), 
-            10000);
+        = new SettlementTier();
 
 
     public SettlementTierList()
     {
-        var models = this.GetPropertiesOfType<SettlementTier>();
-        TiersBySize = models.OrderBy(s => s.MinSize).ToList();
+        TiersBySize = Models.OrderBy(s => s.MinSize).ToList();
     }
     public SettlementTier GetTier(int size)
     {

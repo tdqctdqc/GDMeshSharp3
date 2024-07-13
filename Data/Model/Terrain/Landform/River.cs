@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class River : Landform
+public class River
 {
     public static readonly float WidthFloor = 5f, 
         WidthCeil = 20f,
         FlowFloor = 10f,
         FlowCeil = 200f;
-    public River() : base(nameof(River))
-    {
-    }
+    
 
     public static float GetWidthFromFlow(float flow)
     {

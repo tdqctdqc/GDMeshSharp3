@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BuildingList : ModelList<SettlementBuilding>
+public class BuildingList : ModelManager<SettlementBuilding>
 {
     public Mine IronMine { get; private set; } 
     public Mine CoalMine { get; private set; } 
@@ -14,12 +14,12 @@ public class BuildingList : ModelList<SettlementBuilding>
     public BuildingList(Items items, FlowList flows, 
         PeepJobList jobs)
     {
-        IronMine = new Mine(nameof(IronMine), items.Iron, items, jobs, flows);
-        CoalMine = new Mine(nameof(CoalMine), items.Coal, items, jobs, flows);
-        HeavyMetalMine = new Mine(nameof(HeavyMetalMine), items.HeavyMetal, items, jobs, flows);
-        Factory = new Factory(items, flows, jobs);
-        TownHall = new TownHall(items, jobs, flows);
-        Bank = new Bank(items, jobs, flows);
-        Barracks = new Barracks(items, flows, jobs);
+        IronMine = new Mine();
+        CoalMine = new Mine();
+        HeavyMetalMine = new Mine();
+        Factory = new Factory();
+        TownHall = new TownHall();
+        Bank = new Bank();
+        Barracks = new Barracks();
     }
 }

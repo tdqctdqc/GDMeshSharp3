@@ -8,35 +8,24 @@ public abstract class FoodProdTechnique
 {
     public string Name { get; private set; }
     public int Id { get; private set; }
-    public int BaseProd { get; private set; }
-    public int BaseLabor { get; private set; }
+
+    public float BaseProd() => Labor.Outputs.Contents
+        .Single().Value;
+
+    public float BaseLabor() => Labor.TotalLabor();
     public Icon Icon { get; private set; }
-    public PeepJob JobType { get; private set; }
+    public PeepJob JobType(Data d) => Labor.Jobs.GetEnumModel(d).Single().Key;
     public LaborComponent Labor { get; private set; }
-    public FoodProdTechnique(string name, int baseProd, 
-        int baseLabor,
-        PeepJob jobType, Items items)
+    public FoodProdTechnique()
     {
-        Name = name;
-        BaseProd = baseProd;
-        BaseLabor = baseLabor;
-        Labor = new LaborComponent(
-            IdCount<Item>.Construct(new Dictionary<Item, float>()), 
-            IdCount<Item>.Construct(
-                new Dictionary<Item, float>
-                {
-                    { items.Food, baseProd }
-                }), 
-            IdCount<PeepJob>.Construct(
-                new Dictionary<PeepJob, float>
-                {
-                    { jobType, baseLabor }
-                })
-        );
-        Icon = Icon.Create(name, Vector2I.One);
-        JobType = jobType;
+        
+    }
+
+    public void MakeIcon()
+    {
+        Icon = Icon.Create(Name, Vector2I.One);
     }
 
     public abstract float NumForCell(Cell cell, Data data);
-    public float FoodPerLabor() => BaseProd / BaseLabor;
+    public float FoodPerLabor() => BaseProd() / BaseLabor();
 }

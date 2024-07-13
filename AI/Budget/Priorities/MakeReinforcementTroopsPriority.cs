@@ -11,7 +11,7 @@ public class MakeReinforcementTroopsPriority
     private Dictionary<Troop, float> _needed; 
     public MakeReinforcementTroopsPriority(
         string name) 
-            : base(name, d => d.Models.GetModels<Troop>().Values)
+            : base(name, d => d.Models.GetModels<Troop>())
     {
         _needed = new Dictionary<Troop, float>();
     }

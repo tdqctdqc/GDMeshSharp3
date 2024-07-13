@@ -2,21 +2,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class PeepJobList : ModelList<PeepJob>
+public class PeepJobList : ModelManager<PeepJob>
 {
     public PeepJob Farmer { get; private set; } 
-        = new PeepJob(nameof(Farmer), .05f);
+        = new PeepJob();
     public PeepJob Prole { get; private set; } 
-        = new PeepJob(nameof(Prole), .1f);
+        = new PeepJob();
     public PeepJob Miner { get; private set; } 
-        = new PeepJob(nameof(Miner), .1f);
+        = new PeepJob();
     public PeepJob Bureaucrat { get; private set; } 
-        = new PeepJob(nameof(Bureaucrat), .5f);
+        = new PeepJob();
     public PeepJob Unemployed { get; private set; } 
-        = new PeepJob(nameof(Unemployed), .1f);
+        = new PeepJob();
     public PeepJob Herder { get; private set; }
-        = new PeepJob(nameof(Herder), .1f);
-
+        = new PeepJob();
     public PeepJob Fisher { get; private set; }
-        = new PeepJob(nameof(Fisher), .1f);
+        = new PeepJob();
 }

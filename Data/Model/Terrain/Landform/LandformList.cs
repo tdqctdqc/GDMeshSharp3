@@ -4,22 +4,22 @@ using System.Linq;
 using Godot;
 using VoronoiSandbox;
 
-public class LandformList : ModelList<Landform>
+public class LandformList : ModelManager<Landform>
 {
     public Landform Peak { get; private set; } 
-        = new Peak();
+        = new ();
     public Landform Mountain { get; private set; } 
-        = new Mountain();
+        = new ();
     public Landform Hill { get; private set; } 
-        = new Hill();
+        = new ();
     public Landform Plain  { get; private set; } 
-        = new Landform(nameof(Plain));
+        = new ();
     public Landform Sea  { get; private set; } 
-        = new Landform(nameof(Sea));
+        = new ();
     public Landform River { get; private set; } 
-        = new River();
+        = new ();
     public Landform Urban { get; private set; } 
-        = new Urban();
+        = new ();
     public List<Landform> ByPriority { get; private set; }
     public LandformList()
     {

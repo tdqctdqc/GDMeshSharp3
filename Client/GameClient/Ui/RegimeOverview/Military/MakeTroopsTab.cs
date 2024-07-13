@@ -24,7 +24,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         if (regime is null) return;
         var med = client.Settings.MedIconSize.Value;
         var units = regime.GetUnits(client.Data);
-        var allTroopModels = client.Data.Models.GetModels<Troop>().Values;
+        var allTroopModels = client.Data.Models.GetModels<Troop>();
         var totalDeployed = IdCount<Troop>.Sum(
             units.Select(u => u.Troops).ToArray());
         var totalAuthorized = IdCount<Troop>.Sum(

@@ -49,9 +49,14 @@ public class DepotImporter
     public void MakeSheetObjectsDefault<T>(Func<T> get)
     {
         var sheetName = typeof(T).Name;
-        GD.Print($"making objects for {sheetName}");
         var sheet = Sheets[sheetName];
         sheet.MakeObjectsDefault<T>(get, this);
+    }
+
+    public void MakeSheetObjectsModels<T>(IModelManager<T> manager)
+        where T : IModel
+    {
+        
     }
     public void FillProperties<T>(string lineName, T t)
     {
@@ -86,11 +91,14 @@ public class DepotImporter
     {
         var propertyType = propertyInfo.PropertyType;
         bool found = false;
-        if (sheet.Columns.TryGetValue(propertyInfo.Name, out var column))
+        var propertyName = propertyInfo.Name;
+        if (propertyName == nameof(Entity.Id)) return;
+        if (propertyName == nameof(IIconed.Icon)) return;
+        if (sheet.Columns.TryGetValue(propertyName, out var column))
         {
             var columnType = JsonSerializer.Deserialize<string>
                 (column["typeStr"]);
-            var columnValue = line[propertyInfo.Name];
+            var columnValue = line[propertyName];
             object value = null;
             if (columnType == "float")
             {

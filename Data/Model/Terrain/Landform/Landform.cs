@@ -13,17 +13,17 @@ public class Landform : TerrainAspect
     public float EvasionMult { get; private set; }
     public bool IsWater { get; private set; }
     public bool IsLand() => IsWater == false;
-    public Landform(string name)
+    public Landform()
     {
-        var res = GD.Load<LandformRes>($"Data/Model/Terrain/Landform/{name}.tres");
-        IsWater = res.IsWater;
-        DarkenFactor = res.DarkenFactor;
-        FertilityMod = res.FertilityMod;
-        FrontLengthMult = res.FrontLengthMult;
-        Name = res.Name;
-        MinRoughness = res.MinRoughness;
-        MovementCostMult = res.MovementCostMult;
-        EvasionMult = res.EvasionMult;
-        Color = res.Color;
+        // var res = GD.Load<LandformRes>($"Data/Model/Terrain/Landform/{name}.tres");
+        // IsWater = res.IsWater;
+        // DarkenFactor = res.DarkenFactor;
+        // FertilityMod = res.FertilityMod;
+        // FrontLengthMult = res.FrontLengthMult;
+        // Name = res.Name;
+        // MinRoughness = res.MinRoughness;
+        // MovementCostMult = res.MovementCostMult;
+        // EvasionMult = res.EvasionMult;
+        // Color = res.Color;
     }
 }

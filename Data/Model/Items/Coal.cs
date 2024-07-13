@@ -6,7 +6,6 @@ using Godot;
 public class Coal : NaturalResource
 {
     public Coal() 
-        : base(nameof(Coal), 5)
     {
     }
 

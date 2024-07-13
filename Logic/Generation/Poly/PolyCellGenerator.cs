@@ -122,7 +122,7 @@ public class PolyCellGenerator : Generator
 
         void irrigate(MapPolygon poly, Cell cell)
         {
-            if (poly.DistFromEquatorRatio(_data) >= tundra.MinDistFromEquatorRatio) return;
+            if (poly.DistFromEquatorRatio(_data) >= Tundra.MinDistFromEquatorRatio) return;
             if (cell.GetLandform(_data).IsLand()
                 && cell.GetVegetation(_data).MinMoisture < _data.Models.Vegetations.Grassland.MinMoisture
                 && _data.Models.Vegetations.Grassland.AllowedLandforms.Contains(cell.GetLandform(_data))

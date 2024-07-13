@@ -4,10 +4,8 @@ using Godot;
 
 public class Jungle : Vegetation
 {
-    public float MaxDistRatioFromEquator { get; private set; } = .15f;
-    public Jungle(LandformList lfs) 
-        : base(new HashSet<Landform>{lfs.Hill, lfs.Plain}, 
-            nameof(Jungle))
+    public static float MaxDistRatioFromEquator { get; private set; } = .15f;
+    public Jungle() 
     {
     }
     public override bool Allowed(MapPolygon p, float moisture, Landform lf, Data data)

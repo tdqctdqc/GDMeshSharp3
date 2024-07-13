@@ -5,7 +5,7 @@ using Godot;
 public class Recruits : Item
 {
 
-    public Recruits() : base(nameof(Recruits))
+    public Recruits()
     {
     }
 }

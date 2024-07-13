@@ -12,9 +12,9 @@ public partial class StockBar : HBoxContainer
         AddModel(client, data.Models.Flows.Income, data);
         AddModel(client, data.Models.Flows.MilitaryCap, data);
 
-        foreach (var kvp in data.Models.GetModels<Item>())
+        foreach (var item in data.Models.GetModels<Item>())
         {
-            AddModel(client, kvp.Value, data);
+            AddModel(client, item, data);
         }
     }
 

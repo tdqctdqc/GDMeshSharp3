@@ -6,9 +6,6 @@ using Godot;
 public class Railroad : RoadModel
 {
     public Railroad() 
-        : base(nameof(Railroad), 
-            .01f, 
-            true, 100f)
     {
     }
 

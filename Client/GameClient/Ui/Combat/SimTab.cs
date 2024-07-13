@@ -195,7 +195,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         var med = c.Settings.MedIconSize.Value;
         _chooseIfDef = new CheckBox();
         _lf = new ItemListToken<Landform>(
-            c.Data.Models.GetModels<Landform>().Values,
+            c.Data.Models.GetModels<Landform>(),
             lf => lf.Name,
             lf => lf.GetColorTexture(med),
             (int)med,
@@ -206,7 +206,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         _lf.SelectAt(0);
         
         _veg = new ItemListToken<Vegetation>(
-            c.Data.Models.GetModels<Vegetation>().Values,
+            c.Data.Models.GetModels<Vegetation>(),
             v => v.Name,
             v => v.GetColorTexture(med),
             (int)med,
@@ -218,7 +218,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         
         
         _troops = new ItemListToken<Troop>(
-            c.Data.Models.GetModels<Troop>().Values,
+            c.Data.Models.GetModels<Troop>(),
             t => t.DisplayName,
             t => t.Icon.Texture,
             (int)med,

@@ -5,8 +5,7 @@ using Godot;
 
 public abstract class Flow : Item, IIconed
 {
-    protected Flow(string name)
-        : base(name)
+    protected Flow()
     {
     }
     public abstract float GetNonBuildingSupply(Regime r, Data d);

@@ -63,7 +63,7 @@ public class UnitTemplate : Entity, IMakeable
                 {
                     {key.Data.Models.Troops.Rifle1, 100f},
                     {key.Data.Models.Troops.Artillery1, 10f}
-                }, TroopDomain.Land, key.Data.Models.MoveTypes.InfantryMove,
+                }, key.Data.Models.TroopDomains.Land, key.Data.Models.MoveTypes.InfantryMove,
             r);
     }
 

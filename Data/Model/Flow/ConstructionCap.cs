@@ -4,7 +4,7 @@ using System.Linq;
 
 public class ConstructionCap : Flow
 {
-    public ConstructionCap() : base(nameof(ConstructionCap))
+    public ConstructionCap()
     {
     }
 

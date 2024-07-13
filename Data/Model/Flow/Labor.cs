@@ -1,7 +1,7 @@
 
 public class Labor : Flow
 {
-    public Labor() : base(nameof(Labor))
+    public Labor()
     {
     }
 

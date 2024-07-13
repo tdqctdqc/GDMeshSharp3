@@ -1,5 +1,5 @@
 
-public class InfraList : ModelList<InfraModel>
+public class InfraList : ModelManager<InfraModel>
 {
     public Port Port { get; private set; }
 

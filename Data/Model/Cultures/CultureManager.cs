@@ -5,12 +5,13 @@ using Godot;
 
 public class CultureManager : IModelManager<Culture>
 {
-    public Dictionary<string, Culture> Models { get; private set; }
-    
+    public List<Culture> Models { get; private set; }
+    public Dictionary<string, Culture> ByName { get; private set; }
     public CultureManager()
     {
         Models = FileLoader<Culture>.LoadFromJson("Assets/Cultures/Cultures/",
                 ".json", json => new Culture(json))
-            .ToDictionary(c => c.Name, c => c);
+            .ToList();
+        ByName = Models.ToDictionary(m => m.Name, m => m);
     }
 }

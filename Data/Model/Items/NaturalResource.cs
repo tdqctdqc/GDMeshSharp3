@@ -5,8 +5,7 @@ using Godot;
 
 public abstract class NaturalResource : TradeableItem
 {
-    protected NaturalResource(string name, float initialPrice) 
-        : base(name, initialPrice)
+    protected NaturalResource() 
     {
     }
     public HashSet<Cell> GenerateDeposits(Data data)

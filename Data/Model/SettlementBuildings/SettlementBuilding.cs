@@ -7,21 +7,17 @@ using Godot;
 public abstract class SettlementBuilding : IModel, IMakeable, IIconed
 {
     public int Id { get; private set; }
-    public string Name { get; }
+    public string Name { get; private set; }
     public LaborComponent Labor { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
-    
-
-    public Icon Icon { get; }
-    public SettlementBuilding( 
-        string name, 
-        LaborComponent labor, 
-        MakeableAttribute makeable)
+    public Icon Icon { get; private set; }
+    public SettlementBuilding()
     {
-        Name = name;
+    }
+
+    public void MakeIcon()
+    {
         Icon = Icon.Create(Name, Vector2I.One);
-        Makeable = makeable;
-        Labor = labor;
     }
     
     public abstract bool CanBuildInCell(Cell t, Data data);

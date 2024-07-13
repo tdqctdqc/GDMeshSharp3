@@ -4,10 +4,8 @@ using Godot;
 
 public class Tundra : Vegetation
 {
-    public float MinDistFromEquatorRatio { get; private set; }  = .45f;
-    public Tundra(LandformList lfs) 
-        : base(new HashSet<Landform>{lfs.Hill, lfs.Plain},
-            nameof(Tundra))
+    public static float MinDistFromEquatorRatio { get; private set; }  = .45f;
+    public Tundra() 
     {
     }
     public override bool Allowed(MapPolygon p, float moisture, Landform lf, Data data)

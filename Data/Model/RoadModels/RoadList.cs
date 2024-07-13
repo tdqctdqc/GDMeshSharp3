@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GDMeshSharp3.Session.Data.Model.RoadModels;
 
-public class RoadList : ModelList<RoadModel>
+public class RoadList : ModelManager<RoadModel>
 {
     public PavedRoad PavedRoad { get; private set; } = new PavedRoad();
     public DirtRoad DirtRoad { get; private set; } = new DirtRoad();

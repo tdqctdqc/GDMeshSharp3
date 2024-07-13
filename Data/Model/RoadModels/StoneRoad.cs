@@ -5,8 +5,6 @@ namespace GDMeshSharp3.Session.Data.Model.RoadModels;
 public class StoneRoad : RoadModel
 {
     public StoneRoad() 
-        : base(nameof(StoneRoad), 
-            .15f, false, 0f)
     {
     }
 

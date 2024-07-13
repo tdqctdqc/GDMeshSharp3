@@ -5,7 +5,7 @@ using System.Linq;
 public class Income : Flow
 {
 
-    public Income() : base(nameof(Income))
+    public Income()
     {
     }
 

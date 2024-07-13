@@ -3,31 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class VegetationList : ModelList<Vegetation>
+public class VegetationList : ModelManager<Vegetation>
 {
     public Vegetation Swamp { get; private set; }
+        = new Swamp();
     public Vegetation Forest { get; private set; }
+        = new Vegetation();
     public Vegetation Grassland { get; private set; }
+        = new Vegetation();
     public Vegetation Arid { get; private set; }
+        = new Vegetation();
     public Vegetation Steppe { get; private set; }
+        = new Vegetation();
     public Vegetation Desert { get; private set; }
+        = new Vegetation();
     public Vegetation Barren { get; private set; }
+        = new Vegetation();
     public Vegetation Jungle { get; private set; }
-    public Tundra Tundra { get; private set; }
+        = new Jungle();
+    public Vegetation Tundra { get; private set; }
+        = new Tundra();
     public List<Vegetation> ByPriority { get; private set; }
 
     public VegetationList(LandformList lfs)
     {
-        Swamp = new Swamp(lfs);
-        Forest = new Forest(lfs);
-        Grassland = new Grassland(lfs);
-        Arid = new Arid(lfs);
-        Steppe = new Steppe(lfs);
-        Desert = new Desert(lfs);
-        Barren = new Barren(lfs);
-        Jungle = new Jungle(lfs);
-        Tundra = new Tundra(lfs);
-        
         ByPriority = new List<Vegetation> { Swamp, Jungle, Forest, Tundra,
             Grassland, Steppe, Arid, Desert, Barren };
     }

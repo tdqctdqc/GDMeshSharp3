@@ -5,9 +5,7 @@ using Godot;
 
 public class Ranch : FoodProdTechnique
 {
-    public Ranch(PeepJobList list, Items items) 
-        : base(nameof(Ranch), 1000, 
-            100, list.Herder, items)
+    public Ranch() 
     {
     }
 

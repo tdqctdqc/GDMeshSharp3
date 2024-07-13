@@ -1,5 +1,6 @@
 
-public enum TroopDomain
+public class TroopDomain : IModel
 {
-    Land, Sea, Air
+    public int Id { get; private set; }
+    public string Name { get; private set; }
 }

@@ -1,5 +1,5 @@
 
-public class MoveTypes : ModelList<MoveType>
+public class MoveTypes : ModelManager<MoveType>
 {
     public InfantryMoveType InfantryMove { get; private set; }
         = new ();

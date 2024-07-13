@@ -22,7 +22,7 @@ using System;
 [MessagePack.Union(17, typeof(SetUnitOrderProcedure))]
 [MessagePack.Union(18, typeof(StartOrConsolidateMakeProject.AddMakeProjectProc))]
 [MessagePack.Union(19, typeof(TickProcedure))]
-[MessagePack.Union(20, typeof(TradeProcedure))]
+[MessagePack.Union(20, typeof(SetStockProcedure))]
 [MessagePack.Union(21, typeof(TroopLossesProcedure))]
 [MessagePack.Union(22, typeof(CleanUpArmyMissionsProcedure))]
 [MessagePack.Union(23, typeof(SetArmyOccupationProcedure))]
@@ -37,7 +37,6 @@ using System;
 [MessagePack.Union(32, typeof(AggregateProcedure))]
 [MessagePack.Union(33, typeof(ChangeMakeProjectPriorityProcedure))]
 [MessagePack.Union(34, typeof(ReplaceMakeProjectProc))]
-[MessagePack.Union(35, typeof(SetStockProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

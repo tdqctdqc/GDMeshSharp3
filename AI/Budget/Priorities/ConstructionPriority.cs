@@ -10,7 +10,7 @@ public abstract class ConstructionPriority
 {
     public ConstructionPriority(string name) 
         : base(name, 
-            d => d.Models.GetModels<SettlementBuilding>().Values)
+            d => d.Models.GetModels<SettlementBuilding>())
     {
     }
 

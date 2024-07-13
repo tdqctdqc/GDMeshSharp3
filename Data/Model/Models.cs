@@ -12,8 +12,7 @@ public class Models
         ? (IModel) val
         : null;
     
-    public Dictionary<int, IModel> ModelsById;
-    public Dictionary<string, IModel> _modelsByName;
+    public Dictionary<int, IModel> ModelsById { get; private set; }
     public RoadList RoadList { get; private set; }
     public LandformList Landforms { get; private set; }
     public VegetationList Vegetations { get; private set; }
@@ -28,6 +27,7 @@ public class Models
     public FlowList Flows { get; private set; }
     public Troops Troops { get; private set; }
     public MoveTypes MoveTypes { get; private set; }
+    public TroopDomains TroopDomains { get; private set; }
     public ResourceExtractionList ResourceExtractions { get; private set; }
     private int _idIter;
     private DepotImporter _depot;
@@ -44,53 +44,56 @@ public class Models
         
         _managers = new Dictionary<Type, IModelManager>();
         ModelsById = new Dictionary<int, IModel>();
-        _modelsByName = new Dictionary<string, IModel>();
         _idIter = 0;
         
         Items = new Items();
-        AddManager(Items);
+        AddManager(Items, _depot);
 
         Landforms = new LandformList();
-        AddManager(Landforms);
+        AddManager(Landforms, _depot);
 
         Vegetations = new VegetationList(Landforms);
-        AddManager(Vegetations);
+        AddManager(Vegetations, _depot);
         
         PeepJobs = new PeepJobList();
-        AddManager(PeepJobs);
+        AddManager(PeepJobs, _depot);
         
         Flows = new FlowList();
-        AddManager(Flows);
+        AddManager(Flows, _depot);
 
         Buildings = new BuildingList(Items, Flows, PeepJobs);
-        AddManager(Buildings);
+        AddManager(Buildings, _depot);
 
         RoadList = new RoadList();
-        AddManager(RoadList);
+        AddManager(RoadList, _depot);
 
         Settlements = new SettlementTierList();
-        AddManager(Settlements);
+        AddManager(Settlements, _depot);
         
         Cultures = new CultureManager();
-        AddManager(Cultures);
+        AddManager(Cultures, _depot);
         
         RegimeTemplates = new RegimeTemplateManager(Cultures);
-        AddManager(RegimeTemplates);
+        AddManager(RegimeTemplates, _depot);
         
         FoodProdTechniques = new FoodProdTechniqueList(PeepJobs, Items);
-        AddManager(FoodProdTechniques);
+        AddManager(FoodProdTechniques, _depot);
 
         Infras = new InfraList(PeepJobs, Items);
-        AddManager(Infras);
+        AddManager(Infras, _depot);
         
         MoveTypes = new MoveTypes();
-        AddManager(MoveTypes);
+        AddManager(MoveTypes, _depot);
         
-        Troops = new Troops(_modelsByName);
-        AddManager(Troops);
+        Troops = new Troops();
+        AddManager(Troops, _depot);
 
-        ResourceExtractions = new ResourceExtractionList(Items, Flows, PeepJobs);
-        AddManager(ResourceExtractions);
+        ResourceExtractions = new ResourceExtractionList();
+        AddManager(ResourceExtractions, _depot);
+        
+        TroopDomains = new TroopDomains();
+        AddManager(TroopDomains, _depot);
+        
     }
 
     private void SetId(IModel model)
@@ -121,7 +124,7 @@ public class Models
         return (T)ModelsById[id];
     }
 
-    public Dictionary<string, TModel> GetModels<TModel>() where TModel : IModel
+    public List<TModel> GetModels<TModel>() where TModel : IModel
     {
         return GetManager<TModel>().Models;
     }
@@ -129,20 +132,16 @@ public class Models
     {
         return (IModelManager<TModel>)_managers[typeof(TModel)];
     }
-    private void AddManager<T>(IModelManager<T> manager) 
+    private void AddManager<T>(IModelManager<T> manager,
+        DepotImporter importer) 
         where T : IModel
     {
         _managers.Add(typeof(T), manager);
-        foreach (var keyValuePair in manager.Models)
+        _depot.MakeSheetObjectsModels(manager);
+        foreach (var t in manager.Models)
         {
-            _modelsByName.Add(keyValuePair.Key, keyValuePair.Value);
-            SetId(keyValuePair.Value);
+            SetId(t);
         }
     }
-    private void AddManager<T>(ModelList<T> list) 
-        where T : IModel
-    {
-        var manager = new ModelManager<T>(list);
-        AddManager(manager);
-    }
+    
 }

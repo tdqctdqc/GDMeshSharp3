@@ -81,7 +81,7 @@ public class SocietyGenerator : Generator
             .OfType<LandCell>()
             .ToArray();
         var foodSurplus = 0f;
-        var techniques = _data.Models.GetModels<FoodProdTechnique>().Values.ToArray();
+        var techniques = _data.Models.GetModels<FoodProdTechnique>().ToArray();
         
         for (var i = 0; i < territory.Length; i++)
         {
@@ -92,10 +92,10 @@ public class SocietyGenerator : Generator
             for (var j = 0; j < techniques.Length; j++)
             {
                 var technique = techniques[j];
-                var buildingSurplus = technique.BaseProd - technique.BaseLabor * foodConsPerPeep;
+                var buildingSurplus = technique.BaseProd() - technique.BaseLabor() * foodConsPerPeep;
                 var numBuilding = technique.NumForCell(p, _data) * developmentScale;
                 foodSurplus += buildingSurplus * numBuilding;
-                peepIncrease += Mathf.CeilToInt(technique.BaseLabor * numBuilding);
+                peepIncrease += Mathf.CeilToInt(technique.BaseLabor() * numBuilding);
                 foodProd.Add(technique, numBuilding);
             }
             peep.GrowSize(peepIncrease, _key);
@@ -121,7 +121,7 @@ public class SocietyGenerator : Generator
     {
         var developmentScale = _data.GenMultiSettings.SocietySettings.DevelopmentScale.Value;
         var cells = r.GetCells(_data);
-        var extractionBuildings = _data.Models.GetModels<ResourceExtractionBuilding>().Values;
+        var extractionBuildings = _data.Models.GetModels<ResourceExtractionBuilding>();
         foreach (var cell in cells)
         {
             if (cell.GetResourceDeposit(_data) is ResourceDeposit rd)
@@ -217,7 +217,7 @@ public class SocietyGenerator : Generator
         {
             if (poly.IsWater()) continue;
             var beneath = grassland;
-            if (poly.DistFromEquatorRatio(_data) >= tundra.MinDistFromEquatorRatio)
+            if (poly.DistFromEquatorRatio(_data) >= Tundra.MinDistFromEquatorRatio)
             {
                 beneath = tundra;
             }
@@ -262,7 +262,7 @@ public class SocietyGenerator : Generator
             var cell = (LandCell)settlement.Cell.Get(_data);
             var foodLabor = cell.FoodProd.Nums
                 .GetEnumModel(_data)
-                .Sum(v => v.Key.BaseLabor * v.Value);
+                .Sum(v => v.Key.BaseLabor() * v.Value);
             var freeLabor = cell.GetPeep(_data).Size - foodLabor;
             
             foreach (var (model, weight) in weights)

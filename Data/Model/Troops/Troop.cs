@@ -18,11 +18,7 @@ public class Troop : Item, IMakeable, IIconed
     public float BreakthroughMult { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public TroopDomain Domain { get; private set; }
-    public Troop(string name, 
-        TroopDomain domain,
-        Dictionary<string, IModel> modelsByName,
-        Dictionary<string, Dictionary<string, string>> info)
-            : base(name)
+    public Troop()
     {
         // var thisInfo = info[name];
         //

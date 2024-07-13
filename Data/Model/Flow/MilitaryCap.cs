@@ -3,7 +3,7 @@ using System.Linq;
 
 public class MilitaryCap : Flow
 {
-    public MilitaryCap() : base(nameof(MilitaryCap))
+    public MilitaryCap()
     {
     }
 

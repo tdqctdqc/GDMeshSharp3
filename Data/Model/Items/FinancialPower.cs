@@ -6,7 +6,6 @@ using Godot;
 public class FinancialPower : TradeableItem
 {
     public FinancialPower()
-        : base(nameof(FinancialPower), 2f)
     {
     }
 }

@@ -5,8 +5,6 @@ using Godot;
 
 public class SocietyDomain
 {
-    public Market Market => _market != null ? _market.Value : null;
-    private SingletonCache<Market> _market;
     public ProposalList Proposals => _proposals != null ? _proposals.Value : null;
     private SingletonCache<ProposalList> _proposals;
     public RegimeAux RegimeAux { get; private set; }
@@ -24,7 +22,6 @@ public class SocietyDomain
         PolyPeepAux = new PolyPeepAux(data);
         AllianceAux = new AllianceAux(data);
         _diploGraph = new SingletonCache<DiplomacyGraph>(data);
-        _market = new SingletonCache<Market>(data);
         _proposals = new SingletonCache<ProposalList>(data);
     }
 }

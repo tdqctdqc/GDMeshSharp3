@@ -10,11 +10,12 @@ public class SettlementTier : IModel
     public int MinSize { get; private set; }
     public Icon Icon { get; private set; }
 
-    public SettlementTier(string name, 
-        int minSize)
+    public SettlementTier()
     {
-        Name = name;
-        MinSize = minSize;
+    }
+
+    public void MakeIcon()
+    {
         Icon = Icon.Create(Name, Vector2I.One);
     }
 }

@@ -1,12 +1,11 @@
 
-public class ResourceExtractionList : ModelList<ResourceExtractionBuilding>
+public class ResourceExtractionList : ModelManager<ResourceExtractionBuilding>
 {
     public Mine IronMine { get; private set; }
+        = new Mine();
 
-    public ResourceExtractionList(Items items, FlowList flows, 
-        PeepJobList jobs)
+    public ResourceExtractionList()
     {
-        IronMine = new Mine(nameof(IronMine), items.Iron, 
-            items, jobs, flows);
+        
     }
 }

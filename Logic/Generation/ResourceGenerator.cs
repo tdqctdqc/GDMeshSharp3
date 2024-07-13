@@ -23,7 +23,7 @@ public class ResourceGenerator : Generator
     {
         //todo not fair! will under-generate later resources in list
         var resources = _data.Models
-            .GetModels<Item>().Values
+            .GetModels<Item>()
             .OfType<NaturalResource>();
         
         foreach (var nr in resources)

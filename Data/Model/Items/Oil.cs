@@ -5,7 +5,6 @@ using Godot;
 public class Oil : NaturalResource
 {
     public Oil() 
-        : base(nameof(Oil), 5)
     {
     }
 

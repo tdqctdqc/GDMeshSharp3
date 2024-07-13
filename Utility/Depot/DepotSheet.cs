@@ -43,16 +43,21 @@ public class DepotSheet
     {
         foreach (var (lineName, line) in Lines)
         {
-            GD.Print($"making object for {lineName}");
-
             var t = get();
             var lineGuid = LineGuids[lineName];
             importer.LineObjects.Add(lineGuid, t);
             importer.LineObjectsByName.Add(lineName, t);
         }
     }
-    
-    
-    
-    
+
+    public void MakeObjectsModels<T>(IModelManager<T> manager, DepotImporter importer)
+        where T : IModel
+    {
+        foreach (var (name, value) in manager.ByName)
+        {
+            var guid = LineGuids[name];
+            importer.LineObjects[guid] = value;
+            importer.LineObjectsByName[name] = value;
+        }
+    }
 }

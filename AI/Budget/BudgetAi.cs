@@ -77,51 +77,51 @@ public class BudgetAi
     private void DoTradeOrders(Data data, MajorTurnOrders orders, BudgetPool pool, 
         Dictionary<Item, int> wishlist)
      {
-         var market = data.Society.Market;
-         var credits = pool.Stock.Get(data.Models.Flows.Income);
-
-         var plausibleCosts = new Dictionary<Item, float>();
-         foreach (var kvp in wishlist)
-         {
-             if (kvp.Key is TradeableItem == false) continue;
-             var price = market.Prices[kvp.Key.Id];
-             var latest = market.TradeHistory.GetLatest(kvp.Key);
-             var plausibleCost = 0f;
-             if (latest != null)
-             {
-                 plausibleCost = kvp.Value * latest.BuySatisfyRatio * price;
-             }
-             else plausibleCost = kvp.Value * price;
-
-             plausibleCosts.Add(kvp.Key, plausibleCost);
-         }
-
-         var totalCost = plausibleCosts.Sum(kvp => kvp.Value);
-         var buyRatio = Mathf.Clamp(credits / totalCost, 0f, 1f);
-
-         if (float.IsNaN(buyRatio)) buyRatio = 0;
- 
-         foreach (var kvp in wishlist)
-         {
-             if (kvp.Key is TradeableItem == false) continue;
-             var buyQ = Mathf.FloorToInt(kvp.Value * buyRatio);
-             if (buyQ < 0) throw new Exception();
-             orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, 
-              buyQ));
-         }
- 
-         foreach (var kvp in pool.Stock.Contents)
-         {
-             var item = data.Models.GetModel<Item>(kvp.Key);
-             if (item is TradeableItem t == false) continue;
-             var q = Mathf.FloorToInt(kvp.Value / 2);
-             if (wishlist.ContainsKey(item))
-             {
-                 if (wishlist[item] >= q) continue;
-                 q -= wishlist[item];
-             }
-             orders.TradeOrders.SellOrders
-                .Add(new SellOrder(kvp.Key, _regime.Id, q));
-         }
+         // var market = data.Society.Market;
+         // var credits = pool.Stock.Get(data.Models.Flows.Income);
+         //
+         // var plausibleCosts = new Dictionary<Item, float>();
+         // foreach (var kvp in wishlist)
+         // {
+         //     if (kvp.Key is TradeableItem == false) continue;
+         //     var price = market.Prices[kvp.Key.Id];
+         //     var latest = market.TradeHistory.GetLatest(kvp.Key);
+         //     var plausibleCost = 0f;
+         //     if (latest != null)
+         //     {
+         //         plausibleCost = kvp.Value * latest.BuySatisfyRatio * price;
+         //     }
+         //     else plausibleCost = kvp.Value * price;
+         //
+         //     plausibleCosts.Add(kvp.Key, plausibleCost);
+         // }
+         //
+         // var totalCost = plausibleCosts.Sum(kvp => kvp.Value);
+         // var buyRatio = Mathf.Clamp(credits / totalCost, 0f, 1f);
+         //
+         // if (float.IsNaN(buyRatio)) buyRatio = 0;
+         //
+         // foreach (var kvp in wishlist)
+         // {
+         //     if (kvp.Key is TradeableItem == false) continue;
+         //     var buyQ = Mathf.FloorToInt(kvp.Value * buyRatio);
+         //     if (buyQ < 0) throw new Exception();
+         //     orders.TradeOrders.BuyOrders.Add(new BuyOrder(kvp.Key.Id, _regime.Id, 
+         //      buyQ));
+         // }
+         //
+         // foreach (var kvp in pool.Stock.Contents)
+         // {
+         //     var item = data.Models.GetModel<Item>(kvp.Key);
+         //     if (item is TradeableItem t == false) continue;
+         //     var q = Mathf.FloorToInt(kvp.Value / 2);
+         //     if (wishlist.ContainsKey(item))
+         //     {
+         //         if (wishlist[item] >= q) continue;
+         //         q -= wishlist[item];
+         //     }
+         //     orders.TradeOrders.SellOrders
+         //        .Add(new SellOrder(kvp.Key, _regime.Id, q));
+         // }
      }
 }

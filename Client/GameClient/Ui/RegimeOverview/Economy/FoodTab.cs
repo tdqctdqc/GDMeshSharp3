@@ -43,16 +43,17 @@ public partial class FoodTab : ScrollContainer, IUiDrawable
         {
             var technique = kvp.Key;
             var num = kvp.Value;
+            var job = technique.JobType(client.Data);
 
             var box = technique.Icon.GetLabeledIcon<HBoxContainer>(num.ToString(), iconSize);
             _container.AddChild(box);
 
-            var needed = technique.BaseLabor * num;
-            var have = jobs.ContainsKey(technique.JobType) ? jobs[technique.JobType] : 0;
+            var needed = technique.BaseLabor() * num;
+            var have = jobs.ContainsKey(job) ? jobs[job] : 0;
             var ratio = have / needed;
             _container.CreateLabelAsChild($"Labor: {have} / {needed}");
-            _container.CreateLabelAsChild($"Expected output: {ratio * num * technique.BaseProd}");
-            _container.CreateLabelAsChild($"Maximum output: {num * technique.BaseProd}");
+            _container.CreateLabelAsChild($"Expected output: {ratio * num * technique.BaseProd()}");
+            _container.CreateLabelAsChild($"Maximum output: {num * technique.BaseProd()}");
         }
         
         

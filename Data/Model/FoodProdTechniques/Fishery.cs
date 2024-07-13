@@ -5,9 +5,7 @@ using Godot;
 
 public class Fishery : FoodProdTechnique
 {
-    public Fishery(PeepJobList jobs, Items items) 
-        : base(nameof(Fishery), 1000, 
-            200, jobs.Fisher, items)
+    public Fishery() 
     {
     }
 

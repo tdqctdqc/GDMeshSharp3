@@ -22,7 +22,6 @@ public class GenData : Data
         EntityIds.Create(key);
         GameClock.Create(key);
         PlanetInfo.Create(GenMultiSettings.Dimensions, key);
-        Market.Create(key);
         RuleVars.CreateDefault(key);
         ProposalList.Create(key);
         ClientPlayerData.SetLocalPlayerGuid(new Guid());

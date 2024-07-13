@@ -4,30 +4,7 @@ using System.Linq;
 
 public class Factory : SettlementBuilding
 {
-    public Factory(Items items, FlowList flows, PeepJobList jobs) : 
-        base(nameof(Factory),
-            new LaborComponent(
-                IdCount<Item>.Construct(
-                ),
-                IdCount<Item>.Construct(
-                    (flows.IndustrialPower, 100)
-                ),
-                IdCount<PeepJob>.Construct(
-                    (jobs.Prole, 500)
-                )
-            ),
-            new MakeableAttribute(IdCount<Item>.Construct(
-                    new Dictionary<Item, float>
-                {
-                    { items.Iron, 500 },
-                    { flows.ConstructionCap, 100_000 },
-                }),
-                IdCount<Item>.Construct(
-                    new Dictionary<Item, float>
-                    {
-                    })
-            )
-        )
+    public Factory()
     {
         
     }

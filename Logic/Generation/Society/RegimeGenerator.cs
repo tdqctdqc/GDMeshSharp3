@@ -39,7 +39,7 @@ public class RegimeGenerator : Generator
         var polysPerRegime = 30;
         var polyRegimes = 
             new Dictionary<MapPolygon, Regime>();
-        var templates = _data.Models.RegimeTemplates.Models.Values.ToHashSet();
+        var templates = _data.Models.RegimeTemplates.Models.ToHashSet();
         
         _data.Planet.MapAux.LandSea.Landmasses.ForEach(
             lm =>

@@ -5,10 +5,8 @@ using Godot;
 
 public class TradeableItem : Item
 {
-    public float DefaultPrice { get; private set; }
-    public TradeableItem(string name, float defaultPrice) 
-        : base(name)
+    // public float DefaultPrice { get; private set; }
+    public TradeableItem() 
     {
-        DefaultPrice = defaultPrice;
     }
 }

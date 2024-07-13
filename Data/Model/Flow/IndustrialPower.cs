@@ -6,7 +6,6 @@ using Godot;
 public class IndustrialPower : Flow
 {
     public IndustrialPower() 
-        : base(nameof(IndustrialPower))
     {
     }
 

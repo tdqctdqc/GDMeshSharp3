@@ -5,20 +5,7 @@ using Godot;
 
 public class Mine : ResourceExtractionBuilding
 {
-    public Mine(string name, NaturalResource prodItem, 
-        Items items, PeepJobList jobs, FlowList flows) 
-        : base(name, prodItem, 20, 500, 
-            100, jobs.Miner,
-            new MakeableAttribute(
-                IdCount<Item>.Construct(new Dictionary<Item, float>
-                {
-                    {items.Iron, 1000},
-                    { flows.ConstructionCap, 200_000 },
-                }),
-                IdCount<Item>.Construct(new Dictionary<Item, float>
-                {
-                }))
-        )
+    public Mine() 
     {
     }
     public override bool CanBuildInCell(Cell t, Data data)

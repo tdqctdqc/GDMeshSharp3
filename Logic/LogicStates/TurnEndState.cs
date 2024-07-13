@@ -9,7 +9,6 @@ public class TurnEndState : TurnState
         _majorModules = new LogicModule[]
         {
             new DoTurnOrderProceduresModule(),
-            new TradeModule(),
             new AllianceOrdersModule(),
             new DefaultLogicModule(() => new TickProcedure()),
             new ClearOrdersModule(orders)

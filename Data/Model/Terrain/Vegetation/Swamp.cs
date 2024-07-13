@@ -5,9 +5,7 @@ using Godot;
 
 public class Swamp : Vegetation
 {
-    public Swamp(LandformList lfs) 
-        : base(new HashSet<Landform>{lfs.Plain}, 
-            nameof(Swamp))
+    public Swamp() 
     {
     }
 
