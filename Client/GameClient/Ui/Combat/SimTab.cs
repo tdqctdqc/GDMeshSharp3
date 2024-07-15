@@ -148,11 +148,11 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         list.Remove(unit);
         foreach (var i in _attackers)
         {
-            i.ClearLossesKills();
+            i.ClearLossesKills(Game.I.Client.Data);
         }
         foreach (var i in _defenders)
         {
-            i.ClearLossesKills();
+            i.ClearLossesKills(Game.I.Client.Data);
         }
         DrawCenter();
     }
@@ -171,11 +171,11 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         }
         foreach (var i in _attackers)
         {
-            i.ClearLossesKills();
+            i.ClearLossesKills(Game.I.Client.Data);
         }
         foreach (var i in _defenders)
         {
-            i.ClearLossesKills();
+            i.ClearLossesKills(Game.I.Client.Data);
         }
         DrawCenter();
     }
@@ -255,11 +255,11 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
         foreach (var i in _attackers)
         {
-            i.ClearLossesKills();
+            i.ClearLossesKills(Game.I.Client.Data);
         }
         foreach (var i in _defenders)
         {
-            i.ClearLossesKills();
+            i.ClearLossesKills(Game.I.Client.Data);
         }
         DrawCenter();
     }
@@ -285,6 +285,9 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         var large = Game.I.Client.Settings.LargeIconSize.Value;
         var troop = _troops.Values.First();
         var def = _chooseIfDef.ButtonPressed;
+
+        var friendlies = def ? _defenders : _attackers;
+        var targets = def ? _attackers : _defenders;
         var evasionMult = MilUtil.GetEvasionMult(_lf.Values.First(),
             _veg.Values.First(), def);
         
@@ -302,6 +305,16 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             ($"Accuracy: {troop.Accuracy}");
         _selectedTroopInfo.CreateLabelAsChild
             ($"Echelon: {troop.Echelon}");
+        var echelonChances = MilUtil.GetEchelonChances(
+            troop, _landform, _vegetation, targets.ToArray(),
+            friendlies.ToArray());
+        var totalChance = echelonChances.Sum();
+        _selectedTroopInfo.CreateLabelAsChild($"Target Echelon Chances: ");
+        for (var i = 0; i < echelonChances.Length; i++)
+        {
+            _selectedTroopInfo.CreateLabelAsChild(
+                $"Echelon {i}: {echelonChances[i] / totalChance}");
+        }
         
         _selectedTroopInfo.CreateLabelAsChild($"Base evasion: {troop.Evasion}");
         _selectedTroopInfo.CreateLabelAsChild($"Evasion mult: {evasionMult}");

@@ -26,14 +26,21 @@ public static class MilUtil
         UnitCombatInfo[] defenders,
         Landform lf, Vegetation veg, Data d)
     {
+        foreach (var unitCombatInfo in defenders)
+        {
+            doFights(unitCombatInfo, attackers, 
+                defenders, false);
+        }
         foreach (var unitCombatInfo in attackers)
         {
-            doFights(unitCombatInfo, defenders, attackers);
+            doFights(unitCombatInfo, defenders, 
+                attackers, true);
         }
         
         void doFights(UnitCombatInfo unit, 
             UnitCombatInfo[] targets,
-            UnitCombatInfo[] comrades)
+            UnitCombatInfo[] comrades,
+            bool targetIsDefendingCell)
         {
             foreach (var (troop, amt) in unit.Active.GetEnumModel(d))
             {
@@ -41,7 +48,8 @@ public static class MilUtil
                 for (var i = 0; i < ceil; i++)
                 {
                     var troopAmt = Mathf.Min(1f, unit.Active.Get(troop));
-                    var targetEchelon = getTargetEchelon(troop, targets, comrades);
+                    var targetEchelon = GetTargetEchelon(troop, lf, veg, 
+                        targets, comrades);
                     if (targetEchelon == -1)
                     {
                         return;
@@ -58,7 +66,8 @@ public static class MilUtil
                         return;
                     }
                     
-                    if (getHit(troop, targetTroop, true))
+                    if (getHit(troop, targetTroop, 
+                            targetIsDefendingCell, true))
                     {
                         var kill = getKillAmt(troop, 
                             targetTroop, targetTroopAmt);
@@ -66,83 +75,36 @@ public static class MilUtil
                         targetUnit.AddLoss(targetTroop, kill);
                     }
                     
-                    if (getHit(targetTroop, troop, false))
+                    if (getHit(targetTroop, troop, 
+                            targetIsDefendingCell == false, false))
                     {
                         var kill = getKillAmt(targetTroop, troop, 
                             troopAmt);
-                        
                         unit.AddLoss(troop, kill);
                         targetUnit.AddKill(troop, kill);
                     }
                 }
             }
         }
-        int getTargetEchelon(Troop troop, 
-            UnitCombatInfo[] targets,
-            UnitCombatInfo[] friendlies)
+        
+        bool getHit(Troop troop, Troop target, 
+            bool targetIsDefendingCell, bool troopInitiated)
         {
-            if (targets.Length == 0) return -1;
-            if (targets.Any(t => t.ActiveFrontSizes.Sum() > 0f)
-                == false)
+            if (troopInitiated == false && target.Range > troop.Range)
             {
-                return -1;
+                return false;
             }
-
-            var carryOver = 0f;
-            var carryMult = .5f;
-            
-            var chances = new float[NumEchelons];
-            for (int i = 0; i < NumEchelons; i++)
-            {
-                var enemyFrontage = targets.Sum(c => c.ActiveFrontSizes[i]);
-                var friendlyFrontage = friendlies.Sum(c => c.ActiveFrontSizes[i]);
-                var chance = 0f;
-                if (enemyFrontage > 0f)
-                {
-                    var baseChance = troop.TargetChance[i];
-                    chance = baseChance * enemyFrontage;
-                    if (i > troop.Range)
-                    {
-                        var movementMult = lf.MovementCostMult * veg.MovementCostMult;
-
-                        var frontageModTop = (friendlyFrontage + carryOver) * troop.BreakthroughMult;
-                        var frontageModBottom = (enemyFrontage * movementMult);
-                        
-                        
-                        var frontageMod = frontageModTop / frontageModBottom;
-                        frontageMod = Mathf.Clamp(frontageMod, 0f, 1f);
-                        chance *= frontageMod;
-                    }
-                }
-                carryOver = Mathf.Max(0f, (friendlyFrontage + carryOver - enemyFrontage) * carryMult);
-                chances[i] = chance;
-            }
-            
-            var totalChance = chances.Sum();
-            var score = Game.I.Random.RandfRange(0f, totalChance);
-            var cumul = 0f;
-            for (var i = 0; i < chances.Length; i++)
-            {
-                cumul += chances[i];
-                if (cumul >= score)
-                {
-                    return i;
-                }
-            }
-
-            throw new Exception();
-        }
-        bool getHit(Troop troop, Troop target, bool targetIsDefense)
-        {
             var toHit = Random.Shared.NextSingle()
                         * troop.Accuracy;
-            var evadeMult = GetEvasionMult(lf, veg, targetIsDefense);
+            var evadeMult = GetEvasionMult(lf, veg, targetIsDefendingCell);
             var toEvade = Random.Shared.NextSingle()
                           * target.Evasion * evadeMult;
+            
             return toHit > toEvade;
         }
 
-        float getKillAmt(Troop troop, Troop target, float targetAmt)
+        float getKillAmt(Troop troop, Troop target, 
+            float targetAmt)
         {
             var dmg = getDamage(troop, target);
             return Mathf.Min(targetAmt, dmg / target.Hitpoints);
@@ -214,6 +176,75 @@ public static class MilUtil
         return false;
     }
     
+    public static int GetTargetEchelon(Troop troop, 
+        Landform lf, Vegetation veg,
+        UnitCombatInfo[] targets,
+        UnitCombatInfo[] friendlies)
+    {
+        if (targets.Length == 0) return -1;
+        if (targets.Any(t => t.ActiveFrontSizes.Sum() > 0f)
+            == false)
+        {
+            return -1;
+        }
+
+        var carryOver = 0f;
+        var carryMult = .5f;
+        
+        var chances = GetEchelonChances(troop, lf, veg, targets, friendlies);
+        
+        var totalChance = chances.Sum();
+        var score = Game.I.Random.RandfRange(0f, totalChance);
+        var cumul = 0f;
+        for (var i = 0; i < chances.Length; i++)
+        {
+            cumul += chances[i];
+            if (cumul >= score)
+            {
+                return i;
+            }
+        }
+
+        throw new Exception();
+    }
+
+    public static float[] GetEchelonChances(Troop troop, 
+        Landform lf, Vegetation veg, 
+        UnitCombatInfo[] targets,
+        UnitCombatInfo[] friendlies)
+    {
+        var carryOver = 0f;
+        var carryMult = .5f;
+        var chances = new float[NumEchelons];
+        for (int i = 0; i < NumEchelons; i++)
+        {
+            var enemyFrontage = targets.Sum(c => c.ActiveFrontSizes[i]);
+            var friendlyFrontage = friendlies.Sum(c => c.ActiveFrontSizes[i]);
+            var chance = 0f;
+            if (enemyFrontage > 0f)
+            {
+                var baseChance = troop.TargetChance[i];
+                chance = baseChance * enemyFrontage;
+                if (i > troop.Range)
+                {
+                    var movementMult = lf.MovementCostMult * veg.MovementCostMult;
+                    
+                    var frontageModTop = (friendlyFrontage + carryOver) * troop.BreakthroughMult;
+                    var frontageModBottom = (enemyFrontage * movementMult);
+                    
+                    var frontageMod = frontageModTop / frontageModBottom;
+                    frontageMod = Mathf.Clamp(frontageMod, 0f, 1f);
+                    chance *= frontageMod;
+                }
+            }
+
+            carryOver = Mathf.Max(0f, (friendlyFrontage + carryOver - enemyFrontage) * carryMult);
+            chances[i] = chance;
+        }
+
+        return chances;
+    }
+
     public static Dictionary<Army, HashSet<Cell>> 
         GetGroupLineAssignments(Alliance alliance,
             IEnumerable<Army> groups,

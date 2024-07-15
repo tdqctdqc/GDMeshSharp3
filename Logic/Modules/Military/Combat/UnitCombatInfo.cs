@@ -128,7 +128,7 @@ public class UnitCombatInfo
         return losses;
     }
 
-    public void ClearLossesKills()
+    public void ClearLossesKills(Data data)
     {
         Active.Clear();
         Kills.Clear();
@@ -136,13 +136,14 @@ public class UnitCombatInfo
         {
             Active.Set(key, value);
         }
+
+        ActiveFrontSizes = SetFrontSizes(Active, data);
     }
 
     public void SetInitial(Troop troop, float amt, Data d)
     {
         Initial.Set(troop, amt);
-        ClearLossesKills();
-        ActiveFrontSizes = SetFrontSizes(Active, d);
+        ClearLossesKills(d);
     }
 
 

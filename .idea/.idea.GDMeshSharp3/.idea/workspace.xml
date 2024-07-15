@@ -4,28 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/Icons/IIconed.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/Icons/IIconed.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/FoodProdTechniques/FoodProdTechnique.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Infrastructure/InfraModel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Infrastructure/Port.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Infrastructure/Port.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Items/Item.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/Item.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Models.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Models.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionBuilding.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementBuildings/SettlementBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementBuildings/SettlementBuilding.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTier.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementTier/SettlementTier.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/TroopDomains.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/TroopDomains.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Job/PeepJob.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Job/PeepJob.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Depot/DepotImporter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Depot/DepotImporter.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Depot/DepotSheet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Depot/DepotSheet.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/depot.dpo" beforeDir="false" afterPath="$PROJECT_DIR$/depot.dpo" afterDir="false" />
-    </list>
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -105,6 +84,7 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8b78e83a7fcb41b463a82a2c615d0eb9a82f63e6fe93ffd1fe6781e6349d9b/HashSet.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Budget/BudgetPool.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
@@ -113,8 +93,6 @@
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/Models.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/SettlementBuildings/BuildingList.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -724,7 +702,7 @@
       <workItem from="1720793325414" duration="3737000" />
       <workItem from="1720826096165" duration="6605000" />
       <workItem from="1720875307331" duration="5947000" />
-      <workItem from="1720881533482" duration="3239000" />
+      <workItem from="1720881533482" duration="4579000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -936,14 +914,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00244" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1719761426243</created>
-      <option name="number" value="00244" />
-      <option name="presentableId" value="LOCAL-00244" />
-      <option name="project" value="LOCAL" />
-      <updated>1719761426243</updated>
-    </task>
     <task id="LOCAL-00245" summary="making combat sim">
       <option name="closed" value="true" />
       <created>1719778624072</created>
@@ -1088,7 +1058,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720877397064</updated>
     </task>
-    <option name="localTasksCounter" value="263" />
+    <task id="LOCAL-00263" summary="finished depot">
+      <option name="closed" value="true" />
+      <created>1720886492395</created>
+      <option name="number" value="00263" />
+      <option name="presentableId" value="LOCAL-00263" />
+      <option name="project" value="LOCAL" />
+      <updated>1720886492395</updated>
+    </task>
+    <option name="localTasksCounter" value="264" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1110,7 +1088,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="working on CustomArea control" />
     <MESSAGE value="working on custom click area" />
     <MESSAGE value="more army graphic work" />
     <MESSAGE value="combat history window" />
@@ -1135,6 +1112,7 @@
     <MESSAGE value="doing depot" />
     <MESSAGE value="depot" />
     <MESSAGE value="ditto" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
+    <MESSAGE value="finished depot" />
+    <option name="LAST_COMMIT_MESSAGE" value="finished depot" />
   </component>
 </project>
