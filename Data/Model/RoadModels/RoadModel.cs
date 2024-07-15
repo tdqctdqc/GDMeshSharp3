@@ -10,6 +10,7 @@ public abstract class RoadModel : IModel
     public bool UseSpeedOverride { get; private set; }
     public float SpeedOverride { get; private set; }
     public int Id { get; private set; }
+    public HashSet<Technology> Prereqs { get; private set; }
 
     public RoadModel()
     {

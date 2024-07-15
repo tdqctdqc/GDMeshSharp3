@@ -9,14 +9,14 @@ public class ConstructBuildingsBudgetBranch
         Parent = parent;
         var industrial =
             new MakeProductionBuildingsPriority(
-                d.Models.Flows.IndustrialPower,
+                d.Models.Items.IndustrialPower,
                 "Make Industrial");
         _industrial = new PriorityNode(industrial, this,
             (d, r) => 1f);
         Children.Add(_industrial);
         
         var income = new MakeProductionBuildingsPriority(
-            d.Models.Flows.Income,
+            d.Models.Items.Income,
             "Make Income");
         _income = new PriorityNode(income, this,
             (d, r) => 0f);

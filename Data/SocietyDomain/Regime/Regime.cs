@@ -19,7 +19,7 @@ public class Regime : Entity
     public bool IsMajor { get; private set; }
     public MakeQueue MakeQueue { get; private set; }
     public RegimeMilitary Military { get; private set; }
-
+    public RegimeTechnology Technology { get; private set; }
     [SerializationConstructor] private Regime(int id, string name, 
         Color primaryColor, Color secondaryColor, 
         CellRef capital,
@@ -27,7 +27,9 @@ public class Regime : Entity
         ModelRef<RegimeTemplate> template, 
         RegimeFinance finance, bool isMajor, 
         MakeQueue makeQueue,
-        RegimeMilitary military) : base(id)
+        RegimeMilitary military,
+        RegimeTechnology technology)
+            : base(id)
     {
         Stock = stock;
         PrimaryColor = primaryColor;
@@ -40,11 +42,12 @@ public class Regime : Entity
         IsMajor = isMajor;
         MakeQueue = makeQueue;
         Military = military;
+        Technology = technology;
     }
 
     public static Regime Create(MapPolygon seed, 
         RegimeTemplate regimeTemplate, bool isMajor, 
-        IHostWriteKey key)
+        GenWriteKey key)
     {
         var store = RegimeStock.Construct();
         var id = key.Data.IdDispenser.TakeId();
@@ -58,11 +61,13 @@ public class Regime : Entity
             RegimeFinance.Construct(),
             isMajor,
             MakeQueue.Construct(),
-            RegimeMilitary.Construct(id, key.Data)
+            RegimeMilitary.Construct(id, key.Data),
+            RegimeTechnology.Construct()
         );
         key.Create(r);
         Alliance.Create(r, key);
         UnitTemplate.CreateDefaultTemplatesForRegime(r, key);
+        global::Technology.AddStartingTechsForRegime(r, key);
         return r;
     }
 

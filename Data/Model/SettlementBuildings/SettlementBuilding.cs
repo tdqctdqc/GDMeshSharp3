@@ -11,6 +11,7 @@ public abstract class SettlementBuilding : IModel, IMakeable, IIconed
     public LaborComponent Labor { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public Icon Icon { get; private set; }
+    public HashSet<Technology> Prereqs { get; private set; }
     public SettlementBuilding()
     {
     }

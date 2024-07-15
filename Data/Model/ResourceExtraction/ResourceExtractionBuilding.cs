@@ -18,7 +18,7 @@ public abstract class ResourceExtractionBuilding
     public Icon Icon { get; private set; }
     public LaborComponent Labor { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
-
+    public HashSet<Technology> Prereqs { get; private set; }
     public ResourceExtractionBuilding()
     {
         

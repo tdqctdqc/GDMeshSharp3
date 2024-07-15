@@ -84,10 +84,11 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8b78e83a7fcb41b463a82a2c615d0eb9a82f63e6fe93ffd1fe6781e6349d9b/HashSet.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Budget/BudgetPool.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/MilUtil.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/MilUtil.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
@@ -142,15 +143,6 @@
   }
 }</component>
   <component name="RunManager" selected="Start and Debug.Player">
-    <configuration name="Attach to Player" type="ConnectRemote" factoryName="Mono Remote" show_console_on_std_err="false" show_console_on_std_out="false" port="23685" address="localhost">
-      <option name="allowRunningInParallel" value="false" />
-      <option name="listenPortForConnections" value="false" />
-      <option name="projectPathOnTarget" />
-      <option name="selectedOptions">
-        <list />
-      </option>
-      <method v="2" />
-    </configuration>
     <configuration name="Editor" type="GODOT_DEBUG_RUN_CONFIGURATION" factoryName="Start and Debug">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.1.1-stable_mono_win64/Godot_v4.1.1-stable_mono_win64.exe" />
       <option name="PROGRAM_PARAMETERS" value="--path &quot;$PROJECT_DIR$&quot; --editor" />
@@ -703,6 +695,7 @@
       <workItem from="1720826096165" duration="6605000" />
       <workItem from="1720875307331" duration="5947000" />
       <workItem from="1720881533482" duration="4579000" />
+      <workItem from="1721060002413" duration="2922000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -914,14 +907,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00245" summary="making combat sim">
-      <option name="closed" value="true" />
-      <created>1719778624072</created>
-      <option name="number" value="00245" />
-      <option name="presentableId" value="LOCAL-00245" />
-      <option name="project" value="LOCAL" />
-      <updated>1719778624072</updated>
-    </task>
     <task id="LOCAL-00246" summary="changing windows to freeable, dont keep them in window manager">
       <option name="closed" value="true" />
       <created>1719780341087</created>
@@ -1066,7 +1051,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720886492395</updated>
     </task>
-    <option name="localTasksCounter" value="264" />
+    <task id="LOCAL-00264" summary="tweaking combat">
+      <option name="closed" value="true" />
+      <created>1721062579215</created>
+      <option name="number" value="00264" />
+      <option name="presentableId" value="LOCAL-00264" />
+      <option name="project" value="LOCAL" />
+      <updated>1721062579215</updated>
+    </task>
+    <option name="localTasksCounter" value="265" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1088,7 +1081,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="working on custom click area" />
     <MESSAGE value="more army graphic work" />
     <MESSAGE value="combat history window" />
     <MESSAGE value="doot" />
@@ -1113,6 +1105,7 @@
     <MESSAGE value="depot" />
     <MESSAGE value="ditto" />
     <MESSAGE value="finished depot" />
-    <option name="LAST_COMMIT_MESSAGE" value="finished depot" />
+    <MESSAGE value="tweaking combat" />
+    <option name="LAST_COMMIT_MESSAGE" value="tweaking combat" />
   </component>
 </project>

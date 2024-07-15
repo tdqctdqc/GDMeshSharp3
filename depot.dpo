@@ -244,6 +244,19 @@
                         "sheet": "sheetSelect",
                         "defaultValue": "lineSelect@sheet"
                     }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "ede4806f-4a3d-4991-ad1a-0c496f32991b",
+                    "name": "Prereqs",
+                    "description": "Prereqs",
+                    "sheet": "b18aa0b7-8595-4146-95dd-7a428be7263b",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
                 }
             ],
             "lines": [
@@ -280,6 +293,13 @@
                             "id": "2",
                             "Value": 0.25
                         }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "3dc65216-f60a-4fce-8811-2553f0dd72d3",
+                            "Value": "64dddec9-b8f8-4b17-b26b-64a6814bdaa2",
+                            "id": "0"
+                        }
                     ]
                 },
                 {
@@ -314,6 +334,13 @@
                             "guid": "ae4a1e32-dc2b-49e6-b7c1-0d8367524f27",
                             "Value": 0.25,
                             "id": "2"
+                        }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "944e08bb-8f24-43db-a298-6dbe2458d814",
+                            "Value": "a8f53099-1dbb-4d1c-82d2-761b566e83ea",
+                            "id": "0"
                         }
                     ]
                 },
@@ -350,6 +377,13 @@
                             "Value": 0.25,
                             "id": "2"
                         }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "4ab3fcf9-6555-43e3-9fcf-3d451fcdc3d4",
+                            "Value": "b71a1d88-3015-496b-8a89-fd852403cd4e",
+                            "id": "0"
+                        }
                     ]
                 },
                 {
@@ -384,6 +418,13 @@
                             "guid": "3d3419eb-9819-45b5-afb9-76edee43052d",
                             "Value": 0.25,
                             "id": "2"
+                        }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "58a5764e-3954-449e-b7ee-588ee87dc0bc",
+                            "Value": "37ae653c-184d-44b9-928f-d8b952b4f6d5",
+                            "id": "0"
                         }
                     ]
                 },
@@ -420,6 +461,13 @@
                             "Value": 0.25,
                             "id": "2"
                         }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "f4d20f6c-8278-45c4-b124-a2b49af76525",
+                            "Value": "49cfd428-6327-4150-82c8-a5e08ddcf321",
+                            "id": "0"
+                        }
                     ]
                 },
                 {
@@ -454,6 +502,13 @@
                             "guid": "f53a2425-09c7-4733-a65d-bbb74c6dfcb8",
                             "Value": 0.25,
                             "id": "2"
+                        }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "6d5f1e12-467a-4639-9f96-2a8b65f764bf",
+                            "Value": "c0e7ae59-f5a1-42f0-adbd-f104c7745f80",
+                            "id": "0"
                         }
                     ]
                 },
@@ -490,6 +545,13 @@
                             "Value": 0.25,
                             "id": "2"
                         }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "423259e3-a50e-4b26-b62c-56c2b92e6248",
+                            "Value": "2b9750c1-22c8-478c-84fe-e836ff044cd0",
+                            "id": "0"
+                        }
                     ]
                 },
                 {
@@ -524,6 +586,13 @@
                             "guid": "018de227-8b61-4003-8b81-8b25a8c30777",
                             "Value": 0.25,
                             "id": "2"
+                        }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "733ff98f-2f68-4de8-9c05-30ba79951c48",
+                            "Value": "d561b3bd-6281-4c11-9380-639855edfc3f",
+                            "id": "0"
                         }
                     ]
                 },
@@ -560,6 +629,13 @@
                             "Value": 0.25,
                             "id": "2"
                         }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "73586516-6dc7-4e2e-a8a6-39022fe51c72",
+                            "Value": "a8f53099-1dbb-4d1c-82d2-761b566e83ea",
+                            "id": "0"
+                        }
                     ]
                 },
                 {
@@ -594,6 +670,13 @@
                             "guid": "c0426e7a-cf91-40bb-a1bb-d12a59f884da",
                             "Value": 0.25,
                             "id": "2"
+                        }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "1b8e249c-4037-4ee2-9d34-5d23bc34f040",
+                            "Value": "b71a1d88-3015-496b-8a89-fd852403cd4e",
+                            "id": "0"
                         }
                     ]
                 },
@@ -630,6 +713,13 @@
                             "Value": 0.25,
                             "id": "2"
                         }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "fcfad451-42fa-40c9-81be-95c24ab1da9c",
+                            "Value": "37ae653c-184d-44b9-928f-d8b952b4f6d5",
+                            "id": "0"
+                        }
                     ]
                 },
                 {
@@ -664,6 +754,13 @@
                             "guid": "43f8fe6d-efb6-4bdc-9d07-5a81c0eb315a",
                             "Value": 0.25,
                             "id": "2"
+                        }
+                    ],
+                    "Prereqs": [
+                        {
+                            "guid": "d919807b-bcd3-445a-85ce-3fc09debf0c4",
+                            "Value": "49cfd428-6327-4150-82c8-a5e08ddcf321",
+                            "id": "0"
                         }
                     ]
                 }
@@ -2058,6 +2155,19 @@
                         "sheet": "sheetSelect",
                         "defaultValue": "lineSelect@sheet"
                     }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "e8f320c6-217c-4140-a7c5-8b9e1df7962d",
+                    "name": "Prereqs",
+                    "description": "Prereqs",
+                    "sheet": "036c1b32-b5d2-4dbe-b1d4-933128ddb65e",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
                 }
             ],
             "lines": [
@@ -2068,7 +2178,14 @@
                     "Resource": "347ce84f-55e0-4ff6-89ac-b1256cf35413",
                     "Income": 100,
                     "Labor": "d55f4993-db6d-455f-bea8-24a7f398d059",
-                    "Makeable": "74787ed4-7652-45fa-b4fd-76fb518affe0"
+                    "Makeable": "74787ed4-7652-45fa-b4fd-76fb518affe0",
+                    "Prereqs": [
+                        {
+                            "guid": "9685a07e-6639-4d32-b88f-3abc26fd541b",
+                            "Value": "6c6486b4-903f-47a7-bc51-4e4dc7b79a99",
+                            "id": "0"
+                        }
+                    ]
                 },
                 {
                     "guid": "6a8a518a-479b-46ac-955b-9acb2f2a1acb",
@@ -2077,7 +2194,14 @@
                     "Resource": "075f9309-f655-46eb-b3b5-16d6a79e6798",
                     "Income": 100,
                     "Labor": "dfc48bdc-d66b-47d8-9fdf-3e62d09337c9",
-                    "Makeable": "74787ed4-7652-45fa-b4fd-76fb518affe0"
+                    "Makeable": "74787ed4-7652-45fa-b4fd-76fb518affe0",
+                    "Prereqs": [
+                        {
+                            "guid": "0daf6225-16e2-4ecb-b1b2-850be4e0b3a9",
+                            "Value": "6c6486b4-903f-47a7-bc51-4e4dc7b79a99",
+                            "id": "0"
+                        }
+                    ]
                 }
             ],
             "hidden": false,
@@ -2161,6 +2285,19 @@
                         "description": "text",
                         "defaultValue": "bool"
                     }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "384d90d0-e125-4747-86bd-8a11a6ba0309",
+                    "name": "Prereqs",
+                    "description": "Prereqs",
+                    "sheet": "6813dd26-1c91-4dd9-ae45-2f2f2d004e33",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
                 }
             ],
             "lines": [
@@ -2170,7 +2307,14 @@
                     "Name": "DirtRoad",
                     "CostOverride": 0.25,
                     "SpeedOverride": 0,
-                    "UseSpeedOverride": false
+                    "UseSpeedOverride": false,
+                    "Prereqs": [
+                        {
+                            "guid": "af978708-94b3-4958-a294-fd6cbb300c9e",
+                            "id": "0",
+                            "Value": "5c9a3e82-0265-4909-81fa-3af9236cf33a"
+                        }
+                    ]
                 },
                 {
                     "guid": "519f0a1f-a97e-44f9-b7b7-79e5890c4e1c",
@@ -2178,7 +2322,14 @@
                     "Name": "StoneRoad",
                     "CostOverride": 0.15,
                     "SpeedOverride": 0,
-                    "UseSpeedOverride": false
+                    "UseSpeedOverride": false,
+                    "Prereqs": [
+                        {
+                            "guid": "bb4fc29d-d5a3-4fb5-97c1-6ead8dc6bd74",
+                            "Value": "5c9a3e82-0265-4909-81fa-3af9236cf33a",
+                            "id": "0"
+                        }
+                    ]
                 },
                 {
                     "guid": "68d6bc8a-5cf4-43eb-a298-bd3042a20049",
@@ -2186,7 +2337,14 @@
                     "Name": "PavedRoad",
                     "CostOverride": 0.1,
                     "SpeedOverride": 0,
-                    "UseSpeedOverride": false
+                    "UseSpeedOverride": false,
+                    "Prereqs": [
+                        {
+                            "guid": "fa277649-4e99-4064-8239-8419e9cbb9be",
+                            "Value": "5ac51956-caa5-4c56-9a75-c97eb936e878",
+                            "id": "0"
+                        }
+                    ]
                 },
                 {
                     "guid": "3f3bacf7-d81b-4740-9429-a24e7f49567d",
@@ -2194,7 +2352,14 @@
                     "Name": "Railroad",
                     "CostOverride": 0.01,
                     "SpeedOverride": 100,
-                    "UseSpeedOverride": true
+                    "UseSpeedOverride": true,
+                    "Prereqs": [
+                        {
+                            "guid": "b6517034-7d37-4bbb-827a-64a60d1f2cd0",
+                            "Value": "e5f98289-9f0b-4279-86ae-16a1ca004165",
+                            "id": "0"
+                        }
+                    ]
                 }
             ],
             "hidden": false,
@@ -2261,6 +2426,19 @@
                         "sheet": "sheetSelect",
                         "defaultValue": "lineSelect@sheet"
                     }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "d9f0d01a-0ae2-4a5e-8fa2-706308c00907",
+                    "name": "Prereqs",
+                    "description": "Prereqs",
+                    "sheet": "f35f0fc0-386a-4bde-abe7-c99952c860cb",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
                 }
             ],
             "lines": [
@@ -2269,28 +2447,44 @@
                     "id": "0",
                     "Name": "Bank",
                     "Labor": "b1d73ea3-ccbf-4e48-bf31-1cef0f9c1e7d",
-                    "Makeable": "1db85a38-98bd-492f-b22e-8939314dfb7d"
+                    "Makeable": "1db85a38-98bd-492f-b22e-8939314dfb7d",
+                    "Prereqs": []
                 },
                 {
                     "guid": "612385aa-6919-4417-a03d-0ca53416eb86",
                     "id": "1",
                     "Name": "Barracks",
                     "Labor": "84a33ac8-d6d7-4c50-a1d7-53f3a0dd74ed",
-                    "Makeable": "c650d4f1-7952-49c5-8ad0-9507578b832a"
+                    "Makeable": "c650d4f1-7952-49c5-8ad0-9507578b832a",
+                    "Prereqs": []
                 },
                 {
                     "guid": "11fc215b-81c5-4783-a29e-f22a3cd9193f",
                     "id": "2",
                     "Name": "Factory",
                     "Labor": "3aebadc4-fbf5-44c0-9a54-07d35762ceff",
-                    "Makeable": "2b1a20b1-8de1-48d5-b5a4-a7338977772b"
+                    "Makeable": "2b1a20b1-8de1-48d5-b5a4-a7338977772b",
+                    "Prereqs": [
+                        {
+                            "guid": "0b87bdc2-467e-4fb2-9822-5466e6dc83df",
+                            "Value": "d0db769a-2727-49b3-b8c0-9a702490a804",
+                            "id": "0"
+                        }
+                    ]
                 },
                 {
                     "guid": "67955469-768b-42d7-b581-4af74352a801",
                     "id": "3",
                     "Name": "TownHall",
                     "Labor": "59563400-358a-449f-a181-119546ecc7ad",
-                    "Makeable": "b4ec9804-30bf-4870-ab15-3e5fff5a8924"
+                    "Makeable": "b4ec9804-30bf-4870-ab15-3e5fff5a8924",
+                    "Prereqs": [
+                        {
+                            "guid": "3d7b8d68-03c0-4994-9e68-568f8604a4f1",
+                            "Value": "e61f4eda-136c-4823-8a4a-34b980f5a927",
+                            "id": "0"
+                        }
+                    ]
                 }
             ],
             "hidden": false,
@@ -3199,6 +3393,569 @@
                     ]
                 }
             }
+        },
+        {
+            "name": "Technology",
+            "description": "Technology",
+            "displayColumn": "Name",
+            "guid": "22c2818a-4d4f-4c64-a04d-ad6053509531",
+            "columns": [
+                {
+                    "typeStr": "text",
+                    "guid": "9caf41f3-438d-40ec-bf5d-1603414da019",
+                    "name": "Name",
+                    "description": "Name",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "e47d3e8f-ccd4-4976-ad6f-a882d1e6725a",
+                    "description": "ResearchCost",
+                    "name": "ResearchCost",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "list",
+                    "guid": "94845d80-7993-4f3a-aeec-6eb3858e65ae",
+                    "name": "Prereqs",
+                    "description": "Prereqs",
+                    "sheet": "5ef190b7-41e9-42af-917a-eabfc0fa8e2c",
+                    "defaultValue": [],
+                    "iconName": "newList",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text"
+                    }
+                },
+                {
+                    "typeStr": "text",
+                    "guid": "0ed06ebb-b85f-48da-a833-60455388ddcf",
+                    "name": "DisplayName",
+                    "description": "DisplayName",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "64dddec9-b8f8-4b17-b26b-64a6814bdaa2",
+                    "id": "0",
+                    "Name": "SmallArms1",
+                    "ResearchCost": 1000,
+                    "Prereqs": [],
+                    "DisplayName": "SmallArms1"
+                },
+                {
+                    "guid": "a8f53099-1dbb-4d1c-82d2-761b566e83ea",
+                    "id": "1",
+                    "Name": "SmallArms2",
+                    "ResearchCost": 1500,
+                    "Prereqs": [
+                        {
+                            "guid": "77bb28fc-4301-47bd-98d5-90a36e939c14",
+                            "Value": "64dddec9-b8f8-4b17-b26b-64a6814bdaa2",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "SmallArms2"
+                },
+                {
+                    "guid": "b71a1d88-3015-496b-8a89-fd852403cd4e",
+                    "id": "2",
+                    "Name": "SmallArms3",
+                    "ResearchCost": 2500,
+                    "Prereqs": [
+                        {
+                            "guid": "75a351b2-7ef4-4c2b-a2ac-d20939e557bb",
+                            "Value": "a8f53099-1dbb-4d1c-82d2-761b566e83ea",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "SmallArms3"
+                },
+                {
+                    "guid": "37ae653c-184d-44b9-928f-d8b952b4f6d5",
+                    "id": "3",
+                    "Name": "SmallArms4",
+                    "ResearchCost": 5000,
+                    "Prereqs": [
+                        {
+                            "guid": "03705071-a1e6-45ef-a4d7-5ad24be6a29e",
+                            "Value": "b71a1d88-3015-496b-8a89-fd852403cd4e",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "SmallArms4"
+                },
+                {
+                    "guid": "49cfd428-6327-4150-82c8-a5e08ddcf321",
+                    "id": "4",
+                    "Name": "SmallArms5",
+                    "ResearchCost": 10000,
+                    "Prereqs": [
+                        {
+                            "guid": "044ac816-4302-4c6c-b63c-ad187f1997d4",
+                            "Value": "37ae653c-184d-44b9-928f-d8b952b4f6d5",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "SmallArms5"
+                },
+                {
+                    "guid": "c0e7ae59-f5a1-42f0-adbd-f104c7745f80",
+                    "id": "5",
+                    "Name": "ArtilleryManufacturing1",
+                    "ResearchCost": 2500,
+                    "Prereqs": [],
+                    "DisplayName": "ArtilleryManufacturing1"
+                },
+                {
+                    "guid": "2b9750c1-22c8-478c-84fe-e836ff044cd0",
+                    "id": "6",
+                    "Name": "ArtilleryManufacturing2",
+                    "ResearchCost": 7500,
+                    "Prereqs": [
+                        {
+                            "guid": "6bd99b6c-afdd-40a9-bfe7-207bbd8bae44",
+                            "Value": "c0e7ae59-f5a1-42f0-adbd-f104c7745f80",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "ArtilleryManufacturing2"
+                },
+                {
+                    "guid": "d561b3bd-6281-4c11-9380-639855edfc3f",
+                    "id": "7",
+                    "Name": "ArtilleryManufacturing3",
+                    "ResearchCost": 15000,
+                    "Prereqs": [
+                        {
+                            "guid": "b073ef3b-4759-4410-9536-6c7b83bfdb44",
+                            "Value": "2b9750c1-22c8-478c-84fe-e836ff044cd0",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "ArtilleryManufacturing3"
+                },
+                {
+                    "guid": "d0db769a-2727-49b3-b8c0-9a702490a804",
+                    "id": "10",
+                    "Name": "Industry1",
+                    "ResearchCost": 2000,
+                    "Prereqs": [],
+                    "DisplayName": "Industry1"
+                },
+                {
+                    "guid": "a5c84134-bfeb-4be8-84c7-686fb70f00b5",
+                    "id": "11",
+                    "Name": "Industry2",
+                    "ResearchCost": 5000,
+                    "Prereqs": [
+                        {
+                            "guid": "c79b211f-5daa-45a8-8a9a-e6837a6344a6",
+                            "Value": "d0db769a-2727-49b3-b8c0-9a702490a804",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Industry2"
+                },
+                {
+                    "guid": "06b25ecd-46a5-4079-bf4f-82c0fad31c23",
+                    "id": "10",
+                    "Name": "Industry3",
+                    "ResearchCost": 10000,
+                    "Prereqs": [
+                        {
+                            "guid": "1f276aa9-f9c4-4fd5-9246-f605195c2287",
+                            "Value": "a5c84134-bfeb-4be8-84c7-686fb70f00b5",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Industry3"
+                },
+                {
+                    "guid": "fffc4847-5b35-4753-8e46-230471780992",
+                    "id": "11",
+                    "Name": "Industry4",
+                    "ResearchCost": 20000,
+                    "Prereqs": [
+                        {
+                            "guid": "d6ce2dfb-0024-4152-952b-41f864be0027",
+                            "Value": "06b25ecd-46a5-4079-bf4f-82c0fad31c23",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Industry4"
+                },
+                {
+                    "guid": "3e8faa72-f7bf-4dd7-a2f1-4103ea9ba6f3",
+                    "id": "12",
+                    "Name": "Industry5",
+                    "ResearchCost": 50000,
+                    "Prereqs": [
+                        {
+                            "guid": "26c55c43-70e4-4a26-90b6-e5f5fe0b9d17",
+                            "Value": "fffc4847-5b35-4753-8e46-230471780992",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Industry5"
+                },
+                {
+                    "guid": "6c6486b4-903f-47a7-bc51-4e4dc7b79a99",
+                    "id": "13",
+                    "Name": "Extraction1",
+                    "ResearchCost": 2000,
+                    "Prereqs": [],
+                    "DisplayName": "Extraction1"
+                },
+                {
+                    "guid": "ed8a26e1-43b4-4022-b787-2b025b3d9236",
+                    "id": "14",
+                    "Name": "Extraction2",
+                    "ResearchCost": 5000,
+                    "Prereqs": [
+                        {
+                            "guid": "59dfb33d-d337-4053-bbd1-8fa85f418d96",
+                            "Value": "6c6486b4-903f-47a7-bc51-4e4dc7b79a99",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Extraction2"
+                },
+                {
+                    "guid": "3f8b39ed-fed4-423d-bc28-04482a78da1d",
+                    "id": "15",
+                    "Name": "Extraction3",
+                    "ResearchCost": 10000,
+                    "Prereqs": [
+                        {
+                            "guid": "30a019ed-4e11-4e90-900e-7eed3d1d8b31",
+                            "Value": "ed8a26e1-43b4-4022-b787-2b025b3d9236",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Extraction3"
+                },
+                {
+                    "guid": "17e0cda4-5289-487a-b7d4-2702a865cb95",
+                    "id": "16",
+                    "Name": "Extraction4",
+                    "ResearchCost": 20000,
+                    "Prereqs": [
+                        {
+                            "guid": "3793d92e-bcb1-466f-8cb3-a9760412f303",
+                            "Value": "3f8b39ed-fed4-423d-bc28-04482a78da1d",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Extraction4"
+                },
+                {
+                    "guid": "4e38c2ba-0dd5-42a6-b501-6c7e2ba0e5f0",
+                    "id": "17",
+                    "Name": "Extraction5",
+                    "ResearchCost": 50000,
+                    "Prereqs": [
+                        {
+                            "guid": "3667f4d6-01bf-446a-8bcb-a52d14e0ab70",
+                            "Value": "17e0cda4-5289-487a-b7d4-2702a865cb95",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Extraction5"
+                },
+                {
+                    "guid": "5c9a3e82-0265-4909-81fa-3af9236cf33a",
+                    "id": "18",
+                    "Name": "Infrastructure1",
+                    "ResearchCost": 2000,
+                    "Prereqs": [],
+                    "DisplayName": "Infrastructure1"
+                },
+                {
+                    "guid": "ed409fff-bb1f-43c1-95c9-04d7df2ec681",
+                    "id": "19",
+                    "Name": "Infrastructure2",
+                    "ResearchCost": 5000,
+                    "Prereqs": [
+                        {
+                            "guid": "dffc0d42-fe0e-42f0-bd14-9b534d706a70",
+                            "Value": "5c9a3e82-0265-4909-81fa-3af9236cf33a",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Infrastructure2"
+                },
+                {
+                    "guid": "e5f98289-9f0b-4279-86ae-16a1ca004165",
+                    "id": "20",
+                    "Name": "Infrastructure3",
+                    "ResearchCost": 10000,
+                    "Prereqs": [
+                        {
+                            "guid": "42b72ed2-c033-4a49-9509-7a8c9f7574af",
+                            "Value": "ed409fff-bb1f-43c1-95c9-04d7df2ec681",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Infrastructure3"
+                },
+                {
+                    "guid": "5ac51956-caa5-4c56-9a75-c97eb936e878",
+                    "id": "21",
+                    "Name": "Infrastructure4",
+                    "ResearchCost": 20000,
+                    "Prereqs": [
+                        {
+                            "guid": "461c01d2-e138-473f-bc9a-cb95c2da2cde",
+                            "Value": "e5f98289-9f0b-4279-86ae-16a1ca004165",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Infrastructure4"
+                },
+                {
+                    "guid": "e61f4eda-136c-4823-8a4a-34b980f5a927",
+                    "id": "22",
+                    "Name": "Administration1",
+                    "ResearchCost": 2000,
+                    "Prereqs": [],
+                    "DisplayName": "Administration1"
+                },
+                {
+                    "guid": "3a8abe25-8044-4000-a87d-79ff7a764487",
+                    "id": "23",
+                    "Name": "Administration2",
+                    "ResearchCost": 5000,
+                    "Prereqs": [
+                        {
+                            "guid": "f013121b-9916-489b-ae55-3286cd4aa722",
+                            "Value": "e61f4eda-136c-4823-8a4a-34b980f5a927",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Administration2"
+                },
+                {
+                    "guid": "4e866317-a691-41f9-bb20-146bf101394c",
+                    "id": "24",
+                    "Name": "Administration3",
+                    "ResearchCost": 10000,
+                    "Prereqs": [
+                        {
+                            "guid": "6d6d190a-932b-48ca-8fa7-f26573510c9c",
+                            "Value": "3a8abe25-8044-4000-a87d-79ff7a764487",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Administration3"
+                },
+                {
+                    "guid": "e35ad69b-bb02-43cb-ab85-78968994fd87",
+                    "id": "25",
+                    "Name": "Administration4",
+                    "ResearchCost": 20000,
+                    "Prereqs": [
+                        {
+                            "guid": "4c5ec356-3a84-474f-90c9-58b19c4a5386",
+                            "Value": "4e866317-a691-41f9-bb20-146bf101394c",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Administration4"
+                },
+                {
+                    "guid": "5af5084c-ae85-4a59-9a80-3aeef6356bc7",
+                    "id": "26",
+                    "Name": "Administration5",
+                    "ResearchCost": 50000,
+                    "Prereqs": [
+                        {
+                            "guid": "dd54b75c-2df2-4602-9383-4623685cea35",
+                            "Value": "e35ad69b-bb02-43cb-ab85-78968994fd87",
+                            "id": "0"
+                        }
+                    ],
+                    "DisplayName": "Administration5"
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Prereqs",
+            "description": "list@22c2818a-4d4f-4c64-a04d-ad6053509531",
+            "displayColumn": "id",
+            "guid": "5ef190b7-41e9-42af-917a-eabfc0fa8e2c",
+            "columns": [
+                {
+                    "typeStr": "lineReference",
+                    "guid": "0ea62abd-ade5-4444-a8d6-9995d95e0c36",
+                    "name": "Value",
+                    "description": "Value",
+                    "sheet": "22c2818a-4d4f-4c64-a04d-ad6053509531",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "22c2818a-4d4f-4c64-a04d-ad6053509531",
+            "columnGUID": "94845d80-7993-4f3a-aeec-6eb3858e65ae"
+        },
+        {
+            "name": "Prereqs",
+            "description": "list@4613b504-367c-4d2e-96a1-c08f4a496a33",
+            "displayColumn": "id",
+            "guid": "b18aa0b7-8595-4146-95dd-7a428be7263b",
+            "columns": [
+                {
+                    "typeStr": "lineReference",
+                    "guid": "048877a0-a9a9-4571-9419-559a4c400103",
+                    "name": "Value",
+                    "description": "Value",
+                    "sheet": "22c2818a-4d4f-4c64-a04d-ad6053509531",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "4613b504-367c-4d2e-96a1-c08f4a496a33",
+            "columnGUID": "ede4806f-4a3d-4991-ad1a-0c496f32991b"
+        },
+        {
+            "name": "Prereqs",
+            "description": "list@3f86e4f2-a32e-444b-890e-e2bec0b74336",
+            "displayColumn": "id",
+            "guid": "036c1b32-b5d2-4dbe-b1d4-933128ddb65e",
+            "columns": [
+                {
+                    "typeStr": "lineReference",
+                    "guid": "484d5ea8-e3c4-4a98-889b-b8137632a837",
+                    "name": "Value",
+                    "description": "Value",
+                    "sheet": "22c2818a-4d4f-4c64-a04d-ad6053509531",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "3f86e4f2-a32e-444b-890e-e2bec0b74336",
+            "columnGUID": "e8f320c6-217c-4140-a7c5-8b9e1df7962d"
+        },
+        {
+            "name": "Prereqs",
+            "description": "list@597d07d0-43c3-4f15-99f0-04827c0e3c53",
+            "displayColumn": "id",
+            "guid": "6813dd26-1c91-4dd9-ae45-2f2f2d004e33",
+            "columns": [
+                {
+                    "typeStr": "lineReference",
+                    "guid": "d67ecdbc-92c9-4827-bee8-fe97ffedef37",
+                    "name": "Value",
+                    "description": "Value",
+                    "sheet": "22c2818a-4d4f-4c64-a04d-ad6053509531",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "597d07d0-43c3-4f15-99f0-04827c0e3c53",
+            "columnGUID": "384d90d0-e125-4747-86bd-8a11a6ba0309"
+        },
+        {
+            "name": "Prereqs",
+            "description": "list@af3214c9-8526-44e2-b863-71e5994d31bb",
+            "displayColumn": "id",
+            "guid": "f35f0fc0-386a-4bde-abe7-c99952c860cb",
+            "columns": [
+                {
+                    "typeStr": "lineReference",
+                    "guid": "94d17364-3749-428f-aeaf-27d09fec1ed3",
+                    "name": "Value",
+                    "description": "Value",
+                    "sheet": "22c2818a-4d4f-4c64-a04d-ad6053509531",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                }
+            ],
+            "lines": [],
+            "hidden": true,
+            "isProps": false,
+            "parentSheetGUID": "af3214c9-8526-44e2-b863-71e5994d31bb",
+            "columnGUID": "d9f0d01a-0ae2-4a5e-8fa2-706308c00907"
         }
     ]
 }

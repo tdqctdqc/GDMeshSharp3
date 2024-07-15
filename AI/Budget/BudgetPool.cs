@@ -54,7 +54,7 @@ public class BudgetPool
             });
         freeLabor -= inQueue;
         freeLabor = Mathf.Max(0f, freeLabor);
-        stock.Add(d.Models.Flows.Labor, freeLabor);
+        stock.Add(d.Models.Items.Labor, freeLabor);
         return new BudgetPool(stock, net);
     }
     

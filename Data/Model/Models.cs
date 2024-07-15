@@ -24,10 +24,10 @@ public class Models
     public RegimeTemplateManager RegimeTemplates { get; private set; }
     public FoodProdTechniqueList FoodProdTechniques { get; private set; }
     // public InfraList Infras { get; private set; }
-    public FlowList Flows { get; private set; }
     public Troops Troops { get; private set; }
     public MoveTypes MoveTypes { get; private set; }
     public TroopDomains TroopDomains { get; private set; }
+    public TechnologyList Technologies { get; private set; }
     public ResourceExtractionList ResourceExtractions { get; private set; }
     private int _idIter;
     private DepotImporter _depot;
@@ -46,52 +46,50 @@ public class Models
         _idIter = 0;
         
         Items = new Items();
-        AddManager(Items, _depot);
+        AddManagerDisallowDefault(Items, _depot);
 
         Landforms = new LandformList();
-        AddManager(Landforms, _depot);
+        AddManagerAllowDefault(Landforms, _depot);
 
         Vegetations = new VegetationList(Landforms);
-        AddManager(Vegetations, _depot);
+        AddManagerAllowDefault(Vegetations, _depot);
         
         PeepJobs = new PeepJobList();
-        AddManager(PeepJobs, _depot);
+        AddManagerAllowDefault(PeepJobs, _depot);
         
-        Flows = new FlowList();
-        AddManager(Flows, _depot);
 
         Buildings = new BuildingList();
-        AddManager(Buildings, _depot);
+        AddManagerDisallowDefault(Buildings, _depot);
 
         RoadList = new RoadList();
-        AddManager(RoadList, _depot);
+        AddManagerDisallowDefault(RoadList, _depot);
 
         Settlements = new SettlementTierList();
-        AddManager(Settlements, _depot);
+        AddManagerAllowDefault(Settlements, _depot);
         
         Cultures = new CultureManager();
-        AddManager(Cultures, _depot);
+        AddManagerDisallowDefault(Cultures, _depot);
         
         RegimeTemplates = new RegimeTemplateManager(Cultures);
-        AddManager(RegimeTemplates, _depot);
+        AddManagerDisallowDefault(RegimeTemplates, _depot);
         
         FoodProdTechniques = new FoodProdTechniqueList(PeepJobs, Items);
-        AddManager(FoodProdTechniques, _depot);
-        //
-        // Infras = new InfraList(PeepJobs, Items);
-        // AddManager(Infras, _depot);
+        AddManagerDisallowDefault(FoodProdTechniques, _depot);
         
         MoveTypes = new MoveTypes();
-        AddManager(MoveTypes, _depot);
+        AddManagerDisallowDefault(MoveTypes, _depot);
         
         Troops = new Troops();
-        AddManager(Troops, _depot);
+        AddManagerAllowDefault(Troops, _depot);
 
         ResourceExtractions = new ResourceExtractionList();
-        AddManager(ResourceExtractions, _depot);
+        AddManagerDisallowDefault(ResourceExtractions, _depot);
         
         TroopDomains = new TroopDomains();
-        AddManager(TroopDomains, _depot);
+        AddManagerAllowDefault(TroopDomains, _depot);
+
+        Technologies = new TechnologyList();
+        AddManagerAllowDefault(Technologies, _depot);
         
         _depot.FillAllProperties();
         
@@ -137,13 +135,29 @@ public class Models
     {
         return (IModelManager<TModel>)_managers[typeof(TModel)];
     }
+
+    private void AddManagerAllowDefault<T>(IModelManager<T> manager,
+        DepotImporter importer)
+            where T : IModel, new()
+    {
+        AddManager(manager, () => new(), importer);
+    }
+    private void AddManagerDisallowDefault<T>(IModelManager<T> manager,
+        DepotImporter importer)
+        where T : IModel
+    {
+        AddManager(manager, () => throw new Exception(), importer);
+    }
+    
     private void AddManager<T>(IModelManager<T> manager,
+        Func<T> defaultConstructor,
         DepotImporter importer) 
         where T : IModel
     {
         _managers.Add(typeof(T), manager);
-        _depot.MakeSheetObjectsModels<T>(manager.ByName
-            .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value));
+        var ms = manager.ByName
+            .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
+        _depot.MakeSheetObjectsModels<T>(ms, defaultConstructor);
         foreach (var (name, model) in manager.ByName)
         {
             SetId(model);

@@ -18,54 +18,9 @@ public class Troop : Item, IMakeable, IIconed
     public float BreakthroughMult { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public TroopDomain Domain { get; private set; }
+    public HashSet<Technology> Prereqs { get; private set; }
+    
     public Troop()
     {
-        // var thisInfo = info[name];
-        //
-        // DisplayName = thisInfo[nameof(DisplayName)];
-        // HardAttack = thisInfo[nameof(HardAttack)].ToFloat();
-        // SoftAttack = thisInfo[nameof(SoftAttack)].ToFloat();
-        // Hitpoints = thisInfo[nameof(Hitpoints)].ToFloat();
-        // Hardness = thisInfo[nameof(Hardness)].ToFloat();
-        // Echelon = thisInfo[nameof(Echelon)].ToInt();
-        // Accuracy = thisInfo[nameof(Accuracy)].ToFloat();
-        // Evasion = thisInfo[nameof(Evasion)].ToFloat();
-        // FrontLength = thisInfo[nameof(FrontLength)].ToFloat();
-        // Range = thisInfo[nameof(Range)].ToInt();;
-        // BreakthroughMult = thisInfo[nameof(BreakthroughMult)].ToFloat();;
-        // Domain = domain;
-        //
-        // TargetChance = new float[MilUtil.NumEchelons];
-        // for (var i = 0; i < MilUtil.NumEchelons; i++)
-        // {
-        //     var value = thisInfo[nameof(TargetChance) + i];
-        //     TargetChance[i] = value.ToFloat();
-        // }
-        //
-        // var buildCosts = IdCount<IModel>.Construct();
-        // var maintainCosts = IdCount<IModel>.Construct();
-        //
-        // var buildCostEntries = thisInfo.Where(kvp => kvp.Key.StartsWith("BuildCost"));
-        // var maintainCostEntries = thisInfo.Where(kvp => kvp.Key.StartsWith("MaintainCost"));
-        //
-        // foreach (var (entryName, valueString) in buildCostEntries)
-        // {
-        //     var modelName = entryName.TrimPrefix("BuildCost");
-        //     var model = modelsByName[modelName];
-        //     var value = valueString.ToFloat();
-        //     GD.Print($"{modelName} {value}");
-        //
-        //     buildCosts.Set(model, value);
-        // }
-        // foreach (var (entryName, valueString) in maintainCostEntries)
-        // {
-        //     var modelName = entryName.TrimPrefix("MaintainCost");
-        //     var model = modelsByName[modelName];
-        //     var value = valueString.ToFloat();
-        //     maintainCosts.Set(model, value);
-        // }
-        //
-        // Makeable = new MakeableAttribute(buildCosts, maintainCosts);
-
     }
 }

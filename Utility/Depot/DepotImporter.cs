@@ -61,7 +61,8 @@ public class DepotImporter
     }
 
     public void MakeSheetObjectsModels<T>(
-        IReadOnlyDictionary<string, object> models)
+        IReadOnlyDictionary<string, object> models,
+        Func<T> defaultConstructor)
         where T : IModel
     {
         var name = typeof(T).Name;
@@ -77,13 +78,14 @@ public class DepotImporter
             }
             var mi = GetType().GetMethod(nameof(MakeSheetObjectsModels));
             mi.InvokeGeneric(this, new Type[] { baseType },
-                new object[] { models });
+                new object[] { models, defaultConstructor });
             return;
         }
 
         var sheet = Sheets[name];
         sheet.Type = typeof(T);
-        sheet.MakeObjectsModels<T>(models, this);
+        sheet.MakeObjectsModels<T>(models, 
+            defaultConstructor, this);
     }
 
     public void FillAllProperties()
@@ -105,7 +107,7 @@ public class DepotImporter
 
     private void FillSheetProperties<T>(DepotSheet sheet)
     {
-        foreach (var (name, line) in sheet.Lines)
+        foreach (var (name, line) in sheet.LinesByName)
         {
             FillLineProperties<T>(name, (T)LineObjectsByName[name]);
         }
@@ -116,13 +118,12 @@ public class DepotImporter
         var fillProperty = this.GetType().GetMethod(
             nameof(FillProperty),
             BindingFlags.NonPublic | BindingFlags.Instance);
-        
         while (type is not null)
         {
             var sheetName = type.Name;
             if (Sheets.TryGetValue(type.Name, out var sheet))
             {
-                var line = sheet.Lines[lineName];
+                var line = sheet.LinesByName[lineName];
                 var properties = type.GetProperties();
                 foreach (var propertyInfo in properties)
                 {

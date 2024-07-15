@@ -43,7 +43,7 @@ public class ProductionModule : LogicModule
             new List<MakeProject>(),
             employments);
 
-        var constructCap = d.Models.Flows.ConstructionCap;
+        var constructCap = d.Models.Items.ConstructionCap;
         var constructCapProduced = r.GetPopulation(d);
         var pop = r.GetPopulation(d);
         if (constructCapProduced < 0f) throw new Exception();
@@ -71,7 +71,7 @@ public class ProductionModule : LogicModule
     {
         var newStock = result.Stock;
         var units = r.GetUnits(d);
-        var milCap = d.Models.Flows.MilitaryCap;
+        var milCap = d.Models.Items.MilitaryCap;
         var milCapCost = 0f;
         foreach (var unit in units)
         {

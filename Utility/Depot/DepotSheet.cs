@@ -11,7 +11,7 @@ public class DepotSheet
 {
     public Dictionary<string, JsonObject> Columns { get; private set; }
     public JsonObject Sheet { get; private set; }
-    public Dictionary<string, JsonObject> Lines { get; private set; }
+    public Dictionary<string, JsonObject> LinesByName { get; private set; }
     public Dictionary<string, Guid> LineGuids { get; private set; }
     public Type Type { get; set; }
     public string Name { get; private set; }
@@ -26,7 +26,7 @@ public class DepotSheet
             .ToDictionary(
                 v => JsonSerializer.Deserialize<string>(v["name"]),
                 v => v);
-        Lines = new Dictionary<string, JsonObject>();
+        LinesByName = new Dictionary<string, JsonObject>();
         LineGuids = new Dictionary<string, Guid>();
         foreach (var n in sheet["lines"].AsArray())
         {
@@ -35,14 +35,14 @@ public class DepotSheet
             var lineGuid = JsonSerializer.Deserialize<Guid>(line["guid"]);
             importer.LinesByGuid.Add(lineGuid, line);
             importer.LinesByName.Add(lineName, line);
-            Lines.Add(lineName, line);
+            LinesByName.Add(lineName, line);
             LineGuids.Add(lineName, lineGuid);
         }
     }
 
     public void MakeObjectsDefault<T>(Func<T> get, DepotImporter importer)
     {
-        foreach (var (lineName, line) in Lines)
+        foreach (var (lineName, line) in LinesByName)
         {
             var t = get();
             var lineGuid = LineGuids[lineName];
@@ -52,6 +52,7 @@ public class DepotSheet
     }
 
     public void MakeObjectsModels<T>(IReadOnlyDictionary<string, object> models, 
+        Func<T> defaultConstructor,
         DepotImporter importer)
         where T : IModel
     {
@@ -62,6 +63,16 @@ public class DepotSheet
                 GD.Print($"{name} is not {typeof(T).Name}");
                 throw new Exception();
             }
+            var guid = LineGuids[name];
+            importer.LineObjects[guid] = value;
+            importer.LineObjectsByName[name] = value;
+        }
+
+        foreach (var (name, line) in LinesByName)
+        {
+            if (models.ContainsKey(name)) continue;
+            GD.Print($"adding default {Name} {name}");
+            var value = defaultConstructor();
             var guid = LineGuids[name];
             importer.LineObjects[guid] = value;
             importer.LineObjectsByName[name] = value;

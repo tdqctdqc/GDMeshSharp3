@@ -256,7 +256,7 @@ public class SocietyGenerator : Generator
         };
         var totalWeight = weights.Values.Sum();
         
-        var labor = _data.Models.Flows.Labor;
+        var labor = _data.Models.Items.Labor;
         foreach (var settlement in settlements)
         {
             var cell = (LandCell)settlement.Cell.Get(_data);

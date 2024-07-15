@@ -35,7 +35,7 @@ public abstract class ConstructionPriority
         // solver.SetBuildingSlotConstraints(r, projVars, data);
         
         var laborConstraint = solver.MakeConstraint(0f,
-            pool.Stock.Get(data.Models.Flows.Labor));
+            pool.Stock.Get(data.Models.Items.Labor));
         
         foreach (var (b, variable) in projVars)
         {

@@ -7,10 +7,10 @@ public partial class StockBar : HBoxContainer
 {
     public StockBar(Client client, Data data)
     {
-        AddModel(client, data.Models.Flows.ConstructionCap, data);
-        AddModel(client, data.Models.Flows.IndustrialPower, data);
-        AddModel(client, data.Models.Flows.Income, data);
-        AddModel(client, data.Models.Flows.MilitaryCap, data);
+        AddModel(client, data.Models.Items.ConstructionCap, data);
+        AddModel(client, data.Models.Items.IndustrialPower, data);
+        AddModel(client, data.Models.Items.Income, data);
+        AddModel(client, data.Models.Items.MilitaryCap, data);
 
         foreach (var item in data.Models.GetModels<Item>())
         {

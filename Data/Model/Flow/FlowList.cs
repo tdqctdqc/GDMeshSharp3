@@ -1,17 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-public class FlowList : ModelManager<Flow>
-{
-    public Income Income { get; private set; } 
-        = new ();
-    public IndustrialPower IndustrialPower { get; private set; } 
-        = new ();
-    public ConstructionCap ConstructionCap { get; private set; } 
-        = new ();
-    public MilitaryCap MilitaryCap { get; private set; }
-        = new ();
-    public Labor Labor { get; private set; }
-        = new();
-}
+// using System;
+// using System.Collections.Generic;
+// using System.Linq;
+//
+// public class FlowList : ModelManager<Flow>
+// {
+//     
+// }

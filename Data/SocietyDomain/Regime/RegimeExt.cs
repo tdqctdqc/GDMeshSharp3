@@ -88,7 +88,7 @@ public static class RegimeExt
     public static float GetPowerScore(this Regime r, Data data)
     {
         var fromPop = r.GetPopulation(data);
-        var fromIndustry = r.Stock.Stock.Get(data.Models.Flows.IndustrialPower);
+        var fromIndustry = r.Stock.Stock.Get(data.Models.Items.IndustrialPower);
         return fromPop + fromIndustry;
     }
 
