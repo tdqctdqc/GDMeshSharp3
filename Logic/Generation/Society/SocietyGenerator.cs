@@ -248,11 +248,12 @@ public class SocietyGenerator : Generator
             .Where(s => s.Cell.Get(_data).Controller.RefId == r.Id);
         var factory = _data.Models.Buildings.Factory;
         var barracks = _data.Models.Buildings.Barracks;
-
+        var university = _data.Models.Buildings.University;
         var weights = new Dictionary<SettlementBuilding, float>
         {
             {factory, 4},
-            {barracks, 1}
+            {barracks, 1},
+            {university, .25f},
         };
         var totalWeight = weights.Values.Sum();
         

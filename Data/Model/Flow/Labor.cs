@@ -1,3 +1,4 @@
+using System.Linq;
 
 public class Labor : Flow
 {
@@ -7,6 +8,6 @@ public class Labor : Flow
 
     public override float GetNonBuildingSupply(Regime r, Data d)
     {
-        return 0f;
+        return r.GetCells(d).Sum(c => c.GetPeep(d).Size);
     }
 }

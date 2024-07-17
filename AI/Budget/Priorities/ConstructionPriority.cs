@@ -8,9 +8,10 @@ using Google.OrTools.LinearSolver;
 public abstract class ConstructionPriority 
     : SolverPriority<SettlementBuilding>
 {
-    public ConstructionPriority(string name) 
+    public ConstructionPriority(Regime r, string name) 
         : base(name, 
-            d => d.Models.GetModels<SettlementBuilding>())
+            d => d.Models.GetModels<SettlementBuilding>()
+                .Where(b => r.HasPrereqs(b)))
     {
     }
 
@@ -41,5 +42,22 @@ public abstract class ConstructionPriority
         {
             laborConstraint.SetCoefficient(variable, b.Labor.TotalLabor());
         }
+    }
+    
+    protected override Dictionary<IModel, float> GetCosts(
+        Dictionary<SettlementBuilding, float> toBuild, 
+        Data d)
+    {
+        var res = new Dictionary<IModel, float>();
+        foreach (var (building, num) in toBuild)
+        {
+            foreach (var (id, amt) in building.Makeable.BuildCosts.Contents)
+            {
+                var model = d.Models.GetModel<IModel>(id);
+                res.AddOrSum(model, amt * num);
+            }
+        }
+
+        return res;
     }
 }

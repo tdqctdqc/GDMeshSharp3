@@ -51,14 +51,15 @@ public class DepotSheet
         }
     }
 
-    public void MakeObjectsModels<T>(IReadOnlyDictionary<string, object> models, 
+    public IEnumerable<T> MakeObjectsModels<T>(
+        IReadOnlyDictionary<string, object> models, 
         Func<T> defaultConstructor,
         DepotImporter importer)
         where T : IModel
     {
         foreach (var (name, value) in models)
         {
-            if (value is T == false)
+            if (value is T t == false)
             {
                 GD.Print($"{name} is not {typeof(T).Name}");
                 throw new Exception();
@@ -66,6 +67,7 @@ public class DepotSheet
             var guid = LineGuids[name];
             importer.LineObjects[guid] = value;
             importer.LineObjectsByName[name] = value;
+            yield return t;
         }
 
         foreach (var (name, line) in LinesByName)
@@ -76,6 +78,7 @@ public class DepotSheet
             var guid = LineGuids[name];
             importer.LineObjects[guid] = value;
             importer.LineObjectsByName[name] = value;
+            yield return value;
         }
     }
 }

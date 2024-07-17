@@ -861,6 +861,11 @@
                     "guid": "494225a4-4533-45f9-b86a-f673eb42e3b0",
                     "id": "11",
                     "Name": "Labor"
+                },
+                {
+                    "guid": "aea719f8-8bac-47bc-bf80-61145aa2b677",
+                    "id": "12",
+                    "Name": "Research"
                 }
             ],
             "hidden": false,
@@ -1379,6 +1384,26 @@
                         }
                     ],
                     "MaintainCosts": []
+                },
+                {
+                    "guid": "4c5892a5-9f18-4b97-b4a1-a927b2da19d6",
+                    "id": "17",
+                    "Name": "UniversityMakeable",
+                    "BuildCosts": [
+                        {
+                            "guid": "5d61377f-c80e-47f9-99e2-a0d1cdb2fae0",
+                            "Name": "aea719f8-8bac-47bc-bf80-61145aa2b677",
+                            "Value": 2000,
+                            "id": "0"
+                        },
+                        {
+                            "guid": "b8eb73d5-6760-4d2a-9a3b-8a5ea824bbfd",
+                            "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee",
+                            "Value": 30000,
+                            "id": "1"
+                        }
+                    ],
+                    "MaintainCosts": []
                 }
             ],
             "hidden": false,
@@ -1551,21 +1576,27 @@
                 },
                 {
                     "guid": "3ab40fe6-d33f-4446-829d-c15b973adfd0",
-                    "id": "5",
+                    "id": "4",
                     "Name": "Unemployed",
                     "Income": 0.1
                 },
                 {
                     "guid": "c6f781ce-047a-4d64-88d9-9787fe3b7a1e",
-                    "id": "6",
+                    "id": "5",
                     "Name": "Herder",
                     "Income": 0.1
                 },
                 {
                     "guid": "be5bfa6a-eaf6-47bf-b756-cdfc4feae749",
-                    "id": "7",
+                    "id": "6",
                     "Name": "Fisher",
                     "Income": 0.1
+                },
+                {
+                    "guid": "af93dd79-8273-4747-96ce-b019e2769017",
+                    "id": "7",
+                    "Name": "Researcher",
+                    "Income": 0.75
                 }
             ],
             "hidden": false,
@@ -1840,6 +1871,28 @@
                         }
                     ],
                     "Name": "FisheryLaborComponent"
+                },
+                {
+                    "guid": "14ca9310-cf95-4e68-a6cd-77116334cba2",
+                    "id": "9",
+                    "Inputs": [],
+                    "Outputs": [
+                        {
+                            "guid": "a8bb54e1-e320-4c04-9bcc-514f090b9f5f",
+                            "Name": "aea719f8-8bac-47bc-bf80-61145aa2b677",
+                            "Value": 100,
+                            "id": "0"
+                        }
+                    ],
+                    "Jobs": [
+                        {
+                            "guid": "48bb6fac-44f8-4fe3-a66f-d72049a802fe",
+                            "Name": "af93dd79-8273-4747-96ce-b019e2769017",
+                            "Value": 100,
+                            "id": "0"
+                        }
+                    ],
+                    "Name": "UniversityLaborComponent"
                 }
             ],
             "hidden": false,
@@ -2485,6 +2538,14 @@
                             "id": "0"
                         }
                     ]
+                },
+                {
+                    "guid": "4be67266-92e6-4f8e-8e73-35bf7fdc7d85",
+                    "id": "4",
+                    "Name": "University",
+                    "Labor": "14ca9310-cf95-4e68-a6cd-77116334cba2",
+                    "Makeable": "4c5892a5-9f18-4b97-b4a1-a927b2da19d6",
+                    "Prereqs": []
                 }
             ],
             "hidden": false,

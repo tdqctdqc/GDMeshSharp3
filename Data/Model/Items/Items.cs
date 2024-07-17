@@ -21,4 +21,7 @@ public class Items : ModelManager<Item>
         = new ();
     public Labor Labor { get; private set; }
         = new();
+
+    public Research Research { get; private set; }
+        = new ();
 }

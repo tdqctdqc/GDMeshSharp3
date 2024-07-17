@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract class SettlementBuilding : IModel, IMakeable, IIconed
+public class SettlementBuilding 
+    : IModel, IMakeable, IIconed, ITechReqed
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
@@ -23,7 +24,4 @@ public abstract class SettlementBuilding : IModel, IMakeable, IIconed
     {
         Icon = Icon.Create(Name, Vector2I.One);
     }
-    public abstract bool CanBuildInCell(Cell t, Data data);
-    public abstract bool CanBuildInPoly(MapPolygon p, Data data);
-    
 }

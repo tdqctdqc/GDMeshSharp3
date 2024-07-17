@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract class RoadModel : IModel
+public abstract class RoadModel : IModel, ITechReqed
 {
     public string Name { get; private set; }
     public float CostOverride { get; private set; }

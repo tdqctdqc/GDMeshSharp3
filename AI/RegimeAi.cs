@@ -12,7 +12,7 @@ public class RegimeAi
     {
         Regime = regime;
         Military = new RegimeMilitaryAi(regime, data);
-        Budget = new BudgetAi(Military, data, regime);
+        Budget = new BudgetAi(regime, data, regime);
         Status = new List<string>();
     }
 

@@ -18,4 +18,6 @@ public class PeepJobList : ModelManager<PeepJob>
         = new PeepJob();
     public PeepJob Fisher { get; private set; }
         = new PeepJob();
+    // public PeepJob Researcher { get; private set; }
+    //     = new PeepJob();
 }

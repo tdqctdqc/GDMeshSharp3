@@ -60,7 +60,7 @@ public class DepotImporter
         sheet.MakeObjectsDefault<T>(get, this);
     }
 
-    public void MakeSheetObjectsModels<T>(
+    public IEnumerable<T> MakeSheetObjectsModels<T>(
         IReadOnlyDictionary<string, object> models,
         Func<T> defaultConstructor)
         where T : IModel
@@ -74,17 +74,17 @@ public class DepotImporter
                 || typeof(IModel).IsAssignableFrom(baseType) == false)
             {
                 GD.Print($"couldn't resolve {typeof(T).Name}");
-                return;
+                return null;
             }
             var mi = GetType().GetMethod(nameof(MakeSheetObjectsModels));
             mi.InvokeGeneric(this, new Type[] { baseType },
                 new object[] { models, defaultConstructor });
-            return;
+            return null;
         }
 
         var sheet = Sheets[name];
         sheet.Type = typeof(T);
-        sheet.MakeObjectsModels<T>(models, 
+        return sheet.MakeObjectsModels<T>(models, 
             defaultConstructor, this);
     }
 

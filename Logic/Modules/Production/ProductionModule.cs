@@ -23,16 +23,18 @@ public class ProductionModule : LogicModule
     private ProductionResult DoRegime(Regime r, LogicWriteKey key)
     {
         var d = key.Data;
-        foreach (var (id, amt) in r.Stock.Stock.Contents.ToList())
+        foreach (var f in key.Data.Models.ModelsById.Values.OfType<Flow>())
         {
-            var model = d.Models.GetModel<IModel>(id);
-            if (model is Flow)
-            {
-                r.Stock.Stock.Set(model, 0f);
-            }
+            r.Stock.Stock.Set(f, 0f);
         }
         var newStock = RegimeStock.Construct();
         newStock.Stock.Add(r.Stock.Stock);
+        foreach (var f in key.Data.Models.ModelsById.Values.OfType<Flow>())
+        {
+            var flowAmt = f.GetNonBuildingSupply(r, d);
+            newStock.Stock.Set(f, flowAmt);
+            newStock.Produced.Set(f, flowAmt);
+        }
 
         var employments = r.GetPeeps(d)
             .ToDictionary(p => p.Id, 
@@ -42,14 +44,6 @@ public class ProductionModule : LogicModule
             newStock, new Dictionary<int, int>(), 
             new List<MakeProject>(),
             employments);
-
-        var constructCap = d.Models.Items.ConstructionCap;
-        var constructCapProduced = r.GetPopulation(d);
-        var pop = r.GetPopulation(d);
-        if (constructCapProduced < 0f) throw new Exception();
-        
-        newStock.Stock.Set(constructCap, constructCapProduced);
-        newStock.Produced.Set(constructCap, constructCapProduced);
         
         DoProd(r, d, result);
         foreach (var (id, employment) in result.Employment)
@@ -89,13 +83,15 @@ public class ProductionModule : LogicModule
 
     private class ProdEntry
     {
+        public IModel Model { get; private set; }
         public LaborComponent Labor;
         public float Num;
         public float Satisfied;
         public LandCell Cell;
 
-        public ProdEntry(LaborComponent labor, float num, LandCell cell)
+        public ProdEntry(IModel model, LaborComponent labor, float num, LandCell cell)
         {
+            Model = model;
             Labor = labor;
             Num = num;
             Cell = cell;
@@ -117,7 +113,7 @@ public class ProductionModule : LogicModule
             return c.FoodProd
                 .Nums.GetEnumModel(d)
                 .Select(kvp =>
-                    new ProdEntry(kvp.Key.Labor, kvp.Value, c));
+                    new ProdEntry(kvp.Key, kvp.Key.Labor, kvp.Value, c));
         }).ToArray();
         
         var resourceExtractions = cells
@@ -126,7 +122,7 @@ public class ProductionModule : LogicModule
                 var dep = c.GetResourceDeposit(d);
                 if (dep is null) return null;
                 if (dep.Extraction.Fulfilled() == false) return null;
-                return new ProdEntry(dep.Extraction.Get(d).Labor, 1f, c);
+                return new ProdEntry(dep.Extraction.Get(d), dep.Extraction.Get(d).Labor, 1f, c);
             })
             .Where(v => v is not null).ToArray();
 
@@ -138,7 +134,7 @@ public class ProductionModule : LogicModule
                 return s.Buildings
                     .GetEnumModel(d)
                     .Select(kvp =>
-                        new ProdEntry(kvp.Key.Labor, kvp.Value, c));
+                        new ProdEntry(kvp.Key, kvp.Key.Labor, kvp.Value, c));
             })
             .Where(v => v is not null).ToArray();
         var allProds = foodProds
@@ -197,7 +193,17 @@ public class ProductionModule : LogicModule
             var employment = result.Employment[entry.Cell.GetPeep(d).Id];
             foreach (var (id, amt) in entry.Labor.Jobs.Contents)
             {
-                employment.Counts.Add(id, amt * num * ratio * unsatisfied);
+                try
+                {
+                    var job = d.Models.GetModel<PeepJob>(id);
+                    employment.Counts.Add(job, amt * num * ratio * unsatisfied);
+
+                }
+                catch (Exception e)
+                {
+                    GD.Print($"coudlnt find job {id} for {entry.Model.Name}");
+                    throw;
+                }
             }
         }
     }

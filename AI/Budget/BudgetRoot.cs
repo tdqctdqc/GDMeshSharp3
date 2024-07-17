@@ -8,15 +8,13 @@ public class BudgetRoot : BudgetBranch
 {
     private BudgetBranch _construct, _military;
     public Dictionary<IModel, float> Prices { get; private set; }
-    
-    
-    public BudgetRoot(Data d) : base("Root")
+    public BudgetRoot(Regime r, Data d) : base("Root")
     {
         Prices = new Dictionary<IModel, float>();
-        _construct = new ConstructBuildingsBudgetBranch(this, d);
+        _construct = new ConstructBuildingsBudgetBranch(r, this, d);
         Children.Add(_construct);
 
-        _military = new MilitaryBudgetBranch(this, d);
+        _military = new MilitaryBudgetBranch(r, this, d);
         Children.Add(_military);
     }
 

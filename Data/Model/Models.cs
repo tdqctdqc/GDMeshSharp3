@@ -7,7 +7,6 @@ using Godot;
 
 public class Models
 {
-    private Dictionary<Type, IModelManager> _managers;
     public IModel this[int id] => ModelsById.TryGetValue(id, out var val) 
         ? (IModel) val
         : null;
@@ -41,7 +40,6 @@ public class Models
         _depot.MakeSheetObjectsDefault<LaborComponent>(
             () => new LaborComponent(null, null, null));
         
-        _managers = new Dictionary<Type, IModelManager>();
         ModelsById = new Dictionary<int, IModel>();
         _idIter = 0;
         
@@ -56,10 +54,9 @@ public class Models
         
         PeepJobs = new PeepJobList();
         AddManagerAllowDefault(PeepJobs, _depot);
-        
 
         Buildings = new BuildingList();
-        AddManagerDisallowDefault(Buildings, _depot);
+        AddManagerAllowDefault(Buildings, _depot);
 
         RoadList = new RoadList();
         AddManagerDisallowDefault(RoadList, _depot);
@@ -99,7 +96,7 @@ public class Models
         }
     }
 
-    private void SetId(IModel model)
+    private void AddModel(IModel model)
     {
         var type = model.GetType();
 
@@ -129,11 +126,7 @@ public class Models
 
     public List<TModel> GetModels<TModel>() where TModel : IModel
     {
-        return GetManager<TModel>().Models;
-    }
-    public IModelManager<TModel> GetManager<TModel>() where TModel : IModel
-    {
-        return (IModelManager<TModel>)_managers[typeof(TModel)];
+        return ModelsById.Values.OfType<TModel>().ToList();
     }
 
     private void AddManagerAllowDefault<T>(IModelManager<T> manager,
@@ -154,13 +147,16 @@ public class Models
         DepotImporter importer) 
         where T : IModel
     {
-        _managers.Add(typeof(T), manager);
         var ms = manager.ByName
             .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
-        _depot.MakeSheetObjectsModels<T>(ms, defaultConstructor);
-        foreach (var (name, model) in manager.ByName)
+        var models = _depot.MakeSheetObjectsModels<T>(ms, defaultConstructor);
+        if (models == null)
         {
-            SetId(model);
+            models = manager.ByName.Values;
+        };
+        foreach (var model in models)
+        {
+            AddModel(model);
         }
     }
     

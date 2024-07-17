@@ -7,10 +7,10 @@ public class BudgetAi
 {
     private Regime _regime;
     public BudgetRoot Root { get; private set; }
-    public BudgetAi(RegimeMilitaryAi milAi, Data data, Regime regime)
+    public BudgetAi(Regime r, Data data, Regime regime)
     {
         _regime = regime;
-        Root = new BudgetRoot(data);
+        Root = new BudgetRoot(_regime, data);
     }
 
     public void Calculate(LogicWriteKey key, MajorTurnOrders orders)

@@ -2,7 +2,8 @@ using Godot;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Troop : Item, IMakeable, IIconed
+public class Troop : Item, IMakeable, IIconed,
+    ITechReqed
 {
     public string DisplayName { get; private set; }
     public float HardAttack { get; private set; }

@@ -6,12 +6,13 @@ public class MilitaryBudgetBranch
     : BudgetBranch
 {
     private PriorityNode _recruitBuildings, _reinforcements, _reserve;
-    public MilitaryBudgetBranch(BudgetBranch parent, Data d)
+    public MilitaryBudgetBranch(Regime r, BudgetBranch parent, Data d)
         : base("Military")
     {
         Parent = parent;
         var recruits = new MakeProductionBuildingsPriority(
             d.Models.Items.Recruits,
+            r,
             "Make Recruit Buildings");
         _recruitBuildings = new PriorityNode(recruits, this,
             (r, d) =>
@@ -35,7 +36,7 @@ public class MilitaryBudgetBranch
         Children.Add(_recruitBuildings);
 
         var reinforcements = new MakeReinforcementTroopsPriority(
-            "Make Reinforcement Troops");
+            r, "Make Reinforcement Troops");
         _reinforcements = new PriorityNode(reinforcements, this,
             (r, d) =>
             {
@@ -48,7 +49,7 @@ public class MilitaryBudgetBranch
         Children.Add(_reinforcements);
 
 
-        var reserve = new MakeReserveTroopsPriority("Make Reserve Troops");
+        var reserve = new MakeReserveTroopsPriority(r, "Make Reserve Troops");
         _reserve = new PriorityNode(reserve, this,
             (d, r) => 1f);
         Children.Add(_reserve);

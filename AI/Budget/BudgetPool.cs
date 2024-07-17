@@ -22,10 +22,10 @@ public class BudgetPool
             net.Remove(model, value);
         }
         
-        var pop = r.GetCells(d).Sum(c => c.GetPeep(d).Size);
+        var labor = d.Models.Items.Labor.GetNonBuildingSupply(r, d);
         var prods = r.GetProds(d);
         var laborDemand = prods.Sum(p => p.Key.TotalLabor());
-        var freeLabor = pop - laborDemand;
+        var freeLabor = labor - laborDemand;
         var inQueue = 0f;
         
         r.MakeQueue.Queue.ForEach(m => 

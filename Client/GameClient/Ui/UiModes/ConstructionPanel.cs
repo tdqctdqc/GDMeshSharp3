@@ -6,7 +6,7 @@ using Godot;
 public partial class ConstructionPanel : PanelContainer
 {
     private VBoxContainer _info;
-    private VBoxContainer _buttons;
+    private VBoxContainer _interact;
     private ConstructionPanel()
         : base()
     {
@@ -25,8 +25,8 @@ public partial class ConstructionPanel : PanelContainer
         _info.ExpandFill();
         s1.ExpandFill();
 
-        _buttons = inner.MakeScrollChild<VBoxContainer>(out var s2);
-        _buttons.ExpandFill();
+        _interact = inner.MakeScrollChild<VBoxContainer>(out var s2);
+        _interact.ExpandFill();
         s2.ExpandFill();
 
         var mode = c.UiController.ModeOption.Options
@@ -42,7 +42,7 @@ public partial class ConstructionPanel : PanelContainer
     private void Draw(Settlement s, Client c)
     {
         _info.ClearChildren();
-        _buttons.ClearChildren();
+        _interact.ClearChildren();
         if (s is null) return;
         var regime = s.Cell.Get(c.Data).Controller.Get(c.Data);
         var localPlayer = c.Data.BaseDomain.PlayerAux.LocalPlayer;
@@ -64,7 +64,8 @@ public partial class ConstructionPanel : PanelContainer
         var freeLabor = population - (usedLabor + expectedLabor);
         _info.CreateLabelAsChild($"Free Labor: {freeLabor}");
         
-        var list = c.Data.Models.ModelsById
+        var list = c.Data.Models
+            .ModelsById
             .Values.OfType<SettlementBuilding>();
         foreach (var model in list)
         {
@@ -80,24 +81,30 @@ public partial class ConstructionPanel : PanelContainer
             }
             var labeled = model.Icon.GetLabeledIcon<VBoxContainer>(text, 40f);
             vbox.AddChild(labeled);
-            var button = ButtonExt.GetButton(() =>
-            {
-                var project = PlayerBuildingMakeProject.Construct(
-                    1, s, regime, model);
-                var inner = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
-                var act = () => Draw(s, c);
-                var com = CallbackCommand.Construct(inner, act, c);
-                c.HandleCommand(com);
-            });
-            var building = regime.MakeQueue.Queue
+            
+            var buildingProjects = regime.MakeQueue.Queue
                 .OfType<PlayerBuildingMakeProject>()
                 .Where(p => p.Settlement.RefId == s.Id
                             && p.Making.RefId == model.Id);
-            var buildingTotal = building.Sum(b => b.Amount);
-            var buildingFinished = building.Sum(b => b.Fulfilled);
-            button.Text = $"In progress: {buildingFinished} / {buildingTotal}";
-            vbox.AddChild(button);
-            _buttons.AddChild(vbox);
+            var buildingTotal = buildingProjects.Sum(b => b.Amount);
+            var buildingFinished = buildingProjects.Sum(b => b.Fulfilled);
+            
+            if (regime.HasPrereqs(model))
+            {
+                var button = ButtonExt.GetButton(() =>
+                {
+                    var project = PlayerBuildingMakeProject.Construct(
+                        1, s, regime, model);
+                    var inner = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
+                    var act = () => Draw(s, c);
+                    var com = CallbackCommand.Construct(inner, act, c);
+                    c.HandleCommand(com);
+                });
+                button.Text = $"In progress: {buildingFinished} / {buildingTotal}";
+                vbox.AddChild(button);
+            }
+            
+            _interact.AddChild(vbox);
         }
     }
 

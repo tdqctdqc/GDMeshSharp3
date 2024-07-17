@@ -101,4 +101,10 @@ public static class RegimeExt
     {
         return r0.GetAlliance(data).Members.Contains(r1);
     }
+
+    public static bool HasPrereqs(this Regime r, ITechReqed t)
+    {
+        return t.Prereqs.Count == 0
+               || t.Prereqs.All(tech => r.Technology.Technologies.Contains(tech.MakeRef()));
+    }
 }

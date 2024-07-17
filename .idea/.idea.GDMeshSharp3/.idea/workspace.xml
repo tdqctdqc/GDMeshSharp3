@@ -4,7 +4,35 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Data/Model/Flow/Research.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/Model/Technology/ITechReqed.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/ConstructBuildingsBudgetBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/ConstructBuildingsBudgetBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/MakeProductionBuildingsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/MakeProductionBuildingsPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/MilitaryBudgetBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/MilitaryBudgetBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/ConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/ConstructionPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReinforcementTroopsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReinforcementTroopsPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReserveTroopsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReserveTroopsPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/GameUi/StockBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/GameUi/StockBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/MakeTroopsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/MakeTroopsTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Flow/ConstructionCap.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/ConstructionCap.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Flow/FlowList.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Flow/Labor.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Flow/Labor.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Items/Items.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Items/Items.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/RoadModels/RoadModel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/RoadModels/RoadModel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/SettlementBuildings/SettlementBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/SettlementBuildings/SettlementBuilding.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.sln.DotSettings.user" beforeDir="false" afterPath="$PROJECT_DIR$/GDMeshSharp3.sln.DotSettings.user" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/depot.dpo" beforeDir="false" afterPath="$PROJECT_DIR$/depot.dpo" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -84,11 +112,10 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8b78e83a7fcb41b463a82a2c615d0eb9a82f63e6fe93ffd1fe6781e6349d9b/HashSet.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Budget/BudgetAi.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/MilUtil.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/MilUtil.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
@@ -696,6 +723,8 @@
       <workItem from="1720875307331" duration="5947000" />
       <workItem from="1720881533482" duration="4579000" />
       <workItem from="1721060002413" duration="2922000" />
+      <workItem from="1721076041258" duration="9227000" />
+      <workItem from="1721095677245" duration="2749000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -907,14 +936,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00246" summary="changing windows to freeable, dont keep them in window manager">
-      <option name="closed" value="true" />
-      <created>1719780341087</created>
-      <option name="number" value="00246" />
-      <option name="presentableId" value="LOCAL-00246" />
-      <option name="project" value="LOCAL" />
-      <updated>1719780341087</updated>
-    </task>
     <task id="LOCAL-00247" summary="reworked combat sim window">
       <option name="closed" value="true" />
       <created>1719957807863</created>
@@ -1059,7 +1080,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721062579215</updated>
     </task>
-    <option name="localTasksCounter" value="265" />
+    <task id="LOCAL-00265" summary="adding technology">
+      <option name="closed" value="true" />
+      <created>1721086409078</created>
+      <option name="number" value="00265" />
+      <option name="presentableId" value="LOCAL-00265" />
+      <option name="project" value="LOCAL" />
+      <updated>1721086409078</updated>
+    </task>
+    <option name="localTasksCounter" value="266" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1081,7 +1110,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="more army graphic work" />
     <MESSAGE value="combat history window" />
     <MESSAGE value="doot" />
     <MESSAGE value="added combat modifiers to terrain" />
@@ -1106,6 +1134,7 @@
     <MESSAGE value="ditto" />
     <MESSAGE value="finished depot" />
     <MESSAGE value="tweaking combat" />
-    <option name="LAST_COMMIT_MESSAGE" value="tweaking combat" />
+    <MESSAGE value="adding technology" />
+    <option name="LAST_COMMIT_MESSAGE" value="adding technology" />
   </component>
 </project>

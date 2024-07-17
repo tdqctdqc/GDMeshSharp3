@@ -10,8 +10,11 @@ public class MakeReinforcementTroopsPriority
 {
     private Dictionary<Troop, float> _needed; 
     public MakeReinforcementTroopsPriority(
+        Regime r,
         string name) 
-            : base(name, d => d.Models.GetModels<Troop>())
+            : base(name, 
+                d => d.Models.GetModels<Troop>()
+                    .Where(t => r.HasPrereqs(t)))
     {
         _needed = new Dictionary<Troop, float>();
     }

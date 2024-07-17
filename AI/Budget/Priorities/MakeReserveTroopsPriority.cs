@@ -8,8 +8,10 @@ using Google.OrTools.LinearSolver;
 public class MakeReserveTroopsPriority : SolverPriority<Troop>
 {
     private Dictionary<Troop, float> _needed; 
-    public MakeReserveTroopsPriority(string name) 
-            : base(name, d => d.Models.GetModels<Troop>())
+    public MakeReserveTroopsPriority(Regime r, string name) 
+            : base(name, 
+                d => d.Models.GetModels<Troop>()
+                    .Where(t => r.HasPrereqs(t)))
     {
         _needed = new Dictionary<Troop, float>();
     }
