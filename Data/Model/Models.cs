@@ -28,6 +28,7 @@ public class Models
     public TroopDomains TroopDomains { get; private set; }
     public TechnologyList Technologies { get; private set; }
     public ResourceExtractionList ResourceExtractions { get; private set; }
+    public TechnologyCategories TechnologyCategories { get; private set; }
     private int _idIter;
     private DepotImporter _depot;
     public Models(Data data)
@@ -87,6 +88,9 @@ public class Models
 
         Technologies = new TechnologyList();
         AddManagerAllowDefault(Technologies, _depot);
+
+        TechnologyCategories = new TechnologyCategories();
+        AddManagerAllowDefault(TechnologyCategories, _depot);
         
         _depot.FillAllProperties();
         

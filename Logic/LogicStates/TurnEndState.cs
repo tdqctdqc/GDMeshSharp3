@@ -10,6 +10,7 @@ public class TurnEndState : TurnState
         {
             new DoTurnOrderProceduresModule(),
             new AllianceOrdersModule(),
+            new DefaultLogicModule(() => new DoResearchProcedure()),
             new DefaultLogicModule(() => new TickProcedure()),
             new ClearOrdersModule(orders)
         };

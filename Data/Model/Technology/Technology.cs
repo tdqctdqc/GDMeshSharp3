@@ -9,6 +9,7 @@ public class Technology : IModel
     public string DisplayName { get; private set; }
     public float ResearchCost { get; private set; }
     public HashSet<Technology> Prereqs { get; private set; }
+    public TechnologyCategory Category { get; private set; }
     public Technology()
     {
         

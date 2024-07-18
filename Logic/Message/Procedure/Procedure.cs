@@ -37,6 +37,8 @@ using System;
 [MessagePack.Union(32, typeof(AggregateProcedure))]
 [MessagePack.Union(33, typeof(ChangeMakeProjectPriorityProcedure))]
 [MessagePack.Union(34, typeof(ReplaceMakeProjectProc))]
+[MessagePack.Union(35, typeof(DoResearchProcedure))]
+[MessagePack.Union(36, typeof(SetResearchProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

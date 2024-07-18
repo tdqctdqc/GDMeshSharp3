@@ -23,4 +23,17 @@ public class RegimeTechnology
         ResearchProgresses = researchProgresses;
         CurrentResearch = currentResearch;
     }
+
+    public void SetResearch(Technology t, ProcedureWriteKey key)
+    {
+        if (t is not null)
+        {
+            CurrentResearch = t.MakeRef();
+            ResearchProgresses.TryAdd(t.MakeRef(), 0f);
+        }
+        else
+        {
+            CurrentResearch = new ModelRef<Technology>();
+        }
+    }
 }

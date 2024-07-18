@@ -7,12 +7,15 @@ public class RegimeAi
     public Regime Regime { get; private set; }
     public BudgetAi Budget { get; private set; }
     public RegimeMilitaryAi Military { get; private set; }
+    public RegimeTechnologyAi Technology { get; private set; }
+    
     public List<string> Status { get; private set; }
     public RegimeAi(Regime regime, Data data)
     {
         Regime = regime;
         Military = new RegimeMilitaryAi(regime, data);
         Budget = new BudgetAi(regime, data, regime);
+        Technology = new RegimeTechnologyAi(regime, data);
         Status = new List<string>();
     }
 
@@ -38,7 +41,7 @@ public class RegimeAi
         
         Budget.Calculate(key, orders);
         Military.CalculateMajor(key, orders);
-        
+        Technology.Calculate(key);
         Status.RemoveAt(Status.Count - 1);
 
         return orders; 

@@ -24,15 +24,15 @@ public class ConstructBuildingsBudgetBranch
             "Make Income");
         _income = new PriorityNode(income, this,
             (d, r) => 0f);
-        
+        Children.Add(_income);
+
         var research = new MakeProductionBuildingsPriority(
             d.Models.Items.Research,
             regime,
             "Make Research");
         _research = new PriorityNode(research, this,
             (d, r) => .5f);
-        
-        Children.Add(_income);
+        Children.Add(_research);
     }
 
     protected override float GetWeight(Regime r, Data d)

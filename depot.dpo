@@ -3516,6 +3516,21 @@
                         "description": "text",
                         "defaultValue": "text"
                     }
+                },
+                {
+                    "typeStr": "lineReference",
+                    "guid": "e2077ba8-aaa5-430b-bf26-3ad82aaeaf33",
+                    "name": "Category",
+                    "description": "Category",
+                    "sheet": "ba1fa9ec-62c5-4662-8dfb-ec77c6efff50",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
                 }
             ],
             "lines": [
@@ -3525,7 +3540,8 @@
                     "Name": "SmallArms1",
                     "ResearchCost": 1000,
                     "Prereqs": [],
-                    "DisplayName": "SmallArms1"
+                    "DisplayName": "SmallArms1",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "a8f53099-1dbb-4d1c-82d2-761b566e83ea",
@@ -3539,7 +3555,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "SmallArms2"
+                    "DisplayName": "SmallArms2",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "b71a1d88-3015-496b-8a89-fd852403cd4e",
@@ -3553,7 +3570,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "SmallArms3"
+                    "DisplayName": "SmallArms3",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "37ae653c-184d-44b9-928f-d8b952b4f6d5",
@@ -3567,7 +3585,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "SmallArms4"
+                    "DisplayName": "SmallArms4",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "49cfd428-6327-4150-82c8-a5e08ddcf321",
@@ -3581,7 +3600,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "SmallArms5"
+                    "DisplayName": "SmallArms5",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "c0e7ae59-f5a1-42f0-adbd-f104c7745f80",
@@ -3589,7 +3609,8 @@
                     "Name": "ArtilleryManufacturing1",
                     "ResearchCost": 2500,
                     "Prereqs": [],
-                    "DisplayName": "ArtilleryManufacturing1"
+                    "DisplayName": "ArtilleryManufacturing1",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "2b9750c1-22c8-478c-84fe-e836ff044cd0",
@@ -3603,7 +3624,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "ArtilleryManufacturing2"
+                    "DisplayName": "ArtilleryManufacturing2",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "d561b3bd-6281-4c11-9380-639855edfc3f",
@@ -3617,7 +3639,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "ArtilleryManufacturing3"
+                    "DisplayName": "ArtilleryManufacturing3",
+                    "Category": "e8f96cca-1eb6-4ba3-a608-c96759caece4"
                 },
                 {
                     "guid": "d0db769a-2727-49b3-b8c0-9a702490a804",
@@ -3625,7 +3648,8 @@
                     "Name": "Industry1",
                     "ResearchCost": 2000,
                     "Prereqs": [],
-                    "DisplayName": "Industry1"
+                    "DisplayName": "Industry1",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "a5c84134-bfeb-4be8-84c7-686fb70f00b5",
@@ -3639,7 +3663,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Industry2"
+                    "DisplayName": "Industry2",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "06b25ecd-46a5-4079-bf4f-82c0fad31c23",
@@ -3653,7 +3678,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Industry3"
+                    "DisplayName": "Industry3",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "fffc4847-5b35-4753-8e46-230471780992",
@@ -3667,7 +3693,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Industry4"
+                    "DisplayName": "Industry4",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "3e8faa72-f7bf-4dd7-a2f1-4103ea9ba6f3",
@@ -3681,7 +3708,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Industry5"
+                    "DisplayName": "Industry5",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "6c6486b4-903f-47a7-bc51-4e4dc7b79a99",
@@ -3689,7 +3717,8 @@
                     "Name": "Extraction1",
                     "ResearchCost": 2000,
                     "Prereqs": [],
-                    "DisplayName": "Extraction1"
+                    "DisplayName": "Extraction1",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "ed8a26e1-43b4-4022-b787-2b025b3d9236",
@@ -3703,7 +3732,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Extraction2"
+                    "DisplayName": "Extraction2",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "3f8b39ed-fed4-423d-bc28-04482a78da1d",
@@ -3717,7 +3747,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Extraction3"
+                    "DisplayName": "Extraction3",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "17e0cda4-5289-487a-b7d4-2702a865cb95",
@@ -3731,7 +3762,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Extraction4"
+                    "DisplayName": "Extraction4",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "4e38c2ba-0dd5-42a6-b501-6c7e2ba0e5f0",
@@ -3745,7 +3777,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Extraction5"
+                    "DisplayName": "Extraction5",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "5c9a3e82-0265-4909-81fa-3af9236cf33a",
@@ -3753,7 +3786,8 @@
                     "Name": "Infrastructure1",
                     "ResearchCost": 2000,
                     "Prereqs": [],
-                    "DisplayName": "Infrastructure1"
+                    "DisplayName": "Infrastructure1",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "ed409fff-bb1f-43c1-95c9-04d7df2ec681",
@@ -3767,7 +3801,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Infrastructure2"
+                    "DisplayName": "Infrastructure2",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "e5f98289-9f0b-4279-86ae-16a1ca004165",
@@ -3781,7 +3816,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Infrastructure3"
+                    "DisplayName": "Infrastructure3",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "5ac51956-caa5-4c56-9a75-c97eb936e878",
@@ -3795,7 +3831,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Infrastructure4"
+                    "DisplayName": "Infrastructure4",
+                    "Category": "43726b06-3f60-41c1-b1a1-7b6893420a95"
                 },
                 {
                     "guid": "e61f4eda-136c-4823-8a4a-34b980f5a927",
@@ -3803,7 +3840,8 @@
                     "Name": "Administration1",
                     "ResearchCost": 2000,
                     "Prereqs": [],
-                    "DisplayName": "Administration1"
+                    "DisplayName": "Administration1",
+                    "Category": "5320e22c-aef4-42ba-a0f6-50f420ab30c4"
                 },
                 {
                     "guid": "3a8abe25-8044-4000-a87d-79ff7a764487",
@@ -3817,7 +3855,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Administration2"
+                    "DisplayName": "Administration2",
+                    "Category": "5320e22c-aef4-42ba-a0f6-50f420ab30c4"
                 },
                 {
                     "guid": "4e866317-a691-41f9-bb20-146bf101394c",
@@ -3831,7 +3870,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Administration3"
+                    "DisplayName": "Administration3",
+                    "Category": "5320e22c-aef4-42ba-a0f6-50f420ab30c4"
                 },
                 {
                     "guid": "e35ad69b-bb02-43cb-ab85-78968994fd87",
@@ -3845,7 +3885,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Administration4"
+                    "DisplayName": "Administration4",
+                    "Category": "5320e22c-aef4-42ba-a0f6-50f420ab30c4"
                 },
                 {
                     "guid": "5af5084c-ae85-4a59-9a80-3aeef6356bc7",
@@ -3859,7 +3900,8 @@
                             "id": "0"
                         }
                     ],
-                    "DisplayName": "Administration5"
+                    "DisplayName": "Administration5",
+                    "Category": "5320e22c-aef4-42ba-a0f6-50f420ab30c4"
                 }
             ],
             "hidden": false,
@@ -4017,6 +4059,59 @@
             "isProps": false,
             "parentSheetGUID": "af3214c9-8526-44e2-b863-71e5994d31bb",
             "columnGUID": "d9f0d01a-0ae2-4a5e-8fa2-706308c00907"
+        },
+        {
+            "name": "TechnologyCategory",
+            "description": "TechnologyCategory",
+            "displayColumn": "Name",
+            "guid": "ba1fa9ec-62c5-4662-8dfb-ec77c6efff50",
+            "columns": [
+                {
+                    "typeStr": "text",
+                    "guid": "9089a3c6-2977-4181-95fb-1954caf6e87a",
+                    "name": "Name",
+                    "description": "Name",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "e8f96cca-1eb6-4ba3-a608-c96759caece4",
+                    "id": "0",
+                    "Name": "Military"
+                },
+                {
+                    "guid": "43726b06-3f60-41c1-b1a1-7b6893420a95",
+                    "id": "1",
+                    "Name": "Economic"
+                },
+                {
+                    "guid": "5320e22c-aef4-42ba-a0f6-50f420ab30c4",
+                    "id": "2",
+                    "Name": "Administrative"
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
         }
     ]
 }
