@@ -57,6 +57,7 @@ public class ItemListToken<T>
         ItemList.SelectMode = multiSelect
             ? ItemList.SelectModeEnum.Multi
             : ItemList.SelectModeEnum.Single;
+        Values = new HashSet<T>();
         _items = items.ToList();
         _getLabelText = getLabelText;
         SetList();

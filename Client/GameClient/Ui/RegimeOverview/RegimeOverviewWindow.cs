@@ -15,6 +15,7 @@ public partial class RegimeOverviewWindow
         AddTab(new BudgetTab(this));
         AddTab(new EconomyTab(this, c));
         AddTab(new MilitaryTab(() => Regime, c));
+        AddTab(new TechnologyTab(this));
     }
     public void Setup(Regime regime)
     {

@@ -4,7 +4,8 @@ using System.Linq;
 using Godot;
 namespace Ui.RegimeOverview;
 
-public partial class GeneralTab : ScrollContainer, IUiDrawable
+public partial class GeneralTab : ScrollContainer,
+    IUiDrawable
 {
     private VBoxContainer _container;
     private RegimeOverviewWindow _parent;

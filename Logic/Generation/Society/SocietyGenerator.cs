@@ -144,7 +144,8 @@ public class SocietyGenerator : Generator
     private List<(LandCell, int)> CreateSettlements(Regime r, float popSurplus)
     {
         var res = new List<(LandCell, int)>();
-        var minSize = _data.Models.Settlements.TiersBySize.First().MinSize;
+        var minSize = _data.Models.GetModels<SettlementTier>()
+            .Min(t => t.MinSize);
         var rPolysByHabitability = _data.GetAll<MapPolygon>()
             .Where(p => p.GetCells(_data).First() is LandCell landCell
                         && landCell.Controller.RefId == r.Id)

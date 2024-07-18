@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public class Technology : IModel
 {
@@ -17,9 +18,16 @@ public class Technology : IModel
 
     public static void AddStartingTechsForRegime(Regime r, GenWriteKey key)
     {
-        var starting = key.Data.Models.Technologies.Models
+        var starting = key.Data.Models.GetModels<Technology>()
             .Where(t => t.Prereqs.Count == 0)
             .Select(t => t.MakeRef());
         r.Technology.Technologies.UnionWith(starting);
+    }
+
+    public IEnumerable<IModel> GetModelsWithPrereq(Data d)
+    {
+        return d.Models.ModelsById.Values.OfType<ITechReqed>()
+            .Where(m => m.Prereqs.Contains(this))
+            .Select(m => (IModel)m);
     }
 }

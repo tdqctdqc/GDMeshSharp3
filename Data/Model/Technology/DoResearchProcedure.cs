@@ -8,14 +8,18 @@ public class DoResearchProcedure : Procedure
         {
             var tech = regime.Technology;
             var researching = tech.CurrentResearch.Get(key.Data);
+            var researchPoints = regime.Stock.Stock.Get(key.Data.Models.Items.Research);
             if (researching is not null)
             {
                 tech.ResearchProgresses[tech.CurrentResearch] 
-                    += regime.Stock.Stock.Get(key.Data.Models.Items.Research);
+                    += researchPoints;
                 if (tech.ResearchProgresses[tech.CurrentResearch] >= researching.ResearchCost)
                 {
+                    var overflow = tech.ResearchProgresses[tech.CurrentResearch] - researching.ResearchCost;
                     tech.Technologies.Add(tech.CurrentResearch);
+                    tech.ResearchProgresses.Remove(tech.CurrentResearch);
                     tech.SetResearch(null, key);
+                    tech.SetOverflow(overflow, key);
                 }
             }
         }

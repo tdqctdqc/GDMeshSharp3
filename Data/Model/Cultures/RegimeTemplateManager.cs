@@ -4,13 +4,13 @@ using System.Linq;
 
 public class RegimeTemplateManager : IModelManager<RegimeTemplate>
 {
-    public List<RegimeTemplate> Models { get; }
-    public Dictionary<string, RegimeTemplate> ByName { get; private set; }
+    public List<RegimeTemplate> ExplicitModels { get; }
+    public Dictionary<string, RegimeTemplate> ExplicitModelsByName { get; private set; }
     public RegimeTemplateManager(CultureManager cultures)
     {
-        Models = cultures.Models
+        ExplicitModels = cultures.ExplicitModels
             .SelectMany(c => c.RegimeTemplates)
             .ToList();
-        ByName = Models.ToDictionary(m => m.Name, m => m);
+        ExplicitModelsByName = ExplicitModels.ToDictionary(m => m.Name, m => m);
     }
 }

@@ -151,12 +151,12 @@ public class Models
         DepotImporter importer) 
         where T : IModel
     {
-        var ms = manager.ByName
+        var ms = manager.ExplicitModelsByName
             .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
         var models = _depot.MakeSheetObjectsModels<T>(ms, defaultConstructor);
         if (models == null)
         {
-            models = manager.ByName.Values;
+            models = manager.ExplicitModelsByName.Values;
         };
         foreach (var model in models)
         {

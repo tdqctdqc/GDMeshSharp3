@@ -15,8 +15,9 @@ public partial class StockBar : HBoxContainer
         //
         foreach (var item in data.Models.GetModels<Item>())
         {
-            AddModel(client, item, data);
+            if(item is not Troop) AddModel(client, item, data);
         }
+        
     }
 
     private StockBar()

@@ -18,4 +18,19 @@ public class SettlementTier : IModel, IIconed
     {
         Icon = Icon.Create(Name, Vector2I.One);
     }
+
+    public static SettlementTier GetTier(int size, Data data)
+    {
+        var tiers = data.Models.GetModels<SettlementTier>()
+            .OrderBy(t => t.MinSize);
+        foreach (var tier in tiers)
+        {
+            if (size >= tier.MinSize)
+            {
+                return tier;
+            }
+        }
+
+        return tiers.Last();
+    }
 }

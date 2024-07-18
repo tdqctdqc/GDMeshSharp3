@@ -15,7 +15,7 @@ public class Settlement : Location
     public static Settlement Create(string name, 
         Cell cell, int size, IHostWriteKey key)
     {
-        var tier = key.Data.Models.Settlements.GetTier(size);
+        var tier = SettlementTier.GetTier(size, key.Data);
         var s = new Settlement(key.Data.IdDispenser.TakeId(),
             cell.MakeRef(), 
             tier.MakeRef(), 
@@ -46,12 +46,6 @@ public class Settlement : Location
         var old = Tier.Get(key.Data);
         Tier = tier.MakeRef();
         key.Data.Notices.Infrastructure.ChangedTier.Invoke(this, tier, old);
-    }
-
-    public void SetSizeGen(int size, GenWriteKey key)
-    {
-        var tier = key.Data.Models.Settlements.GetTier(size);
-        Tier = tier.MakeRef();
     }
 
     public override void CleanUp(StrongWriteKey key)
