@@ -92,16 +92,14 @@ public class FrontlineAssignment : GroupAssignment
         SetLineAndInsertingGroups(key);
         HandleInsertingGroupsOrders(key);
         if (LineGroups.Count == 0) return;
+        
+        
+        
+        
         var lineAssignments = MilUtil
             .GetGroupLineAssignments(Alliance, LineGroups, 
                 Frontline.Faces,
-                f =>
-                {
-                    var atkWeight = Frontline.FaceAttackWeights.TryGetValue(f, out var w)
-                        ? w
-                        : 0f;
-                    return atkWeight + Frontline.FaceDefendWeights[f];
-                },
+                GetFaceCost,
                 key.Data);
         
         var toTake = Frontline.AdvanceInto.ToHashSet();
@@ -127,7 +125,8 @@ public class FrontlineAssignment : GroupAssignment
             
             
 
-        foreach (var (group, lineAssignment) in lineAssignments)
+        foreach (var (group, lineAssignment) 
+                 in lineAssignments)
         {
             var order = new LineMission(
                 
@@ -163,6 +162,14 @@ public class FrontlineAssignment : GroupAssignment
         }
     }
 
+    private float GetFaceCost(FrontFace f)
+    {
+        var atkWeight = Frontline.FaceAttackWeights.TryGetValue(f, out var w)
+            ? w
+            : 0f;
+        return atkWeight + Frontline.FaceDefendWeights[f];
+    }
+
 
     private void SetLineAndInsertingGroups(LogicWriteKey key)
     {
@@ -176,11 +183,19 @@ public class FrontlineAssignment : GroupAssignment
 
     private void HandleInsertingGroupsOrders(LogicWriteKey key)
     {
+        var idealAssignments = MilUtil
+            .GetGroupLineAssignments(Alliance, Groups, 
+                Frontline.Faces,
+                GetFaceCost,
+                key.Data);
+        
+        
         foreach (var army in InsertingGroups)
         {
             var close = GetInsertPoint(army, key.Data);
+            var assignment = idealAssignments[army];
             var order = new LineMission(
-                new RefSet<CellRef>(close.MakeRef().Yield().ToHashSet()), 
+                new RefSet<CellRef>(assignment.Select(c => c.MakeRef()).ToHashSet()), 
                 new RefSet<CellRef>(new HashSet<CellRef>()),
                 false);
             key.SendMessage(new SetUnitOrderProcedure(army.MakeRef(), order));

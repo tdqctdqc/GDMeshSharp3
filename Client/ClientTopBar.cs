@@ -32,9 +32,11 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
         });
         this.AddIntButton("Jump to Group", i =>
         {
-            var group = client.Data.Get<Army>(i);
-            if (group == null) return;
-            client.Cam().JumpTo(group.GetHomeCell(client.Data).GetCenter());
+            if (client.Data.EntitiesById.TryGetValue(i, out var e)
+                && e is Army a)
+            {
+                client.Cam().JumpTo(a.GetHomeCell(client.Data).GetCenter());
+            }
         });
         
         var uiFrame = client.GetComponent<UiFrame>();

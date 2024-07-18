@@ -49,22 +49,6 @@ public static class ButtonExt
         n.AddChild(button);
         return button;
     }
-    // public static Button AddWindowButton<T>(this Node n, 
-    //     string name,
-    //     Func<T> getWindow) where T : Window
-    // {
-    //     var settingsWindowBtn
-    //         = ButtonExt.GetButton(() =>
-    //         {
-    //             var windows = Game.I.Client
-    //                 .WindowHolder;
-    //             var w = getWindow();
-    //             windows.OpenWindow(w);
-    //         });
-    //     settingsWindowBtn.Text = name;
-    //     n.AddChild(settingsWindowBtn);
-    //     return settingsWindowBtn;
-    // }
 
     public static void AddIntButton(this Node n, string name, Action<int> action)
     {

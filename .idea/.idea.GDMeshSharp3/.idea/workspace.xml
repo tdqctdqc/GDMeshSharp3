@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="model tweak">
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -94,7 +96,6 @@
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/Model/Cultures/CultureManager.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Regime/RegimeExt.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -699,6 +700,7 @@
       <workItem from="1721076041258" duration="9227000" />
       <workItem from="1721095677245" duration="2749000" />
       <workItem from="1721172875258" duration="13236000" />
+      <workItem from="1721313711906" duration="803000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -910,14 +912,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00251" summary="redoing echelons">
-      <option name="closed" value="true" />
-      <created>1720456947032</created>
-      <option name="number" value="00251" />
-      <option name="presentableId" value="LOCAL-00251" />
-      <option name="project" value="LOCAL" />
-      <updated>1720456947032</updated>
-    </task>
     <task id="LOCAL-00252" summary="working on budget weights">
       <option name="closed" value="true" />
       <created>1720468891277</created>
@@ -1062,7 +1056,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721269150333</updated>
     </task>
-    <option name="localTasksCounter" value="270" />
+    <task id="LOCAL-00270" summary="model tweak">
+      <option name="closed" value="true" />
+      <created>1721314168562</created>
+      <option name="number" value="00270" />
+      <option name="presentableId" value="LOCAL-00270" />
+      <option name="project" value="LOCAL" />
+      <updated>1721314168562</updated>
+    </task>
+    <option name="localTasksCounter" value="271" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1084,7 +1086,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="fixing reinforcement, make project bugs, added reserve troop build priority" />
     <MESSAGE value="working on mouse actions" />
     <MESSAGE value="making combat sim" />
     <MESSAGE value="changing windows to freeable, dont keep them in window manager" />
@@ -1109,6 +1110,7 @@
     <MESSAGE value="doot" />
     <MESSAGE value="research stuff" />
     <MESSAGE value="technology tab" />
-    <option name="LAST_COMMIT_MESSAGE" value="technology tab" />
+    <MESSAGE value="model tweak" />
+    <option name="LAST_COMMIT_MESSAGE" value="model tweak" />
   </component>
 </project>
