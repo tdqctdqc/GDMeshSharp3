@@ -45,52 +45,58 @@ public class Models
         _idIter = 0;
         
         Items = new Items();
-        AddManagerDisallowDefault(Items, _depot);
+        ImportDisallowDefault(Items, _depot);
 
         Landforms = new LandformList();
-        AddManagerAllowDefault(Landforms, _depot);
+        ImportAllowDefault(Landforms, _depot);
 
         Vegetations = new VegetationList(Landforms);
-        AddManagerAllowDefault(Vegetations, _depot);
+        ImportAllowDefault(Vegetations, _depot);
         
         PeepJobs = new PeepJobList();
-        AddManagerAllowDefault(PeepJobs, _depot);
+        ImportAllowDefault(PeepJobs, _depot);
 
         Buildings = new BuildingList();
-        AddManagerAllowDefault(Buildings, _depot);
+        ImportAllowDefault(Buildings, _depot);
 
         RoadList = new RoadList();
-        AddManagerDisallowDefault(RoadList, _depot);
+        ImportDisallowDefault(RoadList, _depot);
 
         Settlements = new SettlementTierList();
-        AddManagerAllowDefault(Settlements, _depot);
+        ImportAllowDefault(Settlements, _depot);
         
         Cultures = new CultureManager();
-        AddManagerDisallowDefault(Cultures, _depot);
+        foreach (var culture in Cultures.Cultures)
+        {
+            AddModel(culture);
+        }
         
         RegimeTemplates = new RegimeTemplateManager(Cultures);
-        AddManagerDisallowDefault(RegimeTemplates, _depot);
+        foreach (var regimeTemplate in RegimeTemplates.RegimeTemplates)
+        {
+            AddModel(regimeTemplate);
+        }
         
         FoodProdTechniques = new FoodProdTechniqueList(PeepJobs, Items);
-        AddManagerDisallowDefault(FoodProdTechniques, _depot);
+        ImportDisallowDefault(FoodProdTechniques, _depot);
         
         MoveTypes = new MoveTypes();
-        AddManagerDisallowDefault(MoveTypes, _depot);
+        ImportDisallowDefault(MoveTypes, _depot);
         
         Troops = new Troops();
-        AddManagerAllowDefault(Troops, _depot);
+        ImportAllowDefault(Troops, _depot);
 
         ResourceExtractions = new ResourceExtractionList();
-        AddManagerDisallowDefault(ResourceExtractions, _depot);
+        ImportDisallowDefault(ResourceExtractions, _depot);
         
         TroopDomains = new TroopDomains();
-        AddManagerAllowDefault(TroopDomains, _depot);
+        ImportAllowDefault(TroopDomains, _depot);
 
         Technologies = new TechnologyList();
-        AddManagerAllowDefault(Technologies, _depot);
+        ImportAllowDefault(Technologies, _depot);
 
         TechnologyCategories = new TechnologyCategories();
-        AddManagerAllowDefault(TechnologyCategories, _depot);
+        ImportAllowDefault(TechnologyCategories, _depot);
         
         _depot.FillAllProperties();
         
@@ -133,31 +139,27 @@ public class Models
         return ModelsById.Values.OfType<TModel>().ToList();
     }
 
-    private void AddManagerAllowDefault<T>(IModelManager<T> manager,
+    private void ImportAllowDefault<T>(ModelManager<T> manager,
         DepotImporter importer)
             where T : IModel, new()
     {
         AddManager(manager, () => new(), importer);
     }
-    private void AddManagerDisallowDefault<T>(IModelManager<T> manager,
+    private void ImportDisallowDefault<T>(ModelManager<T> manager,
         DepotImporter importer)
         where T : IModel
     {
         AddManager(manager, () => throw new Exception(), importer);
     }
     
-    private void AddManager<T>(IModelManager<T> manager,
+    private void AddManager<T>(ModelManager<T> manager,
         Func<T> defaultConstructor,
         DepotImporter importer) 
         where T : IModel
     {
-        var ms = manager.ExplicitModelsByName
+        var ms = manager.GetPropertiesOfTypeByName<T>()
             .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
         var models = _depot.MakeSheetObjectsModels<T>(ms, defaultConstructor);
-        if (models == null)
-        {
-            models = manager.ExplicitModelsByName.Values;
-        };
         foreach (var model in models)
         {
             AddModel(model);
