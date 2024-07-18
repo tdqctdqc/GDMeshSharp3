@@ -25,7 +25,7 @@ public abstract class MousePressAction : IMouseAction
         }
     }
 
-    public abstract void Highlight(Client c);
+    public abstract void Highlight(Client c, MapOverlayDrawer overlay);
     
 
     protected MousePressAction(MouseButtonMask button)

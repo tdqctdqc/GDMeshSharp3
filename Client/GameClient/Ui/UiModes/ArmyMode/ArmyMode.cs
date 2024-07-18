@@ -8,7 +8,7 @@ using Ui.ArmyMode;
 public class ArmyMode : UiMode
 {
     public DefaultSettingsOption<Army> Army { get; private set; }
-    private HashSet<Cell> _moveRadiusCache;
+    private MapOverlayDrawer _armyOverlay, _cellOverlay;
     private Client _client;
     private Node2D _selectedArmyGraphic;
     private MouseOverHandler _mouseOverHandler;
@@ -27,8 +27,7 @@ public class ArmyMode : UiMode
             null);
         Army.SettingChanged.Subscribe(n =>
         {
-            GD.Print("setting");
-            _moveRadiusCache = n.newVal?.GetArmyMoveRadius(_client.Data);
+            DrawArmyOverlay();
             Draw();
         });
     }
@@ -57,52 +56,48 @@ public class ArmyMode : UiMode
         mb.AddCircle(Vector2.Zero, 20f, 20, new Color(Colors.Yellow, .5f));
         _selectedArmyGraphic = mb.GetMeshInstance();
         _selectedArmyGraphic.ZIndex = 99;
+        var mg = _client.GetComponent<MapGraphics>();
+        _armyOverlay = mg.GetOverlay(LayerOrder.Highlighter);
+        _cellOverlay = mg.GetOverlay(LayerOrder.Highlighter);
     }
 
     public override void Clear()
     {
         var mg = _client.GetComponent<MapGraphics>();
-        mg.Highlighter.Clear();
-        mg.DebugOverlay.Clear();
+        
         var tooltip = _client.GetComponent<TooltipManager>();
         tooltip.Clear();
         _selectedArmyGraphic.QueueFree();
+        mg.RemoveOverlay(_armyOverlay);
+        mg.RemoveOverlay(_cellOverlay);
     }
 
     private void Draw()
     {
-        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
-        highlight.Clear();
-        _mouseOverHandler.Highlight();
-        MouseActions.Value.Highlight(_client);
-        OverlayForArmy();
-        UnitTooltip();
-    }
-    private void UnitTooltip()
-    {
-        
+        _cellOverlay.Clear();
+        _mouseOverHandler.Highlight(_cellOverlay);
+        MouseActions.Value.Highlight(_client, _cellOverlay);
     }
 
-    private void OverlayForArmy()
+    private void DrawArmyOverlay()
     {
+        _armyOverlay.Clear();
         var army = Army.Value;
         if (army is null) return;
-        var highlight = _client.GetComponent<MapGraphics>().Highlighter;
-        
-        foreach (var cell in _moveRadiusCache)
+        foreach (var cell in army.GetArmyMoveRadius(_client.Data))
         {
-            highlight.Draw(mb =>
+            _armyOverlay.Draw(mb =>
             {
                 mb.DrawPolygon(cell.RelBoundary, Colors.Yellow.Tint(.5f));
             }, cell.RelTo);
         }
-        highlight.Draw(mb =>
+        _armyOverlay.Draw(mb =>
         {
             army.LineMission.Draw(army, Vector2.Zero, mb, _client.Data);
         }, Vector2.Zero);
         foreach (var order in army.OtherOrders)
         {
-            highlight.Draw(mb =>
+            _armyOverlay.Draw(mb =>
             {
                 order.Draw(army, Vector2.Zero, mb, _client.Data);
             }, Vector2.Zero);

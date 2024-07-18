@@ -4,6 +4,7 @@ using Godot;
 public class PathFindMode : UiMode
 {
     private MouseOverHandler _mouseOverHandler;
+    private MapOverlayDrawer _cellOverlay, _pathOverlay;
     private Cell _from;
     private Cell _to;
     public PathFindMode(Client client) 
@@ -15,6 +16,7 @@ public class PathFindMode : UiMode
     public override void Process(float delta)
     {
         _mouseOverHandler.Process(delta);
+        _mouseOverHandler.Highlight(_cellOverlay);
     }
 
     public override void HandleInput(InputEvent e)
@@ -31,33 +33,29 @@ public class PathFindMode : UiMode
             {
                 _to = cell;
             }
-            Draw();
+            DrawPath();
         }
     }
 
     public override void Enter()
     {
-        
+        var mg = _client.GetComponent<MapGraphics>();
+        _pathOverlay = mg.GetOverlay(LayerOrder.Highlighter);
+        _cellOverlay = mg.GetOverlay(LayerOrder.Highlighter);
     }
 
-    private void Draw()
+    private void DrawPath()
     {
-        var mg = _client.GetComponent<MapGraphics>();
-        var debug = mg.DebugOverlay;
-        debug.Clear();
-
-        mg.Highlighter.Clear();
-        _mouseOverHandler.Highlight();
         if (_from != null)
         {
-            debug.Draw(mb => mb.AddSquare(Vector2.Zero, 
+            _pathOverlay.Draw(mb => mb.AddSquare(Vector2.Zero, 
                     20f, Colors.Red),
                 _from.GetCenter());
         }
 
         if (_to != null)
         {
-            debug.Draw(mb => mb.AddSquare(Vector2.Zero, 
+            _pathOverlay.Draw(mb => mb.AddSquare(Vector2.Zero, 
                     20f, Colors.Green),
                 _to.GetCenter());
         }
@@ -87,15 +85,15 @@ public class PathFindMode : UiMode
             var from = path[i];
             var to = path[i + 1];
             var offset = from.GetCenter().Offset(to.GetCenter(), _client.Data);
-            debug.Draw(mb => mb.AddArrow(Vector2.Zero, offset, 5f, Colors.Yellow),
+            _pathOverlay.Draw(mb => mb.AddArrow(Vector2.Zero, offset, 5f, Colors.Yellow),
                 from.GetCenter());
         }
     }
 
     public override void Clear()
     {
-        var debug = _client.GetComponent<MapGraphics>()
-            .DebugOverlay;
-        debug.Clear();
+        var mg = _client.GetComponent<MapGraphics>();
+        mg.RemoveOverlay(_pathOverlay);
+        mg.RemoveOverlay(_cellOverlay);
     }
 }

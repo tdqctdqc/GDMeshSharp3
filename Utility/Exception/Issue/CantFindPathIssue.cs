@@ -62,7 +62,7 @@ public class CantFindPathIssue : Issue
         }
 
         var debugDrawer = c.GetComponent<MapGraphics>()
-            .DebugOverlay;
+            .GetOverlay(LayerOrder.Debug);
         debugDrawer.Clear();
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
         foreach (var n in union)

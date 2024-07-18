@@ -131,17 +131,15 @@ public class CellEdgeLineMouseAction : MouseAction
         _edges = null;
     }
 
-    public override void Highlight(Client c)
+    public override void Highlight(Client c, MapOverlayDrawer overlay)
     {
         if (_edges == null) return;
-        var highlighter = c.GetComponent<MapGraphics>()
-            .Highlighter;
         for (var i = 0; i < _edges.Count; i++)
         {
             var edge = _edges[i];
             var c1 = PlanetDomainExt.GetPolyCell(edge.X, c.Data);
             var c2 = PlanetDomainExt.GetPolyCell(edge.Y, c.Data);
-            highlighter.Draw(mb =>
+            overlay.Draw(mb =>
             {
                 mb.DrawCellBorder(c1, c2, c => Colors.Red,
                     3f, Vector2.Zero, c.Data);

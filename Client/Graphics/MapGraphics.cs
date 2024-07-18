@@ -10,8 +10,7 @@ public partial class MapGraphics : Node2D, IClientComponent
 {
     public GraphicsSegmenter Segmenter { get; private set; }
     public Regime SpectatingRegime { get; private set; }
-    public MapOverlayDrawer Highlighter { get; private set; }
-    public MapOverlayDrawer DebugOverlay { get; private set; }
+    public List<MapOverlayDrawer> Overlays { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
     public MapUiElements UiElements { get; private set; }
     private int _msToProcessUpdates = 50;
@@ -48,8 +47,7 @@ public partial class MapGraphics : Node2D, IClientComponent
         Segmenter = new GraphicsSegmenter(client, 10);
         AddChild(Segmenter);
         GraphicLayerHolder = new GraphicLayerHolder(client, Segmenter, client.Data);
-        DebugOverlay = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Debug);
-        Highlighter = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Highlighter);
+        Overlays = new List<MapOverlayDrawer>();
         UiElements = new MapUiElements(client);
         client.GraphicsLayer.AddChild(this);
         
@@ -72,5 +70,18 @@ public partial class MapGraphics : Node2D, IClientComponent
     {
         SpectatingRegime = r;
         Game.I.Client.Notices.ChangedSpectatingRegime.Invoke(r);
+    }
+
+    public MapOverlayDrawer GetOverlay(LayerOrder order)
+    {
+        var o = new MapOverlayDrawer(Segmenter, (int)order);
+        Overlays.Add(o);
+        return o;
+    }
+
+    public void RemoveOverlay(MapOverlayDrawer overlay)
+    {
+        Overlays.Remove(overlay);
+        overlay.Clear();
     }
 }

@@ -23,13 +23,11 @@ public class CellMousePressAction : MousePressAction
         MouseReleased?.Invoke(cell);
     }
 
-    public override void Highlight(Client c)
+    public override void Highlight(Client c, MapOverlayDrawer overlay)
     {
         var cell = _mouseOverHandler.MouseOverCell;
         if (cell is null) return;
-        var highlighter = c.GetComponent<MapGraphics>()
-            .Highlighter;
-        highlighter.Draw(mb =>
+        overlay.Draw(mb =>
         {
             mb.DrawPolygon(cell.RelBoundary, Colors.Yellow.Tint(.5f));
         },  cell.RelTo);

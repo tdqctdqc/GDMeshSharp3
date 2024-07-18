@@ -73,7 +73,6 @@ public class DepotSheet
         foreach (var (name, line) in LinesByName)
         {
             if (models.ContainsKey(name)) continue;
-            GD.Print($"adding default {Name} {name}");
             var value = defaultConstructor();
             var guid = LineGuids[name];
             importer.LineObjects[guid] = value;

@@ -5,7 +5,7 @@ using Godot;
 public class ConstructionMode : UiMode
 {
     private MouseOverHandler _mouseOver;
-    private MeshInstance2D _selectedCellGraphic;
+    private MapOverlayDrawer _cellOverlay, _settlementOverlay;
     public DefaultSettingsOption<Settlement> Settlement { get; private set; }
     public ConstructionMode(Client client) : base(client,
         "Construction")
@@ -13,26 +13,23 @@ public class ConstructionMode : UiMode
         Settlement = new DefaultSettingsOption<Settlement>("Settlement", null);
         Settlement.SettingChanged.Subscribe(v =>
         {
-            if (v.newVal is null
-                && _selectedCellGraphic is not null)
-            {
-                _selectedCellGraphic.Mesh = null;
-            }
-            else
+            _settlementOverlay.Clear();
+            
+            if (v.newVal is not null)
             {
                 var mb = new MeshBuilder();
                 var cell = v.newVal.Cell.Get(client.Data);
-                mb.DrawPolygon(cell.RelBoundary,
-                    Colors.Yellow.Tint(.25f));
-                _selectedCellGraphic.Mesh = mb.GetMesh();
-                client.GetComponent<MapGraphics>().Segmenter
-                    .AddElement(_selectedCellGraphic, cell.RelTo);
+                _settlementOverlay.Draw(mb =>
+                {
+                    mb.DrawPolygon(cell.RelBoundary,
+                        Colors.Yellow.Tint(.25f));
+                }, cell.GetCenter());
             }
         });
         _mouseOver = new MouseOverHandler(client.Data);
         _mouseOver.ChangedCell += c =>
         {
-            Highlight();
+            _mouseOver.Highlight(_cellOverlay);
         };
 
     }
@@ -42,17 +39,6 @@ public class ConstructionMode : UiMode
         _mouseOver.Process(delta);
     }
 
-    
-    private void Highlight()
-    {
-        var mg = _client.GetComponent<MapGraphics>();
-        mg.Highlighter.Clear();
-        var localPlayer = _client.Data.BaseDomain.PlayerAux.LocalPlayer;
-        var localPlayerRegime = localPlayer.Regime.Get(_client.Data);
-        if (localPlayerRegime == null) return;
-        
-        
-    }
     public override void HandleInput(InputEvent e)
     {
         if (e is InputEventMouseButton mb
@@ -74,15 +60,15 @@ public class ConstructionMode : UiMode
     
     public override void Enter()
     {
-        _selectedCellGraphic?.QueueFree();
-        _selectedCellGraphic = new MeshInstance2D();
-        _selectedCellGraphic.ZIndex = (int)LayerOrder.Highlighter;
-        _selectedCellGraphic.ZAsRelative = false;
+        var mg = _client.GetComponent<MapGraphics>();
+        _settlementOverlay = mg.GetOverlay(LayerOrder.Highlighter);
+        _cellOverlay = mg.GetOverlay(LayerOrder.Highlighter);
     }
 
     public override void Clear()
     {
-        _selectedCellGraphic.QueueFree();
-        _selectedCellGraphic = null;
+        var mg = _client.GetComponent<MapGraphics>();
+        mg.RemoveOverlay(_settlementOverlay);
+        mg.RemoveOverlay(_cellOverlay);
     }
 }

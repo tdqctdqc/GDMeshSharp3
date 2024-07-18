@@ -8,7 +8,7 @@ public class NoPolyAtPointIssue<TPoly> : Issue
     public override void Draw(Client c)
     {
         var debugDrawer = c.GetComponent<MapGraphics>()
-            .DebugOverlay;
+            .GetOverlay(LayerOrder.Debug);
         debugDrawer.Clear();
         // debugDrawer.Draw(mb => mb.DrawPolyBorders(FoundPoly.Center, FoundPoly, c.Data),
         //     FoundPoly.Center);

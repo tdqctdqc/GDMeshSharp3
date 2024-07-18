@@ -50,14 +50,12 @@ public class CellHashMouseAction : MouseAction
         _cells = null;
     }
     
-    public override void Highlight(Client c)
+    public override void Highlight(Client c, MapOverlayDrawer overlay)
     {
         if (_cells is null || _cells.Count == 0) return;
-        var highlighter = c.GetComponent<MapGraphics>()
-            .Highlighter;
         foreach (var cell in _cells)
         {
-            highlighter.Draw(mb =>
+            overlay.Draw(mb =>
             {
                 mb.DrawPolygon(cell.RelBoundary, Colors.Yellow.Tint(.5f));
             }, cell.RelTo);

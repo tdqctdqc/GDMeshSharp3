@@ -14,8 +14,8 @@ public class GroupInForeignCellIssue : Issue
 
     public override void Draw(Client c)
     {
-        var mb = c.GetComponent<MapGraphics>();
-        var debug = mb.DebugOverlay;
+        var mg = c.GetComponent<MapGraphics>();
+        var debug = mg.GetOverlay(LayerOrder.Debug);
         debug.Clear();
         debug.Draw(mb =>
         {

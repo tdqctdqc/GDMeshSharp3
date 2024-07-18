@@ -127,21 +127,20 @@ public class MouseOverHandler
     }
 
 
-    public void Highlight()
+    public void Highlight(MapOverlayDrawer overlay)
     {
         var client = Game.I.Client;
-        var highlight = client.GetComponent<MapGraphics>().Highlighter;
 
         if (MouseOverCell is not null)
         {
-            client.HighlightCell(MouseOverCell, 2f);
-            client.HighlightCellNeighbors(MouseOverCell, 1f);
+            client.HighlightCell(MouseOverCell, overlay, 2f);
+            client.HighlightCellNeighbors(MouseOverCell, overlay, 1f);
         }
         if (SecondClosest is not null)
         {
             var edge = MouseOverCell
                 .GetEdgeRelWith(SecondClosest);
-            highlight.Draw(mb => mb.AddLine(edge.Item1,
+            overlay.Draw(mb => mb.AddLine(edge.Item1,
                 edge.Item2, Colors.Blue, 2f), 
                 MouseOverCell.RelTo);
         }
