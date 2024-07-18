@@ -77,7 +77,6 @@ public static class PathFinder<T>
         var info = _pool.Get();
         info.Open.Enqueue(start, 0f);
         info.CostsFromStart.Add(start, 0f);
-        // info.HeuristicCosts.Add(start, heuristicFunc(start, end));
         int iter = 0;
         T current = default;
         IEnumerable<T> neighbors = null;
@@ -134,6 +133,76 @@ public static class PathFinder<T>
         _pool.Return(info);
         return null; 
     }
+    
+    
+    public static List<T> FindPathMultipleEnds(T start, 
+        Func<T, bool> isEnd, 
+        Func<T, IEnumerable<T>> getNeighbors, 
+        Func<T,T,float> getEdgeCost, 
+        Func<T,float> heuristicFunc,
+        int maxIter = 10_000)
+    {
+        var info = _pool.Get();
+        info.Open.Enqueue(start, 0f);
+        info.CostsFromStart.Add(start, 0f);
+        int iter = 0;
+        T current = default;
+        IEnumerable<T> neighbors = null;
+        bool currentHasParent = false;
+        T currentParent = default;
+        while(info.Open.Count > 0 && iter < maxIter)
+        {
+            iter++;
+            current = info.Open.Dequeue();
+            var currentCostFromStart = info.CostsFromStart[current];
+
+            if(isEnd(current))
+            {
+                var p = BuildPathBackwards(current, info.Parents);
+                _pool.Return(info);
+                return p;
+            }
+
+            info.Closed.Add(current);
+
+            neighbors = getNeighbors(current);
+            currentHasParent = info.Parents.ContainsKey(current);
+            currentParent = currentHasParent ? info.Parents[current] : default;
+            
+            foreach (var n in neighbors)
+            {
+                if(info.Closed.Contains(n)) continue;
+                if (currentHasParent 
+                    && currentParent.Equals(n)) continue; 
+                var edgeCost = getEdgeCost(current, n);
+                if (float.IsInfinity(edgeCost)) continue;
+                if(info.CostsFromStart.ContainsKey(n) == false)
+                {
+                    var costFromStart = edgeCost + 
+                                        currentCostFromStart;
+                    var heuristic = heuristicFunc(n);
+                    info.Parents.Add(n, current);
+                    info.Open.Enqueue(n, costFromStart + heuristic);
+                    info.CostsFromStart.Add(n, costFromStart);
+                }
+                else
+                {
+                    var newCost = currentCostFromStart + edgeCost + heuristicFunc(current);
+                    var oldCost = info.CostsFromStart[n];
+                    if(newCost < oldCost)
+                    {
+                        info.Parents[n] = current;
+                        info.Open.UpdatePriority(n, newCost);
+                        info.CostsFromStart[n] = newCost;
+                    }
+                }
+            }
+        }
+        _pool.Return(info);
+        return null; 
+    }
+    
+    
     private class PathFindInfo<T>
     {
         public Dictionary<T, float> CostsFromStart;
@@ -346,5 +415,72 @@ public static class PathFinder<T>
         }
 
         return res;
+    }
+
+    public static HashSet<T> FindFlood(T start,
+        Func<T, IEnumerable<T>> getNeighbors, 
+        Func<T,T,float> getEdgeCost, 
+        float maxCost,
+        int maxIter = 10_000)
+    {
+        var info = _pool.Get();
+        info.Open.Enqueue(start, 0f);
+        info.CostsFromStart.Add(start, 0f);
+        int iter = 0;
+        T current = default;
+        IEnumerable<T> neighbors = null;
+        bool currentHasParent = false;
+        T currentParent = default;
+        
+        while(info.Open.Count > 0 && iter < maxIter)
+        {
+            iter++;
+            current = info.Open.Dequeue();
+            var currentCostFromStart = info.CostsFromStart[current];
+
+
+            info.Closed.Add(current);
+
+            neighbors = getNeighbors(current);
+            currentHasParent = info.Parents.ContainsKey(current);
+            currentParent = currentHasParent ? info.Parents[current] : default;
+            
+            foreach (var n in neighbors)
+            {
+                if(info.Closed.Contains(n)) continue;
+                if (currentHasParent 
+                    && currentParent.Equals(n)) continue; 
+                var edgeCost = getEdgeCost(current, n);
+                if (float.IsInfinity(edgeCost)) continue;
+                var currCost = edgeCost + currentCostFromStart;
+                if (currCost > maxCost)
+                {
+                    continue;
+                }
+                if(info.CostsFromStart.ContainsKey(n) == false)
+                {
+                    info.Parents.Add(n, current);
+                    info.Open.Enqueue(n, currCost);
+                    info.CostsFromStart.Add(n, currCost);
+                }
+                else
+                {
+                    var oldCost = info.CostsFromStart[n];
+                    if(currCost < oldCost)
+                    {
+                        info.Parents[n] = current;
+                        info.Open.UpdatePriority(n, currCost);
+                        info.CostsFromStart[n] = currCost;
+                    }
+                }
+            }
+        }
+
+        var res = info.CostsFromStart
+            .Where(kvp => kvp.Value <= maxCost)
+            .Select(kvp => kvp.Key)
+            .ToHashSet();
+        _pool.Return(info);
+        return res; 
     }
 }

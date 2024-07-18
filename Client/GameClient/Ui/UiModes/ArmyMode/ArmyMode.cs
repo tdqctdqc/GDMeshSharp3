@@ -8,7 +8,7 @@ using Ui.ArmyMode;
 public class ArmyMode : UiMode
 {
     public DefaultSettingsOption<Army> Army { get; private set; }
-    
+    private HashSet<Cell> _moveRadiusCache;
     private Client _client;
     private Node2D _selectedArmyGraphic;
     private MouseOverHandler _mouseOverHandler;
@@ -25,7 +25,12 @@ public class ArmyMode : UiMode
         
         Army = new DefaultSettingsOption<Army>("Army",
             null);
-        Army.SettingChanged.Subscribe(n => Draw());
+        Army.SettingChanged.Subscribe(n =>
+        {
+            GD.Print("setting");
+            _moveRadiusCache = n.newVal?.GetArmyMoveRadius(_client.Data);
+            Draw();
+        });
     }
     public override void Process(float delta)
     {
@@ -83,7 +88,8 @@ public class ArmyMode : UiMode
         var army = Army.Value;
         if (army is null) return;
         var highlight = _client.GetComponent<MapGraphics>().Highlighter;
-        foreach (var cell in army.GetCells(_client.Data))
+        
+        foreach (var cell in _moveRadiusCache)
         {
             highlight.Draw(mb =>
             {

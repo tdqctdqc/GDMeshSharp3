@@ -25,7 +25,9 @@ public class LineMission : ArmyMission
         {
             LineCells.Add(g.Cells.Refs, key);
         }
-        proc.NewArmyPosesById.TryAdd(g.Id, LineCells);
+
+        var moveTo = Mover.MoveArmy(g, key.Data);
+        proc.NewArmyPosesById.TryAdd(g.Id, moveTo);
     }
     
     

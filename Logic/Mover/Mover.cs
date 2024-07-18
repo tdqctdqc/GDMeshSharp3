@@ -6,6 +6,34 @@ using Godot;
 
 public static class Mover
 {
+    public static RefSet<CellRef> MoveArmy(Army a, Data d)
+    {
+        var lineCells = a.LineMission.LineCells;
+        var moveRadius = a.GetArmyMoveRadius(d);
+        var overlap = moveRadius.Where(c => lineCells.Contains(c.MakeRef()));
+
+        if (overlap.Any())
+        {
+            return new RefSet<CellRef>(overlap.Select(c => c.MakeRef()).ToHashSet());
+        }
+        else
+        {
+            var alliance = a.Regime.Get(d).GetAlliance(d);
+            var moveType = a.MoveType(d);
+            var center = d.Planet.GetAveragePosition(lineCells.Refs.Select(r => r.Get(d).GetCenter()));
+            
+            var closestPath = PathFinder<Cell>.FindPathMultipleEnds(
+                a.GetHomeCell(d),
+                c => lineCells.Contains(c.MakeRef()),
+                c => c.GetNeighbors(d).Where(n => n.FriendlyControlled(alliance, d)),
+                (from, to) => moveType.EdgeCost(from, to, d),
+                c => center.Offset(c.GetCenter(), d).LengthSquared()
+            );
+
+            var closest = closestPath.Last(c => moveRadius.Contains(c));
+            return new RefSet<CellRef>(new HashSet<CellRef> { closest.MakeRef() });
+        }
+    }
     public static void MoveToCell(this MapPos pos,
         MoveData moveDat, Cell dest, 
         LogicWriteKey key)
