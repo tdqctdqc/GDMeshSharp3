@@ -2,22 +2,22 @@
 using Godot;
 using MessagePack;
 
-public class PlayerBuildingMakeProject : MakeProject
+public class PlayerSettlementBuildingMakeProject : MakeProject
 {
     public ERef<Settlement> Settlement { get; private set; }
     
-    public static PlayerBuildingMakeProject Construct(
+    public static PlayerSettlementBuildingMakeProject Construct(
         int amount,
         Settlement settlement,
         Regime regime,
         SettlementBuilding making)
     {
-        return new PlayerBuildingMakeProject(
+        return new PlayerSettlementBuildingMakeProject(
             settlement.MakeRef(), regime.MakeRef(),
             making.MakeRef<IModel>(),
             amount, 0f, -1);
     }
-    [SerializationConstructor] protected PlayerBuildingMakeProject(
+    [SerializationConstructor] protected PlayerSettlementBuildingMakeProject(
         ERef<Settlement> settlement,
         ERef<Regime> regime, 
         IdRef making,
@@ -122,7 +122,7 @@ public class PlayerBuildingMakeProject : MakeProject
     public override bool Consolidate(MakeProject next, 
         LogicWriteKey key)
     {
-        if (next is not PlayerBuildingMakeProject p
+        if (next is not PlayerSettlementBuildingMakeProject p
             || p.Settlement.Equals(Settlement) == false
             || p.Making.RefId != Making.RefId)
         {

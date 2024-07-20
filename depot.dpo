@@ -2102,14 +2102,14 @@
                     "id": "0",
                     "Name": "InfantryMove",
                     "UseRoads": true,
-                    "BaseSpeed": 200
+                    "BaseSpeed": 100
                 },
                 {
                     "guid": "23304210-2416-4837-abbf-73e7a3f51511",
                     "id": "1",
                     "Name": "StrategicMove",
                     "UseRoads": true,
-                    "BaseSpeed": 200
+                    "BaseSpeed": 100
                 }
             ],
             "hidden": false,
@@ -2358,7 +2358,7 @@
                     "guid": "7b431f33-2465-4b73-97ca-368b2cf87e25",
                     "id": "0",
                     "Name": "DirtRoad",
-                    "CostOverride": 0.25,
+                    "CostOverride": 0.5,
                     "SpeedOverride": 0,
                     "UseSpeedOverride": false,
                     "Prereqs": [
@@ -2373,7 +2373,7 @@
                     "guid": "519f0a1f-a97e-44f9-b7b7-79e5890c4e1c",
                     "id": "1",
                     "Name": "StoneRoad",
-                    "CostOverride": 0.15,
+                    "CostOverride": 0.25,
                     "SpeedOverride": 0,
                     "UseSpeedOverride": false,
                     "Prereqs": [
@@ -2388,7 +2388,7 @@
                     "guid": "68d6bc8a-5cf4-43eb-a298-bd3042a20049",
                     "id": "2",
                     "Name": "PavedRoad",
-                    "CostOverride": 0.1,
+                    "CostOverride": 0.15,
                     "SpeedOverride": 0,
                     "UseSpeedOverride": false,
                     "Prereqs": [

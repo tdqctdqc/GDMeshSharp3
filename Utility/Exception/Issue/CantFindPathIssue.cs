@@ -6,20 +6,20 @@ using Godot;
 public class CantFindPathIssue : Issue
 {
     public Cell Start { get; private set; }
-    public Cell Dest { get; private set; }
+    public List<Cell> Dests { get; private set; }
     public MoveType MoveType { get; private set; }
     public Alliance Alliance { get; private set; }
     public CantFindPathIssue(
         Alliance alliance,
         string message, 
         Cell start, 
-        Cell dest, 
+        List<Cell> dests, 
         MoveType moveType) 
         : base(start.GetCenter(), message)
     {
         Alliance = alliance;
         Start = start;
-        Dest = dest;
+        Dests = dests;
         MoveType = moveType;
     }
 
@@ -28,7 +28,7 @@ public class CantFindPathIssue : Issue
         var startNeighborhood = new HashSet<Cell>();
         var destNeighborhood = new HashSet<Cell>();
         startNeighborhood.Add(Start);
-        destNeighborhood.Add(Dest);
+        destNeighborhood.AddRange(Dests);
         int iter = 0;
         bool touched = false;
         while (iter < 5 || touched == false)
@@ -76,7 +76,7 @@ public class CantFindPathIssue : Issue
             {
                 isStartOrDest = Colors.Green;
             }
-            else if (n == Dest)
+            else if (Dests.Contains(n))
             {
                 isStartOrDest = Colors.Red;
             }

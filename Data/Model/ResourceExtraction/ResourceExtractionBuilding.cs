@@ -4,7 +4,7 @@ using Godot;
 
 
 public abstract class ResourceExtractionBuilding 
-    : IModel, IIconed, IMakeable
+    : IModel, IIconed, IMakeable, ITechReqed
 {
     public string Name { get; private set; }
     public NaturalResource Resource(Data d) 

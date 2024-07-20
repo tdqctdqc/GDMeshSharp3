@@ -23,6 +23,18 @@ public abstract class BudgetBranch : IBudgetNode
         return selfLeaves.Concat(childLeaves);
     }
 
+    public BudgetRoot GetRoot()
+    {
+        var curr = this;
+        while (curr is not null && curr is not BudgetRoot)
+        {
+            curr = curr.Parent;
+        }
+
+        if (curr is BudgetRoot br) return br;
+        throw new Exception("couldnt find budget root");
+    }
+
     public void SetWeights(Regime r, Data d)
     {
         Weight = GetWeight(r, d);

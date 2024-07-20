@@ -1,9 +1,8 @@
 
 using System.Collections.Generic;
 
-public interface IBudgetPriority
+public interface IBudgetPriority : INamed
 {
-    string Name { get; }
     Dictionary<IModel, float> GetWishlist(
             Regime regime,
             Data d);

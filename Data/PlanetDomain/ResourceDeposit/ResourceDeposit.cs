@@ -30,7 +30,8 @@ public class ResourceDeposit : Entity
         Extraction = extraction;
     }
 
-    public void SetExtraction(ModelRef<ResourceExtractionBuilding> extraction)
+    public void SetExtraction(ModelRef<ResourceExtractionBuilding> extraction,
+        StrongWriteKey key)
     {
         Extraction = extraction;
     }

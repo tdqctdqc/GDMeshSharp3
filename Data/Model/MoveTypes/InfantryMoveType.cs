@@ -4,13 +4,6 @@ using Godot;
 
 public class InfantryMoveType : MoveType
 {
-    public InfantryMoveType() 
-        : base(true, 
-            200f, 
-            nameof(InfantryMoveType))
-    {
-        
-    }
 
     protected override float TerrainCostInstantaneous(Cell pt, Data d)
     {

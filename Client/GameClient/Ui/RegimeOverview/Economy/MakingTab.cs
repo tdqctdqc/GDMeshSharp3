@@ -38,10 +38,17 @@ public partial class MakingTab : ScrollContainer, IUiDrawable
         rightScroll.ExpandFill(2);
         var med = client.Settings.MedIconSize.Value;
         var projects = regime.MakeQueue.Queue;
-
+        
         _projectsList = new ItemListToken<MakeProject>(
             projects,
-            p => $"{p.Making.Get(client.Data).GetType().Name} {p.Fulfilled.RoundTo2Digits()}/{p.Amount.RoundTo2Digits()}",
+            p =>
+            {
+                var name = p.Making.Get(client.Data) is INamed n
+                    ? n.Name
+                    : p.Making.Get(client.Data).GetType().Name;
+
+                return $"{name} {p.Fulfilled.RoundTo2Digits()}/{p.Amount.RoundTo2Digits()}";
+            },
             p => p.Making.Get(client.Data) is IIconed i
                     ? i.Icon.Texture
                     : new Texture2D(),

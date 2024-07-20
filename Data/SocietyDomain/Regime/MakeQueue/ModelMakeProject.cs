@@ -39,7 +39,6 @@ public class ModelMakeProject : MakeProject
 
     public override void Finish(LogicWriteKey key)
     {
-        
     }
 
     public override void Cancel(ProcedureWriteKey key)

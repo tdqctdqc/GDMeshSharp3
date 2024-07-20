@@ -5,7 +5,7 @@ using Godot;
 using MessagePack;
 
 
-public class Settlement : Location
+public class Settlement : Location, INamed
 {
     public CellRef Cell { get; protected set; }
     public ModelRef<SettlementTier> Tier { get; private set; }

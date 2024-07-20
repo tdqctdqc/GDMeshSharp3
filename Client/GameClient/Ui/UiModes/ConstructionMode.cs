@@ -4,34 +4,34 @@ using Godot;
 
 public class ConstructionMode : UiMode
 {
+    public DefaultSettingsOption<Cell> Cell { get; private set; }
     private MouseOverHandler _mouseOver;
-    private MapOverlayDrawer _cellOverlay, _settlementOverlay;
-    public DefaultSettingsOption<Settlement> Settlement { get; private set; }
+    private MapOverlayDrawer _mouseOverlay, _selectedOverlay;
     public ConstructionMode(Client client) : base(client,
         "Construction")
     {
-        Settlement = new DefaultSettingsOption<Settlement>("Settlement", null);
-        Settlement.SettingChanged.Subscribe(v =>
+        Cell = new DefaultSettingsOption<Cell>("Cell", null);
+        Cell.SettingChanged.Subscribe(v =>
         {
-            _settlementOverlay.Clear();
-            
+            _selectedOverlay.Clear();
+
             if (v.newVal is not null)
             {
                 var mb = new MeshBuilder();
-                var cell = v.newVal.Cell.Get(client.Data);
-                _settlementOverlay.Draw(mb =>
+                _selectedOverlay.Draw(mb =>
                 {
-                    mb.DrawPolygon(cell.RelBoundary,
+                    mb.DrawPolygon(v.newVal.RelBoundary,
                         Colors.Yellow.Tint(.25f));
-                }, cell.GetCenter());
+                }, v.newVal.RelTo);
             }
         });
+        
         _mouseOver = new MouseOverHandler(client.Data);
         _mouseOver.ChangedCell += c =>
         {
-            _mouseOver.Highlight(_cellOverlay);
+            _mouseOverlay.Clear();
+            _mouseOver.Highlight(_mouseOverlay);
         };
-
     }
 
     public override void Process(float delta)
@@ -46,29 +46,21 @@ public class ConstructionMode : UiMode
             && mb.Pressed == false)
         {
             var cell = _mouseOver.MouseOverCell;
-            if (cell is not null
-                && cell.GetSettlement(_client.Data) is Settlement s)
-            {
-                Settlement.Set(s);
-            }
-            else
-            {
-                Settlement.Set(null);
-            }
+            Cell.Set(cell);
         }
     }
     
     public override void Enter()
     {
         var mg = _client.GetComponent<MapGraphics>();
-        _settlementOverlay = mg.GetOverlay(LayerOrder.Highlighter);
-        _cellOverlay = mg.GetOverlay(LayerOrder.Highlighter);
+        _mouseOverlay = mg.GetOverlay(LayerOrder.Highlighter);
+        _selectedOverlay = mg.GetOverlay(LayerOrder.Highlighter);
     }
 
     public override void Clear()
     {
         var mg = _client.GetComponent<MapGraphics>();
-        mg.RemoveOverlay(_settlementOverlay);
-        mg.RemoveOverlay(_cellOverlay);
+        mg.RemoveOverlay(_mouseOverlay);
+        mg.RemoveOverlay(_selectedOverlay);
     }
 }

@@ -19,7 +19,7 @@ public class MakeReinforcementTroopsPriority
         _needed = new Dictionary<Troop, float>();
     }
 
-    protected override float Utility(Troop t)
+    protected override float Utility(Troop t, Data d)
     {
         return t.GetPowerPoints();
     }

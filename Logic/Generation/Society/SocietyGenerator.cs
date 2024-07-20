@@ -132,7 +132,7 @@ public class SocietyGenerator : Generator
                 if (extractionBuildings.FirstOrDefault(b => b.Resource(_data) == item)
                     is ResourceExtractionBuilding xb)
                 {
-                    rd.SetExtraction(xb.MakeRef());
+                    rd.SetExtraction(xb.MakeRef(), _key);
                     cell.GetPeep(_data).GrowSize(xb.BaseLabor(), _key);
                     popSurplus -= xb.BaseLabor();
                 }

@@ -7,6 +7,7 @@ using Google.OrTools.LinearSolver;
 
 public static class BudgetConstrainer
 {
+    private static float _flowMinCostProportion = .2f; 
     public static void SetMaxVariableConstraint<T>(
         this Solver solver,
         Dictionary<T, Variable> vars, Dictionary<T, float> maxes, Data data)
@@ -35,13 +36,27 @@ public static class BudgetConstrainer
                 .BuildCosts.GetEnumModel(data);
             foreach (var (model, amount) in costs)
             {
-                if (constraints.TryGetValue(model.Id, 
-                        out var constraint) == false)
+                if (model is Flow f)
                 {
-                    constraint = solver.MakeConstraint(0f,
-                        pool.Stock.Get(model));
+                    var net = Mathf.Max(0f, pool.Net.Get(f));
+                    if (constraints.TryGetValue(model.Id, 
+                            out var constraint) == false)
+                    {
+                        constraint = solver.MakeConstraint(0f,
+                            net);
+                    }
+                    constraint.SetCoefficient(variable, amount * _flowMinCostProportion);   
                 }
-                constraint.SetCoefficient(variable, amount);
+                else
+                {
+                    if (constraints.TryGetValue(model.Id, 
+                            out var constraint) == false)
+                    {
+                        constraint = solver.MakeConstraint(0f,
+                            pool.Stock.Get(model));
+                    }
+                    constraint.SetCoefficient(variable, amount);
+                }
             }
         }
     }

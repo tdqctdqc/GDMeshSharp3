@@ -30,7 +30,18 @@ public static class Mover
                 c => center.Offset(c.GetCenter(), d).LengthSquared()
             );
 
-            var closest = closestPath.Last(c => moveRadius.Contains(c));
+
+            if (closestPath is null)
+            {
+                var issue = new CantFindPathIssue(alliance,
+                    "Can't find army move path",
+                    a.GetHomeCell(d), lineCells.Refs.Select(r => r.Get(d)).ToList(),
+                    moveType);
+                d.ClientPlayerData.Issues.Add(issue);
+                return a.Cells;
+            }
+            var closest = closestPath.LastOrDefault(c => moveRadius.Contains(c));
+
             return new RefSet<CellRef>(new HashSet<CellRef> { closest.MakeRef() });
         }
     }
@@ -46,7 +57,7 @@ public static class Mover
             var issue = new CantFindPathIssue(
                 moveDat.Alliance,
                 "", pos.GetCell(key.Data),
-                dest, moveDat.MoveType
+                dest.Yield().ToList(), moveDat.MoveType
             ); 
             key.Data.ClientPlayerData.Issues.Add(issue);
             return;

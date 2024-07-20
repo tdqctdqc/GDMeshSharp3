@@ -25,6 +25,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         _container.AddChild(sideScroll);
         side.ExpandFill();
         sideScroll.ExpandFill(1);
+        side.CreateLabelAsChild("Available Technologies");
 
         _availableResearchInfo = side.MakeScrollChild<VBoxContainer>(out var availScroll);
         availScroll.ExpandFill();
@@ -102,6 +103,21 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
     private void DrawInfo(Client c)
     {
         _currentResearchInfo.ClearChildren();
+
+        var researchModel = c.Data.Models.Items.Research;
+        var researchProduced = _parent.Regime
+            .Stock.Produced.Get(researchModel);
+        var researchRecurring = _parent.Regime
+            .Stock.RecurringCosts.Get(researchModel);
+        var researchSingle = _parent.Regime
+            .Stock.SingleTimeCosts.Get(researchModel);
+        _currentResearchInfo.CreateLabelAsChild($"Research produced: {researchProduced.RoundTo2Digits()}");
+        _currentResearchInfo.CreateLabelAsChild($"Research consumed recurring: {researchRecurring.RoundTo2Digits()}");
+        _currentResearchInfo.CreateLabelAsChild($"Research consumed single time: {researchSingle.RoundTo2Digits()}");
+        _currentResearchInfo.CreateLabelAsChild($"Research for technology: {(researchProduced - (researchRecurring + researchSingle)).RoundTo2Digits()}");
+        
+        
+        
         var tech = _parent.Regime.Technology;
         if (tech.CurrentResearch.Get(c.Data)
             is Technology currTech)

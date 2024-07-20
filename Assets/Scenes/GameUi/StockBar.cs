@@ -7,12 +7,6 @@ public partial class StockBar : HBoxContainer
 {
     public StockBar(Client client, Data data)
     {
-        // AddModel(client, data.Models.Items.ConstructionCap, data);
-        // AddModel(client, data.Models.Items.IndustrialPower, data);
-        // AddModel(client, data.Models.Items.Income, data);
-        // AddModel(client, data.Models.Items.Research, data);
-        // AddModel(client, data.Models.Items.MilitaryCap, data);
-        //
         foreach (var item in data.Models.GetModels<Item>())
         {
             if(item is not Troop) AddModel(client, item, data);
@@ -70,7 +64,7 @@ public partial class StockBar : HBoxContainer
         {
             var r = Game.I.Client.GetComponent<MapGraphics>().SpectatingRegime;
             if (r == null) return "";
-            var stock = r.Stock.Stock.Get(_model);
+            var stock = r.Stock.Stock.Get(_model).RoundTo2Digits();
             return $"{stock}";
         }
 
@@ -80,12 +74,13 @@ public partial class StockBar : HBoxContainer
             var r = Game.I.Client.GetComponent<MapGraphics>().SpectatingRegime;
 
             var stock = r.Stock;
-            var recurring = stock.RecurringCosts.Get(_model);
-            var oneTime = stock.SingleTimeCosts.Get(_model);
-            var produced = stock.Produced.Get(_model);
+            var recurring = stock.RecurringCosts.Get(_model).RoundTo2Digits();
+            var oneTime = stock.SingleTimeCosts.Get(_model).RoundTo2Digits();
+            var produced = stock.Produced.Get(_model).RoundTo2Digits();
             var label = new Label();
             
-            label.Text = $"Produced: {produced} " +
+            label.Text = $"{_model.Name}" +
+                         $"\nProduced: {produced} " +
                          $"\nRecurring: {recurring} " +
                          $"\nOne Time: {oneTime}";
             var vbox = new VBoxContainer();

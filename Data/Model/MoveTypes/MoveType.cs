@@ -68,11 +68,8 @@ public abstract class MoveType : IModel
     public float BaseSpeed { get; private set; }
     public int Id { get; private set; }
     public string Name { get; private set; }
-    protected MoveType(bool useRoads, float baseSpeed, string name)
+    protected MoveType()
     {
-        UseRoads = useRoads;
-        BaseSpeed = baseSpeed;
-        Name = name;
     }
     protected static bool IsFriendly(Alliance moverAlliance, 
         Cell cell, Data d)

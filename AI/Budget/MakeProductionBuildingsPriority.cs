@@ -5,7 +5,7 @@ using System.Linq;
 using Google.OrTools.LinearSolver;
 
 public class MakeProductionBuildingsPriority
-    : ConstructionPriority
+    : SettlementBuildingConstructionPriority
 {
     public IModel Model { get; private set; }
     public BudgetBranch Parent { get; }
@@ -17,7 +17,7 @@ public class MakeProductionBuildingsPriority
         Model = model;
     }
 
-    protected override float Utility(SettlementBuilding t)
+    protected override float Utility(SettlementBuilding t, Data d)
     {
         return t.Labor.Outputs.Contents[Model.Id];
     }

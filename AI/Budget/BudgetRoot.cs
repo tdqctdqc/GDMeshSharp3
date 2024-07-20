@@ -6,8 +6,9 @@ using Godot;
 
 public class BudgetRoot : BudgetBranch
 {
-    private BudgetBranch _construct, _military;
+    private BudgetBranch _construct, _military, _resources;
     public Dictionary<IModel, float> Prices { get; private set; }
+    
     public BudgetRoot(Regime r, Data d) : base("Root")
     {
         Prices = new Dictionary<IModel, float>();
@@ -16,6 +17,8 @@ public class BudgetRoot : BudgetBranch
 
         _military = new MilitaryBudgetBranch(r, this, d);
         Children.Add(_military);
+        _resources = new ResourceExtractionBudgetBranch(r, this, "Resource Extraction", d);
+        Children.Add(_resources);
     }
 
     public void Calculate(Regime r, LogicWriteKey key)
@@ -76,8 +79,7 @@ public class BudgetRoot : BudgetBranch
         
     }
     
-    public void
-        SetPrices(Regime r,
+    public void SetPrices(Regime r,
         Data d,
         PriorityNode[] nodes,
         BudgetPool pool)

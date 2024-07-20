@@ -10,6 +10,7 @@ public class BudgetPool
     {
         var stock = IdCount<IModel>.Construct();
         stock.Add(r.Stock.Stock);
+        
         var net = IdCount<IModel>.ConstructNegative();
         foreach (var (model, value) 
                  in r.Stock.Produced.GetEnumModel(d))
@@ -18,6 +19,11 @@ public class BudgetPool
         }
         foreach (var (model, value) 
                  in r.Stock.RecurringCosts.GetEnumModel(d))
+        {
+            net.Remove(model, value);
+        }
+        foreach (var (model, value) 
+                 in r.Stock.SingleTimeCosts.GetEnumModel(d))
         {
             net.Remove(model, value);
         }

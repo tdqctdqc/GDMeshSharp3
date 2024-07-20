@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public interface IModel : IIdentifiable
+public interface IModel : IIdentifiable, INamed
 {
-    string Name { get; }
 }
 
 public static class IModelExt

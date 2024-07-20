@@ -1,10 +1,6 @@
 
 public class StrategicMoveType : MoveType
 {
-    public StrategicMoveType() 
-        : base(true, 200f, nameof(StrategicMoveType))
-    {
-    }
 
     protected override float TerrainCostInstantaneous(Cell pt, Data d)
     {

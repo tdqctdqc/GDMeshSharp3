@@ -31,6 +31,9 @@ public partial class StockTab : ScrollContainer, IUiDrawable
         var flows = regime.Stock.Stock.GetEnumModel(client.Data)
             .Where(kvp => kvp.Key is Flow);
         
+        var rest = regime.Stock.Stock.GetEnumModel(client.Data)
+            .Where(kvp => kvp.Key is not Flow
+                && kvp.Key is not Item);
         
         _container.CreateLabelAsChild("Flows");
         
@@ -42,6 +45,12 @@ public partial class StockTab : ScrollContainer, IUiDrawable
         _container.CreateLabelAsChild("Items");
         
         foreach (var entry in items)
+        {
+            makeEntry(entry);
+        }
+
+        _container.CreateLabelAsChild("Other Models");
+        foreach (var entry in rest)
         {
             makeEntry(entry);
         }

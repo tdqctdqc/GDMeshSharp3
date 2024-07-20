@@ -5,10 +5,10 @@ using System.Linq;
 using Godot;
 using Google.OrTools.LinearSolver;
 
-public abstract class ConstructionPriority 
+public abstract class SettlementBuildingConstructionPriority 
     : SolverPriority<SettlementBuilding>
 {
-    public ConstructionPriority(Regime r, string name) 
+    public SettlementBuildingConstructionPriority(Regime r, string name) 
         : base(name, 
             d => d.Models.GetModels<SettlementBuilding>()
                 .Where(b => r.HasPrereqs(b)))
@@ -33,7 +33,6 @@ public abstract class ConstructionPriority
                     .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
 
             });
-        // solver.SetBuildingSlotConstraints(r, projVars, data);
         
         var laborConstraint = solver.MakeConstraint(0f,
             pool.Stock.Get(data.Models.Items.Labor));

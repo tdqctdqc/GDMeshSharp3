@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class UnitTemplate : Entity, IMakeable
+public class UnitTemplate : Entity, IMakeable, INamed
 {
     public string Name { get; private set; }
     public IdCount<Troop> Troops { get; private set; }

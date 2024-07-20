@@ -37,7 +37,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         var solver = MakeSolver();
         var projVars = MakeProjVars(solver, d);
         SetConstraints(solver, regime, expandedPool, projVars, d);
-        var success = Solve(solver, projVars);
+        var success = Solve(solver, projVars, d);
         
         return projVars
             .Where(v => v.Value.SolutionValue() > 0f)
@@ -61,7 +61,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         var projVars = MakeProjVars(solver, key.Data);
         SetConstraints(solver, regime, pool, projVars, key.Data);
         
-        var success = Solve(solver, projVars);
+        var success = Solve(solver, projVars, key.Data);
         var toBuild = projVars
             .Where(v => v.Value.SolutionValue() > 0f)
             .ToDictionary(v => v.Key, 
@@ -79,7 +79,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         return toBuild.Count > 0;
     }
 
-    protected abstract float Utility(TBuild t);
+    protected abstract float Utility(TBuild t, Data d);
     protected abstract bool Relevant(TBuild t, Data d);
     protected abstract void SetCalcData(Regime r, Data d);
     protected abstract void SetConstraints(Solver solver, 
@@ -92,7 +92,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         GetCosts(Dictionary<TBuild, float> toBuild, Data d);
     
     private Solver.ResultStatus Solve(Solver solver, 
-        Dictionary<TBuild, Variable> projVars)
+        Dictionary<TBuild, Variable> projVars, Data d)
     {
         var objective = solver.Objective();
         objective.SetMaximization();
@@ -101,7 +101,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         {
             var b = kvp.Key;
             var projVar = projVars[b];
-            var benefit = Utility(b);
+            var benefit = Utility(b, d);
             objective.SetCoefficient(projVar, benefit);
         }
         return solver.Solve();

@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
 [MessagePack.Union(0, typeof(ModelMakeProject))]
-[MessagePack.Union(1, typeof(PlayerBuildingMakeProject))]
+[MessagePack.Union(1, typeof(PlayerSettlementBuildingMakeProject))]
 [MessagePack.Union(2, typeof(UnitMakeProject))]
+[MessagePack.Union(3, typeof(PlayerResourceExtractionMakeProject))]
 
 public abstract class MakeProject : IPolymorph, IIdentifiable
 {

@@ -4,26 +4,22 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="implemented army moves">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="made multiple highlighters">
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/AddExtractionProcedure.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/PlayerResourceExtractionMakeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiActions/UiActions.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyMode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PathFindMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PathFindMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/GroupInForeignCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/GroupInForeignCellIssue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolyAtPointIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolyAtPointIssue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/CellEdgeLineMouseAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/CellEdgeLineMouseAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/CellHashMouseAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/CellHashMouseAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/CellLineMouseAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/CellLineMouseAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/CellMousePressAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/CellMousePressAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/IMouseAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/IMouseAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/MouseAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/MouseAction.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/UI/MouseAction/MousePressAction.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/MouseAction/MousePressAction.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/InfantryMoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/InfantryMoveType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/MoveType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/MoveTypes/StrategicMoveType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/MoveTypes/StrategicMoveType.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionBuilding.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ResourceExtraction/ResourceExtractionBuilding.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/MakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/MakeProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/PlayerBuildingMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/PlayerSettlementBuildingMakeProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/depot.dpo" beforeDir="false" afterPath="$PROJECT_DIR$/depot.dpo" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -109,6 +105,7 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/UiModes/ArmyMode/ArmyMode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/ArmyExt.cs" root0="SKIP_HIGHLIGHTING" />
@@ -720,7 +717,8 @@
       <workItem from="1721076041258" duration="9227000" />
       <workItem from="1721095677245" duration="2749000" />
       <workItem from="1721172875258" duration="13236000" />
-      <workItem from="1721313711906" duration="6121000" />
+      <workItem from="1721313711906" duration="6430000" />
+      <workItem from="1721352390951" duration="4635000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -932,14 +930,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00254" summary="make project ui">
-      <option name="closed" value="true" />
-      <created>1720490498205</created>
-      <option name="number" value="00254" />
-      <option name="presentableId" value="LOCAL-00254" />
-      <option name="project" value="LOCAL" />
-      <updated>1720490498205</updated>
-    </task>
     <task id="LOCAL-00255" summary="more ui stuff, resource icons, host procedures">
       <option name="closed" value="true" />
       <created>1720555167046</created>
@@ -1084,7 +1074,15 @@
       <option name="project" value="LOCAL" />
       <updated>1721317386902</updated>
     </task>
-    <option name="localTasksCounter" value="273" />
+    <task id="LOCAL-00273" summary="made multiple highlighters">
+      <option name="closed" value="true" />
+      <created>1721321600729</created>
+      <option name="number" value="00273" />
+      <option name="presentableId" value="LOCAL-00273" />
+      <option name="project" value="LOCAL" />
+      <updated>1721321600729</updated>
+    </task>
+    <option name="localTasksCounter" value="274" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1106,7 +1104,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="changing windows to freeable, dont keep them in window manager" />
     <MESSAGE value="reworked combat sim window" />
     <MESSAGE value="added echelon to combat calcs" />
     <MESSAGE value="ui stuff" />
@@ -1131,6 +1128,7 @@
     <MESSAGE value="model tweak" />
     <MESSAGE value="tweaked inserting groups move" />
     <MESSAGE value="implemented army moves" />
-    <option name="LAST_COMMIT_MESSAGE" value="implemented army moves" />
+    <MESSAGE value="made multiple highlighters" />
+    <option name="LAST_COMMIT_MESSAGE" value="made multiple highlighters" />
   </component>
 </project>

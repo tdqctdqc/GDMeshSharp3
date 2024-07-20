@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class Regime : Entity
+public class Regime : Entity, INamed
 {
     public static Vector2I FlagAspectRatio { get; private set; }
         = new Vector2I(3, 2);

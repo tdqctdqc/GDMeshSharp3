@@ -39,6 +39,7 @@ using System;
 [MessagePack.Union(34, typeof(ReplaceMakeProjectProc))]
 [MessagePack.Union(35, typeof(DoResearchProcedure))]
 [MessagePack.Union(36, typeof(SetResearchProcedure))]
+[MessagePack.Union(37, typeof(AddExtractionProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {
