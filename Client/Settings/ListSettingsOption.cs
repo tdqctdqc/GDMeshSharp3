@@ -40,8 +40,8 @@ public class ListSettingsOption<T> : SettingsOption<T>
         );
         token.JustSelected += () =>
         {
-            if (token.Values.Count != 1) return;
-            Set(token.Values.First());
+            if (token.Selected.Count != 1) return;
+            Set(token.Selected.First());
         };
         var list = token.ItemList;
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
@@ -66,8 +66,8 @@ public class ListSettingsOption<T> : SettingsOption<T>
         var list = token.ItemList;
         token.JustSelected += () =>
         {
-            if (token.Values.Count != 1) return;
-            Set(token.Values.First());
+            if (token.Selected.Count != 1) return;
+            Set(token.Selected.First());
         };
         SettingChanged.SubscribeForNode(t => list.Select(Options.IndexOf(t.newVal)),
             list);

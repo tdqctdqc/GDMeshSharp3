@@ -39,8 +39,24 @@ public class ResourceExtractionConstructionPriority
     protected override void SetConstraints(Solver solver, 
         Regime r,
         BudgetPool pool,
-        Dictionary<ResourceExtractionBuilding, Variable> projVars, Data data)
+        Dictionary<ResourceExtractionBuilding, Variable> projVars,
+        Data data)
     {
+        var deposits = r.GetCells(data).Sum(c =>
+        {
+            if (c.HasResourceDeposit(data) == false) return 0;
+            var rd = c.GetResourceDeposit(data);
+            if (rd.Item.RefId != Model.Id) return 0;
+            if (rd.Extraction.Fulfilled()) return 0;
+            return 1;
+        });
+
+        var constraint = solver.MakeConstraint(0f, deposits);
+        foreach (var (xb, variable) in projVars)
+        {
+            constraint.SetCoefficient(variable, 1);
+        }
+        
         solver.SetBuildCostConstraints(data, pool, projVars);
         solver.SetMaintainCostConstraints(data, pool, projVars,
             b =>

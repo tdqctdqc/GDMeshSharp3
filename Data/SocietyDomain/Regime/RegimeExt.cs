@@ -5,6 +5,11 @@ using Godot;
 
 public static class RegimeExt
 {
+    public static IEnumerable<Settlement> GetSettlements(this Regime r, Data d)
+    {
+        return r.GetCells(d).Where(c => c.HasSettlement(d))
+            .Select(c => c.GetSettlement(d));
+    }
     public static Color GetUnitColor(this Regime r)
     {
         return r.PrimaryColor

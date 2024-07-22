@@ -16,10 +16,15 @@ public partial class WindowHolder : Node, IClientComponent
     {
        client.UiLayer.AddChild(this);
     }
-    public void OpenWindow(Window w)
+    public void OpenWindowFullSize(Window w)
     {
         AddChild(w);
         w.Size = DisplayServer.WindowGetSize();
         w.PopupCenteredClamped(null, .9f);
+    }
+    public void OpenWindow(Window w)
+    {
+        AddChild(w);
+        w.PopupCenteredClamped(w.Size);
     }
 }

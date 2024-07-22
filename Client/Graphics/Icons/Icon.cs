@@ -4,6 +4,8 @@ using Godot;
 
 public class Icon
 {
+    public static Icon Blank { get; private set; }
+        = Create(nameof(Blank), Vector2I.One);
     public Texture2D Texture { get; private set; }
     public static Icon Create(string textureName, Vector2I ratio)
     {

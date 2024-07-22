@@ -26,7 +26,7 @@ public partial class RegimeOverviewWindow
     {
         var w = new RegimeOverviewWindow(client);
         w.Setup(r);
-        client.WindowHolder.OpenWindow(w);
+        client.WindowHolder.OpenWindowFullSize(w);
         return w;
     }
 }

@@ -78,8 +78,8 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
     {
         var regime = _getRegime();
         _makingUnitsInfo.ClearChildren();
-        if (_makingUnits.Values.Count != 1) return;
-        var value = _makingUnits.Values.First();
+        if (_makingUnits.Selected.Count != 1) return;
+        var value = _makingUnits.Selected.First();
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
 
         _makingUnitsInfo.AddChild(value.GetDisplay(c.Data));
@@ -87,13 +87,13 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         var cancelMakeBtn = _makingUnitsInfo.AddButton(
             "Cancel", () =>
             {
-                if (_makingUnits is null || _makingUnits.Values.Count == 0)
+                if (_makingUnits is null || _makingUnits.Selected.Count == 0)
                 {
                     return;
                 }
 
                 var proc = new AggregateProcedure(
-                    _makingUnits.Values.Select(p =>
+                    _makingUnits.Selected.Select(p =>
                         new CancelMakeProjectProcedure(regime.MakeRef(),
                             p.Id)).ToArray());
                 var inner = new SendMessageCommand(proc, player);
@@ -118,8 +118,8 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         var regime = _getRegime();
         _templateInfo.ClearChildren();
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
-        var template = _templates.Values.Count == 1
-            ? _templates.Values.First()
+        var template = _templates.Selected.Count == 1
+            ? _templates.Selected.First()
             : null;
         if (template is null) return;
         _templateInfo.AddChild(template.GetDisplay(c.Data));
@@ -133,8 +133,8 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
                     return;
                 }
 
-                var template = _templates.Values.Count == 1
-                    ? _templates.Values.First()
+                var template = _templates.Selected.Count == 1
+                    ? _templates.Selected.First()
                     : null;
                 if (template is null) return;
                 

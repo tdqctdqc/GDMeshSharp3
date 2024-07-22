@@ -28,9 +28,23 @@ public partial class GameUiTopBar : VBoxContainer, IClientComponent
         general.AddButton("Military",
             () =>
             {
-                var w =RegimeOverviewWindow.Open(client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data),
+                var w = RegimeOverviewWindow.Open(client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data),
                     client);
                 w.OpenTab<MilitaryTab>();
+            });
+        general.AddButton("Economy",
+            () =>
+            {
+                var w = RegimeOverviewWindow.Open(client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data),
+                    client);
+                w.OpenTab<EconomyTab>();
+            });
+        general.AddButton("Research",
+            () =>
+            {
+                var w = RegimeOverviewWindow.Open(client.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(client.Data),
+                    client);
+                w.OpenTab<TechnologyTab>();
             });
         general.AddButton("Combat Sim",
             () => CombatSimWindow.Open(client));

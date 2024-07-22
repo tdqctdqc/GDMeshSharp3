@@ -132,8 +132,8 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
     private void AddTemplate(Client client)
     {
-        if (_templates.Values.Count != 1) return;
-        var template = _templates.Values.First();
+        if (_templates.Selected.Count != 1) return;
+        var template = _templates.Selected.First();
         var u = new UnitCombatInfo(template.Troops, client.Data);
         AddNewUnit(u, client.Data);
     }
@@ -201,7 +201,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             (int)med,
             false
         );
-        _lf.JustSelected += () => _landform = _lf.Values.First();
+        _lf.JustSelected += () => _landform = _lf.Selected.First();
         _lf.ItemList.ExpandFill();
         _lf.SelectAt(0);
         
@@ -212,7 +212,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             (int)med,
             false
         );
-        _veg.JustSelected += () => _vegetation = _veg.Values.First();
+        _veg.JustSelected += () => _vegetation = _veg.Selected.First();
         _veg.ItemList.ExpandFill();
         _veg.SelectAt(0);
         
@@ -244,8 +244,8 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
     private void SetTroop()
     {
-        if (_troops.Values.Count != 1) return;
-        var troop = _troops.Values.First();
+        if (_troops.Selected.Count != 1) return;
+        var troop = _troops.Selected.First();
         var amt = _numSetting.Value;
         var unit = _chooseIfDef.ButtonPressed
             ? _defendersGraphic.Selected
@@ -274,22 +274,22 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     {
         MilUtil.CalculateCombat(_attackers.ToArray(),
             _defenders.ToArray(),
-            _lf.Values.First(), _veg.Values.First(), d);
+            _lf.Selected.First(), _veg.Selected.First(), d);
         DrawCenter();
     }
 
     private void DrawSelectedTroopInfo()
     {
         _selectedTroopInfo.ClearChildren();
-        if (_troops.Values.Count != 1) return;
+        if (_troops.Selected.Count != 1) return;
         var large = Game.I.Client.Settings.LargeIconSize.Value;
-        var troop = _troops.Values.First();
+        var troop = _troops.Selected.First();
         var def = _chooseIfDef.ButtonPressed;
 
         var friendlies = def ? _defenders : _attackers;
         var targets = def ? _attackers : _defenders;
-        var evasionMult = MilUtil.GetEvasionMult(_lf.Values.First(),
-            _veg.Values.First(), def);
+        var evasionMult = MilUtil.GetEvasionMult(_lf.Selected.First(),
+            _veg.Selected.First(), def);
         
         var icon = troop.Icon.GetLabeledIcon<HBoxContainer>(
             $"{troop.DisplayName}", large);
@@ -324,8 +324,8 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     private void DrawTerrainInfo()
     {
         _terrainInfo.ClearChildren();
-        var lf = _lf.Values.First();
-        var veg = _veg.Values.First();
+        var lf = _lf.Selected.First();
+        var veg = _veg.Selected.First();
         _terrainInfo.CreateLabelAsChild
             ($"Front length: {MilUtil.BaseFrontLength * lf.FrontLengthMult * veg.FrontLengthMult} ");
         _terrainInfo.CreateLabelAsChild

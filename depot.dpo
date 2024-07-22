@@ -231,21 +231,6 @@
                     }
                 },
                 {
-                    "typeStr": "lineReference",
-                    "guid": "db2b2551-faaa-4518-b32c-1b2149c40cb8",
-                    "name": "Domain",
-                    "description": "Domain",
-                    "sheet": "d2f29ae6-a1c5-4c98-8506-bbae2707eeae",
-                    "defaultValue": "",
-                    "iconName": "newLineLink",
-                    "configurable": {
-                        "name": "text",
-                        "description": "text",
-                        "sheet": "sheetSelect",
-                        "defaultValue": "lineSelect@sheet"
-                    }
-                },
-                {
                     "typeStr": "list",
                     "guid": "ede4806f-4a3d-4991-ad1a-0c496f32991b",
                     "name": "Prereqs",
@@ -256,6 +241,36 @@
                     "configurable": {
                         "name": "text",
                         "description": "text"
+                    }
+                },
+                {
+                    "typeStr": "lineReference",
+                    "guid": "4c9bab7e-d0c6-4078-bf0d-5f49ddeacd86",
+                    "name": "TroopType",
+                    "description": "TroopType",
+                    "sheet": "1151c678-760a-447c-965b-bebf9010c1c8",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                },
+                {
+                    "typeStr": "lineReference",
+                    "guid": "bfc75555-4d76-4f65-90e9-c3ad3a971ae3",
+                    "name": "MoveType",
+                    "description": "MoveType",
+                    "sheet": "3069b421-f6e2-4e73-884b-cafaffa9eadc",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
                     }
                 }
             ],
@@ -276,7 +291,6 @@
                     "BreakthroughMult": 1,
                     "DisplayName": "Musket Infantry",
                     "Makeable": "ec7029a0-eb30-472a-b902-77ac424f8214",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "cb6637e4-0556-40d9-8092-f5ff5e8712f8",
@@ -300,7 +314,9 @@
                             "Value": "64dddec9-b8f8-4b17-b26b-64a6814bdaa2",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "d77d5c61-1268-47f5-a1d8-4c35fd87d007",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "a2e59d2c-d83c-4149-aa41-285d46f05695",
@@ -318,7 +334,6 @@
                     "BreakthroughMult": 1,
                     "DisplayName": "Breechloader Infantry",
                     "Makeable": "ec984de5-7ac0-4db3-a95f-89a82ca94bd1",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "f9b7af40-014a-4308-81d6-35e53527d0c2",
@@ -342,7 +357,9 @@
                             "Value": "a8f53099-1dbb-4d1c-82d2-761b566e83ea",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "d77d5c61-1268-47f5-a1d8-4c35fd87d007",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "7a376708-801b-461c-8389-a671d0231398",
@@ -360,7 +377,6 @@
                     "BreakthroughMult": 1.25,
                     "DisplayName": "Bolt Action Infantry",
                     "Makeable": "40ec873c-a4b8-4d04-ad32-a1de123eba98",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "29803141-3c97-4260-8725-065bcbd4c034",
@@ -384,7 +400,9 @@
                             "Value": "b71a1d88-3015-496b-8a89-fd852403cd4e",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "d77d5c61-1268-47f5-a1d8-4c35fd87d007",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "dbdf1b5a-4120-43e4-a4b3-c152a692554e",
@@ -402,7 +420,6 @@
                     "BreakthroughMult": 1.5,
                     "DisplayName": "Semi Auto Infantry",
                     "Makeable": "4521811d-858f-4aec-9cfa-5cfe296c48e4",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "a51d5f1e-970f-4fd0-bf6d-83152f93ac99",
@@ -426,7 +443,9 @@
                             "Value": "37ae653c-184d-44b9-928f-d8b952b4f6d5",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "d77d5c61-1268-47f5-a1d8-4c35fd87d007",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "b31b60d4-247f-467a-8e0e-5830369b8d5b",
@@ -444,7 +463,6 @@
                     "BreakthroughMult": 2,
                     "DisplayName": "Assault Infantry",
                     "Makeable": "47991f4b-dd08-446d-9246-c244e1a2b1f8",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "69b6357d-3e36-474f-8f4f-1bbad1b47ce8",
@@ -468,7 +486,9 @@
                             "Value": "49cfd428-6327-4150-82c8-a5e08ddcf321",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "d77d5c61-1268-47f5-a1d8-4c35fd87d007",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "41f9dea8-746b-4252-8de5-608d9c25b763",
@@ -486,7 +506,6 @@
                     "BreakthroughMult": 0.25,
                     "DisplayName": "Cannon",
                     "Makeable": "14be419b-bc2e-410c-848c-b16a13d58819",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "cf47753f-43de-4235-94fb-9ddae27cdf7c",
@@ -510,7 +529,9 @@
                             "Value": "c0e7ae59-f5a1-42f0-adbd-f104c7745f80",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "9c0ce905-600c-4e82-aa3b-4df190dbfb62",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "d01735ac-4d6e-4ae7-a5d2-e68dad390685",
@@ -528,7 +549,6 @@
                     "BreakthroughMult": 0.35,
                     "DisplayName": "Field Gun",
                     "Makeable": "ad10280f-6c7c-4c76-a04f-0145d3e1bd62",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "726f2943-ecf5-4cb3-9c03-aceddb90acde",
@@ -552,7 +572,9 @@
                             "Value": "2b9750c1-22c8-478c-84fe-e836ff044cd0",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "9c0ce905-600c-4e82-aa3b-4df190dbfb62",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "44137df2-5d47-4380-b859-5df76a71e2c6",
@@ -570,7 +592,6 @@
                     "BreakthroughMult": 0.5,
                     "DisplayName": "Field Howitzer",
                     "Makeable": "b8214767-a22e-4726-8bed-39a87d995c53",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "97e70a9a-cce3-4a12-8f3e-13345603d6cd",
@@ -594,7 +615,9 @@
                             "Value": "d561b3bd-6281-4c11-9380-639855edfc3f",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "9c0ce905-600c-4e82-aa3b-4df190dbfb62",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "57df813b-40fe-4aa0-b8dd-9cd05e1a4f68",
@@ -612,7 +635,6 @@
                     "BreakthroughMult": 0.25,
                     "DisplayName": "Gatling Gun",
                     "Makeable": "cf1161a9-c58c-4196-b87c-0ed15a765113",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "2a4205b6-7ffd-4a77-bd72-83c8d91d766b",
@@ -636,7 +658,9 @@
                             "Value": "a8f53099-1dbb-4d1c-82d2-761b566e83ea",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "7a5db9b3-c2ad-4cdb-b7ed-ca2019178a6b",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "2e6e5059-83b6-406d-a772-5bae36862f84",
@@ -654,7 +678,6 @@
                     "BreakthroughMult": 0.5,
                     "DisplayName": "Maxim Gun",
                     "Makeable": "f21bb613-6969-4fb0-a58d-e91c6dd62523",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "7570f8c2-2455-4d39-88aa-8bbe8c86c214",
@@ -678,7 +701,9 @@
                             "Value": "b71a1d88-3015-496b-8a89-fd852403cd4e",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "7a5db9b3-c2ad-4cdb-b7ed-ca2019178a6b",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "a2a4aeeb-d102-42e6-bbd6-afd68f6b4440",
@@ -696,7 +721,6 @@
                     "BreakthroughMult": 1,
                     "DisplayName": "General Machinegun",
                     "Makeable": "cebcf67b-a3c5-4799-82d4-a087358cf538",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "1b8f047a-2efb-45cc-a681-d2d6d55c7b71",
@@ -720,7 +744,9 @@
                             "Value": "37ae653c-184d-44b9-928f-d8b952b4f6d5",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "7a5db9b3-c2ad-4cdb-b7ed-ca2019178a6b",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 },
                 {
                     "guid": "0d43c0d5-2935-49f4-8688-17be015625e0",
@@ -738,7 +764,6 @@
                     "BreakthroughMult": 1.25,
                     "DisplayName": "Squad Machinegun",
                     "Makeable": "77aeff06-15ff-421f-a76c-67e0062e3abe",
-                    "Domain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
                     "TargetChance": [
                         {
                             "guid": "16675e73-0fc8-4ae3-9e5c-2ffdcb12a37b",
@@ -762,7 +787,9 @@
                             "Value": "49cfd428-6327-4150-82c8-a5e08ddcf321",
                             "id": "0"
                         }
-                    ]
+                    ],
+                    "TroopType": "7a5db9b3-c2ad-4cdb-b7ed-ca2019178a6b",
+                    "MoveType": "583bd046-5a05-46ba-ae14-b563633bc9cf"
                 }
             ],
             "hidden": false,
@@ -4095,6 +4122,77 @@
                     "guid": "5320e22c-aef4-42ba-a0f6-50f420ab30c4",
                     "id": "2",
                     "Name": "Administrative"
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "TroopType",
+            "description": "TroopType",
+            "displayColumn": "Name",
+            "guid": "1151c678-760a-447c-965b-bebf9010c1c8",
+            "columns": [
+                {
+                    "typeStr": "text",
+                    "guid": "91c51f27-d2f5-478f-a58a-48ffd161bbac",
+                    "name": "Name",
+                    "description": "Name",
+                    "defaultValue": "",
+                    "iconName": "newText",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "defaultValue": "text"
+                    }
+                },
+                {
+                    "typeStr": "lineReference",
+                    "guid": "433fb5d8-49d4-48ca-8493-09b6fc69cab1",
+                    "name": "TroopDomain",
+                    "description": "TroopDomain",
+                    "sheet": "d2f29ae6-a1c5-4c98-8506-bbae2707eeae",
+                    "defaultValue": "",
+                    "iconName": "newLineLink",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "sheet": "sheetSelect",
+                        "defaultValue": "lineSelect@sheet"
+                    }
+                }
+            ],
+            "lines": [
+                {
+                    "guid": "d77d5c61-1268-47f5-a1d8-4c35fd87d007",
+                    "id": "0",
+                    "Name": "Infantry",
+                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                },
+                {
+                    "guid": "9c0ce905-600c-4e82-aa3b-4df190dbfb62",
+                    "id": "1",
+                    "Name": "Artillery",
+                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                },
+                {
+                    "guid": "7a5db9b3-c2ad-4cdb-b7ed-ca2019178a6b",
+                    "id": "2",
+                    "Name": "MachineGun",
+                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
                 }
             ],
             "hidden": false,

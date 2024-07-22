@@ -42,7 +42,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
         {
             var building = (SettlementBuilding)Making.Get(key.Data);
             var settlement = Settlement.Get(key.Data);
-            var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
+            var proc = new AddSettlementBuildingProcedure(Settlement, building.MakeRef());
             key.SendMessage(proc);
         }
         var setStock = new SetStockProcedure(regime.MakeRef(),
@@ -63,7 +63,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
             var building = (SettlementBuilding)Making.Get(key.Data);
             var settlement = Settlement.Get(key.Data);
             var regime = Regime.Get(key.Data);
-            var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
+            var proc = new AddSettlementBuildingProcedure(Settlement, building.MakeRef());
             key.SendMessage(proc);
         }
     }
@@ -140,7 +140,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
             var building = (SettlementBuilding)Making.Get(key.Data);
             var settlement = Settlement.Get(key.Data);
             var regime = Regime.Get(key.Data);
-            var proc = new AddBuildingProcedure(Settlement, building.MakeRef());
+            var proc = new AddSettlementBuildingProcedure(Settlement, building.MakeRef());
             key.SendMessage(proc);
         }
 

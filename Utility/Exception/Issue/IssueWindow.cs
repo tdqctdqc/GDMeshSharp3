@@ -24,7 +24,7 @@ public partial class IssueWindow : Window
     {
         var w = new IssueWindow();
         w._client = c;
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
 
     private void Draw()

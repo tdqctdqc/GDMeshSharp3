@@ -39,7 +39,7 @@ public partial class PromptManager : Node, IClientComponent
     {
         var w = new PromptWindow();
         w.Setup(prompt);
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
     Node IClientComponent.Node => this;
 }

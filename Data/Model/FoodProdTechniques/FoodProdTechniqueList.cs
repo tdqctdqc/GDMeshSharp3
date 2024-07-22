@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class FoodProdTechniqueList : ModelManager<FoodProdTechnique>
+public class FoodProdTechniqueList : ModelPredefs<FoodProdTechnique>
 {
     public Farm Farm { get; private set; }
         = new();

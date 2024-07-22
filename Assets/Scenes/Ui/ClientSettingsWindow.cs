@@ -8,7 +8,7 @@ public partial class ClientSettingsWindow : SettingsWindow
     {
         var w = new ClientSettingsWindow();
         w.Setup(s);
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
     private ClientSettingsWindow()
     {

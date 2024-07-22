@@ -10,7 +10,7 @@ public partial class GeneratorSettingsWindow : SettingsWindow
     {
         var w = new GeneratorSettingsWindow();
         w.Setup(settings);
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
 
     private GeneratorSettingsWindow()

@@ -19,8 +19,8 @@ public class Models
     public Items Items { get; private set; }
     public SettlementTierList Settlements { get; private set; }
     public BuildingList Buildings { get; private set; }
-    public CultureManager Cultures { get; private set; }
-    public RegimeTemplateManager RegimeTemplates { get; private set; }
+    public CulturePredefs Cultures { get; private set; }
+    public RegimeTemplatePredefs RegimeTemplates { get; private set; }
     public FoodProdTechniqueList FoodProdTechniques { get; private set; }
     // public InfraList Infras { get; private set; }
     public Troops Troops { get; private set; }
@@ -29,6 +29,8 @@ public class Models
     public TechnologyList Technologies { get; private set; }
     public ResourceExtractionList ResourceExtractions { get; private set; }
     public TechnologyCategories TechnologyCategories { get; private set; }
+    public TroopTypes TroopTypes { get; private set; }
+    
     private int _idIter;
     private DepotImporter _depot;
     public Models(Data data)
@@ -45,58 +47,61 @@ public class Models
         _idIter = 0;
         
         Items = new Items();
-        ImportDisallowDefault(Items, _depot);
+        ImportWithPredefsDisallowDefault(Items, _depot);
 
         Landforms = new LandformList();
-        ImportAllowDefault(Landforms, _depot);
+        ImportWithPredefsAllowDefault(Landforms, _depot);
 
         Vegetations = new VegetationList(Landforms);
-        ImportAllowDefault(Vegetations, _depot);
+        ImportWithPredefsAllowDefault(Vegetations, _depot);
         
         PeepJobs = new PeepJobList();
-        ImportAllowDefault(PeepJobs, _depot);
+        ImportWithPredefsAllowDefault(PeepJobs, _depot);
 
         Buildings = new BuildingList();
-        ImportAllowDefault(Buildings, _depot);
+        ImportWithPredefsAllowDefault(Buildings, _depot);
 
         RoadList = new RoadList();
-        ImportDisallowDefault(RoadList, _depot);
+        ImportWithPredefsDisallowDefault(RoadList, _depot);
 
         Settlements = new SettlementTierList();
-        ImportAllowDefault(Settlements, _depot);
+        ImportWithPredefsAllowDefault(Settlements, _depot);
         
-        Cultures = new CultureManager();
+        Cultures = new CulturePredefs();
         foreach (var culture in Cultures.Cultures)
         {
             AddModel(culture);
         }
         
-        RegimeTemplates = new RegimeTemplateManager(Cultures);
+        RegimeTemplates = new RegimeTemplatePredefs(Cultures);
         foreach (var regimeTemplate in RegimeTemplates.RegimeTemplates)
         {
             AddModel(regimeTemplate);
         }
         
         FoodProdTechniques = new FoodProdTechniqueList(PeepJobs, Items);
-        ImportDisallowDefault(FoodProdTechniques, _depot);
+        ImportWithPredefsDisallowDefault(FoodProdTechniques, _depot);
         
         MoveTypes = new MoveTypes();
-        ImportDisallowDefault(MoveTypes, _depot);
+        ImportWithPredefsDisallowDefault(MoveTypes, _depot);
         
         Troops = new Troops();
-        ImportAllowDefault(Troops, _depot);
+        ImportWithPredefsAllowDefault(Troops, _depot);
 
         ResourceExtractions = new ResourceExtractionList();
-        ImportDisallowDefault(ResourceExtractions, _depot);
+        ImportWithPredefsDisallowDefault(ResourceExtractions, _depot);
         
         TroopDomains = new TroopDomains();
-        ImportAllowDefault(TroopDomains, _depot);
+        ImportWithPredefsAllowDefault(TroopDomains, _depot);
 
         Technologies = new TechnologyList();
-        ImportAllowDefault(Technologies, _depot);
+        ImportWithPredefsAllowDefault(Technologies, _depot);
 
         TechnologyCategories = new TechnologyCategories();
-        ImportAllowDefault(TechnologyCategories, _depot);
+        ImportWithPredefsAllowDefault(TechnologyCategories, _depot);
+
+        TroopTypes = new TroopTypes();
+        ImportWithPredefsAllowDefault<TroopType>(TroopTypes, _depot);
         
         _depot.FillAllProperties();
         
@@ -139,27 +144,39 @@ public class Models
         return ModelsById.Values.OfType<TModel>().ToList();
     }
 
-    private void ImportAllowDefault<T>(ModelManager<T> manager,
+    private void ImportWithPredefsAllowDefault<T>(ModelPredefs<T> predefs,
         DepotImporter importer)
             where T : IModel, new()
     {
-        AddManager(manager, () => new(), importer);
+        ImportWithPredefs(predefs, () => new(), importer);
     }
-    private void ImportDisallowDefault<T>(ModelManager<T> manager,
+    private void ImportWithPredefsDisallowDefault<T>(ModelPredefs<T> predefs,
         DepotImporter importer)
         where T : IModel
     {
-        AddManager(manager, () => throw new Exception(), importer);
+        ImportWithPredefs(predefs, () => throw new Exception(), importer);
     }
     
-    private void AddManager<T>(ModelManager<T> manager,
+    private void ImportWithPredefs<T>(ModelPredefs<T> predefs,
         Func<T> defaultConstructor,
         DepotImporter importer) 
         where T : IModel
     {
-        var ms = manager.GetPropertiesOfTypeByName<T>()
+        var ms = predefs.GetPropertiesOfTypeByName<T>()
             .ToDictionary(kvp => kvp.Key, kvp => (object)kvp.Value);
         var models = _depot.MakeSheetObjectsModels<T>(ms, defaultConstructor);
+        foreach (var model in models)
+        {
+            AddModel(model);
+        }
+    }
+
+    private void ImportNoPredefs<T>(DepotImporter importer)
+        where T : IModel, new()
+    {
+        var models = _depot
+            .MakeSheetObjectsModels<T>(new Dictionary<string, object>(), 
+                () => new T());
         foreach (var model in models)
         {
             AddModel(model);

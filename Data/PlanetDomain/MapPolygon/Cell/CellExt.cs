@@ -4,6 +4,55 @@ using System.Collections.Generic;
 using System.Linq;
 public static class CellExt
 {
+    public static (float total, float free, float used, float expected) 
+        GetLaborCounts(this Cell cell, Data d)
+    {
+        var total = cell.GetPeep(d).Size;
+        var regime = cell.Controller.Get(d);
+        var usedLabor = 0f;
+        var expectedLabor = 0f;
+        if (cell.HasSettlement(d))
+        {
+            var s = cell.GetSettlement(d);
+            usedLabor += s.Buildings.GetEnumModel(d)
+                .Sum(kvp => kvp.Key.Labor.TotalLabor() * kvp.Value);
+            var inProgress = regime.MakeQueue.Queue
+                .OfType<PlayerSettlementBuildingMakeProject>()
+                .Where(p => p.Settlement.RefId == s.Id);
+            expectedLabor += inProgress
+                .Select(p => (SettlementBuilding)p.Making.Get(d))
+                .Sum(b => b.Labor.TotalLabor());
+        }
+
+        if (cell.HasResourceDeposit(d))
+        {
+            var rd = cell.GetResourceDeposit(d);
+            var extraction = rd.Extraction.Get(d);
+            if (extraction is not null)
+            {
+                usedLabor += extraction.Labor.TotalLabor();
+            }
+            var inProgress = regime.MakeQueue.Queue
+                .OfType<PlayerResourceExtractionMakeProject>()
+                .Where(p => p.ResourceDeposit.RefId == rd.Id);
+            expectedLabor += inProgress
+                .Select(p => (ResourceExtractionBuilding)p.Making.Get(d))
+                .Sum(b => b.Labor.TotalLabor());
+        }
+
+        if (cell is LandCell l)
+        {
+            foreach (var (technique, value) in l.FoodProd.Nums.GetEnumModel(d))
+            {
+                usedLabor += value * technique.BaseLabor();
+            }
+        }
+        
+        return (total, total - (usedLabor + expectedLabor),
+            usedLabor, expectedLabor);
+    }
+    
+    
     public static RoadModel GetRoadWith(this Cell p1, Cell p2, Data d)
     {
         return d.Infrastructure.RoadNetwork.Get(p1, p2, d);

@@ -27,7 +27,7 @@ using System;
 [MessagePack.Union(22, typeof(CleanUpArmyMissionsProcedure))]
 [MessagePack.Union(23, typeof(SetArmyOccupationProcedure))]
 [MessagePack.Union(24, typeof(DestroyArmyProcedure))]
-[MessagePack.Union(25, typeof(AddBuildingProcedure))]
+[MessagePack.Union(25, typeof(AddSettlementBuildingProcedure))]
 [MessagePack.Union(26, typeof(CancelMakeProjectProcedure))]
 [MessagePack.Union(27, typeof(DoClientCallbackProcedure))]
 [MessagePack.Union(28, typeof(AddCombatHistoryProc))]
@@ -40,6 +40,9 @@ using System;
 [MessagePack.Union(35, typeof(DoResearchProcedure))]
 [MessagePack.Union(36, typeof(SetResearchProcedure))]
 [MessagePack.Union(37, typeof(AddExtractionProcedure))]
+[MessagePack.Union(38, typeof(AddResourceExtractionProcedure))]
+[MessagePack.Union(39, typeof(ChangeTemplateTroopAmountProcedure))]
+[MessagePack.Union(40, typeof(RenameTemplateProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

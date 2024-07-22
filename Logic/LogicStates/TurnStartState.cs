@@ -10,6 +10,7 @@ public class TurnStartState : TurnState
         {
             new MigrationModule(),
             new ProductionModule(),
+            new AiPlaceBuildingsModule(),
             new DefaultLogicModule(() => new FinishedTurnStartCalcProc())
         };
         _minorModules = new LogicModule[]

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class SettlementTierList : ModelManager<SettlementTier>
+public class SettlementTierList : ModelPredefs<SettlementTier>
 {
     public SettlementTier Village { get; private set; } 
         = new SettlementTier();

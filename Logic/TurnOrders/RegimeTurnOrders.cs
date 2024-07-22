@@ -7,7 +7,6 @@ public abstract class RegimeTurnOrders
     public ERef<Regime> Regime { get; private set; }
     public List<Procedure> Procedures { get; private set; }
     public int Tick { get; private set; }
-
     public RegimeTurnOrders(int tick, ERef<Regime> regime)
     {
         Tick = tick;

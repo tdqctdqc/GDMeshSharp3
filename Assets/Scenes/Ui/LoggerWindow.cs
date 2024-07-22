@@ -15,7 +15,7 @@ public partial class LoggerWindow : Window
     {
         var w = SceneManager.Instance<LoggerWindow>();
         w._data = data;
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
 
     private LoggerWindow()

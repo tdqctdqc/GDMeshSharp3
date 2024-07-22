@@ -11,7 +11,6 @@ public class DeploymentAi
     private DeploymentRoot _root;
     private Data _data;
     public IdDispenser IdDispenser { get; private set; }
-    public MilAiMemo Memo { get; set; }
     public static DeploymentAi Construct(Alliance a, Data d)
     {
         var ai = new DeploymentAi(a, d);
@@ -35,16 +34,9 @@ public class DeploymentAi
         Clear(key);
         _root = new DeploymentRoot(this, key);
         _root.MakeTheaters(ai, key);
-        if (Memo != null)
-        {
-            Memo.Finish(this, _root, key);
-            Memo = null;
-        }
         _root.GrabUnassignedGroups(key);
         _root.ShiftGroups(this, key);
         _root.GiveOrders(this, key);
-
-        Memo = new MilAiMemo(Alliance, key.Data);
     }
     
 

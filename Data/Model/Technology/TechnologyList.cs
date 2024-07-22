@@ -1,4 +1,4 @@
 
-public class TechnologyList : ModelManager<Technology>
+public class TechnologyList : ModelPredefs<Technology>
 {
 }

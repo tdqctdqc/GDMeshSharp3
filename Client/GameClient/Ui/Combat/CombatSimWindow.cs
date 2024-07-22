@@ -15,6 +15,6 @@ public partial class CombatSimWindow : TabWindow
     public static void Open(Client client)
     {
         var w = new CombatSimWindow(client);
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
 }

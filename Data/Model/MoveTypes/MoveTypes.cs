@@ -1,5 +1,5 @@
 
-public class MoveTypes : ModelManager<MoveType>
+public class MoveTypes : ModelPredefs<MoveType>
 {
     public InfantryMoveType InfantryMove { get; private set; }
         = new ();

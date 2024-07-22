@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class VegetationList : ModelManager<Vegetation>
+public class VegetationList : ModelPredefs<Vegetation>
 {
     public Vegetation Swamp { get; private set; }
         = new Swamp();

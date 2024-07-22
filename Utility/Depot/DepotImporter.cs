@@ -48,7 +48,6 @@ public class DepotImporter
     public void UnpackSheetJsonObjects(JsonObject sheetObject)
     {
         var sheetName = JsonSerializer.Deserialize<string>(sheetObject["name"]);
-        GD.Print($"adding sheet {sheetName}");
         var sheet = new DepotSheet(sheetObject, this);
     }
 

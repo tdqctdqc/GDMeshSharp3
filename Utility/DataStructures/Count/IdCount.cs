@@ -96,7 +96,14 @@ public class IdCount<T> : Count<int>
     }
     public void Set(int id, float amount)
     {
-        Contents[id] = amount;
+        if (amount == 0f)
+        {
+            Contents.Remove(id);
+        }
+        else
+        {
+            Contents[id] = amount;
+        }
     }
     public void Remove(T model, float amount)
     {

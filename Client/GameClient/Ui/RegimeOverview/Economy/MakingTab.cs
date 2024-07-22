@@ -63,8 +63,8 @@ public partial class MakingTab : ScrollContainer, IUiDrawable
     private void DrawProjectInfo(Client client)
     {
         _projectInfo.ClearChildren();
-        if (_projectsList.Values.Count != 1) return;
-        var project = _projectsList.Values.First();
+        if (_projectsList.Selected.Count != 1) return;
+        var project = _projectsList.Selected.First();
         var med = client.Settings.MedIconSize.Value;
         var large = client.Settings.LargeIconSize.Value;
         var title = project.Making.Get(client.Data).GetType().Name;

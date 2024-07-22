@@ -92,8 +92,8 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         {
             var selected = _freeUnits.GetSelectedEntities<Unit>(client.Data);
             if (selected.Count == 0) return;
-            var army = _armies.Values.Count == 1
-                ? _armies.Values.First() : null;
+            var army = _armies.Selected.Count == 1
+                ? _armies.Selected.First() : null;
             if (army is null) return;
             foreach (var unit in selected)
             {
@@ -141,8 +141,8 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
     {
         _armyInfoContainer.ClearChildren();
         _armyButtonsContainer.ClearChildren();
-        if (_armies.Values.Count != 1) return;
-        var a = _armies.Values.First();
+        if (_armies.Selected.Count != 1) return;
+        var a = _armies.Selected.First();
         
         _armyTree = a.GetTree(0, c);
         _armyTree.SelectMode = Tree.SelectModeEnum.Multi;

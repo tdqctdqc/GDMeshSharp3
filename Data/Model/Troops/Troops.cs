@@ -5,7 +5,7 @@ using Godot;
 using Microsoft.VisualBasic.FileIO;
 using FileAccess = Godot.FileAccess;
 
-public class Troops : ModelManager<Troop>
+public class Troops : ModelPredefs<Troop>
 {
     public Troop Rifle1 { get; private set; }
         = new();

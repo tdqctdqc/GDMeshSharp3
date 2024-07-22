@@ -9,7 +9,7 @@ public partial class EntityOverviewWindow : Window
     public static void Open(Data data)
     {
         var w = SceneManager.Instance<EntityOverviewWindow>();
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
 
     public EntityOverviewWindow()

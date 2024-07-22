@@ -1,5 +1,5 @@
 
-public class TechnologyCategories : ModelManager<TechnologyCategory>
+public class TechnologyCategories : ModelPredefs<TechnologyCategory>
 {
     public TechnologyCategory Economic { get; private set; }
         = new();

@@ -13,7 +13,7 @@ public partial class RegimeAiOverviewWindow : Window
         var w = new RegimeAiOverviewWindow();
         w._data = data;
         w._aiRegimes = data.HostLogicData.RegimeAis;
-        Game.I.Client.WindowHolder.OpenWindow(w);
+        Game.I.Client.WindowHolder.OpenWindowFullSize(w);
     }
 
     private RegimeAiOverviewWindow()

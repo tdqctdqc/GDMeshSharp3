@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class BuildingList : ModelManager<SettlementBuilding>
+public class BuildingList : ModelPredefs<SettlementBuilding>
 {
     public Mine IronMine { get; private set; } = new ();
     public Mine CoalMine { get; private set; } = new ();

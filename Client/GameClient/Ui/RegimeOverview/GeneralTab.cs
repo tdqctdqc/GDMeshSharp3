@@ -119,6 +119,7 @@ public partial class GeneralTab : ScrollContainer,
             var spectateRegime = ButtonExt.GetButton(() =>
             {
                 client.GetComponent<MapGraphics>().SpectateRegime(regime);
+                Draw(client);
             });
             spectateRegime.Text = "Spectate Regime";
             left.AddChild(spectateRegime);
@@ -131,8 +132,13 @@ public partial class GeneralTab : ScrollContainer,
             {
                 var chooseRegime = ButtonExt.GetButton(() =>
                 {
-                    var com = new ChooseRegimeCommand(regime.MakeRef(),
+                    var inner = new ChooseRegimeCommand(regime.MakeRef(),
                         client.Data.ClientPlayerData.LocalPlayerGuid);
+                    var com = CallbackCommand.Construct(
+                        inner, () =>
+                        {
+                            if(IsInstanceValid(this)) Draw(client);
+                        }, client);
                     client.HandleCommand(com);
                 });
                 chooseRegime.Text = "Choose Regime";

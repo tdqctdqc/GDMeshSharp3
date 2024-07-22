@@ -41,7 +41,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         );
         availableList.JustSelected += () =>
         {
-            var avail = availableList.Values.Single();
+            var avail = availableList.Selected.Single();
             DrawTechInfo(avail, _availableResearchInfo, client);
         };
         availableList.SelectAt(0);
@@ -50,7 +50,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         var researchBtn = side.AddButton("Set Research",
             () =>
             {
-                var tech = availableList.Values.Single();
+                var tech = availableList.Selected.Single();
                 var proc = new SetResearchProcedure(
                     _parent.Regime.MakeRef(),
                     tech.MakeRef());
@@ -89,7 +89,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         );
         alreadyResearchedList.JustSelected += () =>
         {
-            var already = alreadyResearchedList.Values.Single();
+            var already = alreadyResearchedList.Selected.Single();
             DrawTechInfo(already, _alreadyResearchedInfo, client);
         };
         alreadyResearchedList.ItemList.ExpandFill();

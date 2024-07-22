@@ -18,8 +18,9 @@ public class Troop : Item, IMakeable, IIconed,
     public float FrontLength { get; private set; }
     public float BreakthroughMult { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
-    public TroopDomain Domain { get; private set; }
     public HashSet<Technology> Prereqs { get; private set; }
+    public TroopType TroopType { get; private set; }
+    public MoveType MoveType { get; private set; }
     
     public Troop()
     {

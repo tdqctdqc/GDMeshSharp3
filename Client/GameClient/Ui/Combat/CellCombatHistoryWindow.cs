@@ -36,6 +36,6 @@ public partial class CellCombatHistoryWindow : TabWindow
         {
             w.Setup(null, graph, client);
         }
-        holder.OpenWindow(w);
+        holder.OpenWindowFullSize(w);
     }
 }

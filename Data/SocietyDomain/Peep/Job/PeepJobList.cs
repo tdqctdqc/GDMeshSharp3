@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class PeepJobList : ModelManager<PeepJob>
+public class PeepJobList : ModelPredefs<PeepJob>
 {
     public PeepJob Farmer { get; private set; } 
         = new PeepJob();

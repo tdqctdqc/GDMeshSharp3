@@ -26,7 +26,8 @@ public partial class StockTab : ScrollContainer, IUiDrawable
         var tick = client.Data.BaseDomain.GameClock.Tick;
         var iconSize = client.Settings.MedIconSize.Value;
         var items = regime.Stock.Stock.GetEnumModel(client.Data)
-            .Where(kvp => kvp.Key is Item);
+            .Where(kvp => kvp.Key is not Flow
+                          && kvp.Key is Item);
         
         var flows = regime.Stock.Stock.GetEnumModel(client.Data)
             .Where(kvp => kvp.Key is Flow);
@@ -70,10 +71,10 @@ public partial class StockTab : ScrollContainer, IUiDrawable
                 hbox.CreateLabelAsChild(model.Name);
             }
             
-            hbox.CreateLabelAsChild($"Amount: {amt} ");
-            hbox.CreateLabelAsChild($"Prod: {regime.Stock.Produced.Get(model)} ");
-            hbox.CreateLabelAsChild($"Single time: {regime.Stock.SingleTimeCosts.Get(model)} ");
-            hbox.CreateLabelAsChild($"Recurring: {regime.Stock.RecurringCosts.Get(model)} ");
+            hbox.CreateLabelAsChild($"Amount: {amt.RoundTo2Digits()} ");
+            hbox.CreateLabelAsChild($"Prod: {regime.Stock.Produced.Get(model).RoundTo2Digits()} ");
+            hbox.CreateLabelAsChild($"Single time: {regime.Stock.SingleTimeCosts.Get(model).RoundTo2Digits()} ");
+            hbox.CreateLabelAsChild($"Recurring: {regime.Stock.RecurringCosts.Get(model).RoundTo2Digits()} ");
             
             _container.AddChild(hbox);
         }

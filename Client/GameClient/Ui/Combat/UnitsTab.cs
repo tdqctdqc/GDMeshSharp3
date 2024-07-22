@@ -80,8 +80,8 @@ public partial class UnitsTab : HBoxContainer, IUiDrawable
         info.ClearChildren();
 
         var list = attacker ? _attackersList : _defendersList;
-        if (list.Values.Count != 1) return;
-        var u = list.Values.First();
+        if (list.Selected.Count != 1) return;
+        var u = list.Selected.First();
         
         var large = c.Settings.LargeIconSize.Value;
         var med = c.Settings.MedIconSize.Value;

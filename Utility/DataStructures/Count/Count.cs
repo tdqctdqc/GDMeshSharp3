@@ -45,6 +45,7 @@ public abstract class Count<T>
             amount = Contents[t];
         }
         Contents[t] -= amount;
+        if (Contents[t] == 0f) Contents.Remove(t);
     }
     
     public void Clear()

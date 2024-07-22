@@ -2,10 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class RegimeTemplateManager : IModelManager<RegimeTemplate>
+public class RegimeTemplatePredefs : IModelPredefs<RegimeTemplate>
 {
     public List<RegimeTemplate> RegimeTemplates { get; }
-    public RegimeTemplateManager(CultureManager cultures)
+    public RegimeTemplatePredefs(CulturePredefs cultures)
     {
         RegimeTemplates = cultures.Cultures
             .SelectMany(c => c.RegimeTemplates)

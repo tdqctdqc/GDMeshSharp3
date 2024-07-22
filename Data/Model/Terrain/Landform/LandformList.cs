@@ -4,7 +4,7 @@ using System.Linq;
 using Godot;
 using VoronoiSandbox;
 
-public class LandformList : ModelManager<Landform>
+public class LandformList : ModelPredefs<Landform>
 {
     public Landform Peak { get; private set; } 
         = new ();

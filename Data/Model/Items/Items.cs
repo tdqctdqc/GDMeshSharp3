@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-public class Items : ModelManager<Item>
+public class Items : ModelPredefs<Item>
 {
     public Food Food { get; private set; } = new ();
     public Recruits Recruits { get; private set; } = new ();

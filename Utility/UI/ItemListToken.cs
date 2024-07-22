@@ -7,7 +7,7 @@ using Godot;
 
 public class ItemListToken<T>
 {
-    public HashSet<T> Values { get; private set; }
+    public HashSet<T> Selected { get; private set; }
     public event Action JustSelected;
     public ItemList ItemList { get; private set; }
     public IReadOnlyList<T> Items => _items;
@@ -27,9 +27,16 @@ public class ItemListToken<T>
         ItemList.SelectMode = multiSelect
             ? ItemList.SelectModeEnum.Multi
             : ItemList.SelectModeEnum.Single;
-        Values = new HashSet<T>();
+        Selected = new HashSet<T>();
         ItemList.FixedIconSize = textureHeight * Vector2I.One;
-        _items = items.ToList();
+        if (items.Any())
+        {
+            _items = items.ToList();
+        }
+        else
+        {
+            _items = new List<T>();
+        }
         _getLabelText = getLabelText;
         _getTexture = getTexture;
         _textureHeight = textureHeight;
@@ -57,7 +64,7 @@ public class ItemListToken<T>
         ItemList.SelectMode = multiSelect
             ? ItemList.SelectModeEnum.Multi
             : ItemList.SelectModeEnum.Single;
-        Values = new HashSet<T>();
+        Selected = new HashSet<T>();
         _items = items.ToList();
         _getLabelText = getLabelText;
         SetList();
@@ -72,11 +79,18 @@ public class ItemListToken<T>
         };
     }
 
-    public void Reset(IEnumerable<T> items)
+    public void Reset(IEnumerable<T> items, 
+        bool keepSelection = true)
     {
+        var values = Selected.Intersect(items).ToList();
+
         _items = items.ToList();
         ItemList.Clear();
         SetList();
+        if (keepSelection)
+        {
+            Select(values);
+        }
     }
     public void RefreshText()
     {
@@ -97,8 +111,8 @@ public class ItemListToken<T>
     private void HandleSelection()
     {
         var selecteds = ItemList.GetSelectedItems();
-        Values.Clear();
-        Values.UnionWith(selecteds.Select(s => _items[s]));
+        Selected.Clear();
+        Selected.UnionWith(selecteds.Select(s => _items[s]));
         JustSelected?.Invoke();
     }
     private void AddItemToList(T item)
@@ -117,11 +131,6 @@ public class ItemListToken<T>
                 ItemList.FixedIconSize = new Vector2I(w * _textureHeight,
                     _textureHeight);
             }
-            // ItemList.SetItemIconTransposed(i, true);
-            // ItemList.SetItemIconRegion(i,
-            //     new Rect2(0f, 0f, 
-            //         size.X * _textureHeight,
-            //         size.Y * _textureHeight));
         }
         else
         {
@@ -154,6 +163,15 @@ public class ItemListToken<T>
         Add(replacement);
     }
 
+    public void Select(IEnumerable<T> ts)
+    {
+        foreach (var t in ts)
+        {
+            var index = _items.IndexOf(t);
+            ItemList.Select(index);
+        }
+        HandleSelection();
+    }
     public void SelectAt(int index)
     {
         ItemList.Select(index);

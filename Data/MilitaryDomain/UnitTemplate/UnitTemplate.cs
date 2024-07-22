@@ -9,7 +9,6 @@ public class UnitTemplate : Entity, IMakeable, INamed
     public string Name { get; private set; }
     public IdCount<Troop> Troops { get; private set; }
     public ERef<Regime> Regime { get; private set; }
-    public ModelRef<MoveType> MoveType { get; private set; }
     public TroopDomain Domain { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
 
@@ -17,7 +16,6 @@ public class UnitTemplate : Entity, IMakeable, INamed
         string name,
         Dictionary<Troop, float> troopCounts,
         TroopDomain domain,
-        MoveType moveType,
         Regime regime)
     {
         var costs = IdCount<Item>.Construct();
@@ -33,7 +31,7 @@ public class UnitTemplate : Entity, IMakeable, INamed
             IdCount<Item>.Construct()
         );
         var u = new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
-            moveType.MakeRef(), regime.MakeRef(),
+            regime.MakeRef(),
             key.Data.IdDispenser.TakeId(),
             domain,
             makeable);
@@ -41,13 +39,12 @@ public class UnitTemplate : Entity, IMakeable, INamed
         return u;
     }
     [SerializationConstructor] private UnitTemplate(string name,
-        IdCount<Troop> troops, ModelRef<MoveType> moveType,
+        IdCount<Troop> troops,
         ERef<Regime> regime, int id, 
         TroopDomain domain,
         MakeableAttribute makeable) 
         : base(id)
     {
-        MoveType = moveType;
         Name = name;
         Troops = troops;
         Regime = regime;
@@ -63,7 +60,7 @@ public class UnitTemplate : Entity, IMakeable, INamed
                 {
                     {key.Data.Models.Troops.Rifle1, 100f},
                     {key.Data.Models.Troops.Artillery1, 10f}
-                }, key.Data.Models.TroopDomains.Land, key.Data.Models.MoveTypes.InfantryMove,
+                }, key.Data.Models.TroopDomains.Land,
             r);
     }
 
@@ -96,5 +93,10 @@ public class UnitTemplate : Entity, IMakeable, INamed
         }
         
         return vbox;
+    }
+
+    public void Rename(string newName, ProcedureWriteKey key)
+    {
+        Name = newName;
     }
 }

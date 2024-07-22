@@ -72,7 +72,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         left.AddChild(_num);
         _troops.JustSelected += () =>
         {
-            var selected = _troops.Values;
+            var selected = _troops.Selected;
             if (selected.Count != 1)
             {
                 _num.SetRange(0, 0);
@@ -91,7 +91,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
 
         var makeBtn = ButtonExt.GetButton(() =>
         {
-            var selected = _troops.Values;
+            var selected = _troops.Selected;
             if (selected.Count != 1)
             {
                 _num.SetRange(0, 0);
@@ -120,7 +120,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
 
         var setToNeed = ButtonExt.GetButton(() =>
         {
-            var selected = _troops.Values;
+            var selected = _troops.Selected;
             if (selected.Count != 1)
             {
                 _num.SetRange(0, 0);
@@ -139,7 +139,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         right.AddChild(_projects.ItemList);
         var cancel = ButtonExt.GetButton(() =>
         {
-            var projs = _projects.Values;
+            var projs = _projects.Selected;
             if (projs.Count == 0) return;
             var proc = new AggregateProcedure(
                 projs.Select(p => new CancelMakeProjectProcedure(regime.MakeRef(), p.Id)).ToArray());

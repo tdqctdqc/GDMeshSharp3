@@ -1,5 +1,5 @@
 
-public class ResourceExtractionList : ModelManager<ResourceExtractionBuilding>
+public class ResourceExtractionList : ModelPredefs<ResourceExtractionBuilding>
 {
     public Mine IronMine { get; private set; }
         = new Mine();

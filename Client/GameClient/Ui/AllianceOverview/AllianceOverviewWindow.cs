@@ -21,6 +21,6 @@ public partial class AllianceOverviewWindow : TabWindow
     {
         var w = new AllianceOverviewWindow(client);
         w.Setup(alliance);
-        client.WindowHolder.OpenWindow(w);
+        client.WindowHolder.OpenWindowFullSize(w);
     }
 }

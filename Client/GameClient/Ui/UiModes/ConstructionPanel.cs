@@ -47,42 +47,15 @@ public partial class ConstructionPanel : PanelContainer
         var localPlayer = c.Data.BaseDomain.PlayerAux.LocalPlayer;
         if (localPlayer.Regime.RefId != regime.Id) return;
         
-        var usedLabor = 0f;
-        var expectedLabor = 0f;
         
         var s = cell.GetSettlement(c.Data);
-        if (s is not null)
-        {
-            usedLabor += s.Buildings.GetEnumModel(c.Data)
-                .Sum(kvp => kvp.Key.Labor.TotalLabor() * kvp.Value);
-            var inProgress = regime.MakeQueue.Queue
-                .OfType<PlayerSettlementBuildingMakeProject>()
-                .Where(p => p.Settlement.RefId == s.Id);
-            expectedLabor += inProgress
-                .Select(p => (SettlementBuilding)p.Making.Get(c.Data))
-                .Sum(b => b.Labor.TotalLabor());
-        }
-
         var rd = cell.GetResourceDeposit(c.Data);
-        if (rd is not null)
-        {
-            var extraction = rd.Extraction.Get(c.Data);
-            if (extraction is not null)
-            {
-                usedLabor += extraction.Labor.TotalLabor();
-            }
-            var inProgress = regime.MakeQueue.Queue
-                .OfType<PlayerResourceExtractionMakeProject>()
-                .Where(p => p.ResourceDeposit.RefId == rd.Id);
-            expectedLabor += inProgress
-                .Select(p => (ResourceExtractionBuilding)p.Making.Get(c.Data))
-                .Sum(b => b.Labor.TotalLabor());
-        }
+        var laborCounts = cell.GetLaborCounts(c.Data);
         _info.CreateLabelAsChild($"Regime: " + regime.Name);
         _info.CreateLabelAsChild("Cell: " + cell.Id.ToString());
         var population = cell.GetPeep(c.Data).Size;
         _info.CreateLabelAsChild("Population: " + population);
-        var freeLabor = population - (usedLabor + expectedLabor);
+        var freeLabor = laborCounts.free;
         _info.CreateLabelAsChild($"Free Labor: {freeLabor}");
 
         if (s is not null)
