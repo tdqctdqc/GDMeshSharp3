@@ -98,13 +98,17 @@ public partial class GeneralTab : HBoxContainer, IUiDrawable
 
     private void DrawCenter()
     {
-        _attackersGraphic.Draw(_info.Attackers, Game.I.Client.Data);
-        _defendersGraphic.Draw(_info.Defenders, Game.I.Client.Data);
+        _attackersGraphic.Draw(_info.Attackers, 
+            MilUtil.AttackerMinMorale,
+            Game.I.Client.Data);
+        _defendersGraphic.Draw(_info.Defenders, 
+            MilUtil.DefenderMinMorale,
+            Game.I.Client.Data);
 
         var attackerTotals = UnitCombatInfo.Sum(_info.Attackers, Game.I.Client.Data);
         var defenderTotals = UnitCombatInfo.Sum(_info.Defenders, Game.I.Client.Data);
-        _attackerTotalsGraphic.Draw(attackerTotals.Yield(), Game.I.Client.Data);
-        _defenderTotalsGraphic.Draw(defenderTotals.Yield(), Game.I.Client.Data);
+        _attackerTotalsGraphic.Draw(attackerTotals.Yield(), 0f, Game.I.Client.Data);
+        _defenderTotalsGraphic.Draw(defenderTotals.Yield(), 0f, Game.I.Client.Data);
     }
     
 }

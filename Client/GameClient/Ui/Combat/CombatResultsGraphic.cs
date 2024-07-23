@@ -8,7 +8,9 @@ public partial class CombatResultsGraphic : ScrollContainer
 {
     public UnitCombatInfo Selected => _token.Value;
     private SelectableControlListToken<UnitCombatInfo> _token;
-    public void Draw(IEnumerable<UnitCombatInfo> infos, Data d)
+    public void Draw(IEnumerable<UnitCombatInfo> infos, 
+        float minMorale,
+        Data d)
     {
         this.ClearChildren();
         this.ExpandFill();
@@ -18,12 +20,7 @@ public partial class CombatResultsGraphic : ScrollContainer
         AddChild(inner);
         
         _token = new SelectableControlListToken<UnitCombatInfo>(
-            i => GetEntry(
-                i.Template.Fulfilled() 
-                    ? $"{i.Template.Get(d).Name} {i.Unit.RefId}" 
-                    : "Anonymous",
-                i.Initial,
-                i.Active, i.Kills, d),
+            i => GetEntry(i, minMorale, d),
             i => { }
         );
         
@@ -35,10 +32,16 @@ public partial class CombatResultsGraphic : ScrollContainer
         }
     }
 
-    private Control GetEntry(string unitName, IdCount<Troop> initials, 
-        IdCount<Troop> actives, IdCount<Troop> kills, Data d)
+    private Control GetEntry(UnitCombatInfo i, float minMorale,
+        Data d)
     {
         var res = new VBoxContainer();
+        var unitName = i.Template.Fulfilled()
+            ? $"{i.Template.Get(d).Name} {i.Unit.RefId}"
+            : "Anonymous";
+        var initials = i.Initial;
+        var actives = i.Active;
+        var kills = i.Kills;
         var l = res.CreateLabelAsChild(unitName);
         l.CustomMinimumSize = new Vector2(100f, 10f);
         res.SetAnchorsPreset(LayoutPreset.HcenterWide);
@@ -50,7 +53,10 @@ public partial class CombatResultsGraphic : ScrollContainer
             label.SetAnchorsPreset(LayoutPreset.HcenterWide);
             label.ExpandFill();
             res.AddChild(label);
-            var pics = GetSubEntry(troop, active, amt, "Active");
+            var pics = GetSubEntry(troop, 
+                i.Morale < minMorale,
+                active, 
+                amt, "Active");
             pics.ExpandFill();
             res.AddChild(pics);
         }
@@ -58,7 +64,10 @@ public partial class CombatResultsGraphic : ScrollContainer
         return res;
     }
 
-    private Control GetSubEntry(Troop t, float active, float initial, string text)
+    private Control GetSubEntry(Troop t, 
+        bool withdrawn,
+        float active, 
+        float initial, string text)
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;
         var maxRows = 5;
@@ -71,6 +80,14 @@ public partial class CombatResultsGraphic : ScrollContainer
         var initialCap = Mathf.CeilToInt(initial);
         var icons = Enumerable.Range(0, initialCap)
             .Select(i => t.Icon.GetTextureRect(size)).ToList<Control>();
+
+        if (withdrawn)
+        {
+            for (var i = 0; i < activeCap; i++)
+            {
+                icons[i].Modulate = new Color(.25f, .25f, .25f);
+            }
+        }
         for (var i = activeCap; i < initialCap; i++)
         {
             icons[i].Modulate = Colors.Red;

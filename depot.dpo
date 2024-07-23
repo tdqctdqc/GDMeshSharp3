@@ -280,7 +280,7 @@
                     "id": "0",
                     "Name": "Rifle1",
                     "HardAttack": 1,
-                    "SoftAttack": 10,
+                    "SoftAttack": 5,
                     "Hitpoints": 100,
                     "Hardness": 0,
                     "Echelon": 0,
@@ -306,6 +306,11 @@
                             "guid": "ca84f7a9-b967-4571-b04d-a475aa9685a9",
                             "id": "2",
                             "Value": 0.25
+                        },
+                        {
+                            "guid": "3e475329-ab06-466f-9cc4-f4b762d74511",
+                            "Value": 0.1,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -323,7 +328,7 @@
                     "id": "1",
                     "Name": "Rifle2",
                     "HardAttack": 1,
-                    "SoftAttack": 15,
+                    "SoftAttack": 8,
                     "Hitpoints": 100,
                     "Hardness": 0,
                     "Echelon": 0,
@@ -349,6 +354,11 @@
                             "guid": "ae4a1e32-dc2b-49e6-b7c1-0d8367524f27",
                             "Value": 0.25,
                             "id": "2"
+                        },
+                        {
+                            "guid": "483e7e1e-3532-4473-9420-0da367c39a49",
+                            "Value": 0.1,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -366,7 +376,7 @@
                     "id": "2",
                     "Name": "Rifle3",
                     "HardAttack": 3,
-                    "SoftAttack": 25,
+                    "SoftAttack": 12,
                     "Hitpoints": 100,
                     "Hardness": 0,
                     "Echelon": 0,
@@ -392,6 +402,11 @@
                             "guid": "4c49d03c-a367-44e7-bcd4-aac87933f12e",
                             "Value": 0.25,
                             "id": "2"
+                        },
+                        {
+                            "guid": "795e18be-65ae-4b09-b91b-e4ae61d0847b",
+                            "Value": 0.1,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -409,7 +424,7 @@
                     "id": "3",
                     "Name": "Rifle4",
                     "HardAttack": 5,
-                    "SoftAttack": 40,
+                    "SoftAttack": 18,
                     "Hitpoints": 100,
                     "Hardness": 0,
                     "Echelon": 0,
@@ -435,6 +450,11 @@
                             "guid": "3d3419eb-9819-45b5-afb9-76edee43052d",
                             "Value": 0.25,
                             "id": "2"
+                        },
+                        {
+                            "guid": "8ea1eb5f-b84f-4822-b151-ec5654083e8b",
+                            "Value": 0.1,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -452,7 +472,7 @@
                     "id": "4",
                     "Name": "Rifle5",
                     "HardAttack": 7.5,
-                    "SoftAttack": 60,
+                    "SoftAttack": 25,
                     "Hitpoints": 100,
                     "Hardness": 0,
                     "Echelon": 0,
@@ -478,6 +498,11 @@
                             "guid": "104cce19-ff0e-4a7b-9175-205286d75657",
                             "Value": 0.25,
                             "id": "2"
+                        },
+                        {
+                            "guid": "0a9e1192-d9cb-4ff9-9c9e-277f62fb48e6",
+                            "Value": 0.1,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -498,11 +523,11 @@
                     "SoftAttack": 25,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 1,
+                    "Echelon": 2,
                     "Accuracy": 0.1,
                     "Evasion": 0.025,
-                    "FrontLength": 2,
-                    "Range": 1,
+                    "FrontLength": 3,
+                    "Range": 2,
                     "BreakthroughMult": 0.25,
                     "DisplayName": "Cannon",
                     "Makeable": "14be419b-bc2e-410c-848c-b16a13d58819",
@@ -519,8 +544,13 @@
                         },
                         {
                             "guid": "f53a2425-09c7-4733-a65d-bbb74c6dfcb8",
-                            "Value": 0.25,
+                            "Value": 0.75,
                             "id": "2"
+                        },
+                        {
+                            "guid": "816f2c8d-6472-45d0-922e-0d4afa3ebb46",
+                            "Value": 0.25,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -541,11 +571,11 @@
                     "SoftAttack": 50,
                     "Hitpoints": 75,
                     "Hardness": 0.2,
-                    "Echelon": 1,
+                    "Echelon": 2,
                     "Accuracy": 0.25,
                     "Evasion": 0.025,
-                    "FrontLength": 2,
-                    "Range": 1,
+                    "FrontLength": 3,
+                    "Range": 2,
                     "BreakthroughMult": 0.35,
                     "DisplayName": "Field Gun",
                     "Makeable": "ad10280f-6c7c-4c76-a04f-0145d3e1bd62",
@@ -562,8 +592,13 @@
                         },
                         {
                             "guid": "808d4d79-ff6f-4a0e-a0b5-ea4447c2e28f",
-                            "Value": 0.25,
+                            "Value": 0.75,
                             "id": "2"
+                        },
+                        {
+                            "guid": "b4112b0e-2f44-452b-8e4c-502606b5b3e6",
+                            "Value": 0.5,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -584,11 +619,11 @@
                     "SoftAttack": 65,
                     "Hitpoints": 75,
                     "Hardness": 0.2,
-                    "Echelon": 1,
+                    "Echelon": 2,
                     "Accuracy": 0.35,
                     "Evasion": 0.05,
-                    "FrontLength": 2,
-                    "Range": 1,
+                    "FrontLength": 3,
+                    "Range": 2,
                     "BreakthroughMult": 0.5,
                     "DisplayName": "Field Howitzer",
                     "Makeable": "b8214767-a22e-4726-8bed-39a87d995c53",
@@ -605,8 +640,13 @@
                         },
                         {
                             "guid": "018de227-8b61-4003-8b81-8b25a8c30777",
-                            "Value": 0.25,
+                            "Value": 0.75,
                             "id": "2"
+                        },
+                        {
+                            "guid": "c59cbca9-b6da-486a-81ca-8bb3890f7e34",
+                            "Value": 0.5,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -627,11 +667,11 @@
                     "SoftAttack": 25,
                     "Hitpoints": 25,
                     "Hardness": 0,
-                    "Echelon": 0,
+                    "Echelon": 1,
                     "Accuracy": 0.1,
                     "Evasion": 0.025,
                     "FrontLength": 2,
-                    "Range": 0,
+                    "Range": 1,
                     "BreakthroughMult": 0.25,
                     "DisplayName": "Gatling Gun",
                     "Makeable": "cf1161a9-c58c-4196-b87c-0ed15a765113",
@@ -643,13 +683,18 @@
                         },
                         {
                             "guid": "c19e3f1c-5462-4f73-9683-000830db3d47",
-                            "Value": 0.5,
+                            "Value": 0.75,
                             "id": "1"
                         },
                         {
                             "guid": "613a1734-1e76-4b2f-a5d9-d51aea9fe2fe",
-                            "Value": 0.25,
+                            "Value": 0.5,
                             "id": "2"
+                        },
+                        {
+                            "guid": "94b86827-0aa6-4159-a9f0-65a4e028e243",
+                            "Value": 0.25,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -670,11 +715,11 @@
                     "SoftAttack": 50,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 0,
+                    "Echelon": 1,
                     "Accuracy": 0.2,
                     "Evasion": 0.1,
                     "FrontLength": 2,
-                    "Range": 0,
+                    "Range": 1,
                     "BreakthroughMult": 0.5,
                     "DisplayName": "Maxim Gun",
                     "Makeable": "f21bb613-6969-4fb0-a58d-e91c6dd62523",
@@ -686,13 +731,18 @@
                         },
                         {
                             "guid": "3080b460-7982-4659-a039-0fbf80827536",
-                            "Value": 0.5,
+                            "Value": 0.75,
                             "id": "1"
                         },
                         {
                             "guid": "c0426e7a-cf91-40bb-a1bb-d12a59f884da",
-                            "Value": 0.25,
+                            "Value": 0.5,
                             "id": "2"
+                        },
+                        {
+                            "guid": "0b05acb4-b858-4174-817c-741ea7f59da7",
+                            "Value": 0.25,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -713,11 +763,11 @@
                     "SoftAttack": 65,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 0,
+                    "Echelon": 1,
                     "Accuracy": 0.3,
                     "Evasion": 0.15,
                     "FrontLength": 2,
-                    "Range": 0,
+                    "Range": 1,
                     "BreakthroughMult": 1,
                     "DisplayName": "General Machinegun",
                     "Makeable": "cebcf67b-a3c5-4799-82d4-a087358cf538",
@@ -729,13 +779,18 @@
                         },
                         {
                             "guid": "97b18e71-528a-4c68-8a7b-03d21011c064",
-                            "Value": 0.5,
+                            "Value": 0.75,
                             "id": "1"
                         },
                         {
                             "guid": "e5d0bbb4-417f-4f9e-8f54-a269d72c939c",
-                            "Value": 0.25,
+                            "Value": 0.5,
                             "id": "2"
+                        },
+                        {
+                            "guid": "eba452fc-5ca9-49d2-a354-033841bbd286",
+                            "Value": 0.25,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -756,11 +811,11 @@
                     "SoftAttack": 75,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 0,
+                    "Echelon": 1,
                     "Accuracy": 0.3,
                     "Evasion": 0.2,
                     "FrontLength": 2,
-                    "Range": 0,
+                    "Range": 1,
                     "BreakthroughMult": 1.25,
                     "DisplayName": "Squad Machinegun",
                     "Makeable": "77aeff06-15ff-421f-a76c-67e0062e3abe",
@@ -772,13 +827,18 @@
                         },
                         {
                             "guid": "be1eba4f-c4ff-4b70-9d9e-462e81702973",
-                            "Value": 0.5,
+                            "Value": 0.75,
                             "id": "1"
                         },
                         {
                             "guid": "43f8fe6d-efb6-4bdc-9d07-5a81c0eb315a",
-                            "Value": 0.25,
+                            "Value": 0.5,
                             "id": "2"
+                        },
+                        {
+                            "guid": "aa0277b5-65bf-458d-90cb-5a9c3252e9a1",
+                            "Value": 0.25,
+                            "id": "3"
                         }
                     ],
                     "Prereqs": [
@@ -4193,6 +4253,34 @@
                     "id": "2",
                     "Name": "MachineGun",
                     "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                }
+            ],
+            "hidden": false,
+            "isProps": false,
+            "configurable": {
+                "name": "text",
+                "description": "text",
+                "displayColumn": "columnSelect@name",
+                "columnSelect@name@displayColumn": {
+                    "allowedTypes": [
+                        "int",
+                        "float",
+                        "text",
+                        "longtext"
+                    ]
+                }
+            }
+        },
+        {
+            "name": "TargetChancePresets",
+            "description": "TargetChancePresets",
+            "displayColumn": "id",
+            "guid": "fb66647e-82ea-4340-ae67-da842aa24166",
+            "columns": [],
+            "lines": [
+                {
+                    "guid": "bd897f54-cac5-47fc-a7ea-13fcba3f280b",
+                    "id": "0"
                 }
             ],
             "hidden": false,

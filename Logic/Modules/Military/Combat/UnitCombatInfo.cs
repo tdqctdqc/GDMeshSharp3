@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using MessagePack;
 
 public class UnitCombatInfo
@@ -12,6 +13,7 @@ public class UnitCombatInfo
     public IdCount<Troop> Initial { get; private set; }
     public IdCount<Troop> Kills { get; private set; }
     public float[] ActiveFrontSizes { get; private set; }
+    public float Morale { get; private set; }
 
     public static UnitCombatInfo Sum(IEnumerable<UnitCombatInfo> infos,
         Data d)
@@ -19,11 +21,15 @@ public class UnitCombatInfo
         var active = IdCount<Troop>.Sum(infos.Select(i => i.Active).ToArray());
         var initial = IdCount<Troop>.Sum(infos.Select(i => i.Initial).ToArray());
         var kills = IdCount<Troop>.Sum(infos.Select(i => i.Kills).ToArray());
-
+        
         var activeFrontSizes = SetFrontSizes(active, d);
+        var totalFrontSize = activeFrontSizes.Sum();
+        var morale = infos
+            .Sum(i => i.Morale 
+                * i.ActiveFrontSizes.Sum() / totalFrontSize);
         
         return new UnitCombatInfo(new ERef<Unit>(-1),
-            active, initial, kills, new ERef<UnitTemplate>(-1),
+            active, initial, kills, new ERef<UnitTemplate>(-1), morale,
             activeFrontSizes);
     }
     public UnitCombatInfo(Unit u, Data d)
@@ -33,10 +39,11 @@ public class UnitCombatInfo
         Initial = IdCount<Troop>.Construct(u.Troops);
         Kills = IdCount<Troop>.Construct();
         Template = u.Template;
-
+        Morale = u.Morale;
         ActiveFrontSizes = SetFrontSizes(u.Troops, d);
     }
     public UnitCombatInfo(IdCount<Troop> troops,
+        float morale,
         Data d)
     {
         Unit = new ERef<Unit>(-1);
@@ -44,9 +51,28 @@ public class UnitCombatInfo
         Initial = IdCount<Troop>.Construct(troops);
         Kills = IdCount<Troop>.Construct();
         Template = new ERef<UnitTemplate>(-1);
+        Morale = morale;
         ActiveFrontSizes = SetFrontSizes(troops, d);
     }
 
+    
+
+    [SerializationConstructor] public UnitCombatInfo(
+        ERef<Unit> unit, IdCount<Troop> active, 
+        IdCount<Troop> initial, 
+        IdCount<Troop> kills,
+        ERef<UnitTemplate> template,
+        float morale,
+        float[] activeFrontSizes)
+    {
+        Unit = unit;
+        Active = active;
+        Initial = initial;
+        Kills = kills;
+        ActiveFrontSizes = activeFrontSizes;
+        Template = template;
+        Morale = morale;
+    }
     private static float[] SetFrontSizes(IdCount<Troop> troops, Data d)
     {
         var activeFrontSizes = new float[MilUtil.NumEchelons];
@@ -58,22 +84,6 @@ public class UnitCombatInfo
 
         return activeFrontSizes;
     }
-
-    [SerializationConstructor] public UnitCombatInfo(
-        ERef<Unit> unit, IdCount<Troop> active, 
-        IdCount<Troop> initial, 
-        IdCount<Troop> kills,
-        ERef<UnitTemplate> template,
-        float[] activeFrontSizes)
-    {
-        Unit = unit;
-        Active = active;
-        Initial = initial;
-        Kills = kills;
-        ActiveFrontSizes = activeFrontSizes;
-        Template = template;
-    }
-
     public float ProportionLosses(Data d)
     {
         var initial = Initial.GetEnumModel(d).Sum(
@@ -110,7 +120,11 @@ public class UnitCombatInfo
     public void AddLoss(Troop troop, float amt)
     {
         Active.Remove(troop, amt);
-        ActiveFrontSizes[troop.Echelon] -= troop.FrontLength * amt;
+        var totalFrontSize = ActiveFrontSizes.Sum();
+        var frontSizeLost = troop.FrontLength * amt;
+        ActiveFrontSizes[troop.Echelon] -= frontSizeLost;
+        Morale -= (frontSizeLost / totalFrontSize) * 2f;
+        Morale = Mathf.Clamp(Morale, 0f, 1f);
     }
 
     public IdCount<Troop> GetLosses()
@@ -138,6 +152,7 @@ public class UnitCombatInfo
         }
 
         ActiveFrontSizes = SetFrontSizes(Active, data);
+        Morale = 1f;
     }
 
     public void SetInitial(Troop troop, float amt, Data d)

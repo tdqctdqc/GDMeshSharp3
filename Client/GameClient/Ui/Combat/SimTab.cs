@@ -28,11 +28,11 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         Name = "Simulation Settings";
         _attackers = new List<UnitCombatInfo>
         {
-            new (IdCount<Troop>.Construct(), c.Data)
+            new (IdCount<Troop>.Construct(), 1f, c.Data)
         };
         _defenders = new List<UnitCombatInfo>
         {
-            new (IdCount<Troop>.Construct(), c.Data)
+            new (IdCount<Troop>.Construct(), 1f, c.Data)
         };
         
         MakeModel(c);
@@ -63,7 +63,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         calc.Text = "Calculate";
         
         var addNewUnit = ButtonExt.GetButton(
-            () => AddNewUnit(new UnitCombatInfo(IdCount<Troop>.Construct(), c.Data),
+            () => AddNewUnit(new UnitCombatInfo(IdCount<Troop>.Construct(), 1f, c.Data),
                 c.Data));
         addNewUnit.Text = "Add New Unit";
 
@@ -109,11 +109,11 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         
         _attackersGraphic = new CombatResultsGraphic();
         _attackersGraphic.ExpandFill();
-        _attackersGraphic.Draw(_attackers, c.Data);
+        _attackersGraphic.Draw(_attackers, MilUtil.AttackerMinMorale, c.Data);
         byUnitTab.AddChild(_attackersGraphic);
         _defendersGraphic = new CombatResultsGraphic();
         _defendersGraphic.ExpandFill();
-        _attackersGraphic.Draw(_defenders, c.Data);
+        _attackersGraphic.Draw(_defenders, MilUtil.DefenderMinMorale, c.Data);
         byUnitTab.AddChild(_defendersGraphic);
         AddChild(middle);
 
@@ -134,7 +134,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     {
         if (_templates.Selected.Count != 1) return;
         var template = _templates.Selected.First();
-        var u = new UnitCombatInfo(template.Troops, client.Data);
+        var u = new UnitCombatInfo(template.Troops, 1f, client.Data);
         AddNewUnit(u, client.Data);
     }
 
@@ -355,13 +355,13 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
     private void DrawCenter()
     {
-        _attackersGraphic.Draw(_attackers, Game.I.Client.Data);
-        _defendersGraphic.Draw(_defenders, Game.I.Client.Data);
+        _attackersGraphic.Draw(_attackers, MilUtil.AttackerMinMorale, Game.I.Client.Data);
+        _defendersGraphic.Draw(_defenders, MilUtil.DefenderMinMorale, Game.I.Client.Data);
 
         var attackerTotals = UnitCombatInfo.Sum(_attackers, Game.I.Client.Data);
         var defenderTotals = UnitCombatInfo.Sum(_defenders, Game.I.Client.Data);
-        _attackerTotalsGraphic.Draw(attackerTotals.Yield(), Game.I.Client.Data);
-        _defenderTotalsGraphic.Draw(defenderTotals.Yield(), Game.I.Client.Data);
+        _attackerTotalsGraphic.Draw(attackerTotals.Yield(), 0f, Game.I.Client.Data);
+        _defenderTotalsGraphic.Draw(defenderTotals.Yield(), 0f, Game.I.Client.Data);
     }
     
 }

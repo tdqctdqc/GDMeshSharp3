@@ -7,7 +7,7 @@ using Godot;
 public static class MilUtil
 {
     public static int NumEchelons { get; private set; }
-        = 3;
+        = 4;
     public static float CoverOpposingWeight { get; private set; }
         = .5f;
     public static float CoverLengthWeight { get; private set; }
@@ -18,24 +18,69 @@ public static class MilUtil
         = 100f;
     public static float LossRatioToForceBack { get; private set; } 
         = .3f;
+
+    public static float DefenderMinMorale { get; private set; }
+        = .25f;
+    public static float AttackerMinMorale { get; private set; }
+        = .5f;
     public static int BaseFrontLength { get; private set; }
         = 1000;
+    
 
     public static bool CalculateCombat(
         UnitCombatInfo[] attackers,
         UnitCombatInfo[] defenders,
         Landform lf, Vegetation veg, Data d)
     {
+        var attackersStill = attackers
+            .Where(u => u.Morale >= AttackerMinMorale).ToArray();
+        if (attackersStill.Length == 0) return false;
+        
+        var defendersStill = defenders
+            .Where(u => u.Morale >= DefenderMinMorale).ToArray();
+        if (defendersStill.Length == 0) return true;
+        
         foreach (var unitCombatInfo in defenders)
         {
             doFights(unitCombatInfo, attackers, 
                 defenders, false);
         }
-        foreach (var unitCombatInfo in attackers)
+
+        attackersStill = attackers
+            .Where(u => u.Morale >= AttackerMinMorale).ToArray();
+        if (attackersStill.Length == 0) return false;
+        
+        defendersStill = defenders
+            .Where(u => u.Morale >= DefenderMinMorale).ToArray();
+        if (defendersStill.Length == 0) return true;
+
+        foreach (var unitCombatInfo in attackersStill)
         {
-            doFights(unitCombatInfo, defenders, 
-                attackers, true);
+            doFights(unitCombatInfo, defendersStill, 
+                attackersStill, true);
         }
+        
+        if (attackersStill.All(info => info.ActiveFrontSizes.Sum() <= 0f))
+        {
+            return false;
+        }
+        if (defendersStill.All(info => info.ActiveFrontSizes.Sum() <= 0f))
+        {
+            return true;
+        }
+        
+        attackersStill = attackers
+            .Where(u => u.Morale >= AttackerMinMorale).ToArray();
+        if (attackersStill.Length == 0) return false;
+        
+        defendersStill = defenders
+            .Where(u => u.Morale >= DefenderMinMorale).ToArray();
+        if (defendersStill.Length == 0) return true;
+
+        return false;
+        
+        
+        
         
         void doFights(UnitCombatInfo unit, 
             UnitCombatInfo[] targets,
@@ -90,12 +135,13 @@ public static class MilUtil
         bool getHit(Troop troop, Troop target, 
             bool targetIsDefendingCell, bool troopInitiated)
         {
-            if (troopInitiated == false && target.Range > troop.Range)
-            {
-                return false;
-            }
             var toHit = Random.Shared.NextSingle()
                         * troop.Accuracy;
+            if (troopInitiated == false && target.Range > troop.Range)
+            {
+                //shields 'bombard' from return fire
+                return false;
+            }
             var evadeMult = GetEvasionMult(lf, veg, targetIsDefendingCell);
             var toEvade = Random.Shared.NextSingle()
                           * target.Evasion * evadeMult;
@@ -154,26 +200,7 @@ public static class MilUtil
             throw new Exception();
         }
 
-        if (defenders.All(info => info.ActiveFrontSizes.Sum() <= 0f))
-        {
-            return true;
-        }
-
-        var defPower = defenders.Sum(i => i.InitialPowerPoints(d));
-        var lostDefPower = defenders.Sum(i => i.LostPowerPoints(d));
-        var defLossRatio = lostDefPower / defPower;
-        if (lostDefPower / defPower >= LossRatioToForceBack)
-        {
-            var atkPower = attackers.Sum(i => i.InitialPowerPoints(d));
-            var lostAtkPower = attackers.Sum(i => i.LostPowerPoints(d));
-            var atkLossRatio = lostAtkPower / atkPower;
-            if (atkLossRatio < defLossRatio)
-            {
-                return true;
-            }
-        }
-
-        return false;
+        
     }
     
     public static int GetTargetEchelon(Troop troop, 
@@ -298,7 +325,8 @@ public static class MilUtil
 
 
 
-    public static float GetEvasionMult(Landform lf, Vegetation veg, bool defending)
+    public static float GetEvasionMult(Landform lf, 
+        Vegetation veg, bool defending)
     {
         var evadeMult = lf.EvasionMult * veg.EvasionMult;
         if (defending == false)
