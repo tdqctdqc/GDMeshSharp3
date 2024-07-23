@@ -16,10 +16,17 @@ public static class UnitExt
                 return v;
             });
     }
-    public static float GetAttackPoints(this Unit u, Data d)
+    public static float GetPowerPointsWeighted(this Unit u, Data d)
     {
-        return u.Troops.GetEnumModel(d)
-            .Sum(kvp => kvp.Value * kvp.Key.GetAttackPoints());
+        if (u.Troops.Contents.Count == 0) return 0f; 
+        var raw = u.Troops.GetEnumModel(d)
+            .Sum(kvp =>
+            {
+                var v = kvp.Value * kvp.Key.GetPowerPoints();
+                if (float.IsNaN(v)) return 0f;
+                return v;
+            });
+        return raw * Mathf.Sqrt(u.Morale);
     }
     public static float GetHitPoints(this Unit u, Data d)
     {

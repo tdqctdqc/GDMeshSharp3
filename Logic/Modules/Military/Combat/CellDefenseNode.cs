@@ -75,7 +75,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         {
             var numEdges = combat.Graph.GetNeighbors(a)
                 .Count(e => e is IUnitNode);
-            return a.GetPowerPoints(d) / numEdges;
+            return a.GetPowerPointsWeighted(d) / numEdges;
         });
         return Mathf.Max(1f, val);
     }
@@ -90,7 +90,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
                 {
                     var numEdges = combat.Graph.GetNeighbors(a)
                         .Count(e => e is IUnitNode);
-                    return a.GetPowerPoints(d) / numEdges;
+                    return a.GetPowerPointsWeighted(d) / numEdges;
                 });
         });
         return Mathf.Max(1f, val);

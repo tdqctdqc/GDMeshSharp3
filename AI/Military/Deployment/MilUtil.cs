@@ -285,7 +285,7 @@ public static class MilUtil
             .PickInOrderAndAssignAlongFaces2(
             faces, 
             groupsInOrder, 
-            u => u.GetPowerPoints(d),
+            a => a.GetPowerPoints(d),
             getFaceCost);
         return lineOrders.ToDictionary(kvp => kvp.Key,
             kvp => faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1)
