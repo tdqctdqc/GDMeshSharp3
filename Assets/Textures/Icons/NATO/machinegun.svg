@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="99.99958mm"
+   height="100.0001mm"
+   viewBox="0 0 99.99958 100.0001"
+   version="1.1"
+   id="svg8"
+   inkscape:version="1.3 (0e150ed6c4, 2023-07-21)"
+   sodipodi:docname="machinegun.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#00004f"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="125.35714"
+     inkscape:cy="248.92858"
+     inkscape:document-units="mm"
+     inkscape:current-layer="layer1"
+     inkscape:document-rotation="0"
+     showgrid="false"
+     inkscape:snap-object-midpoints="true"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:pagecheckerboard="false"
+     inkscape:showpageshadow="2"
+     inkscape:deskcolor="#d1d1d1" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-73.573969,-107.88262)">
+    <path
+       id="rect10"
+       style="fill:#ffffff;stroke-width:0.264583;stroke:#ffffff"
+       d="m 73.573969,107.88262 v 100.0001 h 99.999581 v -100.0001 z m 9.999906,9.99991 H 163.57364 V 197.8823 H 83.573875 Z" />
+    <g
+       id="g2"
+       transform="translate(0.4211245,0.35152319)">
+      <rect
+         style="fill:#f9f9f9;stroke:#000000;stroke-width:0;stroke-miterlimit:0;paint-order:markers fill stroke"
+         id="rect1"
+         width="7.7508163"
+         height="38.754082"
+         x="119.27705"
+         y="143.1622" />
+      <path
+         id="rect2"
+         style="fill:#f9f9f9;stroke:#000000;stroke-width:0;stroke-miterlimit:0;paint-order:markers fill stroke"
+         d="m 108.12799,148.17084 5.00792,5.00791 10.01654,-10.01655 10.01655,10.01655 5.00828,-5.00828 -10.01655,-10.01655 -5.00791,-5.00791 -5.00828,5.00828 z" />
+    </g>
+  </g>
+</svg>
