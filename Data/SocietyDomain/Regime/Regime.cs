@@ -66,8 +66,9 @@ public class Regime : Entity, INamed
         );
         key.Create(r);
         Alliance.Create(r, key);
-        UnitTemplate.CreateDefaultTemplatesForRegime(r, key);
         global::Technology.AddStartingTechsForRegime(r, key);
+        UnitTemplate.CreateDefaultTemplatesForRegime(r, key);
+        
         return r;
     }
 

@@ -43,15 +43,9 @@ public partial class MakingTab : ScrollContainer, IUiDrawable
             projects,
             p =>
             {
-                var name = p.Making.Get(client.Data) is INamed n
-                    ? n.Name
-                    : p.Making.Get(client.Data).GetType().Name;
-
-                return $"{name} {p.Fulfilled.RoundTo2Digits()}/{p.Amount.RoundTo2Digits()}";
+                return $"{p.Description(client.Data)} {p.Fulfilled.RoundTo2Digits()}/{p.Amount.RoundTo2Digits()}";
             },
-            p => p.Making.Get(client.Data) is IIconed i
-                    ? i.Icon.Texture
-                    : new Texture2D(),
+            p => p.GetIcon(client.Data).Texture,
             (int)med,
             true
         );
@@ -67,16 +61,14 @@ public partial class MakingTab : ScrollContainer, IUiDrawable
         var project = _projectsList.Selected.First();
         var med = client.Settings.MedIconSize.Value;
         var large = client.Settings.LargeIconSize.Value;
-        var title = project.Making.Get(client.Data).GetType().Name;
-        if (project.Making.Get(client.Data) is IIconed i)
-        {
-            _projectInfo.AddChild(i.Icon.GetTextureRect(large));
-        }
+        var title = project.Description(client.Data);
+        _projectInfo.AddChild(project.GetIcon(client.Data).GetTextureRect(large));
+
         var titleLabel = _projectInfo.CreateLabelAsChild(title);
 
         _projectInfo.CreateLabelAsChild($"Amount: {project.Fulfilled}/{project.Amount}");
         _projectInfo.CreateLabelAsChild("Costs");
-        var makeable = ((IMakeable)project.Making.Get(client.Data)).Makeable;
+        var makeable = project.GetMakeable(client.Data);
         foreach (var (costModel, costAmt) in makeable.BuildCosts.GetEnumModel(client.Data))
         {
             var text = $"{costModel.Name}: {costAmt * project.Fulfilled}/{costAmt * project.Amount}";

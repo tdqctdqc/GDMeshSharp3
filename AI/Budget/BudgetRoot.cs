@@ -61,11 +61,11 @@ public class BudgetRoot : BudgetBranch
                 most.Credit.AddSpendingToCurrent(price);
                 if (most.MadeByTick.ContainsKey(tick) == false)
                 {
-                    most.MadeByTick.Add(tick, IdCount<IModel>.Construct());
+                    most.MadeByTick.Add(tick, new Dictionary<string, float>());
                 }
                 foreach (var (model, amt) in built)
                 {
-                    most.MadeByTick[tick].Add(model, amt);
+                    most.MadeByTick[tick].AddOrSum(model, amt);
                 }
             }
         }

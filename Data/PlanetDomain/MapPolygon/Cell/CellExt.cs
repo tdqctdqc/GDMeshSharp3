@@ -20,7 +20,7 @@ public static class CellExt
                 .OfType<PlayerSettlementBuildingMakeProject>()
                 .Where(p => p.Settlement.RefId == s.Id);
             expectedLabor += inProgress
-                .Select(p => (SettlementBuilding)p.Making.Get(d))
+                .Select(p => p.Building.Get(d))
                 .Sum(b => b.Labor.TotalLabor());
         }
 
@@ -36,7 +36,7 @@ public static class CellExt
                 .OfType<PlayerResourceExtractionMakeProject>()
                 .Where(p => p.ResourceDeposit.RefId == rd.Id);
             expectedLabor += inProgress
-                .Select(p => (ResourceExtractionBuilding)p.Making.Get(d))
+                .Select(p => p.Building.Get(d))
                 .Sum(b => b.Labor.TotalLabor());
         }
 

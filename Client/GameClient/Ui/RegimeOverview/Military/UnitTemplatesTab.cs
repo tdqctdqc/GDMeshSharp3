@@ -7,7 +7,7 @@ public partial class UnitTemplatesTab : HBoxContainer, IUiDrawable
 {
     private ItemListToken<UnitTemplate> _templates;
     private ItemListToken<TroopDomain> _domain;
-    private ItemListToken<Troop> _troops;
+    private ItemListToken<TroopType> _troopTypes;
     private VBoxContainer _selectedTemplateInfo;
     private Func<Regime> _getRegime;
 
@@ -37,17 +37,14 @@ public partial class UnitTemplatesTab : HBoxContainer, IUiDrawable
         _domain.JustSelected += () =>
         {
             _templates.Reset(GetValidTemplates(client));
-            _troops.Reset(GetValidTroops(client));
+            _troopTypes.Reset(GetValidTroopTypes(client));
         };
         
         
         _templates = new ItemListToken<UnitTemplate>(
             GetValidTemplates(client),
             u => u.Name,
-            u =>
-                u.Troops.Contents.Count > 0
-                    ? u.GetMaxPowerTroop(client.Data).Icon.Texture
-                    : Icon.Blank.Texture,
+            u => u.GetIcon(client.Data).Texture,
             (int)med,
              false
         );
@@ -114,14 +111,14 @@ public partial class UnitTemplatesTab : HBoxContainer, IUiDrawable
         rightSide.ExpandFill(1);
         AddChild(rightSide);
 
-        _troops = new ItemListToken<Troop>(
-            GetValidTroops(client),
-            t => t.DisplayName,
+        _troopTypes = new ItemListToken<TroopType>(
+            GetValidTroopTypes(client),
+            t => t.Name,
             t => t.Icon.Texture,
             (int)med,
             false);
-        _troops.ItemList.ExpandFill();
-        rightSide.AddChild(_troops.ItemList);
+        _troopTypes.ItemList.ExpandFill();
+        rightSide.AddChild(_troopTypes.ItemList);
         var troopNumSlider = new NumSliderAndEntry("Num Troop",
             0f, 0f, 1000f, 1f);
         rightSide.AddChild(troopNumSlider);
@@ -129,10 +126,10 @@ public partial class UnitTemplatesTab : HBoxContainer, IUiDrawable
             () =>
             {
                 if (_templates.Selected.Count == 0 
-                    || _troops.Selected.Count == 0) return;
+                    || _troopTypes.Selected.Count == 0) return;
                 var inner = new ChangeTemplateTroopAmountProcedure(
                     _templates.Selected.Single().MakeRef(),
-                    _troops.Selected.Single().MakeRef(),
+                    _troopTypes.Selected.Single().MakeRef(),
                     troopNumSlider.Value);
                 var inner2 = new SendMessageCommand(inner, client.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
 
@@ -153,13 +150,15 @@ public partial class UnitTemplatesTab : HBoxContainer, IUiDrawable
         var regime = _getRegime();
         return regime.GetUnitTemplates(client.Data).Where(t => t.Domain == domain);
     }
-    private IEnumerable<Troop> GetValidTroops(Client client)
+    private IEnumerable<TroopType> GetValidTroopTypes(Client client)
     {
         var domain = _domain.Selected.Single();
         var regime = _getRegime();
         return client.Data.Models.GetModels<Troop>()
-            .Where(t => t.TroopType.TroopDomain == domain
-                && regime.HasPrereqs(t));
+            .Select(t => t.TroopType)
+            .Distinct()
+            .Where(t => t.TroopDomain == domain);
+
     }
     private void DrawTemplateInfo(Client client)
     {

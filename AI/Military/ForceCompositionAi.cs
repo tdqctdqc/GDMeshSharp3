@@ -7,15 +7,56 @@ using Godot;
 public class ForceCompositionAi
 {
     private static int PreferredGroupSize = 7;
+    private Regime _regime;
+
+    public Dictionary<UnitMetaTemplate, int>
+        DesiredAmounts { get; private set; }
 
     public ForceCompositionAi(Regime regime)
     {
-        
+        _regime = regime;
+        DesiredAmounts = new Dictionary<UnitMetaTemplate, int>();
     }
+
     public void Calculate(Regime regime, LogicWriteKey key)
     {
+        CalcDesired(regime, key);
         ReinforceUnits(regime, key);
         AssignFreeUnitsToGroups(regime, key);
+    }
+
+    private void CalcDesired(Regime regime, LogicWriteKey key)
+    {
+        var templatesAi = key.Data.HostLogicData.RegimeAis[regime]
+            .Military.Templates;
+        var weights = new Dictionary<UnitMetaTemplate, float>
+        {
+            {templatesAi.Infantry, 1f}
+        };
+        //do mods
+
+        var totalWeight = weights.Sum(kvp => kvp.Value);
+        
+        var numCells = regime.GetCells(key.Data).Count();
+        var approxBorder = Mathf.Sqrt(numCells) * 2.5f;
+        var unitsPerBorder = 2f / UnitTemplatesAi.SingleUnitFrontProportion;
+        var numUnits = approxBorder * unitsPerBorder;
+        DesiredAmounts = weights.ToDictionary(kvp => kvp.Key,
+            kvp => Mathf.CeilToInt(numUnits * kvp.Value / totalWeight));
+    }
+
+    public Dictionary<UnitMetaTemplate, Vector2I> 
+        GetCurrentAndNeededTotals(Data d)
+    {
+        var unitsByMeta = 
+            _regime.GetUnits(d)
+                .SortBy(u => u.Template.Get(d).GetMetaTemplate(d));
+        var needed = DesiredAmounts.ToDictionary(kvp => kvp.Key,
+            kvp => unitsByMeta.TryGetValue(kvp.Key, out var list)
+                ? Mathf.Max(0, kvp.Value - list.Count)
+                : kvp.Value);
+        return unitsByMeta.ToDictionary(kvp => kvp.Key,
+            kvp => new Vector2I(needed[kvp.Key], unitsByMeta[kvp.Key].Count()));
     }
     private void AssignFreeUnitsToGroups(Regime regime, 
         LogicWriteKey key)
@@ -75,13 +116,14 @@ public class ForceCompositionAi
     private void ReinforceUnits(Regime regime,
         LogicWriteKey key)
     {
-        var needCounts = new Dictionary<Troop, float>();
+        var needCounts = new Dictionary<TroopType, float>();
         var units = regime.GetUnits(key.Data);
         if (units == null) return;
         foreach (var unit in units)
         {
             var template = unit.Template.Get(key.Data);
-            foreach (var (troop, value) in unit.Troops.GetEnumModel(key.Data))
+            foreach (var (troop, value) in unit.Troops.GetEnumModel(key.Data)
+                         .SortInto(kvp => kvp.Key.TroopType, kvp => kvp.Value))
             {
                 var shouldHave = template.Troops.Get(troop);
                 if (value < shouldHave)
@@ -91,23 +133,51 @@ public class ForceCompositionAi
             }
         }
         
-        var proc = ReinforceRegimeProcedure.Construct(regime);
+        var proc = ReinforceProcedure.Construct(regime);
         var reserve = regime.Stock;
+
+        var reservesByType = new Dictionary<TroopType, List<Troop>>();
+        var reservesRemaining = new Dictionary<Troop, float>();
+        foreach (var (model, value) in regime.Stock.Stock.GetEnumModel(key.Data))
+        {
+            if (model is not Troop t) continue;
+            if(reservesByType.ContainsKey(t.TroopType) == false)
+            {
+                reservesByType.Add(t.TroopType, new List<Troop>());
+            }
+
+            reservesByType[t.TroopType].Add(t);
+            reservesRemaining.Add(t, value);
+        }
+        foreach (var (troopType, value) in reservesByType)
+        {
+            value.Sort((t1, t2) =>
+            {
+                return Mathf.FloorToInt(t2.GetPowerPoints() - t1.GetPowerPoints());
+            });
+        }
+        
         foreach (var unit in regime.GetUnits(key.Data))
         {
             var template = unit.Template.Get(key.Data);
-            foreach (var (troop, value) in unit.Troops.GetEnumModel(key.Data))
+            foreach (var (troopType, value) in unit.Troops.GetEnumModel(key.Data)
+                         .SortInto(kvp => kvp.Key.TroopType, kvp => kvp.Value))
             {
-                if (needCounts.ContainsKey(troop) == false) continue;
-                if (reserve.Stock.Contents.ContainsKey(troop.Id) == false) continue;
-                var shouldHave = template.Troops.Get(troop);
+                if (needCounts.ContainsKey(troopType) == false) continue;
+                if (reservesByType.ContainsKey(troopType) == false) continue;
+                var shouldHave = template.Troops.Get(troopType);
                 if (value < shouldHave)
                 {
                     var need = shouldHave - value;
-                    var receiveRatio = reserve.Stock.Get(troop) / needCounts[troop];
-                    receiveRatio = Mathf.Clamp(receiveRatio, 0f, 1f);
                     
-                    proc.ReinforceCounts.Add((unit.Id, troop.Id, need * receiveRatio));
+                    foreach (var troop in reservesByType[troopType])
+                    {
+                        if (need == 0f) break;
+                        if (reservesRemaining[troop] == 0f) continue;
+                        var take = Mathf.Min(need, reservesRemaining[troop]);
+                        reservesRemaining[troop] -= take;
+                        proc.ReinforceCounts.Add((unit.Id, troop.Id, take));
+                    }
                 }
             }
         }

@@ -7,14 +7,14 @@ using Godot;
 public static class BuildTree
 {
     public static float Increment(
-        MakeProject proj, RegimeStock stock, StrongWriteKey key)
+        MakeableAttribute makeable, RegimeStock stock, 
+        float totalToMake,
+        StrongWriteKey key)
     {
-        var makeable = ((IMakeable)proj.Making.Get(key.Data)).Makeable;
+        if (totalToMake == 0f) return 0f;
         var children = makeable.BuildCosts.GetEnumModel(key.Data)
                 .Select(kvp => (kvp.Key, kvp.Value)).ToDictionary(
                     v => v.Item1, v => v.Item2);;
-        var totalToMake = proj.Amount - proj.Fulfilled;
-        if (totalToMake == 0f) return 0f;
         var made = Run(children, stock, totalToMake, key.Data);
         return made;
     }

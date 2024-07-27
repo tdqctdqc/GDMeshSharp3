@@ -27,17 +27,30 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         var allTroopModels = client.Data.Models
             .GetModels<Troop>()
             .Where(t => regime.HasPrereqs(t));
-        var totalDeployed = IdCount<Troop>.Sum(
-            units.Select(u => u.Troops).ToArray());
-        var totalAuthorized = IdCount<Troop>.Sum(
-            units.Select(u => u.Template.Get(client.Data).Troops)
-                .ToArray());
+
+        var d = new Dictionary<TroopType, float>();
+        foreach (var unit in units)
+        {
+            foreach (var (troop, value) in unit.Troops.GetEnumModel(client.Data))
+            {
+                d.AddOrSum(troop.TroopType, value);
+            }
+        }
+
+        var totalDeployed = IdCount<TroopType>.Construct(d);
+        
+        var totalAuthorized = IdCount<TroopType>.Sum(
+            units.Select(u => u.Template.Get(client.Data).Troops).ToArray());
+        
+        
+        
+        
         var reserve = regime.Stock.Stock;
         _troops = new ItemListToken<Troop>(
             allTroopModels,
             t => $"{t.Name} " +
-                 $"Deployed: {totalDeployed.Get(t)} " +
-                 $"Authorized: {totalAuthorized.Get(t)} " +
+                 $"Deployed: {totalDeployed.Get(t.TroopType)} " +
+                 $"Authorized: {totalAuthorized.Get(t.TroopType)} " +
                  $"Reserve: {reserve.Get(t)}",
             t => t.Icon.Texture,
             (int)med,
@@ -46,12 +59,12 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
 
         var projects = regime.MakeQueue.Queue
             .OfType<ModelMakeProject>()
-            .Where(m => m.Model(client.Data) is Troop t);
+            .Where(m => m.Model.Get(client.Data) is Troop t);
 
         _projects = new ItemListToken<ModelMakeProject>(
             projects,
-            p => $"{p.Model(client.Data).Name}: {p.Fulfilled} / {p.Amount}",
-            t => ((Troop)t.Model(client.Data)).Icon.Texture,
+            p => $"{p.Model.Get(client.Data).Name}: {p.Fulfilled} / {p.Amount}",
+            t => ((Troop)t.Model.Get(client.Data)).Icon.Texture,
             (int)med,
             true);
         _projects.ItemList.ExpandFill();
@@ -81,8 +94,8 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
             }
 
             var t = selected.First();
-            var have = totalDeployed.Get(t);
-            var authorized = totalAuthorized.Get(t);
+            var have = totalDeployed.Get(t.TroopType);
+            var authorized = totalAuthorized.Get(t.TroopType);
             var need = authorized - (have + reserve.Get(t));
             var max = Mathf.Max(10_000, need);
             _num.SetRange(0, max);
@@ -128,8 +141,8 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
                 return;
             }
             var troop = selected.First();
-            var need = totalAuthorized.Get(troop)
-                       - (reserve.Get(troop) + totalDeployed.Get(troop));
+            var need = totalAuthorized.Get(troop.TroopType)
+                       - (reserve.Get(troop) + totalDeployed.Get(troop.TroopType));
             if (need <= 0f) return;
             _num.SetValue(need);
         });

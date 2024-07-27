@@ -38,29 +38,16 @@ public partial class UnitTree : Tree
         Client c)
     {
         var d = c.Data;
-        Setup(item, unit.Troops, unit.Template.Get(d).Troops,
+        Setup(item, unit.Troops, 
             unit.GetMaxPowerTroop(d).Icon.Texture,
             $"{unit.Template.Get(d).Name} {unit.Id}",
             unit.Id, startColumn, c);
     }
     
-    public static void Setup(
-        TreeItem item,
-        UnitTemplate template, 
-        int startColumn,
-        Client c)
-    {
-        Setup(item, template.Troops,
-            template.Troops,
-            template.GetMaxPowerTroop(c.Data).Icon.Texture,
-            $"{template.Name}",
-            template.Id, startColumn, c);
-    }
     
     public static void Setup(
         TreeItem item,
         IdCount<Troop> troops, 
-        IdCount<Troop> troopsIdeal, 
         Texture2D texture,
         string descr,
         int metadata,
@@ -87,9 +74,7 @@ public partial class UnitTree : Tree
             troopBranch.SetIconRegion(1 + startColumn, new Rect2(0f, 0f, iconSize.X, iconSize.Y));
             troopBranch.SetCellMode(2 + startColumn, TreeItem.TreeCellMode.String);
             troopBranch.SetText(2 + startColumn, 
-                troops == troopsIdeal
-                ? amt.ToString()
-                : $"{amt} / {troopsIdeal.Get(troop)}");
+                amt.ToString());
         }
     }
 

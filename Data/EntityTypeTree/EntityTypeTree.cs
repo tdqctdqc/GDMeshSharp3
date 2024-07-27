@@ -6,6 +6,7 @@ using Godot;
 public class EntityTypeTree
 {
     public Dictionary<Type, IEntityTypeTreeNode> Nodes { get; private set; }
+    private object _key = new (){ };
     public EntityTypeTree(Data data)
     {
         Nodes = new Dictionary<Type, IEntityTypeTreeNode>();
@@ -21,22 +22,26 @@ public class EntityTypeTree
     }
     private void Add(Type type)
     {
-        var node = IEntityTypeTreeNode.ConstructFromType(type);
-        Nodes.Add(type, node);
-        var parentType = type.BaseType;
-        if (Nodes.ContainsKey(parentType) == false && typeof(Entity).IsAssignableFrom(parentType))
+        lock (_key)
         {
-            Add(parentType);
-        }
-        if(Nodes.TryGetValue(parentType, out var pNode))
-        {
-            node.SetParent(Nodes[parentType]);
-        }
-        foreach (var type1 in Nodes.Keys.ToList())
-        {
-            if (type1.BaseType == type)
+            if (Nodes.ContainsKey(type)) return;
+            var node = IEntityTypeTreeNode.ConstructFromType(type);
+            Nodes.Add(type, node);
+            var parentType = type.BaseType;
+            if (Nodes.ContainsKey(parentType) == false && typeof(Entity).IsAssignableFrom(parentType))
             {
-                Nodes[type1].SetParent(node);
+                Add(parentType);
+            }
+            if(Nodes.TryGetValue(parentType, out var pNode))
+            {
+                node.SetParent(Nodes[parentType]);
+            }
+            foreach (var type1 in Nodes.Keys.ToList())
+            {
+                if (type1.BaseType == type)
+                {
+                    Nodes[type1].SetParent(node);
+                }
             }
         }
     }

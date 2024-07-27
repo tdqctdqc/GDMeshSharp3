@@ -17,5 +17,13 @@ public class RegimeMilitary
         Regime = regime;
     }
 
+    public Troop GetBestTroopOfType(TroopType type, Data d)
+    {
+        var regime = Regime.Get(d);
+        return d.Models.GetModels<Troop>()
+            .Where(t => t.TroopType == type && regime.HasPrereqs(t))
+            .OrderByDescending(t => t.GetPowerPoints())
+            .FirstOrDefault();
+    }
     
 }

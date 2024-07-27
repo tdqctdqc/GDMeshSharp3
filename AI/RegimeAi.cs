@@ -16,6 +16,7 @@ public class RegimeAi
         Military = new RegimeMilitaryAi(regime, data);
         Budget = new BudgetAi(regime, data, regime);
         Technology = new RegimeTechnologyAi(regime, data);
+        
         Status = new List<string>();
     }
 
@@ -39,9 +40,9 @@ public class RegimeAi
             ai.CalculateMajor(orders, alliance, key);
         }
         
-        Budget.Calculate(key, orders);
         Military.CalculateMajor(key, orders);
         Technology.Calculate(key);
+        Budget.Calculate(key, orders);
         Status.RemoveAt(Status.Count - 1);
 
         return orders; 

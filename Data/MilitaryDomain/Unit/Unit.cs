@@ -10,11 +10,14 @@ public class Unit : Entity
     public IdCount<Troop> Troops { get; private set; }
     public float Morale { get; private set; }
     public static Unit Create(UnitTemplate template, 
+        IdCount<Troop> troops, 
         Regime regime,
         IHostWriteKey key)
     {
-        var u = new Unit(key.Data.IdDispenser.TakeId(), regime.MakeRef(), template.MakeRef(),
-            IdCount<Troop>.Construct(template.Troops), 1f);
+        var u = new Unit(key.Data.IdDispenser.TakeId(), 
+            regime.MakeRef(), template.MakeRef(),
+            IdCount<Troop>.Construct(troops),
+            1f);
         key.Create(u);
         return u;
     }

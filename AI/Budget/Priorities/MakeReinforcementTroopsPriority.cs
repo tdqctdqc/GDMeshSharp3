@@ -8,15 +8,19 @@ using Google.OrTools.LinearSolver;
 public class MakeReinforcementTroopsPriority
     : SolverPriority<Troop>
 {
-    private Dictionary<Troop, float> _needed; 
+    private Dictionary<TroopType, float> _needed;
+    private Regime _regime;
     public MakeReinforcementTroopsPriority(
-        Regime r,
-        string name) 
-            : base(name, 
-                d => d.Models.GetModels<Troop>()
-                    .Where(t => r.HasPrereqs(t)))
+        Regime r) 
+            : base("Make Reinforcement Troops")
     {
-        _needed = new Dictionary<Troop, float>();
+        _regime = r;
+        _needed = new Dictionary<TroopType, float>();
+    }
+
+    protected override string GetName(Troop t, Data d)
+    {
+        return t.Name;
     }
 
     protected override float Utility(Troop t, Data d)
@@ -26,7 +30,7 @@ public class MakeReinforcementTroopsPriority
 
     protected override bool Relevant(Troop t, Data d)
     {
-        return _needed.ContainsKey(t);
+        return _needed.ContainsKey(t.TroopType);
     }
 
     protected override void SetCalcData(Regime r, Data d)
@@ -36,13 +40,14 @@ public class MakeReinforcementTroopsPriority
         foreach (var unit in units)
         {
             var template = unit.Template.Get(d);
-            foreach (var (troop, amt) in unit.Troops.GetEnumModel(d))
+            foreach (var (troop, amt) in unit.Troops
+                         .GetEnumModel(d).SortInto(kvp => kvp.Key.TroopType, kvp => kvp.Value))
             {
                 var diff = template.Troops.Get(troop) - amt;
                 var stock = r.Stock.Stock.Get(troop);
                 diff -= stock;
                 var producing = r.MakeQueue.Queue.OfType<ModelMakeProject>()
-                    .Where(p => p.Making.RefId == troop.Id)
+                    .Where(p => p.Model.Get(d) == troop)
                     .Sum(p => p.Amount);
                 diff -= producing;
                 if (diff > 0f)
@@ -58,7 +63,7 @@ public class MakeReinforcementTroopsPriority
         Dictionary<Troop, Variable> projVars, Data data)
     {
         solver.SetBuildCostConstraints(data, pool, projVars);
-        solver.SetMaxVariableConstraint(projVars,
+        solver.SetConstraints(projVars, t => (t.TroopType, 1f),
             _needed, data);
     }
 
@@ -77,5 +82,16 @@ public class MakeReinforcementTroopsPriority
         }
 
         return res;
+    }
+
+    protected override IEnumerable<Troop> GetAll(Data d)
+    {
+        return d.Models.GetModels<Troop>()
+            .Where(t => _regime.HasPrereqs(t));
+    }
+
+    protected override void Complete(BudgetPool pool, Regime r, Dictionary<Troop, float> toBuild, LogicWriteKey key)
+    {
+        CompleteModel(pool, r, toBuild, key);
     }
 }

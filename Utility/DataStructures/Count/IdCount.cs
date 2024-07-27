@@ -34,6 +34,11 @@ public class IdCount<T> : Count<int>
     {
         return new IdCount<T>(new Dictionary<int, float>(toCopy.Contents), false);
     }
+    public static IdCount<T> Construct<TCopy>(IdCount<TCopy> toCopy)
+        where TCopy : T
+    {
+        return new IdCount<T>(new Dictionary<int, float>(toCopy.Contents), false);
+    }
     public static IdCount<T> ConstructNegative(IdCount<T> toCopy)
     {
         return new IdCount<T>(

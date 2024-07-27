@@ -5,60 +5,51 @@ using MessagePack;
 public class PlayerResourceExtractionMakeProject : MakeProject
 {
     public ERef<ResourceDeposit> ResourceDeposit { get; private set; }
-    
+    public ModelRef<ResourceExtractionBuilding> Building { get; private set; }
     public static PlayerResourceExtractionMakeProject Construct(
         ResourceDeposit resourceDeposit,
         Regime regime,
-        ResourceExtractionBuilding making)
+        ResourceExtractionBuilding building)
     {
         return new PlayerResourceExtractionMakeProject(
-            resourceDeposit.MakeRef(), regime.MakeRef(),
-            making.MakeRef<IModel>(),
+            resourceDeposit.MakeRef(), 
+            building.MakeRef(),
+            regime.MakeRef(),
             0f, -1);
     }
     [SerializationConstructor] protected PlayerResourceExtractionMakeProject(
         ERef<ResourceDeposit> resourceDeposit,
+        ModelRef<ResourceExtractionBuilding> building,
         ERef<Regime> regime, 
-        IdRef making,
         float fulfilled, int id) 
-            : base(regime, making, 1f, fulfilled, id)
+            : base(regime, 1f, fulfilled, id)
     {
+        Building = building;
         ResourceDeposit = resourceDeposit;
     }
     
     public override void Start(LogicWriteKey key)
     {
         var regime = Regime.Get(key.Data);
-        var before = Mathf.FloorToInt(Fulfilled);
-        var increment = BuildTree.Increment(this, regime.Stock, key);
-        if(increment == 0f) return;
-        Fulfilled += increment;
-        var after = Mathf.FloorToInt(Fulfilled);
-        
-        var diff = after - before;
-        for (var i = 0; i < diff; i++)
-        {
-            var building = (ResourceExtractionBuilding)Making.Get(key.Data);
-            var rd = ResourceDeposit.Get(key.Data);
-            var proc = new AddExtractionProcedure(ResourceDeposit, building.MakeRef());
-            key.SendMessage(proc);
-        }
+        Increment(regime.Stock, key);
         var setStock = new SetStockProcedure(regime.MakeRef(),
             regime.Stock);
         key.SendMessage(setStock);
     }
 
-    public override void Increment(float amount, 
-        RegimeStock stock,
+    public override void Increment(RegimeStock stock,
         LogicWriteKey key)
     {
         var before = Mathf.FloorToInt(Fulfilled);
-        Fulfilled += amount;
+        Fulfilled += BuildTree.Increment(GetMakeable(key.Data),
+            stock,
+            Amount - Fulfilled,
+            key);
         var after = Mathf.FloorToInt(Fulfilled);
         var diff = after - before;
         for (var i = 0; i < diff; i++)
         {
-            var building = (ResourceExtractionBuilding)Making.Get(key.Data);
+            var building = Building.Get(key.Data);
             var rd = ResourceDeposit.Get(key.Data);
             var regime = Regime.Get(key.Data);
             var proc = new AddExtractionProcedure(ResourceDeposit, building.MakeRef());
@@ -73,7 +64,7 @@ public class PlayerResourceExtractionMakeProject : MakeProject
 
     public override void Cancel(ProcedureWriteKey key)
     {
-        var making = MakingBuilding(key.Data);
+        var making = Building.Get(key.Data);
         var stock = Regime.Get(key.Data).Stock;
         foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumModel(key.Data))
         {
@@ -82,15 +73,11 @@ public class PlayerResourceExtractionMakeProject : MakeProject
         }
     }
 
-    public SettlementBuilding MakingBuilding(Data d)
-    {
-        return (SettlementBuilding)Making.Get(d);
-    }
 
     public override Control GetDisplay(Data d)
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;
-        var m = (IModel)Making.Get(d);
+        var m = Building.Get(d);
         var makeable = (IMakeable)m;
         var vbox = new VBoxContainer();
         if (m is IIconed i)
@@ -120,9 +107,9 @@ public class PlayerResourceExtractionMakeProject : MakeProject
     public override bool Consolidate(MakeProject next, 
         LogicWriteKey key)
     {
-        if (next is not PlayerSettlementBuildingMakeProject p
-            || p.Settlement.Equals(ResourceDeposit) == false
-            || p.Making.RefId != Making.RefId)
+        if (next is not PlayerResourceExtractionMakeProject p
+            || p.Building.Equals(ResourceDeposit) == false
+            || p.Building.Equals(Building) == false)
         {
             return false;
         }
@@ -135,7 +122,7 @@ public class PlayerResourceExtractionMakeProject : MakeProject
         var diff = after - before;
         for (var i = 0; i < diff; i++)
         {
-            var building = (ResourceExtractionBuilding)Making.Get(key.Data);
+            var building = Building.Get(key.Data);
             var settlement = ResourceDeposit.Get(key.Data);
             var regime = Regime.Get(key.Data);
             var proc = new AddExtractionProcedure(ResourceDeposit, building.MakeRef());
@@ -144,5 +131,20 @@ public class PlayerResourceExtractionMakeProject : MakeProject
 
         Fulfilled += next.Fulfilled;
         return true;
+    }
+
+    public override MakeableAttribute GetMakeable(Data d)
+    {
+        return Building.Get(d).Makeable;
+    }
+
+    public override Icon GetIcon(Data d)
+    {
+        return Building.Get(d).Icon;
+    }
+
+    public override string Description(Data d)
+    {
+        return Building.Get(d).Name;
     }
 }

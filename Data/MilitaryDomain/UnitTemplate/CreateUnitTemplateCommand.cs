@@ -22,7 +22,7 @@ public class CreateUnitTemplateCommand : Command
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         var regime = player.Regime.Get(key.Data);
         UnitTemplate.Create(key, "New Unit Template",
-            new Dictionary<Troop, float>(),
+            new Dictionary<TroopType, float>(),
             TroopDomain.Get(key.Data), regime);
     }
 }

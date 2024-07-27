@@ -36,25 +36,28 @@ public class BudgetPool
         
         r.MakeQueue.Queue.ForEach(m => 
             {
-                var making = m.Making.Get(d);
-                if (making is ResourceExtractionBuilding r)
+                if (m is ModelMakeProject mp)
                 {
-                    inQueue += r.BaseLabor();
-                    net.Add(r.Resource(d), r.BaseProd());
-                }
-                else if (making is SettlementBuilding b)
-                {
-                    inQueue += b.Labor
-                        .TotalLabor();
-                    foreach (var (model, value) 
-                        in b.Labor.Inputs.GetEnumModel(d))
+                    var making = mp.Model.Get(d);
+                    if (making is ResourceExtractionBuilding r)
                     {
-                        net.Remove(model, value);
+                        inQueue += r.BaseLabor();
+                        net.Add(r.Resource(d), r.BaseProd());
                     }
-                    foreach (var (model, value) 
-                             in b.Labor.Outputs.GetEnumModel(d))
+                    else if (making is SettlementBuilding b)
                     {
-                        net.Add(model, value);
+                        inQueue += b.Labor
+                            .TotalLabor();
+                        foreach (var (model, value) 
+                                 in b.Labor.Inputs.GetEnumModel(d))
+                        {
+                            net.Remove(model, value);
+                        }
+                        foreach (var (model, value) 
+                                 in b.Labor.Outputs.GetEnumModel(d))
+                        {
+                            net.Add(model, value);
+                        }
                     }
                 }
             });

@@ -52,7 +52,6 @@ public class SocietyGenerator : Generator
         
         
         // _times.RunAndTime(Deforest, "deforest");
-        _times.RunAndTime(() => CreateUnits(key), "units");
         
         _times.Print();
         
@@ -299,23 +298,5 @@ public class SocietyGenerator : Generator
         }
     }
     
-    private static void CreateUnits(GenWriteKey key)
-    {
-        foreach (var regime in key.Data.GetAll<Regime>())
-        {
-            var template = regime.GetUnitTemplates(key.Data)
-                .First();
-            var cells = regime
-                .GetCells(key.Data)
-                .ToArray();
-            var score = Mathf.CeilToInt(Mathf.Sqrt(cells.Length));
-            var numUnits = score * 4;
-            
-            
-            for (var i = 0; i < numUnits; i++)
-            {
-                Unit.Create(template, regime, key);
-            }
-        }
-    }
+    
 }

@@ -54,17 +54,6 @@ public static class UnitExt
             }).Key;
         return data.Models.GetModel<Troop>(maxPowerId);
     }
-    public static Troop GetMaxPowerTroop(this UnitTemplate unit, Data data)
-    {
-        var maxPowerId = unit.Troops.Contents
-            .MaxBy(kvp =>
-            {
-                var unit = data.Models.GetModel<Troop>(kvp.Key);
-                var power = kvp.Value * unit.GetPowerPoints();
-                return power;
-            }).Key;
-        return data.Models.GetModel<Troop>(maxPowerId);
-    }
     public static Troop GetMaxPowerTroop(this IdCount<Troop> troops, Data data)
     {
         var maxPowerId = troops.Contents
@@ -78,17 +67,13 @@ public static class UnitExt
     }
     public static Vector2 GetHealth(this Unit unit, Data data)
     {
-        var totalPp = unit.Troops.GetEnumModel(data)
-            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-        var templatePp = unit.Template.Get(data).Troops.GetEnumModel(data)
-            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-        return new Vector2(totalPp, templatePp);
+        var totalFrontLength = unit.Troops.GetEnumModel(data)
+            .Sum(kvp => kvp.Key.TroopType.FrontLength * kvp.Value);
+        var templateFrontLength = unit.Template.Get(data).Troops.GetEnumModel(data)
+            .Sum(kvp => kvp.Key.FrontLength * kvp.Value);
+        return new Vector2(totalFrontLength, templateFrontLength);
     }
     
-    public static Control GetUnitDisplay(this Unit u, Data d)
-    {
-        return u.GetMaxPowerTroop(d).Icon
-            .GetLabeledIcon<HBoxContainer>($"{u.Template.Get(d).Name}: {u.GetPowerPoints(d).Round(2)} / {u.Template.Get(d).GetPowerPoints(d).Round(2)}",
-                10f);
-    }
+    
+    
 }

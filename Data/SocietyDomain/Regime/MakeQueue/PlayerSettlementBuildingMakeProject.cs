@@ -5,7 +5,7 @@ using MessagePack;
 public class PlayerSettlementBuildingMakeProject : MakeProject
 {
     public ERef<Settlement> Settlement { get; private set; }
-    
+    public ModelRef<SettlementBuilding> Building { get; private set; }
     public static PlayerSettlementBuildingMakeProject Construct(
         int amount,
         Settlement settlement,
@@ -14,54 +14,45 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
     {
         return new PlayerSettlementBuildingMakeProject(
             settlement.MakeRef(), regime.MakeRef(),
-            making.MakeRef<IModel>(),
+            making.MakeRef(),
             amount, 0f, -1);
     }
     [SerializationConstructor] protected PlayerSettlementBuildingMakeProject(
         ERef<Settlement> settlement,
         ERef<Regime> regime, 
-        IdRef making,
+        ModelRef<SettlementBuilding> building,
         float amount,
         float fulfilled, int id) 
-            : base(regime, making, amount, fulfilled, id)
+            : base(regime, amount, fulfilled, id)
     {
+        Building = building;
         Settlement = settlement;
     }
     
     public override void Start(LogicWriteKey key)
     {
         var regime = Regime.Get(key.Data);
-        var before = Mathf.FloorToInt(Fulfilled);
-        var increment = BuildTree.Increment(this, regime.Stock, key);
-        if(increment == 0f) return;
-        Fulfilled += increment;
-        var after = Mathf.FloorToInt(Fulfilled);
-        
-        var diff = after - before;
-        for (var i = 0; i < diff; i++)
-        {
-            var building = (SettlementBuilding)Making.Get(key.Data);
-            var settlement = Settlement.Get(key.Data);
-            var proc = new AddSettlementBuildingProcedure(Settlement, building.MakeRef());
-            key.SendMessage(proc);
-        }
+        Increment(regime.Stock, key);
         var setStock = new SetStockProcedure(regime.MakeRef(),
             regime.Stock);
         key.SendMessage(setStock);
     }
 
-    public override void Increment(float amount, 
+    public override void Increment(
         RegimeStock stock,
         LogicWriteKey key)
     {
         var before = Mathf.FloorToInt(Fulfilled);
-        Fulfilled += amount;
+        Fulfilled += BuildTree.Increment(GetMakeable(key.Data),
+            stock,
+            Amount - Fulfilled,
+            key);;
         var after = Mathf.FloorToInt(Fulfilled);
         var diff = after - before;
+        var building = Building.Get(key.Data);
+        var settlement = Settlement.Get(key.Data);
         for (var i = 0; i < diff; i++)
         {
-            var building = (SettlementBuilding)Making.Get(key.Data);
-            var settlement = Settlement.Get(key.Data);
             var regime = Regime.Get(key.Data);
             var proc = new AddSettlementBuildingProcedure(Settlement, building.MakeRef());
             key.SendMessage(proc);
@@ -75,7 +66,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
 
     public override void Cancel(ProcedureWriteKey key)
     {
-        var making = MakingBuilding(key.Data);
+        var making = Building.Get(key.Data);
         var stock = Regime.Get(key.Data).Stock;
         foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumModel(key.Data))
         {
@@ -84,15 +75,11 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
         }
     }
 
-    public SettlementBuilding MakingBuilding(Data d)
-    {
-        return (SettlementBuilding)Making.Get(d);
-    }
 
     public override Control GetDisplay(Data d)
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;
-        var m = (IModel)Making.Get(d);
+        var m = Building.Get(d);
         var makeable = (IMakeable)m;
         var vbox = new VBoxContainer();
         if (m is IIconed i)
@@ -124,7 +111,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
     {
         if (next is not PlayerSettlementBuildingMakeProject p
             || p.Settlement.Equals(Settlement) == false
-            || p.Making.RefId != Making.RefId)
+            || p.Building.Equals(Building) == false)
         {
             return false;
         }
@@ -135,10 +122,10 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
         var before = before1 + before2;
         var after = Mathf.FloorToInt(Fulfilled + next.Fulfilled);
         var diff = after - before;
+        var building = Building.Get(key.Data);
+        var settlement = Settlement.Get(key.Data);
         for (var i = 0; i < diff; i++)
         {
-            var building = (SettlementBuilding)Making.Get(key.Data);
-            var settlement = Settlement.Get(key.Data);
             var regime = Regime.Get(key.Data);
             var proc = new AddSettlementBuildingProcedure(Settlement, building.MakeRef());
             key.SendMessage(proc);
@@ -146,5 +133,20 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
 
         Fulfilled += next.Fulfilled;
         return true;
+    }
+
+    public override MakeableAttribute GetMakeable(Data d)
+    {
+        return Building.Get(d).Makeable;
+    }
+
+    public override Icon GetIcon(Data d)
+    {
+        return Building.Get(d).Icon;
+    }
+
+    public override string Description(Data d)
+    {
+        return Building.Get(d).Name;
     }
 }

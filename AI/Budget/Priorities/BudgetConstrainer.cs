@@ -8,7 +8,7 @@ using Google.OrTools.LinearSolver;
 public static class BudgetConstrainer
 {
     private static float _flowMinCostProportion = .2f; 
-    public static void SetMaxVariableConstraint<T>(
+    public static void SetVariableCaps<T>(
         this Solver solver,
         Dictionary<T, Variable> vars, Dictionary<T, float> maxes, Data data)
     {
@@ -21,7 +21,30 @@ public static class BudgetConstrainer
             }
         }
     }
+    
+    public static void SetConstraints<T, TConstraint>(
+        this Solver solver,
+        Dictionary<T, Variable> vars, 
+        Func<T, (TConstraint, float)> getConstraint,
+        Dictionary<TConstraint, float> maxes, Data data)
+    {
+        var constraints = new Dictionary<TConstraint, Constraint>();
+        foreach (var (constraintKey, constraintAmt) in maxes)
+        {
+            constraints.Add(constraintKey, solver.MakeConstraint(0f, constraintAmt));
+        }
 
+        foreach (var (key, variable) in vars)
+        {
+            var (constraintKey, constraintAmt) = getConstraint(key);
+            
+            if (maxes.ContainsKey(constraintKey))
+            {
+                var constraint = constraints[constraintKey];
+                constraint.SetCoefficient(variable, constraintAmt);
+            }
+        }
+    }
 
     public static void SetBuildCostConstraints<TBuild>(
             this Solver solver, 
@@ -33,6 +56,43 @@ public static class BudgetConstrainer
         foreach (var (build, variable) in vars)
         {
             var costs = build.Makeable
+                .BuildCosts.GetEnumModel(data);
+            foreach (var (model, amount) in costs)
+            {
+                if (model is Flow f)
+                {
+                    var net = Mathf.Max(0f, pool.Net.Get(f));
+                    if (constraints.TryGetValue(model.Id, 
+                            out var constraint) == false)
+                    {
+                        constraint = solver.MakeConstraint(0f,
+                            net);
+                    }
+                    constraint.SetCoefficient(variable, amount * _flowMinCostProportion);   
+                }
+                else
+                {
+                    if (constraints.TryGetValue(model.Id, 
+                            out var constraint) == false)
+                    {
+                        constraint = solver.MakeConstraint(0f,
+                            pool.Stock.Get(model));
+                    }
+                    constraint.SetCoefficient(variable, amount);
+                }
+            }
+        }
+    }
+    public static void SetBuildCostConstraints<TBuild>(
+        this Solver solver, 
+        Data data, BudgetPool pool, 
+        Dictionary<TBuild, Variable> vars,
+        Func<TBuild, MakeableAttribute> getMakeable)
+    {
+        var constraints = new Dictionary<int, Constraint>();
+        foreach (var (build, variable) in vars)
+        {
+            var costs = getMakeable(build)
                 .BuildCosts.GetEnumModel(data);
             foreach (var (model, amount) in costs)
             {

@@ -9,9 +9,7 @@ public abstract class SettlementBuildingConstructionPriority
     : SolverPriority<SettlementBuilding>
 {
     public SettlementBuildingConstructionPriority(Regime r, string name) 
-        : base(name, 
-            d => d.Models.GetModels<SettlementBuilding>()
-                .Where(b => r.HasPrereqs(b)))
+        : base(name)
     {
     }
 
@@ -59,4 +57,5 @@ public abstract class SettlementBuildingConstructionPriority
 
         return res;
     }
+    
 }

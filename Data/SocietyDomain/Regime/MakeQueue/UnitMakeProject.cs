@@ -1,53 +1,88 @@
 
+using System.Linq;
 using Godot;
 using MessagePack;
 
-public class UnitMakeProject : MakeProject
+public class UnitMakeProject : MakeProject, IMakeable
 {
+    public IdCount<Troop> Troops { get; private set; }
+    public MakeableAttribute Makeable { get; private set; }
+    public MakeableAttribute MakeableBase { get; private set; }
+    public ERef<UnitTemplate> Template { get; private set; }
     public static UnitMakeProject Construct(Regime r,
         UnitTemplate template,
-        int amount)
+        int amount, Data d)
     {
-        return new UnitMakeProject(r.MakeRef(), template.MakeRef(),
+        var troops = IdCount<Troop>.Construct();
+        foreach (var (troopType, value) in template.Troops.GetEnumModel(d))
+        {
+            var troop = r.Military.GetBestTroopOfType(troopType, d);
+            troops.Add(troop, value);
+        }
+
+        var baseCosts = IdCount<Item>.Construct();
+        
+        foreach (var (troop, amtTroop) in troops.GetEnumModel(d))
+        {
+            foreach (var (item, amtItem) in troop.Makeable.BuildCosts.GetEnumModel(d))
+            {
+                baseCosts.Add(item, amtTroop * amtItem);
+            }
+        }
+        
+        var makeable = new MakeableAttribute(
+            IdCount<Item>.Construct(troops),
+            IdCount<Item>.Construct()
+        );
+
+        var makeableBase = new MakeableAttribute(
+            baseCosts,
+            IdCount<Item>.Construct()
+        );
+        
+        return new UnitMakeProject(r.MakeRef(), 
+            template.MakeRef(), troops,
+            makeable,
+            makeableBase,
             amount, 0f, -1);
     }
-    [SerializationConstructor] private UnitMakeProject(ERef<Regime> regime, 
-        IdRef making, float amount, float fulfilled, int id) 
-            : base(regime, making, amount, fulfilled, id)
+    [SerializationConstructor] private UnitMakeProject(
+        ERef<Regime> regime, 
+        ERef<UnitTemplate> template, IdCount<Troop> troops, 
+        MakeableAttribute makeable,
+        MakeableAttribute makeableBase,
+        float amount, float fulfilled, int id) 
+            : base(regime, amount, fulfilled, id)
     {
+        Template = template;
+        Makeable = makeable;
+        MakeableBase = makeableBase;
+        Troops = troops;
     }
 
     public override void Start(LogicWriteKey key)
     {
         var regime = Regime.Get(key.Data);
-        var before = Mathf.FloorToInt(Fulfilled);
-        var increment = BuildTree.Increment(this, regime.Stock, key);
-        if (increment == 0f) return;
-        Fulfilled += increment;
-        var after = Mathf.FloorToInt(Fulfilled);
-        var diff = after - before;
-        for (var i = 0; i < diff; i++)
-        {
-            Unit.Create((UnitTemplate)Making.Get(key.Data),
-                Regime.Get(key.Data), key);
-        }
+        Increment(regime.Stock, key);
         var setStock = new SetStockProcedure(regime.MakeRef(),
             regime.Stock);
         key.SendMessage(setStock);
     }
 
-    public override void Increment(float amount, 
-        RegimeStock stock,
+    public override void Increment(RegimeStock stock,
         LogicWriteKey key)
     {
         var before = Mathf.FloorToInt(Fulfilled);
-        Fulfilled += amount;
+        Fulfilled += BuildTree.Increment(Makeable,
+            stock,
+            Amount - Fulfilled,
+            key);
         var after = Mathf.FloorToInt(Fulfilled);
         var made = after - before;
         for (var i = 0; i < made; i++)
         {
-            Unit.Create((UnitTemplate)Making.Get(key.Data),
-                Regime.Get(key.Data), key);
+            Unit.Create(Template.Get(key.Data),
+                Troops, Regime.Get(key.Data), key);
         }
     }
 
@@ -58,11 +93,11 @@ public class UnitMakeProject : MakeProject
 
     public override void Cancel(ProcedureWriteKey key)
     {
-        var making = MakingTemplate(key.Data);
+        var making = Template.Get(key.Data);
         var stock = Regime.Get(key.Data).Stock;
         var numMade = Mathf.FloorToInt(Fulfilled);
         var diff = Fulfilled - numMade;
-        foreach (var (model, amt) in making.Makeable.BuildCosts.GetEnumModel(key.Data))
+        foreach (var (model, amt) in Troops.GetEnumModel(key.Data))
         {
             var spent = numMade * amt;
             stock.Stock.Add(model, spent);
@@ -73,20 +108,19 @@ public class UnitMakeProject : MakeProject
     {
         var large = Game.I.Client.Settings.LargeIconSize.Value;
         var small = Game.I.Client.Settings.SmallIconSize.Value;
-        var m = MakingTemplate(d);
-        var makeable = (IMakeable)m;
+        var m = Template.Get(d);
         var vbox = new VBoxContainer();
-        var icon = m.GetMaxPowerTroop(d).Icon.GetLabeledIcon<HBoxContainer>(
+        var icon = m.GetIcon(d).GetLabeledIcon<HBoxContainer>(
                 $"{m.Name}: {Fulfilled} / {Amount} ",
                 large);
         vbox.AddChild(icon);
         vbox.CreateLabelAsChild(m.Name);
         
-        var costs = makeable.Makeable.BuildCosts.GetEnumModel(d);
+        var costs = Makeable.BuildCosts.GetEnumModel(d);
         foreach (var (key, value) in costs)
         {
-            var needed = makeable.Makeable.BuildCosts.Get(key) * Amount;
-            var have = makeable.Makeable.BuildCosts.Get(key) * Fulfilled;
+            var needed = Makeable.BuildCosts.Get(key) * Amount;
+            var have = Makeable.BuildCosts.Get(key) * Fulfilled;
             var str = $"{key.Name}: {have} / {needed}";
             if (key is IIconed i)
             {
@@ -105,7 +139,7 @@ public class UnitMakeProject : MakeProject
     public override bool Consolidate(MakeProject next, LogicWriteKey key)
     {
         if (next is not UnitMakeProject p
-            || p.MakingTemplate(key.Data) != MakingTemplate(key.Data))
+            || p.Template.Equals(Template) == false)
         {
             return false;
         }
@@ -116,20 +150,38 @@ public class UnitMakeProject : MakeProject
         var before = before1 + before2;
         var after = Mathf.FloorToInt(Fulfilled + next.Fulfilled);
         var diff = after - before;
-        var template = MakingTemplate(key.Data);
+        var template = Template.Get(key.Data);
         var regime = Regime.Get(key.Data);
 
         for (var i = 0; i < diff; i++)
         {
-            Unit.Create(template, regime, key);
+            Unit.Create(template, Troops, regime, key);
         }
 
         Fulfilled += next.Fulfilled;
         return true;
     }
 
-    public UnitTemplate MakingTemplate(Data d)
+    public override MakeableAttribute GetMakeable(Data d)
     {
-        return (UnitTemplate)Making.Get(d);
+        return Makeable;
+    }
+
+    public override Icon GetIcon(Data d)
+    {
+        if (Troops.Contents.Count == 0) return Icon.Blank;
+        return Troops.GetEnumModel(d)
+            .MaxBy(kvp => kvp.Key.GetPowerPoints() * kvp.Value)
+            .Key.Icon;
+    }
+
+    public override string Description(Data d)
+    {
+        return Template.Get(d).Name;
+    }
+
+    public float PowerPoints(Data d)
+    {
+        return Troops.GetEnumModel(d).Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
     }
 }

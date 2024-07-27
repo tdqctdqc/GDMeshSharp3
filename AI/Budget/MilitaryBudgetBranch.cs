@@ -5,7 +5,8 @@ using Godot;
 public class MilitaryBudgetBranch
     : BudgetBranch
 {
-    private PriorityNode _recruitBuildings, _reinforcements, _reserve;
+    private PriorityNode _recruitBuildings, _reinforcements, 
+        _reserve, _units;
     public MilitaryBudgetBranch(Regime r, BudgetBranch parent, Data d)
         : base("Military")
     {
@@ -24,7 +25,9 @@ public class MilitaryBudgetBranch
                         .Sum(kvp => kvp.Key.Makeable.BuildCosts.Get(recruit) * kvp.Value));
                 var numRecruitsAuthorized = r.GetUnits(d)
                     .Sum(u => u.Template.Get(d).Troops.GetEnumModel(d)
-                        .Sum(kvp => kvp.Key.Makeable.BuildCosts.Get(recruit) * kvp.Value));
+                        .Sum(kvp => 
+                            r.Military.GetBestTroopOfType(kvp.Key, d)
+                                .Makeable.BuildCosts.Get(recruit) * kvp.Value));
                 if (numRecruitsAuthorized > 0f)
                 {
                     score += .1f * (1f - numRecruits / numRecruitsAuthorized);
@@ -36,23 +39,57 @@ public class MilitaryBudgetBranch
         Children.Add(_recruitBuildings);
 
         var reinforcements = new MakeReinforcementTroopsPriority(
-            r, "Make Reinforcement Troops");
+            r);
         _reinforcements = new PriorityNode(reinforcements, this,
             (r, d) =>
             {
                 var units = r.GetUnits(d);
                 var str = units.Sum(u => u.GetPowerPoints(d));
-                var authorized = units.Sum(u => u.Template.Get(d).GetPowerPoints(d));
+                var authorized = units.Sum(u => u.Template.Get(d).Troops.GetEnumModel(d)
+                    .Sum(kvp => 
+                        r.Military.GetBestTroopOfType(kvp.Key, d)
+                            .GetPowerPoints() * kvp.Value));
                 if (authorized == 0f) return 0f;
                 return 3f * (1f - str / authorized);
             });
         Children.Add(_reinforcements);
 
 
-        var reserve = new MakeReserveTroopsPriority(r, "Make Reserve Troops");
+        var reserve = new MakeReserveTroopsPriority(r);
         _reserve = new PriorityNode(reserve, this,
             (d, r) => 1f);
         Children.Add(_reserve);
+
+        
+        
+        
+        
+        var units = new MakeUnitPriority(r, d);
+        _units = new PriorityNode(units, this,
+            (r, d) =>
+            {
+                var baseWeight = 5f;
+                var templates = d.HostLogicData.RegimeAis[r].Military.Templates;
+                var desired = d.HostLogicData.RegimeAis[r].Military.ForceComposition.DesiredAmounts;
+                var allUnits = r.GetUnits(d).ToArray();
+                if (allUnits.Count() == 0) return baseWeight;
+                var unitsByMeta = r.GetUnits(d)
+                    .SortBy(u => u.Template.Get(d).GetMetaTemplate(d));
+                var needed = desired.ToDictionary(kvp => kvp.Key,
+                    kvp => unitsByMeta.TryGetValue(kvp.Key, out var list)
+                        ? Mathf.Max(0, kvp.Value - list.Count)
+                        : kvp.Value);
+                
+                return baseWeight * needed.Sum(kvp => kvp.Value)
+                       / allUnits.Count();
+                
+            });
+        Children.Add(_units);
+        
+        
+        
+        
+        
     }
 
     protected override float GetWeight(Regime r, Data d)

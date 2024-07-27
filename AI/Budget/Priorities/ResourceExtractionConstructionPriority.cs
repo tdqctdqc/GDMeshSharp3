@@ -8,14 +8,17 @@ public class ResourceExtractionConstructionPriority
 {
     public IModel Model { get; private set; }
     public BudgetBranch Parent { get; }
-
+    private Regime _regime;
     public ResourceExtractionConstructionPriority(IModel model, 
-        Regime r, string name) 
-        : base(name, d => d.Models.GetModels<ResourceExtractionBuilding>()
-                .Where(b => b.Resource(d) == model
-                    && r.HasPrereqs(b)))
+        Regime r, string name) : base(name)
     {
+        _regime = r;
         Model = model;
+    }
+
+    protected override string GetName(ResourceExtractionBuilding t, Data d)
+    {
+        return t.Name;
     }
 
     protected override float Utility(ResourceExtractionBuilding t, Data d)
@@ -90,5 +93,17 @@ public class ResourceExtractionConstructionPriority
         }
 
         return res;
+    }
+
+    protected override IEnumerable<ResourceExtractionBuilding> GetAll(Data d)
+    {
+        return d.Models.GetModels<ResourceExtractionBuilding>()
+            .Where(b => b.Resource(d) == Model
+                        && _regime.HasPrereqs(b));
+    }
+
+    protected override void Complete(BudgetPool pool, Regime r, Dictionary<ResourceExtractionBuilding, float> toBuild, LogicWriteKey key)
+    {
+        CompleteModel(pool, r, toBuild, key);
     }
 }

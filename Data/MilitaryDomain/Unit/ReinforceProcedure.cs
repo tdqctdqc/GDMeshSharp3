@@ -3,21 +3,22 @@ using System.Collections.Generic;
 using Godot;
 using MessagePack;
 
-public class ReinforceRegimeProcedure : Procedure
+public class ReinforceProcedure : Procedure
 {
-    public static ReinforceRegimeProcedure Construct(Regime regime)
+    public ERef<Regime> Regime { get; private set; }
+    public List<(int unitId, int troopId, float count)> 
+        ReinforceCounts { get; private set; }
+    public static ReinforceProcedure Construct(Regime regime)
     {
-        return new ReinforceRegimeProcedure(regime.MakeRef(), new List<(int unitId, int troopId, float count)>());
+        return new ReinforceProcedure(regime.MakeRef(), new List<(int unitId, int troopId, float count)>());
     }
-    [SerializationConstructor] private ReinforceRegimeProcedure(ERef<Regime> regime, List<(int unitId, int troopId, float count)> reinforceCounts)
+    [SerializationConstructor] private ReinforceProcedure(ERef<Regime> regime, List<(int unitId, int troopId, float count)> reinforceCounts)
     {
         Regime = regime;
         ReinforceCounts = reinforceCounts;
     }
 
-    public ERef<Regime> Regime { get; private set; }
-    public List<(int unitId, int troopId, float count)> 
-        ReinforceCounts { get; private set; }
+    
     public override void Enact(ProcedureWriteKey key)
     {
         var regime = Regime.Get(key.Data);

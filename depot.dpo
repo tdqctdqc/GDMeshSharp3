@@ -88,23 +88,6 @@
                     }
                 },
                 {
-                    "typeStr": "int",
-                    "guid": "9b6396e0-1b49-4841-a844-8961f16e0827",
-                    "description": "int field",
-                    "name": "Echelon",
-                    "min": 0,
-                    "max": 2,
-                    "defaultValue": 0,
-                    "iconName": "newInt",
-                    "configurable": {
-                        "name": "text",
-                        "description": "text",
-                        "min": "int",
-                        "max": "int",
-                        "defaultValue": "int"
-                    }
-                },
-                {
                     "typeStr": "float",
                     "guid": "a66342dd-8fb6-46eb-bfc2-cd32a3d356c9",
                     "description": "float field",
@@ -126,23 +109,6 @@
                     "guid": "a432ce23-99e2-40d0-bcbb-2eba03e786a1",
                     "description": "float field",
                     "name": "Evasion",
-                    "min": 0,
-                    "max": 100000,
-                    "defaultValue": 0,
-                    "iconName": "newFloat",
-                    "configurable": {
-                        "name": "text",
-                        "description": "text",
-                        "min": "float",
-                        "max": "float",
-                        "defaultValue": "float"
-                    }
-                },
-                {
-                    "typeStr": "float",
-                    "guid": "e298f937-35fd-45c3-a01d-174942312ed2",
-                    "description": "float field",
-                    "name": "FrontLength",
                     "min": 0,
                     "max": 100000,
                     "defaultValue": 0,
@@ -283,10 +249,8 @@
                     "SoftAttack": 5,
                     "Hitpoints": 100,
                     "Hardness": 0,
-                    "Echelon": 0,
                     "Accuracy": 0.1,
                     "Evasion": 0.1,
-                    "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1,
                     "DisplayName": "Musket Infantry",
@@ -331,10 +295,8 @@
                     "SoftAttack": 8,
                     "Hitpoints": 100,
                     "Hardness": 0,
-                    "Echelon": 0,
                     "Accuracy": 0.15,
                     "Evasion": 0.1,
-                    "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1,
                     "DisplayName": "Breechloader Infantry",
@@ -379,10 +341,8 @@
                     "SoftAttack": 12,
                     "Hitpoints": 100,
                     "Hardness": 0,
-                    "Echelon": 0,
                     "Accuracy": 0.25,
                     "Evasion": 0.15,
-                    "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1.25,
                     "DisplayName": "Bolt Action Infantry",
@@ -427,10 +387,8 @@
                     "SoftAttack": 18,
                     "Hitpoints": 100,
                     "Hardness": 0,
-                    "Echelon": 0,
                     "Accuracy": 0.3,
                     "Evasion": 0.2,
-                    "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 1.5,
                     "DisplayName": "Semi Auto Infantry",
@@ -475,10 +433,8 @@
                     "SoftAttack": 25,
                     "Hitpoints": 100,
                     "Hardness": 0,
-                    "Echelon": 0,
                     "Accuracy": 0.3,
                     "Evasion": 0.3,
-                    "FrontLength": 1,
                     "Range": 0,
                     "BreakthroughMult": 2,
                     "DisplayName": "Assault Infantry",
@@ -523,10 +479,8 @@
                     "SoftAttack": 25,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 2,
                     "Accuracy": 0.1,
                     "Evasion": 0.025,
-                    "FrontLength": 3,
                     "Range": 2,
                     "BreakthroughMult": 0.25,
                     "DisplayName": "Cannon",
@@ -571,10 +525,8 @@
                     "SoftAttack": 50,
                     "Hitpoints": 75,
                     "Hardness": 0.2,
-                    "Echelon": 2,
                     "Accuracy": 0.25,
                     "Evasion": 0.025,
-                    "FrontLength": 3,
                     "Range": 2,
                     "BreakthroughMult": 0.35,
                     "DisplayName": "Field Gun",
@@ -619,10 +571,8 @@
                     "SoftAttack": 65,
                     "Hitpoints": 75,
                     "Hardness": 0.2,
-                    "Echelon": 2,
                     "Accuracy": 0.35,
                     "Evasion": 0.05,
-                    "FrontLength": 3,
                     "Range": 2,
                     "BreakthroughMult": 0.5,
                     "DisplayName": "Field Howitzer",
@@ -667,10 +617,8 @@
                     "SoftAttack": 25,
                     "Hitpoints": 25,
                     "Hardness": 0,
-                    "Echelon": 1,
                     "Accuracy": 0.1,
                     "Evasion": 0.025,
-                    "FrontLength": 2,
                     "Range": 1,
                     "BreakthroughMult": 0.25,
                     "DisplayName": "Gatling Gun",
@@ -715,10 +663,8 @@
                     "SoftAttack": 50,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 1,
                     "Accuracy": 0.2,
                     "Evasion": 0.1,
-                    "FrontLength": 2,
                     "Range": 1,
                     "BreakthroughMult": 0.5,
                     "DisplayName": "Maxim Gun",
@@ -763,10 +709,8 @@
                     "SoftAttack": 65,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 1,
                     "Accuracy": 0.3,
                     "Evasion": 0.15,
-                    "FrontLength": 2,
                     "Range": 1,
                     "BreakthroughMult": 1,
                     "DisplayName": "General Machinegun",
@@ -811,10 +755,8 @@
                     "SoftAttack": 75,
                     "Hitpoints": 50,
                     "Hardness": 0,
-                    "Echelon": 1,
                     "Accuracy": 0.3,
                     "Evasion": 0.2,
-                    "FrontLength": 2,
                     "Range": 1,
                     "BreakthroughMult": 1.25,
                     "DisplayName": "Squad Machinegun",
@@ -4233,6 +4175,40 @@
                         "sheet": "sheetSelect",
                         "defaultValue": "lineSelect@sheet"
                     }
+                },
+                {
+                    "typeStr": "float",
+                    "guid": "1ff14bea-0466-4ad0-866b-bbe15de05a8c",
+                    "description": "FrontLength",
+                    "name": "FrontLength",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newFloat",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "float",
+                        "max": "float",
+                        "defaultValue": "float"
+                    }
+                },
+                {
+                    "typeStr": "int",
+                    "guid": "85a72d5c-29eb-4aec-a06c-770f28516e5c",
+                    "description": "Echelon",
+                    "name": "Echelon",
+                    "min": 0,
+                    "max": 100000,
+                    "defaultValue": 0,
+                    "iconName": "newInt",
+                    "configurable": {
+                        "name": "text",
+                        "description": "text",
+                        "min": "int",
+                        "max": "int",
+                        "defaultValue": "int"
+                    }
                 }
             ],
             "lines": [
@@ -4240,47 +4216,25 @@
                     "guid": "d77d5c61-1268-47f5-a1d8-4c35fd87d007",
                     "id": "0",
                     "Name": "Infantry",
-                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "FrontLength": 1,
+                    "Echelon": 0
                 },
                 {
                     "guid": "9c0ce905-600c-4e82-aa3b-4df190dbfb62",
                     "id": "1",
                     "Name": "Artillery",
-                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
+                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "FrontLength": 3,
+                    "Echelon": 2
                 },
                 {
                     "guid": "7a5db9b3-c2ad-4cdb-b7ed-ca2019178a6b",
                     "id": "2",
                     "Name": "MachineGun",
-                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22"
-                }
-            ],
-            "hidden": false,
-            "isProps": false,
-            "configurable": {
-                "name": "text",
-                "description": "text",
-                "displayColumn": "columnSelect@name",
-                "columnSelect@name@displayColumn": {
-                    "allowedTypes": [
-                        "int",
-                        "float",
-                        "text",
-                        "longtext"
-                    ]
-                }
-            }
-        },
-        {
-            "name": "TargetChancePresets",
-            "description": "TargetChancePresets",
-            "displayColumn": "id",
-            "guid": "fb66647e-82ea-4340-ae67-da842aa24166",
-            "columns": [],
-            "lines": [
-                {
-                    "guid": "bd897f54-cac5-47fc-a7ea-13fcba3f280b",
-                    "id": "0"
+                    "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
+                    "FrontLength": 2,
+                    "Echelon": 1
                 }
             ],
             "hidden": false,

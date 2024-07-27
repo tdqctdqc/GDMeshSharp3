@@ -64,7 +64,7 @@ public class ProductionModule : LogicModule
         ProductionResult result)
     {
         var newStock = result.Stock;
-        var units = r.GetUnits(d);
+        var units = r.GetUnits(d).ToArray();
         var milCap = d.Models.Items.MilitaryCap;
         var milCapCost = 0f;
         foreach (var unit in units)
@@ -275,15 +275,12 @@ public class ProductionModule : LogicModule
         var queue = r.MakeQueue.Queue;
         foreach (var proj in queue)
         {
-            var making = proj.Making.Get(d);
-            var costs = ((IMakeable)making).Makeable.BuildCosts;
-            var num = proj.Amount;
-            var made = BuildTree.Increment(proj, newStock,
+            var costs = proj.GetMakeable(d).BuildCosts;
+            var made = BuildTree.Increment(proj.GetMakeable(d),
+                newStock,
+                proj.Amount - proj.Fulfilled,
                 key);
-            if (made > 0f)
-            {
-                proj.Increment(made, newStock, key);
-            }
+            
             if (proj.Fulfilled >= proj.Amount)
             {
                 proj.Finish(key);

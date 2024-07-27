@@ -4,6 +4,7 @@ using MessagePack;
 
 public class ModelMakeProject : MakeProject
 {
+    public ModelRef<IModel> Model { get; private set; }
     public static MakeProject Construct<TMakeable>(
         Regime r,
         TMakeable t,
@@ -16,10 +17,11 @@ public class ModelMakeProject : MakeProject
     }
     [SerializationConstructor] protected ModelMakeProject(
         ERef<Regime> regime, 
-        IdRef making, 
+        ModelRef<IModel> model, 
         float amount, float fulfilled, int id) 
-        : base(regime, making, amount, fulfilled, id)
+        : base(regime, amount, fulfilled, id)
     {
+        Model = model;
     }
 
 
@@ -28,13 +30,17 @@ public class ModelMakeProject : MakeProject
         
     }
 
-    public override void Increment(float amount, 
+    public override void Increment(
         RegimeStock stock,
         LogicWriteKey key)
     {
+        var amount = BuildTree.Increment(GetMakeable(key.Data),
+            stock,
+            Amount - Fulfilled,
+            key);
         Fulfilled += amount;
-        stock.Stock.Add(Making.RefId, amount);
-        stock.Produced.Add(Making.RefId, amount);
+        stock.Stock.Add(Model.RefId, amount);
+        stock.Produced.Add(Model.RefId, amount);
     }
 
     public override void Finish(LogicWriteKey key)
@@ -49,7 +55,7 @@ public class ModelMakeProject : MakeProject
     public override Control GetDisplay(Data d)
     {
         var size = Game.I.Client.Settings.MedIconSize.Value;
-        var m = (IModel)Making.Get(d);
+        var m = Model.Get(d);
         var makeable = (IMakeable)m;
         var vbox = new VBoxContainer();
         if (m is IIconed i)
@@ -79,7 +85,7 @@ public class ModelMakeProject : MakeProject
     public override bool Consolidate(MakeProject next, LogicWriteKey key)
     {
         if (next is ModelMakeProject p == false
-            || p.Making.RefId != Making.RefId)
+            || p.Model.Equals(Model) == false)
         {
             return false;
         }
@@ -89,8 +95,20 @@ public class ModelMakeProject : MakeProject
         return true;
     }
 
-    public IModel Model(Data d)
+    public override MakeableAttribute GetMakeable(Data d)
     {
-        return (IModel)Making.Get(d);
+        return ((IMakeable)Model.Get(d)).Makeable;
+    }
+
+    public override Icon GetIcon(Data d)
+    {
+        var model = Model.Get(d);
+        if (model is IIconed i) return i.Icon;
+        return Icon.Blank;
+    }
+
+    public override string Description(Data d)
+    {
+        return Model.Get(d).Name;
     }
 }

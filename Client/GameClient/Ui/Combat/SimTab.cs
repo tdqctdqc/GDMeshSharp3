@@ -13,7 +13,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
     private ItemListToken<Landform> _lf;
     private ItemListToken<Vegetation> _veg;
     private ItemListToken<Troop> _troops;
-    private ItemListToken<UnitTemplate> _templates;
     
     private VBoxContainer _selectedTroopInfo;
     private CheckBox _chooseIfDef;
@@ -69,9 +68,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
 
         var removeUnit = ButtonExt.GetButton(() => RemoveUnit(c));
         removeUnit.Text = "Remove Unit";
-
-        var addTemplate = ButtonExt.GetButton(() => AddTemplate(c));
-        addTemplate.Text = "Add Template";
         
         var left = new VBoxContainer();
         left.ExpandFill();
@@ -98,8 +94,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         left.AddChild(_selectedTroopInfo);
         left.AddChild(chooseIfDefOuter);
 
-        left.AddChild(_templates.ItemList);
-        left.AddChild(addTemplate);
         left.AddChild(_troops.ItemList);
         left.AddChild(sliderOuter);
         left.AddChild(addNewUnit);
@@ -130,13 +124,6 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         AddChild(right);
     }
 
-    private void AddTemplate(Client client)
-    {
-        if (_templates.Selected.Count != 1) return;
-        var template = _templates.Selected.First();
-        var u = new UnitCombatInfo(template.Troops, 1f, client.Data);
-        AddNewUnit(u, client.Data);
-    }
 
     private void RemoveUnit(Client client)
     {
@@ -231,15 +218,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
             "Amount", 100f, 0f, 1000f, 1f, true);
 
         var regime = c.Data.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(c.Data);
-        _templates = new ItemListToken<UnitTemplate>(
-            regime.GetUnitTemplates(c.Data),
-            t => $"{t.Name}",
-            t => t.GetMaxPowerTroop(c.Data).Icon.Texture,
-            (int)med,
-            false
-        );
-        _templates.ItemList.ExpandFill();
-        _templates.SelectAt(0);
+        
     }
 
     private void SetTroop()
@@ -304,7 +283,7 @@ public partial class SimTab : HBoxContainer, IUiDrawable
         _selectedTroopInfo.CreateLabelAsChild
             ($"Accuracy: {troop.Accuracy}");
         _selectedTroopInfo.CreateLabelAsChild
-            ($"Echelon: {troop.Echelon}");
+            ($"Echelon: {troop.TroopType.Echelon}");
         var echelonChances = MilUtil.GetEchelonChances(
             troop, _landform, _vegetation, targets.ToArray(),
             friendlies.ToArray());

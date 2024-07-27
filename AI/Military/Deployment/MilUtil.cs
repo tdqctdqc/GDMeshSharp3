@@ -193,7 +193,7 @@ public static class MilUtil
             var soFar = 0f;
             foreach (var (troop, amt) in targetUnit.Active.GetEnumModel(d))
             {
-                soFar += amt * troop.FrontLength;
+                soFar += amt * troop.TroopType.FrontLength;
                 if (soFar >= sample - .01f) return (troop, Mathf.Min(1f, amt));
             }
 
@@ -336,5 +336,77 @@ public static class MilUtil
         }
 
         return evadeMult;
+    }
+
+
+
+    public static ReinforceProcedure GetReinforceProc(Regime regime,
+        IEnumerable<Unit> units, Data d)
+    {
+        var needCounts = new Dictionary<TroopType, float>();
+        foreach (var unit in units)
+        {
+            var template = unit.Template.Get(d);
+            foreach (var (troop, value) in unit.Troops.GetEnumModel(d)
+                         .SortInto(kvp => kvp.Key.TroopType, kvp => kvp.Value))
+            {
+                var shouldHave = template.Troops.Get(troop);
+                if (value < shouldHave)
+                {
+                    needCounts.AddOrSum(troop, shouldHave - value);
+                }
+            }
+        }
+        
+        var proc = ReinforceProcedure.Construct(regime);
+        var reserve = regime.Stock;
+
+        var reservesByType = new Dictionary<TroopType, List<Troop>>();
+        var reservesRemaining = new Dictionary<Troop, float>();
+        foreach (var (model, value) in regime.Stock.Stock.GetEnumModel(d))
+        {
+            if (model is not Troop t) continue;
+            if(reservesByType.ContainsKey(t.TroopType) == false)
+            {
+                reservesByType.Add(t.TroopType, new List<Troop>());
+            }
+
+            reservesByType[t.TroopType].Add(t);
+            reservesRemaining.Add(t, value);
+        }
+        foreach (var (troopType, value) in reservesByType)
+        {
+            value.Sort((t1, t2) =>
+            {
+                return Mathf.FloorToInt(t2.GetPowerPoints() - t1.GetPowerPoints());
+            });
+        }
+        
+        foreach (var unit in regime.GetUnits(d))
+        {
+            var template = unit.Template.Get(d);
+            foreach (var (troopType, value) in unit.Troops.GetEnumModel(d)
+                         .SortInto(kvp => kvp.Key.TroopType, kvp => kvp.Value))
+            {
+                if (needCounts.ContainsKey(troopType) == false) continue;
+                if (reservesByType.ContainsKey(troopType) == false) continue;
+                var shouldHave = template.Troops.Get(troopType);
+                if (value < shouldHave)
+                {
+                    var need = shouldHave - value;
+                    
+                    foreach (var troop in reservesByType[troopType])
+                    {
+                        if (need == 0f) break;
+                        if (reservesRemaining[troop] == 0f) continue;
+                        var take = Mathf.Min(need, reservesRemaining[troop]);
+                        reservesRemaining[troop] -= take;
+                        proc.ReinforceCounts.Add((unit.Id, troop.Id, take));
+                    }
+                }
+            }
+        }
+
+        return proc;
     }
 }

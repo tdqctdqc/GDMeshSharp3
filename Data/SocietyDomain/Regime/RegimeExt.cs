@@ -5,6 +5,25 @@ using Godot;
 
 public static class RegimeExt
 {
+    public static Dictionary<Troop, float> GetAllTroopAmounts(this Regime r, Data d)
+    {
+        var troops = r.Stock.Stock.GetEnumModel(d)
+            .Select(kvp => kvp.Key)
+            .OfType<Troop>()
+            .ToDictionary(t => t, t => r.Stock.Stock.Get(t));
+        foreach (var unit in r.GetUnits(d))
+        {
+            foreach (var (key, value) in unit.Troops.GetEnumModel(d))
+            {
+                troops.AddOrSum(key, value);
+            }
+        };
+        return troops;
+    }
+    public static RegimeAi GetAi(this Regime r, Data d)
+    {
+        return d.HostLogicData.RegimeAis[r];
+    }
     public static IEnumerable<Settlement> GetSettlements(this Regime r, Data d)
     {
         return r.GetCells(d).Where(c => c.HasSettlement(d))
@@ -22,7 +41,8 @@ public static class RegimeExt
     }
     public static IEnumerable<Unit> GetUnits(this Regime r, Data d)
     {
-        return d.GetAll<Unit>().Where(u => u.Regime.RefId == r.Id);
+        return d.GetAll<Unit>()
+            ?.Where(u => u.Regime.RefId == r.Id);
     }
     public static IEnumerable<UnitTemplate> GetUnitTemplates(this Regime r, Data d)
     {

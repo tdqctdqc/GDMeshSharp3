@@ -99,18 +99,9 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         foreach (var (tick, tickMade) in made.OrderByDescending(kvp => kvp.Key))
         {
             madeBox.CreateLabelAsChild("Tick " + tick);
-            foreach (var (model, amtMade) in tickMade.GetEnumModel(c.Data))
+            foreach (var (name, amtMade) in tickMade)
             {
-                if (model is IIconed i)
-                {
-                    madeBox.AddChild(i.Icon.GetLabeledIcon<HBoxContainer>(
-                        $"{model.Name}: {amtMade}",
-                        med));
-                }
-                else
-                {
-                    madeBox.CreateLabelAsChild($"{model.Name}: {amtMade}");
-                }
+                madeBox.CreateLabelAsChild($"{name}: {amtMade}");
             }
         }
         

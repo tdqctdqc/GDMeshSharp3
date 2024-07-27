@@ -4,62 +4,60 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class UnitTemplate : Entity, IMakeable, INamed
+public class UnitTemplate : Entity, INamed
 {
     public string Name { get; private set; }
-    public IdCount<Troop> Troops { get; private set; }
+    public IdCount<TroopType> Troops { get; private set; }
     public ERef<Regime> Regime { get; private set; }
     public TroopDomain Domain { get; private set; }
-    public MakeableAttribute Makeable { get; private set; }
-
     public static UnitTemplate Create(IHostWriteKey key, 
         string name,
-        Dictionary<Troop, float> troopCounts,
+        IdCount<TroopType> troopCounts,
         TroopDomain domain,
         Regime regime)
     {
-        var costs = IdCount<Item>.Construct();
-        foreach (var kvp in troopCounts)
-        {
-            var troop = kvp.Key;
-            var numTroop = kvp.Value;
-            costs.Add(troop, numTroop);
-        }
-        
-        var makeable = new MakeableAttribute(
-            costs, 
-            IdCount<Item>.Construct()
-        );
-        var u = new UnitTemplate(name, IdCount<Troop>.Construct(troopCounts),
+        var u = new UnitTemplate(name, 
+            IdCount<TroopType>.Construct(troopCounts),
             regime.MakeRef(),
             key.Data.IdDispenser.TakeId(),
-            domain,
-            makeable);
+            domain);
+        key.Create(u);
+        return u;
+    }
+    public static UnitTemplate Create(IHostWriteKey key, 
+        string name,
+        Dictionary<TroopType, float> troopCounts,
+        TroopDomain domain,
+        Regime regime)
+    {
+        var u = new UnitTemplate(name, 
+            IdCount<TroopType>.Construct(troopCounts),
+            regime.MakeRef(),
+            key.Data.IdDispenser.TakeId(),
+            domain);
         key.Create(u);
         return u;
     }
     [SerializationConstructor] private UnitTemplate(string name,
-        IdCount<Troop> troops,
+        IdCount<TroopType> troops,
         ERef<Regime> regime, int id, 
-        TroopDomain domain,
-        MakeableAttribute makeable) 
+        TroopDomain domain) 
         : base(id)
     {
         Name = name;
         Troops = troops;
         Regime = regime;
         Domain = domain;
-        Makeable = makeable;
     }
 
     public static void CreateDefaultTemplatesForRegime(Regime r, 
         IHostWriteKey key)
     {
         var inf = Create(key, "Infantry Division",
-            new Dictionary<Troop, float>
+            new Dictionary<TroopType, float>
                 {
-                    {key.Data.Models.Troops.Rifle1, 100f},
-                    {key.Data.Models.Troops.Artillery1, 10f}
+                    {key.Data.Models.TroopTypes.Infantry, 100f},
+                    {key.Data.Models.TroopTypes.Artillery, 10f}
                 }, key.Data.Models.TroopDomains.Land,
             r);
     }
@@ -68,21 +66,14 @@ public class UnitTemplate : Entity, IMakeable, INamed
     {
         
     }
-
-    public float GetPowerPoints(Data d)
-    {
-        return Troops.GetEnumModel(d)
-            .Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-    }
-
     public Control GetDisplay(Data d)
     {
         var large = Game.I.Client.Settings.LargeIconSize.Value;
         var small = Game.I.Client.Settings.SmallIconSize.Value;
         var vbox = new VBoxContainer();
-        var icon = this.GetMaxPowerTroop(d).Icon.GetLabeledIcon<HBoxContainer>(
-            $"{Name}",
-            large);
+        var icon = GetIcon(d).GetLabeledIcon<HBoxContainer>(
+                $"{Name}",
+                large);;
         vbox.AddChild(icon);
         vbox.CreateLabelAsChild(Name);
         
@@ -93,6 +84,14 @@ public class UnitTemplate : Entity, IMakeable, INamed
         }
         
         return vbox;
+    }
+
+    public Icon GetIcon(Data d)
+    {
+        if (Troops.Contents.Count == 0) return Icon.Blank;
+        return Troops.GetEnumModel(d)
+            .MaxBy(v => v.Key.FrontLength * v.Value)
+            .Key.Icon;
     }
 
     public void Rename(string newName, ProcedureWriteKey key)

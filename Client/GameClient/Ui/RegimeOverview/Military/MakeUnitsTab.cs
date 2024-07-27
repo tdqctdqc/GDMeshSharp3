@@ -9,7 +9,8 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
     private VBoxContainer _makingUnitsContainer,
         _makingUnitsInfo,
         _templateInfo,
-        _templatesContainer;
+        _templatesContainer,
+        _desiredInfo;
 
     private ItemListToken<UnitMakeProject> _makingUnits;
     private ItemListToken<UnitTemplate> _templates;
@@ -32,9 +33,11 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _templatesContainer = new VBoxContainer();
         _templatesContainer.ExpandFill();
         AddChild(_templatesContainer);
+
         
         _templateInfo = new VBoxContainer();
         _templateInfo.ExpandFill();
+        
         AddChild(_templateInfo);
     }
     public void Draw(Client client)
@@ -53,8 +56,8 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
             .OfType<UnitMakeProject>();
         _makingUnits = new ItemListToken<UnitMakeProject>(
             unitProjects,
-            p => $"{p.MakingTemplate(client.Data).Name} {p.Fulfilled} / {p.Amount}",
-            p => p.MakingTemplate(client.Data).GetMaxPowerTroop(client.Data).Icon.Texture,
+            p => $"{p.Template.Get(client.Data).Name} {p.Fulfilled} / {p.Amount}",
+            p => p.GetIcon(client.Data).Texture,
             (int)med,
             true);
         _makingUnits.JustSelected += () => SetMakingUnitsInfo(client);
@@ -65,7 +68,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         _templates = new ItemListToken<UnitTemplate>(
             templates,
             t => t.Name,
-            t => t.GetMaxPowerTroop(client.Data).Icon.Texture,
+            t => t.GetIcon(client.Data).Texture,
             (int)med,
             false
         );
@@ -117,6 +120,19 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
     {
         var regime = _getRegime();
         _templateInfo.ClearChildren();
+
+        if (regime.IsPlayerRegime(c.Data) == false)
+        {
+            var totals = regime
+                .GetAi(c.Data).Military.ForceComposition
+                .GetCurrentAndNeededTotals(c.Data);
+            foreach (var (key, value) in totals)
+            {
+                _templateInfo.CreateLabelAsChild($"{key.Name}: {value.Y} / {value.X}");
+            }
+        }
+        
+        
         var player = c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid;
         var template = _templates.Selected.Count == 1
             ? _templates.Selected.First()
@@ -139,7 +155,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
                 if (template is null) return;
                 
                 var proj = UnitMakeProject.Construct(regime,
-                    template, (int)num.Value);
+                    template, (int)num.Value, c.Data);
                 var inner = new StartMakeProjectCommand(proj, player);
                 var com = CallbackCommand.Construct(
                     inner, () =>

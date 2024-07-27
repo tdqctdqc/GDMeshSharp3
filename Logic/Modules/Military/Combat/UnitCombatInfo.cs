@@ -78,8 +78,8 @@ public class UnitCombatInfo
         var activeFrontSizes = new float[MilUtil.NumEchelons];
         foreach (var (key, value) in troops.GetEnumModel(d))
         {
-            var echelon = key.Echelon;
-            activeFrontSizes[echelon] += key.FrontLength * value;
+            var echelon = key.TroopType.Echelon;
+            activeFrontSizes[echelon] += key.TroopType.FrontLength * value;
         }
 
         return activeFrontSizes;
@@ -121,8 +121,8 @@ public class UnitCombatInfo
     {
         Active.Remove(troop, amt);
         var totalFrontSize = ActiveFrontSizes.Sum();
-        var frontSizeLost = troop.FrontLength * amt;
-        ActiveFrontSizes[troop.Echelon] -= frontSizeLost;
+        var frontSizeLost = troop.TroopType.FrontLength * amt;
+        ActiveFrontSizes[troop.TroopType.Echelon] -= frontSizeLost;
         Morale -= (frontSizeLost / totalFrontSize) * 2f;
         Morale = Mathf.Clamp(Morale, 0f, 1f);
     }

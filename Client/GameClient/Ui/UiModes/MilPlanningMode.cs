@@ -12,7 +12,11 @@ public class MilPlanningMode : UiMode
         "MilitaryPlanning")
     {
         _mouseOver = new MouseOverHandler(client.Data);
-        _mouseOver.ChangedCell += c => Draw();
+        _mouseOver.ChangedCell += c => 
+        {
+            _cellOverlay.Clear();
+            _mouseOver.Highlight(_cellOverlay);
+        };
         _alliance = new DefaultSettingsOption<Alliance>("Alliance", null);
         _alliance.SettingChanged.Subscribe(n =>
         {
@@ -43,10 +47,6 @@ public class MilPlanningMode : UiMode
         _cellOverlay = mg.GetOverlay(LayerOrder.Highlighter);
     }
 
-    private void Draw()
-    {
-        _mouseOver.Highlight(_cellOverlay);
-    }
 
     private void DrawRegimePlans()
     {

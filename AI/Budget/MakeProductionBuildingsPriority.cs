@@ -17,6 +17,11 @@ public class MakeProductionBuildingsPriority
         Model = model;
     }
 
+    protected override string GetName(SettlementBuilding t, Data d)
+    {
+        return t.Name;
+    }
+
     protected override float Utility(SettlementBuilding t, Data d)
     {
         return t.Labor.Outputs.Contents[Model.Id];
@@ -24,13 +29,18 @@ public class MakeProductionBuildingsPriority
 
     protected override bool Relevant(SettlementBuilding t, Data d)
     {
-        if (t.Labor.Outputs.Contents.ContainsKey(Model.Id) == false)
-        {
-            return false;
-        }
-
-        return true;
+        return t.Labor.Outputs.Contents.ContainsKey(Model.Id);
     }
 
-    
+    protected override IEnumerable<SettlementBuilding> GetAll(Data d)
+    {
+        return d.Models.GetModels<SettlementBuilding>()
+            .Where(t => t.Labor.Outputs.Contents.ContainsKey(Model.Id));
+    }
+
+
+    protected override void Complete(BudgetPool pool, Regime r, Dictionary<SettlementBuilding, float> toBuild, LogicWriteKey key)
+    {
+        CompleteModel(pool, r, toBuild, key);
+    }
 }

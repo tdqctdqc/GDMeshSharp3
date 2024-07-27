@@ -3,7 +3,7 @@ using System;
 
 
 [MessagePack.Union(0, typeof(ConquerCellProcedure))]
-[MessagePack.Union(1, typeof(ReinforceRegimeProcedure))]
+[MessagePack.Union(1, typeof(ReinforceProcedure))]
 [MessagePack.Union(2, typeof(DecideOnProposalProcedure))]
 [MessagePack.Union(3, typeof(DeclareRivalProcedure))]
 [MessagePack.Union(4, typeof(DeclareWarProcedure))]
@@ -31,18 +31,18 @@ using System;
 [MessagePack.Union(26, typeof(CancelMakeProjectProcedure))]
 [MessagePack.Union(27, typeof(DoClientCallbackProcedure))]
 [MessagePack.Union(28, typeof(AddCombatHistoryProc))]
-[MessagePack.Union(29, typeof(ReinforceUnitProcedure))]
-[MessagePack.Union(30, typeof(ReinforceArmyProcedure))]
-[MessagePack.Union(31, typeof(ReinforceUnitTroopProcedure))]
+[MessagePack.Union(29, typeof(AddResourceExtractionProcedure))]
+[MessagePack.Union(30, typeof(ChangeTemplateTroopAmountProcedure))]
+[MessagePack.Union(31, typeof(RenameTemplateProcedure))]
 [MessagePack.Union(32, typeof(AggregateProcedure))]
 [MessagePack.Union(33, typeof(ChangeMakeProjectPriorityProcedure))]
 [MessagePack.Union(34, typeof(ReplaceMakeProjectProc))]
 [MessagePack.Union(35, typeof(DoResearchProcedure))]
 [MessagePack.Union(36, typeof(SetResearchProcedure))]
 [MessagePack.Union(37, typeof(AddExtractionProcedure))]
-[MessagePack.Union(38, typeof(AddResourceExtractionProcedure))]
-[MessagePack.Union(39, typeof(ChangeTemplateTroopAmountProcedure))]
-[MessagePack.Union(40, typeof(RenameTemplateProcedure))]
+[MessagePack.Union(38, typeof(UpgradeTroopProcedure))]
+[MessagePack.Union(39, typeof(UnitChangeTroopAmountProcedure))]
+[MessagePack.Union(40, typeof(ChangeStockProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

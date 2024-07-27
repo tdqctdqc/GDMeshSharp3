@@ -64,7 +64,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         _armies =  new ItemListToken<Army>(
             armies, 
             a => $"Army {a.Id.ToString()} Units: {a.Units.Count()} " +
-                 $"Strength: {a.GetPowerPoints(client.Data)} / {a.Units.Entities(client.Data).Sum(u => u.Template.Get(client.Data).GetPowerPoints(client.Data))}",
+                 $"Strength: {a.GetPowerPoints(client.Data)}",
             a => a.Regime.Get(client.Data).Template.Get(client.Data).Flag.Texture,
             (int)med, 
             false
@@ -176,9 +176,7 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         var reinforceUnit = ButtonExt.GetButton(() =>
         {
             var selected = _armyTree.GetSelectedEntities<Unit>(c.Data);
-            var procs = selected.Select(unit => new ReinforceUnitProcedure(unit.MakeRef()))
-                .ToArray();
-            var proc = new AggregateProcedure(procs);
+            var proc = MilUtil.GetReinforceProc(_getRegime(), selected, c.Data);
             var com = new SendMessageCommand(proc, 
                 c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(
@@ -196,7 +194,8 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         
         var reinforceArmy = ButtonExt.GetButton(() =>
         {
-            var proc = new ReinforceArmyProcedure(a.MakeRef());
+            var proc = MilUtil.GetReinforceProc(_getRegime(),
+                a.Units.Entities(c.Data), c.Data);
             var com = new SendMessageCommand(proc, c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(
                 com, () =>
@@ -218,8 +217,8 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             var v = _armyTree.GetSelectedTroopAndUnit(c.Data);
             if (v.HasValue == false) return;
             var (u, t) = v.Value;
-            var proc = new ReinforceUnitTroopProcedure(u.MakeRef(),
-                t.MakeRef());
+            var proc = MilUtil.GetReinforceProc(_getRegime(),
+                u.Yield(), c.Data);
             var com = new SendMessageCommand(proc,
                 c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(

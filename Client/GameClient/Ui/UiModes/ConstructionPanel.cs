@@ -93,7 +93,7 @@ public partial class ConstructionPanel : PanelContainer
             var buildingProjects = regime.MakeQueue.Queue
                 .OfType<PlayerSettlementBuildingMakeProject>()
                 .Where(p => p.Settlement.RefId == s.Id
-                            && p.Making.RefId == model.Id);
+                            && p.Building.Get(c.Data) == model);
             var buildingTotal = buildingProjects.Sum(b => b.Amount);
             var buildingFinished = buildingProjects.Sum(b => b.Fulfilled);
 
@@ -143,9 +143,8 @@ public partial class ConstructionPanel : PanelContainer
                 .OfType<PlayerResourceExtractionMakeProject>()
                 .Where(p =>
                 {
-                    
                     return p.ResourceDeposit.RefId == rd.Id
-                        && p.Making.RefId == model.Id;
+                        && p.Building.Get(c.Data) == model;
                 });
             
             var (buildingTotal, buildingFinished) = 
