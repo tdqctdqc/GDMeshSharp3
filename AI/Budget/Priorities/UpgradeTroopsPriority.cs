@@ -1,6 +1,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Godot;
 using Google.OrTools.LinearSolver;
@@ -18,8 +19,13 @@ public class UpgradeTroopsPriority : SolverPriority<TroopUpgradeProject>
 
     protected override IEnumerable<TroopUpgradeProject> GetAll(Data d)
     {
-        return _needed.Select(kvp => TroopUpgradeProject.Construct(_regime, kvp.Key, _best[kvp.Key.TroopType],
-            1, d));
+        if(_needed is null) return ImmutableArray<TroopUpgradeProject>.Empty;
+        var all = _needed.Select(
+            kvp => TroopUpgradeProject
+                .Construct(_regime, kvp.Key,
+                    _best[kvp.Key.TroopType],
+                    1, d));
+        return all;
     }
     protected override string GetName(TroopUpgradeProject t, Data d)
     {
@@ -38,14 +44,17 @@ public class UpgradeTroopsPriority : SolverPriority<TroopUpgradeProject>
 
     protected override void SetCalcData(Regime r, Data d)
     {
-        var troops = _regime.GetAllTroopAmounts(d);
-
+        var troops = _regime
+            .GetAllTroopAmounts(d);
+        
         _best = d.Models.GetModels<TroopType>()
             .ToDictionary(tt => tt, tt => r.Military.GetBestTroopOfType(tt, d));
+
         _needed = new Dictionary<Troop, int>();
         foreach (var (troop, value) in troops)
         {
-            if (_best[troop.TroopType] != troop)
+            var best = _best[troop.TroopType];
+            if (best != troop)
             {
                 _needed.Add(troop, Mathf.CeilToInt(value));
             }
@@ -83,7 +92,7 @@ public class UpgradeTroopsPriority : SolverPriority<TroopUpgradeProject>
 
     protected override void Complete(BudgetPool pool, Regime r, 
         Dictionary<TroopUpgradeProject, float> toBuild, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         foreach (var (project, value) in toBuild)
         {

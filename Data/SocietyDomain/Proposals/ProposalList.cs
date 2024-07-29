@@ -6,7 +6,7 @@ public class ProposalList : Entity
 {
     public Dictionary<int, Proposal> Proposals { get; private set; }
 
-    public static ProposalList Create(GenWriteKey key)
+    public static ProposalList Create(GenKey key)
     {
         var p = new ProposalList(key.Data.IdDispenser.TakeId(), new Dictionary<int, Proposal>());
         key.Create(p);
@@ -17,7 +17,7 @@ public class ProposalList : Entity
         Proposals = proposals;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

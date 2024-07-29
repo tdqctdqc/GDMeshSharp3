@@ -17,7 +17,7 @@ public class PeepEmploymentReport
         Counts = counts;
     }
 
-    public void Copy(PeepEmploymentReport toCopy, ProcedureWriteKey key)
+    public void Copy(PeepEmploymentReport toCopy, ProcedureKey key)
     {
         Counts.Clear();
         foreach (var (peepJob, value) in toCopy.Counts.GetEnumModel(key.Data))

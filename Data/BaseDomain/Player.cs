@@ -7,9 +7,10 @@ public class Player : Entity
     public Guid PlayerGuid { get; private set; }
     public string Name { get; private set; }
     public ERef<Regime> Regime { get; private set; }
-    public static Player Create(Guid guid, string name, IHostWriteKey key)
+    public static Player Create(Guid guid, string name, 
+        ICreateKey key)
     {
-        var p = new Player(key.Data.IdDispenser.TakeId(), guid, name, new ERef<Regime>(-1));
+        var p = new Player(key.GetData().IdDispenser.TakeId(), guid, name, new ERef<Regime>(-1));
         key.Create(p);
         return p;
     }
@@ -22,7 +23,7 @@ public class Player : Entity
         Name = name;
     }
 
-    public void SetRegime(Regime regime, ProcedureWriteKey key)
+    public void SetRegime(Regime regime, ProcedureKey key)
     {
         if (regime.IsMajor == false) throw new Exception("player must be major regime");
         var old = Regime.Get(key.Data);
@@ -30,7 +31,7 @@ public class Player : Entity
         key.Data.Notices.Player.PlayerChangedRegime.Invoke(this, regime, old);
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

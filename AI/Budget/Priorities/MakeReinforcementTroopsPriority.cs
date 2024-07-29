@@ -37,6 +37,7 @@ public class MakeReinforcementTroopsPriority
     {
         _needed.Clear();
         var units = r.GetUnits(d);
+        if(units is null) return;
         foreach (var unit in units)
         {
             var template = unit.Template.Get(d);
@@ -90,7 +91,7 @@ public class MakeReinforcementTroopsPriority
             .Where(t => _regime.HasPrereqs(t));
     }
 
-    protected override void Complete(BudgetPool pool, Regime r, Dictionary<Troop, float> toBuild, LogicWriteKey key)
+    protected override void Complete(BudgetPool pool, Regime r, Dictionary<Troop, float> toBuild, LogicKey key)
     {
         CompleteModel(pool, r, toBuild, key);
     }

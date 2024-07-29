@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using Godot;
 
@@ -41,8 +42,7 @@ public static class RegimeExt
     }
     public static IEnumerable<Unit> GetUnits(this Regime r, Data d)
     {
-        return d.GetAll<Unit>()
-            ?.Where(u => u.Regime.RefId == r.Id);
+        return d.Military.UnitAux.UnitByRegime[r] ?? ImmutableArray<Unit>.Empty;
     }
     public static IEnumerable<UnitTemplate> GetUnitTemplates(this Regime r, Data d)
     {

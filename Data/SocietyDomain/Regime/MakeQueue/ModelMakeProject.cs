@@ -25,14 +25,14 @@ public class ModelMakeProject : MakeProject
     }
 
 
-    public override void Start(LogicWriteKey key)
+    public override void Start(LogicKey key)
     {
         
     }
 
     public override void Increment(
         RegimeStock stock,
-        LogicWriteKey key)
+        LogicKey key)
     {
         var amount = BuildTree.Increment(GetMakeable(key.Data),
             stock,
@@ -43,11 +43,11 @@ public class ModelMakeProject : MakeProject
         stock.Produced.Add(Model.RefId, amount);
     }
 
-    public override void Finish(LogicWriteKey key)
+    public override void Finish(LogicKey key)
     {
     }
 
-    public override void Cancel(ProcedureWriteKey key)
+    public override void Cancel(ProcedureKey key)
     {
         
     }
@@ -82,7 +82,7 @@ public class ModelMakeProject : MakeProject
         return vbox;
     }
 
-    public override bool Consolidate(MakeProject next, LogicWriteKey key)
+    public override bool Consolidate(MakeProject next, LogicKey key)
     {
         if (next is ModelMakeProject p == false
             || p.Model.Equals(Model) == false)

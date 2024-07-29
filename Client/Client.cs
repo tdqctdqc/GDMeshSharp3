@@ -10,7 +10,7 @@ public partial class Client : Node, IClient
     public Data Data => Session.Data;
     public ClientCallbacks Callbacks { get; private set; }
     public ClientNotices Notices { get; private set; }
-    public ClientWriteKey Key { get; private set; }
+    public ClientKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiController UiController { get; private set; }
     public ConcurrentQueue<Action> QueuedUpdates { get; }
@@ -29,7 +29,7 @@ public partial class Client : Node, IClient
     {
         Notices = new ClientNotices();
         Session = session;
-        Key = new ClientWriteKey(Session);
+        Key = new ClientKey(Session);
         QueuedUpdates = new ConcurrentQueue<Action>();
         UiTick = new RefAction();
         _uiTickTimer = new TimerAction(.1f, 0f, UiTick.Invoke);

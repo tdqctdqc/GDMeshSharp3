@@ -22,7 +22,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
     }
     public static Army Create(Regime r, 
         IEnumerable<Cell> startCells,
-        IEnumerable<int> unitIds, IHostWriteKey key)
+        IEnumerable<int> unitIds, LogicKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
         var units = ERefSetCallback<Unit>.Construct
@@ -65,7 +65,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
 
     public static void ChangeUnitGroup(Unit u, 
         Army oldG, Army newG,
-        ProcedureWriteKey key)
+        ProcedureKey key)
     {
         oldG?.Units.Remove(u, key);
         newG?.Units.Add(u, key);
@@ -81,11 +81,11 @@ public class Army : Entity, ICombatGraphNode, ICelled
         return Cells.Refs.Select(c => c.Get(d)).ToHashSet();
     }
 
-    public void SetLineOrder(LineMission mission, ProcedureWriteKey key)
+    public void SetLineOrder(LineMission mission, ProcedureKey key)
     {
         LineMission = mission;
     }
-    public void AddOrder(ArmyMission groupMission, ProcedureWriteKey key)
+    public void AddOrder(ArmyMission groupMission, ProcedureKey key)
     {
         OtherOrders.Add(groupMission);
     }
@@ -99,12 +99,12 @@ public class Army : Entity, ICombatGraphNode, ICelled
         return Units.Entities(data)
             .Sum(u => u.GetPowerPointsWeighted(data));
     }
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         if (Units.Count() > 0) throw new Exception();
     }
 
-    public void SetCells(RefSet<CellRef> cells, ProcedureWriteKey key)
+    public void SetCells(RefSet<CellRef> cells, ProcedureKey key)
     {
         Cells.Clear(key);
         foreach (var cell in cells.Refs)
@@ -163,7 +163,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
         return assgns;
     }
 
-    public bool Retreat(CombatCalculator combat, LogicWriteKey key)
+    public bool Retreat(CombatCalculator combat, LogicKey key)
     {
         var defeated = combat.Graph.GetNeighbors(this)
             .OfType<CellDefenseNode>()
@@ -215,7 +215,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
         return true;
     }
     public void RemoveIfOverrunOrDestroyed(CombatCalculator combat, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         if (Cells.Count() == 0)
         {

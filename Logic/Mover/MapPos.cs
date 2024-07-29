@@ -20,7 +20,7 @@ public class MapPos
 
     public void Set(int polyCell, (int DestCellId, float Proportion) destCell,
         MoveData moveDat, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         var cell = PlanetDomainExt.GetPolyCell(polyCell, key.Data);
         if (moveDat.MoveType.PassableFriendly(cell, moveDat.Alliance, key.Data) == false)

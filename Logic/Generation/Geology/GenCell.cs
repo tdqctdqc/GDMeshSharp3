@@ -19,7 +19,7 @@ public sealed class GenCell : IGraphNode<GenCell>
     public Vector2 Center { get; private set; }
     private Dictionary<MapPolygon, GenCell> _polyCells { get; }
 
-    public GenCell(MapPolygon seed, GenWriteKey key, Dictionary<MapPolygon, GenCell> polyCells, GenData data)
+    public GenCell(MapPolygon seed, GenKey key, Dictionary<MapPolygon, GenCell> polyCells, GenData data)
     {
         _polyCells = polyCells;
         Center = Vector2.Zero;
@@ -30,11 +30,11 @@ public sealed class GenCell : IGraphNode<GenCell>
         AddPolygon(seed, key);
     }
 
-    public void SetPlate(GenPlate plate, GenWriteKey key)
+    public void SetPlate(GenPlate plate, GenKey key)
     {
         Plate = plate;
     }
-    public void AddPolygon(MapPolygon p, GenWriteKey key)
+    public void AddPolygon(MapPolygon p, GenKey key)
     {
         Center = (Center * Polys.Count + p.Center) / (Polys.Count + 1);
         Polys.Add(p);
@@ -47,7 +47,7 @@ public sealed class GenCell : IGraphNode<GenCell>
     }
 
 
-    public void SetNeighbors(GenWriteKey key)
+    public void SetNeighbors(GenKey key)
     {
         foreach (var p in NeighboringPolyGeos)
         {

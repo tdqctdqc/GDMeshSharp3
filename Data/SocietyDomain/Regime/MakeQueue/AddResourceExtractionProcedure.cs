@@ -10,7 +10,7 @@ public class AddResourceExtractionProcedure : Procedure
         Deposit = deposit;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         Deposit.Get(key.Data).SetExtraction(Model, key);
     }

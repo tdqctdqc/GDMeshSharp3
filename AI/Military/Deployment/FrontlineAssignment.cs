@@ -16,7 +16,7 @@ public class FrontlineAssignment : GroupAssignment
         DeploymentAi ai,
         DeploymentBranch parent,
         Frontline frontline,
-        LogicWriteKey key) : base(parent, ai, key)
+        LogicKey key) : base(parent, ai, key)
     {
         Frontline = frontline;
         LineGroups = new HashSet<Army>();
@@ -51,7 +51,7 @@ public class FrontlineAssignment : GroupAssignment
     }
     public override Army PullGroup(DeploymentAi ai, 
         Func<Army, float> suitability, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         if (Groups.Count < 2) return null;
         if (Groups.Sum(g => g.Units.Count()) < Frontline.Faces.Count * .75f)
@@ -87,7 +87,7 @@ public class FrontlineAssignment : GroupAssignment
     }
 
     public override void GiveOrders(DeploymentAi ai, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         SetLineAndInsertingGroups(key);
         HandleInsertingGroupsOrders(key);
@@ -168,7 +168,7 @@ public class FrontlineAssignment : GroupAssignment
     }
 
 
-    private void SetLineAndInsertingGroups(LogicWriteKey key)
+    private void SetLineAndInsertingGroups(LogicKey key)
     {
         InsertingGroups = Groups.Where(g =>
         {
@@ -178,7 +178,7 @@ public class FrontlineAssignment : GroupAssignment
         LineGroups = Groups.Except(InsertingGroups).ToHashSet();
     }
 
-    private void HandleInsertingGroupsOrders(LogicWriteKey key)
+    private void HandleInsertingGroupsOrders(LogicKey key)
     {
         var idealAssignments = MilUtil
             .GetGroupLineAssignments(Alliance, Groups, 

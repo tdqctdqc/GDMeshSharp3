@@ -10,7 +10,7 @@ public interface IBudgetPriority : INamed
         Regime regime,
         Data d);
     bool Calculate(BudgetPool pool, Regime regime,
-            LogicWriteKey key,
+            LogicKey key,
             out Dictionary<IModel, float> modelCosts,
             out Dictionary<string, float> built);
 }

@@ -18,7 +18,7 @@ public class LineMission : ArmyMission
         Advance = advance;
     }
 
-    public override void Handle(Army g, LogicWriteKey key,
+    public override void Handle(Army g, LogicKey key,
         HandleUnitMissionsProcedure proc)
     {
         if (LineCells.Count() == 0)
@@ -58,7 +58,7 @@ public class LineMission : ArmyMission
 
     public override void RegisterCombatActions(
         Army army, 
-        CombatCalculator combat, LogicWriteKey key)
+        CombatCalculator combat, LogicKey key)
     {
         var d = key.Data;
         
@@ -88,7 +88,7 @@ public class LineMission : ArmyMission
         }
     }
 
-    public override bool CleanUp(Army army, ProcedureWriteKey key)
+    public override bool CleanUp(Army army, ProcedureKey key)
     {
         var alliance = army.Regime.Get(key.Data).GetAlliance(key.Data);
         var lost = army.LineMission.LineCells.Refs

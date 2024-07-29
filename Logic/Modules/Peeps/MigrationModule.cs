@@ -8,7 +8,7 @@ public class MigrationModule : LogicModule
     public static float MaxMigrationRatio { get; private set; }
         = .1f;
     public override void Calculate(List<RegimeTurnOrders> orders,
-        LogicWriteKey key)
+        LogicKey key)
     {
         var regimes = key.Data.GetAll<Regime>();
         var proc = MigrationProcedure.Construct();
@@ -21,7 +21,7 @@ public class MigrationModule : LogicModule
     }
 
     private IEnumerable<(int from, int to, float amt)>
-        DoForRegime(Regime r, LogicWriteKey key)
+        DoForRegime(Regime r, LogicKey key)
     {
         var res = new List<(int from, int to, float amt)>();
         var cells = r.GetCells(key.Data);

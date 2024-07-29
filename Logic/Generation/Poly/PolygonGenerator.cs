@@ -20,7 +20,7 @@ public class PolygonGenerator : Generator
         _dimensions = dimensions;
         _leftRightWrap = leftRightWrap;
     }
-    public override GenReport Generate(GenWriteKey key)
+    public override GenReport Generate(GenKey key)
     {
         var report = new GenReport(GetType().Name);
         _data = key.Data;

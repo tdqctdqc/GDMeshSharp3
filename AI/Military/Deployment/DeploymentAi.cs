@@ -25,11 +25,11 @@ public class DeploymentAi
         IdDispenser = new IdDispenser(0);
     }
 
-    public void Clear(LogicWriteKey key)
+    public void Clear(LogicKey key)
     {
         IdDispenser = new IdDispenser(0);
     }
-    public void Calculate(AllianceMilitaryAi ai, LogicWriteKey key)
+    public void Calculate(AllianceMilitaryAi ai, LogicKey key)
     {
         Clear(key);
         _root = new DeploymentRoot(this, key);

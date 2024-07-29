@@ -20,7 +20,7 @@ public class RegimeAi
         Status = new List<string>();
     }
 
-    public RegimeTurnOrders CalculateAndSendOrders(LogicWriteKey key)
+    public RegimeTurnOrders CalculateAndSendOrders(LogicKey key)
     {
         Status.Clear();
         var major = key.Data.BaseDomain.GameClock.MajorTurn(key.Data);
@@ -28,7 +28,7 @@ public class RegimeAi
         Status.Add("Finished");
         return orders;
     }
-    private MajorTurnOrders GetMajorTurnOrders(LogicWriteKey key)
+    private MajorTurnOrders GetMajorTurnOrders(LogicKey key)
     {
         Status.Add("Doing major");
         var orders = MajorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
@@ -47,7 +47,7 @@ public class RegimeAi
 
         return orders; 
     }
-    private MinorTurnOrders GetMinorTurnOrders(LogicWriteKey key)
+    private MinorTurnOrders GetMinorTurnOrders(LogicKey key)
     {
         var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
         

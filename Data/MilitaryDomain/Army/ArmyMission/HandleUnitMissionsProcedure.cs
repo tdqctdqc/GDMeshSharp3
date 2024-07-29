@@ -18,7 +18,7 @@ public class HandleUnitMissionsProcedure : Procedure
         NewArmyPosesById = newArmyPosesById;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         foreach (var kvp in NewArmyPosesById)
         {

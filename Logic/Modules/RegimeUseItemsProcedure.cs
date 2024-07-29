@@ -18,7 +18,7 @@ public class RegimeUseItemsProcedure : Procedure
         UsageByItemId = usageByItemId;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var regimeItems = Regime.Get(key.Data).Stock;
         foreach (var kvp in UsageByItemId)

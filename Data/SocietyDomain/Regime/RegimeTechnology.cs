@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Godot;
 using MessagePack;
 
 public class RegimeTechnology
@@ -24,16 +25,15 @@ public class RegimeTechnology
         Technologies = technologies;
         ResearchProgresses = researchProgresses;
         CurrentResearch = currentResearch;
-        Overflow = 0f;
+        Overflow = overflow;
     }
 
-    public void SetResearch(Technology t, ProcedureWriteKey key)
+    public void SetResearch(Technology t, ProcedureKey key)
     {
         if (t is not null)
         {
-            CurrentResearch = t.MakeRef();
-            ResearchProgresses.TryAdd(t.MakeRef(), Overflow);
-            Overflow = 0f;
+            var tRef = t.MakeRef();
+            CurrentResearch = tRef;
         }
         else
         {
@@ -41,7 +41,35 @@ public class RegimeTechnology
         }
     }
 
-    public void SetOverflow(float overflow, ProcedureWriteKey key)
+    public void AddProgress(float progress, ProcedureKey key)
+    {
+        if (CurrentResearch.IsEmpty())
+        {
+            Overflow += progress;
+        }
+        else
+        {
+            var total = Overflow + progress;
+            var curr = CurrentResearch.Get(key.Data);
+            var soFar = ResearchProgresses
+                .TryGetValue(CurrentResearch, out var amt)
+                ? amt : 0f;
+            var remaining = curr.ResearchCost - soFar;
+            if (remaining <= total)
+            {
+                Overflow = total - remaining;
+                Technologies.Add(CurrentResearch);
+                ResearchProgresses.Remove(CurrentResearch);
+                CurrentResearch = new ModelRef<Technology>();
+            }
+            else
+            {
+                ResearchProgresses.AddOrSum(CurrentResearch, total);
+                Overflow = 0f;
+            }
+        }
+    }
+    public void SetOverflow(float overflow, ProcedureKey key)
     {
         Overflow = overflow;
     }

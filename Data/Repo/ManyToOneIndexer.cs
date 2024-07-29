@@ -22,6 +22,22 @@ public class ManyToOneIndexer
             (n => indexer.HandleRemoved((TSingle)n.Entity));
         return indexer;
     }
+    
+    public static ManyToOneIndexer<TSingle, TKey>
+        MakeForEntity<TSingle, TKey>(
+            Func<TSingle, IEnumerable<TKey>> get,
+            Data data)
+        where TSingle : Entity where TKey : Entity
+    {
+        var indexer = new ManyToOneIndexer<TSingle, TKey>(
+            get);
+        
+        data.SubscribeForCreation<TSingle>
+            (n => indexer.HandleAdded((TSingle)n.Entity));
+        data.SubscribeForDestruction<TSingle>
+            (n => indexer.HandleRemoved((TSingle)n.Entity));
+        return indexer;
+    }
 }
 public class ManyToOneIndexer<TSingle, TKey>
     where TSingle : class

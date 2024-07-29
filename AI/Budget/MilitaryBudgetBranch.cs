@@ -6,7 +6,7 @@ public class MilitaryBudgetBranch
     : BudgetBranch
 {
     private PriorityNode _recruitBuildings, _reinforcements, 
-        _reserve, _units;
+        _reserve, _units, _upgrade;
     public MilitaryBudgetBranch(Regime r, BudgetBranch parent, Data d)
         : base("Military")
     {
@@ -20,6 +20,10 @@ public class MilitaryBudgetBranch
             {
                 var score = 0f;
                 var recruit = d.Models.Items.Recruits;
+
+                var units = r.GetUnits(d)?.ToArray();
+                if (units is null || units.Length == 0) return 1f;
+                
                 var numRecruits = r.GetUnits(d)
                     .Sum(u => u.Troops.GetEnumModel(d)
                         .Sum(kvp => kvp.Key.Makeable.BuildCosts.Get(recruit) * kvp.Value));
@@ -60,10 +64,6 @@ public class MilitaryBudgetBranch
             (d, r) => 1f);
         Children.Add(_reserve);
 
-        
-        
-        
-        
         var units = new MakeUnitPriority(r, d);
         _units = new PriorityNode(units, this,
             (r, d) =>
@@ -71,8 +71,8 @@ public class MilitaryBudgetBranch
                 var baseWeight = 5f;
                 var templates = d.HostLogicData.RegimeAis[r].Military.Templates;
                 var desired = d.HostLogicData.RegimeAis[r].Military.ForceComposition.DesiredAmounts;
-                var allUnits = r.GetUnits(d).ToArray();
-                if (allUnits.Count() == 0) return baseWeight;
+                var allUnits = r.GetUnits(d)?.ToArray();
+                if (allUnits is null || allUnits.Count() == 0) return baseWeight;
                 var unitsByMeta = r.GetUnits(d)
                     .SortBy(u => u.Template.Get(d).GetMetaTemplate(d));
                 var needed = desired.ToDictionary(kvp => kvp.Key,
@@ -85,11 +85,30 @@ public class MilitaryBudgetBranch
                 
             });
         Children.Add(_units);
-        
-        
-        
-        
-        
+
+
+        var upgrade = new UpgradeTroopsPriority(r);
+        _upgrade = new PriorityNode(upgrade,
+            this, (r, d) =>
+            {
+                var troops = r.GetAllTroopAmounts(d);
+                var totalPp = troops.Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
+                if (totalPp == 0f) return 0f;
+                var upgradePotential = 0f;
+                var best = d.Models.GetModels<TroopType>()
+                    .ToDictionary(tt => tt, tt => r.Military.GetBestTroopOfType(tt, d));
+                foreach (var (troop, value) in troops)
+                {
+                    if (best[troop.TroopType] != troop)
+                    {
+                        upgradePotential += (best[troop.TroopType].GetPowerPoints() - troop.GetPowerPoints()) * value;
+                    }
+                }
+                var score = Mathf.Min(10f, 100f * (upgradePotential / totalPp));
+                return score;
+            });
+        Children.Add(_upgrade);
+
     }
 
     protected override float GetWeight(Regime r, Data d)

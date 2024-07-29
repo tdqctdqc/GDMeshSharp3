@@ -13,11 +13,11 @@ public class AllianceMilitaryAi
         Deployment = DeploymentAi.Construct(a, d);
         Strategic = new StrategicAi(d, a);
     }
-    public void Calculate(LogicWriteKey key, Alliance alliance)
+    public void Calculate(LogicKey key, Alliance alliance)
     {
     }
 
-    public void CalculateMinor(LogicWriteKey key, Alliance alliance)
+    public void CalculateMinor(LogicKey key, Alliance alliance)
     {
         Strategic.Calculate(key.Data);
         Deployment.Calculate(this, key);

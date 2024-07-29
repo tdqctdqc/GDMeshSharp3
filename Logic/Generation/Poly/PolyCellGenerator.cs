@@ -12,7 +12,7 @@ public class PolyCellGenerator : Generator
     public PolyCellGenerator()
     {
     }
-    public override GenReport Generate(GenWriteKey key)
+    public override GenReport Generate(GenKey key)
     {
         _data = key.GenData;
         var report = new GenReport(GetType().Name);
@@ -49,7 +49,7 @@ public class PolyCellGenerator : Generator
     
 
     private IEnumerable<Cell> BuildCells(MapPolygon poly, 
-        GenWriteKey key)
+        GenKey key)
     {
         var preCells = key.GenData.GenAuxData.PreCellPolys[poly];
         if (poly.IsWater())
@@ -67,7 +67,7 @@ public class PolyCellGenerator : Generator
     
 
     
-    private void Postprocess(GenWriteKey key)
+    private void Postprocess(GenKey key)
     {
         var polys = key.Data.GetAll<MapPolygon>();
         var erodeChance = .75f;

@@ -11,7 +11,7 @@ public class LogicResults
     {
         Messages = new List<Message>();
     }
-    public LogicResults(IEnumerable<Message> messages, IEnumerable<Func<HostWriteKey, Entity>> createEntities)
+    public LogicResults(IEnumerable<Message> messages, IEnumerable<Func<HostKey, Entity>> createEntities)
     {
         Messages = messages.ToList();
     }

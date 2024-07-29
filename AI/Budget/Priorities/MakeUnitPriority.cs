@@ -38,11 +38,28 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
         Regime r, BudgetPool pool, 
         Dictionary<UnitMakeProject, Variable> projVars, Data data)
     {
-        var templates = data.HostLogicData.RegimeAis[r].Military.Templates;
+        if (r.GetUnitTemplates(data) is null
+            || r.GetUnitTemplates(data).Count() == 0
+            || r.GetUnits(data) is null)
+        {
+            return;
+        }
+        var templates = data.HostLogicData.RegimeAis[r].Military
+            .Templates;
         var desired = data.HostLogicData.RegimeAis[r].Military.ForceComposition.DesiredAmounts;
         var unitsByMeta = 
             r.GetUnits(data)
-            .SortBy(u => u.Template.Get(data).GetMetaTemplate(data));
+            .SortBy(u =>
+            {
+                var m = u.Template.Get(data).GetMetaTemplate(data);
+                if(m is null)
+                {
+                    templates.CategorizeTemplate(u.Template.Get(data), data);
+                }
+                m = u.Template.Get(data).GetMetaTemplate(data);
+                if (m is null) throw new Exception();
+                return m;
+            });
         var needed = desired.ToDictionary(kvp => kvp.Key,
             kvp => unitsByMeta.TryGetValue(kvp.Key, out var list)
                 ? Mathf.Max(0, kvp.Value - list.Count)
@@ -55,7 +72,12 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
         
         foreach (var (project, v) in projVars)
         {
-            var metaTemplate = project.Template.Get(data).GetMetaTemplate(data);
+            var metaTemplate = project.Template.Get(data)
+                .GetMetaTemplate(data);
+            if (metaTemplate is null)
+            {
+                throw new Exception($"{project.Template.Get(data).Name} has no meta");
+            }
             var constraint = constraints[metaTemplate];
             constraint.SetCoefficient(v, 1);
         }
@@ -89,7 +111,7 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
     }
 
     protected override void Complete(BudgetPool pool, Regime r, 
-        Dictionary<UnitMakeProject, float> toBuild, LogicWriteKey key)
+        Dictionary<UnitMakeProject, float> toBuild, LogicKey key)
     {
         foreach (var (unitMakeProject, value) in toBuild)
         {

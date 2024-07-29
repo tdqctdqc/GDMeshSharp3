@@ -7,7 +7,7 @@ public class FinishedTurnEndCalcProc : Procedure
         return true;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         key.Data.Notices.FinishedTurnEndCalc.Invoke();
     }

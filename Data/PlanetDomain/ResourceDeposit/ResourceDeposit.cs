@@ -10,7 +10,7 @@ public class ResourceDeposit : Entity
     public ModelRef<ResourceExtractionBuilding> Extraction { get; private set; }
     
     public static ResourceDeposit Create(Item resource,
-        Cell cell, IHostWriteKey key)
+        Cell cell, GenKey key)
     {
         var d = new ResourceDeposit(key.Data.IdDispenser.TakeId(),
             resource.MakeRef(), 
@@ -31,11 +31,11 @@ public class ResourceDeposit : Entity
     }
 
     public void SetExtraction(ModelRef<ResourceExtractionBuilding> extraction,
-        StrongWriteKey key)
+        IWriteKey key)
     {
         Extraction = extraction;
     }
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

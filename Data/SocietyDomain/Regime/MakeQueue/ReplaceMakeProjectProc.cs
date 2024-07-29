@@ -12,7 +12,7 @@ public class ReplaceMakeProjectProc : Procedure
         IdToReplace = idToReplace;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var queue = Project.Regime.Get(key.Data)
             .MakeQueue.Queue;

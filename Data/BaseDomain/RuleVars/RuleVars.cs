@@ -13,7 +13,7 @@ public class RuleVars : Entity
     public float MinDeficitRatioToGetDecline { get; private set; }
     public float MaxEffectiveDeficitRatio { get; private set; }
     public float DeclineRateCeiling { get; private set; }
-    public static RuleVars CreateDefault(GenWriteKey key)
+    public static RuleVars CreateDefault(GenKey key)
     {
         var v = new RuleVars(
             4,
@@ -49,7 +49,7 @@ public class RuleVars : Entity
         DeclineRateCeiling = declineRateCeiling;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

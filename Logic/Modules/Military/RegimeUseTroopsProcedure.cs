@@ -19,7 +19,7 @@ public class RegimeUseTroopsProcedure : Procedure
         UsageByTroopId = usageByTroopId;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var regimeTroops = Regime.Get(key.Data).Stock;
         foreach (var kvp in UsageByTroopId)

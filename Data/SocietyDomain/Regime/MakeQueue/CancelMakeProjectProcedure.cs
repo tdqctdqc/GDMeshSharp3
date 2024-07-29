@@ -12,7 +12,7 @@ public class CancelMakeProjectProcedure : Procedure
         MakeProjectId = makeProjectId;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var queue = Regime.Get(key.Data).MakeQueue;
         var proj = queue.Queue

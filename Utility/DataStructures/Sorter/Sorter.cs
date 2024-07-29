@@ -10,7 +10,8 @@ public abstract class Sorter
 
 public static class SorterExt
 {
-    public static Dictionary<TKey, List<TSource>> SortBy<TKey, TSource>(this IEnumerable<TSource> vals,
+    public static Dictionary<TKey, List<TSource>> 
+        SortBy<TKey, TSource>(this IEnumerable<TSource> vals,
         Func<TSource, TKey> getKey)
     {
         var dic = new Dictionary<TKey, List<TSource>>();

@@ -29,7 +29,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
         Settlement = settlement;
     }
     
-    public override void Start(LogicWriteKey key)
+    public override void Start(LogicKey key)
     {
         var regime = Regime.Get(key.Data);
         Increment(regime.Stock, key);
@@ -40,7 +40,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
 
     public override void Increment(
         RegimeStock stock,
-        LogicWriteKey key)
+        LogicKey key)
     {
         var before = Mathf.FloorToInt(Fulfilled);
         Fulfilled += BuildTree.Increment(GetMakeable(key.Data),
@@ -59,12 +59,12 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
         }
     }
 
-    public override void Finish(LogicWriteKey key)
+    public override void Finish(LogicKey key)
     {
         
     }
 
-    public override void Cancel(ProcedureWriteKey key)
+    public override void Cancel(ProcedureKey key)
     {
         var making = Building.Get(key.Data);
         var stock = Regime.Get(key.Data).Stock;
@@ -107,7 +107,7 @@ public class PlayerSettlementBuildingMakeProject : MakeProject
     }
 
     public override bool Consolidate(MakeProject next, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         if (next is not PlayerSettlementBuildingMakeProject p
             || p.Settlement.Equals(Settlement) == false

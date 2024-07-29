@@ -15,12 +15,12 @@ public class RegimeFinance
         LastTradeBalance = lastTradeBalance;
     }
 
-    public void AddToTradeBalance(float balance, ProcedureWriteKey key)
+    public void AddToTradeBalance(float balance, ProcedureKey key)
     {
         LastTradeBalance += balance;
     }
 
-    public void ClearTradeBalance(ProcedureWriteKey key)
+    public void ClearTradeBalance(ProcedureKey key)
     {
         LastTradeBalance = 0;
     }

@@ -13,7 +13,7 @@ public class RoadNetwork : Entity
 
         return null;
     }
-    public static RoadNetwork Create(GenWriteKey key)
+    public static RoadNetwork Create(GenKey key)
     {
         var n = new RoadNetwork(key.Data.IdDispenser.TakeId(), IdGraphLite<Cell, ModelRef<RoadModel>>.Construct());
         key.Create(n);
@@ -24,7 +24,7 @@ public class RoadNetwork : Entity
         Roads = roads;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

@@ -47,7 +47,7 @@ public class Regime : Entity, INamed
 
     public static Regime Create(MapPolygon seed, 
         RegimeTemplate regimeTemplate, bool isMajor, 
-        GenWriteKey key)
+        GenKey key)
     {
         var store = RegimeStock.Construct();
         var id = key.Data.IdDispenser.TakeId();
@@ -67,27 +67,26 @@ public class Regime : Entity, INamed
         key.Create(r);
         Alliance.Create(r, key);
         global::Technology.AddStartingTechsForRegime(r, key);
-        UnitTemplate.CreateDefaultTemplatesForRegime(r, key);
         
         return r;
     }
 
-    public void SetIsMajor(bool isMajor, IHostWriteKey key)
+    public void SetIsMajor(bool isMajor, IWriteKey key)
     {
         IsMajor = isMajor;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
-        var alliance = this.GetAlliance(key.Data);
+        var alliance = this.GetAlliance(key.GetData());
         alliance.Members.Remove(this, key);
         if (alliance.Members.Count() == 0)
         {
-            key.Data.RemoveEntity(alliance.Id, key);
+            key.GetData().RemoveEntity(alliance.Id, key);
         }
     }
 
-    public void SetStock(RegimeStock stock, ProcedureWriteKey key)
+    public void SetStock(RegimeStock stock, ProcedureKey key)
     {
         Stock = stock;
     }

@@ -45,8 +45,8 @@ public static class AllianceExt
         return d.Society.DiploGraph.GetRelations(a, DiploRelation.War, d);
     }
 
-    public static void CreateRelation(this Alliance a, Alliance b, DiploRelation e, StrongWriteKey key)
+    public static void CreateRelation(this Alliance a, Alliance b, DiploRelation e, IWriteKey key)
     {
-        key.Data.Society.DiploGraph.AddEdge(a, b, e, key);
+        key.GetData().Society.DiploGraph.AddEdge(a, b, e, key);
     }
 }

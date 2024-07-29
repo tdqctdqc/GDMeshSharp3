@@ -21,13 +21,13 @@ public class BudgetRoot : BudgetBranch
         Children.Add(_resources);
     }
 
-    public void Calculate(Regime r, LogicWriteKey key)
+    public void Calculate(Regime r, LogicKey key)
     {
         SetWeights(r, key.Data);
         Bid(r, key);
     }
     
-    private void Bid(Regime r, LogicWriteKey key)
+    private void Bid(Regime r, LogicKey key)
     {
         var tick = key.Data.GetTick();
         var leaves = GetLeaves().ToArray();
@@ -40,33 +40,22 @@ public class BudgetRoot : BudgetBranch
             priorityNode.Credit.AddCreditToCurrent(weight);
         }
         
-        var valid = leaves.ToHashSet();
-        var iter = 0;
-        while (valid.Count > 0 && iter < 10)
+        foreach (var leaf in leaves.OrderByDescending(l => l.Credit.GetCredit()))
         {
-            iter++;
-            var most = valid
-                .MaxBy(v => v.Credit.GetCredit());
-            var stillValid = most.Priority.Calculate(buildCostPool, r, key,
+            var stillValid = leaf.Priority.Calculate(buildCostPool, r, key,
                 out var modelCosts,
                 out var built);
-            if (stillValid == false)
+            if (built.Count() == 0) continue;
+            var price = modelCosts.Sum(
+                kvp => kvp.Value * getModelPrice(kvp.Key));
+            leaf.Credit.AddSpendingToCurrent(price);
+            if (leaf.MadeByTick.ContainsKey(tick) == false)
             {
-                valid.Remove(most);
+                leaf.MadeByTick.Add(tick, new Dictionary<string, float>());
             }
-            else
+            foreach (var (model, amt) in built)
             {
-                var price = modelCosts.Sum(
-                    kvp => kvp.Value * getModelPrice(kvp.Key));
-                most.Credit.AddSpendingToCurrent(price);
-                if (most.MadeByTick.ContainsKey(tick) == false)
-                {
-                    most.MadeByTick.Add(tick, new Dictionary<string, float>());
-                }
-                foreach (var (model, amt) in built)
-                {
-                    most.MadeByTick[tick].AddOrSum(model, amt);
-                }
+                leaf.MadeByTick[tick].AddOrSum(model, amt);
             }
         }
 
@@ -75,8 +64,6 @@ public class BudgetRoot : BudgetBranch
             if (Prices.TryGetValue(m, out var price)) return price;
             return 0f;
         }
-
-        
     }
     
     public void SetPrices(Regime r,

@@ -19,7 +19,7 @@ public abstract class Proposal : IPolymorph
     }
     public abstract bool GetDecisionForAi(Data d);
     public abstract Control GetDisplay(Data d);
-    public void Resolve(bool accepted, ProcedureWriteKey key)
+    public void Resolve(bool accepted, ProcedureKey key)
     {
         if (Valid(key.Data, out _))
         {
@@ -32,9 +32,9 @@ public abstract class Proposal : IPolymorph
         Id = id;
     }
     
-    protected abstract void ResolveInner(bool accepted, ProcedureWriteKey key);
+    protected abstract void ResolveInner(bool accepted, ProcedureKey key);
 
-    public void CleanUp(ProcedureWriteKey key)
+    public void CleanUp(ProcedureKey key)
     {
         key.Data.Society.Proposals.Proposals.Remove(Id);
     }

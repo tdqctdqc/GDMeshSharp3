@@ -5,7 +5,7 @@ using Godot;
 public class DoTurnOrderProceduresModule : LogicModule
 {
     public override void Calculate(List<RegimeTurnOrders> orders, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         for (var i = 0; i < orders.Count; i++)
         {

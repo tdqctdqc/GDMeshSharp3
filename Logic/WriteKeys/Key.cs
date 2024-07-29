@@ -1,11 +1,12 @@
 using Godot;
 using System;
 
-public class WriteKey
+public class Key
 {
     public Data Data => Session.Data;
+    public Data GetData() => Data;
     public ISession Session { get; private set; }
-    public WriteKey(ISession session)
+    public Key(ISession session)
     {
         Session = session;
     }

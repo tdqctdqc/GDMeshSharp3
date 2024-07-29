@@ -21,6 +21,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
     {
         this.ClearChildren();
         var regime = _getRegime();
+
         if (regime is null) return;
         var med = client.Settings.MedIconSize.Value;
         var units = regime.GetUnits(client.Data);
@@ -41,9 +42,6 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         
         var totalAuthorized = IdCount<TroopType>.Sum(
             units.Select(u => u.Template.Get(client.Data).Troops).ToArray());
-        
-        
-        
         
         var reserve = regime.Stock.Stock;
         _troops = new ItemListToken<Troop>(

@@ -12,12 +12,12 @@ public class TheaterBranch : DeploymentBranch
     public TheaterBranch (
         Alliance alliance,
         Theater theater,
-        LogicWriteKey key) : base(alliance, key)
+        LogicKey key) : base(alliance, key)
     {
         Theater = theater;
     }
 
-    public void MakeFronts(AllianceMilitaryAi ai, LogicWriteKey key)
+    public void MakeFronts(AllianceMilitaryAi ai, LogicKey key)
     {
         foreach (var frontline in Theater.Frontlines)
         {

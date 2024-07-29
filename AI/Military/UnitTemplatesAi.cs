@@ -25,29 +25,41 @@ public class UnitTemplatesAi
         };
     }
 
-    public void Calculate(LogicWriteKey key)
+    public void Calculate(LogicKey key)
     {
         HandleUnassociatedTemplates(key);
         CheckTemplates(key);
         UpgradeTemplates(key);
     }
-    private void HandleUnassociatedTemplates(LogicWriteKey key)
+    private void HandleUnassociatedTemplates(LogicKey key)
     {
+        var allTemplates = _regime
+            .GetUnitTemplates(key.Data);
+        if (allTemplates is null 
+            || allTemplates.Count() == 0) return;
         var categorized = MetaTemplates.SelectMany(t => t.Obsolete)
             .Concat(MetaTemplates.Where(t => t.Current.Fulfilled()).Select(t => t.Current))
             .Select(t => t.Get(key.Data))
             .ToHashSet();
-        var uncategorized = _regime
-            .GetUnitTemplates(key.Data)
-            .Where(t => categorized.Contains(t) == false)
+        
+        var uncategorized = allTemplates
+            .Except(categorized)
             .ToArray();
         foreach (var unitTemplate in uncategorized)
         {
-            var min = MetaTemplates.MinBy(m => m.GetDistance(unitTemplate, key.Data));
-            min.Obsolete.Add(unitTemplate.MakeRef());
+            CategorizeTemplate(unitTemplate, key.Data);
         }
     }
-    private void CheckTemplates(LogicWriteKey key)
+
+    public UnitMetaTemplate CategorizeTemplate(UnitTemplate unitTemplate,
+        Data d)
+    {
+        var min = MetaTemplates.MinBy(m => m.GetDistance(unitTemplate, d));
+        min.Obsolete.Add(unitTemplate.MakeRef());
+
+        return min;
+    }
+    private void CheckTemplates(LogicKey key)
     {
         foreach (var mt in MetaTemplates)
         {
@@ -55,7 +67,7 @@ public class UnitTemplatesAi
         }
     }
 
-    private void UpgradeTemplates(LogicWriteKey key)
+    private void UpgradeTemplates(LogicKey key)
     {
         
     }

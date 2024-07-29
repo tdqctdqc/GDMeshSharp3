@@ -8,14 +8,14 @@ public class WorldGenerator
 {
     public GenData Data { get; private set; }
     public bool Generating { get; private set; }
-    private GenWriteKey _key;
+    private GenKey _key;
     private Stopwatch _totalTime;
     private Action _succeeded;
     public WorldGenerator(GenData data, GameSession session, Action succeeded)
     {
         _succeeded = succeeded;
         Data = data;
-        _key = new GenWriteKey(Data, session);
+        _key = new GenKey(Data, session);
         _totalTime = new Stopwatch();
     }
     public GenReport Generate()

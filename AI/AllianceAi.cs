@@ -13,13 +13,13 @@ public class AllianceAi
     }
 
     public void CalculateMajor(RegimeTurnOrders orders,
-        Alliance alliance, LogicWriteKey key)
+        Alliance alliance, LogicKey key)
     {
         Military.Calculate(key, alliance);
         Diplomacy.Calculate(orders, key);
     }
 
-    public void CalculateMinor(LogicWriteKey key)
+    public void CalculateMinor(LogicKey key)
     {
         Military.CalculateMinor(key, _alliance);
     }

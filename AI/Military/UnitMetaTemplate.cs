@@ -19,7 +19,7 @@ public class UnitMetaTemplate
         Obsolete = new HashSet<ERef<UnitTemplate>>();
     }
 
-    public void Check(Regime r, LogicWriteKey key)
+    public void Check(Regime r, LogicKey key)
     {
         if (Current.IsEmpty() || IsObsolete(Current.Get(key.Data), r, key.Data))
         {

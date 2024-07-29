@@ -6,5 +6,5 @@ using Godot;
 public abstract class LogicModule
 {
     public abstract void Calculate(List<RegimeTurnOrders> orders, 
-        LogicWriteKey key);
+        LogicKey key);
 }

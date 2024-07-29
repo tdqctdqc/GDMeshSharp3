@@ -9,10 +9,10 @@ using Priority_Queue;
 
 public class SocietyGenerator : Generator
 {
-    private GenWriteKey _key;
+    private GenKey _key;
     private GenData _data;
     private MultiTimer _times;
-    public override GenReport Generate(GenWriteKey key)
+    public override GenReport Generate(GenKey key)
     {
         var report = new GenReport("Society");
         _key = key;

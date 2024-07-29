@@ -10,7 +10,7 @@ public class UnitTemplate : Entity, INamed
     public IdCount<TroopType> Troops { get; private set; }
     public ERef<Regime> Regime { get; private set; }
     public TroopDomain Domain { get; private set; }
-    public static UnitTemplate Create(IHostWriteKey key, 
+    public static UnitTemplate Create(LogicKey key, 
         string name,
         IdCount<TroopType> troopCounts,
         TroopDomain domain,
@@ -24,7 +24,7 @@ public class UnitTemplate : Entity, INamed
         key.Create(u);
         return u;
     }
-    public static UnitTemplate Create(IHostWriteKey key, 
+    public static UnitTemplate Create(LogicKey key, 
         string name,
         Dictionary<TroopType, float> troopCounts,
         TroopDomain domain,
@@ -50,19 +50,7 @@ public class UnitTemplate : Entity, INamed
         Domain = domain;
     }
 
-    public static void CreateDefaultTemplatesForRegime(Regime r, 
-        IHostWriteKey key)
-    {
-        var inf = Create(key, "Infantry Division",
-            new Dictionary<TroopType, float>
-                {
-                    {key.Data.Models.TroopTypes.Infantry, 100f},
-                    {key.Data.Models.TroopTypes.Artillery, 10f}
-                }, key.Data.Models.TroopDomains.Land,
-            r);
-    }
-
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }
@@ -94,7 +82,7 @@ public class UnitTemplate : Entity, INamed
             .Key.Icon;
     }
 
-    public void Rename(string newName, ProcedureWriteKey key)
+    public void Rename(string newName, ProcedureKey key)
     {
         Name = newName;
     }

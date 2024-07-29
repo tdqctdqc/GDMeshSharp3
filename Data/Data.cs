@@ -74,7 +74,7 @@ public class Data
     {
         _entityTypeTree.Get(t);
     }
-    public void AddEntity(Entity e, StrongWriteKey key)
+    public void AddEntity(Entity e, IWriteKey key)
     {
         var t = e.GetType();
         if (_entityTypeTree.Nodes.ContainsKey(t) == false)
@@ -91,14 +91,14 @@ public class Data
         EntitiesById.Add(e.Id, e);
         _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
     }
-    public void AddEntities<TEntity>(IReadOnlyList<TEntity> es, StrongWriteKey key) where TEntity : Entity
+    public void AddEntities<TEntity>(IReadOnlyList<TEntity> es, IWriteKey key) where TEntity : Entity
     {
         foreach (var e in es)
         {
             AddEntity(e, key);
         }
     }
-    public void LoadEntities(IReadOnlyList<Entity> es, StrongWriteKey key) 
+    public void LoadEntities(IReadOnlyList<Entity> es, ICreateKey key) 
     {
 
         foreach (var e in es)
@@ -125,7 +125,7 @@ public class Data
             _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
         }
     }
-    private void SetupEntity(Entity e, StrongWriteKey key)
+    private void SetupEntity(Entity e, ICreateKey key)
     {
         var t = e.GetType();
         if (_entityTypeTree.Nodes.ContainsKey(t) == false)
@@ -139,18 +139,18 @@ public class Data
         }
         EntitiesById.Add(e.Id, e);
     }
-    public void RemoveEntities(int[] entityIds, StrongWriteKey key)
+    public void RemoveEntities(int[] entityIds, IWriteKey key)
     {
         foreach (var entityId in entityIds)
         {
             RemoveEntity(entityId, key);
         }
     }
-    public void RemoveEntity(int eId, StrongWriteKey key)
+    public void RemoveEntity(int eId, IWriteKey key)
     {
         var e = EntitiesById[eId];
         e.CleanUp(key);
-        key.Data._entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
+        _entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
         EntitiesById.Remove(eId);
     }
 

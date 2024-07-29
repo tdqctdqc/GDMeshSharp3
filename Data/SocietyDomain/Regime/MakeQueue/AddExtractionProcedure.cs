@@ -10,7 +10,7 @@ public class AddExtractionProcedure : Procedure
         Extraction = extraction;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         ResourceDeposit.Get(key.Data)
             .SetExtraction(Extraction, key);

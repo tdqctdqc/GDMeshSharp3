@@ -20,7 +20,7 @@ public class ClientCallbacks
         return id;
     }
 
-    public void CallBack(int id, ProcedureWriteKey key)
+    public void CallBack(int id, ProcedureKey key)
     {
         try
         {

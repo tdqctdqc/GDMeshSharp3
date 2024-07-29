@@ -26,7 +26,7 @@ public class ConquerCellProcedure : Procedure
         ConqueringArmies = conqueringArmies;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var cell = Cell.Get(key.Data);
         var newController = ConqueringRegime.Get(key.Data);

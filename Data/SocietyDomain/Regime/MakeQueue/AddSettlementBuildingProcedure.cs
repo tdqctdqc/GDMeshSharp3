@@ -10,7 +10,7 @@ public class AddSettlementBuildingProcedure : Procedure
         Building = building;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         Settlement.Get(key.Data).Buildings.Add(Building.RefId, 1f);
     }

@@ -27,7 +27,7 @@ public static class DelaunayExt
         (Vector2I, Vector2I))[] 
         GetVoronoiGraphNew(this Delaunator delaunay, 
             PreCellResult preCellResult,
-            Vector2I dim, GenWriteKey key)
+            Vector2I dim, GenKey key)
     {
         var splitBag = new 
             ConcurrentDictionary<Vector2I, 
@@ -79,7 +79,7 @@ public static class DelaunayExt
     private static void HandleSplitPointAdjacentEdges(Vector2I dim,
         (Vector2I p1, Vector2I p2, (Vector2I, Vector2I) e)[] res,
         ConcurrentDictionary<Vector2I, (Vector2I a1, Vector2I a2, Vector2I c1, Vector2I c2)> splitPoint,
-        GenWriteKey key)
+        GenKey key)
     {
         Parallel.ForEach(Enumerable.Range(0, res.Length - 1), i =>
         {
@@ -111,7 +111,7 @@ public static class DelaunayExt
     private static (Vector2I, Vector2I) SplitPoint(Vector2I point,
         Vector2I cellPoint1, Vector2I cellPoint2, Vector2I dim,
         float zeroEdgeCorrectionLength,
-        GenWriteKey key)
+        GenKey key)
     {
         var axis = (Vector2)cellPoint1.Offset(cellPoint2, key.Data);
 

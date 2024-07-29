@@ -39,7 +39,7 @@ public class MakeProductionBuildingsPriority
     }
 
 
-    protected override void Complete(BudgetPool pool, Regime r, Dictionary<SettlementBuilding, float> toBuild, LogicWriteKey key)
+    protected override void Complete(BudgetPool pool, Regime r, Dictionary<SettlementBuilding, float> toBuild, LogicKey key)
     {
         CompleteModel(pool, r, toBuild, key);
     }

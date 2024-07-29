@@ -14,7 +14,7 @@ public class GenPlate : IIdentifiable
     public Dictionary<GenCell, int> NeighboringCellsAdjCount { get; private set; }
     public HashSet<GenPlate> Neighbors { get; private set; }
     public Vector2 Center => GetSeedPoly().Center;
-    public GenPlate(GenCell seed, int id, GenWriteKey key)
+    public GenPlate(GenCell seed, int id, GenKey key)
     {
         Id = id;
         Seed = seed;
@@ -24,7 +24,7 @@ public class GenPlate : IIdentifiable
         AddCell(seed, key);
     }
 
-    public void AddCell(GenCell c, GenWriteKey key)
+    public void AddCell(GenCell c, GenKey key)
     {
         Cells.Add(c);
         c.SetPlate(this, key);

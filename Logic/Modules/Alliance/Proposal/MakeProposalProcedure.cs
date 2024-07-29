@@ -8,7 +8,7 @@ public class MakeProposalProcedure : Procedure
 {
     public Proposal Proposal { get; private set; }
     public static MakeProposalProcedure Construct(Proposal p,
-        LogicWriteKey key)
+        LogicKey key)
     {
         p.SetId(key.Data.IdDispenser.TakeId());
         return new MakeProposalProcedure(p);
@@ -18,7 +18,7 @@ public class MakeProposalProcedure : Procedure
     {
         Proposal = proposal;
     }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         if (key.Data.Society.Proposals.Proposals.ContainsKey(Proposal.Id))
         {

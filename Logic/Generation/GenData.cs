@@ -17,7 +17,7 @@ public class GenData : Data
         GenAuxData = new GenAuxiliaryData(this);
         base.Init();
     }
-    public void CreateFirstTime(GenWriteKey key)
+    public void CreateFirstTime(GenKey key)
     {
         EntityIds.Create(key);
         GameClock.Create(key);

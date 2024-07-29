@@ -10,7 +10,7 @@ public static class WindowExt
         w.CloseRequested += w.Hide;
         w.WindowInput += i =>
         {
-            if (i is InputEventKey k && k.Keycode == Key.Escape)
+            if (i is InputEventKey k && k.Keycode == Godot.Key.Escape)
             {
                 w.Hide();
                 w.GetViewport().SetInputAsHandled();
@@ -23,7 +23,7 @@ public static class WindowExt
         w.CloseRequested += w.QueueFree;
         w.WindowInput += i =>
         {
-            if (i is InputEventKey k && k.Keycode == Key.Escape)
+            if (i is InputEventKey k && k.Keycode == Godot.Key.Escape)
             {
                 w.QueueFree();
                 w.GetViewport().SetInputAsHandled();

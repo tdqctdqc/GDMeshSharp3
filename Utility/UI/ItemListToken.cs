@@ -29,7 +29,7 @@ public class ItemListToken<T>
             : ItemList.SelectModeEnum.Single;
         Selected = new HashSet<T>();
         ItemList.FixedIconSize = textureHeight * Vector2I.One;
-        if (items.Any())
+        if (items is not null && items.Any())
         {
             _items = items.ToList();
         }

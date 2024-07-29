@@ -7,7 +7,7 @@ public class DiplomacyGraph : Entity
 {
     public ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation> Graph { get; private set; }
 
-    public static DiplomacyGraph Create(GenWriteKey key)
+    public static DiplomacyGraph Create(GenKey key)
     {
         var g = new DiplomacyGraph(ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation>.Construct(),
             key.Data.IdDispenser.TakeId());
@@ -22,7 +22,7 @@ public class DiplomacyGraph : Entity
     }
     
     public void AddEdge(Alliance a1, Alliance a2, 
-        DiploRelation edge, StrongWriteKey key)
+        DiploRelation edge, IWriteKey key)
     {
         Graph.AddToEdge(a1, a2, edge);
     }
@@ -39,19 +39,19 @@ public class DiplomacyGraph : Entity
             .Select(n => d.Get<Alliance>(n));
     }
 
-    public void MergeRelations(Alliance dissolve, Alliance into, StrongWriteKey key)
+    public void MergeRelations(Alliance dissolve, Alliance into, IWriteKey key)
     {
         Graph.DoForEdges(dissolve, (n, r) =>
         {
-            var other = key.Data.Get<Alliance>(n);
+            var other = key.GetData().Get<Alliance>(n);
             Graph.AddToEdge(into, other, r);
         });
     }
-    public void RemoveAlliance(Alliance a, StrongWriteKey key)
+    public void RemoveAlliance(Alliance a, IWriteKey key)
     {
         Graph.Remove(a);
     }
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

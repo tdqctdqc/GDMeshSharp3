@@ -6,7 +6,7 @@ using Godot;
 public class FinishedStateSyncUpdate : Update
 {
     public Guid PlayerGuid { get; private set; }
-    public static FinishedStateSyncUpdate Create(Guid playerGuid, HostWriteKey key)
+    public static FinishedStateSyncUpdate Create(Guid playerGuid, HostKey key)
     {
         return new FinishedStateSyncUpdate(playerGuid);
     }
@@ -15,7 +15,7 @@ public class FinishedStateSyncUpdate : Update
         PlayerGuid = playerGuid;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         GD.Print("Finished state sync");
         key.Data.ClientPlayerData.SetLocalPlayerGuid(PlayerGuid);

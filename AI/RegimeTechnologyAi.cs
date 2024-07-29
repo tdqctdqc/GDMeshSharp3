@@ -21,7 +21,7 @@ public class RegimeTechnologyAi
         };
     }
 
-    public void Calculate(LogicWriteKey key)
+    public void Calculate(LogicKey key)
     {
         var weights = _getWeight.ToDictionary(kvp => kvp.Key,
             kvp => kvp.Value(_regime, key.Data));
@@ -30,8 +30,22 @@ public class RegimeTechnologyAi
         var available = techs
             .Where(t => t.AvailableToResearch(_regime))
             .ToDictionary(t => t, t => weights[t.Category] / t.ResearchCost);
-        var toResearch = available.MaxBy(kvp => kvp.Value)
+
+        if (available.Count == 0)
+        {
+            key.SendMessage(new SetResearchProcedure(_regime.MakeRef(),
+                new ModelRef<Technology>()));
+            return;
+        }
+        
+        var toResearch = available
+            .MaxBy(kvp => kvp.Value)
             .Key;
-        key.SendMessage(new SetResearchProcedure(_regime.MakeRef(), toResearch.MakeRef()));
+        if (toResearch.MakeRef()
+                .Equals(_regime.Technology.CurrentResearch) 
+            == false)
+        {
+            key.SendMessage(new SetResearchProcedure(_regime.MakeRef(), toResearch.MakeRef()));
+        }
     }
 }

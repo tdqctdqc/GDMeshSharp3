@@ -22,7 +22,7 @@ public class MakeProposalCommand : Command
         return true;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         key.SendMessage(MakeProposalProcedure.Construct(Proposal, key));
     }

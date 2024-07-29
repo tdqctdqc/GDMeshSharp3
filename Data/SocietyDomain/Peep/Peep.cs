@@ -9,7 +9,7 @@ public class Peep : Entity
     public float Size { get; private set; }
     public PeepEmploymentReport Employment { get; private set; }
 
-    public static Peep Create(Cell cell, IHostWriteKey key)
+    public static Peep Create(Cell cell, GenKey key)
     {
         var p = new Peep(PeepEmploymentReport.Construct(), 
             cell.MakeRef(), 0, 
@@ -26,31 +26,31 @@ public class Peep : Entity
         Cell = cell;
     }
 
-    public void GrowSize(float delta, ProcedureWriteKey key)
+    public void GrowSize(float delta, ProcedureKey key)
     {
         if (delta == 0) return;
         if (delta < 0) throw new Exception();
         Size += delta;
     }
-    public void GrowSize(float delta, GenWriteKey key)
+    public void GrowSize(float delta, GenKey key)
     {
         if (delta == 0) return;
         if (delta < 0) throw new Exception();
         Size += delta;
     }
 
-    public void ShrinkSize(float delta, ProcedureWriteKey key)
+    public void ShrinkSize(float delta, ProcedureKey key)
     {
         if (delta == 0) return;
         if (delta < 0) throw new Exception();
         Size -= delta;
     }
-    public void SetEmploymentReport(PeepEmploymentReport peepEmployment, ProcedureWriteKey key)
+    public void SetEmploymentReport(PeepEmploymentReport peepEmployment, ProcedureKey key)
     {
         Employment.Copy(peepEmployment, key);
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

@@ -17,20 +17,20 @@ public class HostLogic : ILogic
     public bool Calculating => _stateMachine.Current != _middle;
     public OrderHolder OrderHolder { get; private set; }
     private HostServer _server; 
-    private HostWriteKey _hKey;
-    public ProcedureWriteKey PKey { get; private set; }
-    private LogicWriteKey _logicKey;
+    private HostKey _hKey;
+    public ProcedureKey PKey { get; private set; }
+    private LogicKey _logicKey;
     private Data _data => _session.Data;
     private readonly object _lock = new object();
     public HostLogic(ISession session)
     {
         _session = session;
         CommandQueue = new ConcurrentQueue<Command>();
-        _logicKey = new LogicWriteKey(HandleMessage,
-            (m, g) => _server?.SendMessageToClient(m, g),
+        _logicKey = new LogicKey(this,
+            _server,
             session);
-        _hKey = new HostWriteKey(this, session);
-        PKey = new ProcedureWriteKey(_session);
+        _hKey = new HostKey(this, session);
+        PKey = new ProcedureKey(_session);
         
         OrderHolder = new OrderHolder(_logicKey);
         
@@ -98,6 +98,7 @@ public class HostLogic : ILogic
     {
         lock (_lock)
         {
+            GD.Print(m.GetType());
             if (m is Update u)
             {
                 u.Enact(PKey);
@@ -140,7 +141,7 @@ public class HostLogic : ILogic
                 return;
             }
 
-        throw new Exception($"message of type {m.GetType()} not handled");
+            throw new Exception($"message of type {m.GetType()} not handled");
         }
     }
     private void DoCommands()

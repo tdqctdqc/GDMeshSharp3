@@ -5,7 +5,7 @@ using System.Linq;
 
 public partial class HostServer : Node, IServer
 {
-    private HostWriteKey _key;
+    private HostKey _key;
     private HostLogic _logic;
     private List<HostSyncer> _peers;
     private Dictionary<Guid, HostSyncer> _peersByGuid;
@@ -21,7 +21,7 @@ public partial class HostServer : Node, IServer
     public void Setup(HostLogic logic, Data data, GameSession session)
     {
         _logic = logic;
-        _key = new HostWriteKey(logic, session);
+        _key = new HostKey(logic, session);
     }
     public override void _Process(double delta)
     {
@@ -62,7 +62,7 @@ public partial class HostServer : Node, IServer
         var bytes = p.Serialize(_key.Data);
         _peersByGuid[clientGuid].QueuePacket(bytes);
     }
-    public void ReceiveMessage(Message m, HostWriteKey k)
+    public void ReceiveMessage(Message m, HostKey k)
     {
         var bytes = m.Serialize(_key.Data);
         for (var j = 0; j < _peers.Count; j++)
@@ -70,7 +70,7 @@ public partial class HostServer : Node, IServer
             _peers[j].QueuePacket(bytes);
         }
     }
-    public void PushPackets(HostWriteKey key)
+    public void PushPackets(HostKey key)
     {
         _peers.ForEach(p => p.PushPackets(key));
     }

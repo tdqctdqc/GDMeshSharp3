@@ -3,7 +3,7 @@ using System;
 
 public class TurnEndState : TurnState
 {
-    public TurnEndState(LogicWriteKey key, OrderHolder orders) 
+    public TurnEndState(LogicKey key, OrderHolder orders) 
         : base(key, orders)
     {
         _majorModules = new LogicModule[]

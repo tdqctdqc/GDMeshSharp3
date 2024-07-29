@@ -13,7 +13,7 @@ public struct ModelRef<T> : IdRef
     {
         RefId = -1;
     }
-    public ModelRef(T model, IHostWriteKey key)
+    public ModelRef(T model)
     {
         RefId = model.Id;
     }

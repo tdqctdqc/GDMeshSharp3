@@ -34,7 +34,7 @@ public class AllianceMergeProposal : Proposal
         return c;
     }
 
-    protected override void ResolveInner(bool accepted, ProcedureWriteKey key)
+    protected override void ResolveInner(bool accepted, ProcedureKey key)
     {
         if (accepted)
         {

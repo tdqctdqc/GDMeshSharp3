@@ -17,7 +17,7 @@ public class CreateUnitTemplateCommand : Command
         return true;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         var regime = player.Regime.Get(key.Data);

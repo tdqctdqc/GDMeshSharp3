@@ -8,8 +8,15 @@ public static class UnitTemplateExt
     {
         var templatesAi = u.Regime.Get(d).GetAi(d)
             .Military.Templates;
-        return templatesAi.MetaTemplates
+        
+        var m = templatesAi.MetaTemplates
             .FirstOrDefault(m => m.Current.Equals(u)
                         || m.Obsolete.Contains(u.MakeRef()));
+        if (m is null)
+        {
+            m = templatesAi.CategorizeTemplate(u, d);
+        }
+
+        return m;
     }
 }

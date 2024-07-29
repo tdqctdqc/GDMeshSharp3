@@ -28,19 +28,19 @@ public class ERefSet<TRef>
     {
         return Refs.Select(r => r.Get(d));
     }
-    public void Add(List<TRef> ids, StrongWriteKey key)
+    public void Add(List<TRef> ids, IWriteKey key)
     {
         ids.ForEach(id => Add(id, key));
     }
-    public void Add(TRef t, StrongWriteKey key)
+    public void Add(TRef t, IWriteKey key)
     {
         Add(t.MakeRef(), key);
     }
-    public void Remove(List<TRef> ids, StrongWriteKey key)
+    public void Remove(List<TRef> ids, IWriteKey key)
     {
         ids.ForEach(id => Remove(id, key));
     }
-    public void Remove(TRef t, StrongWriteKey key)
+    public void Remove(TRef t, IWriteKey key)
     {
         Remove(t.MakeRef(), key);
     }
@@ -53,7 +53,7 @@ public class ERefSet<TRef>
         return Contains(t.MakeRef());
     }
 
-    public void Clear(StrongWriteKey key)
+    public void Clear(IWriteKey key)
     {
         base.Clear(key);
     }

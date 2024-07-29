@@ -7,7 +7,7 @@ public class EntityIds : Entity
 {
     public int Index => Dispenser.Index;
     public IdDispenser Dispenser { get; private set; }
-    public static EntityIds Create(GenWriteKey key)
+    public static EntityIds Create(GenKey key)
     {
         var d = new EntityIds(0, new IdDispenser(0));
         key.Create(d);
@@ -25,7 +25,7 @@ public class EntityIds : Entity
         return Dispenser.TakeId();
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

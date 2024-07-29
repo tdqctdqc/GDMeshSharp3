@@ -16,7 +16,7 @@ public class MigrationProcedure : Procedure
         Results = results;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         for (var i = 0; i < Results.Count; i++)
         {

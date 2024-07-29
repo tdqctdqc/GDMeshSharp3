@@ -13,7 +13,7 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
     public HashSet<Army> Groups { get; }
     
     protected GroupAssignment(DeploymentBranch parent,
-        DeploymentAi ai, LogicWriteKey key)
+        DeploymentAi ai, LogicKey key)
     {
         Id = ai.IdDispenser.TakeId();
         Parent = parent;
@@ -29,7 +29,7 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
     }
     protected abstract void RemoveGroupFromData(DeploymentAi ai, Army g);
     
-    public void PushGroup(DeploymentAi ai, Army g, LogicWriteKey key)
+    public void PushGroup(DeploymentAi ai, Army g, LogicKey key)
     {
         AddGroupToData(ai, g, key.Data);
         if (Groups.Contains(g)) throw new Exception();
@@ -43,8 +43,8 @@ public abstract class GroupAssignment : IDeploymentNode, IIdentifiable
     }
 
 
-    public abstract void GiveOrders(DeploymentAi ai, LogicWriteKey key);
-    public abstract Army PullGroup(DeploymentAi ai, Func<Army, float> suitability, LogicWriteKey key);
+    public abstract void GiveOrders(DeploymentAi ai, LogicKey key);
+    public abstract Army PullGroup(DeploymentAi ai, Func<Army, float> suitability, LogicKey key);
     public abstract float Suitability(Army g, Data d);
     public abstract Cell GetCharacteristicCell(Data d);
 

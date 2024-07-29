@@ -13,14 +13,14 @@ public class BudgetAi
         Root = new BudgetRoot(_regime, data);
     }
 
-    public void Calculate(LogicWriteKey key, MajorTurnOrders orders)
+    public void Calculate(LogicKey key, MajorTurnOrders orders)
     {
         Root.Calculate(_regime, key);
     }
 
     private void Manufacture(Data data, 
         Dictionary<Item, int> wishlist, BudgetPool pool,
-         LogicWriteKey key)
+         LogicKey key)
      {
          // var ip = data.Models.Flows.IndustrialPower;
          // var backlogRatio = 3f;

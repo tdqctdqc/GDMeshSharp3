@@ -20,31 +20,31 @@ public partial class DebugCameraController : Camera2D
     {
         var delta = (float) deltaD;
         var mult = 1f;
-        if (Input.IsKeyPressed( Key.Shift)) mult = 3f;
-        if(Input.IsKeyPressed(Key.W))
+        if (Input.IsKeyPressed( Godot.Key.Shift)) mult = 3f;
+        if(Input.IsKeyPressed(Godot.Key.W))
         {
             _controlled.Position -= Vector2.Up * delta * Zoom * _scrollSpeed * mult;
         }
-        if(Input.IsKeyPressed(Key.S))
+        if(Input.IsKeyPressed(Godot.Key.S))
         {
             _controlled.Position -= Vector2.Down * delta * Zoom * _scrollSpeed * mult;
         }
-        if(Input.IsKeyPressed(Key.A))
+        if(Input.IsKeyPressed(Godot.Key.A))
         {
             _controlled.Position -= Vector2.Left * delta * Zoom * _scrollSpeed * mult;
         }
-        if(Input.IsKeyPressed(Key.D))
+        if(Input.IsKeyPressed(Godot.Key.D))
         {
             _controlled.Position -= Vector2.Right * delta * Zoom * _scrollSpeed * mult;
         }
         
-        if(Input.IsKeyPressed(Key.Z))
+        if(Input.IsKeyPressed(Godot.Key.Z))
         {
             _zoomLevel -= _zoomIncr;
             UpdateZoom();
 
         }
-        if(Input.IsKeyPressed(Key.X))
+        if(Input.IsKeyPressed(Godot.Key.X))
         {
             _zoomLevel += _zoomIncr;
             UpdateZoom();

@@ -9,7 +9,7 @@ using Godot;
 public class RiverCellGenerator
 {
     public static void BuildRiverCells(
-        GenWriteKey key)
+        GenKey key)
     {
         var sw = new Stopwatch();
         sw.Start();
@@ -102,7 +102,7 @@ public class RiverCellGenerator
         GetRiverCellEdgeWidths(
         MapPolygonEdge e, 
         Dictionary<MapPolyNexus, float> nexusRiverWidths,
-        GenWriteKey key)
+        GenKey key)
     {
         var hiPoly = e.HighPoly.Get(key.Data);
         var loPoly = e.LowPoly.Get(key.Data);

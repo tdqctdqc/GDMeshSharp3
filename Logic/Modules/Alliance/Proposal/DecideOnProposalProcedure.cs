@@ -11,7 +11,7 @@ public class DecideOnProposalProcedure : Procedure
         Decision = decision;
         ProposalId = proposalId;
     }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var p = key.Data.Society.Proposals.Proposals[ProposalId];
         p.Resolve(Decision, key);

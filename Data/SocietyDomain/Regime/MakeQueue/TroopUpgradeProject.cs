@@ -49,17 +49,18 @@ public class TroopUpgradeProject : MakeProject, IMakeable
         float amount, float fulfilled, int id) 
             : base(regime, amount, fulfilled, id)
     {
+        Makeable = makeable;
         Target = target;
         From = from;
         To = to;
     }
 
-    public override void Start(LogicWriteKey key)
+    public override void Start(LogicKey key)
     {
         
     }
 
-    public override void Increment(RegimeStock stock, LogicWriteKey key)
+    public override void Increment(RegimeStock stock, LogicKey key)
     {
         var regime = Regime.Get(key.Data);
         var allTroops = regime.GetAllTroopAmounts(key.Data);
@@ -70,15 +71,17 @@ public class TroopUpgradeProject : MakeProject, IMakeable
         var make = Mathf.Min(cap, Amount - Fulfilled);
         var increment = BuildTree.Increment(Makeable,
             regime.Stock, make, key);
+        Fulfilled += increment;
         var proc = new UpgradeTroopProcedure(
             Regime, From, To, increment, Target);
+        key.SendMessage(proc);
     }
 
-    public override void Finish(LogicWriteKey key)
+    public override void Finish(LogicKey key)
     {
     }
 
-    public override void Cancel(ProcedureWriteKey key)
+    public override void Cancel(ProcedureKey key)
     {
     }
 
@@ -114,7 +117,7 @@ public class TroopUpgradeProject : MakeProject, IMakeable
         return hbox;
     }
 
-    public override bool Consolidate(MakeProject next, LogicWriteKey key)
+    public override bool Consolidate(MakeProject next, LogicKey key)
     {
         return false;
     }

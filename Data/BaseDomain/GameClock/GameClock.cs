@@ -6,7 +6,7 @@ using MessagePack;
 public class GameClock : Entity
 {
     public int Tick { get; private set; }
-    public static GameClock Create(GenWriteKey key)
+    public static GameClock Create(GenKey key)
     {
         var gc = new GameClock(key.Data.IdDispenser.TakeId(), 0);
         key.Create(gc);
@@ -22,14 +22,14 @@ public class GameClock : Entity
         return Tick % data.BaseDomain.Rules.TickCycleLength == 0;
     }
 
-    public void DoTick(ProcedureWriteKey key)
+    public void DoTick(ProcedureKey key)
     {
         Tick++;
         key.Data.Notices.Ticked.Invoke(Tick);
         key.Data.Notices.JustTicked.Invoke(Tick);
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

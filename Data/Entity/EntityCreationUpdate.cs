@@ -12,7 +12,7 @@ public sealed partial class EntityCreationUpdate : Update
     public byte[] EntityBytes { get; private set; }
     
     public static EntityCreationUpdate Create(Entity entity,
-        WriteKey key)
+        Key key)
     {
         var entityBytes = key.Data.Serializer.MP.Serialize(entity, entity.GetType());
         return new EntityCreationUpdate(entity.GetType(), entityBytes);
@@ -22,7 +22,7 @@ public sealed partial class EntityCreationUpdate : Update
         EntityBytes = entityBytes;
         EntityType = entityType;
     }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var e = (Entity)key.Data.Serializer.MP.Deserialize(EntityBytes, EntityType);
         key.Data.AddEntity(e, key);
@@ -36,7 +36,7 @@ public sealed partial class EntityCreationUpdate<T> : Update
 {
     public T Entity { get; private set; }
     
-    public static EntityCreationUpdate<T> Create(T entity, WriteKey key)
+    public static EntityCreationUpdate<T> Create(T entity, Key key)
     {
         return new EntityCreationUpdate<T>(entity);
     }
@@ -44,7 +44,7 @@ public sealed partial class EntityCreationUpdate<T> : Update
     {
         Entity = entity;
     }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         key.Data.AddEntity(Entity, key);
     }

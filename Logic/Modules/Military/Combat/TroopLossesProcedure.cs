@@ -18,7 +18,7 @@ public class TroopLossesProcedure : Procedure
         Losses = losses;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var unit = key.Data.Get<Unit>(UnitId);
         if (unit == null) return;

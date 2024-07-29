@@ -11,7 +11,7 @@ public class MapPolyNexus : Entity
     public ERefSet<MapPolygonEdge> IncidentEdges { get; private set; }
     public ERefSet<MapPolygon> IncidentPolys { get; private set; }
     public static MapPolyNexus Create(PreNexus pre,
-        GenWriteKey key)
+        GenKey key)
     {
         var id = pre.Id;
         var ps = new HashSet<int>();
@@ -35,7 +35,7 @@ public class MapPolyNexus : Entity
     
     
     public static MapPolyNexus Create(Vector2 pos, MapPolygon p1, MapPolygon p2,
-        GenWriteKey key)
+        GenKey key)
     {
 
         var mutual = p1.Neighbors.Entities(key.Data)
@@ -84,12 +84,12 @@ public class MapPolyNexus : Entity
     }
     
 
-    public void SetPoint(Vector2 point, GenWriteKey key)
+    public void SetPoint(Vector2 point, GenKey key)
     {
         Point = point;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

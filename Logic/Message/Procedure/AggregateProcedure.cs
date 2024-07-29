@@ -8,7 +8,7 @@ public class AggregateProcedure : Procedure
         Procedures = procedures;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         for (var i = 0; i < Procedures.Length; i++)
         {

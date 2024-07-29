@@ -6,7 +6,7 @@ public class UnoccupiedAssignment : GroupAssignment
 {
     public Cell Cell { get; private set; }
     public UnoccupiedAssignment(Cell cell, DeploymentBranch parent, 
-        DeploymentAi ai, LogicWriteKey key) : base(parent, ai, key)
+        DeploymentAi ai, LogicKey key) : base(parent, ai, key)
     {
         Cell = cell;
     }
@@ -22,7 +22,7 @@ public class UnoccupiedAssignment : GroupAssignment
     {
         return 0f;
     }
-    public override void GiveOrders(DeploymentAi ai, LogicWriteKey key)
+    public override void GiveOrders(DeploymentAi ai, LogicKey key)
     {
         
     }
@@ -39,7 +39,7 @@ public class UnoccupiedAssignment : GroupAssignment
 
     public override Army PullGroup(DeploymentAi ai, 
         Func<Army, float> suitability, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         if (Groups.Count == 0) return null;
         var g = Groups.MaxBy(suitability);

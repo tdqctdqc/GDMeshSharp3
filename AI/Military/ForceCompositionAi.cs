@@ -18,14 +18,14 @@ public class ForceCompositionAi
         DesiredAmounts = new Dictionary<UnitMetaTemplate, int>();
     }
 
-    public void Calculate(Regime regime, LogicWriteKey key)
+    public void Calculate(Regime regime, LogicKey key)
     {
         CalcDesired(regime, key);
         ReinforceUnits(regime, key);
         AssignFreeUnitsToGroups(regime, key);
     }
 
-    private void CalcDesired(Regime regime, LogicWriteKey key)
+    private void CalcDesired(Regime regime, LogicKey key)
     {
         var templatesAi = key.Data.HostLogicData.RegimeAis[regime]
             .Military.Templates;
@@ -59,17 +59,18 @@ public class ForceCompositionAi
             kvp => new Vector2I(needed[kvp.Key], unitsByMeta[kvp.Key].Count()));
     }
     private void AssignFreeUnitsToGroups(Regime regime, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         var freeUnits = regime.GetUnits(key.Data)
             ?.Where(u => u != null)
             .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null)
             .ToHashSet();
         if (freeUnits == null || freeUnits.Any() == false) return;
-
+        
+                
         var groups = key.Data.GetAll<Army>()
-            .Where(g => g.Regime.RefId == regime.Id).ToArray();
-        if (groups.Length > 0)
+            .Where(g => g.Regime.RefId == regime.Id)?.ToArray();
+        if (groups is not null && groups.Length > 0)
         {
             var understrengthGroups = groups.Where(g => g.Units.Count() < PreferredGroupSize);
             foreach (var understrengthGroup in understrengthGroups)
@@ -114,7 +115,7 @@ public class ForceCompositionAi
         }
     }
     private void ReinforceUnits(Regime regime,
-        LogicWriteKey key)
+        LogicKey key)
     {
         var needCounts = new Dictionary<TroopType, float>();
         var units = regime.GetUnits(key.Data);

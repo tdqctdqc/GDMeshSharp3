@@ -25,7 +25,7 @@ public class MapPolygonEdge : Entity
         HiNexus = hiNexus;
     }
     public static MapPolygonEdge Create(PreEdge pre, 
-        GenWriteKey key)
+        GenKey key)
     {
         var (hiPrePoly, loPrePoly) = pre.P1.Id > pre.P2.Id
             ? (pre.P1, pre.P2)
@@ -53,7 +53,7 @@ public class MapPolygonEdge : Entity
     
     
     
-    public void IncrementFlow(float increment, GenWriteKey key)
+    public void IncrementFlow(float increment, GenKey key)
     {
         MoistureFlow += increment;
     }
@@ -71,7 +71,7 @@ public class MapPolygonEdge : Entity
         return HiNexus.RefId == nexus.Id ? LoNexus.Get(data) : HiNexus.Get(data);
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

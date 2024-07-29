@@ -12,7 +12,7 @@ public class Unit : Entity
     public static Unit Create(UnitTemplate template, 
         IdCount<Troop> troops, 
         Regime regime,
-        IHostWriteKey key)
+        LogicKey key)
     {
         var u = new Unit(key.Data.IdDispenser.TakeId(), 
             regime.MakeRef(), template.MakeRef(),
@@ -35,9 +35,9 @@ public class Unit : Entity
         Morale = morale;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
-        var g = this.GetArmy(key.Data);
+        var g = this.GetArmy(key.GetData());
         if (g != null)
         {
             g.Units.Remove(this, key);

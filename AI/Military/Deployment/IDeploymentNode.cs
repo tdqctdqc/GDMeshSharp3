@@ -8,13 +8,13 @@ public interface IDeploymentNode
     Alliance Alliance { get; }
     float GetPowerPointsAssigned(Data data);
     float GetPowerPointNeed(Data data);
-    void GiveOrders(DeploymentAi ai, LogicWriteKey key);
+    void GiveOrders(DeploymentAi ai, LogicKey key);
     Cell GetCharacteristicCell(Data d);
     Army PullGroup(DeploymentAi ai, 
         Func<Army, float> suitability,
-        LogicWriteKey key);
+        LogicKey key);
 
-    void PushGroup(DeploymentAi ai, Army g, LogicWriteKey key);
+    void PushGroup(DeploymentAi ai, Army g, LogicKey key);
 }
 
 public static class IDeploymentNodeExt

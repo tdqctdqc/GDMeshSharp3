@@ -12,8 +12,8 @@ public class OrderHolder
     public ConcurrentDictionary<Regime, RegimeTurnOrders> Orders { get; private set; }
     private ConcurrentDictionary<Regime, Task<RegimeTurnOrders>> _aiOrderCalcs;
     private ConcurrentDictionary<Regime, CancellationTokenSource> _aiCalcCancelTokens;
-    private LogicWriteKey _key;
-    public OrderHolder(LogicWriteKey key)
+    private LogicKey _key;
+    public OrderHolder(LogicKey key)
     {
         _key = key;
         Orders = new ConcurrentDictionary<Regime, RegimeTurnOrders>();
@@ -35,7 +35,7 @@ public class OrderHolder
         if (Orders.ContainsKey(regime) && Orders[regime] != null) throw new Exception();
         Orders[regime] = orders;
     }
-    public void CalcAiOrders(LogicWriteKey key)
+    public void CalcAiOrders(LogicKey key)
     {
         var aiRegimes = key.Data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(key.Data) == false);
@@ -56,7 +56,7 @@ public class OrderHolder
     {
         return Orders.Values.ToList();
     }
-    private async void CalcAiRegimeOrders(Regime r, LogicWriteKey key)
+    private async void CalcAiRegimeOrders(Regime r, LogicKey key)
     {
         if (r == null) return;
         Orders[r] = null;
@@ -89,7 +89,7 @@ public class OrderHolder
         }
     }
 
-    private void CancelCalcAiRegimeOrders(Regime r, LogicWriteKey key)
+    private void CancelCalcAiRegimeOrders(Regime r, LogicKey key)
     {
         if (r == null) return;
         if (_aiOrderCalcs.ContainsKey(r) == false) return;

@@ -9,7 +9,7 @@ public class LandCell : Cell, IPolyCell
     public FoodProd FoodProd { get; private set; }
     public ERef<MapPolygon> Polygon { get; private set; }
     public static LandCell Construct(PreCell pre,
-        GenWriteKey key)
+        GenKey key)
     {
         var poly = key.Data.Get<MapPolygon>(pre.PrePoly.Id);
         var relTo = pre.RelTo;

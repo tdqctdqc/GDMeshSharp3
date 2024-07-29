@@ -50,7 +50,7 @@ public abstract class Procedure : Message, IPolymorph
     {
         
     }
-    public abstract void Enact(ProcedureWriteKey key);
+    public abstract void Enact(ProcedureKey key);
     public abstract bool Valid(Data data, out string error);
 }
 

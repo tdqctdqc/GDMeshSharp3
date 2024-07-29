@@ -10,12 +10,12 @@ using VoronoiSandbox;
 public class GeologyGenerator : Generator
 {
     public GenData Data { get; private set; }
-    private GenWriteKey _key;
+    private GenKey _key;
     public GeologyGenerator()
     {
         
     }
-    public override GenReport Generate(GenWriteKey key)
+    public override GenReport Generate(GenKey key)
     {
         var report = new GenReport(GetType().Name);
         _key = key;

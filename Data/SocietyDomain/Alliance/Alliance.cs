@@ -10,7 +10,7 @@ public class Alliance : Entity
     public IEnumerable<Proposal> PendingProposals(Data data) =>
         data.Society.Proposals
             .Proposals.Values.Where(p => p.Target.RefId == Id);
-    public static Alliance Create(Regime founder, IHostWriteKey key)
+    public static Alliance Create(Regime founder, GenKey key)
     {
         var id = key.Data.IdDispenser.TakeId();
         var members = ERefSetCallback<Regime>.Construct(
@@ -32,9 +32,9 @@ public class Alliance : Entity
             d => d.Society.AllianceAux.RegimeAlliances);
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         if (Members.Count() > 0) throw new Exception();
-        key.Data.Society.DiploGraph.RemoveAlliance(this, key);
+        key.GetData().Society.DiploGraph.RemoveAlliance(this, key);
     }
 }

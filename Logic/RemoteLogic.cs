@@ -7,10 +7,10 @@ using Godot;
 public class RemoteLogic : ILogic
 {
     public bool Calculating => false;
-    public ProcedureWriteKey PKey { get; private set; }
+    public ProcedureKey PKey { get; private set; }
     public RemoteLogic(Data data, GameSession session)
     {
-        PKey = new ProcedureWriteKey(session);
+        PKey = new ProcedureKey(session);
     }
 
 

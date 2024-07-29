@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 public class ResourceGenerator : Generator
 {
     private GenData _data;
-    private GenWriteKey _key;
+    private GenKey _key;
 
-    public override GenReport Generate(GenWriteKey key)
+    public override GenReport Generate(GenKey key)
     {
         _data = key.GenData;
         _key = key;

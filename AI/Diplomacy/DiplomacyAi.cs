@@ -13,12 +13,12 @@ public class DiplomacyAi
         _alliance = alliance;
     }
 
-    public void CalculateMinor(LogicWriteKey key, MinorTurnOrders orders)
+    public void CalculateMinor(LogicKey key, MinorTurnOrders orders)
     {
         DecideOnProposals(key, orders);
     }
 
-    public void Calculate(RegimeTurnOrders orders, LogicWriteKey key)
+    public void Calculate(RegimeTurnOrders orders, LogicKey key)
     {
         var alliancePower = _alliance.GetPowerScore(key.Data);
         var rivalPower = _alliance.GetRivals(key.Data)
@@ -34,7 +34,7 @@ public class DiplomacyAi
         ProposeWars(key.Data, orders, alliancePower, rivalPower);
     }
 
-    private void DecideOnProposals(LogicWriteKey key, MinorTurnOrders orders)
+    private void DecideOnProposals(LogicKey key, MinorTurnOrders orders)
     {
         var proposals = _alliance.PendingProposals(key.Data);
         foreach (var proposal in proposals)
@@ -84,7 +84,7 @@ public class DiplomacyAi
     }
     private void ProposeInvitations( 
         RegimeTurnOrders orders, float friendPower,
-        float rivalPower, LogicWriteKey key)
+        float rivalPower, LogicKey key)
     {
         var regime = orders.Regime.Get(key.Data);
         if (regime.IsMajor == false) return;

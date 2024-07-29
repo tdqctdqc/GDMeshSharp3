@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class GenWriteKey : StrongWriteKey, IHostWriteKey
+public class GenKey : Key,
+    ICreateKey, IWriteKey
 {
     public GenData GenData => (GenData) Data;
-    public GenWriteKey(GenData data, ISession session) : base(session)
+    public GenKey(GenData data, ISession session) : base(session)
     {
     }
 
@@ -19,11 +20,12 @@ public class GenWriteKey : StrongWriteKey, IHostWriteKey
     {
         if (m is Procedure p)
         {
-            p.Enact(new ProcedureWriteKey(Session));
+            p.Enact(new ProcedureKey(Session));
         }
         else
         {
             throw new Exception();
         }
     }
+
 }

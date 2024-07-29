@@ -5,69 +5,215 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/AI/Budget/Priorities/MakeUnitPriority.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AI/Budget/Priorities/UpgradeTroopsPriority.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplateExt.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/TroopUpgradeProject.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/WriteKeys/ClientKey.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/WriteKeys/ICreateKey.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/WriteKeys/IWriteKey.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/WriteKeys/ProcedureKey.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Logic/WriteKeys/ServerKey.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetPool.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/AllianceAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/AllianceAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetAi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/BudgetRoot.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/MakeProductionBuildingsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/MakeProductionBuildingsPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/MilitaryBudgetBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/MilitaryBudgetBranch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetConstrainer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/BudgetConstrainer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/IBudgetPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/IBudgetPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReinforcementTroopsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReinforcementTroopsPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReserveTroopsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/MakeReserveTroopsPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/MakeUnitPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/MakeUnitPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/ResourceExtractionConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/ResourceExtractionConstructionPriority.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/SettlementBuildingConstructionPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/SettlementBuildingConstructionPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/SolverPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/SolverPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/UpgradeTroopsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/UpgradeTroopsPriority.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Budget/PriorityNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/PriorityNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Diplomacy/DiplomacyAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/AllianceMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/AllianceMilitaryAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/TheaterBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/TheaterBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/UnoccupiedAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/UnoccupiedAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/ForceCompositionAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceCompositionAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/FormUnitPriority.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/UnitMetaTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/UnitMetaTemplate.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/UnitTemplatesAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/UnitTemplatesAi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/SimTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Combat/SimTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/ClientCallbacks.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientCallbacks.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/DebugCameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/DebugCameraController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/DoClientCallbackProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/DoClientCallbackProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/BudgetTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/BudgetTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Economy/MakingTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Economy/MakingTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/MakeTroopsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/MakeTroopsTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/MakeUnitsTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/MakeUnitsTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/UnitTemplatesTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/UnitTemplatesTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/Tree/UnitTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/Tree/UnitTree.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningMode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTree.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/ReinforceArmyProcedure.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/ReinforceRegimeProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/ReinforceProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/ReinforceUnitProcedure.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/ReinforceUnitTroopProcedure.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClock.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/Player.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/RuleVars/RuleVars.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/RuleVars/RuleVars.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntitiesDeletionUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/EntitiesDeletionUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/Entity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/Entity.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityCreationUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/EntityCreationUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Entity/EntityDeletionUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/EntityDeletionUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadNetwork.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/ArmyMission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/ArmyMission.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/CleanUpArmyMissionsProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/CleanUpArmyMissionsProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/HandleUnitMissionsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/HandleUnitMissionsModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/HandleUnitMissionsProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/HandleUnitMissionsProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/LineMission.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/SetUnitOrderProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyMission/SetUnitOrderProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/CreateArmyCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/CreateArmyCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/DestroyArmyProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/DestroyArmyProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/SetArmyOccupationProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/SetArmyOccupationProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/SetUnitArmyProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/SetUnitArmyProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/ReinforceProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/ReinforceProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/Unit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/Unit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitAux.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitAux.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitChangeTroopAmountProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/UnitChangeTroopAmountProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/ChangeTemplateTroopAmountProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/ChangeTemplateTroopAmountProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/CreateUnitTemplateCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/CreateUnitTemplateCommand.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitMetaTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/UnitMetaTemplate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/RenameTemplateProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/RenameTemplateProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/Troop.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/TroopType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/TroopType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/CellExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplateExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplateExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/ModelRef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/ModelRef.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/DoResearchProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/DoResearchProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/Technology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/Technology.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Troops/UpgradeTroopProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Troops/UpgradeTroopProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/ConquerCellProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/ConquerCellProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/LandCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/LandCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/RiverCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/RiverCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/SeaCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/SeaCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/CellHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/CellHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolyNexus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolyNexus.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonEdge.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PeepEmploymentReport.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/PeepEmploymentReport.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/PlanetInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/PlanetInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Ref/ERefSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/ERefSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Ref/ERefSetCallback.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/ERefSetCallback.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Ref/RefSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/RefSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Repo/ManyToOneIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/ManyToOneIndexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/Alliance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/AllianceExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/DiplomacyGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/DiplomacyGraph.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Proposals/ProposalList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Proposals/ProposalList.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ChooseRegimeCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/ChooseRegimeCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/AddExtractionProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/AddExtractionProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/AddResourceExtractionProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/AddResourceExtractionProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/AddSettlementBuildingProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/AddSettlementBuildingProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/CancelMakeProjectProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/CancelMakeProjectProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/ChangeMakeProjectPriorityProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/ChangeMakeProjectPriorityProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/MakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/MakeProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/MakeQueue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/MakeQueue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/ModelMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/ModelMakeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/PlayerResourceExtractionMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/PlayerResourceExtractionMakeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/PlayerSettlementBuildingMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/PlayerSettlementBuildingMakeProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/ReplaceMakeProjectProc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/ReplaceMakeProjectProc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/StartMakeProjectCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/StartMakeProjectCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/StartOrConsolidateMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/StartOrConsolidateMakeProject.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/TroopUpgradeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/TroopUpgradeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/UnitMakeProject.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/MakeQueue/UnitMakeProject.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeFinance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeFinance.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeMilitary.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeMilitary.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/SetPlayerRegimeProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/SetPlayerRegimeProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/GenData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/GenData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Generator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Generator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GenCell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenCell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GenPlate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenPlate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/MoistureGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PolygonGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolygonGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/RiverCellGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/ResourceGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/ResourceGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/WorldGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/WorldGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Command/CallbackCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Command/CallbackCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Command/Command.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Command/Command.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/HostProcedure/HostProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/HostProcedure/HostProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/AggregateProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/AggregateProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitCombatInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/UnitCombatInfo.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Message/Update.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Update.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/DeclareRivalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/DeclareRivalProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/DeclareWarProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/DeclareWarProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/DiplomaticCalcModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/DiplomaticCalcModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DecideOnProposalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DecideOnProposalProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/DiplomacyProposal/AllianceMergeProposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/MakeProposalProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/Proposal.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/Proposal.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/SendMessageCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/SendMessageCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/SendMessagesCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Alliance/Proposal/SendMessagesCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/DefaultLogicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/DefaultLogicModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/DoTurnOrderProceduresModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/DoTurnOrderProceduresModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/FinishedTurnEndCalcProc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/FinishedTurnEndCalcProc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/FinishedTurnStartCalcProc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/FinishedTurnStartCalcProc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/LogicModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/LogicModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/LogicResults.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/LogicResults.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/AllianceOrdersModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/AllianceOrdersModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ArmyRetreatProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/ArmyRetreatProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellDefenseNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CellDefenseNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/AddCombatHistoryProc.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/AddCombatHistoryProc.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/TroopLossesProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/TroopLossesProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/FormUnitProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/FormUnitProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/RegimeUseTroopsProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/RegimeUseTroopsProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/MigrationModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/MigrationModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Peeps/MigrationProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Peeps/MigrationProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/AiPlaceBuildingsModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/AiPlaceBuildingsModule.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/BuildTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/BuildTree.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ChangeStockProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ChangeStockProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProdResultProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProdResultProcedure.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/ProductionModule.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Count/IdCount.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/depot.dpo" beforeDir="false" afterPath="$PROJECT_DIR$/depot.dpo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/Production/SetStockProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Production/SetStockProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/RegimeUseItemsProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/RegimeUseItemsProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/TickProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/TickProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Mover/MapPos.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/MapPos.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Mover/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/Mover.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/RemoteLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/RemoteLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/SubmitTurnCommand.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/SubmitTurnCommand.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/ClearOrdersModule.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/TurnOrderModules/ClearOrdersModule.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ClientWriteKey.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/GenWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/GenKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/HostWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/HostKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicKey.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ProcedureWriteKey.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ServerWriteKey.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/StrongWriteKey.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/Key.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/FinishedStateSyncUpdate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/FinishedStateSyncUpdate.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/HostServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/HostSyncer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/HostSyncer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/Server/RemoteServer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/Server/RemoteServer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Sorter/Sorter.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Sorter/Sorter.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DictionaryExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DictionaryExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/EntityIds.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/EntityIds.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/ItemListToken.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/ItemListToken.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/WindowExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/WindowExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,14 +298,14 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/Combat/CombatResultsGraphic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Modules/Military/Combat/CellDefenseNode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/IHostWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/LogicWriteKey.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/WriteKeys/WriteKey.cs" root0="FORCE_HIGHLIGHTING" />
@@ -774,6 +920,9 @@
       <workItem from="1721953905092" duration="2847000" />
       <workItem from="1722029886405" duration="4923000" />
       <workItem from="1722039764094" duration="3220000" />
+      <workItem from="1722091778536" duration="9979000" />
+      <workItem from="1722210937632" duration="6417000" />
+      <workItem from="1722261340074" duration="2900000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -985,22 +1134,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00259" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1720828618939</created>
-      <option name="number" value="00259" />
-      <option name="presentableId" value="LOCAL-00259" />
-      <option name="project" value="LOCAL" />
-      <updated>1720828618939</updated>
-    </task>
-    <task id="LOCAL-00260" summary="depot">
-      <option name="closed" value="true" />
-      <created>1720876927272</created>
-      <option name="number" value="00260" />
-      <option name="presentableId" value="LOCAL-00260" />
-      <option name="project" value="LOCAL" />
-      <updated>1720876927272</updated>
-    </task>
     <task id="LOCAL-00261" summary="depot">
       <option name="closed" value="true" />
       <created>1720876997869</created>
@@ -1137,7 +1270,23 @@
       <option name="project" value="LOCAL" />
       <updated>1721696976206</updated>
     </task>
-    <option name="localTasksCounter" value="278" />
+    <task id="LOCAL-00278" summary="adding troop upgrades">
+      <option name="closed" value="true" />
+      <created>1722095675605</created>
+      <option name="number" value="00278" />
+      <option name="presentableId" value="LOCAL-00278" />
+      <option name="project" value="LOCAL" />
+      <updated>1722095675605</updated>
+    </task>
+    <task id="LOCAL-00279" summary="doot">
+      <option name="closed" value="true" />
+      <created>1722095717706</created>
+      <option name="number" value="00279" />
+      <option name="presentableId" value="LOCAL-00279" />
+      <option name="project" value="LOCAL" />
+      <updated>1722095717706</updated>
+    </task>
+    <option name="localTasksCounter" value="280" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1159,7 +1308,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="redoing echelons" />
     <MESSAGE value="working on budget weights" />
     <MESSAGE value="readded resource generator" />
     <MESSAGE value="make project ui" />
@@ -1173,7 +1321,6 @@
     <MESSAGE value="tweaking combat" />
     <MESSAGE value="adding technology" />
     <MESSAGE value="adding research, fixed bug w/ default model adds where wasnt assigning ids" />
-    <MESSAGE value="doot" />
     <MESSAGE value="research stuff" />
     <MESSAGE value="technology tab" />
     <MESSAGE value="model tweak" />
@@ -1184,6 +1331,8 @@
     <MESSAGE value="template window" />
     <MESSAGE value="added unit morale" />
     <MESSAGE value="added morale to combat tree distribution calcs" />
-    <option name="LAST_COMMIT_MESSAGE" value="added morale to combat tree distribution calcs" />
+    <MESSAGE value="adding troop upgrades" />
+    <MESSAGE value="doot" />
+    <option name="LAST_COMMIT_MESSAGE" value="doot" />
   </component>
 </project>

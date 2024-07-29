@@ -10,5 +10,5 @@ public abstract class Command : Message
         CommandingPlayerGuid = commandingPlayerGuid;
     }
     public abstract bool Valid(Data data, out string error);
-    public abstract void Enact(LogicWriteKey key);
+    public abstract void Enact(LogicKey key);
 }

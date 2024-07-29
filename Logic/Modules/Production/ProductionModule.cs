@@ -10,7 +10,7 @@ using Godot;
 public class ProductionModule : LogicModule
 {   
     public override void Calculate(List<RegimeTurnOrders> orders,
-        LogicWriteKey key)
+        LogicKey key)
     {
         var results = key.Data.GetAll<Regime>()
             .AsParallel()
@@ -20,7 +20,7 @@ public class ProductionModule : LogicModule
         key.SendMessage(proc);
     }
 
-    private ProductionResult DoRegime(Regime r, LogicWriteKey key)
+    private ProductionResult DoRegime(Regime r, LogicKey key)
     {
         var d = key.Data;
         foreach (var f in key.Data.Models.ModelsById.Values.OfType<Flow>())
@@ -268,7 +268,7 @@ public class ProductionModule : LogicModule
 
     private static void DoMake(Regime r, 
             ProductionResult result,
-            LogicWriteKey key)
+            LogicKey key)
     {
         var d = key.Data;
         var newStock = result.Stock;

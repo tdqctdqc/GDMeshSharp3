@@ -8,6 +8,9 @@ public static class Mover
 {
     public static RefSet<CellRef> MoveArmy(Army a, Data d)
     {
+
+        return a.LineMission.LineCells;
+        
         var lineCells = a.LineMission.LineCells;
         var moveRadius = a.GetArmyMoveRadius(d);
         var overlap = moveRadius.Where(c => lineCells.Contains(c.MakeRef()));
@@ -47,7 +50,7 @@ public static class Mover
     }
     public static void MoveToCell(this MapPos pos,
         MoveData moveDat, Cell dest, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         var path = key.Data.Context.FriendlyPathCache.GetOrAdd(
             (moveDat.MoveType, moveDat.Alliance, pos.GetCell(key.Data), dest));
@@ -66,7 +69,7 @@ public static class Mover
     }
     private static void MoveAlongPath(this MapPos pos, 
         MoveData moveDat, List<Cell> path, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         var d = key.Data;
         var index = path

@@ -42,11 +42,11 @@ public abstract class Cell : IPolymorph,
         Controller = controller;
     }
 
-    public void SetVegetation(Vegetation v, GenWriteKey key)
+    public void SetVegetation(Vegetation v, GenKey key)
     {
         Vegetation = v.MakeRef();
     }
-    public void SetLandform(Landform lf, GenWriteKey key)
+    public void SetLandform(Landform lf, GenKey key)
     {
         Landform = lf.MakeRef();
     }
@@ -89,13 +89,13 @@ public abstract class Cell : IPolymorph,
         return Neighbors.Select(i => PlanetDomainExt.GetPolyCell(i, d));
     }
 
-    public void SetController(Regime controller, StrongWriteKey key)
+    public void SetController(Regime controller, IWriteKey key)
     {
-        var old = Controller.Get(key.Data);
+        var old = Controller.Get(key.GetData());
         Controller = controller.MakeRef();
-        key.Data.Notices.Political.ChangedControllerRegime.Invoke(this, controller, old);
+        key.GetData().Notices.Political.ChangedControllerRegime.Invoke(this, controller, old);
     }
-    public void SetController(Regime controller, GenWriteKey key)
+    public void SetController(Regime controller, GenKey key)
     {
         var old = Controller.Get(key.Data);
         Controller = controller.MakeRef();

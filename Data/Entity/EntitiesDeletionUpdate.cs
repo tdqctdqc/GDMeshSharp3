@@ -7,7 +7,7 @@ public class EntitiesDeletionUpdate : Update
 {
     public int[] EntityIds { get; private set; }
     
-    public static EntitiesDeletionUpdate Create(IEnumerable<int> entityIds, HostWriteKey key)
+    public static EntitiesDeletionUpdate Create(IEnumerable<int> entityIds, HostKey key)
     {
         return new EntitiesDeletionUpdate(entityIds.ToArray());
     }
@@ -15,7 +15,7 @@ public class EntitiesDeletionUpdate : Update
     {
         EntityIds = entityIds;
     }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         key.Data.RemoveEntities(EntityIds, key);
     }

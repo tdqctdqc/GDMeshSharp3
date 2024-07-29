@@ -10,7 +10,7 @@ public class SetStockProcedure : Procedure
         Stock = stock;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         Regime.Get(key.Data).SetStock(Stock, key);
     }

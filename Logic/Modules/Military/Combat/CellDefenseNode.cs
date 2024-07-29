@@ -127,7 +127,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
     }
     
 
-    public void SendLosses(CombatCalculator combat, LogicWriteKey key)
+    public void SendLosses(CombatCalculator combat, LogicKey key)
     {
         foreach (var info in UnitInfos)
         {
@@ -156,7 +156,7 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
         }
     }
     public void DoAdvanceForVictorious(CombatCalculator combat, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         if (DefendersForcedBack)
         {

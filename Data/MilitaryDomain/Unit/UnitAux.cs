@@ -6,6 +6,7 @@ using Godot;
 public class UnitAux
 {
     public ManyToOneIndexer<Army, Unit> UnitByGroup { get; private set; }
+    public OneToManyIndexer<Regime, Unit> UnitByRegime { get; private set; }
     public OneToManyIndexer<Regime, UnitTemplate> UnitTemplates { get; private set; }
     public ManyToManyIndexer<Army, Cell> ArmiesByOccupancy { get; private set; }
     public OneToManyIndexer<Cell, Army> ArmiesByHomeCell { get; private set; }
@@ -27,6 +28,9 @@ public class UnitAux
 
         ArmiesByHomeCell = OneToManyIndexer.MakeForEntity<Cell, Army>(
             a => a.GetHomeCell(d), d);
+
+        UnitByRegime = OneToManyIndexer.MakeForEntity<Regime, Unit>(
+            u => u.Regime.Get(d), d);
        
         d.Notices.FinishedStateSync.Subscribe(MakeUnitGrid);
         d.Notices.Ticked.Blank.Subscribe(MakeUnitGrid);

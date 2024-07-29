@@ -8,7 +8,7 @@ using Godot;
 public class CombatCalculator
 {
     public CombatGraph Graph { get; private set; }
-    public void Calculate(LogicWriteKey key)
+    public void Calculate(LogicKey key)
     {
         Graph = new CombatGraph();
         key.Data.HostLogicData.CombatGraphIds.Reset();
@@ -25,7 +25,7 @@ public class CombatCalculator
         key.SendMessage(historyProc);
     }
 
-    private void CalculateCombats(LogicWriteKey key, Logger logger)
+    private void CalculateCombats(LogicKey key, Logger logger)
     {
         logger.RunAndLogTime("Combat calcs", LogType.Logic,
             () =>
@@ -35,7 +35,7 @@ public class CombatCalculator
             });
     }
 
-    private void HandleCombatResults(LogicWriteKey key, Logger logger)
+    private void HandleCombatResults(LogicKey key, Logger logger)
     {
         logger.RunAndLogTime("sending losses", LogType.Logic,
             () =>
@@ -87,7 +87,7 @@ public class CombatCalculator
         }
     }
 
-    private void DistributeResources(LogicWriteKey key, Logger logger)
+    private void DistributeResources(LogicKey key, Logger logger)
     {
         logger.RunAndLogTime("Distributing resources",
             LogType.Logic,
@@ -144,7 +144,7 @@ public class CombatCalculator
 
 
     private void HandleSplitArmies(HashSet<Army> defeated,
-        LogicWriteKey key)
+        LogicKey key)
     {
         if (defeated.Count == 0) return;
         var cells = key.Data.Planet.MapAux
@@ -200,7 +200,7 @@ public class CombatCalculator
             }
         }
     }
-    private void SetupGraph(LogicWriteKey key)
+    private void SetupGraph(LogicKey key)
     {
         foreach (var group in key.Data.GetAll<Army>())
         {

@@ -33,7 +33,7 @@ public class CallbackCommand : Command
         return valid;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         Inner.Enact(key);
         key.SendMessageToClient(new DoClientCallbackProcedure(CallbackId), CommandingPlayerGuid);

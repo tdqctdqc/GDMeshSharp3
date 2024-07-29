@@ -9,7 +9,7 @@ public class RiverCell : Cell, IEdgeCell
     
     public static RiverCell Construct(MapPolygonEdge edge,
         Vector2 relTo,
-        Vector2[] relBoundary, GenWriteKey key)
+        Vector2[] relBoundary, GenKey key)
     {
         var lf = key.Data.Models.Landforms.River;
         var v = key.Data.Models.Vegetations.Barren;
@@ -43,7 +43,7 @@ public class RiverCell : Cell, IEdgeCell
 
     public void MakeNeighbors(Vector2I edgeKey,
         Dictionary<Vector2I, RiverCell> dic,
-        GenWriteKey key)
+        GenKey key)
     {
         var bank1 = PlanetDomainExt.GetPolyCell(edgeKey.X, key.Data);
         var bank2 = PlanetDomainExt.GetPolyCell(edgeKey.Y, key.Data);

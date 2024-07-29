@@ -15,7 +15,7 @@ public abstract class DeploymentBranch
     public HashSet<DeploymentBranch> SubBranches { get; }
     public HashSet<GroupAssignment> Assignments { get; private set; }
     [SerializationConstructor] protected 
-        DeploymentBranch(Alliance alliance, LogicWriteKey key)
+        DeploymentBranch(Alliance alliance, LogicKey key)
     {
         Alliance = alliance;
         SubBranches = new HashSet<DeploymentBranch>();
@@ -37,7 +37,7 @@ public abstract class DeploymentBranch
 
     public Army PullGroup(DeploymentAi ai, 
         Func<Army, float> suitability, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         var children = SubBranches
             .Union<IDeploymentNode>(Assignments)
@@ -51,7 +51,7 @@ public abstract class DeploymentBranch
     }
 
     public void PushGroup(DeploymentAi ai, 
-        Army g, LogicWriteKey key)
+        Army g, LogicKey key)
     {
         var child = SubBranches
                     .Union<IDeploymentNode>(Assignments)
@@ -62,7 +62,7 @@ public abstract class DeploymentBranch
         }
         child.PushGroup(ai, g, key);
     }
-    public void GiveOrders(DeploymentAi ai, LogicWriteKey key)
+    public void GiveOrders(DeploymentAi ai, LogicKey key)
     {
         foreach (var ga in Assignments)
         {
@@ -74,7 +74,7 @@ public abstract class DeploymentBranch
             d.GiveOrders(ai, key);
         }
     }
-    public void ShiftGroups(DeploymentAi ai, LogicWriteKey key)
+    public void ShiftGroups(DeploymentAi ai, LogicKey key)
     {
         var d = key.Data;
         var assignments =

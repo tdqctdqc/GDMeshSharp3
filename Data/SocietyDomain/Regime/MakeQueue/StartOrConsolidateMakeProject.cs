@@ -10,7 +10,7 @@ public class StartOrConsolidateMakeProject : HostProcedure
         Project = project;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         var regime = Project.Regime.Get(key.Data);
         var queue = regime.MakeQueue.Queue;
@@ -36,7 +36,7 @@ public class StartOrConsolidateMakeProject : HostProcedure
     public class AddMakeProjectProc : Procedure
     {
         public static AddMakeProjectProc Construct(ERef<Regime> regime, 
-            MakeProject project, LogicWriteKey key)
+            MakeProject project, LogicKey key)
         {
             project.SetId(key);
             return new AddMakeProjectProc(regime, project);
@@ -50,7 +50,7 @@ public class StartOrConsolidateMakeProject : HostProcedure
 
         public ERef<Regime> Regime { get; private set; }
         public MakeProject Project { get; private set; }
-        public override void Enact(ProcedureWriteKey key)
+        public override void Enact(ProcedureKey key)
         {
             Regime.Get(key.Data).MakeQueue.Queue.Add(Project);
         }

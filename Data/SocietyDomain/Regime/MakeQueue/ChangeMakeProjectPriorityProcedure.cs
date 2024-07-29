@@ -15,7 +15,7 @@ public class ChangeMakeProjectPriorityProcedure
         NewIndex = newIndex;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var regime = Regime.Get(key.Data);
         var makeQueue = regime.MakeQueue.Queue;

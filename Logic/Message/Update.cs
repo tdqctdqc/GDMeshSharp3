@@ -8,5 +8,5 @@ public abstract class Update : Message
         
     }
 
-    public abstract void Enact(ProcedureWriteKey key);
+    public abstract void Enact(ProcedureKey key);
 }

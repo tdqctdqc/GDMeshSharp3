@@ -25,7 +25,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         Data d)
     {
         var all = GetAll(d);
-        
+        if (all.Count() == 0) return new Dictionary<TBuild, float>();
         var expandedPool = BudgetPool.ConstructForRegime(regime, d);
         foreach (var i in expandedPool.Stock.Contents.Keys.ToList())
         {
@@ -50,7 +50,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     }
     public bool Calculate(BudgetPool pool, 
         Regime regime, 
-        LogicWriteKey key,
+        LogicKey key,
         out Dictionary<IModel, float> modelCosts,
         out Dictionary<string, float> built)
     {
@@ -137,14 +137,14 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         BudgetPool pool,
         Regime r,
         Dictionary<TBuild, float> toBuild,
-        LogicWriteKey key);
+        LogicKey key);
     
     
     protected void CompleteModel<TModel>
         (BudgetPool pool,
         Regime r,
         Dictionary<TModel, float> toBuild,
-        LogicWriteKey key)
+        LogicKey key)
             where TModel : class, IModel, IMakeable
     {
         foreach (var (model, value) in toBuild)

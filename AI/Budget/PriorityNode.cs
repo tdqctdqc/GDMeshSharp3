@@ -23,7 +23,6 @@ public class PriorityNode : IBudgetNode
         Credit = new CreditBuffer(20);
         _getWeight = getWeight;
         MadeByTick = new Dictionary<int, Dictionary<string, float>>();
-
     }
     public void SetWeights(Regime r, Data d)
     {

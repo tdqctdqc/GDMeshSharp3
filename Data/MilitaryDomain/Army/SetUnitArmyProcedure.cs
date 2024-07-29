@@ -10,7 +10,7 @@ public class SetUnitArmyProcedure : Procedure
         NewGroup = newGroup;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var oldGroup = key.Data.Military.UnitAux.UnitByGroup[Unit.Get(key.Data)];
         Army.ChangeUnitGroup(Unit.Get(key.Data),

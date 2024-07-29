@@ -7,7 +7,7 @@ public class CellHolder : Entity
 {
     public Dictionary<int, Cell> Cells { get; private set; }
 
-    public static CellHolder Create(Dictionary<int, Cell> cells, GenWriteKey key)
+    public static CellHolder Create(Dictionary<int, Cell> cells, GenKey key)
     {
         var e = new CellHolder(cells, key.Data.IdDispenser.TakeId());
         key.Create(e);
@@ -19,7 +19,7 @@ public class CellHolder : Entity
         Cells = cells;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

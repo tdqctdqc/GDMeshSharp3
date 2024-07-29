@@ -9,7 +9,7 @@ public class SeaCell : Cell, IPolyCell
 {
     public ERef<MapPolygon> Polygon { get; private set; }
     
-    public static SeaCell Construct(PreCell pre, GenWriteKey key)
+    public static SeaCell Construct(PreCell pre, GenKey key)
     {
         var poly = key.Data.Get<MapPolygon>(pre.PrePoly.Id);
         var relTo = pre.RelTo;

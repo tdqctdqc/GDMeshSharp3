@@ -19,7 +19,7 @@ public class StartMakeProjectCommand : Command
         return true;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         var regime = key.Data.BaseDomain
             .PlayerAux.ByGuid[CommandingPlayerGuid].Regime;

@@ -16,7 +16,7 @@ public class Technology : IModel
         
     }
 
-    public static void AddStartingTechsForRegime(Regime r, GenWriteKey key)
+    public static void AddStartingTechsForRegime(Regime r, GenKey key)
     {
         var starting = key.Data.Models.GetModels<Technology>()
             .Where(t => t.Prereqs.Count == 0)

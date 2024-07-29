@@ -16,7 +16,7 @@ public class MakeQueue
         Queue = queue;
     }
 
-    public void SetQueue(List<MakeProject> newQueue, ProcedureWriteKey key)
+    public void SetQueue(List<MakeProject> newQueue, ProcedureKey key)
     {
         Queue = newQueue;
     }

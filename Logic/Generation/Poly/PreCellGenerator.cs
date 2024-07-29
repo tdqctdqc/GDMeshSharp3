@@ -10,7 +10,7 @@ using VoronoiSandbox;
 public static class PreCellGenerator
 {
     
-    public static PreCellResult Make(Vector2I dim, GenWriteKey key)
+    public static PreCellResult Make(Vector2I dim, GenKey key)
     {
         var result = new PreCellResult();
         
@@ -181,7 +181,7 @@ public static class PreCellGenerator
     private static List<Vector2I> MakePolyPoints(
         float pointDist,
         Vector2I dim,
-        GenWriteKey key)
+        GenKey key)
     {
         var points = new List<Vector2I>();
         var xCells = Mathf.CeilToInt(dim.X / pointDist);
@@ -211,7 +211,7 @@ public static class PreCellGenerator
         List<Vector2I> points,
         (Vector2I, Vector2I, (Vector2I, Vector2I))[] graph, 
         Vector2[] bounds, HashSet<Vector2I> dummyPoints,
-        GenWriteKey key)
+        GenKey key)
     {
         var cellDic = points
             .Where(p => dummyPoints.Contains(p) == false)
@@ -298,7 +298,7 @@ public static class PreCellGenerator
 
 
     private static List<PrePoly> MakePolys(List<PreCell> cells, 
-        Vector2I dim, GenWriteKey key)
+        Vector2I dim, GenKey key)
     {
         var points = MakePolyPoints(150f, dim, key);
         int idIndex = 0;
@@ -336,7 +336,7 @@ public static class PreCellGenerator
     }
 
     private static void CheckPolysContiguous(List<PrePoly> polys, 
-        Vector2I dim, GenWriteKey key)
+        Vector2I dim, GenKey key)
     {
 
         var queue = new Queue<PreCell>();
@@ -410,7 +410,7 @@ public static class PreCellGenerator
     }
     
     private static Dictionary<Vector2I, PreEdge> MakeEdges(
-        List<PrePoly> polys, GenWriteKey key)
+        List<PrePoly> polys, GenKey key)
     {
         int idIndex = 0;
         var edges = new Dictionary<Vector2I, PreEdge>();
@@ -433,7 +433,7 @@ public static class PreCellGenerator
     private static List<PreNexus> MakeNexi(List<PrePoly> polys,
         List<PreCell> cells, 
         Dictionary<Vector2I, PreEdge> edges, Vector2I dim,
-        PreCellResult preCellResult, GenWriteKey key)
+        PreCellResult preCellResult, GenKey key)
     {
         var pointAbsDic = new Dictionary<Vector2I, (PreCell X, PreCell Y, PreCell Z)>();
         var borderCells = cells

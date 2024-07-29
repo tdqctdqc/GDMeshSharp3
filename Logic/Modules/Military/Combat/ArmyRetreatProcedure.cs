@@ -15,7 +15,7 @@ public class ArmyRetreatProcedure : Procedure
         Army = army;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var army = Army.Get(key.Data);
         army.Cells.Remove(Froms, key);

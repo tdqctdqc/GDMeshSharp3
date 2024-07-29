@@ -12,7 +12,7 @@ public class SendMessagesCommand : Command
         Messages = messages;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         for (var i = 0; i < Messages.Length; i++)
         {

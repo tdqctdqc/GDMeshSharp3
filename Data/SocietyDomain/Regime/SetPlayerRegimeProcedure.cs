@@ -12,7 +12,7 @@ public class SetPlayerRegimeProcedure : Procedure
         PlayerGuid = playerGuid;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var player = key.Data.BaseDomain.PlayerAux.ByGuid[PlayerGuid];
         player.SetRegime(Regime.Get(key.Data), key);

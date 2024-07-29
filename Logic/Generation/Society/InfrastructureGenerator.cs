@@ -10,13 +10,13 @@ using Godot;
 public class InfrastructureGenerator : Generator
 {
     private GenData _data;
-    private GenWriteKey _key;
+    private GenKey _key;
     private float _portInfraNodeSize = 0f;
     private float _minSettlementSizeForInfraNode = 0f;
     private float _sizeBuildRoadRangeMult = 2.5f;
     private float _maxBuildRoadRange = 2000f;
     private MultiTimer _multiTimer;
-    public override GenReport Generate(GenWriteKey key)
+    public override GenReport Generate(GenKey key)
     {
         _key = key;
         _data = _key.GenData;

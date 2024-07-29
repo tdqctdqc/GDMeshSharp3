@@ -10,7 +10,7 @@ public class SetUnitOrderProcedure : Procedure
         GroupMission = groupMission;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         if (GroupMission is LineMission l)
         {

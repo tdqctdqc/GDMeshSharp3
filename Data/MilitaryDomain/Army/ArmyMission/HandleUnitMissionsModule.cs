@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 public class HandleUnitMissionsModule : LogicModule
 {
     public override void Calculate(List<RegimeTurnOrders> orders, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         var data = key.Data;
         var proc = HandleUnitMissionsProcedure.Construct();

@@ -13,7 +13,7 @@ public class Settlement : Location, INamed
     public string Name { get; protected set; }
     
     public static Settlement Create(string name, 
-        Cell cell, int size, IHostWriteKey key)
+        Cell cell, int size, GenKey key)
     {
         var tier = SettlementTier.GetTier(size, key.Data);
         var s = new Settlement(key.Data.IdDispenser.TakeId(),
@@ -36,19 +36,19 @@ public class Settlement : Location, INamed
         Cell = cell;
     }
 
-    public void SetName(string name, GenWriteKey key)
+    public void SetName(string name, GenKey key)
     {
         Name = name;
     }
 
-    public void SetTier(SettlementTier tier, ProcedureWriteKey key)
+    public void SetTier(SettlementTier tier, ProcedureKey key)
     {
         var old = Tier.Get(key.Data);
         Tier = tier.MakeRef();
         key.Data.Notices.Infrastructure.ChangedTier.Invoke(this, tier, old);
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

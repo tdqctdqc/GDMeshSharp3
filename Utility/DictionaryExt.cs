@@ -53,7 +53,7 @@ public static class DictionaryExt
             return false;
         }
     }
-    public static bool AddOrSum<TKey>(this Dictionary<TKey, float> dic,
+    public static bool AddOrSum<TKey>(this IDictionary<TKey, float> dic,
         TKey key, float val, float min = float.MinValue, float max = float.MaxValue)
     {
         if (dic.ContainsKey(key))

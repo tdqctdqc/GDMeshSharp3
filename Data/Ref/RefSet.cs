@@ -11,30 +11,30 @@ public class RefSet<TRef> where TRef : IdRef
     {
         Refs = refs;
     }
-    public virtual void Add(IEnumerable<TRef> ts, StrongWriteKey key)
+    public virtual void Add(IEnumerable<TRef> ts, IWriteKey key)
     {
         foreach (var t in ts)
         {
             Add(t, key);
         }
     }
-    public virtual void Add(TRef t, StrongWriteKey key)
+    public virtual void Add(TRef t, IWriteKey key)
     {
         Refs.Add(t);
     }
-    public virtual void Remove(IEnumerable<TRef> ts, StrongWriteKey key)
+    public virtual void Remove(IEnumerable<TRef> ts, IWriteKey key)
     {
         foreach (var t in ts)
         {
             Remove(t, key);
         }
     }
-    public virtual void Remove(TRef t, StrongWriteKey key)
+    public virtual void Remove(TRef t, IWriteKey key)
     {
         Refs.Remove(t);
     }
 
-    public virtual void Clear(StrongWriteKey key)
+    public virtual void Clear(IWriteKey key)
     {
         Refs.Clear();
     }

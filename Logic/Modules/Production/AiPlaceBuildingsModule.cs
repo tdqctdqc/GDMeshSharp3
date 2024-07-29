@@ -7,7 +7,7 @@ using Priority_Queue;
 public class AiPlaceBuildingsModule : LogicModule
 {
     
-    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicKey key)
     {
         var procs = new List<Procedure>();
         foreach (var regime in key.Data.GetAll<Regime>())

@@ -34,7 +34,7 @@ public class MapPolygon : Entity
     }
 
     public static MapPolygon Create(PrePoly pre, 
-        int mapWidth, GenWriteKey key)
+        int mapWidth, GenKey key)
     {
         var mapCenter = pre.RelTo;
         if (mapCenter.X > mapWidth) mapCenter = new Vector2I(mapCenter.X - mapWidth, mapCenter.Y);
@@ -87,39 +87,39 @@ public class MapPolygon : Entity
             .ToList().FlipChainify().GetPoints().ToArray();
     }
     public void AddNeighbor(MapPolygon n, 
-        GenWriteKey key)
+        GenKey key)
     {
         if (Neighbors.Contains(n)) return;
         Neighbors.Add(n, key);
     }
-    public void RemoveNeighbor(MapPolygon poly, GenWriteKey key)
+    public void RemoveNeighbor(MapPolygon poly, GenKey key)
     {
         //only use in merging left-right wrap
         Neighbors.Remove(poly, key);
     }
 
-    public void SetIsLand(bool isLand, GenWriteKey key)
+    public void SetIsLand(bool isLand, GenKey key)
     {
         IsLand = isLand;
     }
 
     
 
-    public void SetAltitude(float altitude, GenWriteKey key)
+    public void SetAltitude(float altitude, GenKey key)
     {
         Altitude = altitude;
     }
-    public void SetRoughness(float roughness, GenWriteKey key)
+    public void SetRoughness(float roughness, GenKey key)
     {
         Roughness = roughness;
     }
 
-    public void SetMoisture(float moisture, GenWriteKey key)
+    public void SetMoisture(float moisture, GenKey key)
     {
         Moisture = moisture;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

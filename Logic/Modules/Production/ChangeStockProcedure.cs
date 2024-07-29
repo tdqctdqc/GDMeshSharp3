@@ -4,7 +4,7 @@ public class ChangeStockProcedure : Procedure
     public ERef<Regime> Regime { get; private set; }
     public ModelRef<IModel> Model { get; private set; }
     public float Amount { get; private set; }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var stock = Regime.Get(key.Data).Stock;
         var model = Model.Get(key.Data);

@@ -13,7 +13,7 @@ public class ChangeTemplateTroopAmountProcedure : Procedure
         NewAmount = newAmount;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var template = Template.Get(key.Data);
         template.Troops.Set(TroopType.RefId, NewAmount);

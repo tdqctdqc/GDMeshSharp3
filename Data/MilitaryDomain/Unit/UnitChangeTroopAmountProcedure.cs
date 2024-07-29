@@ -12,7 +12,7 @@ public class UnitChangeTroopAmountProcedure : Procedure
         Unit = unit;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var u = Unit.Get(key.Data);
         var t = Troop.Get(key.Data);

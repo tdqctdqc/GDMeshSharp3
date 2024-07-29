@@ -9,7 +9,7 @@ public static class BuildTree
     public static float Increment(
         MakeableAttribute makeable, RegimeStock stock, 
         float totalToMake,
-        StrongWriteKey key)
+        LogicKey key)
     {
         if (totalToMake == 0f) return 0f;
         var children = makeable.BuildCosts.GetEnumModel(key.Data)

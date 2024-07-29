@@ -13,13 +13,13 @@ public class RegimeMilitaryAi
         ForceComposition = new ForceCompositionAi(_regime);
         Templates = new UnitTemplatesAi(_regime, d);
     }
-    public void CalculateMajor(LogicWriteKey key, MajorTurnOrders orders)
+    public void CalculateMajor(LogicKey key, MajorTurnOrders orders)
     {
         ForceComposition.Calculate(_regime, key);
         Templates.Calculate(key);
     }
 
-    public void CalculateMinor(LogicWriteKey key, MinorTurnOrders orders)
+    public void CalculateMinor(LogicKey key, MinorTurnOrders orders)
     {
         
     }

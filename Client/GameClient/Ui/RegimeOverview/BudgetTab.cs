@@ -83,7 +83,6 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         var ai = ais[regime];
         var budget = ai.Budget;
         
-        var wishlist = priority.GetWishlist(regime, c.Data);
         var small = c.Settings.SmallIconSize.Value;
         var med = c.Settings.MedIconSize.Value;
         
@@ -108,50 +107,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         
         _priorityInfo.CreateLabelAsChild($"Wishlist");
 
-        var wishlistContainer = new HBoxContainer();
         
-        var wishlistItems = new ItemListToken<IModel>(
-            wishlist.Keys,
-            m => $"{m.Name}: {wishlist[m]}",
-            m => m is IIconed i ? i.Icon.Texture : new Texture2D(),
-            (int)med,
-            false
-        );        
-        wishlistContainer.AddChild(wishlistItems.ItemList);
-        var wishlistInfo = wishlistContainer.MakeScrollChild<VBoxContainer>(
-            out var wishlistInfoScroll);
-        wishlistInfoScroll.ExpandFill();
-
-        void drawWishlistItemInfo(IModel model)
-        {
-            wishlistInfo.ClearChildren();
-            var amt = wishlist[model];
-            if (model is IIconed i)
-            {
-                wishlistInfo.AddChild(i.Icon.GetLabeledIcon<HBoxContainer>(
-                    $"{model.Name}: {amt}",
-                    med));
-            }
-            else
-            {
-                wishlistInfo.CreateLabelAsChild($"{model.Name}: {amt}");
-            }
-            
-            wishlistInfo.CreateLabelAsChild("Costs");
-            var makeable = (IMakeable)model;
-            foreach (var (costModel, costAmt) in makeable.Makeable.BuildCosts.GetEnumModel(c.Data))
-            {
-                if (costModel is IIconed iCost)
-                {
-                    wishlistInfo.AddChild(iCost.Icon.GetLabeledIcon<HBoxContainer>(
-                        $"{costModel.Name}: {costAmt * amt}",
-                        med));
-                }
-                else
-                {
-                    wishlistInfo.CreateLabelAsChild($"{costModel.Name}: {costAmt * amt}");
-                }
-            }
-        }
+        
     }
 }

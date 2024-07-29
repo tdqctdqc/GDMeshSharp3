@@ -8,11 +8,11 @@ using MessagePack;
 public class DeploymentRoot : DeploymentBranch
 {
     public DeploymentRoot(DeploymentAi ai,
-        LogicWriteKey key) : base(ai.Alliance, key)
+        LogicKey key) : base(ai.Alliance, key)
     {
     }
     
-    public void MakeTheaters(AllianceMilitaryAi ai, LogicWriteKey key)
+    public void MakeTheaters(AllianceMilitaryAi ai, LogicKey key)
     {
         foreach (var theater in ai.Strategic.Theaters)
         {
@@ -22,7 +22,7 @@ public class DeploymentRoot : DeploymentBranch
         }
     }
 
-    public void GrabUnassignedGroups(LogicWriteKey key)
+    public void GrabUnassignedGroups(LogicKey key)
     {
         var ai = key.Data.HostLogicData.AllianceAis[Alliance]
             .Military.Deployment;

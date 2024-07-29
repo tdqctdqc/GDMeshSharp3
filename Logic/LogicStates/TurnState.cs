@@ -11,9 +11,9 @@ public abstract class TurnState : State
     private TurnState _nextState;
     protected LogicModule[] _majorModules, _minorModules;
     private OrderHolder _orders;
-    private LogicWriteKey _key;
+    private LogicKey _key;
 
-    public TurnState(LogicWriteKey key, 
+    public TurnState(LogicKey key, 
         OrderHolder orders)
     {
         _key = key;

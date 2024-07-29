@@ -102,7 +102,7 @@ public class ResourceExtractionConstructionPriority
                         && _regime.HasPrereqs(b));
     }
 
-    protected override void Complete(BudgetPool pool, Regime r, Dictionary<ResourceExtractionBuilding, float> toBuild, LogicWriteKey key)
+    protected override void Complete(BudgetPool pool, Regime r, Dictionary<ResourceExtractionBuilding, float> toBuild, LogicKey key)
     {
         CompleteModel(pool, r, toBuild, key);
     }

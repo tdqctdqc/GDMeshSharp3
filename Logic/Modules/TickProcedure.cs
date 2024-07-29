@@ -8,7 +8,7 @@ public class TickProcedure : Procedure
         error = "";
         return true;
     }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         key.Data.Context.Calculate(key.Data);
         key.Data.BaseDomain.GameClock.DoTick(key);

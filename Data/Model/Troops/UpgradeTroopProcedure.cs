@@ -19,7 +19,7 @@ public class UpgradeTroopProcedure : Procedure
         Target = target;
     }
 
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var regime = Regime.Get(key.Data);
         var from = From.Get(key.Data);
@@ -27,6 +27,8 @@ public class UpgradeTroopProcedure : Procedure
         if(Target.IsEmpty())
         {
             var amt = Mathf.Min(Amount, regime.Stock.Stock.Get(from));
+            GD.Print($"upgrading {amt} {from.Name} to {to.Name} in stock");
+
             regime.Stock.Stock.Add(to, amt);
             regime.Stock.Stock.Remove(from, amt);
         }
@@ -36,6 +38,8 @@ public class UpgradeTroopProcedure : Procedure
             var amt = Mathf.Min(Amount, unit.Troops.Get(from));
             unit.Troops.Remove(from, amt);
             unit.Troops.Add(to, amt);
+            GD.Print($"upgrading {amt} {from.Name} to {to.Name} in unit");
+
         }
     }
 

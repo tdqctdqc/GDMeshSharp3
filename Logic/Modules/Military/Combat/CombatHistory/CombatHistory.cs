@@ -5,7 +5,7 @@ using MessagePack;
 public class CombatHistory : Entity
 {
     public Dictionary<int, CombatGraph> Graphs { get; private set; }
-    public static CombatHistory Construct(GenWriteKey key)
+    public static CombatHistory Construct(GenKey key)
     {
         var h = new CombatHistory(key.Data.IdDispenser.TakeId(),
             new Dictionary<int, CombatGraph>());
@@ -18,7 +18,7 @@ public class CombatHistory : Entity
         Graphs = graphs;
     }
 
-    public override void CleanUp(StrongWriteKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

@@ -16,7 +16,7 @@ public class DeclareWarProcedure : Procedure
         TargetAllianceId = targetAllianceId;
         DeclaringAllianceId = declaringAllianceId;
     }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var alliance = key.Data.Get<Alliance>(DeclaringAllianceId);
         var target = key.Data.Get<Alliance>(TargetAllianceId);

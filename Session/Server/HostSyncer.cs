@@ -22,7 +22,7 @@ public class HostSyncer : Syncer
         _peerQueue = new Queue<byte[]>();
     }
 
-    public void Sync(Guid newPlayerGuid, HostWriteKey key)
+    public void Sync(Guid newPlayerGuid, HostKey key)
     {
         GD.Print("Syncing");
         Player.Create(newPlayerGuid, "doot", key);
@@ -43,7 +43,7 @@ public class HostSyncer : Syncer
     {
         _peerQueue.Enqueue(packet);
     }
-    public void PushPackets(HostWriteKey key)
+    public void PushPackets(HostKey key)
     {
         bool push = true;
         var count = _peerQueue.Count;

@@ -11,7 +11,7 @@ public class ChooseRegimeCommand : Command
         Regime = regime;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         var proc = new SetPlayerRegimeProcedure(Regime, CommandingPlayerGuid);
         key.SendMessage(proc);

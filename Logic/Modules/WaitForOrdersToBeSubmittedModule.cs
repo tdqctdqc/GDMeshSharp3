@@ -9,7 +9,7 @@ public class WaitForOrdersToBeSubmittedModule : LogicModule
     {
         _holder = holder;
     }
-    public override void Calculate(List<RegimeTurnOrders> orders, LogicWriteKey key)
+    public override void Calculate(List<RegimeTurnOrders> orders, LogicKey key)
     {
         var res = new LogicResults();
         _holder.CalcAiOrders(key);

@@ -9,7 +9,7 @@ using Godot;
 public class RegimeGenerator : Generator
 {
     private GenData _data;
-    private GenWriteKey _key;
+    private GenKey _key;
     private int _polysForRegimeAvg = 20;
     private int _numPolysToBeMajor = 20;
     public RegimeGenerator()
@@ -17,7 +17,7 @@ public class RegimeGenerator : Generator
         
     }
 
-    public override GenReport Generate(GenWriteKey key)
+    public override GenReport Generate(GenKey key)
     {
         _key = key;
         _data = key.GenData;

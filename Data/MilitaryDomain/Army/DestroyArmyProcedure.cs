@@ -9,7 +9,7 @@ public class DestroyArmyProcedure : Procedure
     }
     
     public ERef<Army> Army { get; private set; }
-    public override void Enact(ProcedureWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
         var army = Army.Get(key.Data);
         foreach (var item in army.Units.Entities(key.Data))

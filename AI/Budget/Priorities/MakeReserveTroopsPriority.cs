@@ -102,7 +102,7 @@ public class MakeReserveTroopsPriority : SolverPriority<Troop>
 
     protected override void Complete(BudgetPool pool, 
         Regime r, Dictionary<Troop, float> toBuild, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         CompleteModel(pool, r, toBuild, key);
     }

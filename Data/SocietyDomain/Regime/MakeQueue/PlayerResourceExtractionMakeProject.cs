@@ -28,7 +28,7 @@ public class PlayerResourceExtractionMakeProject : MakeProject
         ResourceDeposit = resourceDeposit;
     }
     
-    public override void Start(LogicWriteKey key)
+    public override void Start(LogicKey key)
     {
         var regime = Regime.Get(key.Data);
         Increment(regime.Stock, key);
@@ -38,7 +38,7 @@ public class PlayerResourceExtractionMakeProject : MakeProject
     }
 
     public override void Increment(RegimeStock stock,
-        LogicWriteKey key)
+        LogicKey key)
     {
         var before = Mathf.FloorToInt(Fulfilled);
         Fulfilled += BuildTree.Increment(GetMakeable(key.Data),
@@ -57,12 +57,12 @@ public class PlayerResourceExtractionMakeProject : MakeProject
         }
     }
 
-    public override void Finish(LogicWriteKey key)
+    public override void Finish(LogicKey key)
     {
         
     }
 
-    public override void Cancel(ProcedureWriteKey key)
+    public override void Cancel(ProcedureKey key)
     {
         var making = Building.Get(key.Data);
         var stock = Regime.Get(key.Data).Stock;
@@ -105,7 +105,7 @@ public class PlayerResourceExtractionMakeProject : MakeProject
     }
 
     public override bool Consolidate(MakeProject next, 
-        LogicWriteKey key)
+        LogicKey key)
     {
         if (next is not PlayerResourceExtractionMakeProject p
             || p.Building.Equals(ResourceDeposit) == false

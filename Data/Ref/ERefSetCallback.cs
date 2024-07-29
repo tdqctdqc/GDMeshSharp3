@@ -15,20 +15,20 @@ public class ERefSetCallback<TEntity> : RefSetCallback<ERef<TEntity>>
     }
     
     
-    public void Remove(List<TEntity> ids, StrongWriteKey key)
+    public void Remove(List<TEntity> ids, IWriteKey key)
     {
         ids.ForEach(id => Remove(id, key));
     }
-    public void Remove(TEntity t, StrongWriteKey key)
+    public void Remove(TEntity t, IWriteKey key)
     {
-        Remove(t.MakeRef(), key);
+        base.Remove(t.MakeRef(), key);
     }
-    public void Add(List<TEntity> ts, StrongWriteKey key)
+    public void Add(List<TEntity> ts, IWriteKey key)
     {
         ts.ForEach(t => Add(t, key));
     }
-    public void Add(TEntity t, StrongWriteKey key)
+    public void Add(TEntity t, IWriteKey key)
     {
-        Add(t.MakeRef(), key);
+        base.Add(t.MakeRef(), key);
     }
 }

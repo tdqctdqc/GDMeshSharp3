@@ -184,7 +184,8 @@ public static class MilUtil
             return targets[i];
         }
 
-        (Troop troop, float amt) getTargetTroop(UnitCombatInfo targetUnit,
+        (Troop troop, float amt) getTargetTroop(
+            UnitCombatInfo targetUnit,
             int targetEchelon)
         {
             var echelonFrontage = targetUnit.ActiveFrontSizes[targetEchelon];
@@ -197,7 +198,8 @@ public static class MilUtil
                 if (soFar >= sample - .01f) return (troop, Mathf.Min(1f, amt));
             }
 
-            throw new Exception();
+            var first = targetUnit.Active.GetEnumModel(d).First();
+            return (first.Key, Mathf.Min(1f, first.Value));
         }
 
         

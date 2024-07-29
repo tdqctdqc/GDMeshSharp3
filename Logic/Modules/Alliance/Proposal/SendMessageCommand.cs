@@ -12,7 +12,7 @@ public class SendMessageCommand : Command
         Message = message;
     }
 
-    public override void Enact(LogicWriteKey key)
+    public override void Enact(LogicKey key)
     {
         key.SendMessage(Message);
     }
