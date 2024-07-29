@@ -4,17 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Ref/ERef.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Ref/ERef.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/GDMeshSharp3.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/project.godot" beforeDir="false" afterPath="$PROJECT_DIR$/project.godot" afterDir="false" />
-    </list>
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -103,6 +93,7 @@
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
@@ -727,7 +718,7 @@
       <workItem from="1722261340074" duration="2900000" />
       <workItem from="1722267710915" duration="1124000" />
       <workItem from="1722269213344" duration="600000" />
-      <workItem from="1722273462040" duration="2658000" />
+      <workItem from="1722273462040" duration="3698000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -939,14 +930,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00261" summary="depot">
-      <option name="closed" value="true" />
-      <created>1720876997869</created>
-      <option name="number" value="00261" />
-      <option name="presentableId" value="LOCAL-00261" />
-      <option name="project" value="LOCAL" />
-      <updated>1720876997869</updated>
-    </task>
     <task id="LOCAL-00262" summary="ditto">
       <option name="closed" value="true" />
       <created>1720877397064</created>
@@ -1091,7 +1074,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722095717706</updated>
     </task>
-    <option name="localTasksCounter" value="280" />
+    <task id="LOCAL-00280" summary="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?">
+      <option name="closed" value="true" />
+      <created>1722290222210</created>
+      <option name="number" value="00280" />
+      <option name="presentableId" value="LOCAL-00280" />
+      <option name="project" value="LOCAL" />
+      <updated>1722290222211</updated>
+    </task>
+    <option name="localTasksCounter" value="281" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1113,7 +1104,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="working on budget weights" />
     <MESSAGE value="readded resource generator" />
     <MESSAGE value="make project ui" />
     <MESSAGE value="more ui stuff, resource icons, host procedures" />
@@ -1138,6 +1128,7 @@
     <MESSAGE value="added morale to combat tree distribution calcs" />
     <MESSAGE value="adding troop upgrades" />
     <MESSAGE value="doot" />
-    <option name="LAST_COMMIT_MESSAGE" value="doot" />
+    <MESSAGE value="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
   </component>
 </project>
