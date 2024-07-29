@@ -41,11 +41,6 @@ public class RegimeTechnologyAi
         var toResearch = available
             .MaxBy(kvp => kvp.Value)
             .Key;
-        if (toResearch.MakeRef()
-                .Equals(_regime.Technology.CurrentResearch) 
-            == false)
-        {
-            key.SendMessage(new SetResearchProcedure(_regime.MakeRef(), toResearch.MakeRef()));
-        }
+        key.SendMessage(new SetResearchProcedure(_regime.MakeRef(), toResearch.MakeRef()));
     }
 }

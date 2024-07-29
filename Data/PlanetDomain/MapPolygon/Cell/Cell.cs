@@ -78,7 +78,7 @@ public abstract class Cell : IPolymorph,
 
         return area;
     }
-
+    
     public Vector2 GetCenter()
     {
         return RelBoundary.Avg() + RelTo;

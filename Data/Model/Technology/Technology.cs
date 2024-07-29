@@ -21,7 +21,7 @@ public class Technology : IModel
         var starting = key.Data.Models.GetModels<Technology>()
             .Where(t => t.Prereqs.Count == 0)
             .Select(t => t.MakeRef());
-        r.Technology.Technologies.UnionWith(starting);
+        r.Technology.Technologies.Refs.UnionWith(starting);
     }
 
     public IEnumerable<IModel> GetModelsWithPrereq(Data d)

@@ -80,7 +80,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         
         right.CreateLabelAsChild("Researched Technologies");
          
-        var alreadyResearched = _parent.Regime.Technology.Technologies.Select(t => t.Get(client.Data));
+        var alreadyResearched = _parent.Regime.Technology.Technologies.Refs.Select(t => t.Get(client.Data));
         
         var alreadyResearchedList = new ItemListToken<Technology>(
             alreadyResearched,
@@ -116,31 +116,16 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         _currentResearchInfo.CreateLabelAsChild($"Research consumed single time: {researchSingle.RoundTo2Digits()}");
         _currentResearchInfo.CreateLabelAsChild($"Research for technology: {(researchProduced - (researchRecurring + researchSingle)).RoundTo2Digits()}");
         
-        
-        
         var tech = _parent.Regime.Technology;
-        if (tech.CurrentResearch.Get(c.Data)
-            is Technology currTech)
+        
+        
+        for (var i = 0; i < tech.Progresses.Count; i++)
         {
-            _currentResearchInfo.CreateLabelAsChild($"Researching: {currTech.DisplayName}");
-            _currentResearchInfo.CreateLabelAsChild($"Progress: {tech.ResearchProgresses[currTech.MakeRef()]} / {currTech.ResearchCost}");
-        }
-        else
-        {
-            _currentResearchInfo.CreateLabelAsChild("No current research");
-        }
-
-        var others = tech.ResearchProgresses
-            .Where(t => t.Key.RefId != tech.CurrentResearch.RefId)
-            .Where(t => t.Value > 0f);
-        if (others.Any())
-        {
-            _currentResearchInfo.CreateLabelAsChild("Stored research: ");
-            foreach (var (other, progress) in others)
-            { 
-                var otherTech = other.Get(c.Data);
-                _currentResearchInfo.CreateLabelAsChild($"{otherTech.DisplayName}: {progress} / {otherTech.ResearchCost}");
-            }
+            var t = tech.Current.Get(c.Data);
+            var e = tech.Progresses[tech.Current];
+            
+            _currentResearchInfo.CreateLabelAsChild($"Researching: {t.DisplayName}");
+            _currentResearchInfo.CreateLabelAsChild($"Progress: {e} / {t.ResearchCost}");
         }
     }
 

@@ -17,7 +17,7 @@ public class SetResearchProcedure : Procedure
     public override void Enact(ProcedureKey key)
     {
         Regime.Get(key.Data).Technology
-            .SetResearch(Technology.Get(key.Data), key);
+            .SetResearch(Technology, key);
     }
 
     public override bool Valid(Data data, out string error)

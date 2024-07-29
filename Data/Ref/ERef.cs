@@ -32,6 +32,4 @@ public struct ERef<TEntity> : IdRef<TEntity>
         if (RefId == -1) return null;
         return data.Get<TEntity>(RefId);
     }
-
-    
 }
