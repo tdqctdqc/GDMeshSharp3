@@ -37,9 +37,9 @@ public class RegimeTechnologyAi
 
         if (available.Count == 0)
         {
-            key.SendMessage(new SetResearchProcedure(_regime.MakeRef(),
-                new ModelRef<Technology>()));
-            return;
+            // key.SendMessage(new SetResearchProcedure(_regime.MakeRef(),
+            //     new ModelRef<Technology>()));
+            // return;
         }
         
         var toResearch = available
