@@ -22,7 +22,7 @@ public class RegimeMilitary
         var regime = Regime.Get(d);
         return d.Models.GetModels<Troop>()
             .Where(t => t.TroopType == type 
-                && regime.HasPrereqs(t))
+                && regime.HasPrereqs(t, d))
             .OrderByDescending(t => t.GetPowerPoints())
             .FirstOrDefault();
     }

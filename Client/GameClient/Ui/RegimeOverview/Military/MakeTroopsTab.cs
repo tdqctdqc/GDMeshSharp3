@@ -27,7 +27,7 @@ public partial class MakeTroopsTab : HBoxContainer, IUiDrawable
         var units = regime.GetUnits(client.Data);
         var allTroopModels = client.Data.Models
             .GetModels<Troop>()
-            .Where(t => regime.HasPrereqs(t));
+            .Where(t => regime.HasPrereqs(t, client.Data));
 
         var d = new Dictionary<TroopType, float>();
         foreach (var unit in units)

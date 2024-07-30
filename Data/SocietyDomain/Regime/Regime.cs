@@ -19,7 +19,6 @@ public class Regime : Entity, INamed
     public bool IsMajor { get; private set; }
     public MakeQueue MakeQueue { get; private set; }
     public RegimeMilitary Military { get; private set; }
-    public RegimeTechnology Technology { get; private set; }
     [SerializationConstructor] private Regime(int id, string name, 
         Color primaryColor, Color secondaryColor, 
         CellRef capital,
@@ -27,8 +26,7 @@ public class Regime : Entity, INamed
         ModelRef<RegimeTemplate> template, 
         RegimeFinance finance, bool isMajor, 
         MakeQueue makeQueue,
-        RegimeMilitary military,
-        RegimeTechnology technology)
+        RegimeMilitary military)
             : base(id)
     {
         Stock = stock;
@@ -42,7 +40,6 @@ public class Regime : Entity, INamed
         IsMajor = isMajor;
         MakeQueue = makeQueue;
         Military = military;
-        Technology = technology;
     }
 
     public static Regime Create(MapPolygon seed, 
@@ -61,8 +58,7 @@ public class Regime : Entity, INamed
             RegimeFinance.Construct(),
             isMajor,
             MakeQueue.Construct(),
-            RegimeMilitary.Construct(id, key.Data),
-            RegimeTechnology.Construct()
+            RegimeMilitary.Construct(id, key.Data)
         );
         key.Create(r);
         Alliance.Create(r, key);
