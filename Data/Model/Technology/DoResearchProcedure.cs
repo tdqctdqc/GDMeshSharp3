@@ -7,9 +7,7 @@ public class DoResearchProcedure : Procedure
         foreach (var regime in regimes)
         {
             var researchPoints = regime.Stock.Stock.Get(key.Data.Models.Items.Research);
-            
-            //todo
-            // regime.Technology.AddProgress(researchPoints, key);
+            regime.Technology.AddProgress(researchPoints, key);
         }
     }
 

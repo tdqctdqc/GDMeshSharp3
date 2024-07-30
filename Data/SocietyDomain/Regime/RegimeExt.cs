@@ -6,11 +6,6 @@ using Godot;
 
 public static class RegimeExt
 {
-    public static HashSet<ModelRef<Technology>> GetTechnologies(this Regime r, Data d)
-    {
-        //todo
-        return new HashSet<ModelRef<Technology>>();
-    }
     public static Dictionary<Troop, float> GetAllTroopAmounts(this Regime r, Data d)
     {
         var troops = r.Stock.Stock.GetEnumModel(d)

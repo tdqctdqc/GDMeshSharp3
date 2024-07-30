@@ -88,7 +88,7 @@ public class MakeReinforcementTroopsPriority
     protected override IEnumerable<Troop> GetAll(Data d)
     {
         return d.Models.GetModels<Troop>()
-            .Where(t => _regime.HasPrereqs(t, d));
+            .Where(t => _regime.HasPrereqs(t));
     }
 
     protected override void Complete(BudgetPool pool, Regime r, Dictionary<Troop, float> toBuild, LogicKey key)
