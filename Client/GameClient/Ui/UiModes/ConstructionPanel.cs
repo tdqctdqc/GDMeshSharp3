@@ -97,7 +97,7 @@ public partial class ConstructionPanel : PanelContainer
             var buildingTotal = buildingProjects.Sum(b => b.Amount);
             var buildingFinished = buildingProjects.Sum(b => b.Fulfilled);
 
-            if (regime.HasPrereqs(model))
+            if (regime.HasPrereqs(model, c.Data))
             {
                 var button = ButtonExt.GetButton(() =>
                 {
@@ -153,7 +153,7 @@ public partial class ConstructionPanel : PanelContainer
                     projects.First().Fulfilled)
                 : (0f, 0f);
 
-            if (regime.HasPrereqs(model))
+            if (regime.HasPrereqs(model, c.Data))
             {
                 var button = ButtonExt.GetButton(() =>
                 {

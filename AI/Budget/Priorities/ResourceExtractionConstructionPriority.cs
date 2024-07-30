@@ -99,7 +99,7 @@ public class ResourceExtractionConstructionPriority
     {
         return d.Models.GetModels<ResourceExtractionBuilding>()
             .Where(b => b.Resource(d) == Model
-                        && _regime.HasPrereqs(b));
+                        && _regime.HasPrereqs(b, d));
     }
 
     protected override void Complete(BudgetPool pool, Regime r, Dictionary<ResourceExtractionBuilding, float> toBuild, LogicKey key)

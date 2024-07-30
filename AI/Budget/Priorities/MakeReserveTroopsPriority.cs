@@ -97,7 +97,7 @@ public class MakeReserveTroopsPriority : SolverPriority<Troop>
     protected override IEnumerable<Troop> GetAll(Data d)
     {
         return d.Models.GetModels<Troop>()
-            .Where(t => _regime.HasPrereqs(t));
+            .Where(t => _regime.HasPrereqs(t, d));
     }
 
     protected override void Complete(BudgetPool pool, 
