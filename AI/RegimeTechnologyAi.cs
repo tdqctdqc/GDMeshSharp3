@@ -23,9 +23,12 @@ public class RegimeTechnologyAi
 
     public void Calculate(LogicKey key)
     {
+        if (_regime.Technology.Current.Fulfilled()) return;
+
         var weights = _getWeight.ToDictionary(kvp => kvp.Key,
             kvp => kvp.Value(_regime, key.Data));
         var techs = key.Data.Models.GetModels<Technology>();
+        
         var researched = _regime.Technology.Technologies;
         var available = techs
             .Where(t => t.AvailableToResearch(_regime))

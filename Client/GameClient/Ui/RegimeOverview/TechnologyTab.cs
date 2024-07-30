@@ -69,7 +69,6 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         infoScroll.ExpandFill(3);
         _container.AddChild(infoScroll);
 
-
         var right = ContainerExt.MakeScroll<VBoxContainer>(out var rightScroll);
         right.ExpandFill(1);
         rightScroll.ExpandFill();
@@ -122,7 +121,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         for (var i = 0; i < tech.Progresses.Count; i++)
         {
             var t = tech.Current.Get(c.Data);
-            var e = tech.Progresses[tech.Current];
+            var e = tech.Progresses[tech.Current.RefId];
             
             _currentResearchInfo.CreateLabelAsChild($"Researching: {t.DisplayName}");
             _currentResearchInfo.CreateLabelAsChild($"Progress: {e} / {t.ResearchCost}");

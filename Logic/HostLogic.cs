@@ -98,6 +98,7 @@ public class HostLogic : ILogic
     {
         lock (_lock)
         {
+            GD.Print(m.GetType());
             if (m is Update u)
             {
                 u.Enact(PKey);

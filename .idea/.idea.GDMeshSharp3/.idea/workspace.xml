@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj.old" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj.old.1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj.old.2" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/depot - Copy.dpo" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -119,6 +129,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Godot 3 Start and Debug.Player.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
@@ -133,17 +144,17 @@
   },
   &quot;keyToStringList&quot;: {
     &quot;rider.external.source.directories&quot;: [
-      &quot;C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\DecompilerCache&quot;,
-      &quot;C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2023.2\\resharper-host\\SourcesCache&quot;,
+      &quot;C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\DecompilerCache&quot;,
+      &quot;C:\\Users\\Me\\AppData\\Roaming\\JetBrains\\Rider2024.1\\resharper-host\\SourcesCache&quot;,
       &quot;C:\\Users\\Me\\AppData\\Local\\Symbols\\src&quot;
     ]
   }
 }</component>
-  <component name="RunManager" selected="Start and Debug.Player">
+  <component name="RunManager" selected="Godot 3 Start and Debug.Player">
     <configuration name="Editor" type="GODOT_DEBUG_RUN_CONFIGURATION" factoryName="Start and Debug">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.2.2-stable_mono_win64/Godot_v4.2.2-stable_mono_win64.exe" />
       <option name="PROGRAM_PARAMETERS" value="--path &quot;$PROJECT_DIR$&quot; --editor" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../Godot_v4.2.2-stable_mono_win64" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Me\Desktop\games\GDMeshSharp3" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <method v="2">
@@ -153,7 +164,7 @@
     <configuration name="Player" type="GODOT_DEBUG_RUN_CONFIGURATION" factoryName="Start and Debug">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.2.2-stable_mono_win64/Godot_v4.2.2-stable_mono_win64.exe" />
       <option name="PROGRAM_PARAMETERS" value="--path &quot;$PROJECT_DIR$&quot;" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/../../Godot_v4.2.2-stable_mono_win64" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Me\Desktop\games\GDMeshSharp3" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <method v="2">
@@ -163,7 +174,7 @@
     <configuration name="Editor" type="RunExe" factoryName=".NET Executable">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.2.2-stable_mono_win64/Godot_v4.2.2-stable_mono_win64.exe" />
       <option name="PROGRAM_PARAMETERS" value="--path &quot;C:\Users\Me\Desktop\games\GDMeshSharp3&quot; --editor" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Me\Desktop\games\GDMeshSharp3" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
@@ -176,7 +187,7 @@
     <configuration name="Player" type="RunExe" factoryName=".NET Executable">
       <option name="EXE_PATH" value="$PROJECT_DIR$/../../Godot_v4.2.2-stable_mono_win64/Godot_v4.2.2-stable_mono_win64.exe" />
       <option name="PROGRAM_PARAMETERS" value="--path &quot;C:\Users\Me\Desktop\games\GDMeshSharp3&quot;" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="WORKING_DIRECTORY" value="C:\Users\Me\Desktop\games\GDMeshSharp3" />
       <option name="PASS_PARENT_ENVS" value="1" />
       <option name="USE_EXTERNAL_CONSOLE" value="0" />
       <option name="USE_MONO" value="0" />
@@ -189,8 +200,8 @@
     <list>
       <item itemvalue=".NET Executable.Editor" />
       <item itemvalue=".NET Executable.Player" />
-      <item itemvalue="Start and Debug.Editor" />
-      <item itemvalue="Start and Debug.Player" />
+      <item itemvalue="Godot 3 Start and Debug.Editor" />
+      <item itemvalue="Godot 3 Start and Debug.Player" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -718,7 +729,10 @@
       <workItem from="1722261340074" duration="2900000" />
       <workItem from="1722267710915" duration="1124000" />
       <workItem from="1722269213344" duration="600000" />
-      <workItem from="1722273462040" duration="3698000" />
+      <workItem from="1722273462040" duration="5651000" />
+      <workItem from="1722296224137" duration="1148000" />
+      <workItem from="1722357105055" duration="912000" />
+      <workItem from="1722365829242" duration="401000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -930,14 +944,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00262" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1720877397064</created>
-      <option name="number" value="00262" />
-      <option name="presentableId" value="LOCAL-00262" />
-      <option name="project" value="LOCAL" />
-      <updated>1720877397064</updated>
-    </task>
     <task id="LOCAL-00263" summary="finished depot">
       <option name="closed" value="true" />
       <created>1720886492395</created>
@@ -1082,7 +1088,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722290222211</updated>
     </task>
-    <option name="localTasksCounter" value="281" />
+    <task id="LOCAL-00281" summary="doot">
+      <option name="closed" value="true" />
+      <created>1722290938745</created>
+      <option name="number" value="00281" />
+      <option name="presentableId" value="LOCAL-00281" />
+      <option name="project" value="LOCAL" />
+      <updated>1722290938746</updated>
+    </task>
+    <option name="localTasksCounter" value="282" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1127,8 +1141,8 @@
     <MESSAGE value="added unit morale" />
     <MESSAGE value="added morale to combat tree distribution calcs" />
     <MESSAGE value="adding troop upgrades" />
-    <MESSAGE value="doot" />
     <MESSAGE value="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
+    <MESSAGE value="doot" />
+    <option name="LAST_COMMIT_MESSAGE" value="doot" />
   </component>
 </project>
