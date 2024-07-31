@@ -5,13 +5,13 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Godot;
 
-public abstract class TurnState : State
+public abstract class TurnState
 {
-    private Task _calculation;
-    private TurnState _nextState;
+    public TurnState NextState { get; private set; }
     protected LogicModule[] _majorModules, _minorModules;
-    private OrderHolder _orders;
-    private LogicKey _key;
+    protected OrderHolder _orders;
+    protected LogicKey _key;
+    public bool Calculating { get; protected set; }
 
     public TurnState(LogicKey key, 
         OrderHolder orders)
@@ -22,16 +22,12 @@ public abstract class TurnState : State
 
     public void SetNextState(TurnState next)
     {
-        _nextState = next;
+        NextState = next;
     }
-    public override void Enter()
+    public virtual void Calculate()
     {
-        _key.Data.Logger.Log("Entering state "  + GetType().Name, LogType.Logic);
-        if (_calculation != null) throw new Exception();
-        _calculation = Task.Run(Calculate);
-    }
-    private void Calculate()
-    {
+        GD.Print("calculating " + GetType().Name);
+        Calculating = true;
         if (_key.Data.BaseDomain.GameClock.MajorTurn(_key.Data))
         {
             CalculateMajor();
@@ -40,6 +36,10 @@ public abstract class TurnState : State
         {
             CalculateMinor();
         }
+
+        Calculating = false;
+        GD.Print("done calculating " + GetType().Name);
+
     }
     private void CalculateMajor()
     {
@@ -67,18 +67,6 @@ public abstract class TurnState : State
                 LogType.Logic);
         }
     }
-    public override State Check()
-    {
-        if (_calculation.IsFaulted)
-        {
-            throw _calculation.Exception;
-        }
-        if (_calculation.IsCompleted)
-        {
-            _calculation = null;
-            return _nextState;
-        }
-        
-        return this;
-    }
+
+    public abstract bool ReadyForNext();
 }

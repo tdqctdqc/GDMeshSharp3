@@ -18,4 +18,9 @@ public class TurnStartState : TurnState
             new DefaultLogicModule(() => new FinishedTurnStartCalcProc())
         };
     }
+
+    public override bool ReadyForNext()
+    {
+        return true;
+    }
 }

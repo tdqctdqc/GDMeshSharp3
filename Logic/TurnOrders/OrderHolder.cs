@@ -26,7 +26,7 @@ public class OrderHolder
     public void HandlePlayerChangedRegime(ValChangeNotice<Player, Regime> notice)
     {
         CancelCalcAiRegimeOrders(notice.NewVal, _key);
-        CalcAiRegimeOrders(notice.OldVal, _key);
+        CalcAiRegimeOrdersAsync(notice.OldVal, _key);
     }
     public void SubmitPlayerTurnOrders(Player player, RegimeTurnOrders orders, Data data)
     {
@@ -35,13 +35,22 @@ public class OrderHolder
         if (Orders.ContainsKey(regime) && Orders[regime] != null) throw new Exception();
         Orders[regime] = orders;
     }
-    public void CalcAiOrders(LogicKey key)
+    public void CalcAiOrdersSync(LogicKey key)
     {
         var aiRegimes = key.Data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(key.Data) == false);
         foreach (var r in aiRegimes)
         {
-            CalcAiRegimeOrders(r, key);
+            CalcAiRegimeOrdersSync(r, key);
+        }
+    }
+    public void CalcAiOrdersAsync(LogicKey key)
+    {
+        var aiRegimes = key.Data.GetAll<Regime>()
+            .Where(r => r.IsPlayerRegime(key.Data) == false);
+        foreach (var r in aiRegimes)
+        {
+            CalcAiRegimeOrdersAsync(r, key);
         }
     }
     public void Clear()
@@ -56,7 +65,14 @@ public class OrderHolder
     {
         return Orders.Values.ToList();
     }
-    private async void CalcAiRegimeOrders(Regime r, LogicKey key)
+
+    private void CalcAiRegimeOrdersSync(Regime r, LogicKey key)
+    {
+        var ai = key.Data.HostLogicData.RegimeAis[r];
+        var orders = (RegimeTurnOrders)ai.CalculateAndSendOrders(key);
+        Orders[r] = orders;
+    }
+    private async void CalcAiRegimeOrdersAsync(Regime r, LogicKey key)
     {
         if (r == null) return;
         Orders[r] = null;

@@ -8,12 +8,21 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/Technology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/Technology.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/TechnologyExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/TechnologyExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj.old" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj.old.1" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/GDMeshSharp3.csproj.old.2" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/depot - Copy.dpo" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Session/GameSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GameSession.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/State.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/StateMachine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/TurnStateMachine.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,49 +61,6 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/12b544f3d6604d0c98a8a519e62542912200/05/5ddd39d8/IPool`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/0b/4ac82b1f/MouseButtonMask.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/1c/0fe04ae9/InputEventMouseButton.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/25/e6133dbc/ItemList.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/2d/df82060a/ProjectSettings.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/38/fc3bba61/Node.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/48/e369cec8/TabContainer.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/51/6d3003d9/CanvasItem.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/6b/6f51637d/Control.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/7c/bce2412c/Variant.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/87/0ad14edb/ScrollContainer.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/91/fed64d87/Window.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/97/238d1a6a/PanelContainer.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/c6/26c6df49/TextureRect.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/c6/edd21999/Colors.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/cb/85d3a3d3/Geometry2D.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/17ecfff6f7c64ec7aa08ab75932e7df63d0e00/e2/fea13c16/GodotObject.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/482400ac7bb64f65a36c413fc85a49871e600/de/a908187d/Polygon2D.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/6f9cd2b865094294bc69db1184ad68be40888/ce/da3f4d25/ConcurrentDictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9ce37f9840d1416d87de97127bbb586312e00/7c/048ceff7/Polygon.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/b34296d7545f4a54bda041aecea156b4b1d878/1c/94f3ee6b/Dictionary`2.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/f91966cb9bce4035a5e5d1453a1193d8238b0/e4/a72000f3/Parallel.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/215ca8fd95391172a79e7562793d1c44d7ec8c3b6bb186f01251b947efd0f6a4/Index.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/25b7a8e363cf4f9521afbcde038b888809e22255c8a1e06c5ba0d0b8aa7b2/Attributes.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/295e6b84bc60637d8ab24bfa045df752cad1a405191b9dbb615482d79f29a7c/MinCostFlowBase.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/46f85f6668fa0db3ebaa6247785f1c770b7433addf0f1bae21e374a1eabca98/Solver.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/6879c9ed20391a5ccfea363be5964fbcfe4f1dfde9558aa84b36df6b6ec92c6/List.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7629111d32825e5f932d2682df155565b0ef2cce8be88acbf56c81b57a603/ConcurrentDictionary.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/7641a1a0695522e81971758464776ba68659afdcd53575f6917f7593181d9345/Dictionary.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/76a7b4387866adc31f9e317277cff4e5a723e96e76b52dd8afe066edf1abf9c3/Array.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/86c2101b66b89b7ebd422e325139db459361d0b5d898ecc545e1b585b3b6fd4/ConcurrentBag.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8b59fa60d15ea79167bca4aee77af3ed6b93648c61b472b7a8381c62977ddfdb/Type.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/8be73ec14cdbb4d3b59b395937d47ef7cf72e9398e7189c8be8861f9efd/MessagePackWriter.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/99b062cddd6fcedfc32673e6f0e231847b57f81083133c375e06fe39affa8f2/Reverse.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9f6eb4020bb69f92834e6525579fb08899521b2d8dbaf42dbb6eda2ba15d3/MessagePackSerializer.NonGeneric.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c1392dcec8fbf06e88494e16d596717b5b19153ad1426cd1ab14675469194781/PropertyInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/c13e9ef0c99a8e8b306bbef1e24dea53bf8660b9c1cb4724e3b57133a73db580/Enum.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ce04664612ca92dc1e6ae3361bbd1ac9ab788375bc495523c965f3f66772/BufferWriter.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d3b35aba78af8938342254c9ab4da7b7362a691ccc71b3decaabd322fea44/Int32.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/d7fd665bf3b3479e1b42d469191ce18f9a9fb07d6acfadb046c21534e1ef65e9/MemberInfo.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/ec11765cbb8c53eff7ee868d6884fa5d48e1b543926061744e7947896e88422/CancellationToken.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/f8b78e83a7fcb41b463a82a2c615d0eb9a82f63e6fe93ffd1fe6781e6349d9b/HashSet.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/../GDMeshSharp3-034b9ecde7dee521cf4037eaf068a582f044f678/Utility/Serialization/Serializer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
@@ -103,9 +69,8 @@
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/HostLogic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -733,6 +698,10 @@
       <workItem from="1722296224137" duration="1148000" />
       <workItem from="1722357105055" duration="912000" />
       <workItem from="1722365829242" duration="401000" />
+      <workItem from="1722373494227" duration="1433000" />
+      <workItem from="1722383419799" duration="1872000" />
+      <workItem from="1722385393179" duration="3489000" />
+      <workItem from="1722389921857" duration="1530000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -944,14 +913,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00263" summary="finished depot">
-      <option name="closed" value="true" />
-      <created>1720886492395</created>
-      <option name="number" value="00263" />
-      <option name="presentableId" value="LOCAL-00263" />
-      <option name="project" value="LOCAL" />
-      <updated>1720886492395</updated>
-    </task>
     <task id="LOCAL-00264" summary="tweaking combat">
       <option name="closed" value="true" />
       <created>1721062579215</created>
@@ -1096,7 +1057,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722290938746</updated>
     </task>
-    <option name="localTasksCounter" value="282" />
+    <task id="LOCAL-00282" summary="doot">
+      <option name="closed" value="true" />
+      <created>1722373288833</created>
+      <option name="number" value="00282" />
+      <option name="presentableId" value="LOCAL-00282" />
+      <option name="project" value="LOCAL" />
+      <updated>1722373288833</updated>
+    </task>
+    <option name="localTasksCounter" value="283" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

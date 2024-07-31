@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class Technology : IModel
+public class Technology : IModel, ITechReqed
 {
     public int Id { get; private set; }
     public string Name { get; private set; }
@@ -16,13 +16,6 @@ public class Technology : IModel
         
     }
 
-    public static void AddStartingTechsForRegime(Regime r, GenKey key)
-    {
-        var starting = key.Data.Models.GetModels<Technology>()
-            .Where(t => t.Prereqs.Count == 0)
-            .Select(t => t.MakeRef());
-        r.Technology.Technologies.Refs.UnionWith(starting);
-    }
 
     public IEnumerable<IModel> GetModelsWithPrereq(Data d)
     {

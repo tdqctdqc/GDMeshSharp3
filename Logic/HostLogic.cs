@@ -12,9 +12,9 @@ public class HostLogic : ILogic
 {
     public ConcurrentQueue<Command> CommandQueue { get; }
     private ISession _session;
-    private StateMachine _stateMachine;
+    private TurnStateMachine _turnStateMachine;
     private TurnState _start, _middle, _end;
-    public bool Calculating => _stateMachine.Current != _middle;
+    public bool Calculating => _turnStateMachine.Current != _middle;
     public OrderHolder OrderHolder { get; private set; }
     private HostServer _server; 
     private HostKey _hKey;
@@ -31,7 +31,6 @@ public class HostLogic : ILogic
             session);
         _hKey = new HostKey(this, session);
         PKey = new ProcedureKey(_session);
-        
         OrderHolder = new OrderHolder(_logicKey);
         
         _start = new TurnStartState(_logicKey, OrderHolder);
@@ -48,7 +47,7 @@ public class HostLogic : ILogic
     public void Process(float delta)
     {
         DoCommands();
-        _stateMachine?.Process();
+        _turnStateMachine?.Process();
     }
 
     public void SubmitPlayerOrders(Player player, RegimeTurnOrders orders)
@@ -60,8 +59,7 @@ public class HostLogic : ILogic
     {
         SetPlayerRegimes();
         SetInitialRivals();
-
-        _stateMachine = new StateMachine(_start);
+        _turnStateMachine = new TurnStateMachine(_start);
     }
 
     private void SetInitialRivals()
@@ -98,7 +96,6 @@ public class HostLogic : ILogic
     {
         lock (_lock)
         {
-            GD.Print(m.GetType());
             if (m is Update u)
             {
                 u.Enact(PKey);

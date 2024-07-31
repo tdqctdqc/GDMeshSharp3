@@ -51,6 +51,7 @@ public class Regime : Entity, INamed
     {
         var store = RegimeStock.Construct();
         var id = key.Data.IdDispenser.TakeId();
+        
         var r = new Regime(id, regimeTemplate.Name, 
             new Color(regimeTemplate.PrimaryColor), 
             new Color(regimeTemplate.SecondaryColor), 
@@ -62,11 +63,10 @@ public class Regime : Entity, INamed
             isMajor,
             MakeQueue.Construct(),
             RegimeMilitary.Construct(id, key.Data),
-            RegimeTechnology.Construct()
+            RegimeTechnology.Construct(key.Data)
         );
         key.Create(r);
         Alliance.Create(r, key);
-        global::Technology.AddStartingTechsForRegime(r, key);
         
         return r;
     }

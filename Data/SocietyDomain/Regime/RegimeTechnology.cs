@@ -1,73 +1,64 @@
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 using MessagePack;
 
 public class RegimeTechnology
 {
-    public RefSet<ModelRef<Technology>> Technologies { get; private set; }
-    public Dictionary<int, float> Progresses { get; private set; }
-
-    public Dictionary<int, float> Progresses2 { get; private set; }
-        = new Dictionary<int, float>();
+    public IReadOnlyCollection<ModelRef<Technology>> Technologies() 
+        => _techs.Select(id => new ModelRef<Technology>(id)).ToList();
+    private List<int> _techs;
+    
     public ModelRef<Technology> Current { get; private set; }
-    public float Overflow { get; private set; }
-    public static RegimeTechnology Construct()
+    public float Progress { get; private set; }
+    public static RegimeTechnology Construct(Data d)
     {
+        var starting = d.Models.GetModels<Technology>()
+            .Where(t => t.Prereqs.Count == 0)
+            .Select(t => t.Id)
+            .ToList();
         return new RegimeTechnology(
-            new RefSet<ModelRef<Technology>>(new HashSet<ModelRef<Technology>>()),
-            new Dictionary<int, float>(),
-            new ModelRef<Technology>(),
+            starting,
+            new ModelRef<Technology>(-1),
             0f);
     }
     
     [SerializationConstructor] private RegimeTechnology(
-        RefSet<ModelRef<Technology>> technologies, 
-        Dictionary<int, float> progresses,
+        // HashSet<ModelRef<Technology>> technologies, 
+        List<int> techs,
         ModelRef<Technology> current, 
-        float overflow)
+        float progress)
     {
-        Technologies = technologies;
-        Progresses = progresses;
-        Overflow = overflow;
+        // Technologies = technologies;
+        _techs = techs;
+        Progress = progress;
         Current = current;
     }
     
     public void SetResearch(ModelRef<Technology> t, ProcedureKey key)
     {
-        if (Progresses.ContainsKey(t.RefId) == false)
-        {
-            Progresses.Add(t.RefId, 0f);
-        }
-
         Current = t;
     }
 
     public void AddProgress(float progress, ProcedureKey key)
     {
-        if (Current.IsEmpty())
+        Progress += progress;
+
+        if (Current.Fulfilled())
         {
-            Overflow += progress;
-        }
-        else
-        {
-            var total = Overflow + progress;
-            var remaining = Current.Get(key.Data).ResearchCost - Progresses[Current.RefId];
-            if (remaining <= total)
+            var remaining = Current.Get(key.Data).ResearchCost - Progress;
+            if (remaining <= 0f)
             {
-                Overflow = total - remaining;
-                Technologies.Add(Current, key);
-                Progresses.Remove(Current.RefId);
-                Current = new ModelRef<Technology>();
-            }
-            else
-            {
-                Progresses[Current.RefId] += total;
-                Overflow = 0f;
+                Progress -= remaining;
+                // Technologies.Add(Current);
+                _techs.Add(Current.RefId);
+                Current = new ModelRef<Technology>(-1);
             }
         }
     }
-    public void SetOverflow(float overflow, ProcedureKey key)
+
+    public bool HaveTech(Technology t)
     {
-        Overflow = overflow;
+        return _techs.Contains(t.Id);
     }
 }

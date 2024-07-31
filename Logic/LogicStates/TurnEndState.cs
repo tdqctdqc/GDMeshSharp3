@@ -24,4 +24,9 @@ public class TurnEndState : TurnState
             new ClearOrdersModule(orders)
         };
     }
+
+    public override bool ReadyForNext()
+    {
+        return true;
+    }
 }

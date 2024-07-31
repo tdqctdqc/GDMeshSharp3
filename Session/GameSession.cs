@@ -48,7 +48,6 @@ public partial class GameSession : Node, ISession
         Data = new GenData();
         StartClient();
         
-        
         worldGen.FinishedGenSuccessfully = () => Client.SetupForGameData();
         worldGen.FinalizeGen += GeneratorToGameTransition;
         Client.SetupForGenerator(worldGen);
@@ -85,13 +84,15 @@ public partial class GameSession : Node, ISession
     public void GeneratorToGameTransition()
     {
         Data.Notices.Gen.ExitedGen.Invoke();
+
         var hServer = new HostServer();
+
         var logic = new HostLogic(this);
         Logic = logic;
         hServer.Setup(logic, Data, this);
         logic.SetDependencies(hServer);
         StartServer(hServer);
-        
+
         logic.Start();
         Client.SetupForGameplay(true);
     }
