@@ -26,7 +26,6 @@ public abstract class TurnState
     }
     public virtual void Calculate()
     {
-        GD.Print("calculating " + GetType().Name);
         Calculating = true;
         if (_key.Data.BaseDomain.GameClock.MajorTurn(_key.Data))
         {
@@ -38,8 +37,6 @@ public abstract class TurnState
         }
 
         Calculating = false;
-        GD.Print("done calculating " + GetType().Name);
-
     }
     private void CalculateMajor()
     {

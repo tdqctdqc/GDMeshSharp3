@@ -16,11 +16,15 @@ public class Technology : IModel, ITechReqed
         
     }
 
-
     public IEnumerable<IModel> GetModelsWithPrereq(Data d)
     {
         return d.Models.ModelsById.Values.OfType<ITechReqed>()
             .Where(m => m.Prereqs.Contains(this))
             .Select(m => (IModel)m);
+    }
+
+    public bool TechEquals(Technology t)
+    {
+        return t.Name == Name;
     }
 }

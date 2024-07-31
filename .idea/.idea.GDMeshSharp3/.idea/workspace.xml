@@ -4,26 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/TechnologyTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/SetResearchProcedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/Technology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/Technology.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Model/Technology/TechnologyExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Model/Technology/TechnologyExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnEndState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnStartState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnState.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/WaitForOrdersToBeSubmittedModule.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Session/GameSession.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Session/GameSession.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/State.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/StateMachine.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/StateMachine/TurnStateMachine.cs" afterDir="false" />
-    </list>
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -70,7 +51,7 @@
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/HostLogic.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/GameSession.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -701,7 +682,7 @@
       <workItem from="1722373494227" duration="1433000" />
       <workItem from="1722383419799" duration="1872000" />
       <workItem from="1722385393179" duration="3489000" />
-      <workItem from="1722389921857" duration="1530000" />
+      <workItem from="1722389921857" duration="2036000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -913,14 +894,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00264" summary="tweaking combat">
-      <option name="closed" value="true" />
-      <created>1721062579215</created>
-      <option name="number" value="00264" />
-      <option name="presentableId" value="LOCAL-00264" />
-      <option name="project" value="LOCAL" />
-      <updated>1721062579215</updated>
-    </task>
     <task id="LOCAL-00265" summary="adding technology">
       <option name="closed" value="true" />
       <created>1721086409078</created>
@@ -1065,7 +1038,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722373288833</updated>
     </task>
-    <option name="localTasksCounter" value="283" />
+    <task id="LOCAL-00283" summary="fixed it....">
+      <option name="closed" value="true" />
+      <created>1722391967978</created>
+      <option name="number" value="00283" />
+      <option name="presentableId" value="LOCAL-00283" />
+      <option name="project" value="LOCAL" />
+      <updated>1722391967978</updated>
+    </task>
+    <option name="localTasksCounter" value="284" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1087,7 +1068,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="readded resource generator" />
     <MESSAGE value="make project ui" />
     <MESSAGE value="more ui stuff, resource icons, host procedures" />
     <MESSAGE value="fixed combat front length not carry over bug, troops not taking breakthroughMult value from res bug" />
@@ -1112,6 +1092,7 @@
     <MESSAGE value="adding troop upgrades" />
     <MESSAGE value="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
     <MESSAGE value="doot" />
-    <option name="LAST_COMMIT_MESSAGE" value="doot" />
+    <MESSAGE value="fixed it...." />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed it...." />
   </component>
 </project>

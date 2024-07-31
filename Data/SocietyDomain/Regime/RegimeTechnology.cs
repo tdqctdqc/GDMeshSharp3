@@ -5,60 +5,75 @@ using MessagePack;
 
 public class RegimeTechnology
 {
-    public IReadOnlyCollection<ModelRef<Technology>> Technologies() 
-        => _techs.Select(id => new ModelRef<Technology>(id)).ToList();
-    private List<int> _techs;
-    
+    public HashSet<ModelRef<Technology>> Researched { get; private set; }
     public ModelRef<Technology> Current { get; private set; }
-    public float Progress { get; private set; }
+    public float Overflow { get; private set; }
+    public Dictionary<ModelRef<Technology>, float> Progresses { get; private set; }
     public static RegimeTechnology Construct(Data d)
     {
         var starting = d.Models.GetModels<Technology>()
             .Where(t => t.Prereqs.Count == 0)
-            .Select(t => t.Id)
-            .ToList();
+            .Select(t => t.MakeRef())
+            .ToHashSet();
         return new RegimeTechnology(
             starting,
+            starting.ToDictionary(s => s,
+                s => s.Get(d).ResearchCost),
             new ModelRef<Technology>(-1),
             0f);
     }
     
     [SerializationConstructor] private RegimeTechnology(
-        // HashSet<ModelRef<Technology>> technologies, 
-        List<int> techs,
+        HashSet<ModelRef<Technology>> researched, 
+        Dictionary<ModelRef<Technology>, float> progresses,
         ModelRef<Technology> current, 
-        float progress)
+        float overflow)
     {
-        // Technologies = technologies;
-        _techs = techs;
-        Progress = progress;
+        Progresses = progresses;
+        Researched = researched;
+        Overflow = overflow;
         Current = current;
     }
     
     public void SetResearch(ModelRef<Technology> t, ProcedureKey key)
     {
         Current = t;
+        if (Progresses.ContainsKey(Current) == false
+            && Current.Fulfilled())
+        {
+            GD.Print("Setting research as " + t.Get(key.Data).Name);
+            Progresses.Add(Current, 0f);
+        }
     }
 
     public void AddProgress(float progress, ProcedureKey key)
     {
-        Progress += progress;
+        Overflow += progress;
 
         if (Current.Fulfilled())
         {
-            var remaining = Current.Get(key.Data).ResearchCost - Progress;
+            var total = Overflow + Progresses[Current];
+            var cost = Current.Get(key.Data).ResearchCost;
+            var remaining = cost - total;
             if (remaining <= 0f)
             {
-                Progress -= remaining;
-                // Technologies.Add(Current);
-                _techs.Add(Current.RefId);
+                GD.Print("finished researching " + Current.Get(key.Data).Name);
+                Overflow = -remaining;
+                Progresses[Current] += total;
+                Researched.Add(Current);
+                // Progresses.Remove(Current);
                 Current = new ModelRef<Technology>(-1);
+            }
+            else
+            {
+                Progresses[Current] += total;
+                Overflow = 0f;
             }
         }
     }
 
     public bool HaveTech(Technology t)
     {
-        return _techs.Contains(t.Id);
+        return Researched.Contains(t.MakeRef());
     }
 }

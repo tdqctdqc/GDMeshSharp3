@@ -8,6 +8,7 @@ public class RegimeTechnologyAi
 {
     private Regime _regime;
     private Dictionary<TechnologyCategory, Func<Regime, Data, float>> _getWeight;
+    
     public RegimeTechnologyAi(Regime regime, Data d)
     {
         _regime = regime;
@@ -24,38 +25,49 @@ public class RegimeTechnologyAi
 
     public void Calculate(LogicKey key)
     {
-        if (_regime.Technology.Current.Fulfilled()) return;
-
         var weights = _getWeight.ToDictionary(kvp => kvp.Key,
             kvp => kvp.Value(_regime, key.Data));
         var techs = key.Data.Models
             .GetModels<Technology>()
-            .ToHashSet();
-
+            .ToArray();
 
         var max = 0f;
         Technology toResearch = null;
         var researched = _regime.Technology
-            .Technologies().Select(t => t.Get(key.Data)).ToArray();
+            .Researched
+            .Select(r => r.Get(key.Data))
+            .ToArray();
         
         //todo why why why 
-        foreach (var t in techs)
+        
+        for (var j = 0; j < techs.Length; j++)
         {
+            var t = techs[j];
             if (_regime.HasPrereqs(t) == false) continue;
-            // if (researched.Contains(t)) continue;
-            var already = false;
-            for (var i = 0; i < researched.Length; i++)
-            {
-                if(researched[i] == t);
-                {
-                    already = true;
-                    break;
-                }
-            }
+            if (_regime.Technology.Progresses.TryGetValue(t.MakeRef(), out var p2)
+                && p2 >= t.ResearchCost) continue;
+            // var alreadyResearched = false;
+            //
+            // for (var i = 0; i < researched.Length; i++)
+            // {
+            //     var r = researched[i];
+            //     if(r.GetHashCode().Equals(t.GetHashCode()));
+            //     {
+            //         alreadyResearched = true;
+            //         GD.Print($"{t.Name} equals {r.Name}");
+            //         break;
+            //     }
+            // }
+            //
+            // if (alreadyResearched) continue;
+            GD.Print("potential " + t.Name);
             
-            if (already) continue;
-            
-            var score = weights[t.Category] / t.ResearchCost;
+            var progress = _regime.Technology.Progresses
+                .TryGetValue(t.MakeRef(), out var p)
+                ? p
+                : 0f;
+            progress = Mathf.Min(progress, t.ResearchCost);
+            var score = weights[t.Category] / (t.ResearchCost - progress);
 
             if (score > max)
             {
@@ -70,7 +82,7 @@ public class RegimeTechnologyAi
                 new ModelRef<Technology>(-1)));
             return;
         }
-        
+        GD.Print("setting research as " + toResearch.Name);
         key.SendMessage(new SetResearchProcedure(_regime.MakeRef(), toResearch.MakeRef()));
     }
 }

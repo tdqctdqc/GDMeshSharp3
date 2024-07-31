@@ -30,13 +30,13 @@ public class SetResearchProcedure : Procedure
             return true;
         }
         
-        if (regimeTech.Technologies().Contains(Technology))
+        if (regimeTech.Researched.Contains(Technology))
         {
             error = "Tech already researched";
             return false;
         }
 
-        if (Technology.Get(data).Prereqs.Any(p => regimeTech.Technologies().Contains(p.MakeRef()) == false))
+        if (Technology.Get(data).Prereqs.Any(p => regimeTech.Researched.Contains(p.MakeRef()) == false))
         {
             error = "Prereq techs not researched";
             return false;

@@ -79,7 +79,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         
         right.CreateLabelAsChild("Researched Technologies");
          
-        var alreadyResearched = _parent.Regime.Technology.Technologies().Select(t => t.Get(client.Data));
+        var alreadyResearched = _parent.Regime.Technology.Researched.Select(t => t.Get(client.Data));
         
         var alreadyResearchedList = new ItemListToken<Technology>(
             alreadyResearched,
@@ -118,7 +118,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         var tech = _parent.Regime.Technology;
         var curr = tech.Current.Get(c.Data);
         _currentResearchInfo.CreateLabelAsChild($"Researching: {curr.DisplayName}");
-        _currentResearchInfo.CreateLabelAsChild($"Progress: {tech.Progress} / {curr.ResearchCost}");
+        _currentResearchInfo.CreateLabelAsChild($"Progress: {tech.Overflow} / {curr.ResearchCost}");
 
     }
 

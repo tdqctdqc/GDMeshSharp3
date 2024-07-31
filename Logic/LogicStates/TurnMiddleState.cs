@@ -8,11 +8,9 @@ public class TurnMiddleState : TurnState
     {
         _majorModules = new LogicModule[]
         {
-            // new WaitForOrdersToBeSubmittedModule(holder)
         };
         _minorModules = new LogicModule[] 
         {
-            // new WaitForOrdersToBeSubmittedModule(holder)
         };
     }
 
