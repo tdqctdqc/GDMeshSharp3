@@ -28,39 +28,25 @@ public class RegimeTechnologyAi
         var weights = _getWeight.ToDictionary(kvp => kvp.Key,
             kvp => kvp.Value(_regime, key.Data));
         var techs = key.Data.Models
-            .GetModels<Technology>()
-            .ToArray();
-
+            .GetModels<Technology>();
+        var researched = _regime.Technology.Researched;
+        var avail = new List<ModelRef<Technology>>();
+        foreach (var technology in techs)
+        {
+            if (researched.Contains(technology.MakeRef()) == false)
+            {
+                avail.Add(technology.MakeRef());
+            }
+        }
         var max = 0f;
         Technology toResearch = null;
-        var researched = _regime.Technology
-            .Researched
-            .Select(r => r.Get(key.Data))
-            .ToArray();
         
-        //todo why why why 
         
-        for (var j = 0; j < techs.Length; j++)
+        for (var j = 0; j < techs.Count; j++)
         {
             var t = techs[j];
-            if (_regime.HasPrereqs(t) == false) continue;
-            if (_regime.Technology.Progresses.TryGetValue(t.MakeRef(), out var p2)
-                && p2 >= t.ResearchCost) continue;
-            // var alreadyResearched = false;
-            //
-            // for (var i = 0; i < researched.Length; i++)
-            // {
-            //     var r = researched[i];
-            //     if(r.GetHashCode().Equals(t.GetHashCode()));
-            //     {
-            //         alreadyResearched = true;
-            //         GD.Print($"{t.Name} equals {r.Name}");
-            //         break;
-            //     }
-            // }
-            //
-            // if (alreadyResearched) continue;
-            GD.Print("potential " + t.Name);
+            if (t.AvailableToResearch(_regime) == false) continue;
+            if (avail.Any(v => v.Equals(t.MakeRef())) == false) continue;
             
             var progress = _regime.Technology.Progresses
                 .TryGetValue(t.MakeRef(), out var p)
@@ -82,7 +68,6 @@ public class RegimeTechnologyAi
                 new ModelRef<Technology>(-1)));
             return;
         }
-        GD.Print("setting research as " + toResearch.Name);
         key.SendMessage(new SetResearchProcedure(_regime.MakeRef(), toResearch.MakeRef()));
     }
 }

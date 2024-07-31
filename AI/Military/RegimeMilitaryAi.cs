@@ -1,6 +1,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
 public class RegimeMilitaryAi
 {
@@ -15,6 +16,8 @@ public class RegimeMilitaryAi
     }
     public void CalculateMajor(LogicKey key, MajorTurnOrders orders)
     {
+        
+        
         ForceComposition.Calculate(_regime, key);
         Templates.Calculate(key);
     }

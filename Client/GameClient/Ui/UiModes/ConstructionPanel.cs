@@ -97,20 +97,21 @@ public partial class ConstructionPanel : PanelContainer
             var buildingTotal = buildingProjects.Sum(b => b.Amount);
             var buildingFinished = buildingProjects.Sum(b => b.Fulfilled);
 
-            if (regime.HasPrereqs(model))
-            {
-                var button = ButtonExt.GetButton(() =>
-                {
-                    var project = PlayerSettlementBuildingMakeProject.Construct(
-                        1, s, regime, model);
-                    var inner = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
-                    var act = () => Draw(cell, c);
-                    var com = CallbackCommand.Construct(inner, act, c);
-                    c.HandleCommand(com);
-                });
-                button.Text = $"In progress: {buildingFinished} / {buildingTotal}";
-                vbox.AddChild(button);
-            }
+            
+             if (regime.HasPrereqs(model))
+             {
+                 var button = ButtonExt.GetButton(() =>
+                 {
+                     var project = PlayerSettlementBuildingMakeProject.Construct(
+                         1, s, regime, model);
+                     var inner = new StartMakeProjectCommand(project, localPlayer.PlayerGuid);
+                     var act = () => Draw(cell, c);
+                     var com = CallbackCommand.Construct(inner, act, c);
+                     c.HandleCommand(com);
+                 });
+                 button.Text = $"In progress: {buildingFinished} / {buildingTotal}";
+                 vbox.AddChild(button);
+             }
 
             _interact.AddChild(vbox);
         }

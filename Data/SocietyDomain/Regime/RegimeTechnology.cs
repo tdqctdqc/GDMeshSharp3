@@ -5,7 +5,7 @@ using MessagePack;
 
 public class RegimeTechnology
 {
-    public HashSet<ModelRef<Technology>> Researched { get; private set; }
+    public List<ModelRef<Technology>> Researched { get; private set; }
     public ModelRef<Technology> Current { get; private set; }
     public float Overflow { get; private set; }
     public Dictionary<ModelRef<Technology>, float> Progresses { get; private set; }
@@ -14,7 +14,7 @@ public class RegimeTechnology
         var starting = d.Models.GetModels<Technology>()
             .Where(t => t.Prereqs.Count == 0)
             .Select(t => t.MakeRef())
-            .ToHashSet();
+            .ToList();
         return new RegimeTechnology(
             starting,
             starting.ToDictionary(s => s,
@@ -24,7 +24,7 @@ public class RegimeTechnology
     }
     
     [SerializationConstructor] private RegimeTechnology(
-        HashSet<ModelRef<Technology>> researched, 
+        List<ModelRef<Technology>> researched, 
         Dictionary<ModelRef<Technology>, float> progresses,
         ModelRef<Technology> current, 
         float overflow)

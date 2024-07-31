@@ -24,19 +24,6 @@ public class HostLogic : ILogic
     private readonly object _lock = new object();
     public HostLogic(ISession session)
     {
-        foreach (var t1 in session.Data.Models.GetModels<Technology>())
-        {
-            foreach (var t2 in session.Data.Models.GetModels<Technology>())
-            {
-                if (t1.Equals(t2))
-                {
-                    GD.Print($"{t1.Name} {t1.GetHashCode()} equals {t2.Name} {t2.GetHashCode()}");
-                }
-            }
-        }
-        
-        
-        
         _session = session;
         CommandQueue = new ConcurrentQueue<Command>();
         _logicKey = new LogicKey(this,

@@ -40,7 +40,8 @@ public class UnitMetaTemplate
     {
         if (Weights.Length != MilUtil.NumEchelons) throw new Exception();
         var availTroops = d.Models.GetModels<Troop>()
-            .Where(t => regime.HasPrereqs(t)).ToHashSet();
+            .Where(t => regime.HasPrereqs(t))
+            .ToHashSet();
         
         var res = IdCount<TroopType>.Construct();
         for (var i = 0; i < Weights.Length; i++)

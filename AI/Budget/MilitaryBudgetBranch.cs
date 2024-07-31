@@ -87,27 +87,27 @@ public class MilitaryBudgetBranch
         Children.Add(_units);
 
 
-        var upgrade = new UpgradeTroopsPriority(r);
-        _upgrade = new PriorityNode(upgrade,
-            this, (r, d) =>
-            {
-                var troops = r.GetAllTroopAmounts(d);
-                var totalPp = troops.Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
-                if (totalPp == 0f) return 0f;
-                var upgradePotential = 0f;
-                var best = d.Models.GetModels<TroopType>()
-                    .ToDictionary(tt => tt, tt => r.Military.GetBestTroopOfType(tt, d));
-                foreach (var (troop, value) in troops)
-                {
-                    if (best[troop.TroopType] != troop)
-                    {
-                        upgradePotential += (best[troop.TroopType].GetPowerPoints() - troop.GetPowerPoints()) * value;
-                    }
-                }
-                var score = Mathf.Min(10f, 100f * (upgradePotential / totalPp));
-                return score;
-            });
-        Children.Add(_upgrade);
+        // var upgrade = new UpgradeTroopsPriority(r);
+        // _upgrade = new PriorityNode(upgrade,
+        //     this, (r, d) =>
+        //     {
+        //         var troops = r.GetAllTroopAmounts(d);
+        //         var totalPp = troops.Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
+        //         if (totalPp == 0f) return 0f;
+        //         var upgradePotential = 0f;
+        //         var best = d.Models.GetModels<TroopType>()
+        //             .ToDictionary(tt => tt, tt => r.Military.GetBestTroopOfType(tt, d));
+        //         foreach (var (troop, value) in troops)
+        //         {
+        //             if (best[troop.TroopType] != troop)
+        //             {
+        //                 upgradePotential += (best[troop.TroopType].GetPowerPoints() - troop.GetPowerPoints()) * value;
+        //             }
+        //         }
+        //         var score = Mathf.Min(10f, 100f * (upgradePotential / totalPp));
+        //         return score;
+        //     });
+        // Children.Add(_upgrade);
 
     }
 

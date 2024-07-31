@@ -11,13 +11,11 @@ public static class TechnologyExt
     public static bool AvailableToResearch(
         this Technology t, Regime r)
     {
-
         var ts = r.Technology.Researched;
         
         return 
             r.Technology.HaveTech(t) == false
-               
                &&
-               t.Prereqs.All(p => ts.Contains(p.MakeRef()));
+            t.Prereqs.All(p => ts.Contains(p.MakeRef()));
     }
 }
