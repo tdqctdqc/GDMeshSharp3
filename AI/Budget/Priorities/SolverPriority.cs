@@ -48,7 +48,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     {
         return GetCosts(GetWishlist(regime, d), d);
     }
-    public bool Calculate(BudgetPool pool, 
+    public void Calculate(BudgetPool pool, 
         Regime regime, 
         LogicKey key,
         out Dictionary<IModel, float> modelCosts,
@@ -74,7 +74,6 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         modelCosts = GetCosts(toBuild, key.Data);
         built = toBuild.ToDictionary(kvp => GetName(kvp.Key, key.Data),
             kvp => kvp.Value);
-        return toBuild.Count > 0;
     }
 
     protected abstract string GetName(TBuild t, Data d);

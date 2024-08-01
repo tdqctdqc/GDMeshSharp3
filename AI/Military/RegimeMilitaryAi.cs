@@ -16,8 +16,6 @@ public class RegimeMilitaryAi
     }
     public void CalculateMajor(LogicKey key, MajorTurnOrders orders)
     {
-        
-        
         ForceComposition.Calculate(_regime, key);
         Templates.Calculate(key);
     }

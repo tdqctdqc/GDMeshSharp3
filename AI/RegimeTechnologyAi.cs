@@ -41,7 +41,6 @@ public class RegimeTechnologyAi
         var max = 0f;
         Technology toResearch = null;
         
-        
         for (var j = 0; j < techs.Count; j++)
         {
             var t = techs[j];

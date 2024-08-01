@@ -41,7 +41,6 @@ public class RegimeTechnology
         if (Progresses.ContainsKey(Current) == false
             && Current.Fulfilled())
         {
-            GD.Print("Setting research as " + t.Get(key.Data).Name);
             Progresses.Add(Current, 0f);
         }
     }
@@ -57,7 +56,6 @@ public class RegimeTechnology
             var remaining = cost - total;
             if (remaining <= 0f)
             {
-                GD.Print("finished researching " + Current.Get(key.Data).Name);
                 Overflow = -remaining;
                 Progresses[Current] += total;
                 Researched.Add(Current);

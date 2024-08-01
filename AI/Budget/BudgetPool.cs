@@ -68,7 +68,7 @@ public class BudgetPool
     }
     
     
-    private BudgetPool(IdCount<IModel> models,
+    public BudgetPool(IdCount<IModel> models,
         IdCount<IModel> net)
     {
         Stock = IdCount<IModel>.Construct(models);

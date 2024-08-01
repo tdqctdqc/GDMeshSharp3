@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/AI/Budget/MilitaryBudgetBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/MilitaryBudgetBranch.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Budget/Priorities/UpgradeTroopsPriority.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Budget/Priorities/UpgradeTroopsPriority.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeTechnologyAi.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -45,13 +50,15 @@
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/RegimeTechnologyAi.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/UiModes/ConstructionPanel.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/GameSession.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/HostLogic.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -683,6 +690,7 @@
       <workItem from="1722383419799" duration="1872000" />
       <workItem from="1722385393179" duration="3489000" />
       <workItem from="1722389921857" duration="2036000" />
+      <workItem from="1722431114989" duration="12189000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -894,22 +902,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00265" summary="adding technology">
-      <option name="closed" value="true" />
-      <created>1721086409078</created>
-      <option name="number" value="00265" />
-      <option name="presentableId" value="LOCAL-00265" />
-      <option name="project" value="LOCAL" />
-      <updated>1721086409078</updated>
-    </task>
-    <task id="LOCAL-00266" summary="adding research, fixed bug w/ default model adds where wasnt assigning ids">
-      <option name="closed" value="true" />
-      <created>1721177908020</created>
-      <option name="number" value="00266" />
-      <option name="presentableId" value="LOCAL-00266" />
-      <option name="project" value="LOCAL" />
-      <updated>1721177908020</updated>
-    </task>
     <task id="LOCAL-00267" summary="doot">
       <option name="closed" value="true" />
       <created>1721177956675</created>
@@ -1046,7 +1038,23 @@
       <option name="project" value="LOCAL" />
       <updated>1722391967978</updated>
     </task>
-    <option name="localTasksCounter" value="284" />
+    <task id="LOCAL-00284" summary="fixed?? problem is technologies are returning as 'equal' in ai loop even when not, used stupid workaround">
+      <option name="closed" value="true" />
+      <created>1722436357137</created>
+      <option name="number" value="00284" />
+      <option name="presentableId" value="LOCAL-00284" />
+      <option name="project" value="LOCAL" />
+      <updated>1722436357137</updated>
+    </task>
+    <task id="LOCAL-00285" summary="it's problem in upgrade priority">
+      <option name="closed" value="true" />
+      <created>1722444441535</created>
+      <option name="number" value="00285" />
+      <option name="presentableId" value="LOCAL-00285" />
+      <option name="project" value="LOCAL" />
+      <updated>1722444441535</updated>
+    </task>
+    <option name="localTasksCounter" value="286" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1068,8 +1076,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="make project ui" />
-    <MESSAGE value="more ui stuff, resource icons, host procedures" />
     <MESSAGE value="fixed combat front length not carry over bug, troops not taking breakthroughMult value from res bug" />
     <MESSAGE value="adding more troops" />
     <MESSAGE value="doing depot" />
@@ -1093,6 +1099,8 @@
     <MESSAGE value="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
     <MESSAGE value="doot" />
     <MESSAGE value="fixed it...." />
-    <option name="LAST_COMMIT_MESSAGE" value="fixed it...." />
+    <MESSAGE value="fixed?? problem is technologies are returning as 'equal' in ai loop even when not, used stupid workaround" />
+    <MESSAGE value="it's problem in upgrade priority" />
+    <option name="LAST_COMMIT_MESSAGE" value="it's problem in upgrade priority" />
   </component>
 </project>

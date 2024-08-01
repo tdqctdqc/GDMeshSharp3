@@ -42,9 +42,16 @@ public class BudgetRoot : BudgetBranch
         
         foreach (var leaf in leaves.OrderByDescending(l => l.Credit.GetCredit()))
         {
-            var stillValid = leaf.Priority.Calculate(buildCostPool, r, key,
+            leaf.Priority.Calculate(buildCostPool, r, key,
                 out var modelCosts,
                 out var built);
+            
+            foreach (var (model, value) in modelCosts)
+            {
+                buildCostPool.Stock.Remove(model, Mathf.Min(value, buildCostPool.Stock.Get(model)));
+            }
+            
+            
             if (built.Count() == 0) continue;
             var price = modelCosts.Sum(
                 kvp => kvp.Value * getModelPrice(kvp.Key));

@@ -9,7 +9,7 @@ public interface IBudgetPriority : INamed
     Dictionary<IModel, float> GetWishlistCosts(
         Regime regime,
         Data d);
-    bool Calculate(BudgetPool pool, Regime regime,
+    void Calculate(BudgetPool pool, Regime regime,
             LogicKey key,
             out Dictionary<IModel, float> modelCosts,
             out Dictionary<string, float> built);

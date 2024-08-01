@@ -1,137 +1,156 @@
 
-using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using Godot;
-using Google.OrTools.LinearSolver;
 
-public class UpgradeTroopsPriority : SolverPriority<TroopUpgradeProject>
+public class UpgradeTroopsPriority : IBudgetPriority
 {
-    private Regime _regime;
-    private Dictionary<Troop, int> _needed;
-    private Dictionary<TroopType, Troop> _best;
-    public UpgradeTroopsPriority(Regime regime) 
-        : base("Upgrade Troops")
+    public string Name { get; private set; }
+
+    public UpgradeTroopsPriority()
     {
-        _regime = regime;
+        Name = "Upgrade Troops";
     }
 
-    protected override IEnumerable<TroopUpgradeProject> GetAll(Data d)
+    public Dictionary<IModel, float> GetWishlist(Regime regime, Data d)
     {
-        if(_needed is null) return ImmutableArray<TroopUpgradeProject>.Empty;
-        var all = _needed.Select(
-            kvp => TroopUpgradeProject
-                .Construct(_regime, kvp.Key,
-                    _best[kvp.Key.TroopType],
-                    1, d));
-        return all;
-    }
-    protected override string GetName(TroopUpgradeProject t, Data d)
-    {
-        return t.Description(d);
+        return GetNeeded(regime, d).ToDictionary(kvp => (IModel)kvp.Key, kvp => kvp.Value);
     }
 
-    protected override float Utility(TroopUpgradeProject t, Data d)
-    {
-        return Mathf.Max(0f, t.To.Get(d).GetPowerPoints() - t.From.Get(d).GetPowerPoints());
-    }
-
-    protected override bool Relevant(TroopUpgradeProject t, Data d)
-    {
-        return true;
-    }
-
-    protected override void SetCalcData(Regime r, Data d)
-    {
-        var troops = _regime
-            .GetAllTroopAmounts(d);
-        
-        _best = d.Models.GetModels<TroopType>()
-            .ToDictionary(tt => tt, tt => r.Military.GetBestTroopOfType(tt, d));
-
-        _needed = new Dictionary<Troop, int>();
-        foreach (var (troop, value) in troops)
-        {
-            var best = _best[troop.TroopType];
-            if (best != troop)
-            {
-                _needed.Add(troop, Mathf.CeilToInt(value));
-            }
-        }
-    }
-
-    protected override void SetConstraints(Solver solver, 
-        Regime r, BudgetPool pool, 
-        Dictionary<TroopUpgradeProject, Variable> projVars, 
-        Data data)
-    {
-        foreach (var (proj, projVar) in projVars)
-        {
-            projVar.SetLb(0);
-            projVar.SetUb(_needed[proj.From.Get(data)]);
-        }
-        solver.SetBuildCostConstraints(data, pool,
-            projVars);
-    }
-
-    protected override Dictionary<IModel, float> GetCosts(Dictionary<TroopUpgradeProject, float> toBuild, Data d)
+    public Dictionary<IModel, float> GetWishlistCosts(Regime regime,
+        Data d)
     {
         var res = new Dictionary<IModel, float>();
-        
-        foreach (var (makeProj, value) in toBuild)
+        var needed = GetNeeded(regime, d);
+        foreach (var (troop, value) in needed)
         {
-            foreach (var (item, amount) in makeProj.Makeable.BuildCosts.GetEnumModel(d))
+            foreach (var (item, amt) in troop.Makeable.BuildCosts.GetEnumModel(d))
             {
-                res.AddOrSum(item, amount * value);
+                res.AddOrSum(item, amt * value);
             }
         }
-
         return res;
     }
 
-    protected override void Complete(BudgetPool pool, Regime r, 
-        Dictionary<TroopUpgradeProject, float> toBuild, 
-        LogicKey key)
+    public void Calculate(BudgetPool pool, Regime regime, 
+        LogicKey key, out Dictionary<IModel, float> modelCosts,
+        out Dictionary<string, float> built)
     {
-        foreach (var (project, value) in toBuild)
+        var pool2 = new BudgetPool(
+            IdCount<IModel>.Construct(pool.Stock),
+            IdCount<IModel>.Construct(pool.Net));
+        modelCosts = new Dictionary<IModel, float>();
+        
+        var d = key.Data;
+        var needed = GetNeeded(regime, d);
+        var best = d.Models.GetModels<TroopType>()
+            .ToDictionary(tt => tt, tt => regime.Military.GetBestTroopOfType(tt, d));
+
+        var toBuild = new Dictionary<Troop, float>();
+        foreach (var (troop, troopAmt) in needed)
         {
-            var from = project.From.Get(key.Data);
+            var troopBest = best[troop.TroopType];
+            if(troopBest == troop) continue;
+            var troopUpgradeCosts = IdCount<Item>.Construct(troopBest.Makeable.BuildCosts);
+        
+            foreach (var (buildItem, buildItemAmt) in troop.Makeable.BuildCosts.GetEnumModel(d))
+            {
+                troopUpgradeCosts.Remove(buildItem, Mathf.Min(buildItemAmt, 
+                    troopUpgradeCosts.Get(buildItem)));
+            }
+
+            var ratio = 1f;
+            foreach (var (buildItem, buildItemAmt) in troopUpgradeCosts.GetEnumModel(d))
+            {
+                var stock = pool2.Stock.Get(buildItem);
+                var neededStock = buildItemAmt * troopAmt;
+                var thisRatio = Mathf.Clamp(stock / neededStock, 0f, 1f);
+                ratio = Mathf.Min(thisRatio, ratio);
+                if (ratio == 0f) break;
+            }
+
+            if (ratio == 0f) continue;
+
+            var buildAmt = troopAmt * ratio;
+            
+            foreach (var (buildItem, value) in troopUpgradeCosts.GetEnumModel(d))
+            {
+                pool2.Stock.Remove(buildItem, value * buildAmt);
+                modelCosts.AddOrSum(buildItem, value);
+            }
+            
+            
+            toBuild.Add(troop, buildAmt);
+            var newProj = TroopUpgradeProject.Construct(
+                regime, troop,
+                troopBest,
+                buildAmt, key.Data);
+            var proc = new StartOrConsolidateMakeProject(newProj);
+            key.SendMessage(proc);
+        }
+        
+        
+        
+        
+        foreach (var (from, value) in toBuild)
+        {
             var remaining = value;
-            foreach (var unit in _regime.GetUnits(key.Data))
+            var to = best[from.TroopType];
+            foreach (var unit in regime.GetUnits(key.Data).ToArray())
             {
                 if (remaining <= 0f) break;
-                if (unit.Troops.Contents.ContainsKey(project.From.RefId) == false)
+                if (unit.Troops.Get(from) == 0f)
                 {
                     continue;
                 }
-
+        
                 var unitAmt = unit.Troops.Get(from);
                 unitAmt = Mathf.Min(unitAmt, remaining);
                 remaining -= unitAmt;
                 var newProj = TroopUpgradeProject.Construct(
-                    r, project.From.Get(key.Data),
-                    project.To.Get(key.Data),
+                    regime, from,
+                    to,
                     unitAmt, key.Data,
                     unit);
                 var proc = new StartOrConsolidateMakeProject(newProj);
                 key.SendMessage(proc);
             }
-
+        
             if (remaining > 0f)
             {
-                var inStock = r.Stock.Stock.Get(from);
-                var amt = MathF.Min(inStock, remaining);
+                var inStock = regime.Stock.Stock.Get(from);
+                var amt = Mathf.Min(inStock, remaining);
                 var newProj = TroopUpgradeProject.Construct(
-                    r, project.From.Get(key.Data),
-                    project.To.Get(key.Data),
+                    regime, from,
+                    to,
                     amt, key.Data);
                 var proc = new StartOrConsolidateMakeProject(newProj);
                 key.SendMessage(proc);
             }
-            
-            
-            
         }
+
+        built = toBuild.ToDictionary(v => v.Key.Name, v => v.Value);
+    }
+
+
+    private Dictionary<Troop, float> GetNeeded(Regime regime, Data d)
+    {
+        var troops = regime
+            .GetAllTroopAmounts(d);
+        
+        var best = d.Models.GetModels<TroopType>()
+            .ToDictionary(tt => tt, tt => regime.Military.GetBestTroopOfType(tt, d));
+
+        var needed = new Dictionary<Troop, float>();
+        foreach (var (troop, value) in troops)
+        {
+            var bestTroop = best[troop.TroopType];
+            if (bestTroop != troop)
+            {
+                needed.Add(troop, Mathf.CeilToInt(value));
+            }
+        }
+
+        return needed;
     }
 }
