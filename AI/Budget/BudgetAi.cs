@@ -5,17 +5,23 @@ using Godot;
 
 public class BudgetAi
 {
-    private Regime _regime;
+    private ERef<Regime> _regime;
     public BudgetRoot Root { get; private set; }
-    public BudgetAi(Regime r, Data data, Regime regime)
+
+    public BudgetAi(ERef<Regime> regime, BudgetRoot root)
     {
         _regime = regime;
-        Root = new BudgetRoot(_regime, data);
+        Root = root;
+    }
+
+    public static BudgetAi Construct(Regime regime, Data d)
+    {
+        return new BudgetAi(regime.MakeRef(), BudgetRoot.Construct(regime, d));
     }
 
     public void Calculate(LogicKey key, MajorTurnOrders orders)
     {
-        Root.Calculate(_regime, key);
+        Root.Calculate(_regime.Get(key.Data), key);
     }
 
     private void Manufacture(Data data, 

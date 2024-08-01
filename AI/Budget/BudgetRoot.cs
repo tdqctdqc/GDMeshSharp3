@@ -6,24 +6,55 @@ using Godot;
 
 public class BudgetRoot : BudgetBranch
 {
-    private BudgetBranch _construct, _military, _resources;
-    public Dictionary<IModel, float> Prices { get; private set; }
-    
-    public BudgetRoot(Regime r, Data d) : base("Root")
-    {
-        Prices = new Dictionary<IModel, float>();
-        _construct = new ConstructBuildingsBudgetBranch(r, this, d);
-        Children.Add(_construct);
+    private Dictionary<IBudgetNode, BudgetBranch> _parents;
+    public IdCount<IModel> Prices { get; private set; }
 
-        _military = new MilitaryBudgetBranch(r, this, d);
-        Children.Add(_military);
-        _resources = new ResourceExtractionBudgetBranch(r, this, "Resource Extraction", d);
-        Children.Add(_resources);
+    public static BudgetRoot Construct(Regime r, Data d)
+    {
+        var b = new BudgetRoot(new List<IBudgetNode>(),
+            1f, "Budget Root",
+            IdCount<IModel>.Construct());
+
+        var construct = ConstructBuildingsBudgetBranch.Construct(r, d);
+        b.Children.Add(construct);
+
+        var military = MilitaryBudgetBranch.Construct(r, d);
+        b.Children.Add(military);
+        var resources = ResourceExtractionBudgetBranch.Construct(r, b, d);
+        b.Children.Add(resources);
+        
+        return b;
+    }
+
+    public BudgetRoot(List<IBudgetNode> children, float weight, string name, IdCount<IModel> prices) : base(children, weight, name)
+    {
+        Prices = prices;
+        _parents = new Dictionary<IBudgetNode, BudgetBranch>();
+        CalcParents(this);
+    }
+
+    private void CalcParents(BudgetBranch b)
+    {
+        foreach (var child in b.Children)
+        {
+            _parents[child] = b;
+            if (child is BudgetBranch b2)
+            {
+                CalcParents(b2);
+            }
+        }
+    }
+
+    public BudgetBranch GetParent(IBudgetNode n)
+    {
+        return _parents.TryGetValue(n, out var p)
+            ? p
+            : null;
     }
 
     public void Calculate(Regime r, LogicKey key)
     {
-        SetWeights(r, key.Data);
+        SetWeights(r, this, key.Data);
         Bid(r, key);
     }
     
@@ -36,7 +67,7 @@ public class BudgetRoot : BudgetBranch
         
         foreach (var priorityNode in leaves)
         {
-            var weight = priorityNode.GetTreeWeight(key.Data);
+            var weight = priorityNode.GetTreeWeight(this, key.Data);
             priorityNode.Credit.AddCreditToCurrent(weight);
         }
         
@@ -54,7 +85,7 @@ public class BudgetRoot : BudgetBranch
             
             if (built.Count() == 0) continue;
             var price = modelCosts.Sum(
-                kvp => kvp.Value * getModelPrice(kvp.Key));
+                kvp => kvp.Value * Prices.Get(kvp.Key));
             leaf.Credit.AddSpendingToCurrent(price);
             if (leaf.MadeByTick.ContainsKey(tick) == false)
             {
@@ -64,12 +95,6 @@ public class BudgetRoot : BudgetBranch
             {
                 leaf.MadeByTick[tick].AddOrSum(model, amt);
             }
-        }
-
-        float getModelPrice(IModel m)
-        {
-            if (Prices.TryGetValue(m, out var price)) return price;
-            return 0f;
         }
     }
     
@@ -113,24 +138,24 @@ public class BudgetRoot : BudgetBranch
         }
 
         
-        Prices = modelPrices;
+        Prices = IdCount<IModel>.Construct(modelPrices);
     }
 
-    public Dictionary<IModel, float> RelativePrices()
+    public Dictionary<IModel, float> RelativePrices(Data d)
     {
-        if (Prices.Count > 0)
+        if (Prices.Contents.Count > 0)
         {
-            var min = Prices.Min(kvp => kvp.Value);
+            var min = Prices.Contents.Min(kvp => kvp.Value);
             if (min > 0f)
             {
-                return Prices.ToDictionary(kvp => kvp.Key,
+                return Prices.Contents.ToDictionary(kvp => d.Models.GetModel<IModel>(kvp.Key),
                     kvp => kvp.Value / min);
             }
         }
         return new Dictionary<IModel, float>();
     }
 
-    protected override float GetWeight(Regime r, Data d)
+    protected override float GetWeight(Regime r, BudgetRoot root, Data d)
     {
         return 1f;
     }

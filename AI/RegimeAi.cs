@@ -4,20 +4,30 @@ using Godot;
 
 public class RegimeAi
 {
-    public Regime Regime { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public BudgetAi Budget { get; private set; }
     public RegimeMilitaryAi Military { get; private set; }
     public RegimeTechnologyAi Technology { get; private set; }
     
     public List<string> Status { get; private set; }
-    public RegimeAi(Regime regime, Data data)
+
+    public static RegimeAi Construct(Regime r, Data d)
+    {
+        return new RegimeAi(
+            r.MakeRef(),
+            BudgetAi.Construct(r, d),
+            new RegimeMilitaryAi(r, d),
+            new RegimeTechnologyAi(r, d),
+            new List<string>()
+        );
+    }
+    public RegimeAi(ERef<Regime> regime, BudgetAi budget, RegimeMilitaryAi military, RegimeTechnologyAi technology, List<string> status)
     {
         Regime = regime;
-        Military = new RegimeMilitaryAi(regime, data);
-        Budget = new BudgetAi(regime, data, regime);
-        Technology = new RegimeTechnologyAi(regime, data);
-        
-        Status = new List<string>();
+        Budget = budget;
+        Military = military;
+        Technology = technology;
+        Status = status;
     }
 
     public RegimeTurnOrders CalculateAndSendOrders(LogicKey key)
@@ -31,10 +41,11 @@ public class RegimeAi
     private MajorTurnOrders GetMajorTurnOrders(LogicKey key)
     {
         Status.Add("Doing major");
-        var orders = MajorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
-        var alliance = Regime.GetAlliance(key.Data);
+        var regime = Regime.Get(key.Data);
+        var orders = MajorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, regime);
+        var alliance = regime.GetAlliance(key.Data);
         var allianceLeader = alliance.Leader.Get(key.Data);
-        if (allianceLeader == Regime)
+        if (allianceLeader == regime)
         {
             var ai = key.Data.HostLogicData.AllianceAis[alliance];
             ai.CalculateMajor(orders, alliance, key);
@@ -49,11 +60,12 @@ public class RegimeAi
     }
     private MinorTurnOrders GetMinorTurnOrders(LogicKey key)
     {
-        var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, Regime);
-        
-        var alliance = Regime.GetAlliance(key.Data);
+        var regime = Regime.Get(key.Data);
+        var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, regime);
+
+        var alliance = regime.GetAlliance(key.Data);
         var allianceLeader = alliance.Leader.Get(key.Data);
-        if (allianceLeader == Regime)
+        if (allianceLeader == regime)
         {
             var ai = key.Data.HostLogicData.AllianceAis[alliance];
             ai.CalculateMinor(key);

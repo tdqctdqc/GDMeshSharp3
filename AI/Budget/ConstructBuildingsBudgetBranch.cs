@@ -1,41 +1,48 @@
 
+using System.Collections.Generic;
+
 public class ConstructBuildingsBudgetBranch
     : BudgetBranch
 {
-    private PriorityNode _industrial, _income, _research;
-    public ConstructBuildingsBudgetBranch(Regime regime,
-        BudgetBranch parent, 
-        Data d)
-        : base("Construct Buildings")
+
+    public static ConstructBuildingsBudgetBranch Construct(Regime regime, Data d)
     {
-        Parent = parent;
-        var industrial =
+        var b = new ConstructBuildingsBudgetBranch(new List<IBudgetNode>(),
+            0f, "Construct Buildings");
+        var industrialPriority =
             new MakeProductionBuildingsPriority(
-                d.Models.Items.IndustrialPower,
+                d.Models.Items.IndustrialPower.MakeRef<IModel>(),
                 regime,
                 "Make Industrial");
-        _industrial = new PriorityNode(industrial, this,
+        var industrialNode = new PriorityNode(industrialPriority,
             (d, r) => 1f);
-        Children.Add(_industrial);
+        b.Children.Add(industrialNode);
         
-        var income = new MakeProductionBuildingsPriority(
-            d.Models.Items.Income,
+        var incomePriority = new MakeProductionBuildingsPriority(
+            d.Models.Items.Income.MakeRef<IModel>(),
             regime,
             "Make Income");
-        _income = new PriorityNode(income, this,
+        var incomeNode = new PriorityNode(incomePriority,
             (d, r) => 0f);
-        Children.Add(_income);
+        b.Children.Add(incomeNode);
 
-        var research = new MakeProductionBuildingsPriority(
-            d.Models.Items.Research,
+        var researchPriority = new MakeProductionBuildingsPriority(
+            d.Models.Items.Research.MakeRef<IModel>(),
             regime,
             "Make Research");
-        _research = new PriorityNode(research, this,
+        var researchNode = new PriorityNode(researchPriority,
             (d, r) => .5f);
-        Children.Add(_research);
+        b.Children.Add(researchNode);
+
+
+        return b;
+    }
+    
+    public ConstructBuildingsBudgetBranch(List<IBudgetNode> children, float weight, string name) : base(children, weight, name)
+    {
     }
 
-    protected override float GetWeight(Regime r, Data d)
+    protected override float GetWeight(Regime r, BudgetRoot root, Data d)
     {
         return 1f;
     }

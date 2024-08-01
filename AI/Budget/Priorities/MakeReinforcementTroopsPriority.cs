@@ -8,15 +8,19 @@ using Google.OrTools.LinearSolver;
 public class MakeReinforcementTroopsPriority
     : SolverPriority<Troop>
 {
-    private Dictionary<TroopType, float> _needed;
-    private Regime _regime;
-    public MakeReinforcementTroopsPriority(
-        Regime r) 
-            : base("Make Reinforcement Troops")
+    public Dictionary<ModelRef<TroopType>, float> _needed { get; private set; }
+    public ERef<Regime> _regime { get; private set; }
+
+
+    public MakeReinforcementTroopsPriority(string name, 
+        Dictionary<ModelRef<TroopType>, float> needed, 
+        ERef<Regime> regime) 
+        : base(name)
     {
-        _regime = r;
-        _needed = new Dictionary<TroopType, float>();
+        _needed = needed;
+        _regime = regime;
     }
+
 
     protected override string GetName(Troop t, Data d)
     {
@@ -30,7 +34,7 @@ public class MakeReinforcementTroopsPriority
 
     protected override bool Relevant(Troop t, Data d)
     {
-        return _needed.ContainsKey(t.TroopType);
+        return _needed.ContainsKey(t.TroopType.MakeRef());
     }
 
     protected override void SetCalcData(Regime r, Data d)
@@ -41,19 +45,19 @@ public class MakeReinforcementTroopsPriority
         foreach (var unit in units)
         {
             var template = unit.Template.Get(d);
-            foreach (var (troop, amt) in unit.Troops
+            foreach (var (troopType, amt) in unit.Troops
                          .GetEnumModel(d).SortInto(kvp => kvp.Key.TroopType, kvp => kvp.Value))
             {
-                var diff = template.Troops.Get(troop) - amt;
-                var stock = r.Stock.Stock.Get(troop);
+                var diff = template.Troops.Get(troopType) - amt;
+                var stock = r.Stock.Stock.Get(troopType);
                 diff -= stock;
                 var producing = r.MakeQueue.Queue.OfType<ModelMakeProject>()
-                    .Where(p => p.Model.Get(d) == troop)
+                    .Where(p => p.Model.Get(d) == troopType)
                     .Sum(p => p.Amount);
                 diff -= producing;
                 if (diff > 0f)
                 {
-                    _needed.AddOrSum(troop, diff);
+                    _needed.AddOrSum(troopType.MakeRef(), diff);
                 }
             }
         }
@@ -64,7 +68,7 @@ public class MakeReinforcementTroopsPriority
         Dictionary<Troop, Variable> projVars, Data data)
     {
         solver.SetBuildCostConstraints(data, pool, projVars);
-        solver.SetConstraints(projVars, t => (t.TroopType, 1f),
+        solver.SetConstraints(projVars, t => (t.TroopType.MakeRef(), 1f),
             _needed, data);
     }
 
@@ -88,7 +92,7 @@ public class MakeReinforcementTroopsPriority
     protected override IEnumerable<Troop> GetAll(Data d)
     {
         return d.Models.GetModels<Troop>()
-            .Where(t => _regime.HasPrereqs(t));
+            .Where(t => _regime.Get(d).HasPrereqs(t));
     }
 
     protected override void Complete(BudgetPool pool, Regime r, Dictionary<Troop, float> toBuild, LogicKey key)

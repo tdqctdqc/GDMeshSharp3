@@ -46,7 +46,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         {
             if (n is PriorityNode p)
             {
-                DrawPriorityInfo(p, client);
+                DrawPriorityInfo(budget.Root, p, client);
             }
         };
         budgetTree.ExpandFill();
@@ -57,7 +57,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
             out var priceScroll);
         priceScroll.ExpandFill();
         
-        foreach (var (model, price) in budget.Root.RelativePrices())
+        foreach (var (model, price) in budget.Root.RelativePrices(client.Data))
         {
             if (model is IIconed i)
             {
@@ -72,7 +72,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         }
     }
 
-    private void DrawPriorityInfo(PriorityNode node, Client c)
+    private void DrawPriorityInfo(BudgetRoot root, PriorityNode node, Client c)
     {
         _priorityInfo.ClearChildren();
         var priority = node.Priority;
@@ -88,7 +88,7 @@ public partial class BudgetTab : ScrollContainer, IUiDrawable
         
         
         _priorityInfo.CreateLabelAsChild($"Credit: {node.Credit.GetCredit()}");
-        _priorityInfo.CreateLabelAsChild($"Weight: {node.GetTreeWeight(c.Data)}");
+        _priorityInfo.CreateLabelAsChild($"Weight: {node.GetTreeWeight(budget.Root, c.Data)}");
         var made = node.MadeByTick;
 
         var madeBox = _priorityInfo.MakeScrollChild<VBoxContainer>(

@@ -6,14 +6,13 @@ using Google.OrTools.LinearSolver;
 public class ResourceExtractionConstructionPriority
     : SolverPriority<ResourceExtractionBuilding>
 {
-    public IModel Model { get; private set; }
-    public BudgetBranch Parent { get; }
-    private Regime _regime;
-    public ResourceExtractionConstructionPriority(IModel model, 
-        Regime r, string name) : base(name)
+    public ModelRef<IModel> Model { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
+    public ResourceExtractionConstructionPriority(ModelRef<IModel> model, 
+        ERef<Regime> regime, string name) : base(name)
     {
-        _regime = r;
         Model = model;
+        Regime = regime;
     }
 
     protected override string GetName(ResourceExtractionBuilding t, Data d)
@@ -23,12 +22,12 @@ public class ResourceExtractionConstructionPriority
 
     protected override float Utility(ResourceExtractionBuilding t, Data d)
     {
-        return t.Labor.Outputs.Contents[Model.Id];
+        return t.Labor.Outputs.Contents[Model.RefId];
     }
 
     protected override bool Relevant(ResourceExtractionBuilding t, Data d)
     {
-        if (t.Labor.Outputs.Contents.ContainsKey(Model.Id) == false)
+        if (t.Labor.Outputs.Contents.ContainsKey(Model.RefId) == false)
         {
             return false;
         }
@@ -49,7 +48,7 @@ public class ResourceExtractionConstructionPriority
         {
             if (c.HasResourceDeposit(data) == false) return 0;
             var rd = c.GetResourceDeposit(data);
-            if (rd.Item.RefId != Model.Id) return 0;
+            if (rd.Item.RefId != Model.RefId) return 0;
             if (rd.Extraction.Fulfilled()) return 0;
             return 1;
         });
@@ -98,8 +97,8 @@ public class ResourceExtractionConstructionPriority
     protected override IEnumerable<ResourceExtractionBuilding> GetAll(Data d)
     {
         return d.Models.GetModels<ResourceExtractionBuilding>()
-            .Where(b => b.Resource(d) == Model
-                        && _regime.HasPrereqs(b));
+            .Where(b => b.Resource(d).Id == Model.RefId
+                        && Regime.Get(d).HasPrereqs(b));
     }
 
     protected override void Complete(BudgetPool pool, Regime r, Dictionary<ResourceExtractionBuilding, float> toBuild, LogicKey key)

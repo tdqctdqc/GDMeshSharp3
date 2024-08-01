@@ -6,21 +6,21 @@ public partial class BudgetTree : Tree
 {
     public event Action<IBudgetNode> SelectedBudgetNode;
     private Dictionary<TreeItem, IBudgetNode> _budgetNodes;
-    public BudgetTree(BudgetRoot r, Data d)
+    public BudgetTree(BudgetRoot budgetRoot, Data d)
     {
         _budgetNodes = new Dictionary<TreeItem, IBudgetNode>();
         var root = CreateItem();
-        var depth = GetDepth(r, 0);
+        var depth = GetDepth(budgetRoot, 0);
         Columns = depth + 1;
-        foreach (var budgetNode in r.Children)
+        foreach (var budgetNode in budgetRoot.Children)
         {
-            AddBudgetNode(root, budgetNode, 0, d);
+            AddBudgetNode(root, budgetRoot, budgetNode, 0, d);
         }
 
         ItemSelected += () => SelectedBudgetNode.Invoke(_budgetNodes[GetSelected()]);
     }
 
-    private void AddBudgetNode(TreeItem parent, IBudgetNode node,
+    private void AddBudgetNode(TreeItem parent, BudgetRoot root, IBudgetNode node,
         int startColumn, Data d)
     {
         var item = CreateItem(parent);
@@ -28,7 +28,7 @@ public partial class BudgetTree : Tree
         _budgetNodes.Add(item, node);
         var text = $"{node.Name} " +
                    $"Weight: {node.Weight} " +
-                   $"Tree Weight: {node.GetTreeWeight(d)} ";
+                   $"Tree Weight: {node.GetTreeWeight(root, d)} ";
         if (node is PriorityNode p)
         {
             text += $"Credit: {p.Credit.GetCredit()}";
@@ -39,7 +39,7 @@ public partial class BudgetTree : Tree
         {
             foreach (var budgetNode in b.Children)
             {
-                AddBudgetNode(item, budgetNode, startColumn + 1, d);
+                AddBudgetNode(item, root, budgetNode, startColumn + 1, d);
             }
         }
     }

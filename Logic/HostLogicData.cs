@@ -11,7 +11,7 @@ public class HostLogicData
     {
         //todo make serialized and saved
         RegimeAis = Cache.MakeForEntity<Regime, RegimeAi>
-            (r => new RegimeAi(r, data), data);
+            (r => RegimeAi.Construct(r, data), data);
         AllianceAis = Cache.MakeForEntity<Alliance, AllianceAi>
             (a => new AllianceAi(a, data), data);
         CombatGraphIds = new IdRecycler();

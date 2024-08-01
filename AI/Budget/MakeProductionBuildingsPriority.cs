@@ -7,10 +7,10 @@ using Google.OrTools.LinearSolver;
 public class MakeProductionBuildingsPriority
     : SettlementBuildingConstructionPriority
 {
-    public IModel Model { get; private set; }
+    public ModelRef<IModel> Model { get; private set; }
     public BudgetBranch Parent { get; }
 
-    public MakeProductionBuildingsPriority(IModel model, 
+    public MakeProductionBuildingsPriority(ModelRef<IModel> model, 
         Regime r, string name) 
         : base(r, name)
     {
@@ -24,18 +24,18 @@ public class MakeProductionBuildingsPriority
 
     protected override float Utility(SettlementBuilding t, Data d)
     {
-        return t.Labor.Outputs.Contents[Model.Id];
+        return t.Labor.Outputs.Contents[Model.RefId];
     }
 
     protected override bool Relevant(SettlementBuilding t, Data d)
     {
-        return t.Labor.Outputs.Contents.ContainsKey(Model.Id);
+        return t.Labor.Outputs.Contents.ContainsKey(Model.RefId);
     }
 
     protected override IEnumerable<SettlementBuilding> GetAll(Data d)
     {
         return d.Models.GetModels<SettlementBuilding>()
-            .Where(t => t.Labor.Outputs.Contents.ContainsKey(Model.Id));
+            .Where(t => t.Labor.Outputs.Contents.ContainsKey(Model.RefId));
     }
 
 

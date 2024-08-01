@@ -6,13 +6,14 @@ using System.Linq;
 public abstract class BudgetBranch : IBudgetNode
 {
     public List<IBudgetNode> Children { get; }
-    public BudgetBranch Parent { get; protected set; }
     public float Weight { get; protected set; }
     public string Name { get; private set; }
-    protected BudgetBranch(string name)
+
+    protected BudgetBranch(List<IBudgetNode> children, float weight, string name)
     {
+        Children = children;
+        Weight = weight;
         Name = name;
-        Children = new List<IBudgetNode>();
     }
 
     public IEnumerable<PriorityNode> GetLeaves()
@@ -23,26 +24,14 @@ public abstract class BudgetBranch : IBudgetNode
         return selfLeaves.Concat(childLeaves);
     }
 
-    public BudgetRoot GetRoot()
+    public void SetWeights(Regime r, BudgetRoot root, Data d)
     {
-        var curr = this;
-        while (curr is not null && curr is not BudgetRoot)
-        {
-            curr = curr.Parent;
-        }
-
-        if (curr is BudgetRoot br) return br;
-        throw new Exception("couldnt find budget root");
-    }
-
-    public void SetWeights(Regime r, Data d)
-    {
-        Weight = GetWeight(r, d);
+        Weight = GetWeight(r, root, d);
         foreach (var child in Children)
         {
-            child.SetWeights(r, d);
+            child.SetWeights(r, root, d);
         }
     }
 
-    protected abstract float GetWeight(Regime r, Data d);
+    protected abstract float GetWeight(Regime r, BudgetRoot root, Data d);
 }

@@ -1,21 +1,21 @@
 
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
 public class MilitaryBudgetBranch
     : BudgetBranch
 {
-    private PriorityNode _recruitBuildings, _reinforcements, 
-        _reserve, _units, _upgrade;
-    public MilitaryBudgetBranch(Regime r, BudgetBranch parent, Data d)
-        : base("Military")
+    public static MilitaryBudgetBranch Construct(Regime r, Data d)
     {
-        Parent = parent;
-        var recruits = new MakeProductionBuildingsPriority(
-            d.Models.Items.Recruits,
+        var b = new MilitaryBudgetBranch(new List<IBudgetNode>(),
+            0f, "Military");
+
+        var recruitBuildingsPriority = new MakeProductionBuildingsPriority(
+            d.Models.Items.Recruits.MakeRef<IModel>(),
             r,
             "Make Recruit Buildings");
-        _recruitBuildings = new PriorityNode(recruits, this,
+        var recruitBuildingsNode = new PriorityNode(recruitBuildingsPriority, 
             (r, d) =>
             {
                 var score = 0f;
@@ -40,11 +40,13 @@ public class MilitaryBudgetBranch
                 score += .1f * Mathf.Clamp(1f - lastProd * 10f / numRecruitsAuthorized, 0f, 1f);
                 return score;
             });
-        Children.Add(_recruitBuildings);
+        b.Children.Add(recruitBuildingsNode);
 
-        var reinforcements = new MakeReinforcementTroopsPriority(
-            r);
-        _reinforcements = new PriorityNode(reinforcements, this,
+        var reinforcementsPriority = new MakeReinforcementTroopsPriority(
+            "Make reinforcements",
+            new Dictionary<ModelRef<TroopType>, float>(),
+            r.MakeRef());
+        var reinforcementsNode = new PriorityNode(reinforcementsPriority,
             (r, d) =>
             {
                 var units = r.GetUnits(d);
@@ -56,16 +58,16 @@ public class MilitaryBudgetBranch
                 if (authorized == 0f) return 0f;
                 return 3f * (1f - str / authorized);
             });
-        Children.Add(_reinforcements);
+        b.Children.Add(reinforcementsNode);
 
 
-        var reserve = new MakeReserveTroopsPriority(r);
-        _reserve = new PriorityNode(reserve, this,
+        var reservePriority = new MakeReserveTroopsPriority(r);
+        var reserveNode = new PriorityNode(reservePriority, 
             (d, r) => 1f);
-        Children.Add(_reserve);
+        b.Children.Add(reserveNode);
 
-        var units = new MakeUnitPriority(r, d);
-        _units = new PriorityNode(units, this,
+        var unitsPriority = new MakeUnitPriority(r, d);
+        var unitsNode = new PriorityNode(unitsPriority,
             (r, d) =>
             {
                 var baseWeight = 5f;
@@ -84,12 +86,12 @@ public class MilitaryBudgetBranch
                        / allUnits.Count();
                 
             });
-        Children.Add(_units);
+        b.Children.Add(unitsNode);
 
 
-        var upgrade = new UpgradeTroopsPriority();
-        _upgrade = new PriorityNode(upgrade,
-            this, (r, d) =>
+        var upgradePriority = new UpgradeTroopsPriority();
+        var upgradeNode = new PriorityNode(upgradePriority,
+            (r, d) =>
             {
                 var troops = r.GetAllTroopAmounts(d);
                 var activeTroopTypes = troops.Select(kvp => kvp.Key.TroopType).ToHashSet();
@@ -107,11 +109,15 @@ public class MilitaryBudgetBranch
                 var score = Mathf.Min(10f, 100f * (upgradePotential / totalPp));
                 return score;
             });
-        Children.Add(_upgrade);
-
+        b.Children.Add(upgradeNode);
+        
+        return b;
+    }
+    public MilitaryBudgetBranch(List<IBudgetNode> children, float weight, string name) : base(children, weight, name)
+    {
     }
 
-    protected override float GetWeight(Regime r, Data d)
+    protected override float GetWeight(Regime r, BudgetRoot root, Data d)
     {
         var alliance = r.GetAlliance(d);
         var allianceStr = alliance.GetPowerScore(d);

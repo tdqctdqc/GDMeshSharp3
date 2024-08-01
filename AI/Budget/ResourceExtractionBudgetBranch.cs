@@ -1,32 +1,40 @@
 
+using System.Collections.Generic;
 using System.Linq;
 
 public class ResourceExtractionBudgetBranch : BudgetBranch
 {
-    public ResourceExtractionBudgetBranch(Regime r, BudgetBranch parent,
-        string name, Data d) : base(name)
+    public static ResourceExtractionBudgetBranch Construct(Regime r,
+        BudgetRoot root,
+        Data d)
     {
-        Parent = parent;
+        var b = new ResourceExtractionBudgetBranch(new List<IBudgetNode>(),
+            0f, "Resource Extraction");
+
         foreach (var nr in d.Models.GetModels<NaturalResource>())
         {
             var priority = new ResourceExtractionConstructionPriority(
-                nr, r, nr.Name + " extraction");
-            Children.Add(new PriorityNode(priority, parent,
+                nr.MakeRef<IModel>(), r.MakeRef(), nr.Name + " extraction");
+            b.Children.Add(new PriorityNode(priority,
                 (r, d) =>
                 {
-                    if (parent.GetRoot().Prices.TryGetValue(nr, out var price))
-                    {
-                        return price;
-                    }
-
-                    return .5f;
+                    var p = root.Prices.Get(nr);
+                    if (p == 0f) return .5f;
+                    return p;
                 }));
         }
+
+        return b;
     }
 
-    protected override float GetWeight(Regime r, Data d)
+    public ResourceExtractionBudgetBranch(List<IBudgetNode> children, float weight, string name) : base(children, weight, name)
     {
-        var prices = GetRoot().Prices;
+    }
+
+
+    protected override float GetWeight(Regime r, BudgetRoot root, Data d)
+    {
+        var prices = root.Prices;
         var deposits = r.GetCells(d)
             .Where(c => c.HasResourceDeposit(d))
             .Select(c => c.GetResourceDeposit(d))
