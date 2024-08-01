@@ -17,8 +17,7 @@ public class RegimeTechnology
             .ToList();
         return new RegimeTechnology(
             starting,
-            starting.ToDictionary(s => s,
-                s => s.Get(d).ResearchCost),
+            new Dictionary<ModelRef<Technology>, float>(),
             new ModelRef<Technology>(-1),
             0f);
     }
@@ -45,8 +44,9 @@ public class RegimeTechnology
         }
     }
 
-    public void AddProgress(float progress, ProcedureKey key)
+    public void AddProgress(Regime regime, float rawProgress, ProcedureKey key)
     {
+        var progress = Research.GetEffectiveAmount(rawProgress, regime, key.Data);
         Overflow += progress;
 
         if (Current.Fulfilled())
@@ -57,9 +57,8 @@ public class RegimeTechnology
             if (remaining <= 0f)
             {
                 Overflow = -remaining;
-                Progresses[Current] += total;
                 Researched.Add(Current);
-                // Progresses.Remove(Current);
+                Progresses.Remove(Current);
                 Current = new ModelRef<Technology>(-1);
             }
             else

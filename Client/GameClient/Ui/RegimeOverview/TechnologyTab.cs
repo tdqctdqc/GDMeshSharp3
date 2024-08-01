@@ -102,7 +102,7 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
     private void DrawInfo(Client c)
     {
         _currentResearchInfo.ClearChildren();
-
+        var regime = _parent.Regime;
         var researchModel = c.Data.Models.Items.Research;
         var researchProduced = _parent.Regime
             .Stock.Produced.Get(researchModel);
@@ -110,16 +110,23 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
             .Stock.RecurringCosts.Get(researchModel);
         var researchSingle = _parent.Regime
             .Stock.SingleTimeCosts.Get(researchModel);
-        _currentResearchInfo.CreateLabelAsChild($"Research produced: {researchProduced.RoundTo2Digits()}");
-        _currentResearchInfo.CreateLabelAsChild($"Research consumed recurring: {researchRecurring.RoundTo2Digits()}");
-        _currentResearchInfo.CreateLabelAsChild($"Research consumed single time: {researchSingle.RoundTo2Digits()}");
-        _currentResearchInfo.CreateLabelAsChild($"Research for technology: {(researchProduced - (researchRecurring + researchSingle)).RoundTo2Digits()}");
+        _currentResearchInfo.CreateLabelAsChild($"Raw research produced: {researchProduced.RoundTo2Digits()}");
+        _currentResearchInfo.CreateLabelAsChild($"Effective research produced: {Research.GetEffectiveAmount(researchProduced, regime, c.Data).RoundTo2Digits()}");
         
         var tech = _parent.Regime.Technology;
         var curr = tech.Current.Get(c.Data);
-        _currentResearchInfo.CreateLabelAsChild($"Researching: {curr.DisplayName}");
-        _currentResearchInfo.CreateLabelAsChild($"Progress: {tech.Overflow} / {curr.ResearchCost}");
+        _currentResearchInfo.CreateLabelAsChild($"Currently Researching: {curr.DisplayName}");
+        _currentResearchInfo.CreateLabelAsChild($"Progress: {tech.Progresses[curr.MakeRef()].RoundTo2Digits()} / {curr.ResearchCost.RoundTo2Digits()}");
 
+        _currentResearchInfo.CreateLabelAsChild("All Progresses");
+        
+        foreach (var (tRef, value) in tech.Progresses)
+        {
+            var t = tRef.Get(c.Data);
+            _currentResearchInfo.CreateLabelAsChild($"Technology: {t.DisplayName}");
+            _currentResearchInfo.CreateLabelAsChild($"Progress: {value.RoundTo2Digits()} / {t.ResearchCost.RoundTo2Digits()}");
+
+        }
     }
 
     private void DrawTechInfo(Technology t, Container container, Client c)

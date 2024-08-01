@@ -27,10 +27,8 @@ public class RegimeGenerator : Generator
         foreach (var (p, regime) in polyRegimes)
         {
             var size = regime.GetCells(_key.Data).Count();
-            regime.Stock.Stock.Add(key.Data.Models.Troops.Rifle1, size * 10f);
-            regime.Stock.Stock.Add(key.Data.Models.Troops.Artillery1, size * 2f);
-            
-            
+            regime.Stock.Stock.Add(key.Data.Models.Troops.Rifle1, size * 2f);
+            regime.Stock.Stock.Add(key.Data.Models.Troops.Artillery1, size);
         }
 
         _data.Notices.Gen.GeneratedRegimes.Invoke();

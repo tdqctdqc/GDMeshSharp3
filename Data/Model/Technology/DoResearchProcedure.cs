@@ -1,4 +1,7 @@
 
+using System.Linq;
+using Godot;
+
 public class DoResearchProcedure : Procedure
 {
     public override void Enact(ProcedureKey key)
@@ -7,7 +10,7 @@ public class DoResearchProcedure : Procedure
         foreach (var regime in regimes)
         {
             var researchPoints = regime.Stock.Stock.Get(key.Data.Models.Items.Research);
-            regime.Technology.AddProgress(researchPoints, key);
+            regime.Technology.AddProgress(regime, researchPoints, key);
         }
     }
 

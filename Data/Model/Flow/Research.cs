@@ -11,4 +11,11 @@ public class Research : Flow
                    .Sum(c => c.GetSettlement(d).Cell.Get(d).GetPeep(d).Size)
                / 200f;
     }
+
+    public static float GetEffectiveAmount(float raw, Regime r, Data d)
+    {
+        var pop = r.GetPeeps(d)
+            .Sum(p => p.Size);
+        return 20000f * raw / pop;
+    }
 }
