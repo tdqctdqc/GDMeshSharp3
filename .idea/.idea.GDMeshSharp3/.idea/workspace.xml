@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="bug fixes for unit make priority, research overflow">
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeTechnology.cs" afterDir="false" />
-    </list>
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -692,7 +689,7 @@
       <workItem from="1722518683702" duration="8720000" />
       <workItem from="1722533720792" duration="1058000" />
       <workItem from="1722634280647" duration="3420000" />
-      <workItem from="1722693023932" duration="5960000" />
+      <workItem from="1722693023932" duration="6325000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -904,14 +901,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00271" summary="tweaked inserting groups move">
-      <option name="closed" value="true" />
-      <created>1721314776401</created>
-      <option name="number" value="00271" />
-      <option name="presentableId" value="LOCAL-00271" />
-      <option name="project" value="LOCAL" />
-      <updated>1721314776401</updated>
-    </task>
     <task id="LOCAL-00272" summary="implemented army moves">
       <option name="closed" value="true" />
       <created>1721317386902</created>
@@ -1056,7 +1045,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722698288972</updated>
     </task>
-    <option name="localTasksCounter" value="290" />
+    <task id="LOCAL-00290" summary="ditto">
+      <option name="closed" value="true" />
+      <created>1722699532285</created>
+      <option name="number" value="00290" />
+      <option name="presentableId" value="LOCAL-00290" />
+      <option name="project" value="LOCAL" />
+      <updated>1722699532286</updated>
+    </task>
+    <option name="localTasksCounter" value="291" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1078,7 +1075,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="ditto" />
     <MESSAGE value="finished depot" />
     <MESSAGE value="tweaking combat" />
     <MESSAGE value="adding technology" />
@@ -1103,6 +1099,7 @@
     <MESSAGE value="curved research by population" />
     <MESSAGE value="making ai serializable" />
     <MESSAGE value="bug fixes for unit make priority, research overflow" />
-    <option name="LAST_COMMIT_MESSAGE" value="bug fixes for unit make priority, research overflow" />
+    <MESSAGE value="ditto" />
+    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
   </component>
 </project>

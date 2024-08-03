@@ -40,52 +40,63 @@ public class MoistureGenerator : Generator
         var scale = Data.GenMultiSettings.MoistureSettings.Scale.Value;
         var equatorDistMultWeight = Data.GenMultiSettings
             .MoistureSettings.EquatorDistMoistureMultWeight.Value;
-        var frictionCostMult = Data.GenMultiSettings
-            .MoistureSettings.MoistureFlowRoughnessCostMult.Value;
         var polys = Data.GetAll<MapPolygon>();
+
+        var distsFromWater = 
+            Data.GenAuxData.Cells
+            .ToDictionary(c => c,
+                c => c.Plate.Mass.GenContinent.IsLand
+                    ? 1f
+                    : int.MaxValue);
+        var unhandled = Data.GenAuxData.Cells
+            .Where(c => c.Plate.Mass.GenContinent.IsLand)
+            .ToHashSet();
+        
+        var frontier = Data.GenAuxData.Cells
+            .Where(c => c.Plate.Mass.GenContinent.IsLand == false)
+            .ToHashSet();
+
+        var iter = 2f;
+        while (unhandled.Count > 0 && frontier.Count > 0)
+        {
+            var newFrontier = new HashSet<GenCell>();
+            foreach (var cell in frontier)
+            {
+                var neighbors = cell
+                    .Neighbors
+                    .Intersect(unhandled);
+                if (neighbors.Any() == false)
+                {
+                    continue;
+                }
+                foreach (var landCell in neighbors)
+                {
+                    newFrontier.Add(landCell);
+                    distsFromWater[landCell] = iter;
+                }
+                unhandled.ExceptWith(newFrontier);
+            }
+            frontier = newFrontier;
+            iter += 4f;
+        }
+        var avgDim = (Data.Planet.Height + Data.Planet.Width) / 2f;
+
         Parallel.ForEach(polys, p =>
         {
             var distFromEquator = Mathf.Abs(Data.Planet.Height / 2f - p.Center.Y);
             var latitudeMult = (1f - equatorDistMultWeight) 
                           + equatorDistMultWeight * (1f - distFromEquator / (Data.Planet.Height / 2f));
-            var baseScore = p.IsLand 
-                ? massBaseMoistures[Data.GenAuxData.PolyGenCells[p].Plate.Mass] 
-                : 1f;
-            var score = scale * latitudeMult * baseScore;
+            var genCell = Data.GenAuxData.PolyGenCells[p];
+            var baseScore =
+                    (avgDim / 20_000f) / distsFromWater[genCell]
+                + massBaseMoistures[genCell.Plate.Mass]
+                ;
+            var score = scale 
+                        * latitudeMult 
+                        * baseScore;
+            score = Mathf.Clamp(score, 0f, 1f);
             p.SetMoisture(score, _key);
         });
-        var avgDim = (Data.Planet.Height + Data.Planet.Width) / 2f;
-        var diffuseNum = Mathf.CeilToInt( avgDim / 500f);
-        for (int i = 0; i < diffuseNum; i++)
-        {
-            diffuse();
-        }
-        foreach (var poly in polys)
-        {
-            poly.SetMoisture(Mathf.Clamp(poly.Moisture, 0f, 1f), _key);
-        }
-        
-        
-        
-        void diffuse()
-        {
-            foreach (var c in polys)
-            {
-                var oldScore = c.Moisture;
-
-                var newScore = c.Neighbors.Entities(Data)
-                    .Select(n =>
-                {
-                    var mult = 1f - (c.Roughness + n.Roughness) / 3f;
-                    return mult * n.Moisture;
-                }).Average();
-
-                if (newScore > oldScore)
-                {
-                    c.SetMoisture(newScore, _key);
-                }
-            }
-        }
     }
 
     private void MoistureFlow()

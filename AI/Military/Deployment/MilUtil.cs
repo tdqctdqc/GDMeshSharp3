@@ -188,6 +188,10 @@ public static class MilUtil
             UnitCombatInfo targetUnit,
             int targetEchelon)
         {
+            if (targetUnit.Active.Contents.Count == 0)
+            {
+                return (null, 0f);
+            }
             var echelonFrontage = targetUnit.ActiveFrontSizes[targetEchelon];
             if (echelonFrontage <= 0f) return (null, 0f);
             var sample = Game.I.Random.RandfRange(0f, echelonFrontage);
@@ -197,8 +201,9 @@ public static class MilUtil
                 soFar += amt * troop.TroopType.FrontLength;
                 if (soFar >= sample - .01f) return (troop, Mathf.Min(1f, amt));
             }
-
-            var first = targetUnit.Active.GetEnumModel(d).First();
+            
+            var first = targetUnit.Active
+                .GetEnumModel(d).First();
             return (first.Key, Mathf.Min(1f, first.Value));
         }
 

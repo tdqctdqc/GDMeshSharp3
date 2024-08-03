@@ -1773,7 +1773,7 @@
                             "guid": "132ae77f-c8bb-411a-8736-98cd25b5b046",
                             "id": "0",
                             "Name": "ea291cec-5802-4b4c-ac48-084550dcbf46",
-                            "Value": 100
+                            "Value": 10
                         },
                         {
                             "guid": "f84b348c-25d3-46b0-8219-4c5cfe37033a",
@@ -4211,7 +4211,7 @@
                     "id": "0",
                     "Name": "Infantry",
                     "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
-                    "FrontLength": 1,
+                    "FrontLength": 10,
                     "Echelon": 0
                 },
                 {
@@ -4219,7 +4219,7 @@
                     "id": "1",
                     "Name": "Artillery",
                     "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
-                    "FrontLength": 3,
+                    "FrontLength": 30,
                     "Echelon": 2
                 },
                 {
@@ -4227,7 +4227,7 @@
                     "id": "2",
                     "Name": "MachineGun",
                     "TroopDomain": "41436acb-8c3e-45e5-8698-cac92e62ef22",
-                    "FrontLength": 2,
+                    "FrontLength": 20,
                     "Echelon": 1
                 }
             ],

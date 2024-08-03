@@ -8,16 +8,16 @@ public static class Mover
 {
     public static RefSet<CellRef> MoveArmy(Army a, Data d)
     {
-
-        return a.LineMission.LineCells;
-        
         var lineCells = a.LineMission.LineCells;
         var moveRadius = a.GetArmyMoveRadius(d);
         var overlap = moveRadius.Where(c => lineCells.Contains(c.MakeRef()));
 
         if (overlap.Any())
         {
-            return new RefSet<CellRef>(overlap.Select(c => c.MakeRef()).ToHashSet());
+            var unions = UnionFind.Find(overlap,
+                (c, d) => true,
+                c => c.GetNeighbors(d));
+            return new RefSet<CellRef>(unions.MaxBy(u => u.Count).Select(c => c.MakeRef()).ToHashSet());
         }
         else
         {

@@ -16,6 +16,7 @@ public class PathFindMode : UiMode
     public override void Process(float delta)
     {
         _mouseOverHandler.Process(delta);
+        _cellOverlay.Clear();
         _mouseOverHandler.Highlight(_cellOverlay);
     }
 
