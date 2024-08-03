@@ -8,7 +8,7 @@ using Google.OrTools.LinearSolver;
 public abstract class SettlementBuildingConstructionPriority 
     : SolverPriority<SettlementBuilding>
 {
-    public SettlementBuildingConstructionPriority(Regime r, string name) 
+    public SettlementBuildingConstructionPriority(string name) 
         : base(name)
     {
     }

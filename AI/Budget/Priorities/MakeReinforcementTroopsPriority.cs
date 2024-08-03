@@ -9,16 +9,12 @@ public class MakeReinforcementTroopsPriority
     : SolverPriority<Troop>
 {
     public Dictionary<ModelRef<TroopType>, float> _needed { get; private set; }
-    public ERef<Regime> _regime { get; private set; }
 
 
-    public MakeReinforcementTroopsPriority(string name, 
-        Dictionary<ModelRef<TroopType>, float> needed, 
-        ERef<Regime> regime) 
+    public MakeReinforcementTroopsPriority(string name) 
         : base(name)
     {
-        _needed = needed;
-        _regime = regime;
+        _needed = new Dictionary<ModelRef<TroopType>, float>();
     }
 
 
@@ -89,14 +85,26 @@ public class MakeReinforcementTroopsPriority
         return res;
     }
 
-    protected override IEnumerable<Troop> GetAll(Data d)
+    protected override IEnumerable<Troop> GetAll(Regime r, Data d)
     {
         return d.Models.GetModels<Troop>()
-            .Where(t => _regime.Get(d).HasPrereqs(t));
+            .Where(t => r.HasPrereqs(t));
     }
 
     protected override void Complete(BudgetPool pool, Regime r, Dictionary<Troop, float> toBuild, LogicKey key)
     {
         CompleteModel(pool, r, toBuild, key);
+    }
+
+    public override float GetWeight(Regime r, Data d)
+    {
+        var units = r.GetUnits(d);
+        var str = units.Sum(u => u.GetPowerPoints(d));
+        var authorized = units.Sum(u => u.Template.Get(d).Troops.GetEnumModel(d)
+            .Sum(kvp => 
+                r.Military.GetBestTroopOfType(kvp.Key, d)
+                    .GetPowerPoints() * kvp.Value));
+        if (authorized == 0f) return 0f;
+        return 3f * (1f - str / authorized);
     }
 }

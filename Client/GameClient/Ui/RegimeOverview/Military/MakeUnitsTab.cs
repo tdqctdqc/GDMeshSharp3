@@ -125,7 +125,7 @@ public partial class MakeUnitsTab : HBoxContainer, IUiDrawable
         {
             var totals = regime
                 .GetAi(c.Data).Military.ForceComposition
-                .GetCurrentAndNeededTotals(c.Data);
+                .GetCurrentAndNeededTotals(regime, c.Data);
             foreach (var (key, value) in totals)
             {
                 _templateInfo.CreateLabelAsChild($"{key.Name}: {value.Y} / {value.X}");

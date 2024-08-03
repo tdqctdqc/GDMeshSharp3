@@ -14,14 +14,9 @@ public class ResourceExtractionBudgetBranch : BudgetBranch
         foreach (var nr in d.Models.GetModels<NaturalResource>())
         {
             var priority = new ResourceExtractionConstructionPriority(
-                nr.MakeRef<IModel>(), r.MakeRef(), nr.Name + " extraction");
-            b.Children.Add(new PriorityNode(priority,
-                (r, d) =>
-                {
-                    var p = root.Prices.Get(nr);
-                    if (p == 0f) return .5f;
-                    return p;
-                }));
+                nr.MakeRef<IModel>(), nr.Name + " extraction");
+            var node = new PriorityNode(priority);
+            root.SetParent(node, b);
         }
 
         return b;

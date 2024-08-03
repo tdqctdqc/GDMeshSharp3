@@ -8,7 +8,6 @@ public class RegimeAi
     public BudgetAi Budget { get; private set; }
     public RegimeMilitaryAi Military { get; private set; }
     public RegimeTechnologyAi Technology { get; private set; }
-    
     public List<string> Status { get; private set; }
 
     public static RegimeAi Construct(Regime r, Data d)
@@ -16,7 +15,7 @@ public class RegimeAi
         return new RegimeAi(
             r.MakeRef(),
             BudgetAi.Construct(r, d),
-            new RegimeMilitaryAi(r, d),
+            RegimeMilitaryAi.Construct(r, d),
             new RegimeTechnologyAi(r, d),
             new List<string>()
         );

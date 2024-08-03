@@ -7,26 +7,15 @@ using Godot;
 public class RegimeTechnologyAi
 {
     private Regime _regime;
-    private Dictionary<TechnologyCategory, Func<Regime, Data, float>> _getWeight;
     
     public RegimeTechnologyAi(Regime regime, Data d)
     {
         _regime = regime;
-        _getWeight = new Dictionary<TechnologyCategory, Func<Regime, Data, float>>
-        {
-            {d.Models.TechnologyCategories.Economic, 
-                (r,d) => 1f },
-            {d.Models.TechnologyCategories.Military, 
-                (r,d) => .75f },
-            {d.Models.TechnologyCategories.Administrative, 
-                (r,d) => .25f },
-        };
     }
 
     public void Calculate(LogicKey key)
     {
-        var weights = _getWeight.ToDictionary(kvp => kvp.Key,
-            kvp => kvp.Value(_regime, key.Data));
+        var weights = GetWeights(key.Data);
         var techs = key.Data.Models
             .GetModels<Technology>();
         var researched = _regime.Technology.Researched;
@@ -68,5 +57,15 @@ public class RegimeTechnologyAi
             return;
         }
         key.SendMessage(new SetResearchProcedure(_regime.MakeRef(), toResearch.MakeRef()));
+    }
+
+    private Dictionary<TechnologyCategory, float> GetWeights(Data d)
+    {
+        return new Dictionary<TechnologyCategory, float>
+        {
+            { d.Models.TechnologyCategories.Economic, 1f },
+            { d.Models.TechnologyCategories.Military, .75f },
+            { d.Models.TechnologyCategories.Administrative, .25f },
+        };
     }
 }

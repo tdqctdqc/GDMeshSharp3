@@ -17,6 +17,7 @@ public class TurnMiddleState : TurnState
     public override void Calculate()
     {
         _orders.CalcAiOrdersAsync(_key);
+        // _orders.CalcAiOrdersSync(_key);
     }
 
     public override bool ReadyForNext()

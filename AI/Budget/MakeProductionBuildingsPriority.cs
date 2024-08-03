@@ -4,15 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Google.OrTools.LinearSolver;
 
-public class MakeProductionBuildingsPriority
+public abstract class MakeProductionBuildingsPriority
     : SettlementBuildingConstructionPriority
 {
     public ModelRef<IModel> Model { get; private set; }
-    public BudgetBranch Parent { get; }
 
-    public MakeProductionBuildingsPriority(ModelRef<IModel> model, 
-        Regime r, string name) 
-        : base(r, name)
+    public MakeProductionBuildingsPriority(ModelRef<IModel> model, string name) 
+        : base(name)
     {
         Model = model;
     }
@@ -32,7 +30,7 @@ public class MakeProductionBuildingsPriority
         return t.Labor.Outputs.Contents.ContainsKey(Model.RefId);
     }
 
-    protected override IEnumerable<SettlementBuilding> GetAll(Data d)
+    protected override IEnumerable<SettlementBuilding> GetAll(Regime r, Data d)
     {
         return d.Models.GetModels<SettlementBuilding>()
             .Where(t => t.Labor.Outputs.Contents.ContainsKey(Model.RefId));
@@ -43,4 +41,5 @@ public class MakeProductionBuildingsPriority
     {
         CompleteModel(pool, r, toBuild, key);
     }
+    
 }

@@ -18,5 +18,6 @@ public partial class MilitaryTab : DrawTabContainer, IUiDrawable
         AddTab(new MakeUnitsTab(getRegime));
         AddTab(new MakeTroopsTab(getRegime));
         AddTab(new UnitTemplatesTab(getRegime));
+        AddTab(new MilitaryAiTab(getRegime));
     }
 }

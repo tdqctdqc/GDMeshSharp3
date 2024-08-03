@@ -63,7 +63,7 @@ public class RegimeTechnology
             }
             else
             {
-                Progresses[Current] += total;
+                Progresses[Current] += Overflow;
                 Overflow = 0f;
             }
         }

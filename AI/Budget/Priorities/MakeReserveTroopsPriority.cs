@@ -1,5 +1,6 @@
 
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
@@ -8,11 +9,9 @@ using Google.OrTools.LinearSolver;
 public class MakeReserveTroopsPriority : SolverPriority<Troop>
 {
     private Dictionary<TroopType, float> _needed;
-    private Regime _regime;
-    public MakeReserveTroopsPriority(Regime r) 
+    public MakeReserveTroopsPriority() 
             : base("Make Reserve Troops")
     {
-        _regime = r;
         _needed = new Dictionary<TroopType, float>();
     }
 
@@ -94,10 +93,10 @@ public class MakeReserveTroopsPriority : SolverPriority<Troop>
         return res;
     }
 
-    protected override IEnumerable<Troop> GetAll(Data d)
+    protected override IEnumerable<Troop> GetAll(Regime r, Data d)
     {
         return d.Models.GetModels<Troop>()
-            .Where(t => _regime.HasPrereqs(t));
+            .Where(t => r.HasPrereqs(t));
     }
 
     protected override void Complete(BudgetPool pool, 
@@ -105,5 +104,10 @@ public class MakeReserveTroopsPriority : SolverPriority<Troop>
         LogicKey key)
     {
         CompleteModel(pool, r, toBuild, key);
+    }
+
+    public override float GetWeight(Regime r, Data d)
+    {
+        return 1f;
     }
 }

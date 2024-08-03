@@ -9,7 +9,9 @@ public static class UnitTemplateExt
         var templatesAi = u.Regime.Get(d).GetAi(d)
             .Military.Templates;
         
-        var m = templatesAi.MetaTemplates
+        var m = templatesAi
+            .MetaTemplates
+            .Values
             .FirstOrDefault(m => m.Current.Equals(u)
                         || m.Obsolete.Contains(u.MakeRef()));
         if (m is null)

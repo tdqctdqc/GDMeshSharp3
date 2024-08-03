@@ -115,8 +115,12 @@ public partial class TechnologyTab : ScrollContainer, IUiDrawable
         
         var tech = _parent.Regime.Technology;
         var curr = tech.Current.Get(c.Data);
-        _currentResearchInfo.CreateLabelAsChild($"Currently Researching: {curr.DisplayName}");
-        _currentResearchInfo.CreateLabelAsChild($"Progress: {tech.Progresses[curr.MakeRef()].RoundTo2Digits()} / {curr.ResearchCost.RoundTo2Digits()}");
+        if (curr is not null)
+        {
+            _currentResearchInfo.CreateLabelAsChild($"Currently Researching: {curr.DisplayName}");
+            _currentResearchInfo.CreateLabelAsChild($"Progress: {tech.Progresses[curr.MakeRef()].RoundTo2Digits()} / {curr.ResearchCost.RoundTo2Digits()}");
+        }
+        _currentResearchInfo.CreateLabelAsChild($"Overflow: {tech.Overflow.RoundTo2Digits()}");
 
         _currentResearchInfo.CreateLabelAsChild("All Progresses");
         

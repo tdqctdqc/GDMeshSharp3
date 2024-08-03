@@ -7,16 +7,13 @@ using Godot;
 public class ForceCompositionAi
 {
     private static int PreferredGroupSize = 7;
-    private Regime _regime;
+    public Dictionary<UnitTemplatesAi.UnitTypeTag, int> DesiredAmounts { get; private set; }
 
-    public Dictionary<UnitMetaTemplate, int>
-        DesiredAmounts { get; private set; }
-
-    public ForceCompositionAi(Regime regime)
+    public ForceCompositionAi(Dictionary<UnitTemplatesAi.UnitTypeTag, int> desiredAmounts)
     {
-        _regime = regime;
-        DesiredAmounts = new Dictionary<UnitMetaTemplate, int>();
+        DesiredAmounts = desiredAmounts;
     }
+
 
     public void Calculate(Regime regime, LogicKey key)
     {
@@ -29,9 +26,9 @@ public class ForceCompositionAi
     {
         var templatesAi = key.Data.HostLogicData.RegimeAis[regime]
             .Military.Templates;
-        var weights = new Dictionary<UnitMetaTemplate, float>
+        var weights = new Dictionary<UnitTemplatesAi.UnitTypeTag, float>
         {
-            {templatesAi.Infantry, 1f}
+            {UnitTemplatesAi.UnitTypeTag.Infantry, 1f}
         };
         //do mods
 
@@ -46,17 +43,20 @@ public class ForceCompositionAi
     }
 
     public Dictionary<UnitMetaTemplate, Vector2I> 
-        GetCurrentAndNeededTotals(Data d)
+        GetCurrentAndNeededTotals(Regime r, Data d)
     {
+        var metas = d.HostLogicData.RegimeAis[r].Military.Templates
+            .MetaTemplates;
         var unitsByMeta = 
-            _regime.GetUnits(d)
+            r.GetUnits(d)
                 .SortBy(u => u.Template.Get(d).GetMetaTemplate(d));
         var needed = DesiredAmounts.ToDictionary(kvp => kvp.Key,
-            kvp => unitsByMeta.TryGetValue(kvp.Key, out var list)
+            kvp => unitsByMeta.TryGetValue( metas[kvp.Key], out var list)
                 ? Mathf.Max(0, kvp.Value - list.Count)
                 : kvp.Value);
+        
         return unitsByMeta.ToDictionary(kvp => kvp.Key,
-            kvp => new Vector2I(needed[kvp.Key], unitsByMeta[kvp.Key].Count()));
+            kvp => new Vector2I(needed[kvp.Key.Tag], unitsByMeta[kvp.Key].Count()));
     }
     private void AssignFreeUnitsToGroups(Regime regime, 
         LogicKey key)

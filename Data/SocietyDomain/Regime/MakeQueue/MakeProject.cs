@@ -12,7 +12,6 @@ using MessagePack;
 public abstract class MakeProject : IPolymorph, IIdentifiable
 {
     public ERef<Regime> Regime { get; protected set; }
-    // public IdRef Making { get; protected set; }
     public float Amount { get; protected set; }
     public float Fulfilled { get; protected set; }
     public int Id { get; private set; }

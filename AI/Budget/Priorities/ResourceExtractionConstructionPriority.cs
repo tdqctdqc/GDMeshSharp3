@@ -7,12 +7,10 @@ public class ResourceExtractionConstructionPriority
     : SolverPriority<ResourceExtractionBuilding>
 {
     public ModelRef<IModel> Model { get; private set; }
-    public ERef<Regime> Regime { get; private set; }
-    public ResourceExtractionConstructionPriority(ModelRef<IModel> model, 
-        ERef<Regime> regime, string name) : base(name)
+    public ResourceExtractionConstructionPriority
+        (ModelRef<IModel> model, string name) : base(name)
     {
         Model = model;
-        Regime = regime;
     }
 
     protected override string GetName(ResourceExtractionBuilding t, Data d)
@@ -94,15 +92,25 @@ public class ResourceExtractionConstructionPriority
         return res;
     }
 
-    protected override IEnumerable<ResourceExtractionBuilding> GetAll(Data d)
+    protected override IEnumerable<ResourceExtractionBuilding> 
+        GetAll(Regime r, Data d)
     {
         return d.Models.GetModels<ResourceExtractionBuilding>()
             .Where(b => b.Resource(d).Id == Model.RefId
-                        && Regime.Get(d).HasPrereqs(b));
+                        && r.HasPrereqs(b));
     }
 
     protected override void Complete(BudgetPool pool, Regime r, Dictionary<ResourceExtractionBuilding, float> toBuild, LogicKey key)
     {
         CompleteModel(pool, r, toBuild, key);
+    }
+
+    public override float GetWeight(Regime r, Data d)
+    {
+        var root = d.HostLogicData.RegimeAis[r]
+            .Budget.Root;
+        var p = root.Prices.Get(Model.Get(d));
+        if (p == 0f) return .5f;
+        return p;
     }
 }

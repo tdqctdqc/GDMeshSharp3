@@ -24,7 +24,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         Regime regime,
         Data d)
     {
-        var all = GetAll(d);
+        var all = GetAll(regime, d);
         if (all.Count() == 0) return new Dictionary<TBuild, float>();
         var expandedPool = BudgetPool.ConstructForRegime(regime, d);
         foreach (var i in expandedPool.Stock.Contents.Keys.ToList())
@@ -33,7 +33,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         }
         SetCalcData(regime, d);
         var solver = MakeSolver();
-        var projVars = MakeProjVars(solver, d);
+        var projVars = MakeProjVars(regime, solver, d);
         SetConstraints(solver, regime, expandedPool, projVars, d);
         var success = Solve(solver, projVars, d);
         
@@ -56,7 +56,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     {
         SetCalcData(regime, key.Data);
         var solver = MakeSolver();
-        var projVars = MakeProjVars(solver, key.Data);
+        var projVars = MakeProjVars(regime, solver, key.Data);
         SetConstraints(solver, regime, pool, projVars, key.Data);
         
         var success = Solve(solver, projVars, key.Data);
@@ -89,7 +89,7 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
     protected abstract Dictionary<IModel, float>
         GetCosts(Dictionary<TBuild, float> toBuild, Data d);
 
-    protected abstract IEnumerable<TBuild> GetAll(Data d);
+    protected abstract IEnumerable<TBuild> GetAll(Regime r,Data d);
     private Solver.ResultStatus Solve(Solver solver, 
         Dictionary<TBuild, Variable> projVars, Data d)
     {
@@ -106,11 +106,11 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
         return solver.Solve();
     }
     
-    protected Dictionary<TBuild, Variable> MakeProjVars(
+    protected Dictionary<TBuild, Variable> MakeProjVars(Regime regime,
         Solver solver, 
         Data data)
     {
-        var models = GetAll(data)
+        var models = GetAll(regime, data)
             .Where(t => Relevant(t, data));
         return models.Select(b =>
         {
@@ -153,4 +153,6 @@ public abstract class SolverPriority<TBuild> : IBudgetPriority
             key.SendMessage(proc);
         }
     }
+
+    public abstract float GetWeight(Regime r, Data d);
 }

@@ -5,35 +5,19 @@ public class ConstructBuildingsBudgetBranch
     : BudgetBranch
 {
 
-    public static ConstructBuildingsBudgetBranch Construct(Regime regime, Data d)
+    public static ConstructBuildingsBudgetBranch Construct(Regime regime,
+        BudgetRoot root, Data d)
     {
         var b = new ConstructBuildingsBudgetBranch(new List<IBudgetNode>(),
             0f, "Construct Buildings");
         var industrialPriority =
-            new MakeProductionBuildingsPriority(
-                d.Models.Items.IndustrialPower.MakeRef<IModel>(),
-                regime,
-                "Make Industrial");
-        var industrialNode = new PriorityNode(industrialPriority,
-            (d, r) => 1f);
-        b.Children.Add(industrialNode);
+            MakeIndustrialBuildingsPriority.Construct(d);
+        var industrialNode = new PriorityNode(industrialPriority);
+        root.SetParent(industrialNode, b);
         
-        var incomePriority = new MakeProductionBuildingsPriority(
-            d.Models.Items.Income.MakeRef<IModel>(),
-            regime,
-            "Make Income");
-        var incomeNode = new PriorityNode(incomePriority,
-            (d, r) => 0f);
-        b.Children.Add(incomeNode);
-
-        var researchPriority = new MakeProductionBuildingsPriority(
-            d.Models.Items.Research.MakeRef<IModel>(),
-            regime,
-            "Make Research");
-        var researchNode = new PriorityNode(researchPriority,
-            (d, r) => .5f);
-        b.Children.Add(researchNode);
-
+        var researchPriority = MakeResearchBuildingsPriority.Construct(d);
+        var researchNode = new PriorityNode(researchPriority);
+        root.SetParent(researchNode, b);
 
         return b;
     }

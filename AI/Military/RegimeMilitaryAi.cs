@@ -5,18 +5,27 @@ using Godot;
 
 public class RegimeMilitaryAi
 {
-    private Regime _regime;
+    private ERef<Regime> _regime;
     public ForceCompositionAi ForceComposition { get; private set; }
     public UnitTemplatesAi Templates { get; private set; }
-    public RegimeMilitaryAi(Regime regime, Data d)
+
+
+    public RegimeMilitaryAi(ERef<Regime> regime, ForceCompositionAi forceComposition, UnitTemplatesAi templates)
     {
         _regime = regime;
-        ForceComposition = new ForceCompositionAi(_regime);
-        Templates = new UnitTemplatesAi(_regime, d);
+        ForceComposition = forceComposition;
+        Templates = templates;
+    }
+
+    public static RegimeMilitaryAi Construct(Regime regime, Data d)
+    {
+        return new RegimeMilitaryAi(regime.MakeRef(),
+            new ForceCompositionAi(new Dictionary<UnitTemplatesAi.UnitTypeTag, int>()),
+        UnitTemplatesAi.Construct(regime, d));
     }
     public void CalculateMajor(LogicKey key, MajorTurnOrders orders)
     {
-        ForceComposition.Calculate(_regime, key);
+        ForceComposition.Calculate(_regime.Get(key.Data), key);
         Templates.Calculate(key);
     }
 

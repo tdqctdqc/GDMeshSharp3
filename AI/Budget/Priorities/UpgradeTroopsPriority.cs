@@ -132,6 +132,25 @@ public class UpgradeTroopsPriority : IBudgetPriority
         built = toBuild.ToDictionary(v => v.Key.Name, v => v.Value);
     }
 
+    public float GetWeight(Regime r, Data d)
+    {
+        var troops = r.GetAllTroopAmounts(d);
+        var activeTroopTypes = troops.Select(kvp => kvp.Key.TroopType).ToHashSet();
+        var totalPp = troops.Sum(kvp => kvp.Key.GetPowerPoints() * kvp.Value);
+        if (totalPp == 0f) return 0f;
+        var upgradePotential = 0f;
+        foreach (var (troop, value) in troops)
+        {
+            var best = r.Military.GetBestTroopOfType(troop.TroopType, d);
+            if (best != troop)
+            {
+                upgradePotential += (best.GetPowerPoints() - troop.GetPowerPoints()) * value;
+            }
+        }
+        var score = Mathf.Min(10f, 100f * (upgradePotential / totalPp));
+        return score;
+    }
+
 
     private Dictionary<Troop, float> GetNeeded(Regime regime, Data d)
     {

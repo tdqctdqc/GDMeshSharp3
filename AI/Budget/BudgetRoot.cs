@@ -15,13 +15,14 @@ public class BudgetRoot : BudgetBranch
             1f, "Budget Root",
             IdCount<IModel>.Construct());
 
-        var construct = ConstructBuildingsBudgetBranch.Construct(r, d);
-        b.Children.Add(construct);
+        var construct = ConstructBuildingsBudgetBranch.Construct(r, b, d);
+        b.SetParent(construct, b);
 
-        var military = MilitaryBudgetBranch.Construct(r, d);
-        b.Children.Add(military);
+        var military = MilitaryBudgetBranch.Construct(r, b, d);
+        b.SetParent(military, b);
+
         var resources = ResourceExtractionBudgetBranch.Construct(r, b, d);
-        b.Children.Add(resources);
+        b.SetParent(resources, b);
         
         return b;
     }
@@ -50,6 +51,12 @@ public class BudgetRoot : BudgetBranch
         return _parents.TryGetValue(n, out var p)
             ? p
             : null;
+    }
+
+    public void SetParent(IBudgetNode n, BudgetBranch b)
+    {
+        b.Children.Add(n);
+        _parents[n] = b;
     }
 
     public void Calculate(Regime r, LogicKey key)

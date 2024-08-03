@@ -7,11 +7,10 @@ using Google.OrTools.LinearSolver;
 
 public class MakeUnitPriority : SolverPriority<UnitMakeProject>
 {
-    private Regime _regime;
-    public MakeUnitPriority(Regime regime, Data d)
+    public MakeUnitPriority()
             : base("Make Units")
     {
-        _regime = regime;
+        
     }
 
     protected override string GetName(UnitMakeProject t, Data d)
@@ -39,8 +38,7 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
         Dictionary<UnitMakeProject, Variable> projVars, Data data)
     {
         if (r.GetUnitTemplates(data) is null
-            || r.GetUnitTemplates(data).Count() == 0
-            || r.GetUnits(data) is null)
+            || r.GetUnitTemplates(data).Count() == 0)
         {
             return;
         }
@@ -61,7 +59,7 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
                 return m;
             });
         var needed = desired.ToDictionary(kvp => kvp.Key,
-            kvp => unitsByMeta.TryGetValue(kvp.Key, out var list)
+            kvp => unitsByMeta.TryGetValue(templates.MetaTemplates[kvp.Key], out var list)
                 ? Mathf.Max(0, kvp.Value - list.Count)
                 : kvp.Value);
         
@@ -78,7 +76,7 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
             {
                 throw new Exception($"{project.Template.Get(data).Name} has no meta");
             }
-            var constraint = constraints[metaTemplate];
+            var constraint = constraints[metaTemplate.Tag];
             constraint.SetCoefficient(v, 1);
         }
         solver.SetBuildCostConstraints(
@@ -102,12 +100,13 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
         return res;
     }
 
-    protected override IEnumerable<UnitMakeProject> GetAll(Data d)
+    protected override IEnumerable<UnitMakeProject> GetAll(Regime r, Data d)
     {
-        return d.HostLogicData.RegimeAis[_regime].Military.Templates
-            .MetaTemplates.Select(m => m.Current.Get(d))
-            .Select(t => UnitMakeProject.Construct(_regime, t, 1,
-                d));
+        var all = d.HostLogicData.RegimeAis[r].Military.Templates
+            .MetaTemplates.Select(m => m.Value.Current.Get(d))
+            .Select(t => UnitMakeProject.Construct(r, t, 1,
+                d)).ToArray();
+        return all;
     }
 
     protected override void Complete(BudgetPool pool, Regime r, 
@@ -115,11 +114,31 @@ public class MakeUnitPriority : SolverPriority<UnitMakeProject>
     {
         foreach (var (unitMakeProject, value) in toBuild)
         {
+            var amount = Mathf.CeilToInt(value);
             var newProj = UnitMakeProject.Construct(
                 r, unitMakeProject.Template.Get(key.Data),
-                (int)value, key.Data);
-            var proc = new StartOrConsolidateMakeProject(unitMakeProject);
+                amount, key.Data);
+            var proc = new StartOrConsolidateMakeProject(newProj);
             key.SendMessage(proc);
         }
+    }
+
+    public override float GetWeight(Regime r, Data d)
+    {
+        var baseWeight = 5f;
+        var templates = d.HostLogicData.RegimeAis[r].Military.Templates;
+        var metas = templates.MetaTemplates;
+        var desired = d.HostLogicData.RegimeAis[r].Military.ForceComposition.DesiredAmounts;
+        var allUnits = r.GetUnits(d)?.ToArray();
+        if (allUnits is null || allUnits.Count() == 0) return baseWeight;
+        var unitsByMeta = r.GetUnits(d)
+            .SortBy(u => u.Template.Get(d).GetMetaTemplate(d));
+        var needed = desired.ToDictionary(kvp => kvp.Key,
+            kvp => unitsByMeta.TryGetValue(metas[kvp.Key], out var list)
+                ? Mathf.Max(0, kvp.Value - list.Count)
+                : kvp.Value);
+                
+        return baseWeight * needed.Sum(kvp => kvp.Value)
+               / allUnits.Count();
     }
 }

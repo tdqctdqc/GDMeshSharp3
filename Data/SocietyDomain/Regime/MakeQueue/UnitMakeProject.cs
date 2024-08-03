@@ -6,9 +6,9 @@ using MessagePack;
 public class UnitMakeProject : MakeProject, IMakeable
 {
     public IdCount<Troop> Troops { get; private set; }
+    public ERef<UnitTemplate> Template { get; private set; }
     public MakeableAttribute Makeable { get; private set; }
     public MakeableAttribute MakeableBase { get; private set; }
-    public ERef<UnitTemplate> Template { get; private set; }
     public static UnitMakeProject Construct(Regime r,
         UnitTemplate template,
         int amount, Data d)
@@ -39,7 +39,7 @@ public class UnitMakeProject : MakeProject, IMakeable
             baseCosts,
             IdCount<Item>.Construct()
         );
-        
+
         return new UnitMakeProject(r.MakeRef(), 
             template.MakeRef(), troops,
             makeable,
@@ -73,6 +73,7 @@ public class UnitMakeProject : MakeProject, IMakeable
         LogicKey key)
     {
         var before = Mathf.FloorToInt(Fulfilled);
+        
         Fulfilled += BuildTree.Increment(Makeable,
             stock,
             Amount - Fulfilled,

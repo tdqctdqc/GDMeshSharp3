@@ -24,7 +24,7 @@ public class BudgetAi
         Root.Calculate(_regime.Get(key.Data), key);
     }
 
-    private void Manufacture(Data data, 
+    private void ManufactureForWishlist(Data data, 
         Dictionary<Item, int> wishlist, BudgetPool pool,
          LogicKey key)
      {
