@@ -56,18 +56,19 @@ public class MilPlanningMode : UiMode
         var ai = _client.Data.HostLogicData.AllianceAis[alliance];
         var relTo = alliance.Leader.Get(_client.Data).GetCells(_client.Data).First().GetCenter();
         if (ai.Military.Strategic.Theaters == null) return;
-        foreach (var theater in ai.Military.Strategic.Theaters)
+        foreach (var theater in ai.Military.Strategic.Theaters.Entities(_client.Data))
         {
-            foreach (var frontline in theater.Frontlines)
+            foreach (var frontline in theater.Frontlines.Entities(_client.Data))
             {
                 var pos = frontline.Faces.First().GetNative(_client.Data).GetCenter();
                 if (frontline.AdvanceInto != null)
                 {
                     foreach (var c in frontline.AdvanceInto)
                     {
-                        _plansOverlay.Draw(mb => mb.DrawPolygon(c.RelBoundary,
+                        var cell = c.Get(_client.Data);
+                        _plansOverlay.Draw(mb => mb.DrawPolygon(cell.RelBoundary,
                                 new Color(Colors.Black, .5f)),
-                            c.RelTo);
+                            cell.RelTo);
                     }
                 }
                 _plansOverlay.Draw(mb => mb.DrawFrontFaces(frontline.Faces, 

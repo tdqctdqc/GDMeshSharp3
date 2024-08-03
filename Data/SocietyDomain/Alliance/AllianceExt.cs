@@ -4,6 +4,10 @@ using System.Linq;
 
 public static class AllianceExt
 {
+    public static AllianceAi GetAi(this Alliance a, Data d)
+    {
+        return d.HostLogicData.AllianceAis[a];
+    }
     public static float GetPowerScore(this Alliance a, Data data)
     {
         return a.Members.Entities(data).Sum(r => r.GetPowerScore(data));

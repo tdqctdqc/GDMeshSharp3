@@ -1,15 +1,19 @@
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 public class UnoccupiedAssignment : GroupAssignment
 {
-    public Cell Cell { get; private set; }
-    public UnoccupiedAssignment(Cell cell, DeploymentBranch parent, 
-        DeploymentAi ai, LogicKey key) : base(parent, ai, key)
+    public CellRef Cell { get; private set; }
+
+    public UnoccupiedAssignment(int id, DeploymentBranch parent, 
+        ERef<Alliance> alliance, HashSet<ERef<Army>> groups, 
+        CellRef cell) : base(id, parent, alliance, groups)
     {
         Cell = cell;
     }
+
     protected override void RemoveGroupFromData(DeploymentAi ai, Army g)
     {
         
@@ -34,7 +38,7 @@ public class UnoccupiedAssignment : GroupAssignment
 
     public override Cell GetCharacteristicCell(Data d)
     {
-        return Cell;
+        return Cell.Get(d);
     }
 
     public override Army PullGroup(DeploymentAi ai, 
@@ -42,8 +46,8 @@ public class UnoccupiedAssignment : GroupAssignment
         LogicKey key)
     {
         if (Groups.Count == 0) return null;
-        var g = Groups.MaxBy(suitability);
+        var g = Groups.MaxBy(v => suitability(v.Get(key.Data)));
         Groups.Remove(g);
-        return g;
+        return g.Get(key.Data);
     }
 }

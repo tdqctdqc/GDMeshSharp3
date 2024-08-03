@@ -43,6 +43,7 @@ using System;
 [MessagePack.Union(38, typeof(UpgradeTroopProcedure))]
 [MessagePack.Union(39, typeof(UnitChangeTroopAmountProcedure))]
 [MessagePack.Union(40, typeof(ChangeStockProcedure))]
+[MessagePack.Union(41, typeof(SetFrontlineAdvanceIntoProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

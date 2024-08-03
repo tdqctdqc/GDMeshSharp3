@@ -1,27 +1,39 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using MessagePack;
 
 public class StrategicAi
-{
-    public HashSet<Theater> Theaters { get; private set; }
+{ 
+    public ERefSet<Theater> Theaters { get; private set; }
+    public Dictionary<ERef<Frontline>, FrontlineAi> FrontlineAis { get; private set; }
 
-    public StrategicAi(HashSet<Theater> theaters)
+    public static StrategicAi Construct(Alliance a, Data d)
+    {
+        return new StrategicAi(ERefSet<Theater>.Construct(new ERef<Theater>[]{}),
+            new Dictionary<ERef<Frontline>, FrontlineAi>());
+    }
+    [SerializationConstructor] private StrategicAi(
+        ERefSet<Theater> theaters, 
+        Dictionary<ERef<Frontline>, FrontlineAi> frontlineAis)
     {
         Theaters = theaters;
+        FrontlineAis = frontlineAis;
     }
 
-    public void Calculate(Alliance alliance, Data d)
+    public void Calculate(Alliance alliance, LogicKey key)
     {
-        MakeTheaters(alliance, d);
-        foreach (var theater in Theaters)
+        var d = key.Data;
+        MakeTheaters(alliance, key);
+        foreach (var theater in Theaters.Entities(d))
         {
-            CalculateTheater(alliance, theater, d);
+            CalculateTheater(alliance, theater, key);
         }
     }
 
-    private void MakeTheaters(Alliance alliance, Data d)
+    private void MakeTheaters(Alliance alliance, LogicKey key)
     {
+        var d = key.Data;
         var cells = d.Planet.MapAux
             .CellHolder.Cells.Values
             .Where(c => alliance.Members.Contains(c.Controller))
@@ -29,29 +41,37 @@ public class StrategicAi
         var unions = UnionFind.Find(cells,
             (p, q) => true,
             p => p.GetNeighbors(d));
-        Theaters = new HashSet<Theater>();
+        
+        d.RemoveEntities(Theaters.Entities(d).SelectMany(t => t.Frontlines.Entities(d).Select(fl => fl.Id)).ToArray(),
+            key);
+        d.RemoveEntities(Theaters.Refs.Select(r => r.RefId).ToArray(), key);
+        
+        Theaters = ERefSet<Theater>.Construct(new HashSet<int>());
         foreach (var union in unions)
         {
-            var theater = Theater.Construct(alliance, union.ToHashSet(), d);
-            Theaters.Add(theater);
+            var theater = Theater.Create(alliance, 
+                union.ToHashSet(), key);
+            Theaters.Add(theater, key);
+            foreach (var frontline in theater.Frontlines.Entities(d))
+            {
+                FrontlineAis.Add(frontline.MakeRef(), FrontlineAi.Construct(frontline));
+            }
         }
-        
     }
     
-    private void CalculateTheater(Alliance alliance, Theater theater, Data d)
+    private void CalculateTheater(Alliance alliance, Theater theater, 
+        LogicKey key)
     {
         //todo alter weights for rival not at war
-        
-        
-        
-        var reports = theater.Frontlines.ToDictionary(fl => fl,
-            fl => new FrontlineTacticalReport(fl, d));
-        
-        
-        foreach (var frontline in theater.Frontlines)
+
+
+        var d = key.Data;
+        foreach (var frontline in theater.Frontlines.Entities(d))
         {
             var length = frontline.Faces.Count;
-            var report = reports[frontline];
+            var frontlineAi = FrontlineAis[frontline.MakeRef()];
+            frontlineAi.MakeReport(d);
+            var report = frontlineAi.Report;
             var hostilePp = report.HostileOnFront.Any()
                 ? report.HostileOnFront.Sum(
                     c => d.Context.PowerPoints[c]) 
@@ -63,31 +83,28 @@ public class StrategicAi
             var oppNeed = opposing * MilUtil.DesiredOpposingPpRatio;
             var lengthNeed = length * MilUtil.PowerPointsPerCellFaceToCover;
             
-            frontline.AddDefendWeightAlongWholeLine(oppNeed + lengthNeed, d);
+            frontlineAi.AddDefendWeightAlongWholeLine(oppNeed + lengthNeed, d);
         }
-        
-        
-        
-        
+        var reports = FrontlineAis.Values.Select(v => v.Report);
         var allHostile = reports
-            .SelectMany(kvp => kvp.Value.HostileOnFront).ToHashSet();
+            .SelectMany(kvp => kvp.HostileOnFront).ToHashSet();
         
-        var friendlyPower = reports.Values.Sum(r => r.FriendlyPower);
-        var enemyPower = reports.Values.Sum(r => r.EnemyPower);
+        var friendlyPower = reports.Sum(r => r.FriendlyPower);
+        var enemyPower = reports.Sum(r => r.EnemyPower);
         var availablePowerForOffense = friendlyPower - enemyPower * .8f;
         
         if (availablePowerForOffense <= 0f) return;
         
-        foreach (var (frontline, pocket) in reports
-                     .SelectMany(kvp => kvp.Value.Pockets
-                         .Select(pocket => (kvp.Key, pocket)))
+        foreach (var (frontlineAi, pocket) in FrontlineAis.Values
+                     .SelectMany(kvp => kvp.Report.Pockets
+                         .Select(pocket => (kvp, pocket)))
                      .OrderBy(v => v.pocket.Count))
         {
             
             var pocketPower = pocket.Sum(c => d.Context.PowerPoints[c]);
             var commit = 1.5f * pocketPower;
             availablePowerForOffense -= commit;
-            frontline.AddAttackWeight(commit, pocket);
+            frontlineAi.AddAttackWeight(commit, pocket, key);
             allHostile.ExceptWith(pocket);
             if (availablePowerForOffense <= 0f) break;
         }
@@ -98,9 +115,11 @@ public class StrategicAi
             if (availablePowerForOffense <= 0f) break;
             var commit = d.Context.PowerPoints[hostile] * 1.5f;
             availablePowerForOffense -= commit;
-            foreach (var frontline in theater.Frontlines.Where(fl => reports[fl].RivalOnFront.Contains(hostile)))
+            foreach (var frontlineAi in theater.Frontlines.Entities(d)
+                         .Select(fl => FrontlineAis[fl.MakeRef()])
+                         .Where(flAi => flAi.Report.RivalOnFront.Contains(hostile)))
             {
-                frontline.AddAttackWeight(commit, hostile);
+                frontlineAi.AddAttackWeight(commit, hostile, key);
             }
         }
         

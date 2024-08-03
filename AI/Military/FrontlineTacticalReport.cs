@@ -20,7 +20,7 @@ public class FrontlineTacticalReport
         }
 
         HostileOnFront = RivalOnFront.Where(c => c.Controller.Get(data).GetAlliance(data)
-            .IsAtWar(frontline.Alliance, data)).ToHashSet();
+            .IsAtWar(frontline.Alliance.Get(data), data)).ToHashSet();
         var friendlies = frontline.Faces.Select(f => f.GetNative(data))
             .ToHashSet();
         EnemyPower = RivalOnFront

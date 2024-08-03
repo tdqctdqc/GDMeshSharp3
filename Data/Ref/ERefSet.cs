@@ -19,8 +19,8 @@ public class ERefSet<TRef>
         return col;
     }
     [SerializationConstructor] private ERefSet(
-        HashSet<ERef<TRef>> items) 
-        : base(items)
+        HashSet<ERef<TRef>> refs) 
+        : base(refs)
     {
     }
 

@@ -13,7 +13,7 @@ public class HostLogicData
         RegimeAis = Cache.MakeForEntity<Regime, RegimeAi>
             (r => RegimeAi.Construct(r, data), data);
         AllianceAis = Cache.MakeForEntity<Alliance, AllianceAi>
-            (a => new AllianceAi(a, data), data);
+            (a => AllianceAi.Construct(a, data), data);
         CombatGraphIds = new IdRecycler();
     }
 }

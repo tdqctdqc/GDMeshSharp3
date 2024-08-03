@@ -29,11 +29,14 @@ public class DeploymentAi
     {
         IdDispenser = new IdDispenser(0);
     }
-    public void Calculate(AllianceMilitaryAi ai, LogicKey key)
+    public void Calculate(Alliance alliance, LogicKey key)
     {
         Clear(key);
-        _root = new DeploymentRoot(this, key);
-        _root.MakeTheaters(ai, key);
+        _root = new DeploymentRoot(alliance.MakeRef(),
+            key.Data.IdDispenser.TakeId(),
+            new HashSet<DeploymentBranch>(), 
+            new HashSet<GroupAssignment>());
+        _root.MakeTheaters(alliance.GetAi(key.Data).Military, key);
         _root.GrabUnassignedGroups(key);
         _root.ShiftGroups(this, key);
         _root.GiveOrders(this, key);

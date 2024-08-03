@@ -5,7 +5,7 @@ using Godot;
 
 public interface IDeploymentNode 
 {
-    Alliance Alliance { get; }
+    ERef<Alliance> Alliance { get; }
     float GetPowerPointsAssigned(Data data);
     float GetPowerPointNeed(Data data);
     void GiveOrders(DeploymentAi ai, LogicKey key);

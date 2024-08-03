@@ -10,22 +10,22 @@ public abstract class GroupAssignment : IDeploymentNode,
 {
     public int Id { get; private set; }
     public DeploymentBranch Parent { get; }
-    public Alliance Alliance { get; private set; }
-    public HashSet<Army> Groups { get; }
+    public ERef<Alliance> Alliance { get; private set; }
+    public HashSet<ERef<Army>> Groups { get; }
     
-    protected GroupAssignment(DeploymentBranch parent,
-        DeploymentAi ai, LogicKey key)
+
+    protected GroupAssignment(int id, DeploymentBranch parent, ERef<Alliance> alliance, HashSet<ERef<Army>> groups)
     {
-        Id = ai.IdDispenser.TakeId();
+        Id = id;
         Parent = parent;
-        Alliance = ai.Alliance;
-        Groups = new HashSet<Army>();
+        Alliance = alliance;
+        Groups = groups;
     }
 
     public void RemoveGroup(DeploymentAi ai, Army g)
     {
-        if (Groups.Contains(g) == false) throw new Exception();
-        Groups.Remove(g);
+        if (Groups.Contains(g.MakeRef()) == false) throw new Exception();
+        Groups.Remove(g.MakeRef());
         RemoveGroupFromData(ai, g);
     }
     protected abstract void RemoveGroupFromData(DeploymentAi ai, Army g);
@@ -33,14 +33,14 @@ public abstract class GroupAssignment : IDeploymentNode,
     public void PushGroup(DeploymentAi ai, Army g, LogicKey key)
     {
         AddGroupToData(ai, g, key.Data);
-        if (Groups.Contains(g)) throw new Exception();
-        Groups.Add(g);
+        if (Groups.Contains(g.MakeRef())) throw new Exception();
+        Groups.Add(g.MakeRef());
     }
     protected abstract void AddGroupToData(DeploymentAi ai, Army g, Data d);
     public abstract float GetPowerPointNeed(Data d);
     public float GetPowerPointsAssigned(Data data)
     {
-        return Groups.Sum(g => g.GetPowerPoints(data));
+        return Groups.Sum(g => g.Get(data).GetPowerPoints(data));
     }
 
 

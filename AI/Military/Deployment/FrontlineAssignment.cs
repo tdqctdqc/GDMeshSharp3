@@ -8,27 +8,41 @@ using MessagePack;
 
 public class FrontlineAssignment : GroupAssignment
 {
-    public Frontline Frontline { get; private set; }
+    public ERef<Frontline> Frontline { get; private set; }
     public Color Color { get; private set; }
-    public HashSet<Army> LineGroups { get; private set; }
-    public HashSet<Army> InsertingGroups { get; private set; }
-    public FrontlineAssignment(
+    public HashSet<ERef<Army>> LineGroups { get; private set; }
+    public HashSet<ERef<Army>> InsertingGroups { get; private set; }
+    
+    public static FrontlineAssignment Construct(
         DeploymentAi ai,
         DeploymentBranch parent,
         Frontline frontline,
-        LogicKey key) : base(parent, ai, key)
+        LogicKey key)
+    {
+        return new FrontlineAssignment(ai.IdDispenser.TakeId(),
+            parent, ai.Alliance.MakeRef(),
+            new HashSet<ERef<Army>>(),
+            frontline.MakeRef(), ColorsExt.GetRandomColor(),
+            new HashSet<ERef<Army>>(), new HashSet<ERef<Army>>());
+    }
+
+    public FrontlineAssignment(int id, DeploymentBranch parent, 
+        ERef<Alliance> alliance, HashSet<ERef<Army>> groups, 
+        ERef<Frontline> frontline, Color color, 
+        HashSet<ERef<Army>> lineGroups, 
+        HashSet<ERef<Army>> insertingGroups) : base(id, parent, alliance, groups)
     {
         Frontline = frontline;
-        LineGroups = new HashSet<Army>();
-        InsertingGroups = new HashSet<Army>();
-        Color = ColorsExt.GetRandomColor();
+        Color = color;
+        LineGroups = lineGroups;
+        InsertingGroups = insertingGroups;
     }
-    
+
 
     protected override void RemoveGroupFromData(DeploymentAi ai, Army g)
     {
-        LineGroups.Remove(g);
-        InsertingGroups.Remove(g);
+        LineGroups.Remove(g.MakeRef());
+        InsertingGroups.Remove(g.MakeRef());
     }
 
     protected override void AddGroupToData(DeploymentAi ai,
@@ -36,41 +50,43 @@ public class FrontlineAssignment : GroupAssignment
     {
         var cell = g.GetHomeCell(d);
         
-        if (Frontline.Faces.Any(f => f.Native == cell.Id)
+        if (Frontline.Get(d).Faces.Any(f => f.Native == cell.Id)
             == false)
         {
-            InsertingGroups.Add(g);
+            InsertingGroups.Add(g.MakeRef());
             return;
         }
-        LineGroups.Add(g);
+        LineGroups.Add(g.MakeRef());
     }
 
     public override float GetPowerPointNeed(Data d)
     {
-        return Frontline.AttackWeight + Frontline.DefendWeight;
+        var ai = Alliance.Get(d).GetAi(d).Military.Strategic.FrontlineAis[Frontline];
+        
+        return ai.AttackWeight + ai.DefendWeight;
     }
     public override Army PullGroup(DeploymentAi ai, 
         Func<Army, float> suitability, 
         LogicKey key)
     {
         if (Groups.Count < 2) return null;
-        if (Groups.Sum(g => g.Units.Count()) < Frontline.Faces.Count * .75f)
+        if (Groups.Sum(g => g.Get(key.Data).Units.Count()) < Frontline.Get(key.Data).Faces.Count * .75f)
         {
             return null;
         }
         if (InsertingGroups.Count > 0)
         {
-            var group = InsertingGroups.MaxBy(suitability);
+            var group = InsertingGroups.MaxBy(r => suitability(r.Get(key.Data)));
             Groups.Remove(group);
             InsertingGroups.Remove(group);
-            return group;
+            return group.Get(key.Data);
         }
         else if (LineGroups.Count > 0)
         {
-            var group = LineGroups.MaxBy(suitability);
+            var group = LineGroups.MaxBy(g => suitability(g.Get(key.Data)));
             Groups.Remove(group);
             LineGroups.Remove(group);
-            return group;
+            return group.Get(key.Data);
         }
 
         return null;
@@ -83,7 +99,7 @@ public class FrontlineAssignment : GroupAssignment
 
     public override Cell GetCharacteristicCell(Data d)
     {
-        return Frontline.Faces.First().GetNative(d);
+        return Frontline.Get(d).Faces.First().GetNative(d);
     }
 
     public override void GiveOrders(DeploymentAi ai, 
@@ -92,18 +108,22 @@ public class FrontlineAssignment : GroupAssignment
         SetLineAndInsertingGroups(key);
         HandleInsertingGroupsOrders(key);
         if (LineGroups.Count == 0) return;
+        var frontline = Frontline.Get(key.Data);
+        var frontlineAi = Alliance.Get(key.Data).GetAi(key.Data)
+            .Military.Strategic.FrontlineAis[Frontline];
         
         var lineAssignments = MilUtil
-            .GetGroupLineAssignments(Alliance, LineGroups, 
-                Frontline.Faces,
-                GetFaceCost,
+            .GetGroupLineAssignments(Alliance.Get(key.Data),
+                LineGroups.Select(g => g.Get(key.Data)), 
+                frontline.Faces,
+                v => GetFaceCost(frontlineAi, v, key.Data),
                 key.Data);
         
-        var toTake = Frontline.AdvanceInto.ToHashSet();
+        var toTake = frontline.AdvanceInto.ToHashSet();
 
         
-        if (Frontline.AdvanceInto is null
-            || Frontline.AdvanceInto.Count == 0)
+        if (frontline.AdvanceInto is null
+            || frontline.AdvanceInto.Count == 0)
         {
             foreach (var (group, lineAssignment) in lineAssignments)
             {
@@ -144,11 +164,11 @@ public class FrontlineAssignment : GroupAssignment
             foreach (var cell in lineAssignment)
             {
                 foreach (var n1 in cell.GetNeighbors(key.Data)
-                             .Where(c => Frontline.AdvanceInto.Contains(c)))
+                             .Where(c => frontline.AdvanceInto.Contains(c.MakeRef())))
                 {
                     res.Add(n1.MakeRef());
                     foreach (var n2 in n1.GetNeighbors(key.Data)
-                                 .Where(c => Frontline.AdvanceInto.Contains(c)))
+                                 .Where(c => frontline.AdvanceInto.Contains(c.MakeRef())))
                     {
                         res.Add(n2.MakeRef());
                     }
@@ -159,49 +179,56 @@ public class FrontlineAssignment : GroupAssignment
         }
     }
 
-    private float GetFaceCost(FrontFace f)
+    private float GetFaceCost(FrontlineAi ai, FrontFace f, Data d)
     {
-        var atkWeight = Frontline.FaceAttackWeights.TryGetValue(f, out var w)
+        var atkWeight = ai.FaceAttackWeights.TryGetValue(f, out var w)
             ? w
             : 0f;
-        return atkWeight + Frontline.FaceDefendWeights[f];
+        return atkWeight + ai.FaceDefendWeights[f];
     }
 
 
     private void SetLineAndInsertingGroups(LogicKey key)
     {
+        var frontline = Frontline.Get(key.Data);
         InsertingGroups = Groups.Where(g =>
         {
-            return g.Units.Entities(key.Data)
-                .Any(u => Frontline.Faces.Any(f => g.Cells.Contains(f.Native))) == false;
+            var a = g.Get(key.Data);
+            return a.Units.Entities(key.Data)
+                .Any(u => frontline.Faces.Any(f => a.Cells.Contains(f.Native))) == false;
         }).ToHashSet();
         LineGroups = Groups.Except(InsertingGroups).ToHashSet();
     }
 
     private void HandleInsertingGroupsOrders(LogicKey key)
     {
+        var frontline = Frontline.Get(key.Data);
+        var ai = Alliance.Get(key.Data).GetAi(key.Data).Military.Strategic.FrontlineAis[Frontline];
+
         var idealAssignments = MilUtil
-            .GetGroupLineAssignments(Alliance, Groups, 
-                Frontline.Faces,
-                GetFaceCost,
+            .GetGroupLineAssignments(Alliance.Get(key.Data), 
+                Groups.Select(g => g.Get(key.Data)), 
+                frontline.Faces,
+                v => GetFaceCost(ai, v, key.Data),
                 key.Data);
         
         
         foreach (var army in InsertingGroups)
         {
-            var close = GetInsertPoint(army, key.Data);
-            var assignment = idealAssignments[army];
+            var close = GetInsertPoint(frontline, army.Get(key.Data),
+                key.Data);
+            var assignment = idealAssignments[army.Get(key.Data)];
             var order = new LineMission(
                 new RefSet<CellRef>(assignment.Select(c => c.MakeRef()).ToHashSet()), 
                 new RefSet<CellRef>(new HashSet<CellRef>()),
                 false);
-            key.SendMessage(new SetUnitOrderProcedure(army.MakeRef(), order));
+            key.SendMessage(new SetUnitOrderProcedure(army, order));
         }
     }
 
-    private Cell GetInsertPoint(Army army, Data d)
+    private Cell GetInsertPoint(Frontline frontline, Army army, Data d)
     {
-        return Frontline.Faces.Select(f => f.GetNative(d))
+        return frontline.Faces.Select(f => f.GetNative(d))
             .MinBy(c => c.GetCenter().Offset(army.GetHomeCell(d).GetCenter(), d).Length());
     }
 }

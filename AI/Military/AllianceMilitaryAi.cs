@@ -11,7 +11,7 @@ public class AllianceMilitaryAi
     public static AllianceMilitaryAi Construct(Alliance a, Data d)
     {
         return new AllianceMilitaryAi(DeploymentAi.Construct(a, d),
-            new StrategicAi(new HashSet<Theater>()));
+            StrategicAi.Construct(a, d));
     }
 
     public AllianceMilitaryAi(DeploymentAi deployment, StrategicAi strategic)
@@ -26,7 +26,7 @@ public class AllianceMilitaryAi
 
     public void CalculateMinor(LogicKey key, Alliance alliance)
     {
-        Strategic.Calculate(alliance, key.Data);
-        Deployment.Calculate(this, key);
+        Strategic.Calculate(alliance, key);
+        Deployment.Calculate(alliance, key);
     }
 }

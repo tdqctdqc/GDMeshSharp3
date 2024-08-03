@@ -10,17 +10,21 @@ using MessagePack;
 public abstract class DeploymentBranch 
     : IPolymorph, IDeploymentNode
 {
-    public Alliance Alliance { get; private set; }
+    public ERef<Alliance> Alliance { get; private set; }
     public int Id { get; private set; }
     public HashSet<DeploymentBranch> SubBranches { get; }
     public HashSet<GroupAssignment> Assignments { get; private set; }
-    [SerializationConstructor] protected 
-        DeploymentBranch(Alliance alliance, LogicKey key)
+
+
+    [SerializationConstructor] protected DeploymentBranch(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<GroupAssignment> assignments)
     {
         Alliance = alliance;
-        SubBranches = new HashSet<DeploymentBranch>();
-        Assignments = new HashSet<GroupAssignment>();
+        Id = id;
+        SubBranches = subBranches;
+        Assignments = assignments;
     }
+
+
 
     public float GetPowerPointsAssigned(Data data)
     {
@@ -103,7 +107,7 @@ public abstract class DeploymentBranch
                 var cell2 = a2.GetCharacteristicCell(key.Data);
                 var cost = 0f;
                 var path = d.Context.FriendlyPathCache.GetOrAdd((stratMove,
-                    alliance, cell1, cell2));
+                    alliance.Get(d), cell1, cell2));
                 if (path == null)
                 {
                     cost = Mathf.Inf;
