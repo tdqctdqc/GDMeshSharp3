@@ -1420,12 +1420,6 @@
                     "Name": "UniversityMakeable",
                     "BuildCosts": [
                         {
-                            "guid": "5d61377f-c80e-47f9-99e2-a0d1cdb2fae0",
-                            "Name": "aea719f8-8bac-47bc-bf80-61145aa2b677",
-                            "Value": 2000,
-                            "id": "0"
-                        },
-                        {
                             "guid": "b8eb73d5-6760-4d2a-9a3b-8a5ea824bbfd",
                             "Name": "f0689f87-953e-435e-8d78-8ced9fd75eee",
                             "Value": 30000,
@@ -3684,7 +3678,7 @@
                     "guid": "a5c84134-bfeb-4be8-84c7-686fb70f00b5",
                     "id": "11",
                     "Name": "Industry2",
-                    "ResearchCost": 5000,
+                    "ResearchCost": 5000000000,
                     "Prereqs": [
                         {
                             "guid": "c79b211f-5daa-45a8-8a9a-e6837a6344a6",

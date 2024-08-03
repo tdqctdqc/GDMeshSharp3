@@ -44,15 +44,23 @@ public class RegimeTechnology
         }
     }
 
-    public void AddProgress(Regime regime, float rawProgress, ProcedureKey key)
+    public void AddProgress(Regime regime, float rawProgress, 
+        ProcedureKey key)
     {
         var progress = Research.GetEffectiveAmount(rawProgress, regime, key.Data);
+        if (progress == 0f)
+        {
+            return;
+        }
         Overflow += progress;
 
         if (Current.Fulfilled())
         {
+            var current = Current.Get(key.Data);
             var total = Overflow + Progresses[Current];
-            var cost = Current.Get(key.Data).ResearchCost;
+            var cost = current.ResearchCost;
+            var before = Progresses[Current];
+
             var remaining = cost - total;
             if (remaining <= 0f)
             {
@@ -63,7 +71,7 @@ public class RegimeTechnology
             }
             else
             {
-                Progresses[Current] += Overflow;
+                Progresses[Current] = total;
                 Overflow = 0f;
             }
         }
