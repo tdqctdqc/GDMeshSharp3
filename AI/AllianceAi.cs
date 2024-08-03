@@ -1,26 +1,33 @@
 
 public class AllianceAi
 {
-    private Alliance _alliance;
+    public ERef<Alliance> Alliance { get; private set; }
     public AllianceMilitaryAi Military { get; private set; }
     public DiplomacyAi Diplomacy { get; private set; }
 
-    public AllianceAi(Alliance alliance, Data data)
+    public AllianceAi(ERef<Alliance> alliance, AllianceMilitaryAi military, DiplomacyAi diplomacy)
     {
-        _alliance = alliance;
-        Military = new AllianceMilitaryAi(alliance, data);
-        Diplomacy = new DiplomacyAi(alliance);
+        Alliance = alliance;
+        Military = military;
+        Diplomacy = diplomacy;
+    }
+
+    public static AllianceAi Construct(Alliance alliance, Data data)
+    {
+        return new AllianceAi(alliance.MakeRef(),
+            AllianceMilitaryAi.Construct(alliance, data),
+            new DiplomacyAi());
     }
 
     public void CalculateMajor(RegimeTurnOrders orders,
         Alliance alliance, LogicKey key)
     {
         Military.Calculate(key, alliance);
-        Diplomacy.Calculate(orders, key);
+        Diplomacy.Calculate(alliance, orders, key);
     }
 
     public void CalculateMinor(LogicKey key)
     {
-        Military.CalculateMinor(key, _alliance);
+        Military.CalculateMinor(key, Alliance.Get(key.Data));
     }
 }

@@ -4,7 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -690,6 +694,7 @@
       <workItem from="1722533720792" duration="1058000" />
       <workItem from="1722634280647" duration="3420000" />
       <workItem from="1722693023932" duration="6325000" />
+      <workItem from="1722701824633" duration="4877000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -901,14 +906,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00272" summary="implemented army moves">
-      <option name="closed" value="true" />
-      <created>1721317386902</created>
-      <option name="number" value="00272" />
-      <option name="presentableId" value="LOCAL-00272" />
-      <option name="project" value="LOCAL" />
-      <updated>1721317386902</updated>
-    </task>
     <task id="LOCAL-00273" summary="made multiple highlighters">
       <option name="closed" value="true" />
       <created>1721321600729</created>
@@ -1053,7 +1050,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722699532286</updated>
     </task>
-    <option name="localTasksCounter" value="291" />
+    <task id="LOCAL-00291" summary="changed moisture gen again, scaled 'diffusion' with planet dim">
+      <option name="closed" value="true" />
+      <created>1722706410408</created>
+      <option name="number" value="00291" />
+      <option name="presentableId" value="LOCAL-00291" />
+      <option name="project" value="LOCAL" />
+      <updated>1722706410408</updated>
+    </task>
+    <option name="localTasksCounter" value="292" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1075,7 +1080,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="finished depot" />
     <MESSAGE value="tweaking combat" />
     <MESSAGE value="adding technology" />
     <MESSAGE value="adding research, fixed bug w/ default model adds where wasnt assigning ids" />
@@ -1100,6 +1104,7 @@
     <MESSAGE value="making ai serializable" />
     <MESSAGE value="bug fixes for unit make priority, research overflow" />
     <MESSAGE value="ditto" />
-    <option name="LAST_COMMIT_MESSAGE" value="ditto" />
+    <MESSAGE value="changed moisture gen again, scaled 'diffusion' with planet dim" />
+    <option name="LAST_COMMIT_MESSAGE" value="changed moisture gen again, scaled 'diffusion' with planet dim" />
   </component>
 </project>

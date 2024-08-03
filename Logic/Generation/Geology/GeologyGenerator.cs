@@ -149,6 +149,7 @@ public class GeologyGenerator : Generator
         var seaMinAlt = .1f;
         var seaMaxAlt = .45f;
         
+        
         var landRatio = Data.GenMultiSettings.GeologySettings.LandRatio.Value;
         var numSeaMasses = Mathf.FloorToInt(numMasses * (1f - landRatio));
 

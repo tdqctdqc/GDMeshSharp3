@@ -4,45 +4,41 @@ using System.Linq;
 
 public class StrategicAi
 {
-    public Alliance Alliance { get; private set; }
-    private Data _data;
     public HashSet<Theater> Theaters { get; private set; }
 
-    public StrategicAi(Data data, Alliance alliance)
+    public StrategicAi(HashSet<Theater> theaters)
     {
-        _data = data;
-        Alliance = alliance;
-        
+        Theaters = theaters;
     }
-    public void Calculate(Data d)
+
+    public void Calculate(Alliance alliance, Data d)
     {
-        MakeTheaters();
+        MakeTheaters(alliance, d);
         foreach (var theater in Theaters)
         {
-            CalculateTheater(theater, d);
+            CalculateTheater(alliance, theater, d);
         }
     }
 
-    private void MakeTheaters()
+    private void MakeTheaters(Alliance alliance, Data d)
     {
-        var alliance = Alliance;
-        var cells = _data.Planet.MapAux
+        var cells = d.Planet.MapAux
             .CellHolder.Cells.Values
             .Where(c => alliance.Members.Contains(c.Controller))
             .ToArray();
         var unions = UnionFind.Find(cells,
             (p, q) => true,
-            p => p.GetNeighbors(_data));
+            p => p.GetNeighbors(d));
         Theaters = new HashSet<Theater>();
         foreach (var union in unions)
         {
-            var theater = Theater.Construct(Alliance, union.ToHashSet(), _data);
+            var theater = Theater.Construct(alliance, union.ToHashSet(), d);
             Theaters.Add(theater);
         }
         
     }
     
-    private void CalculateTheater(Theater theater, Data d)
+    private void CalculateTheater(Alliance alliance, Theater theater, Data d)
     {
         //todo alter weights for rival not at war
         
@@ -113,7 +109,7 @@ public class StrategicAi
         {
             var pp = d.Context.PowerPoints[hCell];
             var adj = hCell.GetNeighbors(d)
-                .Count(c => c.Controller.RefId == Alliance.Id);
+                .Count(c => c.Controller.RefId == alliance.Id);
             return pp / adj;
         }
     }

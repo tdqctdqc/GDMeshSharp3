@@ -8,18 +8,25 @@ public class AllianceMilitaryAi
 {
     public DeploymentAi Deployment { get; private set; }
     public StrategicAi Strategic { get; private set; }
-    public AllianceMilitaryAi(Alliance a, Data d)
+    public static AllianceMilitaryAi Construct(Alliance a, Data d)
     {
-        Deployment = DeploymentAi.Construct(a, d);
-        Strategic = new StrategicAi(d, a);
+        return new AllianceMilitaryAi(DeploymentAi.Construct(a, d),
+            new StrategicAi(new HashSet<Theater>()));
     }
+
+    public AllianceMilitaryAi(DeploymentAi deployment, StrategicAi strategic)
+    {
+        Deployment = deployment;
+        Strategic = strategic;
+    }
+
     public void Calculate(LogicKey key, Alliance alliance)
     {
     }
 
     public void CalculateMinor(LogicKey key, Alliance alliance)
     {
-        Strategic.Calculate(key.Data);
+        Strategic.Calculate(alliance, key.Data);
         Deployment.Calculate(this, key);
     }
 }

@@ -41,7 +41,7 @@ public static class PreCellGenerator
         sw.Reset();
 
         sw.Start();
-        var graph = delaunator.GetVoronoiGraphNew(result, dim, key);
+        var graph = delaunator.GetPreCellVoronoiGraphNew(result, dim, key);
         sw.Stop();
         // GD.Print($"make graph {sw.Elapsed.TotalMilliseconds}");
         sw.Reset();

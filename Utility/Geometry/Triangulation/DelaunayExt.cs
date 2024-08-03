@@ -25,7 +25,7 @@ public static class DelaunayExt
     }
     public static (Vector2I p1, Vector2I p2,
         (Vector2I, Vector2I))[] 
-        GetVoronoiGraphNew(this Delaunator delaunay, 
+        GetPreCellVoronoiGraphNew(this Delaunator delaunay, 
             PreCellResult preCellResult,
             Vector2I dim, GenKey key)
     {
