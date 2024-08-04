@@ -34,8 +34,6 @@ public class LineMission : ArmyMission
     public override void Draw(Army group, Vector2 relTo, 
         MeshBuilder mb, Data d)
     {
-        var innerColor = group.Regime.Get(d).PrimaryColor;
-        var outerColor = group.Regime.Get(d).PrimaryColor;
         var squareSize = 10f;
         var lineSize = 5f;
         var alliance = group.Regime.Get(d).GetAlliance(d);

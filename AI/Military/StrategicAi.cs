@@ -1,4 +1,5 @@
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MessagePack;
@@ -24,14 +25,16 @@ public class StrategicAi
     public void Calculate(Alliance alliance, LogicKey key)
     {
         var d = key.Data;
-        if (Theaters.Count() == 0)
-        {
-            MakeTheatersFromScratch(alliance, key);
-        }
-        else
-        {
-            ValidateTheaters(alliance, key);
-        }
+        
+        MakeTheatersFromScratch(alliance, key);
+        // if (Theaters.Count() == 0)
+        // {
+        //     
+        // }
+        // else
+        // {
+        //     ValidateTheaters(alliance, key);
+        // }
         foreach (var theater in Theaters.Entities(d))
         {
             CalculateTheater(alliance, theater, key);
@@ -56,9 +59,10 @@ public class StrategicAi
         Theaters = ERefSet<Theater>.Construct(new HashSet<int>());
         foreach (var union in unions)
         {
-            var theater = Theater.CreateWithFrontlines(alliance, 
+            var theater = Theater.Create(alliance, 
                 union, key);
             Theaters.Add(theater, key);
+            theater.MakeFrontlinesFromScratch(key);
             foreach (var frontline in theater.Frontlines.Entities(d))
             {
                 FrontlineAis.Add(frontline.MakeRef(), FrontlineAi.Construct(frontline));
@@ -76,6 +80,32 @@ public class StrategicAi
         var unions = UnionFind.Find<Cell, HashSet<Cell>>(cells,
             (p, q) => true,
             p => p.GetNeighbors(d));
+        var merge = unions.ToDictionary(v => v,
+            v => new List<Theater>());
+        foreach (var theater in Theaters.Entities(d).ToArray())
+        {
+            var theaterCell = theater.Cells
+                .Select(r => r.Get(d))
+                .Where(c => c.FriendlyControlled(alliance, d))
+                .FirstOrDefault();
+            if (theaterCell is null)
+            {
+                //clean up
+                Theaters.Remove(theater.MakeRef(), key);
+                key.Data.RemoveEntity(theater.Id, key);
+                continue;
+            }
+            var mergeIntos = merge
+                .Keys
+                .Where(k => k.Contains(theaterCell));
+            foreach (var mergeInto in mergeIntos)
+            {
+                merge[mergeInto].Add(theater);
+            }
+        }
+        
+
+
     }
     
     

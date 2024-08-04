@@ -5,27 +5,27 @@ using System.Linq;
 using Godot;
 
 [MessagePack.Union(0, typeof(FrontlineAssignment))]
-public abstract class GroupAssignment : IDeploymentNode, 
+public abstract class ArmyAssignment : IDeploymentNode, 
     IIdentifiable
 {
     public int Id { get; private set; }
     public DeploymentBranch Parent { get; }
     public ERef<Alliance> Alliance { get; private set; }
-    public HashSet<ERef<Army>> Groups { get; }
+    public HashSet<ERef<Army>> Armies { get; }
     
 
-    protected GroupAssignment(int id, DeploymentBranch parent, ERef<Alliance> alliance, HashSet<ERef<Army>> groups)
+    protected ArmyAssignment(int id, DeploymentBranch parent, ERef<Alliance> alliance, HashSet<ERef<Army>> armies)
     {
         Id = id;
         Parent = parent;
         Alliance = alliance;
-        Groups = groups;
+        Armies = armies;
     }
 
     public void RemoveGroup(DeploymentAi ai, Army g)
     {
-        if (Groups.Contains(g.MakeRef()) == false) throw new Exception();
-        Groups.Remove(g.MakeRef());
+        if (Armies.Contains(g.MakeRef()) == false) throw new Exception();
+        Armies.Remove(g.MakeRef());
         RemoveGroupFromData(ai, g);
     }
     protected abstract void RemoveGroupFromData(DeploymentAi ai, Army g);
@@ -33,14 +33,17 @@ public abstract class GroupAssignment : IDeploymentNode,
     public void PushGroup(DeploymentAi ai, Army g, LogicKey key)
     {
         AddGroupToData(ai, g, key.Data);
-        if (Groups.Contains(g.MakeRef())) throw new Exception();
-        Groups.Add(g.MakeRef());
+        if (Armies.Contains(g.MakeRef())) throw new Exception();
+        Armies.Add(g.MakeRef());
     }
+
+    public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
+
     protected abstract void AddGroupToData(DeploymentAi ai, Army g, Data d);
     public abstract float GetPowerPointNeed(Data d);
     public float GetPowerPointsAssigned(Data data)
     {
-        return Groups.Sum(g => g.Get(data).GetPowerPoints(data));
+        return Armies.Sum(g => g.Get(data).GetPowerPoints(data));
     }
 
 

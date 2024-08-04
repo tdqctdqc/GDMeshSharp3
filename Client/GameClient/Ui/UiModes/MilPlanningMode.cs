@@ -5,11 +5,13 @@ using Godot;
 public class MilPlanningMode : UiMode
 {
     private MouseOverHandler _mouseOver;
-    private DefaultSettingsOption<Alliance> _alliance;
+    public DefaultSettingsOption<Alliance> Alliance { get; private set; }
+    public DefaultSettingsOption<IDeploymentNode> DeploymentNode { get; private set; }
+    
     private MapOverlayDrawer _cellOverlay, _plansOverlay;
 
     public MilPlanningMode(Client client) : base(client,
-        "MilitaryPlanning")
+        "Military Planning")
     {
         _mouseOver = new MouseOverHandler(client.Data);
         _mouseOver.ChangedCell += c => 
@@ -17,13 +19,40 @@ public class MilPlanningMode : UiMode
             _cellOverlay.Clear();
             _mouseOver.Highlight(_cellOverlay);
         };
-        _alliance = new DefaultSettingsOption<Alliance>("Alliance", null);
-        _alliance.SettingChanged.Subscribe(n =>
+        Alliance = new DefaultSettingsOption<Alliance>("Alliance", null);
+        Alliance.SettingChanged.Subscribe(n =>
         {
-            DrawRegimePlans();
+            var alliance = n.newVal;
+            if (alliance is null || alliance.Leader.Get(_client.Data).IsPlayerRegime(_client.Data))
+            {
+                DeploymentNode.Set(null);
+            }
+            else
+            {
+                var root = alliance.GetAi(client.Data).Military.Deployment.Root;
+                DeploymentNode.Set(root);
+            }
+            Draw(client);
         });
+
+        DeploymentNode = new DefaultSettingsOption<IDeploymentNode>("Deployment Node",
+            null);
+        DeploymentNode.SettingChanged.Subscribe(n =>
+        {
+            Draw(client);
+        });
+
+
     }
 
+    private void Draw(Client c)
+    {
+        _plansOverlay.Clear();
+        var node = DeploymentNode.Value;
+        if (node is null) return;
+        var relTo = node.GetCharacteristicCell(c.Data).GetCenter();
+        _plansOverlay.Draw(mb => node.Draw(mb, relTo, c.Data), relTo);
+    }
     public override void Process(float delta)
     {
         _mouseOver.Process(delta);
@@ -36,7 +65,7 @@ public class MilPlanningMode : UiMode
             && mb.Pressed == false)
         {
             var cell = _mouseOver.MouseOverCell;
-            _alliance.Set(cell.Controller.Get(_client.Data).GetAlliance(_client.Data));
+            Alliance.Set(cell.Controller.Get(_client.Data)?.GetAlliance(_client.Data));
         }
     }
 
@@ -48,34 +77,7 @@ public class MilPlanningMode : UiMode
     }
 
 
-    private void DrawRegimePlans()
-    {
-        _plansOverlay.Clear();
-        var alliance = _alliance.Value;
-        if (alliance is null) return;
-        var ai = _client.Data.HostLogicData.AllianceAis[alliance];
-        var relTo = alliance.Leader.Get(_client.Data).GetCells(_client.Data).First().GetCenter();
-        if (ai.Military.Strategic.Theaters == null) return;
-        foreach (var theater in ai.Military.Strategic.Theaters.Entities(_client.Data))
-        {
-            foreach (var frontline in theater.Frontlines.Entities(_client.Data))
-            {
-                var pos = frontline.Faces.First().GetNative(_client.Data).GetCenter();
-                if (frontline.AdvanceInto != null)
-                {
-                    foreach (var c in frontline.AdvanceInto)
-                    {
-                        var cell = c.Get(_client.Data);
-                        _plansOverlay.Draw(mb => mb.DrawPolygon(cell.RelBoundary,
-                                new Color(Colors.Black, .5f)),
-                            cell.RelTo);
-                    }
-                }
-                _plansOverlay.Draw(mb => mb.DrawFrontFaces(frontline.Faces, 
-                    Colors.Black, 3f, pos, _client.Data), pos);
-            }
-        }
-    }
+    
     public override void Clear()
     {
         var mg = _client.GetComponent<MapGraphics>();

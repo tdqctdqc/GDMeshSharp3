@@ -13,10 +13,10 @@ public abstract class DeploymentBranch
     public ERef<Alliance> Alliance { get; private set; }
     public int Id { get; private set; }
     public HashSet<DeploymentBranch> SubBranches { get; }
-    public HashSet<GroupAssignment> Assignments { get; private set; }
+    public HashSet<ArmyAssignment> Assignments { get; private set; }
 
 
-    [SerializationConstructor] protected DeploymentBranch(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<GroupAssignment> assignments)
+    [SerializationConstructor] protected DeploymentBranch(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<ArmyAssignment> assignments)
     {
         Alliance = alliance;
         Id = id;
@@ -66,6 +66,9 @@ public abstract class DeploymentBranch
         }
         child.PushGroup(ai, g, key);
     }
+
+    public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
+
     public void GiveOrders(DeploymentAi ai, LogicKey key)
     {
         foreach (var ga in Assignments)
@@ -83,7 +86,8 @@ public abstract class DeploymentBranch
         var d = key.Data;
         var assignments =
             GetDescendentAssignments()
-                .OrderBy(a => a.GetSatisfiedRatio(key.Data)).ToList();
+            .OrderBy(a => a.GetSatisfiedRatio(key.Data))
+            .ToList();
         var needs = assignments
             .ToDictionary(a => a,
             a => a.GetPowerPointNeed(key.Data));
@@ -91,7 +95,6 @@ public abstract class DeploymentBranch
             .Where(kvp => kvp.Value > 0f)
             .Count();
         if (numWant == 0) return;
-        
         
         var stratMove = key.Data.Models.MoveTypes.StrategicMove;
         var alliance = Alliance;
@@ -123,11 +126,8 @@ public abstract class DeploymentBranch
             }
         }
 
-        
-        
         var maxIter = assignments
-            .Sum(a => a.Groups.Count) 
-             / 2 + 1;
+            .Sum(a => a.Armies.Count) + 1;
         
         var iter = 0;
         
@@ -138,7 +138,7 @@ public abstract class DeploymentBranch
                 var a = assignments[i];
                 iter++;
                 var need = needs[a];
-                if (need == 0) continue;
+                if (need <= 0) continue;
                 var ratio = a.GetPowerPointsAssigned(key.Data) / need;
                 
                 for (var j = assignments.Count - 1; j >= 0; j--)
@@ -151,13 +151,13 @@ public abstract class DeploymentBranch
                             is Army g)
                     {
                         a.PushGroup(ai, g, key);
-                        break;
+                        // break;
                     }
                 }
             }
         }
 
-        Assignments.RemoveWhere(b => b.Groups.Count == 0);
+        Assignments.RemoveWhere(b => b.Armies.Count == 0);
         
         foreach (var b in SubBranches)
         {
@@ -166,9 +166,9 @@ public abstract class DeploymentBranch
 
         SubBranches.RemoveWhere(b => b.SubBranches.Count == 0 && b.Assignments.Count == 0);
         
-        bool eligibleToTakeFrom(GroupAssignment assgn, float ratio)
+        bool eligibleToTakeFrom(ArmyAssignment assgn, float ratio)
         {
-            if (assgn.Groups.Count == 0) return false;
+            if (assgn.Armies.Count == 0) return false;
             var need = needs[assgn];
             if (need == 0f) return true;
             var assgnRatio = assgn.GetPowerPointsAssigned(key.Data) / need;
@@ -177,7 +177,13 @@ public abstract class DeploymentBranch
         }
     }
 
-    public IEnumerable<GroupAssignment> GetDescendentAssignments()
+    public IEnumerable<IDeploymentNode> GetDescendentNodes()
+    {
+        return Assignments
+            .Concat<IDeploymentNode>(SubBranches)
+            .Concat(SubBranches.SelectMany(s => s.GetDescendentNodes()));
+    }
+    public IEnumerable<ArmyAssignment> GetDescendentAssignments()
     {
         return Assignments.Union(SubBranches.SelectMany(s => s.GetDescendentAssignments()));
     }

@@ -300,98 +300,22 @@ public class Assigner
             return faces.Count - 1;
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     public static Dictionary<TUnit, Vector2I> 
         PickInOrderAndAssignAlongFaces<TUnit, TFace>(
-        IReadOnlyList<TFace> faces,
-        IReadOnlyList<TUnit> units,
-        Func<TUnit, float> getStrength,
-        Func<TFace, float> getFaceCost)
-    {
-        if (faces.Count == 0) throw new Exception();
-        if (faces.Count == 1) return units.ToDictionary(u => u, 
-            u => new Vector2I(0, 0));
-
-        var totalCost = faces.Sum(getFaceCost);
-        if (totalCost <= 0f) throw new Exception();
-        if (float.IsNaN(totalCost)) throw new Exception();
-        var totalStrength = units.Sum(getStrength);
-        if (totalStrength < 0f) throw new Exception();
-        if (totalStrength == 0f)
-        {
-            totalStrength = units.Count();
-            getStrength = u => 1f;
-        }
-        if (float.IsNaN(totalStrength)) throw new Exception();
-
-        var res = new Dictionary<TUnit, Vector2I>();
-        var faceProportions = new Vector2[faces.Count];
-        
-        var runningCost = 0f;
-        for (var i = 0; i < faces.Count; i++)
-        {
-            if (float.IsNaN(runningCost)) throw new Exception();
-            var startProp = runningCost / totalCost;
-            runningCost += getFaceCost(faces[i]);
-            var endProp = runningCost / totalCost;
-            if (i == faces.Count - 1) endProp = 1f;
-            faceProportions[i] = new Vector2(startProp, endProp);
-        }
-
-        var runningStrength = 0f;
-        
-        
-        for (var j = 0; j < units.Count; j++)
-        {
-            var picked = units[j];
-            var startProp = runningStrength / totalStrength;
-            runningStrength += getStrength(picked);
-            var endProp = runningStrength / totalStrength;
-            if (j == units.Count - 1) endProp = 1f;
-            
-            var startFace = getFaceAtProportion(startProp);
-            var endFace = getFaceAtProportion(endProp);
-            var list = new List<TFace>();
-            for (int i = startFace; i <= endFace; i++)
-            {
-                list.Add(faces[i]);
-            }
-            res.Add(picked, new Vector2I(startFace, endFace));
-        }
-
-        return res;
-        
-        int getFaceAtProportion(float prop)
-        {
-            if (prop < 0) throw new Exception();
-            if (prop == 0f) return 0;
-            if (prop >= 1f) return faces.Count - 1;
-            for (var i = 0; i < faceProportions.Length; i++)
-            {
-                var faceProps = faceProportions[i];
-                if (faceProps.X <= prop && prop <= faceProps.Y)
-                {
-                    return i;
-                }
-            }
-
-            return faces.Count - 1;
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    public static Dictionary<TUnit, Vector2I> 
-        PickInOrderAndAssignAlongFaces2<TUnit, TFace>(
         IReadOnlyList<TFace> faces,
         IReadOnlyList<TUnit> units,
         Func<TUnit, float> getStrength,

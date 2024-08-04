@@ -6,10 +6,6 @@ using Godot;
 public partial class PolyPanel : PanelContainer
 {
     private VBoxContainer _inner;
-    private PolyPanel()
-        : base()
-    {
-    }
     public PolyPanel(Client c)
     {
         var margin = new MarginContainer();

@@ -7,44 +7,45 @@ using MessagePack;
 
 public class DeploymentAi
 {
-    public Alliance Alliance { get; private set; }
-    private DeploymentRoot _root;
-    private Data _data;
+    public ERef<Alliance> Alliance { get; private set; }
+    public DeploymentRoot Root { get; private set; }
     public IdDispenser IdDispenser { get; private set; }
     public static DeploymentAi Construct(Alliance a, Data d)
     {
-        var ai = new DeploymentAi(a, d);
-        
+        var ai = new DeploymentAi(a.MakeRef(),
+            null,
+            new IdDispenser(0));
         return ai;
     }
-    private DeploymentAi(Alliance a, 
-        Data d)
+
+    public DeploymentAi(ERef<Alliance> alliance, DeploymentRoot root, IdDispenser idDispenser)
     {
-        _data = d;
-        Alliance = a;
-        IdDispenser = new IdDispenser(0);
+        Alliance = alliance;
+        Root = root;
+        IdDispenser = idDispenser;
     }
 
     public void Clear(LogicKey key)
     {
         IdDispenser = new IdDispenser(0);
+        Root = null;
     }
     public void Calculate(Alliance alliance, LogicKey key)
     {
         Clear(key);
-        _root = new DeploymentRoot(alliance.MakeRef(),
+        Root = new DeploymentRoot(alliance.MakeRef(),
             key.Data.IdDispenser.TakeId(),
             new HashSet<DeploymentBranch>(), 
-            new HashSet<GroupAssignment>());
-        _root.MakeTheaters(alliance.GetAi(key.Data).Military, key);
-        _root.GrabUnassignedGroups(key);
-        _root.ShiftGroups(this, key);
-        _root.GiveOrders(this, key);
+            new HashSet<ArmyAssignment>());
+        Root.MakeTheaters(alliance.GetAi(key.Data).Military, key);
+        Root.GrabUnassignedGroups(key);
+        Root.ShiftGroups(this, key);
+        Root.GiveOrders(this, key);
     }
     
 
     public DeploymentRoot GetRoot()
     {
-        return _root;
+        return Root;
     }
 }

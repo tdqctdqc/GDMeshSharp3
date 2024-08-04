@@ -6,7 +6,7 @@ using System.Linq;
 using Godot;
 using MessagePack;
 
-public class FrontlineAssignment : GroupAssignment
+public class FrontlineAssignment : ArmyAssignment
 {
     public ERef<Frontline> Frontline { get; private set; }
     public Color Color { get; private set; }
@@ -20,17 +20,17 @@ public class FrontlineAssignment : GroupAssignment
         LogicKey key)
     {
         return new FrontlineAssignment(ai.IdDispenser.TakeId(),
-            parent, ai.Alliance.MakeRef(),
+            parent, ai.Alliance,
             new HashSet<ERef<Army>>(),
             frontline.MakeRef(), ColorsExt.GetRandomColor(),
             new HashSet<ERef<Army>>(), new HashSet<ERef<Army>>());
     }
 
     public FrontlineAssignment(int id, DeploymentBranch parent, 
-        ERef<Alliance> alliance, HashSet<ERef<Army>> groups, 
+        ERef<Alliance> alliance, HashSet<ERef<Army>> armies, 
         ERef<Frontline> frontline, Color color, 
         HashSet<ERef<Army>> lineGroups, 
-        HashSet<ERef<Army>> insertingGroups) : base(id, parent, alliance, groups)
+        HashSet<ERef<Army>> insertingGroups) : base(id, parent, alliance, armies)
     {
         Frontline = frontline;
         Color = color;
@@ -43,6 +43,11 @@ public class FrontlineAssignment : GroupAssignment
     {
         LineGroups.Remove(g.MakeRef());
         InsertingGroups.Remove(g.MakeRef());
+    }
+
+    public override void Draw(MeshBuilder mb, Vector2 relTo, Data d)
+    {
+        Frontline.Get(d).Draw(mb, relTo, d);
     }
 
     protected override void AddGroupToData(DeploymentAi ai,
@@ -69,22 +74,22 @@ public class FrontlineAssignment : GroupAssignment
         Func<Army, float> suitability, 
         LogicKey key)
     {
-        if (Groups.Count < 2) return null;
-        if (Groups.Sum(g => g.Get(key.Data).Units.Count()) < Frontline.Get(key.Data).Faces.Count * .75f)
+        if (Armies.Count < 2) return null;
+        if (Armies.Sum(g => g.Get(key.Data).Units.Count()) < Frontline.Get(key.Data).Faces.Count * .75f)
         {
             return null;
         }
         if (InsertingGroups.Count > 0)
         {
             var group = InsertingGroups.MaxBy(r => suitability(r.Get(key.Data)));
-            Groups.Remove(group);
+            Armies.Remove(group);
             InsertingGroups.Remove(group);
             return group.Get(key.Data);
         }
         else if (LineGroups.Count > 0)
         {
             var group = LineGroups.MaxBy(g => suitability(g.Get(key.Data)));
-            Groups.Remove(group);
+            Armies.Remove(group);
             LineGroups.Remove(group);
             return group.Get(key.Data);
         }
@@ -111,6 +116,11 @@ public class FrontlineAssignment : GroupAssignment
         var frontline = Frontline.Get(key.Data);
         var frontlineAi = Alliance.Get(key.Data).GetAi(key.Data)
             .Military.Strategic.FrontlineAis[Frontline];
+        var lineGroups = LineGroups
+            .Select(g => g.Get(key.Data)).ToArray();
+        var groupsInOrder = MilUtil.GetLineGroupsInOrder(
+            frontline.Faces,
+            lineGroups, key.Data);
         
         var lineAssignments = MilUtil
             .GetGroupLineAssignments(Alliance.Get(key.Data),
@@ -119,48 +129,27 @@ public class FrontlineAssignment : GroupAssignment
                 v => GetFaceCost(frontlineAi, v, key.Data),
                 key.Data);
         
-        var toTake = frontline.AdvanceInto.ToHashSet();
-
-        
-        if (frontline.AdvanceInto is null
-            || frontline.AdvanceInto.Count == 0)
-        {
-            foreach (var (group, lineAssignment) in lineAssignments)
-            {
-                var order = new LineMission(
-                    new RefSet<CellRef>(lineAssignment.Select(f => f.MakeRef()).ToHashSet()),
-                    new RefSet<CellRef>(new HashSet<CellRef>()),
-                    false);
-                var proc = new SetUnitOrderProcedure(
-                    group.MakeRef(), order);
-                key.SendMessage(proc);
-            }
-
-            return;
-        }
-
-            
-            
-
-        foreach (var (group, lineAssignment) 
+        foreach (var (group, lineAssignment)
                  in lineAssignments)
         {
             var order = new LineMission(
-                
                 new RefSet<CellRef>(
-                    lineAssignment
-                        .Select(c => c.MakeRef()).ToHashSet()),
-                getAdvanceInto(lineAssignment),
-                true);
+                    lineAssignment.Select(f => f.MakeRef()).ToHashSet()),
+                new RefSet<CellRef>(new HashSet<CellRef>()),
+                false);
             var proc = new SetUnitOrderProcedure(
-                group.MakeRef(),
-                order);
+                group.MakeRef(), order);
             key.SendMessage(proc);
         }
 
         RefSet<CellRef> getAdvanceInto(HashSet<Cell> lineAssignment)
         {
             var res = new HashSet<CellRef>();
+            if (frontline.AdvanceInto is null
+                || frontline.AdvanceInto.Count == 0)
+            {
+                return new RefSet<CellRef>(res);
+            }
             foreach (var cell in lineAssignment)
             {
                 foreach (var n1 in cell.GetNeighbors(key.Data)
@@ -191,13 +180,13 @@ public class FrontlineAssignment : GroupAssignment
     private void SetLineAndInsertingGroups(LogicKey key)
     {
         var frontline = Frontline.Get(key.Data);
-        InsertingGroups = Groups.Where(g =>
+        InsertingGroups = Armies.Where(g =>
         {
             var a = g.Get(key.Data);
             return a.Units.Entities(key.Data)
                 .Any(u => frontline.Faces.Any(f => a.Cells.Contains(f.Native))) == false;
         }).ToHashSet();
-        LineGroups = Groups.Except(InsertingGroups).ToHashSet();
+        LineGroups = Armies.Except(InsertingGroups).ToHashSet();
     }
 
     private void HandleInsertingGroupsOrders(LogicKey key)
@@ -207,7 +196,7 @@ public class FrontlineAssignment : GroupAssignment
 
         var idealAssignments = MilUtil
             .GetGroupLineAssignments(Alliance.Get(key.Data), 
-                Groups.Select(g => g.Get(key.Data)), 
+                Armies.Select(g => g.Get(key.Data)), 
                 frontline.Faces,
                 v => GetFaceCost(ai, v, key.Data),
                 key.Data);

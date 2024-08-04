@@ -2,14 +2,15 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 
-public class UnoccupiedAssignment : GroupAssignment
+public class UnoccupiedAssignment : ArmyAssignment
 {
     public CellRef Cell { get; private set; }
 
     public UnoccupiedAssignment(int id, DeploymentBranch parent, 
-        ERef<Alliance> alliance, HashSet<ERef<Army>> groups, 
-        CellRef cell) : base(id, parent, alliance, groups)
+        ERef<Alliance> alliance, HashSet<ERef<Army>> armies, 
+        CellRef cell) : base(id, parent, alliance, armies)
     {
         Cell = cell;
     }
@@ -18,6 +19,12 @@ public class UnoccupiedAssignment : GroupAssignment
     {
         
     }
+
+    public override void Draw(MeshBuilder mb, Vector2 relTo, Data d)
+    {
+        
+    }
+
     protected override void AddGroupToData(DeploymentAi ai, Army g, Data d)
     {
         
@@ -45,9 +52,9 @@ public class UnoccupiedAssignment : GroupAssignment
         Func<Army, float> suitability, 
         LogicKey key)
     {
-        if (Groups.Count == 0) return null;
-        var g = Groups.MaxBy(v => suitability(v.Get(key.Data)));
-        Groups.Remove(g);
+        if (Armies.Count == 0) return null;
+        var g = Armies.MaxBy(v => suitability(v.Get(key.Data)));
+        Armies.Remove(g);
         return g.Get(key.Data);
     }
 }

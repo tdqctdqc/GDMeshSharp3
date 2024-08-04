@@ -49,6 +49,18 @@ public class Frontline : Entity
             .Sum(c => data.Context.PowerPoints[c]);
     }
 
+    public void Draw(MeshBuilder mb, Vector2 relTo, Data d)
+    {
+        foreach (var face in Faces)
+        {
+            mb.DrawCellBorder(
+                face.GetNative(d), face.GetForeign(d),
+                c => Colors.Black, 10f, relTo, d);
+            mb.DrawCellBorder(
+                face.GetNative(d), face.GetForeign(d),
+                c => Colors.White, 5f, relTo, d);
+        }
+    }
     public override void CleanUp(IWriteKey key)
     {
         

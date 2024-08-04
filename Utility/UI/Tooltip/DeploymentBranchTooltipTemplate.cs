@@ -24,9 +24,9 @@ public class DeploymentBranchTooltipTemplate : TooltipTemplate<DeploymentBranch>
         foreach (var c in branch.Assignments)
         {
             panel.CreateLabelAsChild($"\t{c.GetType().Name}");
-            if (c is GroupAssignment g)
+            if (c is ArmyAssignment g)
             {
-                panel.CreateLabelAsChild($"\t\tGroups: {g.Groups.Count}");
+                panel.CreateLabelAsChild($"\t\tGroups: {g.Armies.Count}");
             }
             panel.CreateLabelAsChild($"\aAssigned {c.GetPowerPointsAssigned(d)}");
             panel.CreateLabelAsChild($"\tNeeded {c.GetPowerPointNeed(d)}");

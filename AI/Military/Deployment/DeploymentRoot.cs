@@ -8,7 +8,7 @@ using MessagePack;
 public class DeploymentRoot : DeploymentBranch
 {
     
-    public DeploymentRoot(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<GroupAssignment> assignments) : base(alliance, id, subBranches, assignments)
+    public DeploymentRoot(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<ArmyAssignment> assignments) : base(alliance, id, subBranches, assignments)
     {
     }
 
@@ -19,10 +19,10 @@ public class DeploymentRoot : DeploymentBranch
             var theaterBranch = new TheaterBranch(Alliance, 
                 key.Data.IdDispenser.TakeId(),
                 new HashSet<DeploymentBranch>(),
-                new HashSet<GroupAssignment>(),
+                new HashSet<ArmyAssignment>(),
                 theater.MakeRef());
             SubBranches.Add(theaterBranch);
-            theaterBranch.MakeFronts(ai, key);
+            theaterBranch.MakeFrontAssignments(ai, key);
         }
     }
 
@@ -32,15 +32,15 @@ public class DeploymentRoot : DeploymentBranch
         var ai = key.Data.HostLogicData.AllianceAis[alliance]
             .Military.Deployment;
 
-        var freeGroups =
+        var free =
             key.Data.GetAll<Army>()
                 .Where(g => alliance.Members.Contains(g.Regime))
             .ToHashSet();
-        if (freeGroups.Count == 0) return;
+        if (free.Count == 0) return;
         var taken = GetDescendentAssignments()
-            .SelectMany(a => a.Groups);
-        freeGroups.ExceptWith(taken.Select(t => t.Get(key.Data)));
-        var byCell = freeGroups.SortBy(g => g.GetHomeCell(key.Data));
+            .SelectMany(a => a.Armies);
+        free.ExceptWith(taken.Select(t => t.Get(key.Data)));
+        var byCell = free.SortBy(g => g.GetHomeCell(key.Data));
         foreach (var (cell, groups) in byCell)
         {
             var unassigned = new UnoccupiedAssignment(
@@ -61,7 +61,16 @@ public class DeploymentRoot : DeploymentBranch
     {
         return Alliance.Get(d).Leader.Get(d).Capital.Get(d);
     }
-    
+
+    public override void Draw(MeshBuilder mb, Vector2 relTo, Data d)
+    {
+        var ns = GetDescendentNodes();
+        foreach (var n in ns)
+        {
+            n.Draw(mb, relTo, d);
+        }
+    }
+
 
     public override Vector2 GetMapPosForDisplay(Data d)
     {

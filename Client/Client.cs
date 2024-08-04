@@ -194,7 +194,7 @@ public partial class Client : Node, IClient
         uiFrame.LeftBar.Add(() =>
             {
                 UiController.ModeOption.Choose<MilPlanningMode>();
-                return new PanelContainer();
+                return new MilPlanningPanel(this);
             },
             "Military Planning");
         UiController.ModeOption.Choose<PolyMode>();

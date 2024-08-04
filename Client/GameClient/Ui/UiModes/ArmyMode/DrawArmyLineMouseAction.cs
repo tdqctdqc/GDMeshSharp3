@@ -62,7 +62,7 @@ public class DrawArmyLineMouseAction : CellHashMouseAction
             .ToHashSet();
         var order = new LineMission(
             new RefSet<CellRef>(occupy),
-            new RefSet<CellRef>(army.LineMission.AdvanceInto.Refs), false);
+            new RefSet<CellRef>(army.LineMission.AdvanceInto.Refs.ToHashSet()), false);
         var proc = new SetUnitOrderProcedure(army.MakeRef(),
             order);
         var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;

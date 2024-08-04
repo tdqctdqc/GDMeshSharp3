@@ -289,10 +289,10 @@ public static class MilUtil
         var groupsInOrder = GetLineGroupsInOrder(faces,
             groups, d);
         var lineOrders = Assigner
-            .PickInOrderAndAssignAlongFaces2(
+            .PickInOrderAndAssignAlongFaces(
             faces, 
             groupsInOrder, 
-            a => a.GetPowerPoints(d),
+            a => 1f, //a.GetPowerPoints(d),
             getFaceCost);
         return lineOrders.ToDictionary(kvp => kvp.Key,
             kvp => faces.GetRange(kvp.Value.X, kvp.Value.Y - kvp.Value.X + 1)

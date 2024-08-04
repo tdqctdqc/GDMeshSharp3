@@ -91,13 +91,6 @@ public class Data
         EntitiesById.Add(e.Id, e);
         _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
     }
-    public void AddEntities<TEntity>(IReadOnlyList<TEntity> es, IWriteKey key) where TEntity : Entity
-    {
-        foreach (var e in es)
-        {
-            AddEntity(e, key);
-        }
-    }
     public void LoadEntities(IReadOnlyList<Entity> es, ICreateKey key) 
     {
 
