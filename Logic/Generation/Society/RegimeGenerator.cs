@@ -159,7 +159,7 @@ public class RegimeGenerator : Generator
         HashSet<RegimeTemplate> templates,
         Dictionary<MapPolygon, Regime> polyRegimes)
     {
-        var unions = UnionFind.Find(
+        var unions = UnionFind.Find<MapPolygon, List<MapPolygon>>(
             remainder, 
             (p1, p2) => p1.IsLand == p2.IsLand,
             p => p.Neighbors.Entities(_data)

@@ -7,9 +7,10 @@ using System.Collections.Generic;
 public static class UnionFind
 {
     
-    public static List<List<T>> Find<T>(IEnumerable<T> elements, 
+    public static List<TCol> Find<T, TCol>(IEnumerable<T> elements, 
         Func<T,T,bool> compare, 
-        Func<T, IEnumerable<T>> neighborFunc)
+        Func<T, IEnumerable<T>> neighborFunc) 
+            where TCol : ICollection<T>, new()
     {
         var unionFind = new UnionFind<T>(compare);
         foreach (var element in elements)
@@ -17,7 +18,7 @@ public static class UnionFind
             unionFind.AddElement(element, neighborFunc(element));   
         }
         unionFind.CheckRoots();
-        return unionFind.GetUnions();
+        return unionFind.GetUnions<TCol>();
     }
 }
 public class UnionFind<T>
@@ -56,9 +57,10 @@ public class UnionFind<T>
             _parents[element] = FindRoot(element);
         }
     }
-    public List<List<T>> GetUnions()
+    public List<TCol> GetUnions<TCol>()
+        where TCol : ICollection<T>, new()
     {
-        var unions = new Dictionary<T, List<T>>();
+        var unions = new Dictionary<T, TCol>();
         
         foreach (var entry in _parents)
         {
@@ -66,7 +68,7 @@ public class UnionFind<T>
             var parent = entry.Value;
             if (unions.ContainsKey(parent) == false)
             {
-                unions.Add(parent, new List<T>());
+                unions.Add(parent, new TCol());
             }
             unions[parent].Add(element);
         }

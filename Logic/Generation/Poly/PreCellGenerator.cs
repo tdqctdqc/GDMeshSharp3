@@ -371,7 +371,7 @@ public static class PreCellGenerator
 
         foreach (var poly in nonContiguous)
         {
-            var unions = UnionFind.Find(poly.Cells,
+            var unions = UnionFind.Find<PreCell, List<PreCell>>(poly.Cells,
                 (c, d) => true, c => c.Neighbors);
             var biggest = unions.MaxBy(l => l.Count);
             foreach (var union in unions)

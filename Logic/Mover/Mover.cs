@@ -14,7 +14,7 @@ public static class Mover
 
         if (overlap.Any())
         {
-            var unions = UnionFind.Find(overlap,
+            var unions = UnionFind.Find<Cell, List<Cell>>(overlap,
                 (c, d) => true,
                 c => c.GetNeighbors(d));
             return new RefSet<CellRef>(unions.MaxBy(u => u.Count).Select(c => c.MakeRef()).ToHashSet());

@@ -184,7 +184,7 @@ public class GeologyGenerator : Generator
 
         if (seaRemainder.Count > 0)
         {
-            var unions = UnionFind.Find(seaRemainder, (g, h) => true, m => m.Neighbors);
+            var unions = UnionFind.Find<GenMass, List<GenMass>>(seaRemainder, (g, h) => true, m => m.Neighbors);
             foreach (var u in unions)
             {
                 var cont = new GenContinent(u.First(), 

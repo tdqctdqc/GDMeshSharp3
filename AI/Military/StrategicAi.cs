@@ -24,33 +24,40 @@ public class StrategicAi
     public void Calculate(Alliance alliance, LogicKey key)
     {
         var d = key.Data;
-        MakeTheaters(alliance, key);
+        if (Theaters.Count() == 0)
+        {
+            MakeTheatersFromScratch(alliance, key);
+        }
+        else
+        {
+            ValidateTheaters(alliance, key);
+        }
         foreach (var theater in Theaters.Entities(d))
         {
             CalculateTheater(alliance, theater, key);
         }
     }
 
-    private void MakeTheaters(Alliance alliance, LogicKey key)
+    private void MakeTheatersFromScratch(Alliance alliance, LogicKey key)
     {
         var d = key.Data;
         var cells = d.Planet.MapAux
             .CellHolder.Cells.Values
             .Where(c => alliance.Members.Contains(c.Controller))
             .ToArray();
-        var unions = UnionFind.Find(cells,
+        var unions = UnionFind.Find<Cell, HashSet<Cell>>(cells,
             (p, q) => true,
             p => p.GetNeighbors(d));
         
         d.RemoveEntities(Theaters.Entities(d).SelectMany(t => t.Frontlines.Entities(d).Select(fl => fl.Id)).ToArray(),
             key);
         d.RemoveEntities(Theaters.Refs.Select(r => r.RefId).ToArray(), key);
-        
+        FrontlineAis.Clear();
         Theaters = ERefSet<Theater>.Construct(new HashSet<int>());
         foreach (var union in unions)
         {
-            var theater = Theater.Create(alliance, 
-                union.ToHashSet(), key);
+            var theater = Theater.CreateWithFrontlines(alliance, 
+                union, key);
             Theaters.Add(theater, key);
             foreach (var frontline in theater.Frontlines.Entities(d))
             {
@@ -58,13 +65,23 @@ public class StrategicAi
             }
         }
     }
+
+    private void ValidateTheaters(Alliance alliance, LogicKey key)
+    {
+        var d = key.Data;
+        var cells = d.Planet.MapAux
+            .CellHolder.Cells.Values
+            .Where(c => alliance.Members.Contains(c.Controller))
+            .ToArray();
+        var unions = UnionFind.Find<Cell, HashSet<Cell>>(cells,
+            (p, q) => true,
+            p => p.GetNeighbors(d));
+    }
+    
     
     private void CalculateTheater(Alliance alliance, Theater theater, 
         LogicKey key)
     {
-        //todo alter weights for rival not at war
-
-
         var d = key.Data;
         foreach (var frontline in theater.Frontlines.Entities(d))
         {

@@ -100,7 +100,7 @@ public class DrawArmyAdvanceMouseAction : CellHashMouseAction
                 .Refs.ToHashSet();
             
         var advanceUnions =
-            UnionFind.Find(advanceZone
+            UnionFind.Find<Cell, List<Cell>>(advanceZone
                     .Where(c => advance.Contains(c.Get(client.Data)) == false)
                     .Select(r => r.Get(client.Data)),
                 (c, d) => true,

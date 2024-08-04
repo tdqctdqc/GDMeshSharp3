@@ -103,7 +103,7 @@ public class LineMission : ArmyMission
         army.LineMission.AdvanceInto.Remove(conquered, key);
 
         var advanceUnions = 
-            UnionFind.Find(army.LineMission.AdvanceInto
+            UnionFind.Find<Cell, HashSet<Cell>>(army.LineMission.AdvanceInto
                 .Get<Cell, CellRef>(key.Data),
                 (c,d) => true,
                 c => c.GetNeighbors(key.Data));

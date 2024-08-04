@@ -81,7 +81,7 @@ public class DrawArmyLineMouseAction : CellHashMouseAction
         HashSet<CellRef> occupy = old.Except(drawn).ToHashSet();
         if (occupy.Count == 0) return;
         var advanceUnions =
-            UnionFind.Find(army.LineMission.AdvanceInto.Get<Cell, CellRef>(client.Data),
+            UnionFind.Find<Cell, List<Cell>>(army.LineMission.AdvanceInto.Get<Cell, CellRef>(client.Data),
                 (c, d) => true,
                 c => c.GetNeighbors(client.Data));
 

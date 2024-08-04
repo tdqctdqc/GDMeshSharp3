@@ -16,11 +16,11 @@ public static class Blobber
             where TElement : class
     {
         var validHash = allValidElements.ToHashSet();
-        var newUnions = UnionFind.Find(
+        var newUnions = UnionFind.Find<TElement, HashSet<TElement>>(
             validHash,
             (e, f) => true,
             e => getNeighbors(e).Where(validHash.Contains))
-            .Select(l => l.ToHashSet());
+            ;
         var newBlobs = newUnions.ToDictionary(
             u => u,
             u => makeBlob(u));

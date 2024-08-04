@@ -23,24 +23,24 @@ public class LandSeaManager
         var landPolys = polys.Where(p => p.IsLand);
         var seaPolys = polys.Where(p => p.IsWater());
         var landmasses =
-            UnionFind.Find(landPolys.ToList(), (p1, p2) => p1.HasNeighbor(p2), p1 => p1.Neighbors.Entities(data));
+            UnionFind.Find<MapPolygon, HashSet<MapPolygon>>(landPolys.ToList(), (p1, p2) => p1.HasNeighbor(p2), p1 => p1.Neighbors.Entities(data));
         landmasses.ForEach(m =>
         {
-            var lm = new Landmass(m.ToHashSet());
+            var lm = new Landmass(m);
             Landmasses.Add(lm);
-            m.ForEach(p => LandmassDic.Add(p, lm));
+            LandmassDic.AddRange(m.Select(p => new KeyValuePair<MapPolygon, Landmass>(p, lm)));
         });
         
         Seas = new List<Sea>();
         SeaDic = new Dictionary<MapPolygon, Sea>();
         var seamasses =
-            UnionFind.Find(seaPolys.ToList(), 
+            UnionFind.Find<MapPolygon, HashSet<MapPolygon>>(seaPolys.ToList(), 
                 (p1, p2) => p1.HasNeighbor(p2), p1 => p1.Neighbors.Entities(data));
         seamasses.ForEach(m =>
         {
             var sea = new Sea(m.ToHashSet());
             Seas.Add(sea);
-            m.ForEach(p => SeaDic.Add(p, sea));
+            SeaDic.AddRange(m.Select(p => new KeyValuePair<MapPolygon, Sea>(p, sea)));
         });
 
         var landAndSeaCount = landPolys.Count() + seaPolys.Count();

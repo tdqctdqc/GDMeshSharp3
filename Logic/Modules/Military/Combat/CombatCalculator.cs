@@ -150,11 +150,6 @@ public class CombatCalculator
         var cells = key.Data.Planet.MapAux
             .CellHolder.Cells.Values
             .OfType<LandCell>();
-        var unionsByAlliance = UnionFind.Find(cells,
-            (c, d) => c.FriendlyControlled(d.Controller.Get(key.Data), key.Data),
-            c => c.GetNeighbors(key.Data).OfType<LandCell>())
-            .Select(u => u.ToHashSet())
-            .SortBy(c => c.First().Controller.Get(key.Data).GetAlliance(key.Data));
         foreach (var army in defeated)
         {
             if (key.Data.HasEntity(army.Id) == false) continue;
@@ -164,10 +159,10 @@ public class CombatCalculator
             if (flood.Count == army.Cells.Count()) continue;
             var regime = army.Regime.Get(key.Data);
             var alliance = regime.GetAlliance(key.Data);
-            var armyCellUnions = UnionFind.Find(armyCells,
+            var armyCellUnions = UnionFind.Find<Cell, List<Cell>>(armyCells,
                 (c, d) => true,
                 c => c.GetNeighbors(key.Data))
-                .ToDictionary(v => v, v => new List<Unit>());
+                    .ToDictionary(v => v, v => new List<Unit>());
             Assigner.AssignRanked(
                 armyCellUnions,
                 l => 1f,

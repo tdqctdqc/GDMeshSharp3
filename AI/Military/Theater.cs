@@ -8,7 +8,7 @@ public class Theater : Entity
     public HashSet<CellRef> Cells { get; private set; }
     public ERefSet<Frontline> Frontlines { get; private set; }
     
-    public static Theater Create(
+    public static Theater CreateWithFrontlines(
         Alliance alliance,
         HashSet<Cell> theaterCells,
         ICreateKey key)
