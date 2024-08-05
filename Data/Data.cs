@@ -132,20 +132,21 @@ public class Data
         }
         EntitiesById.Add(e.Id, e);
     }
-    public void RemoveEntities(int[] entityIds, IWriteKey key)
+    public void RemoveEntities(int[] entityIds, ProcedureKey key)
     {
         foreach (var entityId in entityIds)
         {
             RemoveEntity(entityId, key);
         }
     }
-    public void RemoveEntity(int eId, IWriteKey key)
+    public void RemoveEntity(int eId, ProcedureKey key)
     {
         var e = EntitiesById[eId];
         e.CleanUp(key);
         _entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
         EntitiesById.Remove(eId);
     }
+    
 
     public void SubscribeForCreation<TEntity>
         (Action<EntityCreatedNotice> callback) 

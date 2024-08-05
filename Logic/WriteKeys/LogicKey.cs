@@ -13,6 +13,12 @@ public class LogicKey : Key, ICreateKey
         _server = server;
     }
 
+    public void Remove(Entity e)
+    {
+        var proc = EntityDeletionUpdate.Create(e.Id, this);
+        SendMessage(proc);
+    }
+
     public void Create<TEntity>(TEntity t) where TEntity : Entity
     {
         var update = EntityCreationUpdate<TEntity>.Create(t, this);

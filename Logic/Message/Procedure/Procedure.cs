@@ -44,6 +44,8 @@ using System;
 [MessagePack.Union(39, typeof(UnitChangeTroopAmountProcedure))]
 [MessagePack.Union(40, typeof(ChangeStockProcedure))]
 [MessagePack.Union(41, typeof(SetFrontlineAdvanceIntoProcedure))]
+[MessagePack.Union(42, typeof(SetTheaterCellsProcedure))]
+[MessagePack.Union(43, typeof(AddTheaterFrontlineProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

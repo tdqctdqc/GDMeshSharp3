@@ -76,7 +76,7 @@ public class Regime : Entity, INamed
         IsMajor = isMajor;
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         var alliance = this.GetAlliance(key.GetData());
         alliance.Members.Remove(this, key);

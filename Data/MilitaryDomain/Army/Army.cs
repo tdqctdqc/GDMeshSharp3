@@ -99,7 +99,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
         return Units.Entities(data)
             .Sum(u => u.GetPowerPointsWeighted(data));
     }
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         if (Units.Count() > 0) throw new Exception();
     }

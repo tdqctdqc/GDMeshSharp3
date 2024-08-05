@@ -11,6 +11,12 @@ public class GenKey : Key,
     {
     }
 
+    public void Remove(Entity e)
+    {
+        var proc = EntityDeletionUpdate.Create(e.Id, this);
+        SendMessage(proc);
+    }
+
     public void Create<TEntity>(TEntity t) where TEntity : Entity
     {
         Data.AddEntity(t, this);

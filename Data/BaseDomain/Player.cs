@@ -31,7 +31,7 @@ public class Player : Entity
         key.Data.Notices.Player.PlayerChangedRegime.Invoke(this, regime, old);
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

@@ -14,7 +14,10 @@ public class DeploymentRoot : DeploymentBranch
 
     public void MakeTheaters(AllianceMilitaryAi ai, LogicKey key)
     {
-        foreach (var theater in ai.Strategic.Theaters.Entities(key.Data))
+        var theaters = key.Data.GetAll<Theater>()
+            .Where(t => t.Alliance.Equals(Alliance))
+            .ToArray();
+        foreach (var theater in theaters)
         {
             var theaterBranch = new TheaterBranch(Alliance, 
                 key.Data.IdDispenser.TakeId(),

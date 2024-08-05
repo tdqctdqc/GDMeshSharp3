@@ -12,5 +12,5 @@ public abstract class Entity : IIdentifiable
         Id = id;
     }
 
-    public abstract void CleanUp(IWriteKey key);
+    public abstract void CleanUp(ProcedureKey key);
 }

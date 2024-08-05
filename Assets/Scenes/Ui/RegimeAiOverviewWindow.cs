@@ -18,7 +18,13 @@ public partial class RegimeAiOverviewWindow : Window
 
     private RegimeAiOverviewWindow()
     {
-        _container = this.MakeScroll<VBoxContainer>();
+        var panelContainer = new PanelContainer();
+        AddChild(panelContainer);
+        panelContainer.FullRect();
+        panelContainer.ExpandFill();
+        _container = panelContainer.MakeScrollChild<VBoxContainer>(out var scroll);
+        _container.FullRect();
+        _container.ExpandFill();
         this.MakeFreeable();
         AboutToPopup += Draw;
     }
@@ -44,14 +50,19 @@ public partial class RegimeAiOverviewWindow : Window
         for (var i = 0; i < ai.Status.Count; i++)
         {
             var label = new Label();
-            for (var j = 0; j < i + 1; j++)
-            {
-                label.Text += "\t";
-                
-            }
+            label.Text += "....";
 
             label.Text += ai.Status[i];
             vbox.AddChild(label);
+        }
+
+        if (ai.Status.Count > 0 && ai.Status.Last() == "Finished")
+        {
+            vbox.Modulate = Colors.Green;
+        }
+        else
+        {
+            vbox.Modulate = Colors.Red;
         }
         
         return vbox;

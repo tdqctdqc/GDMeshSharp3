@@ -37,6 +37,19 @@ public abstract class DeploymentBranch
         return SubBranches.Sum(s => s.GetPowerPointNeed(d))
                + Assignments.Sum(a => a.GetPowerPointNeed(d));
     }
+
+    public void SetWeights(LogicKey key)
+    {
+        foreach (var armyAssignment in Assignments)
+        {
+            armyAssignment.SetWeights(key);
+        }
+        foreach (var deploymentBranch in SubBranches)
+        {
+            deploymentBranch.SetWeights(key);
+        }
+    }
+
     public abstract Cell GetCharacteristicCell(Data d);
 
     public Army PullGroup(DeploymentAi ai, 

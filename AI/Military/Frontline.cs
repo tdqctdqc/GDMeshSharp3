@@ -20,6 +20,22 @@ public class Frontline : Entity
         key.Create(f);
         return f;
     }
+
+    public static List<List<FrontFace>> GetFacesFromCells(
+        IEnumerable<Cell> cells,
+        Alliance alliance, 
+        Data data)
+    {
+        return FrontFinder
+            .FindFrontsLeftToRight(cells.ToHashSet(),
+                p =>
+                {
+                    if (p.Controller.IsEmpty()) return false;
+                    var pAlliance = p.Controller.Get(data).GetAlliance(data);
+                    return alliance.IsRivals(pAlliance, data);
+                }, data);
+    }
+    
     
     public Frontline(int id, ERef<Alliance> alliance, 
         List<FrontFace> faces, HashSet<CellRef> advanceInto)
@@ -61,7 +77,7 @@ public class Frontline : Entity
                 c => Colors.White, 5f, relTo, d);
         }
     }
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

@@ -71,7 +71,7 @@ public class CombatCalculator
                     foreach (var unit in empty.ToArray())
                     {
                         GD.Print("removing unit");
-                        key.Data.RemoveEntity(unit.Id, key);
+                        key.Remove(unit);
                     }
                 }
             }

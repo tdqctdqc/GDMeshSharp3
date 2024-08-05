@@ -8,6 +8,7 @@ public interface IDeploymentNode
     ERef<Alliance> Alliance { get; }
     float GetPowerPointsAssigned(Data data);
     float GetPowerPointNeed(Data data);
+    void SetWeights(LogicKey key);
     void GiveOrders(DeploymentAi ai, LogicKey key);
     Cell GetCharacteristicCell(Data d);
     Army PullGroup(DeploymentAi ai, 

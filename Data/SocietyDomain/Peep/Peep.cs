@@ -50,7 +50,7 @@ public class Peep : Entity
         Employment.Copy(peepEmployment, key);
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

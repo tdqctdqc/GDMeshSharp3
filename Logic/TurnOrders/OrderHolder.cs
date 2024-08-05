@@ -39,6 +39,10 @@ public class OrderHolder
     {
         var aiRegimes = key.Data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(key.Data) == false);
+        foreach (var aiRegime in aiRegimes)
+        {
+            aiRegime.GetAi(key.Data).Status.Clear();
+        }
         foreach (var r in aiRegimes)
         {
             CalcAiRegimeOrdersSync(r, key);
@@ -48,6 +52,10 @@ public class OrderHolder
     {
         var aiRegimes = key.Data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(key.Data) == false);
+        foreach (var aiRegime in aiRegimes)
+        {
+            aiRegime.GetAi(key.Data).Status.Clear();
+        }
         foreach (var r in aiRegimes)
         {
             CalcAiRegimeOrdersAsync(r, key);

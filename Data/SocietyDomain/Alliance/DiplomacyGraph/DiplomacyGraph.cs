@@ -51,7 +51,7 @@ public class DiplomacyGraph : Entity
     {
         Graph.Remove(a);
     }
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

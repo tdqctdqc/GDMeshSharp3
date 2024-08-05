@@ -50,7 +50,7 @@ public class UnitTemplate : Entity, INamed
         Domain = domain;
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

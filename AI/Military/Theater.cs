@@ -23,6 +23,19 @@ public class Theater : Entity
         key.Create(t);
         return t;
     }
+    public static Theater Create(
+        Alliance alliance,
+        HashSet<CellRef> theaterCells,
+        ICreateKey key)
+    {
+        var data = key.GetData();
+        var t = new Theater(data.IdDispenser.TakeId(),
+            theaterCells.ToHashSet(), 
+            ERefSet<Frontline>.Construct(new HashSet<int>()), 
+            alliance.MakeRef());
+        key.Create(t);
+        return t;
+    }
     
     [SerializationConstructor] private 
         Theater(int id,
@@ -40,19 +53,14 @@ public class Theater : Entity
     {
         var data = key.Data;
         var alliance = Alliance.Get(key.Data);
-        var frontBounds = FrontFinder
-            .FindFrontsLeftToRight(Cells.Select(c => c.Get(key.Data)).ToHashSet(),
-                p =>
-                {
-                    if (p.Controller.IsEmpty()) return false;
-                    var pAlliance = p.Controller.Get(data).GetAlliance(data);
-                    return alliance.IsRivals(pAlliance, data);
-                }, data);
-        var frontlines = frontBounds
-            .Select(fs => Frontline.Create(fs, 
-                new HashSet<CellRef>(), 
-                alliance, key))
-            .Select(fl => fl.MakeRef()).ToArray();
+        
+        var frontlines = 
+            Frontline.GetFacesFromCells(Cells.Select(c => c.Get(key.Data)),
+            alliance, data)
+                .Select(l => Frontline.Create(l, new HashSet<CellRef>(),
+                    alliance, key))
+                .Select(f => f.MakeRef()).ToArray();
+            
         Frontlines = ERefSet<Frontline>.Construct(frontlines);
     }
     public void Draw(MeshBuilder mb, Vector2 relTo, Data d)
@@ -64,7 +72,7 @@ public class Theater : Entity
                 Colors.Blue.Tint(.5f), relTo, d);
         }
     }
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

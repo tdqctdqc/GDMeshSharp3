@@ -51,5 +51,6 @@ public abstract class ArmyAssignment : IDeploymentNode,
     public abstract Army PullGroup(DeploymentAi ai, Func<Army, float> suitability, LogicKey key);
     public abstract float Suitability(Army g, Data d);
     public abstract Cell GetCharacteristicCell(Data d);
+    public abstract void SetWeights(LogicKey key);
 
 }

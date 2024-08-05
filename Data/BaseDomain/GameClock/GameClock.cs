@@ -29,7 +29,7 @@ public class GameClock : Entity
         key.Data.Notices.JustTicked.Invoke(Tick);
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

@@ -12,7 +12,11 @@ public class FrontlineAssignment : ArmyAssignment
     public Color Color { get; private set; }
     public HashSet<ERef<Army>> LineGroups { get; private set; }
     public HashSet<ERef<Army>> InsertingGroups { get; private set; }
-    
+    public float AttackWeight { get; private set; }
+    public float DefendWeight { get; private set; }
+    public Dictionary<FrontFace, float> FaceAttackWeights { get; private set; }
+    public Dictionary<FrontFace, float> FaceDefendWeights { get; private set; }
+
     public static FrontlineAssignment Construct(
         DeploymentAi ai,
         DeploymentBranch parent,
@@ -23,19 +27,29 @@ public class FrontlineAssignment : ArmyAssignment
             parent, ai.Alliance,
             new HashSet<ERef<Army>>(),
             frontline.MakeRef(), ColorsExt.GetRandomColor(),
-            new HashSet<ERef<Army>>(), new HashSet<ERef<Army>>());
+            new HashSet<ERef<Army>>(), 
+            new HashSet<ERef<Army>>(),
+            0f, 0f, new Dictionary<FrontFace, float>(),
+            new Dictionary<FrontFace, float>());
     }
 
     public FrontlineAssignment(int id, DeploymentBranch parent, 
-        ERef<Alliance> alliance, HashSet<ERef<Army>> armies, 
+        ERef<Alliance> alliance, 
+        HashSet<ERef<Army>> armies, 
         ERef<Frontline> frontline, Color color, 
         HashSet<ERef<Army>> lineGroups, 
-        HashSet<ERef<Army>> insertingGroups) : base(id, parent, alliance, armies)
+        HashSet<ERef<Army>> insertingGroups, 
+        float attackWeight, float defendWeight, 
+        Dictionary<FrontFace, float> faceAttackWeights, Dictionary<FrontFace, float> faceDefendWeights) : base(id, parent, alliance, armies)
     {
         Frontline = frontline;
         Color = color;
         LineGroups = lineGroups;
         InsertingGroups = insertingGroups;
+        AttackWeight = attackWeight;
+        DefendWeight = defendWeight;
+        FaceAttackWeights = faceAttackWeights;
+        FaceDefendWeights = faceDefendWeights;
     }
 
 
@@ -66,10 +80,64 @@ public class FrontlineAssignment : ArmyAssignment
 
     public override float GetPowerPointNeed(Data d)
     {
-        var ai = Alliance.Get(d).GetAi(d).Military.Strategic.FrontlineAis[Frontline];
-        
-        return ai.AttackWeight + ai.DefendWeight;
+        return AttackWeight + DefendWeight;
     }
+
+    public override void SetWeights(LogicKey key)
+    {
+        var d = key.Data;
+        var alliance = Alliance.Get(d);
+        var frontline = Frontline.Get(d);
+        var length = frontline.Faces.Count;
+        var report = new FrontlineTacticalReport(frontline, d);
+        var hostilePp = report.HostileOnFront.Any()
+            ? report.HostileOnFront.Sum(
+                c => d.Context.PowerPoints[c]) 
+            : 0f;
+        hostilePp *= .5f;
+        var rivalPp = report.RivalOnFront.Sum(
+            c => d.Context.PowerPoints[c]) * 5f;
+        var opposing = hostilePp + rivalPp;
+        var oppNeed = opposing * MilUtil.DesiredOpposingPpRatio;
+        var lengthNeed = length * MilUtil.PowerPointsPerCellFaceToCover;
+            
+        AddDefendWeightAlongWholeLine(oppNeed + lengthNeed, d);
+        
+        var friendlyPower = report.FriendlyPower;
+        var enemyPower = report.EnemyPower;
+        var availablePowerForOffense = friendlyPower - enemyPower * .8f;
+        
+        if (availablePowerForOffense <= 0f) return;
+        var allHostile = report.HostileOnFront.ToHashSet();
+
+        foreach (var pocket in report.Pockets.OrderBy(v => v.Count))
+        {
+            var pocketPower = pocket.Sum(c => d.Context.PowerPoints[c]);
+            var commit = 1.5f * pocketPower;
+            availablePowerForOffense -= commit;
+            AddAttackWeight(commit, pocket, key);
+            allHostile.ExceptWith(pocket);
+            if (availablePowerForOffense <= 0f) break;
+        }
+        
+        foreach (var hostile in allHostile.OrderBy(getAtkScore))
+        {
+            if (availablePowerForOffense <= 0f) break;
+            var commit = d.Context.PowerPoints[hostile] * 1.5f;
+            availablePowerForOffense -= commit;
+            AddAttackWeight(commit, hostile, key);
+        }
+        
+        float getAtkScore(Cell hCell)
+        {
+            var pp = d.Context.PowerPoints[hCell];
+            var adj = hCell.GetNeighbors(d)
+                .Count(c => c.Controller.RefId == alliance.Id);
+            return pp / adj;
+        }
+        
+    }
+
     public override Army PullGroup(DeploymentAi ai, 
         Func<Army, float> suitability, 
         LogicKey key)
@@ -114,8 +182,6 @@ public class FrontlineAssignment : ArmyAssignment
         HandleInsertingGroupsOrders(key);
         if (LineGroups.Count == 0) return;
         var frontline = Frontline.Get(key.Data);
-        var frontlineAi = Alliance.Get(key.Data).GetAi(key.Data)
-            .Military.Strategic.FrontlineAis[Frontline];
         var lineGroups = LineGroups
             .Select(g => g.Get(key.Data)).ToArray();
         var groupsInOrder = MilUtil.GetLineGroupsInOrder(
@@ -126,7 +192,7 @@ public class FrontlineAssignment : ArmyAssignment
             .GetGroupLineAssignments(Alliance.Get(key.Data),
                 LineGroups.Select(g => g.Get(key.Data)), 
                 frontline.Faces,
-                v => GetFaceCost(frontlineAi, v, key.Data),
+                v => GetFaceCost(v, key.Data),
                 key.Data);
         
         foreach (var (group, lineAssignment)
@@ -135,7 +201,7 @@ public class FrontlineAssignment : ArmyAssignment
             var order = new LineMission(
                 new RefSet<CellRef>(
                     lineAssignment.Select(f => f.MakeRef()).ToHashSet()),
-                new RefSet<CellRef>(new HashSet<CellRef>()),
+                getAdvanceInto(lineAssignment),
                 false);
             var proc = new SetUnitOrderProcedure(
                 group.MakeRef(), order);
@@ -168,12 +234,12 @@ public class FrontlineAssignment : ArmyAssignment
         }
     }
 
-    private float GetFaceCost(FrontlineAi ai, FrontFace f, Data d)
+    private float GetFaceCost(FrontFace f, Data d)
     {
-        var atkWeight = ai.FaceAttackWeights.TryGetValue(f, out var w)
+        var atkWeight = FaceAttackWeights.TryGetValue(f, out var w)
             ? w
             : 0f;
-        return atkWeight + ai.FaceDefendWeights[f];
+        return atkWeight + FaceDefendWeights[f];
     }
 
 
@@ -192,13 +258,12 @@ public class FrontlineAssignment : ArmyAssignment
     private void HandleInsertingGroupsOrders(LogicKey key)
     {
         var frontline = Frontline.Get(key.Data);
-        var ai = Alliance.Get(key.Data).GetAi(key.Data).Military.Strategic.FrontlineAis[Frontline];
 
         var idealAssignments = MilUtil
             .GetGroupLineAssignments(Alliance.Get(key.Data), 
                 Armies.Select(g => g.Get(key.Data)), 
                 frontline.Faces,
-                v => GetFaceCost(ai, v, key.Data),
+                v => GetFaceCost(v, key.Data),
                 key.Data);
         
         
@@ -219,5 +284,76 @@ public class FrontlineAssignment : ArmyAssignment
     {
         return frontline.Faces.Select(f => f.GetNative(d))
             .MinBy(c => c.GetCenter().Offset(army.GetHomeCell(d).GetCenter(), d).Length());
+    }
+    
+    public void AddAttackWeight(float w,
+        Cell attack, LogicKey key)
+    {
+        var frontline = Frontline.Get(key.Data);
+
+        AttackWeight += w;
+        for (var i = 0; i < frontline.Faces.Count; i++)
+        {
+            var face = frontline.Faces[i];
+            if (face.Foreign == attack.Id)
+            {
+                FaceAttackWeights.AddOrSum(face, w);
+            }
+        }
+
+        var newAdvanceInto = frontline.
+            AdvanceInto.Concat(attack.MakeRef().Yield())
+                .ToHashSet();
+        var proc = new SetFrontlineAdvanceIntoProcedure(Frontline, newAdvanceInto);
+        key.SendMessage(proc);
+    }
+    public void AddAttackWeight(float w,
+        IEnumerable<Cell> attack, LogicKey key)
+    {
+        var frontline = Frontline.Get(key.Data);
+        AttackWeight += w;
+        var ids = attack.Select(a => a.Id).ToHashSet();
+        
+        for (var i = 0; i < frontline.Faces.Count; i++)
+        {
+            var face = frontline.Faces[i];
+            if (ids.Contains(face.Foreign))
+            {
+                FaceAttackWeights.AddOrSum(face, w);
+            }
+        }
+        var newAdvanceInto = frontline.
+            AdvanceInto.Union(attack.Select(a => a.MakeRef()))
+                .ToHashSet();
+        var proc = new SetFrontlineAdvanceIntoProcedure(Frontline, newAdvanceInto);
+        key.SendMessage(proc);
+    }
+    
+    public void AddDefendWeightAlongWholeLine(float w, Data d)
+    {
+        var frontline = Frontline.Get(d);
+        var alliance = frontline.Alliance.Get(d);
+        DefendWeight += w;
+        var totalCellDef = frontline.Faces.Sum(
+            f => 1f / ((LandCell)f.GetNative(d)).GetLandDefendScore(d));
+        
+        for (var i = 0; i < frontline.Faces.Count; i++)
+        {
+            var face = frontline.Faces[i];
+            var native = (LandCell)face.GetNative(d);
+            var foreign = face.GetForeign(d);
+            var mult = foreign.Controller.Get(d)
+                .GetAlliance(d).IsAtWar(alliance, d)
+                ? 1f : global::Frontline.DefMultForNotAtWarCell;
+            if (totalCellDef == 0f)
+            {
+                FaceDefendWeights.AddOrSum(face, w / frontline.Faces.Count);
+            }
+            else
+            {
+                var cellDefRatio = (1f / native.GetLandDefendScore(d)) / totalCellDef;
+                FaceDefendWeights.AddOrSum(face, cellDefRatio * w);
+            }
+        }
     }
 }

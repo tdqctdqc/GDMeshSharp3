@@ -17,7 +17,7 @@ public class ProposalList : Entity
         Proposals = proposals;
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

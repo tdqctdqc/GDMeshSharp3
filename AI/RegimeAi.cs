@@ -53,7 +53,7 @@ public class RegimeAi
         Military.CalculateMajor(key, orders);
         Technology.Calculate(key);
         Budget.Calculate(key, orders);
-        Status.RemoveAt(Status.Count - 1);
+        // Status.RemoveAt(Status.Count - 1);
 
         return orders; 
     }

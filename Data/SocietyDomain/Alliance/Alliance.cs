@@ -32,7 +32,7 @@ public class Alliance : Entity
             d => d.Society.AllianceAux.RegimeAlliances);
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         if (Members.Count() > 0) throw new Exception();
         key.GetData().Society.DiploGraph.RemoveAlliance(this, key);

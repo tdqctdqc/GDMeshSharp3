@@ -49,7 +49,7 @@ public class RuleVars : Entity
         DeclineRateCeiling = declineRateCeiling;
     }
 
-    public override void CleanUp(IWriteKey key)
+    public override void CleanUp(ProcedureKey key)
     {
         
     }

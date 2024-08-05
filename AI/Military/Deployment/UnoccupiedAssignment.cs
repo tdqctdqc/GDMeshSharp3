@@ -33,6 +33,12 @@ public class UnoccupiedAssignment : ArmyAssignment
     {
         return 0f;
     }
+
+    public override void SetWeights(LogicKey key)
+    {
+        
+    }
+
     public override void GiveOrders(DeploymentAi ai, LogicKey key)
     {
         

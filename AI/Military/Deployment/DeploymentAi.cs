@@ -39,6 +39,7 @@ public class DeploymentAi
             new HashSet<ArmyAssignment>());
         Root.MakeTheaters(alliance.GetAi(key.Data).Military, key);
         Root.GrabUnassignedGroups(key);
+        Root.SetWeights(key);
         Root.ShiftGroups(this, key);
         Root.GiveOrders(this, key);
     }

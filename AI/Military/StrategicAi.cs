@@ -2,183 +2,270 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Godot;
 using MessagePack;
 
 public class StrategicAi
-{ 
-    public ERefSet<Theater> Theaters { get; private set; }
-    public Dictionary<ERef<Frontline>, FrontlineAi> FrontlineAis { get; private set; }
-
+{
+    public HashSet<CellRef> PrevOccupation { get; private set; }
+    public Dictionary<ERef<Frontline>, List<ERef<Frontline>>> FrontlineMerges { get; private set; }
     public static StrategicAi Construct(Alliance a, Data d)
     {
-        return new StrategicAi(ERefSet<Theater>.Construct(new ERef<Theater>[]{}),
-            new Dictionary<ERef<Frontline>, FrontlineAi>());
+        return new StrategicAi(new HashSet<CellRef>(),
+            new Dictionary<ERef<Frontline>, List<ERef<Frontline>>>());
     }
     [SerializationConstructor] private StrategicAi(
-        ERefSet<Theater> theaters, 
-        Dictionary<ERef<Frontline>, FrontlineAi> frontlineAis)
+        HashSet<CellRef> prevOccupation, 
+        Dictionary<ERef<Frontline>, List<ERef<Frontline>>> frontlineMerges)
     {
-        Theaters = theaters;
-        FrontlineAis = frontlineAis;
+        FrontlineMerges = frontlineMerges;
+        PrevOccupation = prevOccupation;
     }
 
     public void Calculate(Alliance alliance, LogicKey key)
     {
         var d = key.Data;
+        var context = new StrategicContext(alliance, key.Data);
         
-        MakeTheatersFromScratch(alliance, key);
-        // if (Theaters.Count() == 0)
-        // {
-        //     
-        // }
-        // else
-        // {
-        //     ValidateTheaters(alliance, key);
-        // }
-        foreach (var theater in Theaters.Entities(d))
+        var theaters = key.Data.GetAll<Theater>()
+            .Where(t => t.Alliance.RefId == alliance.Id)
+            .ToArray();
+        var leaderAi = alliance.Leader.Get(key.Data).GetAi(key.Data);
+        leaderAi.Status.Add("Doing strategic ai");
+        if (theaters.Count() == 0)
         {
-            CalculateTheater(alliance, theater, key);
+            leaderAi.Status.Add("Making theaters from scratch");
+
+            MakeTheatersFromScratch(theaters, alliance, context, key);
         }
+        else
+        {
+            leaderAi.Status.Add("validating theaters");
+            ValidateTheaters(theaters, alliance, context, key);
+        }
+        leaderAi.Status.Add("validating frontlines");
+        ValidateFrontlines(alliance, context, key);
+        leaderAi.Status.Add("finished strategic ai");
     }
 
-    private void MakeTheatersFromScratch(Alliance alliance, LogicKey key)
+    private void MakeTheatersFromScratch(
+        Theater[] theaters,
+        Alliance alliance, 
+        StrategicContext context,
+        LogicKey key)
     {
         var d = key.Data;
-        var cells = d.Planet.MapAux
-            .CellHolder.Cells.Values
-            .Where(c => alliance.Members.Contains(c.Controller))
-            .ToArray();
-        var unions = UnionFind.Find<Cell, HashSet<Cell>>(cells,
-            (p, q) => true,
-            p => p.GetNeighbors(d));
         
-        d.RemoveEntities(Theaters.Entities(d).SelectMany(t => t.Frontlines.Entities(d).Select(fl => fl.Id)).ToArray(),
-            key);
-        d.RemoveEntities(Theaters.Refs.Select(r => r.RefId).ToArray(), key);
-        FrontlineAis.Clear();
-        Theaters = ERefSet<Theater>.Construct(new HashSet<int>());
-        foreach (var union in unions)
+        foreach (var frontline in theaters.SelectMany(t => t.Frontlines.Entities(d)))
+        {
+            key.Remove(frontline);
+        }
+        foreach (var theater in theaters)
+        {
+            key.Remove(theater);   
+        }
+        
+        foreach (var union in context.Unions)
         {
             var theater = Theater.Create(alliance, 
                 union, key);
-            Theaters.Add(theater, key);
-            theater.MakeFrontlinesFromScratch(key);
-            foreach (var frontline in theater.Frontlines.Entities(d))
-            {
-                FrontlineAis.Add(frontline.MakeRef(), FrontlineAi.Construct(frontline));
-            }
         }
     }
 
-    private void ValidateTheaters(Alliance alliance, LogicKey key)
+    private void ValidateTheaters(Theater[] theaters, 
+        Alliance alliance, StrategicContext context, LogicKey key)
     {
         var d = key.Data;
-        var cells = d.Planet.MapAux
-            .CellHolder.Cells.Values
-            .Where(c => alliance.Members.Contains(c.Controller))
-            .ToArray();
-        var unions = UnionFind.Find<Cell, HashSet<Cell>>(cells,
-            (p, q) => true,
-            p => p.GetNeighbors(d));
-        var merge = unions.ToDictionary(v => v,
+        
+        var merge = 
+            context.Unions.ToDictionary(v => v,
             v => new List<Theater>());
-        foreach (var theater in Theaters.Entities(d).ToArray())
+        foreach (var theater in theaters)
         {
             var theaterCell = theater.Cells
                 .Select(r => r.Get(d))
-                .Where(c => c.FriendlyControlled(alliance, d))
-                .FirstOrDefault();
+                .FirstOrDefault(context.AlliedCells.Contains);
             if (theaterCell is null)
             {
                 //clean up
-                Theaters.Remove(theater.MakeRef(), key);
-                key.Data.RemoveEntity(theater.Id, key);
+                key.Remove(theater);
                 continue;
             }
             var mergeIntos = merge
                 .Keys
                 .Where(k => k.Contains(theaterCell));
+            if (mergeIntos.Any() == false)
+            {
+                throw new Exception();
+            }
             foreach (var mergeInto in mergeIntos)
             {
                 merge[mergeInto].Add(theater);
             }
         }
         
-
-
-    }
-    
-    
-    private void CalculateTheater(Alliance alliance, Theater theater, 
-        LogicKey key)
-    {
-        var d = key.Data;
-        foreach (var frontline in theater.Frontlines.Entities(d))
+        foreach (var (union, theatersToMerge) in merge)
         {
-            var length = frontline.Faces.Count;
-            var frontlineAi = FrontlineAis[frontline.MakeRef()];
-            frontlineAi.MakeReport(d);
-            var report = frontlineAi.Report;
-            var hostilePp = report.HostileOnFront.Any()
-                ? report.HostileOnFront.Sum(
-                    c => d.Context.PowerPoints[c]) 
-                : 0f;
-            hostilePp *= .5f;
-            var rivalPp = report.RivalOnFront.Sum(
-                c => d.Context.PowerPoints[c]) * 5f;
-            var opposing = hostilePp + rivalPp;
-            var oppNeed = opposing * MilUtil.DesiredOpposingPpRatio;
-            var lengthNeed = length * MilUtil.PowerPointsPerCellFaceToCover;
-            
-            frontlineAi.AddDefendWeightAlongWholeLine(oppNeed + lengthNeed, d);
-        }
-        var reports = FrontlineAis.Values.Select(v => v.Report);
-        var allHostile = reports
-            .SelectMany(kvp => kvp.HostileOnFront).ToHashSet();
-        
-        var friendlyPower = reports.Sum(r => r.FriendlyPower);
-        var enemyPower = reports.Sum(r => r.EnemyPower);
-        var availablePowerForOffense = friendlyPower - enemyPower * .8f;
-        
-        if (availablePowerForOffense <= 0f) return;
-        
-        foreach (var (frontlineAi, pocket) in FrontlineAis.Values
-                     .SelectMany(kvp => kvp.Report.Pockets
-                         .Select(pocket => (kvp, pocket)))
-                     .OrderBy(v => v.pocket.Count))
-        {
-            
-            var pocketPower = pocket.Sum(c => d.Context.PowerPoints[c]);
-            var commit = 1.5f * pocketPower;
-            availablePowerForOffense -= commit;
-            frontlineAi.AddAttackWeight(commit, pocket, key);
-            allHostile.ExceptWith(pocket);
-            if (availablePowerForOffense <= 0f) break;
-        }
-        //find 'necks' 
-        
-        foreach (var hostile in allHostile.OrderBy(getAtkScore))
-        {
-            if (availablePowerForOffense <= 0f) break;
-            var commit = d.Context.PowerPoints[hostile] * 1.5f;
-            availablePowerForOffense -= commit;
-            foreach (var frontlineAi in theater.Frontlines.Entities(d)
-                         .Select(fl => FrontlineAis[fl.MakeRef()])
-                         .Where(flAi => flAi.Report.RivalOnFront.Contains(hostile)))
+            if (theatersToMerge.Count == 0)
             {
-                frontlineAi.AddAttackWeight(commit, hostile, key);
+                var theater = Theater.Create(alliance,
+                    union.ToHashSet(),
+                    key);
+            }
+            else
+            {
+                foreach (var theater in theatersToMerge)
+                {
+                    key.Remove(theater);
+                }
+                var newTheater = Theater.Create(alliance,
+                    union.ToHashSet(),
+                    key);
+            }
+        }
+    }
+
+    private void ValidateFrontlines(Alliance alliance,
+        StrategicContext context, LogicKey key)
+    {
+        var oldFrontlines = key.Data.GetAll<Frontline>()
+            .Where(fl => fl.Alliance.RefId == alliance.Id)
+            .ToArray();
+        var theaters = key.Data.GetAll<Theater>()
+            .Where(t => t.Alliance.RefId == alliance.Id).ToArray();
+        
+        var merge = GetFrontlineMerges(alliance, context, key);
+        
+        FrontlineMerges = merge.ToDictionary(kvp => kvp.Key.MakeRef(),
+            kvp => kvp.Value.Select(v => v.MakeRef()).ToList());
+        foreach (var oldFrontline in oldFrontlines)
+        {
+            key.Remove(oldFrontline);
+        }
+
+        var newFrontlines = key.Data.GetAll<Frontline>()
+            .Where(fl => fl.Alliance.RefId == alliance.Id).ToArray();
+        foreach (var newFrontline in newFrontlines)
+        {
+            var theater =
+                theaters.First(t => t.Cells.Contains(newFrontline.Faces.First().GetNative(key.Data).MakeRef()));
+            var proc = new AddTheaterFrontlineProcedure(theater.MakeRef(),
+                newFrontline.MakeRef());
+            key.SendMessage(proc);
+        }
+    }
+
+    private Dictionary<Frontline, List<Frontline>> GetFrontlineMerges(
+        Alliance alliance, StrategicContext context, LogicKey key)
+    {
+        var newFrontFaces = Frontline.GetFacesFromCells(
+            context.AlliedCells, alliance, key.Data);
+        var oldFrontlines = key.Data.GetAll<Frontline>()
+            .Where(fl => fl.Alliance.RefId == alliance.Id).ToArray();
+
+        var newFrontlines = newFrontFaces
+            .Select(fs => Frontline.Create(fs, new HashSet<CellRef>(),
+                alliance, key)).ToArray();
+        
+        
+        var prev = PrevOccupation.Select(p => p.Get(key.Data)).ToHashSet();
+        
+        var gained = context.AlliedCells.Except(prev).ToHashSet();
+        var gainedUnions = UnionFind.Find<Cell, HashSet<Cell>>(
+            gained, (c, d) => true, c => c.GetNeighbors(key.Data));
+        
+        var lost = prev.Except(context.AlliedCells).ToHashSet();
+        var lostUnions = UnionFind.Find<Cell, HashSet<Cell>>(
+            lost, (c, d) => true, c => c.GetNeighbors(key.Data));
+
+        var stable = context.AlliedCells.Intersect(prev).ToHashSet();
+        var stableUnions = UnionFind.Find<Cell, HashSet<Cell>>(
+            stable, (c, d) => true, c => c.GetNeighbors(key.Data));
+
+
+        var unionToNewMap = new Dictionary<HashSet<Cell>, 
+            List<Frontline>>();
+        foreach (var gainedUnion in gainedUnions)
+        {
+            unionToNewMap.Add(gainedUnion, new List<Frontline>());
+        }
+        foreach (var lostUnion in lostUnions)
+        {
+            unionToNewMap.Add(lostUnion, new List<Frontline>());
+        }
+        foreach (var stableUnion in stableUnions)
+        {
+            unionToNewMap.Add(stableUnion, new List<Frontline>());
+        }
+        
+        foreach (var newFrontline in newFrontlines)
+        {
+            foreach (var newFrontFace in newFrontline.Faces)
+            {
+                var native = newFrontFace.GetNative(key.Data);
+                var foreign = newFrontFace.GetForeign(key.Data);
+
+                if (stable.Contains(native))
+                {
+                    var stableUnion = stableUnions.First(u => u.Contains(native));
+                    unionToNewMap[stableUnion].Add(newFrontline);
+                }
+                if (lost.Contains(foreign))
+                {
+                    var lostUnion = lostUnions.First(u => u.Contains(foreign));
+                    unionToNewMap[lostUnion].Add(newFrontline);
+                }
+                if (gained.Contains(native))
+                {
+                    var gainedUnion = gainedUnions.First(u => u.Contains(native));
+                    unionToNewMap[gainedUnion].Add(newFrontline);
+                }
+            }
+        }
+
+        var oldToUnionMap = new Dictionary<Frontline, List<HashSet<Cell>>>();
+        
+        foreach (var oldFrontline in oldFrontlines)
+        {
+            oldToUnionMap.Add(oldFrontline, new List<HashSet<Cell>>());
+            foreach (var oldFrontFace in oldFrontline.Faces)
+            {
+                var native = oldFrontFace.GetNative(key.Data);
+                var foreign = oldFrontFace.GetForeign(key.Data);
+
+                if (stable.Contains(native))
+                {
+                    var stableUnion = stableUnions.First(u => u.Contains(native));
+                    oldToUnionMap[oldFrontline].Add(stableUnion);
+                }
+                if (lost.Contains(native))
+                {
+                    var lostUnion = lostUnions.First(u => u.Contains(native));
+                    oldToUnionMap[oldFrontline].Add(lostUnion);
+                }
+                if (gained.Contains(foreign))
+                {
+                    var gainedUnion = gainedUnions.First(u => u.Contains(foreign));
+                    oldToUnionMap[oldFrontline].Add(gainedUnion);
+                }
             }
         }
         
-
-        float getAtkScore(Cell hCell)
+        
+        var mergeMap = new Dictionary<Frontline, List<Frontline>>();
+        
+        foreach (var (oldFrontline, unions) in oldToUnionMap)
         {
-            var pp = d.Context.PowerPoints[hCell];
-            var adj = hCell.GetNeighbors(d)
-                .Count(c => c.Controller.RefId == alliance.Id);
-            return pp / adj;
+            mergeMap.Add(oldFrontline, new List<Frontline>());
+            foreach (var union in unions)
+            {
+                foreach (var newFrontline in unionToNewMap[union])
+                {
+                    mergeMap[oldFrontline].Add(newFrontline);
+                }
+            }
         }
+
+        return mergeMap;
     }
-    
-    
 }
