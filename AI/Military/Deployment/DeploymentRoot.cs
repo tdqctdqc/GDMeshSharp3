@@ -55,7 +55,7 @@ public class DeploymentRoot : DeploymentBranch
             Assignments.Add(unassigned);
             foreach (var g in groups)
             {
-               unassigned.PushGroup(ai, g, key);
+               unassigned.PushGroup(g, key);
             }
         }
     }

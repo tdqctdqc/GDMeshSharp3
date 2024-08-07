@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/AI/Military/AddTheaterFrontlineProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AI/Military/SetTheaterCellsProcedure.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/AI/Military/StrategicContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CustomIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/ArmyAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/ArmyAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
@@ -16,42 +13,12 @@
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/UnoccupiedAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/UnoccupiedAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Frontline.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Frontline.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/FrontlineAi.cs" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Theater.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Theater.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClock.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/GameClock/GameClock.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/Player.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/Player.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/BaseDomain/RuleVars/RuleVars.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/BaseDomain/RuleVars/RuleVars.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Entity/Entity.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Entity/Entity.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadNetwork.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/InfrastructureDomain/Road/RoadNetwork.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/Unit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Unit/Unit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/UnitTemplate/UnitTemplate.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/CellHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/CellHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolyNexus.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolyNexus.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygon.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonEdge.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/MapPolygonEdge.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/PlanetInfo.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/PlanetInfo.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/ResourceDeposit/ResourceDeposit.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/Alliance.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/Alliance.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/DiplomacyGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/DiplomacyGraph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Location/Settlement.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Peep/Peep.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Proposals/ProposalList.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Proposals/ProposalList.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/Regime.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Message/Procedure/Procedure.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatCalculator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistory.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Modules/Military/Combat/CombatHistory/CombatHistory.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/GenKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/GenKey.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/HostKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/HostKey.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/ICreateKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/ICreateKey.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicKey.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/EntityIds.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/EntityIds.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/Issue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/Issue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/IssueWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/IssueWindow.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -746,6 +713,7 @@
       <workItem from="1722809613447" duration="1823000" />
       <workItem from="1722814640215" duration="2111000" />
       <workItem from="1722867555374" duration="7508000" />
+      <workItem from="1722879933287" duration="12085000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -957,14 +925,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00277" summary="added morale to combat tree distribution calcs">
-      <option name="closed" value="true" />
-      <created>1721696976206</created>
-      <option name="number" value="00277" />
-      <option name="presentableId" value="LOCAL-00277" />
-      <option name="project" value="LOCAL" />
-      <updated>1721696976206</updated>
-    </task>
     <task id="LOCAL-00278" summary="adding troop upgrades">
       <option name="closed" value="true" />
       <created>1722095675605</created>
@@ -1109,7 +1069,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722806425374</updated>
     </task>
-    <option name="localTasksCounter" value="296" />
+    <task id="LOCAL-00296" summary="making theaters, frontlines semi persistent">
+      <option name="closed" value="true" />
+      <created>1722883663260</created>
+      <option name="number" value="00296" />
+      <option name="presentableId" value="LOCAL-00296" />
+      <option name="project" value="LOCAL" />
+      <updated>1722883663261</updated>
+    </task>
+    <option name="localTasksCounter" value="297" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1131,7 +1099,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="technology tab" />
     <MESSAGE value="model tweak" />
     <MESSAGE value="tweaked inserting groups move" />
     <MESSAGE value="implemented army moves" />
@@ -1156,6 +1123,7 @@
     <MESSAGE value="serializing alliance military ai" />
     <MESSAGE value="made unionFind generic wrt collection type" />
     <MESSAGE value="made so shift phase in deployment node goes longer to fix problem, added more to milplanningmode ui" />
-    <option name="LAST_COMMIT_MESSAGE" value="made so shift phase in deployment node goes longer to fix problem, added more to milplanningmode ui" />
+    <MESSAGE value="making theaters, frontlines semi persistent" />
+    <option name="LAST_COMMIT_MESSAGE" value="making theaters, frontlines semi persistent" />
   </component>
 </project>

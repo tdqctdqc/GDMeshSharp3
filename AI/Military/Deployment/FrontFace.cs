@@ -8,62 +8,31 @@ public struct FrontFace
 {
     public int Native { get; private set; }
     public int Foreign { get; private set; }
-    public int Left { get; private set; }
-    public int Right { get; private set; }
     public static FrontFace
         Construct(Cell native, Cell foreign, Data d)
     {
-        if (native is RiverCell || foreign is RiverCell)
-        {
-            return new FrontFace(native.Id, foreign.Id, -1, -1);
-        }
-        Cell left = null;
-        Cell right = null;
-        
-        var nfAxis = native.GetCenter().Offset(foreign.GetCenter(), d);
-        var sharedNs = native.Neighbors
-            .Intersect(foreign.Neighbors)
-            .Distinct()
-            .Select(i => PlanetDomainExt.GetPolyCell(i, d))
-            .Where(n => n is not RiverCell);
-
-        int iter = 0;
-        foreach (var sharedN in sharedNs)
-        {
-            iter++;
-            if (iter > 2) throw new Exception();
-            var nAxis = native.GetCenter().Offset(sharedN.GetCenter(), d);
-            var onLeft = nfAxis.GetCCWAngleTo(nAxis) < Mathf.Pi;
-            if (onLeft)
-            {
-                if (left != null) throw new Exception();
-                left = sharedN;
-            }
-            else
-            {
-                if (right != null) throw new Exception();
-                right = sharedN;
-            }
-        }
-
-        return new FrontFace(native.Id, foreign.Id,
-            left is not null ? left.Id : -1,
-            right is not null ? right.Id : -1);
+        return new FrontFace(native.Id, foreign.Id);
     }
-    private FrontFace(int native, int foreign,
-        int left, int right)
+    private FrontFace(int native, int foreign)
     {
         Native = native;
         Foreign = foreign;
-        Left = left;
-        Right = right;
     }
 
-    public FrontFace GetLeftNeighbor(Func<Cell, bool> isNative,
+    public int GetLeftNeighborCellId(Data d)
+    {
+        var key = GetIdEdgeKey();
+        var flip = Native < Foreign;
+        return flip
+            ? d.Planet.MapAux.CellHolder.Rights[key]
+            : d.Planet.MapAux.CellHolder.Lefts[key];
+    }
+    public FrontFace GetLeftNeighborFace(Func<Cell, bool> isNative,
         Data d)
     {
-        if (Left == -1) throw new Exception();
-        var left = PlanetDomainExt.GetPolyCell(Left, d);
+        var leftId = GetLeftNeighborCellId(d);
+        if (leftId == -1) throw new Exception();
+        var left = PlanetDomainExt.GetPolyCell(leftId, d);
         var native = PlanetDomainExt.GetPolyCell(Native, d);
         if (isNative(left))
         {
@@ -72,13 +41,22 @@ public struct FrontFace
         }
         return FrontFace.Construct(native, left, d);
     }
-    
-    public FrontFace GetRightNeighbor(
+    public int GetRightNeighborCellId(Data d)
+    {
+        var key = GetIdEdgeKey();
+        var flip = Native < Foreign;
+        return flip
+            ? d.Planet.MapAux.CellHolder.Lefts[key]
+            : d.Planet.MapAux.CellHolder.Rights[key];
+    }
+    public FrontFace GetRightNeighborFace(
         Func<Cell, bool> isNative,
         Data d)
     {
-        if (Right == -1) throw new Exception();
-        var right = PlanetDomainExt.GetPolyCell(Right, d);
+        var rightId = GetRightNeighborCellId(d);
+        
+        if (rightId == -1) throw new Exception();
+        var right = PlanetDomainExt.GetPolyCell(rightId, d);
         var native = PlanetDomainExt.GetPolyCell(Native, d);
         if (isNative(right))
         {
@@ -94,10 +72,12 @@ public struct FrontFace
         bool toLeft, Action<FrontFace> action, Data d)
     {
         var curr = this;
-        while (toLeft ? curr.Left != null : curr.Right != null)
+        while (toLeft 
+                   ? curr.GetLeftNeighborCellId(d) != -1 
+                   : curr.GetRightNeighborCellId(d) != -1)
         {
-            curr = toLeft ? curr.GetLeftNeighbor(isNative, d) 
-                : curr.GetRightNeighbor(isNative, d);
+            curr = toLeft ? curr.GetLeftNeighborFace(isNative, d) 
+                : curr.GetRightNeighborFace(isNative, d);
             if (valid(curr) == false) return;
             action(curr);
         }
@@ -115,17 +95,17 @@ public struct FrontFace
     {
         var res = new List<FrontFace>();
         var furthestLeft = this;
-        while (furthestLeft.Left != -1)
+        while (furthestLeft.GetLeftNeighborCellId(d) != -1)
         {
-            var nextLeft = furthestLeft.GetLeftNeighbor(isNative, d);
+            var nextLeft = furthestLeft.GetLeftNeighborFace(isNative, d);
             if (nextLeft.Equals(this) || valid(nextLeft) == false) break;
             furthestLeft = nextLeft;
         }
         res.Add(furthestLeft);
         var curr = furthestLeft;
-        while (curr.Right != -1)
+        while (curr.GetRightNeighborCellId(d) != -1)
         {
-            var nextRight = curr.GetRightNeighbor(isNative, d);
+            var nextRight = curr.GetRightNeighborFace(isNative, d);
             if (nextRight.Equals(furthestLeft) || valid(nextRight) == false) break;
             res.Add(nextRight);
             curr = nextRight;
@@ -142,26 +122,6 @@ public struct FrontFace
 
     }
 
-    public bool JoinsWith(FrontFace n)
-    {
-        var score = 0;
-        score += Shared(n.Native);
-        
-        score += Shared(n.Foreign);
-        if (score == 2) return true;
-
-        score += Shared(n.Left);
-        if (score == 2) return true;
-
-        score += Shared(n.Right);
-        return (score == 2);
-    }
-    private int Shared(int id)
-    {
-        return Native == id || Foreign == id
-                            || Left == id || Right == id
-                            ? 1 : 0;
-    }
 
     public Vector2I GetIdEdgeKey()
     {
@@ -175,14 +135,17 @@ public struct FrontFace
         Vector2 rightJoin = Vector2.Inf;
         var native = PlanetDomainExt.GetPolyCell(Native, d);
         var foreign = PlanetDomainExt.GetPolyCell(Foreign, d);
-        if (Left != -1)
+
+        var leftId = GetLeftNeighborCellId(d);
+        var rightId = GetRightNeighborCellId(d);
+        if (leftId != -1)
         {
-            var left = PlanetDomainExt.GetPolyCell(Left, d);
+            var left = PlanetDomainExt.GetPolyCell(leftId, d);
             leftJoin = native.AbsBoundary(d)
                 .Intersect(foreign.AbsBoundary(d))
                 .Intersect(left.AbsBoundary(d))
                 .First();
-            if (Right == -1)
+            if (rightId == -1)
             {
                 rightJoin = native.AbsBoundary(d)
                     .Intersect(foreign.AbsBoundary(d))
@@ -191,14 +154,14 @@ public struct FrontFace
             }
         }
 
-        if (Right != -1)
+        if (rightId != -1)
         {
-            var right = PlanetDomainExt.GetPolyCell(Right, d);
+            var right = PlanetDomainExt.GetPolyCell(rightId, d);
             rightJoin = native.AbsBoundary(d)
                 .Intersect(foreign.AbsBoundary(d))
                 .Intersect(right.AbsBoundary(d))
                 .First();
-            if (Left == -1)
+            if (leftId == -1)
             {
                 leftJoin = native.AbsBoundary(d)
                     .Intersect(foreign.AbsBoundary(d))
@@ -207,7 +170,7 @@ public struct FrontFace
             }
         }
 
-        if (Left == -1 && Right == -1)
+        if (leftId == -1 && rightId == -1)
         {
             GD.Print($"bad edge at {Native} {Foreign} ");
             return (Vector2.Zero, Vector2.Zero);

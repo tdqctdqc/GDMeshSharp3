@@ -64,7 +64,7 @@ public class FrontlineAssignment : ArmyAssignment
         Frontline.Get(d).Draw(mb, relTo, d);
     }
 
-    protected override void AddGroupToData(DeploymentAi ai,
+    protected override void AddGroupToData(
         Army g, Data d)
     {
         var cell = g.GetHomeCell(d);
@@ -138,8 +138,7 @@ public class FrontlineAssignment : ArmyAssignment
         
     }
 
-    public override Army PullGroup(DeploymentAi ai, 
-        Func<Army, float> suitability, 
+    public override Army PullGroup(Func<Army, float> suitability, 
         LogicKey key)
     {
         if (Armies.Count < 2) return null;
@@ -175,8 +174,7 @@ public class FrontlineAssignment : ArmyAssignment
         return Frontline.Get(d).Faces.First().GetNative(d);
     }
 
-    public override void GiveOrders(DeploymentAi ai, 
-        LogicKey key)
+    public override void GiveOrders(LogicKey key)
     {
         SetLineAndInsertingGroups(key);
         HandleInsertingGroupsOrders(key);

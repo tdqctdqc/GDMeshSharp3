@@ -42,6 +42,13 @@ public static class MeshBuilderExt
             mb.AddTri(p1, p2, p3, color);
         }
     }
+
+    public static void DrawCellRel(this MeshBuilder mb,
+        Cell cell, Vector2 relTo, Color color, Data d)
+    {
+        mb.DrawPolygonRel(cell.AbsBoundary(d).ToArray(),
+            color, relTo, d);
+    }
     public static void DrawPolygonRel(this MeshBuilder mb,
         Vector2[] boundaryPoints, Color color, Vector2 relTo, Data d)
     {

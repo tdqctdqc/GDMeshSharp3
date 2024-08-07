@@ -11,6 +11,7 @@ public partial class MapGraphics : Node2D, IClientComponent
     public GraphicsSegmenter Segmenter { get; private set; }
     public Regime SpectatingRegime { get; private set; }
     public List<MapOverlayDrawer> Overlays { get; private set; }
+    public MapOverlayDrawer DebugOverlay { get; private set; }
     public GraphicLayerHolder GraphicLayerHolder { get; private set; }
     public MapUiElements UiElements { get; private set; }
     private int _msToProcessUpdates = 50;
@@ -48,6 +49,9 @@ public partial class MapGraphics : Node2D, IClientComponent
         AddChild(Segmenter);
         GraphicLayerHolder = new GraphicLayerHolder(client, Segmenter, client.Data);
         Overlays = new List<MapOverlayDrawer>();
+        DebugOverlay = new MapOverlayDrawer(Segmenter, (int)LayerOrder.Debug);
+        Overlays.Add(DebugOverlay);
+        
         UiElements = new MapUiElements(client);
         client.GraphicsLayer.AddChild(this);
         

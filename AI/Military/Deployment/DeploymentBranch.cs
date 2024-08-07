@@ -52,8 +52,7 @@ public abstract class DeploymentBranch
 
     public abstract Cell GetCharacteristicCell(Data d);
 
-    public Army PullGroup(DeploymentAi ai, 
-        Func<Army, float> suitability, 
+    public Army PullGroup(Func<Army, float> suitability, 
         LogicKey key)
     {
         var children = SubBranches
@@ -61,14 +60,13 @@ public abstract class DeploymentBranch
             .OrderByDescending(c => c.GetSatisfiedRatio(key.Data));
         foreach (var c in children)
         {
-            var u = c.PullGroup(ai, suitability, key);
+            var u = c.PullGroup(suitability, key);
             if(u != null) return u;
         }
         return null;
     }
 
-    public void PushGroup(DeploymentAi ai, 
-        Army g, LogicKey key)
+    public void PushGroup(Army g, LogicKey key)
     {
         var child = SubBranches
                     .Union<IDeploymentNode>(Assignments)
@@ -77,24 +75,24 @@ public abstract class DeploymentBranch
         {
             throw new Exception("no children " + this.GetType());
         }
-        child.PushGroup(ai, g, key);
+        child.PushGroup(g, key);
     }
 
     public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
 
-    public void GiveOrders(DeploymentAi ai, LogicKey key)
+    public void GiveOrders(LogicKey key)
     {
         foreach (var ga in Assignments)
         {
-            ga.GiveOrders(ai, key);
+            ga.GiveOrders(key);
         }
 
         foreach (var d in SubBranches)
         {
-            d.GiveOrders(ai, key);
+            d.GiveOrders(key);
         }
     }
-    public void ShiftGroups(DeploymentAi ai, LogicKey key)
+    public void ShiftGroups(LogicKey key)
     {
         var d = key.Data;
         var assignments =
@@ -159,11 +157,10 @@ public abstract class DeploymentBranch
                     if (i == j) continue;
                     var a2 = assignments[j];
                     if (eligibleToTakeFrom(a2, ratio)
-                        && a2.PullGroup(ai, 
-                                g => a.Suitability(g, key.Data), key)
+                        && a2.PullGroup(g => a.Suitability(g, key.Data), key)
                             is Army g)
                     {
-                        a.PushGroup(ai, g, key);
+                        a.PushGroup(g, key);
                         // break;
                     }
                 }
@@ -174,7 +171,7 @@ public abstract class DeploymentBranch
         
         foreach (var b in SubBranches)
         {
-            b.ShiftGroups(ai, key);
+            b.ShiftGroups(key);
         }
 
         SubBranches.RemoveWhere(b => b.SubBranches.Count == 0 && b.Assignments.Count == 0);

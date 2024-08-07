@@ -8,24 +8,29 @@ using MessagePack;
 public class StrategicAi
 {
     public HashSet<CellRef> PrevOccupation { get; private set; }
-    public Dictionary<ERef<Frontline>, List<ERef<Frontline>>> FrontlineMerges { get; private set; }
+    public Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>> FrontlineMerges { get; private set; }
+    public Dictionary<ERef<Frontline>, Frontline> FrontlineCache { get; private set; }
     public static StrategicAi Construct(Alliance a, Data d)
     {
         return new StrategicAi(new HashSet<CellRef>(),
-            new Dictionary<ERef<Frontline>, List<ERef<Frontline>>>());
+            new Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>(),
+            new Dictionary<ERef<Frontline>, Frontline>());
     }
     [SerializationConstructor] private StrategicAi(
         HashSet<CellRef> prevOccupation, 
-        Dictionary<ERef<Frontline>, List<ERef<Frontline>>> frontlineMerges)
+        Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>> frontlineMerges, Dictionary<ERef<Frontline>, Frontline> frontlineCache)
     {
         FrontlineMerges = frontlineMerges;
+        FrontlineCache = frontlineCache;
         PrevOccupation = prevOccupation;
     }
 
     public void Calculate(Alliance alliance, LogicKey key)
     {
         var d = key.Data;
-        var context = new StrategicContext(alliance, key.Data);
+        var context = new StrategicContext(alliance, 
+            PrevOccupation.Select(p => p.Get(key.Data)).ToHashSet(),
+            key.Data);
         
         var theaters = key.Data.GetAll<Theater>()
             .Where(t => t.Alliance.RefId == alliance.Id)
@@ -46,6 +51,8 @@ public class StrategicAi
         leaderAi.Status.Add("validating frontlines");
         ValidateFrontlines(alliance, context, key);
         leaderAi.Status.Add("finished strategic ai");
+
+        PrevOccupation = context.AlliedCells.Select(c => c.MakeRef()).ToHashSet();
     }
 
     private void MakeTheatersFromScratch(
@@ -131,13 +138,14 @@ public class StrategicAi
         var oldFrontlines = key.Data.GetAll<Frontline>()
             .Where(fl => fl.Alliance.RefId == alliance.Id)
             .ToArray();
+        FrontlineCache = oldFrontlines.ToDictionary(v => v.MakeRef(), v => v);
         var theaters = key.Data.GetAll<Theater>()
             .Where(t => t.Alliance.RefId == alliance.Id).ToArray();
         
         var merge = GetFrontlineMerges(alliance, context, key);
         
         FrontlineMerges = merge.ToDictionary(kvp => kvp.Key.MakeRef(),
-            kvp => kvp.Value.Select(v => v.MakeRef()).ToList());
+            kvp => kvp.Value.Select(v => v.MakeRef()).ToHashSet());
         foreach (var oldFrontline in oldFrontlines)
         {
             key.Remove(oldFrontline);
@@ -155,6 +163,11 @@ public class StrategicAi
         }
     }
 
+    // private Dictionary<Frontline, List<Frontline>> GetFrontlineMergesNew(
+    //     Alliance alliance, StrategicContext context, LogicKey key)
+    // {
+    //     
+    // }
     private Dictionary<Frontline, List<Frontline>> GetFrontlineMerges(
         Alliance alliance, StrategicContext context, LogicKey key)
     {
@@ -170,30 +183,19 @@ public class StrategicAi
         
         var prev = PrevOccupation.Select(p => p.Get(key.Data)).ToHashSet();
         
-        var gained = context.AlliedCells.Except(prev).ToHashSet();
-        var gainedUnions = UnionFind.Find<Cell, HashSet<Cell>>(
-            gained, (c, d) => true, c => c.GetNeighbors(key.Data));
         
-        var lost = prev.Except(context.AlliedCells).ToHashSet();
-        var lostUnions = UnionFind.Find<Cell, HashSet<Cell>>(
-            lost, (c, d) => true, c => c.GetNeighbors(key.Data));
-
-        var stable = context.AlliedCells.Intersect(prev).ToHashSet();
-        var stableUnions = UnionFind.Find<Cell, HashSet<Cell>>(
-            stable, (c, d) => true, c => c.GetNeighbors(key.Data));
-
 
         var unionToNewMap = new Dictionary<HashSet<Cell>, 
             List<Frontline>>();
-        foreach (var gainedUnion in gainedUnions)
+        foreach (var gainedUnion in context.GainedUnions)
         {
             unionToNewMap.Add(gainedUnion, new List<Frontline>());
         }
-        foreach (var lostUnion in lostUnions)
+        foreach (var lostUnion in context.LostUnions)
         {
             unionToNewMap.Add(lostUnion, new List<Frontline>());
         }
-        foreach (var stableUnion in stableUnions)
+        foreach (var stableUnion in context.StableUnions)
         {
             unionToNewMap.Add(stableUnion, new List<Frontline>());
         }
@@ -205,19 +207,19 @@ public class StrategicAi
                 var native = newFrontFace.GetNative(key.Data);
                 var foreign = newFrontFace.GetForeign(key.Data);
 
-                if (stable.Contains(native))
+                if (context.Stable.Contains(native))
                 {
-                    var stableUnion = stableUnions.First(u => u.Contains(native));
+                    var stableUnion = context.StableUnions.First(u => u.Contains(native));
                     unionToNewMap[stableUnion].Add(newFrontline);
                 }
-                if (lost.Contains(foreign))
+                if (context.Lost.Contains(foreign))
                 {
-                    var lostUnion = lostUnions.First(u => u.Contains(foreign));
+                    var lostUnion = context.LostUnions.First(u => u.Contains(foreign));
                     unionToNewMap[lostUnion].Add(newFrontline);
                 }
-                if (gained.Contains(native))
+                if (context.Gained.Contains(native))
                 {
-                    var gainedUnion = gainedUnions.First(u => u.Contains(native));
+                    var gainedUnion = context.GainedUnions.First(u => u.Contains(native));
                     unionToNewMap[gainedUnion].Add(newFrontline);
                 }
             }
@@ -233,19 +235,19 @@ public class StrategicAi
                 var native = oldFrontFace.GetNative(key.Data);
                 var foreign = oldFrontFace.GetForeign(key.Data);
 
-                if (stable.Contains(native))
+                if (context.Stable.Contains(native))
                 {
-                    var stableUnion = stableUnions.First(u => u.Contains(native));
+                    var stableUnion = context.StableUnions.First(u => u.Contains(native));
                     oldToUnionMap[oldFrontline].Add(stableUnion);
                 }
-                if (lost.Contains(native))
+                if (context.Lost.Contains(native))
                 {
-                    var lostUnion = lostUnions.First(u => u.Contains(native));
+                    var lostUnion = context.LostUnions.First(u => u.Contains(native));
                     oldToUnionMap[oldFrontline].Add(lostUnion);
                 }
-                if (gained.Contains(foreign))
+                if (context.Gained.Contains(foreign))
                 {
-                    var gainedUnion = gainedUnions.First(u => u.Contains(foreign));
+                    var gainedUnion = context.GainedUnions.First(u => u.Contains(foreign));
                     oldToUnionMap[oldFrontline].Add(gainedUnion);
                 }
             }
@@ -257,12 +259,55 @@ public class StrategicAi
         foreach (var (oldFrontline, unions) in oldToUnionMap)
         {
             mergeMap.Add(oldFrontline, new List<Frontline>());
+            int iter = 0;
             foreach (var union in unions)
             {
                 foreach (var newFrontline in unionToNewMap[union])
                 {
                     mergeMap[oldFrontline].Add(newFrontline);
+                    iter++;
                 }
+            }
+
+            if (iter == 0)
+            {
+                GD.Print("couldnt find merge frontline");
+                var pos = oldFrontline.Faces.First().GetNative(key.Data).GetCenter();
+
+                var issue = new CustomIssue(pos,
+                    $"{alliance.Leader.Get(key.Data).Name} couldnt find merge frontline",
+                    c =>
+                    {
+                        // foreach (var cell in stable)
+                        // {
+                        //     c.DrawCellRel(cell, pos, Colors.Blue, key.Data);
+                        // }
+                        // foreach (var cell in gained)
+                        // {
+                        //     c.DrawCellRel(cell, pos, Colors.Green, key.Data);
+                        // }
+                        // foreach (var cell in lost)
+                        // {
+                        //     c.DrawCellRel(cell, pos, Colors.Red, key.Data);
+                        // }
+                        foreach (var union in unions)
+                        {
+                            foreach (var cell in union)
+                            {
+                                c.DrawCellRel(cell, pos, Colors.Orange, key.Data);
+                            }
+                        }
+                        foreach (var union in unions)
+                        {
+                            foreach (var newFrontline in unionToNewMap[union])
+                            {
+                                c.DrawFrontFaces(newFrontline.Faces, Colors.Red, 10f, pos, key.Data);
+                            }
+                        }
+                        c.DrawFrontFaces(oldFrontline.Faces, Colors.Yellow, 5f, pos, key.Data);
+                        
+                    });
+                key.Data.ClientPlayerData.Issues.Add(issue);
             }
         }
 

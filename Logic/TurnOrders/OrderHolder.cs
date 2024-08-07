@@ -45,10 +45,10 @@ public class OrderHolder
         }
         foreach (var r in aiRegimes)
         {
-            CalcAiRegimeOrdersSync(r, key);
+            CalcAiRegimeOrdersSequentially(r, key);
         }
     }
-    public void CalcAiOrdersAsync(LogicKey key)
+    public void CalcAiOrdersParallel(LogicKey key)
     {
         var aiRegimes = key.Data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(key.Data) == false);
@@ -74,10 +74,21 @@ public class OrderHolder
         return Orders.Values.ToList();
     }
 
-    private void CalcAiRegimeOrdersSync(Regime r, LogicKey key)
+    private async void CalcAiRegimeOrdersSequentially(Regime r, LogicKey key)
     {
         var ai = key.Data.HostLogicData.RegimeAis[r];
-        var orders = (RegimeTurnOrders)ai.CalculateAndSendOrders(key);
+
+        var task = Task.Run(() => (RegimeTurnOrders)ai.CalculateAndSendOrders(key));
+        try
+        {
+            await task;
+        }
+        catch
+        {
+            throw;
+        }
+        var orders = task.Result;
+
         Orders[r] = orders;
     }
     private async void CalcAiRegimeOrdersAsync(Regime r, LogicKey key)

@@ -9,13 +9,12 @@ public interface IDeploymentNode
     float GetPowerPointsAssigned(Data data);
     float GetPowerPointNeed(Data data);
     void SetWeights(LogicKey key);
-    void GiveOrders(DeploymentAi ai, LogicKey key);
+    void GiveOrders(LogicKey key);
     Cell GetCharacteristicCell(Data d);
-    Army PullGroup(DeploymentAi ai, 
-        Func<Army, float> suitability,
+    Army PullGroup(Func<Army, float> suitability,
         LogicKey key);
 
-    void PushGroup(DeploymentAi ai, Army g, LogicKey key);
+    void PushGroup(Army g, LogicKey key);
     void Draw(MeshBuilder mb, Vector2 relTo, Data d);
 }
 

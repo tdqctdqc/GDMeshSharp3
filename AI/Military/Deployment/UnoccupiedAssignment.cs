@@ -25,7 +25,7 @@ public class UnoccupiedAssignment : ArmyAssignment
         
     }
 
-    protected override void AddGroupToData(DeploymentAi ai, Army g, Data d)
+    protected override void AddGroupToData(Army g, Data d)
     {
         
     }
@@ -39,7 +39,7 @@ public class UnoccupiedAssignment : ArmyAssignment
         
     }
 
-    public override void GiveOrders(DeploymentAi ai, LogicKey key)
+    public override void GiveOrders(LogicKey key)
     {
         
     }
@@ -54,7 +54,7 @@ public class UnoccupiedAssignment : ArmyAssignment
         return Cell.Get(d);
     }
 
-    public override Army PullGroup(DeploymentAi ai, 
+    public override Army PullGroup(
         Func<Army, float> suitability, 
         LogicKey key)
     {

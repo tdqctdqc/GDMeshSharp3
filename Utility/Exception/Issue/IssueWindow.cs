@@ -5,7 +5,7 @@ public partial class IssueWindow : Window
 {
     private Client _client;
     private Container _container;
-
+    
     private IssueWindow()
     {
         this.MakeFreeable();
@@ -31,10 +31,15 @@ public partial class IssueWindow : Window
     {
         _container.ClearChildren();
         var issues = _client.Data.ClientPlayerData.Issues;
-        _container.AddButton("Clear", () =>
+        _container.AddButton("Clear Issues", () =>
         {
             _client.Data.ClientPlayerData.Issues.Clear();
+            _client.GetComponent<MapGraphics>().DebugOverlay.Clear();
             Draw();
+        });
+        _container.AddButton("Clear Overlay", () =>
+        {
+            _client.GetComponent<MapGraphics>().DebugOverlay.Clear();
         });
         foreach (var issue in issues)
         {

@@ -30,16 +30,16 @@ public abstract class ArmyAssignment : IDeploymentNode,
     }
     protected abstract void RemoveGroupFromData(DeploymentAi ai, Army g);
     
-    public void PushGroup(DeploymentAi ai, Army g, LogicKey key)
+    public void PushGroup(Army g, LogicKey key)
     {
-        AddGroupToData(ai, g, key.Data);
+        AddGroupToData(g, key.Data);
         if (Armies.Contains(g.MakeRef())) throw new Exception();
         Armies.Add(g.MakeRef());
     }
 
     public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
 
-    protected abstract void AddGroupToData(DeploymentAi ai, Army g, Data d);
+    protected abstract void AddGroupToData(Army g, Data d);
     public abstract float GetPowerPointNeed(Data d);
     public float GetPowerPointsAssigned(Data data)
     {
@@ -47,8 +47,8 @@ public abstract class ArmyAssignment : IDeploymentNode,
     }
 
 
-    public abstract void GiveOrders(DeploymentAi ai, LogicKey key);
-    public abstract Army PullGroup(DeploymentAi ai, Func<Army, float> suitability, LogicKey key);
+    public abstract void GiveOrders(LogicKey key);
+    public abstract Army PullGroup(Func<Army, float> suitability, LogicKey key);
     public abstract float Suitability(Army g, Data d);
     public abstract Cell GetCharacteristicCell(Data d);
     public abstract void SetWeights(LogicKey key);
