@@ -9,6 +9,7 @@ public static class Mover
     public static RefSet<CellRef> MoveArmy(Army a, Data d)
     {
         var lineCells = a.LineMission.LineCells;
+        if (lineCells.Count() == 0) return new RefSet<CellRef>(new HashSet<CellRef>());
         var moveRadius = a.GetArmyMoveRadius(d);
         var overlap = moveRadius.Where(c => lineCells.Contains(c.MakeRef()));
 
@@ -39,7 +40,7 @@ public static class Mover
                 var issue = new CantFindPathIssue(alliance,
                     "Can't find army move path",
                     a.GetHomeCell(d), lineCells.Refs.Select(r => r.Get(d)).ToList(),
-                    moveType);
+                    moveType, d.GetTick());
                 d.ClientPlayerData.Issues.Add(issue);
                 return a.Cells;
             }
@@ -60,7 +61,7 @@ public static class Mover
             var issue = new CantFindPathIssue(
                 moveDat.Alliance,
                 "", pos.GetCell(key.Data),
-                dest.Yield().ToList(), moveDat.MoveType
+                dest.Yield().ToList(), moveDat.MoveType, key.Data.GetTick()
             ); 
             key.Data.ClientPlayerData.Issues.Add(issue);
             return;

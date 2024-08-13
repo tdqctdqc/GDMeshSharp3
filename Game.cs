@@ -25,6 +25,7 @@ public partial class Game : Node
 		
 		// var r = ExcelDataReader.ExcelReaderFactory
 		// 	.CreateReader();
+		// RunsTest();
 	}
 	public void StartMainMenuSession()
 	{
@@ -52,5 +53,24 @@ public partial class Game : Node
 		session.Name = "Session";
 		_session = (ISession)session;
 		AddChild(session);
+	}
+
+
+
+	private void RunsTest()
+	{
+		var test = new List<int> { 1, 1, 1, 2, 2, 3, 3, 3, 1 };
+		var runs = new HashSet<List<int>>();
+		test.DoForRuns(i => i,
+			l => runs.Add(l),
+			(i,j) => false);
+		foreach (var run in runs)
+		{
+			GD.Print("RUN");
+			foreach (var i in run)
+			{
+				GD.Print(i);
+			}
+		}
 	}
 }

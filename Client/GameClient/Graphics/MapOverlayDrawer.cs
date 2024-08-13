@@ -7,7 +7,7 @@ using Godot;
 public class MapOverlayDrawer
 {
     private GraphicsSegmenter _segmenter;
-    private List<Node> _nodes;
+    private List<Node2D> _nodes;
     private int _z;
 
     private MapOverlayDrawer()
@@ -17,7 +17,7 @@ public class MapOverlayDrawer
     public MapOverlayDrawer(GraphicsSegmenter segmenter, int z)
     {
         _segmenter = segmenter;
-        _nodes = new List<Node>();
+        _nodes = new List<Node2D>();
         _z = z;
     }
 
@@ -55,5 +55,13 @@ public class MapOverlayDrawer
         node.ZIndex = _z;
         _nodes.Add(node);
         _segmenter.AddElement(node, pos);
+    }
+
+    public void SetVisibility(bool vis)
+    {
+        foreach (var node in _nodes)
+        {
+            node.Visible = vis;
+        }
     }
 }

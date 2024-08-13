@@ -163,8 +163,9 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
             var attackerInfos = combat.Graph.GetNeighbors(this)
                 .OfType<CellAttackNode>()
                 .SelectMany(n => n.UnitInfos)
+                .Where(i => key.Data.HasEntity(i.Unit.RefId))
                 .Select(i => i.Unit.Get(key.Data));
-            
+            if (attackerInfos.Any() == false) return;
             var alliancesByStr = attackerInfos
                 .Where(u => key.Data.HasEntity(u.Id))
                 .SortBy(u => u.Regime.Get(key.Data).GetAlliance(key.Data));

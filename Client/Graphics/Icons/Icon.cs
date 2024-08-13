@@ -6,6 +6,9 @@ public class Icon
 {
     public static Icon Blank { get; private set; }
         = Create(nameof(Blank), Vector2I.One);
+
+    public static Texture2D Button1 
+        => TextureManager.Textures[nameof(Button1).ToLower()];
     public Texture2D Texture { get; private set; }
     public static Icon Create(string textureName, Vector2I ratio)
     {

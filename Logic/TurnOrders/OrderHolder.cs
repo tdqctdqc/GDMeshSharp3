@@ -35,7 +35,7 @@ public class OrderHolder
         if (Orders.ContainsKey(regime) && Orders[regime] != null) throw new Exception();
         Orders[regime] = orders;
     }
-    public void CalcAiOrdersSync(LogicKey key)
+    public void CalcAiOrdersSequentially(LogicKey key)
     {
         var aiRegimes = key.Data.GetAll<Regime>()
             .Where(r => r.IsPlayerRegime(key.Data) == false);

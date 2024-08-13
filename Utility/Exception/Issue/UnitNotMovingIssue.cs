@@ -10,7 +10,8 @@ public class UnitNotMovingIssue : Issue
     public bool GoThruHostile { get; private set; }
     public UnitNotMovingIssue(Vector2 dest,
         Vector2 unitPos, string message, MoveType moveType,
-        Alliance alliance, bool goThruHostile) : base(unitPos, message)
+        Alliance alliance, bool goThruHostile, int tick) : base(unitPos, 
+        message, tick)
     {
         MoveType = moveType;
         Alliance = alliance;
@@ -18,7 +19,7 @@ public class UnitNotMovingIssue : Issue
         GoThruHostile = goThruHostile;
     }
 
-    public override void Draw(Client c)
+    private void Draw(Client c)
     {
         // var debugDrawer = c.GetComponent<MapGraphics>()
         //     .DebugOverlay;

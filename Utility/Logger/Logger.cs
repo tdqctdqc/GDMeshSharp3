@@ -20,7 +20,7 @@ public class Logger
 
     private async void RunLoop()
     {
-        // await Task.Run(Loop);
+        await Task.Run(Loop);
     }
     
     private void Loop()

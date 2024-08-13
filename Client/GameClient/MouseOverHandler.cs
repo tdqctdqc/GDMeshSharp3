@@ -66,7 +66,7 @@ public class MouseOverHandler
                 if (thisDist < dist)
                 {
                     var cand = PlanetDomainExt.GetPolyCell(MouseOverCell.Geometry.Neighbors[i], data);
-                    if (_validCell(cand))
+                    if (_validCell(cand) && MouseOverCell.Neighbors.Contains(cand.Id))
                     {
                         secondClosestAny = cand;
                         dist = thisDist;
@@ -141,8 +141,14 @@ public class MouseOverHandler
             var edge = MouseOverCell
                 .GetEdgeRelWith(SecondClosest);
             overlay.Draw(mb => mb.AddLine(edge.Item1,
-                edge.Item2, Colors.Blue, 2f), 
+                edge.Item2, Colors.Black, 2f), 
                 MouseOverCell.RelTo);
+
+            
         }
+
+        
     }
+
+    
 }

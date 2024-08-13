@@ -133,4 +133,32 @@ public abstract class Cell : IPolymorph,
     {
         return this;
     }
+
+    public static Vector2 GetNexusPoint(Vector3I nexus, Data d)
+    {
+        var a = PlanetDomainExt.GetPolyCell(nexus.X, d);
+        var b = PlanetDomainExt.GetPolyCell(nexus.Y, d);
+        
+        if (nexus.Z == -1)
+        {
+            var e = a.GetEdgeRelWith(b);
+            return d.Planet.ClampPosition(a.RelTo + (e.Item1 + e.Item2) / 2f);
+        }
+        
+        var c = PlanetDomainExt.GetPolyCell(nexus.Z, d);
+
+        var e1 = a.GetEdgeRelWith(b);
+        var e2 = a.GetEdgeRelWith(c);
+
+        Vector2 p = Vector2.Inf;
+        if (e1.Item1 == e2.Item1) p = e1.Item1;
+        if (e1.Item1 == e2.Item2) p = e1.Item1;
+        if (e1.Item2 == e2.Item1) p = e1.Item2;
+        if (e1.Item2 == e2.Item2) p = e1.Item2;
+        
+        if(p == Vector2.Inf) throw new Exception();
+
+        return d.Planet.ClampPosition(a.RelTo + p);
+    }
+    
 }

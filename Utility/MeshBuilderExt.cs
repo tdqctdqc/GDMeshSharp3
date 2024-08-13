@@ -71,11 +71,17 @@ public static class MeshBuilderExt
         for (var i = 0; i < faces.Count; i++)
         {
             var face = faces[i];
-            var native = face.GetNative(d);
-            var foreign = face.GetForeign(d);
-            var nPos = relTo.Offset(native.GetCenter(), d);
-            var fPos = relTo.Offset(foreign.GetCenter(), d);
-            mb.AddArrow(nPos, fPos, thickness, color);
+            DrawFrontFace(mb, face, color, thickness, relTo, d);
         }
+    }
+
+    public static void DrawFrontFace(this MeshBuilder mb,
+        FrontFace face,
+        Color color, 
+        float thickness,
+        Vector2 relTo, Data d)
+    {
+        var (start, end) = (face.GetLeftNexusPoint(d), face.GetRightNexusPoint(d));
+        mb.AddArrowRel(start, end, thickness, color, relTo, d);
     }
 }

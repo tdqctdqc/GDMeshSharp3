@@ -20,8 +20,21 @@ public class Frontline : Entity
         key.Create(f);
         return f;
     }
-
-    public static List<List<FrontFace>> GetFacesFromCells(
+    public static List<List<FrontFace>> GetRivalFacesFromCellsLToR(
+        IEnumerable<Cell> cells,
+        Alliance alliance, 
+        Data data)
+    {
+        return FrontFinder
+            .FindFrontsLeftToRight(cells.ToHashSet(),
+                p =>
+                {
+                    if (p.Controller.IsEmpty()) return false;
+                    var pAlliance = p.Controller.Get(data).GetAlliance(data);
+                    return alliance.IsRivals(pAlliance, data);
+                }, data);
+    }
+    public static List<List<FrontFace>> GetFacesFromCellsLToR(
         IEnumerable<Cell> cells,
         Alliance alliance, 
         Data data)

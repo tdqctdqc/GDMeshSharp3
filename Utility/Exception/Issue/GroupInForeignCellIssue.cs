@@ -5,24 +5,17 @@ public class GroupInForeignCellIssue : Issue
 {
     private Cell _cell;
     private Army _group;
-    public GroupInForeignCellIssue(Army g, Cell cell) 
-        : base(cell.GetCenter(), "")
+    public GroupInForeignCellIssue(Army g, Cell cell, int tick) 
+        : base(cell.GetCenter(), "", tick)
     {
         _cell = cell;
         _group = g;
-    }
-
-    public override void Draw(Client c)
-    {
-        var mg = c.GetComponent<MapGraphics>();
-        var debug = mg.GetOverlay(LayerOrder.Debug);
-        debug.Clear();
-        debug.Draw(mb =>
+        AddLayer("base", mb =>
         {
-            var groupP = Pos.Offset(_group.GetHomeCell(c.Data).GetCenter(), c.Data);
-            var cellP = Pos.Offset(_cell.GetCenter(), c.Data);
+            var groupP = Pos.Offset(_group.GetHomeCell(Game.I.Client.Data).GetCenter(), Game.I.Client.Data);
+            var cellP = Pos.Offset(_cell.GetCenter(), Game.I.Client.Data);
             mb.AddSquare(cellP, 20f, Colors.Black);
             mb.AddSquare(groupP, 10f, _group.Color);
-        }, Pos);
+        });
     }
 }

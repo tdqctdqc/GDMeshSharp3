@@ -14,16 +14,23 @@ public class CantFindPathIssue : Issue
         string message, 
         Cell start, 
         List<Cell> dests, 
-        MoveType moveType) 
-        : base(start.GetCenter(), message)
+        MoveType moveType, int tick) 
+        : base(start.GetCenter(), message, tick)
     {
         Alliance = alliance;
         Start = start;
         Dests = dests;
         MoveType = moveType;
+        
+        AddLayer("start", mb =>
+        {
+            DrawPaths(mb, Game.I.Client);
+        });
+        
+        
     }
 
-    public override void Draw(Client c)
+    private void DrawPaths(MeshBuilder mb, Client c)
     {
         var startNeighborhood = new HashSet<Cell>();
         var destNeighborhood = new HashSet<Cell>();
@@ -61,9 +68,7 @@ public class CantFindPathIssue : Issue
             }
         }
 
-        var debugDrawer = c.GetComponent<MapGraphics>()
-            .GetOverlay(LayerOrder.Debug);
-        debugDrawer.Clear();
+        
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
         foreach (var n in union)
         {
@@ -85,10 +90,10 @@ public class CantFindPathIssue : Issue
                 isStartOrDest = Colors.Yellow;
                 size = 5f;
             }
-            debugDrawer.Draw(mb => mb.AddSquare(Vector2.Zero, size, canPass), 
-                n.GetCenter());
-            debugDrawer.Draw(mb => mb.AddSquare(Vector2.Zero, size / 2f, isStartOrDest), 
-                n.GetCenter());
+
+            var offset = Pos.Offset(n.GetCenter(), c.Data);
+            mb.AddSquare(offset, size, canPass);
+            mb.AddSquare(offset, size / 2f, isStartOrDest);
         }
     }
 }

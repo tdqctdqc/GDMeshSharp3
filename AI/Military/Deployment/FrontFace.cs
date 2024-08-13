@@ -13,16 +13,27 @@ public struct FrontFace
     {
         return new FrontFace(native.Id, foreign.Id);
     }
-    private FrontFace(int native, int foreign)
+    public FrontFace(int native, int foreign)
     {
         Native = native;
         Foreign = foreign;
     }
 
+    public Cell GetLeftNeighborCell(Data d)
+    {
+        var leftId = GetLeftNeighborCellId(d);
+
+        if (leftId == -1)
+        {
+            return null;
+        }
+
+        return PlanetDomainExt.GetPolyCell(leftId, d);
+    }
     public int GetLeftNeighborCellId(Data d)
     {
         var key = GetIdEdgeKey();
-        var flip = Native < Foreign;
+        var flip = Native > Foreign;
         return flip
             ? d.Planet.MapAux.CellHolder.Rights[key]
             : d.Planet.MapAux.CellHolder.Lefts[key];
@@ -41,10 +52,21 @@ public struct FrontFace
         }
         return FrontFace.Construct(native, left, d);
     }
+    public Cell GetRightNeighborCell(Data d)
+    {
+        var rightId = GetRightNeighborCellId(d);
+
+        if (rightId == -1)
+        {
+            return null;
+        }
+
+        return PlanetDomainExt.GetPolyCell(rightId, d);
+    }
     public int GetRightNeighborCellId(Data d)
     {
         var key = GetIdEdgeKey();
-        var flip = Native < Foreign;
+        var flip = Native > Foreign;
         return flip
             ? d.Planet.MapAux.CellHolder.Lefts[key]
             : d.Planet.MapAux.CellHolder.Rights[key];
@@ -182,6 +204,12 @@ public struct FrontFace
 
 public static class FrontFaceExt
 {
+    public static (Vector3I start, Vector3I end) GetStartEndNexus(
+        this List<FrontFace> list, Data d)
+    {
+        return (list[0].GetLeftNexus(d), list[^1].GetRightNexus(d));
+    }
+    
     public static Vector2 GetAxis(this FrontFace f, Data d)
     {
         return f.GetNative(d).GetCenter().Offset(f.GetForeign(d).GetCenter(), d);
@@ -194,6 +222,80 @@ public static class FrontFaceExt
     public static Cell GetForeign(this FrontFace f, Data d)
     {
         return PlanetDomainExt.GetPolyCell(f.Foreign, d);
+    }
+
+    public static Vector2 GetLeftNexusPoint (this FrontFace ff, Data d)
+    {
+        return Cell.GetNexusPoint(GetNexusKey(ff.Native, ff.Foreign, 
+            ff.GetLeftNeighborCellId(d)), d);
+    }
+    public static Vector3I GetLeftNexus(this FrontFace ff, Data d)
+    {
+        return GetNexusKey(ff.Native, ff.Foreign, 
+            ff.GetLeftNeighborCellId(d));
+    }
+    public static Vector2 GetRightNexusPoint (this FrontFace ff, Data d)
+    {
+        return Cell.GetNexusPoint(GetNexusKey(ff.Native, ff.Foreign, 
+            ff.GetRightNeighborCellId(d)), d);
+    }
+    public static Vector3I GetRightNexus(this FrontFace ff, Data d)
+    {
+        return GetNexusKey(ff.Native, ff.Foreign, 
+            ff.GetRightNeighborCellId(d));
+    }
+    public static Vector3I GetNexusKey(int a, int b, int c)
+    {
+        if (a == -1)
+        {
+            if (b < c) return new Vector3I(b, c, a);
+            return new Vector3I(c, b, a);
+        }
+        
+        
+        if (b == -1)
+        {
+            if (a < c) return new Vector3I(a, c, b);
+            return new Vector3I(c, a, b);
+        }
+        
+        
+        if (c == -1)
+        {
+            if (a < b) return new Vector3I(a, b, c);
+            return new Vector3I(b, a, c);
+        }
+        
+        
+        if (a < b && a < c && b < c)
+        {
+            return new Vector3I(a, b, c);
+        }
+        if (a < b && a < c && c < b)
+        {
+            return new Vector3I(a, c, b);
+        }
+        
+        if (a < b && c < a && c < b)
+        {
+            return new Vector3I(c, a, b);
+        }
+        
+        if (b < a && c < a && c < b)
+        {
+            return new Vector3I(c, b, a);
+        }
+        
+        if (b < c && b < a && c < a)
+        {
+            return new Vector3I(b, c, a);
+        }
+        if (b < c && b < a && a < c)
+        {
+            return new Vector3I(b, a, c);
+        }
+
+        throw new Exception($"cant order {a} {b} {c}");
     }
 
 }

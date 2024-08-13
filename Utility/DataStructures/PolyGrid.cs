@@ -136,7 +136,8 @@ public class PolyGrid<TPoly>
     }
     private (TPoly, NoPolyAtPointIssue<TPoly>) ForceGet(Vector2 point, Vector2I key, Data d)
     {
-        var issue = new NoPolyAtPointIssue<TPoly>(point, null, "");
+        var issue = new NoPolyAtPointIssue<TPoly>(point, null,
+            "", d.GetTick());
         issue.Message += $"couldn't find poly at point {point}" +
                          $" cell {key}, force getting";
         var (close, dist) = GetClosestInCell(point, key, d);
@@ -188,7 +189,7 @@ public class PolyGrid<TPoly>
         var cell = Cells[key];
         if (cell.Count == 0)
         {
-            var issue = new NoPolysInCellIssue(key, point, "");
+            var issue = new NoPolysInCellIssue(key, point, "", d.GetTick());
             d.ClientPlayerData.Issues.Add(issue);
             return (null, Mathf.Inf);
         }

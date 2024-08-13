@@ -6,12 +6,14 @@ public class PolyMode : UiMode
 {
     public DefaultSettingsOption<MapPolygon> Poly { get; private set; }
     public DefaultSettingsOption<Cell> Cell { get; private set; }
+    private MapOverlayDrawer _mouseOverlay;
     private MeshInstance2D _selectedCell, _selectedPoly;
     private MouseOverHandler _mouseOverHandler;
 
     public PolyMode(Client client) : base(client, "Poly")
     {
         _mouseOverHandler = new MouseOverHandler(client.Data);
+        
         Poly = new DefaultSettingsOption<MapPolygon>("Poly", null);
         Cell = new DefaultSettingsOption<Cell>("Cell", null);
         client.Notices.Selecting.Subscribe(v => SelectCell(v.GetCell(client.Data)));
@@ -65,6 +67,8 @@ public class PolyMode : UiMode
     public override void HandleInput(InputEvent e)
     {
         var mapPos = _client.Cam().GetMousePosInMapSpace();
+        _mouseOverlay.Clear();
+        _mouseOverHandler.Highlight(_mouseOverlay);
         if(e.IsAction("Open Regime Overview"))
         {
             var cell = _mouseOverHandler.MouseOverCell;
@@ -113,6 +117,8 @@ public class PolyMode : UiMode
 
     public override void Enter()
     {
+        _mouseOverlay = _client.GetComponent<MapGraphics>()
+            .GetOverlay(LayerOrder.Debug);
         _selectedCell?.QueueFree();
         _selectedCell = new MeshInstance2D();
         _selectedCell.ZIndex = (int)LayerOrder.Highlighter;
@@ -152,5 +158,9 @@ public class PolyMode : UiMode
         _selectedCell = null;
         _selectedPoly.QueueFree();
         _selectedPoly = null;
+        
+        _mouseOverlay.Clear();
+        _client.GetComponent<MapGraphics>().RemoveOverlay(_mouseOverlay);
+        _mouseOverlay = null;
     }
 }

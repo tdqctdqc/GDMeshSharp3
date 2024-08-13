@@ -55,7 +55,7 @@ public class Theater : Entity
         var alliance = Alliance.Get(key.Data);
         
         var frontlines = 
-            Frontline.GetFacesFromCells(Cells.Select(c => c.Get(key.Data)),
+            Frontline.GetFacesFromCellsLToR(Cells.Select(c => c.Get(key.Data)),
             alliance, data)
                 .Select(l => Frontline.Create(l, new HashSet<CellRef>(),
                     alliance, key))

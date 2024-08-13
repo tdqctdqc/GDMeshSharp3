@@ -5,20 +5,35 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CustomIssue.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/ArmyAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/ArmyAssignment.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Military/CellChangeStatus.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/AI/Military/StrategicContextIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/IDeploymentNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/UnoccupiedAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/UnoccupiedAssignment.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontFace.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Frontline.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Frontline.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/MapGraphics.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/StrategicContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Theater.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Theater.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Graphics/MapOverlayDrawer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/PolyMode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/Icons/Icon.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Game.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Game.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/LogicStates/TurnMiddleState.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Mover/Mover.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Mover/Mover.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PolyGrid.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/EnumerableExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/EnumerableExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CantFindPathIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/CustomIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/CustomIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/GroupInForeignCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/GroupInForeignCellIssue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/Issue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/Issue.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/IssueWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/IssueWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/MeshBuilderExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolyAtPointIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolyAtPointIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/NoPolysInCellIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/UnitNotMovingIssue.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/UnitNotMovingIssue.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/Logger/Logger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Logger/Logger.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,15 +75,13 @@
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/da93d77c56294abbb64e45d77ba161c8b4a0/27/03d38b2d/List`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/GroupAssignment.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Alliance/AllianceExt.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Apportioner/Blobber.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/EnumerableExt.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -714,6 +727,12 @@
       <workItem from="1722814640215" duration="2111000" />
       <workItem from="1722867555374" duration="7508000" />
       <workItem from="1722879933287" duration="12085000" />
+      <workItem from="1723039205853" duration="8220000" />
+      <workItem from="1723124920922" duration="8619000" />
+      <workItem from="1723300912859" duration="7295000" />
+      <workItem from="1723387776191" duration="18681000" />
+      <workItem from="1723472613725" duration="4890000" />
+      <workItem from="1723483631116" duration="2867000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -925,14 +944,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00278" summary="adding troop upgrades">
-      <option name="closed" value="true" />
-      <created>1722095675605</created>
-      <option name="number" value="00278" />
-      <option name="presentableId" value="LOCAL-00278" />
-      <option name="project" value="LOCAL" />
-      <updated>1722095675605</updated>
-    </task>
     <task id="LOCAL-00279" summary="doot">
       <option name="closed" value="true" />
       <created>1722095717706</created>
@@ -1077,7 +1088,15 @@
       <option name="project" value="LOCAL" />
       <updated>1722883663261</updated>
     </task>
-    <option name="localTasksCounter" value="297" />
+    <task id="LOCAL-00297" summary="made left-right for cells cached in cellHolder">
+      <option name="closed" value="true" />
+      <created>1723043921656</created>
+      <option name="number" value="00297" />
+      <option name="presentableId" value="LOCAL-00297" />
+      <option name="project" value="LOCAL" />
+      <updated>1723043921656</updated>
+    </task>
+    <option name="localTasksCounter" value="298" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1099,7 +1118,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="model tweak" />
     <MESSAGE value="tweaked inserting groups move" />
     <MESSAGE value="implemented army moves" />
     <MESSAGE value="made multiple highlighters" />
@@ -1124,6 +1142,7 @@
     <MESSAGE value="made unionFind generic wrt collection type" />
     <MESSAGE value="made so shift phase in deployment node goes longer to fix problem, added more to milplanningmode ui" />
     <MESSAGE value="making theaters, frontlines semi persistent" />
-    <option name="LAST_COMMIT_MESSAGE" value="making theaters, frontlines semi persistent" />
+    <MESSAGE value="made left-right for cells cached in cellHolder" />
+    <option name="LAST_COMMIT_MESSAGE" value="made left-right for cells cached in cellHolder" />
   </component>
 </project>

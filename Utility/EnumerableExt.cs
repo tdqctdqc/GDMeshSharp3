@@ -152,83 +152,53 @@ public static class EnumerableExt
         return res;
     }
     
-    public static void DoForRuns<T>(this List<T> list,
-        Func<T, bool> valid,
-        Action<List<T>> handleRun)
+    
+    public static void DoForRuns<T, TMark>(this List<T> list,
+        Func<T, TMark> getMark,
+        Action<List<T>> handleRun,
+        Func<T,T,bool> endsConnect)
     {
-        var goodStartIndex = -1;
+        var startIndex = 0;
+        if (endsConnect(list[^1], list[0])
+            && getMark(list[0]).Equals(getMark(list[^1])))
+        {
+            var lastDiffIndex = list.FindLastIndex(t => getMark(t).Equals(getMark(list[0])) == false);
+            if (lastDiffIndex == -1)
+            {
+                handleRun(list.ToList());
+                return;
+            }
+            startIndex = (lastDiffIndex + 1) % list.Count;
+        }
+        
+        bool inited = false;
+        TMark mark = default;
+        var run = new List<T>();
         for (var i = 0; i < list.Count; i++)
         {
-            var val = list[i];
-            if (valid(val) == false)
+            var index = (startIndex + i) % list.Count;
+            var val = list[index];
+            if(inited == false)
             {
-                handle(goodStartIndex, i - 1);
-                goodStartIndex = -1;
+                mark = getMark(val);
+                inited = true;
+            }
+
+            var thisMark = getMark(val);
+            if (thisMark.Equals(mark) == false)
+            {
+                handleRun(run);
+                mark = thisMark;
+                run = new List<T> { val };
             }
             else
             {
-                if (goodStartIndex == -1)
-                {
-                    goodStartIndex = i;
-                }
+                run.Add(val);
             }
 
-            if (i == list.Count - 1)
+            if (index == list.Count - 1)
             {
-                handle(goodStartIndex, i);
-            }
-        }
-
-        void handle(int from, int to)
-        {
-            if (from == -1) return;
-            handleRun(list.GetRange(from, to - from + 1));
-        }
-    }
-    public static void DoForRunsCircular<T>(this List<T> list,
-        Func<T, bool> valid,
-        Action<List<T>> handleRun)
-    {
-        var firstGood = list.FindIndex(t => valid(t));
-        if (firstGood == -1) return;
-        var goodStartIndex = -1;
-        
-        
-        for (var i = 0; i < list.Count; i++)
-        {
-            var val = list.Modulo(firstGood + i);
-            if (valid(val) == false)
-            {
-                handle(goodStartIndex, i + firstGood - 1);
-                goodStartIndex = -1;
-            }
-            else
-            {
-                if (goodStartIndex == -1)
-                {
-                    goodStartIndex = firstGood + i;
-                }
-            }
-
-            if (i == list.Count - 1)
-            {
-                handle(goodStartIndex, i + firstGood);
-            }
-        }
-
-        void handle(int from, int to)
-        {
-            if (from == -1) return;
-            if (from <= to)
-            {
-                handleRun(list.GetRange(from, to - from + 1));
-            }
-            else
-            {
-                var run1 = list.GetRange(from, list.Count - 1);
-                var run2 = list.GetRange(0, to + 1);
-                run2.AddRange(run1);
-                handleRun(run2);
+                handleRun(run);
             }
         }
     }
