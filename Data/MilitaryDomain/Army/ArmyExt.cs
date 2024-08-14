@@ -6,6 +6,13 @@ using Godot;
 
 public static class ArmyExt
 {
+    public static float GetMoveCost(this Army a, Cell dest, Data d)
+    {
+        var path = a.FindArmyPath(dest, true, d);
+        return PathFinder<Cell>.GetPathCost(
+            path, (c1, c2) => a.MoveType(d)
+                .EdgeCost(c1, c2, d));
+    }
     public static ArmyTree GetTree(this Army a, int startColumn,
         Client c)
     {

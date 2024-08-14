@@ -11,10 +11,11 @@ public interface IDeploymentNode
     void SetWeights(LogicKey key);
     void GiveOrders(LogicKey key);
     Cell GetCharacteristicCell(Data d);
-    Army PullGroup(Func<Army, float> suitability,
+    Unit PullUnit(Func<Unit, float> suitability,
         LogicKey key);
 
-    void PushGroup(Army g, LogicKey key);
+    void PushUnit(Unit u, LogicKey key);
+    void PushArmy(Army a, LogicKey key);
     void Draw(MeshBuilder mb, Vector2 relTo, Data d);
 }
 

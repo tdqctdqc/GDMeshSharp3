@@ -22,25 +22,34 @@ public abstract class ArmyAssignment : IDeploymentNode,
         Armies = armies;
     }
 
-    public void RemoveGroup(DeploymentAi ai, Army g)
+    public void RemoveArmy(Army g)
     {
         if (Armies.Contains(g.MakeRef()) == false) throw new Exception();
         Armies.Remove(g.MakeRef());
-        RemoveGroupFromData(ai, g);
+        RemoveArmyFromData(g);
     }
-    protected abstract void RemoveGroupFromData(DeploymentAi ai, Army g);
+    protected abstract void RemoveArmyFromData(Army g);
     
-    public void PushGroup(Army g, LogicKey key)
+    public void PushUnit(Unit u, LogicKey key)
     {
-        AddGroupToData(g, key.Data);
-        if (Armies.Contains(g.MakeRef())) throw new Exception();
-        Armies.Add(g.MakeRef());
+        var min = Armies
+            .MinBy(a => a.Get(key.Data).GetPowerPoints(key.Data));
+        var proc = new SetUnitArmyProcedure(u.MakeRef(), min);
+        key.SendMessage(proc);
+    }
+
+    public void PushArmy(Army a, LogicKey key)
+    {
+        AddGroupToData(a, key.Data);
+        if (Armies.Contains(a.MakeRef())) throw new Exception();
+        Armies.Add(a.MakeRef());
     }
 
     public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
 
     protected abstract void AddGroupToData(Army g, Data d);
     public abstract float GetPowerPointNeed(Data d);
+
     public float GetPowerPointsAssigned(Data data)
     {
         return Armies.Sum(g => g.Get(data).GetPowerPoints(data));
@@ -48,8 +57,8 @@ public abstract class ArmyAssignment : IDeploymentNode,
 
 
     public abstract void GiveOrders(LogicKey key);
-    public abstract Army PullGroup(Func<Army, float> suitability, LogicKey key);
-    public abstract float Suitability(Army g, Data d);
+    public abstract Unit PullUnit(Func<Unit, float> suitability, LogicKey key);
+    public abstract float Suitability(Unit u, Data d);
     public abstract Cell GetCharacteristicCell(Data d);
     public abstract void SetWeights(LogicKey key);
 

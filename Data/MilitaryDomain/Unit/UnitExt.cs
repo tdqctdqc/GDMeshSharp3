@@ -16,7 +16,7 @@ public static class UnitExt
                 return v;
             });
     }
-    public static float GetPowerPointsWeighted(this Unit u, Data d)
+    public static float GetPowerPointsWeightedMorale(this Unit u, Data d)
     {
         if (u.Troops.Contents.Count == 0) return 0f; 
         var raw = u.Troops.GetEnumModel(d)

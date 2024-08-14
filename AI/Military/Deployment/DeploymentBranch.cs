@@ -38,6 +38,8 @@ public abstract class DeploymentBranch
                + Assignments.Sum(a => a.GetPowerPointNeed(d));
     }
 
+    
+
     public void SetWeights(LogicKey key)
     {
         foreach (var armyAssignment in Assignments)
@@ -52,7 +54,7 @@ public abstract class DeploymentBranch
 
     public abstract Cell GetCharacteristicCell(Data d);
 
-    public Army PullGroup(Func<Army, float> suitability, 
+    public Unit PullUnit(Func<Unit, float> suitability, 
         LogicKey key)
     {
         var children = SubBranches
@@ -60,13 +62,13 @@ public abstract class DeploymentBranch
             .OrderByDescending(c => c.GetSatisfiedRatio(key.Data));
         foreach (var c in children)
         {
-            var u = c.PullGroup(suitability, key);
+            var u = c.PullUnit(suitability, key);
             if(u != null) return u;
         }
         return null;
     }
 
-    public void PushGroup(Army g, LogicKey key)
+    public void PushUnit(Unit u, LogicKey key)
     {
         var child = SubBranches
                     .Union<IDeploymentNode>(Assignments)
@@ -75,7 +77,19 @@ public abstract class DeploymentBranch
         {
             throw new Exception("no children " + this.GetType());
         }
-        child.PushGroup(g, key);
+        child.PushUnit(u, key);
+    }
+
+    public void PushArmy(Army a, LogicKey key)
+    {
+        var child = SubBranches
+            .Union<IDeploymentNode>(Assignments)
+            .MinBy(c => c.GetSatisfiedRatio(key.Data));
+        if (child == null)
+        {
+            throw new Exception("no children " + this.GetType());
+        }
+        child.PushArmy(a, key);
     }
 
     public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
@@ -92,7 +106,7 @@ public abstract class DeploymentBranch
             d.GiveOrders(key);
         }
     }
-    public void ShiftGroups(LogicKey key)
+    public void ShiftUnits(LogicKey key)
     {
         var d = key.Data;
         var assignments =
@@ -157,10 +171,10 @@ public abstract class DeploymentBranch
                     if (i == j) continue;
                     var a2 = assignments[j];
                     if (eligibleToTakeFrom(a2, ratio)
-                        && a2.PullGroup(g => a.Suitability(g, key.Data), key)
-                            is Army g)
+                        && a2.PullUnit(g => a.Suitability(g, key.Data), key)
+                            is Unit u)
                     {
-                        a.PushGroup(g, key);
+                        a.PushUnit(u, key);
                         // break;
                     }
                 }
@@ -171,7 +185,7 @@ public abstract class DeploymentBranch
         
         foreach (var b in SubBranches)
         {
-            b.ShiftGroups(key);
+            b.ShiftUnits(key);
         }
 
         SubBranches.RemoveWhere(b => b.SubBranches.Count == 0 && b.Assignments.Count == 0);
@@ -193,18 +207,25 @@ public abstract class DeploymentBranch
             .Concat<IDeploymentNode>(SubBranches)
             .Concat(SubBranches.SelectMany(s => s.GetDescendentNodes()));
     }
+    public IEnumerable<T> GetDescendentNodesOfType<T>()
+        where T : IDeploymentNode
+    {
+        return Assignments
+            .Concat<IDeploymentNode>(SubBranches)
+            .Concat(SubBranches.SelectMany(s => s.GetDescendentNodes()))
+            .OfType<T>();
+    }
     public IEnumerable<ArmyAssignment> GetDescendentAssignments()
     {
         return Assignments.Union(SubBranches.SelectMany(s => s.GetDescendentAssignments()));
     }
     public IEnumerable<T> GetDescendentAssignmentsOfType<T>()
-        where T : IDeploymentNode
+        where T : ArmyAssignment
     {
         return Assignments.OfType<T>()
             .Union(SubBranches
                 .SelectMany(c => c.GetDescendentAssignmentsOfType<T>()));
     }
-
     public abstract Vector2 GetMapPosForDisplay(Data d);
 
 }

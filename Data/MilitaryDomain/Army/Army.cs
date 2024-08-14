@@ -100,7 +100,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
     public float GetPowerPointsWeighted(Data data)
     {
         return Units.Entities(data)
-            .Sum(u => u.GetPowerPointsWeighted(data));
+            .Sum(u => u.GetPowerPointsWeightedMorale(data));
     }
     public override void CleanUp(ProcedureKey key)
     {
@@ -149,7 +149,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
             def => nodeNeeds[def],
             def => nodeNeeds[def] * 1.5f,
             def => assgns[def],
-            u => u.GetPowerPointsWeighted(d),
+            u => u.GetPowerPointsWeightedMorale(d),
             toPick,
             (n, u) => assgns[n].Add(u)
         );
@@ -158,7 +158,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
             nodes,
             n => nodeNeeds[n],
             n => assgns[n],
-            u => Mathf.Max(u.GetPowerPointsWeighted(d), 1f),
+            u => Mathf.Max(u.GetPowerPointsWeightedMorale(d), 1f),
             toPick,
             (n, u) => assgns[n].Add(u)
         );

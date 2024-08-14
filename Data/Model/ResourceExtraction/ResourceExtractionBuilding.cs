@@ -10,7 +10,7 @@ public abstract class ResourceExtractionBuilding
     public NaturalResource Resource(Data d) 
         => (NaturalResource)Labor.Outputs
             .GetEnumModel(d)
-            .GetOnly().Key;
+            .Single().Key;
     public int Id { get; private set; }
     public float BaseProd() => Labor.Outputs.Contents.Single().Value;
     public float BaseLabor() => Labor.TotalLabor();

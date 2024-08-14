@@ -7,14 +7,42 @@ using Google.OrTools.Graph;
 
 public static class OrToolsExt
 {
-
+    public static Dictionary<TWorker, TTask>
+        GetAssignment<TWorker, TTask>(
+            IReadOnlyList<TWorker> workers,
+            IReadOnlyList<TTask> tasks,
+            Func<TWorker, TTask, int> getCost,
+            out HashSet<TWorker> leftoverWorkers,
+            out HashSet<TTask> leftoverTasks,
+            out Dictionary<(TWorker, TTask), float> costs)
+    {
+        var assignment = new Dictionary<TWorker, TTask>();
+        if (tasks.Count >= workers.Count)
+        {
+            assignment = GetLinearSumAssignment(workers, tasks, getCost, out var c);
+            costs = c;
+        }
+        else
+        {
+            assignment = GetLinearSumAssignment(tasks, workers, 
+                    (t, w) => getCost(w, t), out var c)
+                .ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
+            costs = c.ToDictionary(kvp => (kvp.Key.Item2, kvp.Key.Item1), kvp => kvp.Value);
+        }
+        
+        leftoverWorkers = workers.Except(assignment.Keys).ToHashSet();
+        leftoverTasks = tasks.Except(assignment.Values).ToHashSet();
+        return assignment;
+    }
     public static Dictionary<TWorker, TTask> 
         GetLinearSumAssignment<TWorker, TTask>(
             IReadOnlyList<TWorker> workers,
             IReadOnlyList<TTask> tasks,
-            Func<TWorker, TTask, int> getCost)
+            Func<TWorker, TTask, int> getCost,
+            out Dictionary<(TWorker, TTask), float> costs)
     {
         var assignment = new LinearSumAssignment();
+        costs = new Dictionary<(TWorker, TTask), float>();
         for (var i = 0; i < workers.Count; i++)
         {
             var worker = workers[i];
@@ -22,8 +50,8 @@ public static class OrToolsExt
             {
                 var task = tasks[j];
                 var cost = getCost(worker, task);
+                costs.Add((worker, task), cost);
                 assignment.AddArcWithCost(i, j, cost);
-
             }
         }
 

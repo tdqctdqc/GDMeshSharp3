@@ -35,6 +35,8 @@ public static class EnumerableExt
                 && i < list.Count - 1)
             {
                 curr = new List<T>();
+                res.Add(curr);
+                iter = 0;
             }
         }
 

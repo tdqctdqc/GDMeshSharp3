@@ -29,36 +29,36 @@ public class DeploymentRoot : DeploymentBranch
         }
     }
 
-    public void GrabUnassignedGroups(LogicKey key)
-    {
-        var alliance = Alliance.Get(key.Data);
-        var ai = key.Data.HostLogicData.AllianceAis[alliance]
-            .Military.Deployment;
-
-        var free =
-            key.Data.GetAll<Army>()
-                .Where(g => alliance.Members.Contains(g.Regime))
-            .ToHashSet();
-        if (free.Count == 0) return;
-        var taken = GetDescendentAssignments()
-            .SelectMany(a => a.Armies);
-        free.ExceptWith(taken.Select(t => t.Get(key.Data)));
-        var byCell = free.SortBy(g => g.GetHomeCell(key.Data));
-        foreach (var (cell, groups) in byCell)
-        {
-            var unassigned = new UnoccupiedAssignment(
-                key.Data.IdDispenser.TakeId(),
-                this,
-                alliance.MakeRef(),
-                new HashSet<ERef<Army>>(),
-                cell.MakeRef());
-            Assignments.Add(unassigned);
-            foreach (var g in groups)
-            {
-               unassigned.PushGroup(g, key);
-            }
-        }
-    }
+    // public void GrabUnassignedGroups(LogicKey key)
+    // {
+    //     var alliance = Alliance.Get(key.Data);
+    //     var ai = key.Data.HostLogicData.AllianceAis[alliance]
+    //         .Military.Deployment;
+    //
+    //     var free =
+    //         key.Data.GetAll<Army>()
+    //             .Where(g => alliance.Members.Contains(g.Regime))
+    //         .ToHashSet();
+    //     if (free.Count == 0) return;
+    //     var taken = GetDescendentAssignments()
+    //         .SelectMany(a => a.Armies);
+    //     free.ExceptWith(taken.Select(t => t.Get(key.Data)));
+    //     var byCell = free.SortBy(g => g.GetHomeCell(key.Data));
+    //     foreach (var (cell, groups) in byCell)
+    //     {
+    //         var unassigned = new UnoccupiedAssignment(
+    //             key.Data.IdDispenser.TakeId(),
+    //             this,
+    //             alliance.MakeRef(),
+    //             new HashSet<ERef<Army>>(),
+    //             cell.MakeRef());
+    //         Assignments.Add(unassigned);
+    //         foreach (var g in groups)
+    //         {
+    //            unassigned.PushUnit(g, key);
+    //         }
+    //     }
+    // }
     
     public override Cell GetCharacteristicCell(Data d)
     {
