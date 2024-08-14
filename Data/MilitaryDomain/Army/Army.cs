@@ -13,6 +13,9 @@ public class Army : Entity, ICombatGraphNode, ICelled
     public LineMission LineMission { get; private set; }
     public HashSet<ArmyMission> OtherOrders { get; private set; }
     public Color Color { get; private set; }
+
+    public static int CommandRadius { get; private set; }
+        = 5;
     public MoveType MoveType(Data d)
     {
         if (Units.Count() == 0) return d.Models.MoveTypes.StrategicMove;

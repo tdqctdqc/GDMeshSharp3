@@ -5,6 +5,39 @@ using System.Linq;
 
 public static class FloodFill<T>
 {
+    public static HashSet<T> FloodFillForIter(T seed,
+        int iter,
+        Func<T, IEnumerable<T>> getNeighbors,
+        Func<T, bool> valid)
+    {
+        var list = new List<T>{ seed };
+        var res = new HashSet<T> { seed };
+        var lastAddition = 1;
+        for (var i = 0; i < iter; i++)
+        {
+            var thisAddition = 0;
+            var count = list.Count;
+            for (int j = count - lastAddition; j < count; j++)
+            {
+                var t = list[j];
+                foreach (var n in getNeighbors(t))
+                {
+                    if (res.Contains(n) == false && valid(n))
+                    {
+                        list.Add(n);
+                        res.Add(n);
+                        thisAddition++;
+                    }
+                }
+            }
+
+            if (thisAddition == 0) return res;
+            lastAddition = thisAddition;
+        }
+
+        return res;
+    }
+    
     public static Dictionary<T, List<T>> FloodFillMultiple
         (IEnumerable<T> seeds, Func<T, IEnumerable<T>> getNs,
             Func<T, T, float> getHeuristic,

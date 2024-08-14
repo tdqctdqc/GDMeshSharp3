@@ -12,7 +12,7 @@ public class StrategicAi
     public Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>
         FrontlineMerges { get; private set; }
 
-    public Dictionary<ERef<Frontline>, Frontline>
+    public Dictionary<ERef<Frontline>, List<FrontFace>>
         FrontlineCache { get; private set; }
 
     public StrategicContext Context { get; private set; }
@@ -162,13 +162,25 @@ public class StrategicAi
 
     private void ValidateFrontlines(Alliance alliance, LogicKey key)
     {
-        var oldFrontlines = key.Data.GetAll<Frontline>()
-            .Where(fl => fl.Alliance.RefId == alliance.Id)
-            .ToArray();
-        FrontlineCache = oldFrontlines.ToDictionary(v => v.MakeRef(), v => v);
-        foreach (var oldFrontline in oldFrontlines)
+        var depRoot = alliance.GetAi(key.Data).Military.Deployment.GetRoot();
+
+        FrontlineAssignment[] oldFrontlines;
+        if (depRoot is not null)
         {
-            key.Remove(oldFrontline);
+            oldFrontlines = depRoot.GetDescendentAssignmentsOfType<FrontlineAssignment>()
+                .ToArray();
+        }
+        else
+        {
+            oldFrontlines = new FrontlineAssignment[] { };
+        }
+        FrontlineCache = oldFrontlines.ToDictionary(
+            a => a.Frontline, a => a.Frontline.Get(key.Data).Faces.ToList());
+        foreach (var frontline in key.Data.GetAll<Frontline>()
+                     .Where(fl => fl.Alliance.RefId == alliance.Id)
+                     .ToArray())
+        {
+            key.Remove(frontline);
         }
         var theaters = key.Data.GetAll<Theater>()
             .Where(t => t.Alliance.RefId == alliance.Id).ToArray();
@@ -323,7 +335,6 @@ public class StrategicAi
     }
     private void FindEdgeMerges(Alliance alliance, LogicKey key)
     {
-        // if (FrontlineCache is null || FrontlineCache.Count == 0) return;
         var edgeMergeMap = new Dictionary<List<FrontFace>, HashSet<List<FrontFace>>>();
         foreach (var graphEdge in Context.Graph.Edges)
         {
@@ -398,10 +409,10 @@ public class StrategicAi
             = Context.Graph.Edges.SelectMany(v => v)
             .ToDictionary(l => l.ToHashSet(), l => l);
         FrontlineMerges = new Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>();
-        foreach (var (frontlineRef, frontline) in FrontlineCache)
+        foreach (var (oldFrontline, oldFaces) 
+                 in FrontlineCache)
         {
-            var faces = frontline.Faces
-                
+            var faces = oldFaces
                 .ToHashSet();
             var mergeInto = new HashSet<ERef<Frontline>>();
             while (faces.Count > 0)
@@ -415,11 +426,10 @@ public class StrategicAi
                 {
                     var issue = new CantFindFrontlineMergeIssue(
                         alliance,
-                        first, frontline, Context, key.Data);
+                        first, oldFaces, Context, key.Data);
                     key.Data.ClientPlayerData.Issues.Add(issue);
                     continue;
                 }
-
                 var match = edgeHashes[matchH];
                 faces.ExceptWith(matchH);
                 if (Context.EdgeMergeMap.ContainsKey(match) == false)
@@ -431,161 +441,7 @@ public class StrategicAi
                 
                 mergeInto.UnionWith(validFrontlines);
             }
-            FrontlineMerges.Add(frontlineRef, mergeInto);
+            FrontlineMerges.Add(oldFrontline, mergeInto);
         }
     }
-
-    // private Dictionary<Frontline, List<Frontline>> GetFrontlineMerges(
-    //     Alliance alliance, LogicKey key)
-    // {
-    //     var newFrontFaces = Frontline.GetFacesFromCellsLToR(
-    //         Context.AlliedCells, alliance, key.Data);
-    //     var oldFrontlines = key.Data.GetAll<Frontline>()
-    //         .Where(fl => fl.Alliance.RefId == alliance.Id).ToArray();
-    //
-    //     var newFrontlines = newFrontFaces
-    //         .Select(fs => Frontline.Create(fs, 
-    //             new HashSet<CellRef>(),
-    //             alliance, key)).ToArray();
-    //     
-    //     HashSet<Cell> prev;
-    //     if (PrevContext is not null)
-    //     {
-    //         prev = PrevContext.AlliedCells.ToHashSet();
-    //     }
-    //     else
-    //     {
-    //         prev = new HashSet<Cell>();
-    //     }
-    //
-    //     var unionToNewMap = new Dictionary<HashSet<Cell>, 
-    //         List<Frontline>>();
-    //     foreach (var gainedUnion in Context.GainedUnions)
-    //     {
-    //         unionToNewMap.Add(gainedUnion, new List<Frontline>());
-    //     }
-    //     foreach (var lostUnion in Context.LostUnions)
-    //     {
-    //         unionToNewMap.Add(lostUnion, new List<Frontline>());
-    //     }
-    //     foreach (var stableUnion in Context.StableUnions)
-    //     {
-    //         unionToNewMap.Add(stableUnion, new List<Frontline>());
-    //     }
-    //     
-    //     foreach (var newFrontline in newFrontlines)
-    //     {
-    //         foreach (var newFrontFace in newFrontline.Faces)
-    //         {
-    //             var native = newFrontFace.GetNative(key.Data);
-    //             var foreign = newFrontFace.GetForeign(key.Data);
-    //
-    //             if (Context.Stable.Contains(native))
-    //             {
-    //                 var stableUnion = Context.StableUnions.First(u => u.Contains(native));
-    //                 unionToNewMap[stableUnion].Add(newFrontline);
-    //             }
-    //             if (Context.Lost.Contains(foreign))
-    //             {
-    //                 var lostUnion = Context.LostUnions.First(u => u.Contains(foreign));
-    //                 unionToNewMap[lostUnion].Add(newFrontline);
-    //             }
-    //             if (Context.Gained.Contains(native))
-    //             {
-    //                 var gainedUnion = Context.GainedUnions.First(u => u.Contains(native));
-    //                 unionToNewMap[gainedUnion].Add(newFrontline);
-    //             }
-    //         }
-    //     }
-    //
-    //     var oldToUnionMap = new Dictionary<Frontline, List<HashSet<Cell>>>();
-    //     
-    //     foreach (var oldFrontline in oldFrontlines)
-    //     {
-    //         oldToUnionMap.Add(oldFrontline, new List<HashSet<Cell>>());
-    //         foreach (var oldFrontFace in oldFrontline.Faces)
-    //         {
-    //             var native = oldFrontFace.GetNative(key.Data);
-    //             var foreign = oldFrontFace.GetForeign(key.Data);
-    //
-    //             if (Context.Stable.Contains(native))
-    //             {
-    //                 var stableUnion = Context.StableUnions.First(u => u.Contains(native));
-    //                 oldToUnionMap[oldFrontline].Add(stableUnion);
-    //             }
-    //             if (Context.Lost.Contains(native))
-    //             {
-    //                 var lostUnion = Context.LostUnions.First(u => u.Contains(native));
-    //                 oldToUnionMap[oldFrontline].Add(lostUnion);
-    //             }
-    //             if (Context.Gained.Contains(foreign))
-    //             {
-    //                 var gainedUnion = Context.GainedUnions.First(u => u.Contains(foreign));
-    //                 oldToUnionMap[oldFrontline].Add(gainedUnion);
-    //             }
-    //         }
-    //     }
-    //     
-    //     
-    //     var mergeMap = new Dictionary<Frontline, List<Frontline>>();
-    //     
-    //     foreach (var (oldFrontline, unions) in oldToUnionMap)
-    //     {
-    //         mergeMap.Add(oldFrontline, new List<Frontline>());
-    //         int iter = 0;
-    //         foreach (var union in unions)
-    //         {
-    //             foreach (var newFrontline in unionToNewMap[union])
-    //             {
-    //                 mergeMap[oldFrontline].Add(newFrontline);
-    //                 iter++;
-    //             }
-    //         }
-    //
-    //         if (iter == 0)
-    //         {
-    //             GD.Print("couldnt find merge frontline");
-    //             var pos = oldFrontline.Faces.First().GetNative(key.Data).GetCenter();
-    //
-    //             var issue = new CustomIssue(pos,
-    //                 $"{alliance.Leader.Get(key.Data).Name} couldnt find merge frontline",
-    //                 key.Data.GetTick(), ("base", c =>
-    //                 {
-    //                     foreach (var cell in Context.Stable)
-    //                     {
-    //                         c.DrawCellRel(cell, pos, Colors.Blue, key.Data);
-    //                     }
-    //                     foreach (var cell in Context.Gained)
-    //                     {
-    //                         c.DrawCellRel(cell, pos, Colors.Green, key.Data);
-    //                     }
-    //                     foreach (var cell in Context.Lost)
-    //                     {
-    //                         c.DrawCellRel(cell, pos, Colors.Red, key.Data);
-    //                     }
-    //                     foreach (var union in unions)
-    //                     {
-    //                         foreach (var cell in union)
-    //                         {
-    //                             c.DrawCellRel(cell, pos, Colors.Orange, key.Data);
-    //                         }
-    //                     }
-    //
-    //                     foreach (var union in unions)
-    //                     {
-    //                         foreach (var newFrontline in unionToNewMap[union])
-    //                         {
-    //                             c.DrawFrontFaces(newFrontline.Faces, Colors.Red, 10f, pos, key.Data);
-    //                         }
-    //                     }
-    //
-    //                     c.DrawFrontFaces(oldFrontline.Faces, Colors.Yellow, 5f, pos, key.Data);
-    //
-    //                 }));
-    //             key.Data.ClientPlayerData.Issues.Add(issue);
-    //         }
-    //     }
-    //
-    //     return mergeMap;
-    // }
 }

@@ -26,7 +26,7 @@ public class LineMission : ArmyMission
             LineCells.Add(g.Cells.Refs, key);
         }
 
-        var moveTo = Mover.MoveArmy(g, key.Data);
+        var moveTo = Mover.GetArmyMoveDest(g, key.Data);
         proc.NewArmyPosesById.TryAdd(g.Id, moveTo);
     }
     

@@ -4,6 +4,11 @@ using System.Linq;
 
 public static class AllianceExt
 {
+    public static IEnumerable<Army> GetArmies(this Alliance alliance, Data d)
+    {
+        return d.GetAll<Army>()
+            .Where(a => alliance.Members.Contains(a.Regime));
+    }
     public static AllianceAi GetAi(this Alliance a, Data d)
     {
         return d.HostLogicData.AllianceAis[a];
@@ -21,6 +26,12 @@ public static class AllianceExt
         return w;
     }
 
+    public static IEnumerable<Cell> GetCells(this Alliance alliance, Data d)
+    {
+        return d.Planet.MapAux.CellHolder.Cells.Values
+            .OfType<LandCell>()
+            .Where(c => alliance.Members.Contains(c.Controller));
+    }
     public static IEnumerable<Alliance> GetNeighborAlliances(this Alliance alliance, Data data)
     {
         return alliance.Members.Entities(data)

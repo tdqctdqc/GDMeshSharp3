@@ -6,7 +6,7 @@ using Godot;
 
 public class ForceCompositionAi
 {
-    private static int PreferredGroupSize = 7;
+    // private static int PreferredGroupSize = 7;
     public Dictionary<UnitTemplatesAi.UnitTypeTag, int> DesiredAmounts { get; private set; }
 
     public ForceCompositionAi(Dictionary<UnitTemplatesAi.UnitTypeTag, int> desiredAmounts)
@@ -19,7 +19,6 @@ public class ForceCompositionAi
     {
         CalcDesired(regime, key);
         ReinforceUnits(regime, key);
-        AssignFreeUnitsToGroups(regime, key);
     }
 
     private void CalcDesired(Regime regime, LogicKey key)
@@ -58,62 +57,64 @@ public class ForceCompositionAi
         return unitsByMeta.ToDictionary(kvp => kvp.Key,
             kvp => new Vector2I(needed[kvp.Key.Tag], unitsByMeta[kvp.Key].Count()));
     }
-    private void AssignFreeUnitsToGroups(Regime regime, 
-        LogicKey key)
-    {
-        var freeUnits = regime.GetUnits(key.Data)
-            ?.Where(u => u != null)
-            .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null)
-            .ToHashSet();
-        if (freeUnits == null || freeUnits.Any() == false) return;
-        
-                
-        var groups = key.Data.GetAll<Army>()
-            .Where(g => g.Regime.RefId == regime.Id)?.ToArray();
-        if (groups is not null && groups.Length > 0)
-        {
-            var understrengthGroups = groups.Where(g => g.Units.Count() < PreferredGroupSize);
-            foreach (var understrengthGroup in understrengthGroups)
-            {
-                var deficit = PreferredGroupSize - understrengthGroup.Units.Count();
-                var toTake = Mathf.Min(deficit, freeUnits.Count());
-                var took = freeUnits.Take(toTake);
-                foreach (var unit in took)
-                {
-                    var proc = new SetUnitArmyProcedure(unit.MakeRef(), understrengthGroup.MakeRef());
-                    freeUnits.Remove(unit);
-                    key.SendMessage(proc);
-                }
-            }
-        }
-        
-        
-        
-        var numNewGroups = Mathf.CeilToInt((float)freeUnits.Count() / PreferredGroupSize);
-        if (numNewGroups == 0) return;
-        var newGroups = Enumerable.Range(0, numNewGroups)
-            .Select(i => new List<int>())
-            .ToList();
-        
-        var iter = 0;
-        foreach (var freeUnit in freeUnits)
-        {
-            var group = iter % numNewGroups;
-            key.Data.Logger.Log($"adding unit to group pre", LogType.Temp);
 
-            newGroups.ElementAt(group).Add(freeUnit.Id);
-            iter++;
-        }
-        foreach (var newGroup in newGroups)
-        {
-            if (newGroup.Count == 0) continue;
-            key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
-            Army.Create(
-                regime, 
-                regime.Capital.Get(key.Data).Yield(),
-                newGroup, key);
-        }
-    }
+    
+    // private void AssignFreeUnitsToGroups(Regime regime, 
+    //     LogicKey key)
+    // {
+    //     var freeUnits = regime.GetUnits(key.Data)
+    //         ?.Where(u => u != null)
+    //         .Where(u => key.Data.Military.UnitAux.UnitByGroup[u] == null)
+    //         .ToHashSet();
+    //     if (freeUnits == null || freeUnits.Any() == false) return;
+    //     
+    //             
+    //     var groups = key.Data.GetAll<Army>()
+    //         .Where(g => g.Regime.RefId == regime.Id)?.ToArray();
+    //     if (groups is not null && groups.Length > 0)
+    //     {
+    //         var understrengthGroups = groups.Where(g => g.Units.Count() < PreferredGroupSize);
+    //         foreach (var understrengthGroup in understrengthGroups)
+    //         {
+    //             var deficit = PreferredGroupSize - understrengthGroup.Units.Count();
+    //             var toTake = Mathf.Min(deficit, freeUnits.Count());
+    //             var took = freeUnits.Take(toTake);
+    //             foreach (var unit in took)
+    //             {
+    //                 var proc = new SetUnitArmyProcedure(unit.MakeRef(), understrengthGroup.MakeRef());
+    //                 freeUnits.Remove(unit);
+    //                 key.SendMessage(proc);
+    //             }
+    //         }
+    //     }
+    //     
+    //     
+    //     
+    //     var numNewGroups = Mathf.CeilToInt((float)freeUnits.Count() / PreferredGroupSize);
+    //     if (numNewGroups == 0) return;
+    //     var newGroups = Enumerable.Range(0, numNewGroups)
+    //         .Select(i => new List<int>())
+    //         .ToList();
+    //     
+    //     var iter = 0;
+    //     foreach (var freeUnit in freeUnits)
+    //     {
+    //         var group = iter % numNewGroups;
+    //         key.Data.Logger.Log($"adding unit to group pre", LogType.Temp);
+    //
+    //         newGroups.ElementAt(group).Add(freeUnit.Id);
+    //         iter++;
+    //     }
+    //     foreach (var newGroup in newGroups)
+    //     {
+    //         if (newGroup.Count == 0) continue;
+    //         key.Data.Logger.Log($"creating new group from {newGroup.Count()} units", LogType.Temp);
+    //         Army.Create(
+    //             regime, 
+    //             regime.Capital.Get(key.Data).Yield(),
+    //             newGroup, key);
+    //     }
+    // }
     private void ReinforceUnits(Regime regime,
         LogicKey key)
     {

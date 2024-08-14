@@ -16,7 +16,7 @@ public class FrontlineAssignment : ArmyAssignment
     public float DefendWeight { get; private set; }
     public Dictionary<FrontFace, float> FaceAttackWeights { get; private set; }
     public Dictionary<FrontFace, float> FaceDefendWeights { get; private set; }
-
+    public Dictionary<List<FrontFace>, Army> ArmyFaceAssignments { get; private set; }
     public static FrontlineAssignment Construct(
         DeploymentAi ai,
         DeploymentBranch parent,
@@ -30,7 +30,8 @@ public class FrontlineAssignment : ArmyAssignment
             new HashSet<ERef<Army>>(), 
             new HashSet<ERef<Army>>(),
             0f, 0f, new Dictionary<FrontFace, float>(),
-            new Dictionary<FrontFace, float>());
+            new Dictionary<FrontFace, float>(),
+            new Dictionary<List<FrontFace>, Army>());
     }
 
     public FrontlineAssignment(int id, DeploymentBranch parent, 
@@ -40,7 +41,9 @@ public class FrontlineAssignment : ArmyAssignment
         HashSet<ERef<Army>> lineGroups, 
         HashSet<ERef<Army>> insertingGroups, 
         float attackWeight, float defendWeight, 
-        Dictionary<FrontFace, float> faceAttackWeights, Dictionary<FrontFace, float> faceDefendWeights) : base(id, parent, alliance, armies)
+        Dictionary<FrontFace, float> faceAttackWeights, 
+        Dictionary<FrontFace, float> faceDefendWeights,
+        Dictionary<List<FrontFace>, Army> armyFaceAssignments) : base(id, parent, alliance, armies)
     {
         Frontline = frontline;
         Color = color;
@@ -50,6 +53,7 @@ public class FrontlineAssignment : ArmyAssignment
         DefendWeight = defendWeight;
         FaceAttackWeights = faceAttackWeights;
         FaceDefendWeights = faceDefendWeights;
+        ArmyFaceAssignments = armyFaceAssignments;
     }
 
 

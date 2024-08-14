@@ -6,7 +6,7 @@ using Godot;
 
 public static class Mover
 {
-    public static RefSet<CellRef> MoveArmy(Army a, Data d)
+    public static RefSet<CellRef> GetArmyMoveDest(Army a, Data d)
     {
         var lineCells = a.LineMission.LineCells;
         if (lineCells.Count() == 0) return new RefSet<CellRef>(new HashSet<CellRef>());

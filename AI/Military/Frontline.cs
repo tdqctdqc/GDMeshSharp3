@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Godot;
+using MessagePack;
 
 public class Frontline : Entity
 {
@@ -50,7 +51,7 @@ public class Frontline : Entity
     }
     
     
-    public Frontline(int id, ERef<Alliance> alliance, 
+    [SerializationConstructor] private Frontline(int id, ERef<Alliance> alliance, 
         List<FrontFace> faces, HashSet<CellRef> advanceInto)
             : base(id)
     {

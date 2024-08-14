@@ -139,4 +139,14 @@ public static partial class PathFinder
             }
         }
     }
+
+
+    public static List<Cell> FindArmyPath(this Army a, Cell dest, bool friendly, Data d)
+    {
+        var home = a.GetHomeCell(d);
+        var moveType = a.MoveType(d);
+        var cache = friendly ? d.Context.FriendlyPathCache : d.Context.RivalPathCache;
+        return cache.FindPath(moveType, a.Regime.Get(d).GetAlliance(d),
+            home, dest);
+    }
 }

@@ -1,14 +1,15 @@
+using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
 public class CantFindFrontlineMergeIssue : Issue
 {
     public FrontFace Face { get; private set; }
-    public Frontline OldFrontline { get; private set; }
+    public List<FrontFace> OldFrontline { get; private set; }
     public StrategicContext Context { get; private set; }
     public CantFindFrontlineMergeIssue(Alliance a, 
         FrontFace face,
-        Frontline oldFrontline,
+        List<FrontFace> oldFrontline,
         StrategicContext context,
         Data d) 
         : base(face.GetMid(d), 
@@ -30,7 +31,7 @@ public class CantFindFrontlineMergeIssue : Issue
     }
     private void DrawOldFrontline(MeshBuilder mb, Data d)
     {
-        mb.DrawFrontFaces(OldFrontline.Faces, Colors.White, 5f, Pos, d);
+        mb.DrawFrontFaces(OldFrontline, Colors.White, 5f, Pos, d);
     }
     private void DrawNewEdges(MeshBuilder mb, Data d)
     {

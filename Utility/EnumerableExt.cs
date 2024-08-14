@@ -7,14 +7,38 @@ public static class EnumerableExt
 {
     private static RandomNumberGenerator _rand = new RandomNumberGenerator();
 
-    public static T GetOnly<T>(this IEnumerable<T> get)
+    public static T GetMiddleElement<T>(this List<T> list)
     {
-        var en = get.GetEnumerator();
-        var haveFirst = en.MoveNext();
-        if(haveFirst == false) throw new Exception();
-        var t = en.Current;
-        if (en.MoveNext()) throw new Exception();
-        return t;
+        var mid = list.Count / 2f;
+        return list[Mathf.RoundToInt(mid)];
+    }
+    public static List<List<T>> GetSegmentsOfApproxLength<T>(this List<T> list,
+        int segLength)
+    {
+        var res = new List<List<T>>();
+        var remainder = list.Count % segLength;
+        var numSegs = list.Count / segLength;
+        var effectiveSegLength = segLength;
+        if (effectiveSegLength > 1 && remainder + numSegs <= segLength)
+        {
+            effectiveSegLength -= 1;
+        }
+
+        var curr = new List<T>();
+        res.Add(curr);
+        var iter = 0;
+        for (var i = 0; i < list.Count; i++)
+        {
+            curr.Add(list[i]);
+            iter++;
+            if (iter == effectiveSegLength
+                && i < list.Count - 1)
+            {
+                curr = new List<T>();
+            }
+        }
+
+        return res;
     }
     public static int IndexOf<T>(this T[] array, T t)
     {

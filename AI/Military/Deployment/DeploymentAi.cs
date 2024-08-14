@@ -47,16 +47,18 @@ public class DeploymentAi
         Root.MakeTheaters(milAi, key);
         if (oldFrontlineGroupAssignments is not null)
         {
-            ShiftGroupsFromOldFrontlines(key, oldFrontlineGroupAssignments, milAi);
+            ShiftArmiesFromOldFrontlines(key, oldFrontlineGroupAssignments, milAi);
         }
+        CreateArmiesForEmptyFronts(key);
 
-        Root.GrabUnassignedGroups(key);
+        // Root.GrabUnassignedGroups(key);
         Root.SetWeights(key);
         Root.ShiftGroups(key);
         Root.GiveOrders(key);
-    }
 
-    private void ShiftGroupsFromOldFrontlines(LogicKey key, 
+    }
+    
+    private void ShiftArmiesFromOldFrontlines(LogicKey key, 
         Dictionary<ERef<Frontline>, HashSet<ERef<Army>>> oldFrontlineGroupAssignments,
         AllianceMilitaryAi milAi)
     {
@@ -100,7 +102,54 @@ public class DeploymentAi
             }
         }
     }
+    private void CreateArmiesForEmptyFronts(LogicKey key)
+    {
+        var alliance = Alliance.Get(key.Data);
+        var regimes = alliance.Members.Entities(key.Data);
 
+        var frontlineAssgns = Root
+            .GetDescendentAssignmentsOfType<FrontlineAssignment>()
+            .ToArray();
+
+        foreach (var frontlineAssgn in frontlineAssgns)
+        {
+            var frontline = frontlineAssgn.Frontline.Get(key.Data);
+            var segs = frontline.Faces.GetSegmentsOfApproxLength(
+                Army.CommandRadius / 2 + 1);
+
+            if (frontlineAssgn.Armies.Count > 0)
+            {
+                var armyAssignment = OrToolsExt
+                    .GetLinearSumAssignment(frontlineAssgn.Armies.Select(a => a.Get(key.Data)).ToList(),
+                        segs,
+                        (army, list) =>
+                        {
+                            var mid = list.GetMiddleElement();
+                            var path = army.FindArmyPath(mid.GetNative(key.Data), true, key.Data);
+                            return (int)PathFinder<Cell>.GetPathCost(
+                                path, (c1, c2) => army.MoveType(key.Data).EdgeCost(c1, c2, key.Data));
+                        });
+                foreach (var (army, value) in armyAssignment)
+                {
+                    frontlineAssgn.ArmyFaceAssignments
+                        .Add(value, army);
+                }
+            }
+
+            var uncoveredSegs = segs
+                .Where(s => frontlineAssgn.ArmyFaceAssignments
+                    .ContainsKey(s) == false)
+                .ToArray();
+            foreach (var uncoveredSeg in uncoveredSegs)
+            {
+                var army = Army.Create(alliance.Leader.Get(key.Data),
+                    uncoveredSeg.Select(f => f.GetNative(key.Data)),
+                    new int[] { },
+                    key);
+                frontlineAssgn.ArmyFaceAssignments.Add(uncoveredSeg, army);
+            }
+        }
+    }
 
     public DeploymentRoot GetRoot()
     {

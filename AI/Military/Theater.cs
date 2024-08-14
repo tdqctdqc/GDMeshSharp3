@@ -49,20 +49,6 @@ public class Theater : Entity
         Frontlines = frontlines;
     }
 
-    public void MakeFrontlinesFromScratch(LogicKey key)
-    {
-        var data = key.Data;
-        var alliance = Alliance.Get(key.Data);
-        
-        var frontlines = 
-            Frontline.GetFacesFromCellsLToR(Cells.Select(c => c.Get(key.Data)),
-            alliance, data)
-                .Select(l => Frontline.Create(l, new HashSet<CellRef>(),
-                    alliance, key))
-                .Select(f => f.MakeRef()).ToArray();
-            
-        Frontlines = ERefSet<Frontline>.Construct(frontlines);
-    }
     public void Draw(MeshBuilder mb, Vector2 relTo, Data d)
     {
         foreach (var cRef in Cells)
