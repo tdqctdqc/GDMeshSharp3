@@ -3,13 +3,13 @@ public class MoveData
     public int Id;
     public MoveType MoveType;
     public float MovePoints;
-    public Alliance Alliance;
+    public Regime Regime;
 
-    public MoveData(int id, MoveType moveType, float movePoints, Alliance alliance)
+    public MoveData(int id, MoveType moveType, float movePoints, Regime regime)
     {
         Id = id;
         MoveType = moveType;
         MovePoints = movePoints;
-        Alliance = alliance;
+        Regime = regime;
     }
 }

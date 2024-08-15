@@ -158,7 +158,6 @@ public class CombatCalculator
                 armyCells.First(), armyCells.Contains, c => c.GetNeighbors(key.Data));
             if (flood.Count == army.Cells.Count()) continue;
             var regime = army.Regime.Get(key.Data);
-            var alliance = regime.GetAlliance(key.Data);
             var armyCellUnions = UnionFind.Find<Cell, List<Cell>>(armyCells,
                 (c, d) => true,
                 c => c.GetNeighbors(key.Data))

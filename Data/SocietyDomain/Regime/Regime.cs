@@ -66,7 +66,6 @@ public class Regime : Entity, INamed
             RegimeTechnology.Construct(key.Data)
         );
         key.Create(r);
-        Alliance.Create(r, key);
         
         return r;
     }
@@ -78,12 +77,6 @@ public class Regime : Entity, INamed
 
     public override void CleanUp(ProcedureKey key)
     {
-        var alliance = this.GetAlliance(key.GetData());
-        alliance.Members.Remove(this, key);
-        if (alliance.Members.Count() == 0)
-        {
-            key.GetData().RemoveEntity(alliance.Id, key);
-        }
     }
 
     public void SetStock(RegimeStock stock, ProcedureKey key)

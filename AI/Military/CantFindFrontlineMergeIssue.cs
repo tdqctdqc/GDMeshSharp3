@@ -7,13 +7,13 @@ public class CantFindFrontlineMergeIssue : Issue
     public FrontFace Face { get; private set; }
     public List<FrontFace> OldFrontline { get; private set; }
     public StrategicContext Context { get; private set; }
-    public CantFindFrontlineMergeIssue(Alliance a, 
+    public CantFindFrontlineMergeIssue(Regime a, 
         FrontFace face,
         List<FrontFace> oldFrontline,
         StrategicContext context,
         Data d) 
         : base(face.GetMid(d), 
-            $"{a.Leader.Get(d).Name} can't find frontline merge", 
+            $"{a.Name} can't find frontline merge", 
             d.GetTick())
     {
         Face = face;

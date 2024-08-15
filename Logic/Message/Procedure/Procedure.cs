@@ -4,7 +4,7 @@ using System;
 
 [MessagePack.Union(0, typeof(ConquerCellProcedure))]
 [MessagePack.Union(1, typeof(ReinforceProcedure))]
-[MessagePack.Union(2, typeof(DecideOnProposalProcedure))]
+[MessagePack.Union(2, typeof(AddTheaterFrontlineProcedure))]
 [MessagePack.Union(3, typeof(DeclareRivalProcedure))]
 [MessagePack.Union(4, typeof(DeclareWarProcedure))]
 [MessagePack.Union(5, typeof(FinishedTurnEndCalcProc))]
@@ -12,7 +12,7 @@ using System;
 [MessagePack.Union(7, typeof(MigrationProcedure))]
 [MessagePack.Union(8, typeof(FormUnitProcedure))]
 [MessagePack.Union(9 , typeof(HandleUnitMissionsProcedure))]
-[MessagePack.Union(10, typeof(MakeProposalProcedure))]
+[MessagePack.Union(10, typeof(SetTheaterCellsProcedure))]
 [MessagePack.Union(11, typeof(SetPlayerRegimeProcedure))]
 [MessagePack.Union(12, typeof(ProdResultProcedure))]
 [MessagePack.Union(13, typeof(RegimeUseItemsProcedure))]
@@ -44,8 +44,6 @@ using System;
 [MessagePack.Union(39, typeof(UnitChangeTroopAmountProcedure))]
 [MessagePack.Union(40, typeof(ChangeStockProcedure))]
 [MessagePack.Union(41, typeof(SetFrontlineAdvanceIntoProcedure))]
-[MessagePack.Union(42, typeof(SetTheaterCellsProcedure))]
-[MessagePack.Union(43, typeof(AddTheaterFrontlineProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

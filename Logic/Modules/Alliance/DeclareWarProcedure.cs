@@ -3,49 +3,45 @@ using Godot;
 
 public class DeclareWarProcedure : Procedure
 {
-    public int TargetAllianceId { get; private set; }
-    public int DeclaringAllianceId { get; private set; }
-    public static DeclareWarProcedure 
-        Construct(Alliance declaringAlliance, Alliance targetAlliance,
-            Data data)
+    public ERef<Regime> Target { get; private set; }
+    public ERef<Regime> Declarer { get; private set; }
+
+    public DeclareWarProcedure(ERef<Regime> target, ERef<Regime> declarer)
     {
-        return new DeclareWarProcedure(targetAlliance.Id, declaringAlliance.Id);
+        Target = target;
+        Declarer = declarer;
     }
-    public DeclareWarProcedure(int targetAllianceId, int declaringAllianceId)
-    {
-        TargetAllianceId = targetAllianceId;
-        DeclaringAllianceId = declaringAllianceId;
-    }
+
     public override void Enact(ProcedureKey key)
     {
-        var alliance = key.Data.Get<Alliance>(DeclaringAllianceId);
-        var target = key.Data.Get<Alliance>(TargetAllianceId);
-        key.Data.Society.DiploGraph.AddEdge(alliance, target, DiploRelation.War, key);            
-        key.Data.Notices.Political.WarDeclared.Invoke((alliance, target));
+        var declarer = Declarer.Get(key.Data);
+        var target = Target.Get(key.Data);
+        key.Data.Society.DiploGraph.AddEdge(declarer, target, DiploRelation.War, key);            
+        key.Data.Notices.Political.WarDeclared.Invoke((declarer, target));
     }
 
     public override bool Valid(Data data, out string error)
     {
-        if (data.HasEntity(TargetAllianceId) == false)
+        if (data.HasEntity(Target.RefId) == false)
         {
             error = "Could not find target alliance";
             return false;
         }
 
-        if (data.HasEntity(DeclaringAllianceId) == false)
+        if (data.HasEntity(Declarer.RefId) == false)
         {
             error = "Could not find declarer alliance";
             return false;
         }
 
-        if (TargetAllianceId == DeclaringAllianceId)
+        if (Target.RefId == Declarer.RefId)
         {
             error = "Target and declaring alliance are the same";
             return false;
         }
         
-        var target = data.Get<Alliance>(TargetAllianceId);
-        var declarer = data.Get<Alliance>(DeclaringAllianceId);
+        var declarer = Declarer.Get(data);
+        var target = Target.Get(data);
         if (target.IsRivals(declarer, data) == false)
         {
             error = "Target and declarer are not rivals";

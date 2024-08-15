@@ -16,7 +16,7 @@ public class StrategicAi
 
     public StrategicContext Context { get; private set; }
 
-    public static StrategicAi Construct(Alliance a, Data d)
+    public static StrategicAi Construct(Regime r, Data d)
     {
         return new StrategicAi(null,
             new Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>());
@@ -31,7 +31,7 @@ public class StrategicAi
         PrevContext = prevContext;
     }
 
-    public void Calculate(Alliance alliance, LogicKey key)
+    public void Calculate(Regime regime, LogicKey key)
     {
         var d = key.Data;
         HashSet<Cell> prev;
@@ -46,41 +46,41 @@ public class StrategicAi
 
         PrevContext = Context;
 
-        Context = new StrategicContext(alliance,
+        Context = new StrategicContext(regime,
             prev,
             key.Data);
 
         var theaters = key.Data.GetAll<Theater>()
-            .Where(t => t.Alliance.RefId == alliance.Id)
+            .Where(t => t.Regime.RefId == regime.Id)
             .ToArray();
-        var leaderAi = alliance.Leader.Get(key.Data).GetAi(key.Data);
-        leaderAi.Status.Add("Doing strategic ai");
+        var regimeAi = regime.GetAi(key.Data);
+        regimeAi.Status.Add("Doing strategic ai");
         if (theaters.Count() == 0)
         {
-            leaderAi.Status.Add("Making theaters from scratch");
+            regimeAi.Status.Add("Making theaters from scratch");
 
-            MakeTheatersFromScratch(theaters, alliance, Context, key);
+            MakeTheatersFromScratch(theaters, regime, Context, key);
         }
         else
         {
-            leaderAi.Status.Add("validating theaters");
-            ValidateTheaters(theaters, alliance, Context, key);
+            regimeAi.Status.Add("validating theaters");
+            ValidateTheaters(theaters, regime, Context, key);
         }
 
-        leaderAi.Status.Add("validating frontlines");
-        ValidateFrontlines(alliance, key);
-        leaderAi.Status.Add("finished strategic ai");
+        regimeAi.Status.Add("validating frontlines");
+        ValidateFrontlines(regime, key);
+        regimeAi.Status.Add("finished strategic ai");
 
         if (Context.Gained.Count > 0 || Context.Lost.Count > 0)
         {
-            d.ClientPlayerData.Issues.Add(new StrategicContextIssue(leaderAi.Regime.Get(d),
+            d.ClientPlayerData.Issues.Add(new StrategicContextIssue(regimeAi.Regime.Get(d),
                 Context, d));
         }
     }
 
     private void MakeTheatersFromScratch(
         Theater[] theaters,
-        Alliance alliance,
+        Regime regime,
         StrategicContext context,
         LogicKey key)
     {
@@ -98,13 +98,13 @@ public class StrategicAi
 
         foreach (var union in context.Unions)
         {
-            var theater = Theater.Create(alliance,
+            var theater = Theater.Create(regime,
                 union, key);
         }
     }
 
     private void ValidateTheaters(Theater[] theaters,
-        Alliance alliance, StrategicContext context, LogicKey key)
+        Regime regime, StrategicContext context, LogicKey key)
     {
         var d = key.Data;
 
@@ -142,13 +142,13 @@ public class StrategicAi
         {
             if (theatersToMerge.Count == 0)
             {
-                var theater = Theater.Create(alliance,
+                var theater = Theater.Create(regime,
                     union.ToHashSet(),
                     key);
             }
             else
             {
-                var newTheater = Theater.Create(alliance,
+                var newTheater = Theater.Create(regime,
                     union.ToHashSet(),
                     key);
                 foreach (var theater in theatersToMerge)
@@ -160,9 +160,9 @@ public class StrategicAi
         }
     }
 
-    private void ValidateFrontlines(Alliance alliance, LogicKey key)
+    private void ValidateFrontlines(Regime regime, LogicKey key)
     {
-        var depRoot = alliance.GetAi(key.Data).Military.Deployment.GetRoot();
+        var depRoot = regime.GetAi(key.Data).Military.Deployment.GetRoot();
 
         FrontlineAssignment[] oldFrontlines;
         if (depRoot is not null)
@@ -177,21 +177,21 @@ public class StrategicAi
         FrontlineCache = oldFrontlines.ToDictionary(
             a => a.Frontline, a => a.Frontline.Get(key.Data).Faces.ToList());
         foreach (var frontline in key.Data.GetAll<Frontline>()
-                     .Where(fl => fl.Alliance.RefId == alliance.Id)
+                     .Where(fl => fl.Regime.RefId == regime.Id)
                      .ToArray())
         {
             key.Remove(frontline);
         }
         var theaters = key.Data.GetAll<Theater>()
-            .Where(t => t.Alliance.RefId == alliance.Id).ToArray();
+            .Where(t => t.Regime.RefId == regime.Id).ToArray();
 
-        MakeContextFrontGraph(alliance, key);
-        ConstructNewFrontlinesWithGraph(alliance, key);
-        FindEdgeMerges(alliance, key);
-        FindFrontlineMerges(alliance, key);
+        MakeContextFrontGraph(regime, key);
+        ConstructNewFrontlinesWithGraph(regime, key);
+        FindEdgeMerges(regime, key);
+        FindFrontlineMerges(regime, key);
 
         var newFrontlines = key.Data.GetAll<Frontline>()
-            .Where(fl => fl.Alliance.RefId == alliance.Id).ToArray();
+            .Where(fl => fl.Regime.RefId == regime.Id).ToArray();
         foreach (var newFrontline in newFrontlines)
         {
             var theater =
@@ -205,7 +205,7 @@ public class StrategicAi
 
     private Dictionary<Frontline, List<Frontline>>
         MakeContextFrontGraph(
-            Alliance alliance, LogicKey key)
+            Regime regime, LogicKey key)
     {
         var res = new Dictionary<Frontline, List<Frontline>>();
 
@@ -258,11 +258,11 @@ public class StrategicAi
         
     }
     
-    private void ConstructNewFrontlinesWithGraph(Alliance alliance, LogicKey key)
+    private void ConstructNewFrontlinesWithGraph(Regime regime, LogicKey key)
     {
         var validEdges = Context.Graph.Edges
             .SelectMany(fs => fs)
-            .Where(f => ValidEdge(f, alliance, key.Data)).ToHashSet();
+            .Where(f => ValidEdge(f, regime, key.Data)).ToHashSet();
         var byLeft = new Dictionary<Vector3I, List<FrontFace>>();
         var byRight = new Dictionary<Vector3I, List<FrontFace>>();
         foreach (var faces in validEdges)
@@ -308,7 +308,7 @@ public class StrategicAi
             }
 
             var frontline = Frontline.Create(newFrontFaces, new HashSet<CellRef>(),
-                alliance, key);
+                regime, key);
             foreach (var f in newFronts)
             {
                 Context.ValidEdgesFrontlines[f] = frontline.MakeRef();
@@ -325,15 +325,15 @@ public class StrategicAi
 
     }
 
-    private bool ValidEdge(List<FrontFace> f, Alliance alliance, Data d)
+    private bool ValidEdge(List<FrontFace> f, Regime regime, Data d)
     {
         var native = f[0].GetNative(d);
         var foreign = f[0].GetForeign(d);
 
-        return native.FriendlyControlled(alliance, d)
-               && foreign.RivalControlled(alliance, d);
+        return native.FriendlyControlled(regime, d)
+               && foreign.RivalControlled(regime, d);
     }
-    private void FindEdgeMerges(Alliance alliance, LogicKey key)
+    private void FindEdgeMerges(Regime regime, LogicKey key)
     {
         var edgeMergeMap = new Dictionary<List<FrontFace>, HashSet<List<FrontFace>>>();
         foreach (var graphEdge in Context.Graph.Edges)
@@ -344,11 +344,11 @@ public class StrategicAi
                 {
                     edgeMergeMap.Add(faces, new HashSet<List<FrontFace>>());
                 }
-                if (ValidEdge(faces, alliance, key.Data))
+                if (ValidEdge(faces, regime, key.Data))
                 {
                     edgeMergeMap[faces].Add(faces);
                 }
-                else if (graphEdge.FirstOrDefault(e => ValidEdge(e, alliance, key.Data))
+                else if (graphEdge.FirstOrDefault(e => ValidEdge(e, regime, key.Data))
                          is List<FrontFace> ve)
                 {
                     edgeMergeMap[faces].Add(ve);
@@ -376,19 +376,19 @@ public class StrategicAi
                 .Where(n => n != otherNexus)
                 .SelectMany(n => Context.Graph.GetEdge(nexus, n))
                 .ToArray();
-            if (adjEdges.FirstOrDefault(f => ValidEdge(f, alliance, key.Data)
+            if (adjEdges.FirstOrDefault(f => ValidEdge(f, regime, key.Data)
                                     && Context.GetCellChangeStatus(f[0].GetNative(key.Data)) == CellChangeStatus.Gained)
                 is List<FrontFace> res1)
             {
                 return res1;
             }
-            if (adjEdges.FirstOrDefault(f => ValidEdge(f, alliance, key.Data)
+            if (adjEdges.FirstOrDefault(f => ValidEdge(f, regime, key.Data)
                                     && Context.GetCellChangeStatus(f[0].GetForeign(key.Data)) == CellChangeStatus.Lost)
                 is List<FrontFace> res2)
             {
                 return res2;
             }
-            if (adjEdges.FirstOrDefault(f => ValidEdge(f, alliance, key.Data))
+            if (adjEdges.FirstOrDefault(f => ValidEdge(f, regime, key.Data))
                 is List<FrontFace> res3)
             {
                 return res3;
@@ -403,7 +403,7 @@ public class StrategicAi
         }
     }
 
-    private void FindFrontlineMerges(Alliance alliance, LogicKey key)
+    private void FindFrontlineMerges(Regime regime, LogicKey key)
     {
         var edgeHashes 
             = Context.Graph.Edges.SelectMany(v => v)
@@ -424,7 +424,7 @@ public class StrategicAi
                 if (matchH is null)
                 {
                     var issue = new CantFindFrontlineMergeIssue(
-                        alliance,
+                        regime,
                         first, oldFaces, Context, key.Data);
                     key.Data.ClientPlayerData.Issues.Add(issue);
                     continue;

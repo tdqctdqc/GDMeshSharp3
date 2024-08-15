@@ -10,15 +10,15 @@ using MessagePack;
 public abstract class DeploymentBranch 
     : IPolymorph, IDeploymentNode
 {
-    public ERef<Alliance> Alliance { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public int Id { get; private set; }
     public HashSet<DeploymentBranch> SubBranches { get; }
     public HashSet<ArmyAssignment> Assignments { get; private set; }
 
 
-    [SerializationConstructor] protected DeploymentBranch(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<ArmyAssignment> assignments)
+    [SerializationConstructor] protected DeploymentBranch(ERef<Regime> regime, int id, HashSet<DeploymentBranch> subBranches, HashSet<ArmyAssignment> assignments)
     {
-        Alliance = alliance;
+        Regime = regime;
         Id = id;
         SubBranches = subBranches;
         Assignments = assignments;
@@ -129,7 +129,7 @@ public abstract class DeploymentBranch
         if (numWant == 0) return;
         
         var stratMove = key.Data.Models.MoveTypes.StrategicMove;
-        var alliance = Alliance;
+        var alliance = Regime;
         var distCosts = new Dictionary<Vector2I, float>();
         
         foreach (var a1 in assignments)

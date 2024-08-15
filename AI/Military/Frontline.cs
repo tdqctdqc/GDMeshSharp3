@@ -6,24 +6,24 @@ using MessagePack;
 
 public class Frontline : Entity
 {
-    public ERef<Alliance> Alliance { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public List<FrontFace> Faces { get; private set; }
     public HashSet<CellRef> AdvanceInto { get; private set; }
     public static float DefMultForNotAtWarCell { get; private set; } 
         = .5f;
     public static Frontline Create(List<FrontFace> faces, 
         HashSet<CellRef> advanceInto,
-        Alliance alliance, ICreateKey key)
+        Regime regime, ICreateKey key)
     {
         var f = new Frontline(key.GetData().IdDispenser.TakeId(),
-            alliance.MakeRef(),
+            regime.MakeRef(),
             faces, advanceInto);
         key.Create(f);
         return f;
     }
     public static List<List<FrontFace>> GetRivalFacesFromCellsLToR(
         IEnumerable<Cell> cells,
-        Alliance alliance, 
+        Regime regime, 
         Data data)
     {
         return FrontFinder
@@ -31,13 +31,13 @@ public class Frontline : Entity
                 p =>
                 {
                     if (p.Controller.IsEmpty()) return false;
-                    var pAlliance = p.Controller.Get(data).GetAlliance(data);
-                    return alliance.IsRivals(pAlliance, data);
+                    var pRegime = p.Controller.Get(data);
+                    return regime.IsRivals(pRegime, data);
                 }, data);
     }
     public static List<List<FrontFace>> GetFacesFromCellsLToR(
         IEnumerable<Cell> cells,
-        Alliance alliance, 
+        Regime regime, 
         Data data)
     {
         return FrontFinder
@@ -45,17 +45,17 @@ public class Frontline : Entity
                 p =>
                 {
                     if (p.Controller.IsEmpty()) return false;
-                    var pAlliance = p.Controller.Get(data).GetAlliance(data);
-                    return alliance.IsRivals(pAlliance, data);
+                    var pRegime = p.Controller.Get(data);
+                    return regime.IsRivals(pRegime, data);
                 }, data);
     }
     
     
-    [SerializationConstructor] private Frontline(int id, ERef<Alliance> alliance, 
+    [SerializationConstructor] private Frontline(int id, ERef<Regime> regime, 
         List<FrontFace> faces, HashSet<CellRef> advanceInto)
             : base(id)
     {
-        Alliance = alliance;
+        Regime = regime;
         Faces = faces;
         AdvanceInto = advanceInto;
     }
@@ -66,7 +66,7 @@ public class Frontline : Entity
             .Select(f => f.GetForeign(data))
             .Distinct()
             .Where(f => f.Controller.Get(data)
-                .GetAlliance(data).IsRivals(Alliance.Get(data), data))
+                .IsRivals(Regime.Get(data), data))
             .ToHashSet();
     }
     public float GetOpposingPowerPointsWeighted(Data data)
@@ -75,7 +75,7 @@ public class Frontline : Entity
             .Distinct()
             .SelectMany(c => c.GetNeighbors(data))
             .Distinct()
-            .Where(n => n.RivalControlled(Alliance.Get(data), data))
+            .Where(n => n.RivalControlled(Regime.Get(data), data))
             .Sum(c => data.Context.PowerPoints[c]);
     }
 

@@ -30,9 +30,9 @@ public class DrawArmyAdvanceMouseAction : CellHashMouseAction
         var cell = v.prospect;
         if (cell is LandCell == false) return false;
         var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;
-        var alliance = army.Regime.Get(client.Data).GetAlliance(client.Data);
+        var regime = army.Regime.Get(client.Data);
         var res = false;
-        if (alliance.Members.Contains(v.prospect.Controller))
+        if (regime.Id == v.prospect.Controller.RefId)
         {
             return false;
         }

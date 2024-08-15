@@ -23,7 +23,7 @@ public class MakeArmyMouseAction : CellMousePressAction
     {
         if (c is LandCell == false) return false;
         var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;
-        var localAlliance = localPlayer.Regime.Get(client.Data).GetAlliance(client.Data);
-        return localAlliance.Members.Contains(c.Controller);
+        var regime = localPlayer.Regime.Get(client.Data);
+        return regime.Id == c.Controller.RefId;
     }
 }

@@ -21,14 +21,14 @@ public class StrategicContext
     public Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>> FrontlineMerges { get; private set; }
     public Dictionary<ERef<Theater>, HashSet<ERef<Theater>>> TheaterMerges { get; private set; }
     
-    public StrategicContext(Alliance alliance, 
+    public StrategicContext(Regime regime, 
         HashSet<Cell> prev,
         Data d)
     {
         Graph = new Graph<Vector3I, HashSet<List<FrontFace>>>();
         var alliedCells = d.Planet.MapAux
             .CellHolder.Cells.Values
-            .Where(c => c.FriendlyControlled(alliance, d))
+            .Where(c => c.FriendlyControlled(regime, d))
             .ToArray();
         AlliedCells = alliedCells
             .ToHashSet();

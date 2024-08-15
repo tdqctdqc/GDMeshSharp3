@@ -19,7 +19,7 @@ public partial class MilPlanningPanel : PanelContainer
         var mode = c.UiController.ModeOption.Options
             .OfType<MilPlanningMode>()
             .First();
-        mode.Alliance.SettingChanged.SubscribeForNode(
+        mode.Regime.SettingChanged.SubscribeForNode(
             n => Set(c, mode),
             this);
         mode.DeploymentNode.SettingChanged.SubscribeForNode(
@@ -36,14 +36,14 @@ public partial class MilPlanningPanel : PanelContainer
         var d = c.Data;
         _inner.ClearChildren();
         _deploymentNodeInfo = null;
-        var alliance = mode.Alliance.Value;
-        if (alliance == null || alliance.Leader.Get(d).IsPlayerRegime(d))
+        var regime = mode.Regime.Value;
+        if (regime == null || regime.IsPlayerRegime(d))
         {
             _inner.CreateLabelAsChild("No alliance");
             return;
         }
 
-        var ai = alliance.GetAi(d);
+        var ai = regime.GetAi(d);
         _deploymentNodeInfo = new VBoxContainer();
         _inner.AddChild(_deploymentNodeInfo);
         var root = ai.Military

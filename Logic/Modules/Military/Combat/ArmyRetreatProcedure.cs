@@ -24,13 +24,13 @@ public class ArmyRetreatProcedure : Procedure
 
     public override bool Valid(Data data, out string error)
     {
-        var alliance = Army.Get(data)
-            .Regime.Get(data).GetAlliance(data);
+        var regime = Army.Get(data)
+            .Regime.Get(data);
         
         foreach (var to in Tos)
         {
             if (to.Fulfilled()
-                && to.Get(data).FriendlyControlled(alliance, data) == false)
+                && to.Get(data).FriendlyControlled(regime, data) == false)
             {
                 error = "Retreating to non-friendly cell";
                 return false;

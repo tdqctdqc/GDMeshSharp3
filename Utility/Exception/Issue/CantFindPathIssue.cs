@@ -8,16 +8,16 @@ public class CantFindPathIssue : Issue
     public Cell Start { get; private set; }
     public List<Cell> Dests { get; private set; }
     public MoveType MoveType { get; private set; }
-    public Alliance Alliance { get; private set; }
+    public Regime Regime { get; private set; }
     public CantFindPathIssue(
-        Alliance alliance,
+        Regime regime,
         string message, 
         Cell start, 
         List<Cell> dests, 
         MoveType moveType, int tick) 
         : base(start.GetCenter(), message, tick)
     {
-        Alliance = alliance;
+        Regime = regime;
         Start = start;
         Dests = dests;
         MoveType = moveType;
@@ -72,7 +72,7 @@ public class CantFindPathIssue : Issue
         var union = startNeighborhood.Union(destNeighborhood).Distinct();
         foreach (var n in union)
         {
-            Color canPass = canPass = MoveType.PassableFriendly(n, Alliance, c.Data)
+            Color canPass = canPass = MoveType.PassableFriendly(n, Regime, c.Data)
                 ? Colors.White : Colors.Black;
             
             Color isStartOrDest = Colors.White;

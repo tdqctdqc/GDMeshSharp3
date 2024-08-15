@@ -23,7 +23,6 @@ public class GenData : Data
         GameClock.Create(key);
         PlanetInfo.Create(GenMultiSettings.Dimensions, key);
         RuleVars.CreateDefault(key);
-        ProposalList.Create(key);
         ClientPlayerData.SetLocalPlayerGuid(new Guid());
         Player.Create(ClientPlayerData.LocalPlayerGuid, "Doot", key);
         DiplomacyGraph.Create(key);

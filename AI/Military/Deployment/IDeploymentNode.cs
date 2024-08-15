@@ -5,7 +5,7 @@ using Godot;
 
 public interface IDeploymentNode 
 {
-    ERef<Alliance> Alliance { get; }
+    ERef<Regime> Regime { get; }
     float GetPowerPointsAssigned(Data data);
     float GetPowerPointNeed(Data data);
     void SetWeights(LogicKey key);

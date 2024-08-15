@@ -16,13 +16,14 @@ public class FrontlineAssignment : ArmyAssignment
     public Dictionary<FrontFace, float> FaceDefendWeights { get; private set; }
     public Dictionary<List<FrontFace>, Army> ArmyFaceAssignments { get; private set; }
     public static FrontlineAssignment Construct(
+        Regime regime,
         DeploymentAi ai,
         DeploymentBranch parent,
         Frontline frontline,
         LogicKey key)
     {
         return new FrontlineAssignment(ai.IdDispenser.TakeId(),
-            parent, ai.Alliance,
+            parent, regime.MakeRef(),
             new HashSet<ERef<Army>>(),
             frontline.MakeRef(), ColorsExt.GetRandomColor(),
             new HashSet<ERef<Army>>(), 
@@ -33,7 +34,7 @@ public class FrontlineAssignment : ArmyAssignment
     }
 
     public FrontlineAssignment(int id, DeploymentBranch parent, 
-        ERef<Alliance> alliance, 
+        ERef<Regime> regime, 
         HashSet<ERef<Army>> armies, 
         ERef<Frontline> frontline, Color color, 
         HashSet<ERef<Army>> lineGroups, 
@@ -42,7 +43,7 @@ public class FrontlineAssignment : ArmyAssignment
         Dictionary<FrontFace, float> faceAttackWeights, 
         Dictionary<FrontFace, float> faceDefendWeights,
         Dictionary<List<FrontFace>, Army> armyFaceAssignments) 
-        : base(parent, alliance, armies, id)
+        : base(parent, regime, armies, id)
     {
         Frontline = frontline;
         Color = color;
@@ -123,7 +124,7 @@ public class FrontlineAssignment : ArmyAssignment
     {
         var frontline = Frontline.Get(key.Data);
         
-        var alliance = Alliance.Get(key.Data);
+        var alliance = Regime.Get(key.Data);
         if (Armies.Count > 0)
         {
             var segs = ArmyFaceAssignments.Keys.ToList();
@@ -171,7 +172,7 @@ public class FrontlineAssignment : ArmyAssignment
     public override void SetWeights(LogicKey key)
     {
         var d = key.Data;
-        var alliance = Alliance.Get(d);
+        var alliance = Regime.Get(d);
         var frontline = Frontline.Get(d);
         var length = frontline.Faces.Count;
         var report = new FrontlineTacticalReport(frontline, d);
@@ -380,7 +381,7 @@ public class FrontlineAssignment : ArmyAssignment
     public void AddDefendWeightAlongWholeLine(float w, Data d)
     {
         var frontline = Frontline.Get(d);
-        var alliance = frontline.Alliance.Get(d);
+        var regime = frontline.Regime.Get(d);
         DefendWeight += w;
         var totalCellDef = frontline.Faces.Sum(
             f => 1f / ((LandCell)f.GetNative(d)).GetLandDefendScore(d));
@@ -391,7 +392,7 @@ public class FrontlineAssignment : ArmyAssignment
             var native = (LandCell)face.GetNative(d);
             var foreign = face.GetForeign(d);
             var mult = foreign.Controller.Get(d)
-                .GetAlliance(d).IsAtWar(alliance, d)
+                .IsAtWar(regime, d)
                 ? 1f : global::Frontline.DefMultForNotAtWarCell;
             if (totalCellDef == 0f)
             {

@@ -8,18 +8,18 @@ using MessagePack;
 public class DeploymentRoot : DeploymentBranch
 {
     
-    public DeploymentRoot(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<ArmyAssignment> assignments) : base(alliance, id, subBranches, assignments)
+    public DeploymentRoot(ERef<Regime> regime, int id, HashSet<DeploymentBranch> subBranches, HashSet<ArmyAssignment> assignments) : base(regime, id, subBranches, assignments)
     {
     }
 
-    public void MakeTheaters(AllianceMilitaryAi ai, LogicKey key)
+    public void MakeTheaters(RegimeMilitaryAi ai, LogicKey key)
     {
         var theaters = key.Data.GetAll<Theater>()
-            .Where(t => t.Alliance.Equals(Alliance))
+            .Where(t => t.Regime.Equals(Regime))
             .ToArray();
         foreach (var theater in theaters)
         {
-            var theaterBranch = new TheaterBranch(Alliance, 
+            var theaterBranch = new TheaterBranch(Regime, 
                 key.Data.IdDispenser.TakeId(),
                 new HashSet<DeploymentBranch>(),
                 new HashSet<ArmyAssignment>(),
@@ -28,7 +28,7 @@ public class DeploymentRoot : DeploymentBranch
             var avgPos = key.Data.Planet.GetAveragePosition(theaterCells.Select(c => c.GetCenter()));
             var centerCell = theaterCells.MinBy(c => c.GetCenter().Offset(avgPos, key.Data));
             var theaterReserve = new ReserveAssignment(theaterBranch,
-                Alliance, new HashSet<ERef<Army>>(), centerCell.MakeRef(),
+                Regime, new HashSet<ERef<Army>>(), centerCell.MakeRef(),
                 theaterBranch.Theater, key.Data.IdDispenser.TakeId());
             theaterBranch.Assignments.Add(theaterReserve);
             SubBranches.Add(theaterBranch);
@@ -69,7 +69,7 @@ public class DeploymentRoot : DeploymentBranch
     
     public override Cell GetCharacteristicCell(Data d)
     {
-        return Alliance.Get(d).Leader.Get(d).Capital.Get(d);
+        return Regime.Get(d).Capital.Get(d);
     }
 
     public override void Draw(MeshBuilder mb, Vector2 relTo, Data d)
@@ -84,8 +84,7 @@ public class DeploymentRoot : DeploymentBranch
 
     public override Vector2 GetMapPosForDisplay(Data d)
     {
-        var polys = Alliance.Get(d).Members.Entities(d)
-            .SelectMany(r => r.GetCells(d));
+        var polys = Regime.Get(d).GetCells(d);
         return d.Planet.GetAveragePosition(polys.Select(p => p.GetCenter()));
     }
 }

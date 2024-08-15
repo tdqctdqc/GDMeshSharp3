@@ -5,49 +5,49 @@ using MessagePack;
 
 public class DiplomacyGraph : Entity
 {
-    public ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation> Graph { get; private set; }
+    public ConcurrentIdMultiEdgeGraph<Regime, DiploRelation> Graph { get; private set; }
 
     public static DiplomacyGraph Create(GenKey key)
     {
-        var g = new DiplomacyGraph(ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation>.Construct(),
+        var g = new DiplomacyGraph(ConcurrentIdMultiEdgeGraph<Regime, DiploRelation>.Construct(),
             key.Data.IdDispenser.TakeId());
         key.Create(g);
         return g;
     }
     [SerializationConstructor] private DiplomacyGraph(
-        ConcurrentIdMultiEdgeGraph<Alliance, DiploRelation> graph,
+        ConcurrentIdMultiEdgeGraph<Regime, DiploRelation> graph,
         int id) : base(id)
     {
         Graph = graph;
     }
     
-    public void AddEdge(Alliance a1, Alliance a2, 
+    public void AddEdge(Regime r1, Regime r2, 
         DiploRelation edge, IWriteKey key)
     {
-        Graph.AddToEdge(a1, a2, edge);
+        Graph.AddToEdge(r1, r2, edge);
     }
 
-    public bool HasRelation(Alliance a1, Alliance a2, DiploRelation edge)
+    public bool HasRelation(Regime a1, Regime a2, DiploRelation edge)
     {
         return Graph.TryGetEdges(a1, a2, out var edges)
             && edges.Any(e => e.Key == edge);
     }
 
-    public IEnumerable<Alliance> GetRelations(Alliance a, DiploRelation edge, Data d)
+    public IEnumerable<Regime> GetRelations(Regime a, DiploRelation edge, Data d)
     {
         return Graph.GetNeighborsWith(a, e => e == edge)
-            .Select(n => d.Get<Alliance>(n));
+            .Select(n => d.Get<Regime>(n));
     }
 
-    public void MergeRelations(Alliance dissolve, Alliance into, IWriteKey key)
+    public void MergeRelations(Regime dissolve, Regime into, IWriteKey key)
     {
         Graph.DoForEdges(dissolve, (n, r) =>
         {
-            var other = key.GetData().Get<Alliance>(n);
+            var other = key.GetData().Get<Regime>(n);
             Graph.AddToEdge(into, other, r);
         });
     }
-    public void RemoveAlliance(Alliance a, IWriteKey key)
+    public void RemoveRegime(Regime a, IWriteKey key)
     {
         Graph.Remove(a);
     }

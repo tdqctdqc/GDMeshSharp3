@@ -15,8 +15,7 @@ public class CreateArmyCommand : Command
         var player = data.BaseDomain.PlayerAux.ByGuid[CommandingPlayerGuid];
         var regime = player.Regime.Get(data);
         var cell = Cell.Get(data);
-        if (regime.GetAlliance(data).Members
-                .Contains(cell.Controller) == false)
+        if (regime.Id != cell.Controller.RefId)
         {
             error = "regime alliance does not control cell";
             return false;

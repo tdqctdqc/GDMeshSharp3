@@ -9,16 +9,16 @@ public abstract class ArmyAssignment : IDeploymentNode, IIdentifiable
 {
     public int Id { get; private set; }
     public DeploymentBranch Parent { get; }
-    public ERef<Alliance> Alliance { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public HashSet<ERef<Army>> Armies { get; }
     
 
     protected ArmyAssignment(DeploymentBranch parent, 
-        ERef<Alliance> alliance, HashSet<ERef<Army>> armies, int id)
+        ERef<Regime> regime, HashSet<ERef<Army>> armies, int id)
     {
         Id = id;
         Parent = parent;
-        Alliance = alliance;
+        Regime = regime;
         Armies = armies;
     }
 

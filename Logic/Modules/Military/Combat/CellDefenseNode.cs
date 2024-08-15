@@ -166,19 +166,16 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
                 .Where(i => key.Data.HasEntity(i.Unit.RefId))
                 .Select(i => i.Unit.Get(key.Data));
             if (attackerInfos.Any() == false) return;
-            var alliancesByStr = attackerInfos
+            var attackerUnitsByRegime = attackerInfos
                 .Where(u => key.Data.HasEntity(u.Id))
-                .SortBy(u => u.Regime.Get(key.Data).GetAlliance(key.Data));
-            if (alliancesByStr.Any() == false) return;
+                .SortBy(u => u.Regime.Get(key.Data));
+            if (attackerUnitsByRegime.Any() == false) return;
 
-            var victoriousAllianceUnits = 
-                alliancesByStr.MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data)));
-            
-            var maxStrengthRegime = victoriousAllianceUnits.Value.SortBy(u => u.Regime.Get(key.Data))
-                .MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data)));
-            
-            var victoriousRegime = maxStrengthRegime.Key;
-            var victoriousArmies = maxStrengthRegime.Value.Select(u => u.GetArmy(key.Data))
+            var victoriousRegimeUnits = 
+                attackerUnitsByRegime.MaxBy(kvp => kvp.Value.Sum(u => u.GetPowerPoints(key.Data)));
+
+            var victoriousRegime = victoriousRegimeUnits.Key;
+            var victoriousArmies = victoriousRegimeUnits.Value.Select(u => u.GetArmy(key.Data))
                 .Distinct();
             var changeController = ConquerCellProcedure
                 .Construct(Cell.Get(key.Data), victoriousRegime, victoriousArmies);

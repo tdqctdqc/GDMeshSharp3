@@ -280,7 +280,7 @@ public static class MilUtil
     }
 
     public static Dictionary<Army, HashSet<Cell>> 
-        GetGroupLineAssignments(Alliance alliance,
+        GetGroupLineAssignments(Regime regime,
             IEnumerable<Army> groups,
             List<FrontFace> faces,
             Func<FrontFace, float> getFaceCost,

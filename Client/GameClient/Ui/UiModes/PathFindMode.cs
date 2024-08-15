@@ -71,11 +71,11 @@ public class PathFindMode : UiMode
             return;
         }
 
-        var alliance = _from.Controller.Get(_client.Data).GetAlliance(_client.Data);
+        var regime = _from.Controller.Get(_client.Data);
         
         
         var stratMove = _client.Data.Models.MoveTypes.StrategicMove;
-        var path = PathFinder.FindPathThroughFriendly(stratMove, alliance,
+        var path = PathFinder.FindPathThroughFriendly(stratMove, regime,
             _from, _to, _client.Data);
         if (path == null)
         {

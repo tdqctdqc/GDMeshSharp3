@@ -19,8 +19,8 @@ public class FrontlineTacticalReport
             throw new Exception();
         }
 
-        HostileOnFront = RivalOnFront.Where(c => c.Controller.Get(data).GetAlliance(data)
-            .IsAtWar(frontline.Alliance.Get(data), data)).ToHashSet();
+        HostileOnFront = RivalOnFront.Where(c => c.Controller.Get(data)
+            .IsAtWar(frontline.Regime.Get(data), data)).ToHashSet();
         var friendlies = frontline.Faces.Select(f => f.GetNative(data))
             .ToHashSet();
         EnemyPower = RivalOnFront
@@ -51,13 +51,12 @@ public class FrontlineTacticalReport
         while (seeds.Any())
         {
             var seed = seeds.First();
-            var alliance = seed.Controller.Get(data).GetAlliance(data);
+            var regime = seed.Controller.Get(data);
             seeds.Remove(seed);
             var flood = FloodFill<Cell>
                 .GetFloodFill(seed,
                     c => c.Controller.Fulfilled()
-                         && c.Controller.Get(data)
-                             .GetAlliance(data) == alliance,
+                         && c.Controller.RefId == regime.Id,
                     c => c.GetNeighbors(data));
             seeds.ExceptWith(flood);
             unions.Add(flood);

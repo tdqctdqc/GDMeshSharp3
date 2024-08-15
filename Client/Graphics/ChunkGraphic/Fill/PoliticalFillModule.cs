@@ -26,7 +26,7 @@ public partial class PoliticalFillModule : PolyCellFillChunkGraphic
         else if (Parent.SelectedMode == PoliticalChunkModule.Mode.Alliance)
         {
             if(cell.Controller.IsEmpty()) return Colors.Transparent;
-            return cell.Controller.Get(d).GetAlliance(d).Leader.Get(d).GetMapColor();
+            return cell.Controller.Get(d).GetMapColor();
         }
         else if (Parent.SelectedMode == PoliticalChunkModule.Mode.Diplomacy)
         {
@@ -35,13 +35,12 @@ public partial class PoliticalFillModule : PolyCellFillChunkGraphic
             if (d.BaseDomain.PlayerAux.LocalPlayer.Regime.IsEmpty()) return Colors.Gray;
             var playerRegime = d.BaseDomain.PlayerAux.LocalPlayer.Regime.Get(d);
             if (cell.Controller.RefId == playerRegime.Id) return Colors.Green;
-            var playerAlliance = playerRegime.GetAlliance(d);
-            var polyAlliance = cell.Controller.Get(d).GetAlliance(d);
-            if (playerAlliance.Members.Contains(cell.Controller)) 
+            var polyRegime = cell.Controller.Get(d);
+            if (playerRegime == polyRegime) 
                 return Colors.SkyBlue;
-            if (playerAlliance.IsAtWar(polyAlliance, d)) 
+            if (playerRegime.IsAtWar(polyRegime, d)) 
                 return Colors.Red;
-            if (playerAlliance.IsRivals(polyAlliance, d)) 
+            if (playerRegime.IsRivals(polyRegime, d)) 
                 return Colors.Orange;
             return Colors.Gray;
         }

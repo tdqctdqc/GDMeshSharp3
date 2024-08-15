@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 
-public class PathCache : ThreadSafeCache<(MoveType moveType, Alliance a, Cell from, Cell to), List<Cell>>
+public class PathCache : ThreadSafeCache<(MoveType moveType, Regime a, Cell from, Cell to), List<Cell>>
 {
     private Data _data;
     private bool _thruRival;
@@ -11,12 +11,12 @@ public class PathCache : ThreadSafeCache<(MoveType moveType, Alliance a, Cell fr
         _thruRival = thruRival;
         _data = d;
     }
-    public List<Cell> FindPath(MoveType m, Alliance a,
+    public List<Cell> FindPath(MoveType m, Regime a,
         Cell from, Cell to)
     {
         return GetOrAdd((m, a, from, to));
     }
-    protected override List<Cell> Make((MoveType moveType, Alliance a, 
+    protected override List<Cell> Make((MoveType moveType, Regime a, 
         Cell from, Cell to) key)
     {
         if (_thruRival)

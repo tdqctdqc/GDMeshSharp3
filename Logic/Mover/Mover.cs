@@ -22,14 +22,14 @@ public static class Mover
         }
         else
         {
-            var alliance = a.Regime.Get(d).GetAlliance(d);
+            var regime = a.Regime.Get(d);
             var moveType = a.MoveType(d);
             var center = d.Planet.GetAveragePosition(lineCells.Refs.Select(r => r.Get(d).GetCenter()));
             
             var closestPath = PathFinder<Cell>.FindPathMultipleEnds(
                 a.GetHomeCell(d),
                 c => lineCells.Contains(c.MakeRef()),
-                c => c.GetNeighbors(d).Where(n => n.FriendlyControlled(alliance, d)),
+                c => c.GetNeighbors(d).Where(n => n.FriendlyControlled(regime, d)),
                 (from, to) => moveType.EdgeCost(from, to, d),
                 c => center.Offset(c.GetCenter(), d).LengthSquared()
             );
@@ -37,7 +37,7 @@ public static class Mover
 
             if (closestPath is null)
             {
-                var issue = new CantFindPathIssue(alliance,
+                var issue = new CantFindPathIssue(regime,
                     "Can't find army move path",
                     a.GetHomeCell(d), lineCells.Refs.Select(r => r.Get(d)).ToList(),
                     moveType, d.GetTick());
@@ -54,12 +54,12 @@ public static class Mover
         LogicKey key)
     {
         var path = key.Data.Context.FriendlyPathCache.GetOrAdd(
-            (moveDat.MoveType, moveDat.Alliance, pos.GetCell(key.Data), dest));
+            (moveDat.MoveType, moveDat.Regime, pos.GetCell(key.Data), dest));
             
         if (path == null)
         {
             var issue = new CantFindPathIssue(
-                moveDat.Alliance,
+                moveDat.Regime,
                 "", pos.GetCell(key.Data),
                 dest.Yield().ToList(), moveDat.MoveType, key.Data.GetTick()
             ); 

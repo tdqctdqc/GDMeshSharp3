@@ -9,19 +9,19 @@ public class TheaterBranch : DeploymentBranch
 {
     public ERef<Theater> Theater { get; private set; }
 
-    public TheaterBranch(ERef<Alliance> alliance, int id, 
+    public TheaterBranch(ERef<Regime> regime, int id, 
         HashSet<DeploymentBranch> subBranches, 
         HashSet<ArmyAssignment> assignments, 
-        ERef<Theater> theater) : base(alliance, id, subBranches, assignments)
+        ERef<Theater> theater) : base(regime, id, subBranches, assignments)
     {
         Theater = theater;
     }
 
-    public void MakeFrontAssignments(AllianceMilitaryAi ai, LogicKey key)
+    public void MakeFrontAssignments(RegimeMilitaryAi ai, LogicKey key)
     {
         foreach (var frontline in Theater.Get(key.Data).Frontlines.Entities(key.Data))
         {
-            var holdLine = FrontlineAssignment.Construct(ai.Deployment,
+            var holdLine = FrontlineAssignment.Construct(Regime.Get(key.Data), ai.Deployment,
                 this, frontline, key);
             Assignments.Add(holdLine);
         }

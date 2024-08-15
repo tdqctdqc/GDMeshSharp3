@@ -10,9 +10,9 @@ public class ReserveAssignment : ArmyAssignment
     public CellRef Cell { get; private set; }
     
     public ReserveAssignment(DeploymentBranch parent, 
-        ERef<Alliance> alliance, HashSet<ERef<Army>> armies, 
+        ERef<Regime> regime, HashSet<ERef<Army>> armies, 
         CellRef cell, ERef<Theater> theater, int id) 
-            : base(parent, alliance, armies, id)
+            : base(parent, regime, armies, id)
     {
         Cell = cell;
         Theater = theater;

@@ -57,27 +57,16 @@ public static class CellExt
     {
         return d.Infrastructure.RoadNetwork.Get(p1, p2, d);
     }
-    public static bool FriendlyControlled(this Cell p, Alliance a, Data d)
-    {
-        if (p.Controller.IsEmpty()) return false;
-        var controllerAlliance = p.Controller.Get(d).GetAlliance(d);
-        return a == controllerAlliance;
-    }
     public static bool FriendlyControlled(this Cell p, Regime r, Data d)
     {
         if (p.Controller.IsEmpty()) return false;
-        var controllerAlliance = p.Controller.Get(d).GetAlliance(d);
-        return r.GetAlliance(d) == controllerAlliance;
+        return r.Id == p.Controller.RefId;
     }
-    public static bool RivalControlled(this Cell p, Alliance a, Data d)
+    public static bool RivalControlled(this Cell p, Regime r, Data d)
     {
         if (p.Controller.IsEmpty()) return false;
-        var controllerAlliance = p.Controller.Get(d).GetAlliance(d);
-        return a.IsRivals(controllerAlliance, d);
-    }
-    public static bool Controlled(this Cell p, Alliance a, Data d)
-    {
-        return a.Members.Contains(p.Controller);
+        var controller = p.Controller.Get(d);
+        return r.IsRivals(controller, d);
     }
 
     public static MapChunk GetChunk(this Cell c, Data d)

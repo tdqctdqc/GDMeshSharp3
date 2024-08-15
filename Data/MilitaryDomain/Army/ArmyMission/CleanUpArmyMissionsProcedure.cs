@@ -7,7 +7,6 @@ public class CleanUpArmyMissionsProcedure : Procedure
     {
         foreach (var army in key.Data.GetAll<Army>())
         {
-            var alliance = army.Regime.Get(key.Data).GetAlliance(key.Data);
             army.LineMission.CleanUp(army, key);
             foreach (var mission in army.OtherOrders.ToArray())
             {

@@ -68,11 +68,10 @@ public class HostLogic : ILogic
         foreach (var regime in regimes)
         {
             if (Random.Shared.NextSingle() < .75f) continue;
-            var alliance = regime.GetAlliance(_data);
-            var neighbors = alliance.GetNeighborAlliances(_data);
+            var neighbors = regime.GetNeighborRegimes(_data);
             if (neighbors.Any() == false) continue;
-            HandleMessage(new DeclareRivalProcedure(regime.GetAlliance(_data).Id, 
-                neighbors.First().Id));
+            HandleMessage(new DeclareRivalProcedure(regime.MakeRef(), 
+                neighbors.First().MakeRef()));
         }
     }
 

@@ -22,10 +22,10 @@ public static class ArmyExt
     public static HashSet<Cell> GetArmyMoveRadius(this Army a, Data d)
     {
         var moveType = a.MoveType(d);
-        var alliance = a.Regime.Get(d).GetAlliance(d);
+        var regime = a.Regime.Get(d);
         return PathFinder<Cell>.FindFlood(
             a.GetHomeCell(d),
-            c => c.GetNeighbors(d).Where(c => c.FriendlyControlled(alliance, d)),
+            c => c.GetNeighbors(d).Where(c => c.FriendlyControlled(regime, d)),
             (from, to) => moveType.EdgeCost(from, to, d),
             moveType.BaseSpeed
         );

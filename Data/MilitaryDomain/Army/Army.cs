@@ -177,7 +177,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
         var next = new HashSet<Cell>();
         var safe = new HashSet<CellRef>();
         var covered = new HashSet<Cell>(curr);
-        var alliance = Regime.Get(key.Data).GetAlliance(key.Data);
+        var regime = Regime.Get(key.Data);
         while (curr.Any())
         {
             foreach (var cell in curr)
@@ -186,7 +186,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
                 {
                     if (covered.Contains(n)) continue;
                     covered.Add(n);
-                    if (n.FriendlyControlled(alliance, key.Data) 
+                    if (n.FriendlyControlled(regime, key.Data) 
                             == false)
                     {
                         continue;

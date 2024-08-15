@@ -6,6 +6,36 @@ using Godot;
 
 public static class RegimeExt
 {
+    public static bool IsRivals(this Regime r1, Regime r2, Data d)
+    {
+        return d.Society.DiploGraph.HasRelation(r1, r2, DiploRelation.Rivals);
+    }
+    public static bool IsAtWar(this Regime a, Regime b, Data d)
+    {
+        return d.Society.DiploGraph.HasRelation(a, b, DiploRelation.War);
+    }
+    public static IEnumerable<Regime> GetRivals(this Regime a, Data d)
+    {
+        return d.Society.DiploGraph.GetRelations(a, DiploRelation.Rivals, d);
+    }
+    public static IEnumerable<Regime> GetAtWar(this Regime a, Data d)
+    {
+        return d.Society.DiploGraph.GetRelations(a, DiploRelation.War, d);
+    }
+    public static void CreateRelation(this Regime a, Regime b, DiploRelation e, IWriteKey key)
+    {
+        key.GetData().Society.DiploGraph.AddEdge(a, b, e, key);
+    }
+    
+    public static IEnumerable<Regime> GetNeighborRegimes(this Regime regime, Data data)
+    {
+        return regime.GetCells(data)
+            .SelectMany(p => p.GetNeighbors(data).Where(e => e.Controller.Fulfilled()))
+            .Select(p => p.Controller.Get(data))
+            .Distinct()
+            .Where(a => a != regime);
+    }
+    
     public static Dictionary<Troop, float> GetAllTroopAmounts(this Regime r, Data d)
     {
         var troops = r.Stock.Stock.GetEnumModel(d)
@@ -115,16 +145,6 @@ public static class RegimeExt
         var fromPop = r.GetPopulation(data);
         var fromIndustry = r.Stock.Stock.Get(data.Models.Items.IndustrialPower);
         return fromPop + fromIndustry;
-    }
-
-    public static Alliance GetAlliance(this Regime r, Data data)
-    {
-        return data.Society.AllianceAux.RegimeAlliances[r];
-    }
-
-    public static bool IsAllied(this Regime r0, Regime r1, Data data)
-    {
-        return r0.GetAlliance(data).Members.Contains(r1);
     }
 
     

@@ -36,7 +36,7 @@ public class LineMission : ArmyMission
     {
         var squareSize = 10f;
         var lineSize = 5f;
-        var alliance = group.Regime.Get(d).GetAlliance(d);
+        var regime = group.Regime;
 
         var natives = LineCells
             .Get<Cell, CellRef>(d)
@@ -61,7 +61,7 @@ public class LineMission : ArmyMission
         var d = key.Data;
         
         if (army.Units.Count() == 0) return;
-        var alliance = army.Regime.Get(d).GetAlliance(d);
+        var regime = army.Regime.Get(d);
         var cells = LineCells.Get<Cell, CellRef>(d);
         
         foreach (var cell in cells)
@@ -73,8 +73,8 @@ public class LineMission : ArmyMission
                     continue;
                 }
 
-                if (neighbor.Controller.Get(d).GetAlliance(d)
-                        .IsAtWar(alliance, d) == false)
+                if (neighbor.Controller.Get(d)
+                        .IsAtWar(regime, d) == false)
                 {
                     continue;
                 }
@@ -88,14 +88,14 @@ public class LineMission : ArmyMission
 
     public override bool CleanUp(Army army, ProcedureKey key)
     {
-        var alliance = army.Regime.Get(key.Data).GetAlliance(key.Data);
+        var regime = army.Regime.Get(key.Data);
         var lost = army.LineMission.LineCells.Refs
-            .Where(c => c.Get(key.Data).FriendlyControlled(alliance, key.Data) == false)
+            .Where(c => c.Get(key.Data).FriendlyControlled(regime, key.Data) == false)
             .ToArray();
         army.LineMission.AdvanceInto.Add(lost, key);
         army.LineMission.LineCells.Remove(lost, key);
         var conquered = army.LineMission.AdvanceInto.Refs
-            .Where(i => i.Get(key.Data).FriendlyControlled(alliance, key.Data))
+            .Where(i => i.Get(key.Data).FriendlyControlled(regime, key.Data))
             .ToArray();
         army.LineMission.LineCells.Add(conquered, key);
         army.LineMission.AdvanceInto.Remove(conquered, key);

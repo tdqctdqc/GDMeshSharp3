@@ -7,20 +7,17 @@ using MessagePack;
 
 public class DeploymentAi
 {
-    public ERef<Alliance> Alliance { get; private set; }
     public DeploymentRoot Root { get; private set; }
     public IdDispenser IdDispenser { get; private set; }
-    public static DeploymentAi Construct(Alliance a, Data d)
+    public static DeploymentAi Construct(Regime a, Data d)
     {
-        var ai = new DeploymentAi(a.MakeRef(),
-            null,
+        var ai = new DeploymentAi(null, 
             new IdDispenser(0));
         return ai;
     }
 
-    public DeploymentAi(ERef<Alliance> alliance, DeploymentRoot root, IdDispenser idDispenser)
+    public DeploymentAi(DeploymentRoot root, IdDispenser idDispenser)
     {
-        Alliance = alliance;
         Root = root;
         IdDispenser = idDispenser;
     }
@@ -30,9 +27,10 @@ public class DeploymentAi
         IdDispenser = new IdDispenser(0);
         Root = null;
     }
-    public void Calculate(Alliance alliance, LogicKey key)
+    public void Calculate(Regime regime, LogicKey key)
     {
-        var stratAi = alliance.GetAi(key.Data).Military.Strategic;
+        var milAi = regime.GetAi(key.Data).Military;
+        var stratAi = milAi.Strategic;
         var oldFrontlineGroupAssignments = 
             Root
             ?.GetDescendentAssignmentsOfType<FrontlineAssignment>()
@@ -42,25 +40,23 @@ public class DeploymentAi
             Root
             ?.GetDescendentNodesOfType<TheaterBranch>()
                 .ToArray();
-        var milAi = alliance.GetAi(key.Data).Military;
         Clear(key);
-        Root = new DeploymentRoot(alliance.MakeRef(),
+        Root = new DeploymentRoot(regime.MakeRef(),
             key.Data.IdDispenser.TakeId(),
             new HashSet<DeploymentBranch>(), 
             new HashSet<ArmyAssignment>());
         
         Root.MakeTheaters(milAi, key);
         Root.MergeToNew(Root, stratAi.Context, key);
-        PatchFrontlines(key);
+        PatchFrontlines(regime, key);
         Root.SetWeights(key);
         Root.ShiftUnits(key);
         Root.GiveOrders(key);
     }
     
 
-    private void PatchFrontlines(LogicKey key)
+    private void PatchFrontlines(Regime regime, LogicKey key)
     {
-        var leader = Alliance.Get(key.Data).Leader.Get(key.Data);
         var theaters = Root
             .GetDescendentNodesOfType<TheaterBranch>()
             .ToArray();
@@ -116,7 +112,7 @@ public class DeploymentAi
             {
 
                 var cells = faces.Select(f => f.GetNative(key.Data)).ToHashSet();
-                var army = Army.Create(leader,
+                var army = Army.Create(regime,
                     cells, new List<int>(), key);
                 fa.PushArmy(army, key);
                 fa.ArmyFaceAssignments[faces] = army;

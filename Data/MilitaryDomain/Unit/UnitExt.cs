@@ -38,10 +38,6 @@ public static class UnitExt
         return d.Military.UnitAux.UnitByGroup[u];
     }
 
-    public static bool Hostile(this Unit u, Alliance a, Data d)
-    {
-        return u.Regime.Get(d).GetAlliance(d).IsRivals(a, d);
-    }
 
     public static Troop GetMaxPowerTroop(this Unit unit, Data data)
     {

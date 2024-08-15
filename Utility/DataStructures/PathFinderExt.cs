@@ -9,27 +9,27 @@ public static partial class PathFinder
     
     public static List<Cell> FindPathThroughFriendly(
         MoveType moveType, 
-        Alliance alliance,
+        Regime regime,
         Cell start,
         Cell dest, 
         Data d)
     {
         return PathFinder<Cell>.FindPath(start, dest, 
             p => p.GetNeighbors(d)
-                .Where(wp => moveType.PassableFriendly(wp, alliance, d)),
+                .Where(wp => moveType.PassableFriendly(wp, regime, d)),
             (w, v) => moveType.EdgeCost(w, v, d), 
             (p1, p2) => p1.GetCenter().Offset(p2.GetCenter(), d).Length());
     }
     public static List<Cell> FindPathThroughFriendlyAndRival(
         MoveType moveType, 
-        Alliance alliance,
+        Regime regime,
         Cell start,
         Cell dest, 
         Data d)
     {
         return PathFinder<Cell>.FindPath(start, dest, 
             p => p.GetNeighbors(d)
-                .Where(wp => moveType.PassableFriendlyOrRival(wp, alliance, d)),
+                .Where(wp => moveType.PassableFriendlyOrRival(wp, regime, d)),
             (w, v) => moveType.EdgeCost(w, v, d), 
             (p1, p2) => p1.GetCenter().Offset(p2.GetCenter(), d).Length());
     }
@@ -146,7 +146,7 @@ public static partial class PathFinder
         var home = a.GetHomeCell(d);
         var moveType = a.MoveType(d);
         var cache = friendly ? d.Context.FriendlyPathCache : d.Context.RivalPathCache;
-        return cache.FindPath(moveType, a.Regime.Get(d).GetAlliance(d),
+        return cache.FindPath(moveType, a.Regime.Get(d),
             home, dest);
     }
 }

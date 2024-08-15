@@ -7,10 +7,8 @@ public class PoliticalNotices
         = new();
     public ValChangeAction<Cell, Regime> ChangedControllerRegime { get; private set; }
         = new();
-    public RefAction<(Alliance, Alliance)> WarDeclared { get; private set; }
+    public RefAction<(Regime, Regime)> WarDeclared { get; private set; }
         = new();
-    public RefAction<(Alliance, Alliance)> WarEnded { get; private set; }
-        = new();
-    public RefAction<Alliance> AllianceDissolved { get; private set; }
+    public RefAction<(Regime, Regime)> WarEnded { get; private set; }
         = new();
 }

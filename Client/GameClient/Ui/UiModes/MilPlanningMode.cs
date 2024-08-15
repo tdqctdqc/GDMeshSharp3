@@ -5,7 +5,7 @@ using Godot;
 public class MilPlanningMode : UiMode
 {
     private MouseOverHandler _mouseOver;
-    public DefaultSettingsOption<Alliance> Alliance { get; private set; }
+    public DefaultSettingsOption<Regime> Regime { get; private set; }
     public DefaultSettingsOption<IDeploymentNode> DeploymentNode { get; private set; }
     
     private MapOverlayDrawer _cellOverlay, _plansOverlay;
@@ -19,17 +19,17 @@ public class MilPlanningMode : UiMode
             _cellOverlay.Clear();
             _mouseOver.Highlight(_cellOverlay);
         };
-        Alliance = new DefaultSettingsOption<Alliance>("Alliance", null);
-        Alliance.SettingChanged.Subscribe(n =>
+        Regime = new DefaultSettingsOption<Regime>("Regime", null);
+        Regime.SettingChanged.Subscribe(n =>
         {
-            var alliance = n.newVal;
-            if (alliance is null || alliance.Leader.Get(_client.Data).IsPlayerRegime(_client.Data))
+            var regime = n.newVal;
+            if (regime is null || regime.IsPlayerRegime(_client.Data))
             {
                 DeploymentNode.Set(null);
             }
             else
             {
-                var root = alliance.GetAi(client.Data).Military.Deployment.Root;
+                var root = regime.GetAi(client.Data).Military.Deployment.Root;
                 DeploymentNode.Set(root);
             }
             Draw(client);
@@ -65,7 +65,10 @@ public class MilPlanningMode : UiMode
             && mb.Pressed == false)
         {
             var cell = _mouseOver.MouseOverCell;
-            Alliance.Set(cell.Controller.Get(_client.Data)?.GetAlliance(_client.Data));
+            if (cell.Controller.Fulfilled())
+            {
+                Regime.Set(cell.Controller.Get(_client.Data));
+            }
         }
     }
 

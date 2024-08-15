@@ -55,38 +55,9 @@ public partial class GeneralTab : ScrollContainer,
         var right = new VBoxContainer();
         right.ExpandFill();
         middle.AddChild(right);
-        var alliance = regime.GetAlliance(client.Data);
-        var allies = alliance.Members.Entities(client.Data);
         
-        if (allies.Count() > 1)
-        {
-            right.CreateLabelAsChild("Allies");
-            var alliesContainer = right.MakeScrollChild<HBoxContainer>(
-                out var alliesScroll);
-            alliesScroll.ExpandFill();
-
-            foreach (var ally in allies)
-            {
-                if (ally == regime) continue;
-                var allyContainer = new VBoxContainer();
-                var allyFlag = ally.Template.Get(client.Data).Flag;
-                var allyFlagTexture = allyFlag.GetTextureRect(50f);
-                allyFlagTexture.AddClickUpAction(MouseButton.Left,
-                    () => RegimeOverviewWindow.Open(ally, client));
-                allyContainer.AddChild(allyFlagTexture);
-                allyContainer.CreateLabelAsChild(ally.Name);
-                alliesContainer.AddChild(allyContainer);
-            }
-        }
-        var seeAlliance = ButtonExt.GetButton(() =>
-        {
-            AllianceOverviewWindow.Open(regime.GetAlliance(client.Data), client);
-        });
-        seeAlliance.Text = "See Alliance";
-        right.AddChild(seeAlliance);
         
-        var rivals = regime
-            .GetAlliance(client.Data).GetRivals(client.Data);
+        var rivals = regime.GetRivals(client.Data);
         if (rivals.Count() > 0)
         {
             right.CreateLabelAsChild("Rivals");
@@ -98,14 +69,13 @@ public partial class GeneralTab : ScrollContainer,
             foreach (var rival in rivals)
             {
                 var rivalContainer = new VBoxContainer();
-                var leader = rival.Leader.Get(client.Data);
-                var rivalFlag = leader.Template.Get(client.Data).Flag;
+                var rivalFlag = rival.Template.Get(client.Data).Flag;
                 var rivalFlagTexture = rivalFlag.GetTextureRect(50f);
                 rivalFlagTexture.AddClickUpAction(MouseButton.Left,
-                    () => AllianceOverviewWindow.Open(rival, client));
+                    () => RegimeOverviewWindow.Open(rival, client));
                 rivalContainer.AddChild(rivalFlagTexture);
-                rivalContainer.CreateLabelAsChild(leader.Name);
-                rivalContainer.CreateLabelAsChild($"{(alliance.IsAtWar(rival, client.Data) ? "At War" : "At Peace")}");
+                rivalContainer.CreateLabelAsChild(rival.Name);
+                rivalContainer.CreateLabelAsChild($"{(rival.IsAtWar(rival, client.Data) ? "At War" : "At Peace")}");
                 rivalsContainer.AddChild(rivalContainer);
             }
         }
@@ -146,23 +116,18 @@ public partial class GeneralTab : ScrollContainer,
             }
         }
 
-        var spectatingAlliance = spectating.GetAlliance(client.Data);
-        var spectatingAllianceLeader = spectatingAlliance.Leader.Get(client.Data);
         
-        var regimeAlliance = regime.GetAlliance(client.Data);
-        var regimeAllianceLeader = regimeAlliance.Leader.Get(client.Data);
         
-        if (regime != spectating
-            && spectatingAllianceLeader == spectating)
+        if (regime != spectating)
         {
-            if (spectatingAlliance.IsRivals(regimeAlliance, client.Data)
-                    == false)
+            if (spectating.IsRivals(regime, client.Data)
+                == false)
             {
                 var declareRival = ButtonExt.GetButton(() =>
                 {
                     var proc = new DeclareRivalProcedure(
-                        spectatingAlliance.Id,
-                        regimeAlliance.Id);
+                        spectating.MakeRef(),
+                        regime.MakeRef());
                     var com = new SendMessageCommand(proc, 
                         client.Data.ClientPlayerData.LocalPlayerGuid);
                     var outer = CallbackCommand.Construct(
@@ -176,14 +141,14 @@ public partial class GeneralTab : ScrollContainer,
                 declareRival.Text = "Declare Rival";
                 left.AddChild(declareRival);
             }
-            else if(spectatingAlliance.IsAtWar(regimeAlliance, client.Data)
+            else if(spectating.IsAtWar(regime, client.Data)
                     == false)
             {
                 var declareRival = ButtonExt.GetButton(() =>
                 {
                     var proc = new DeclareWarProcedure(
-                        regimeAlliance.Id,
-                        spectatingAlliance.Id);
+                        regime.MakeRef(),
+                        spectating.MakeRef());
                     var com = new SendMessageCommand(proc, 
                         client.Data.ClientPlayerData.LocalPlayerGuid);
                     var outer = CallbackCommand.Construct(

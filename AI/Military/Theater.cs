@@ -6,12 +6,12 @@ using MessagePack;
 
 public class Theater : Entity 
 {
-    public ERef<Alliance> Alliance { get; private set; }
+    public ERef<Regime> Regime { get; private set; }
     public HashSet<CellRef> Cells { get; private set; }
     public ERefSet<Frontline> Frontlines { get; private set; }
     
     public static Theater Create(
-        Alliance alliance,
+        Regime regime,
         HashSet<Cell> theaterCells,
         ICreateKey key)
     {
@@ -19,12 +19,12 @@ public class Theater : Entity
         var t = new Theater(data.IdDispenser.TakeId(),
             theaterCells.Select(c => c.MakeRef()).ToHashSet(), 
             ERefSet<Frontline>.Construct(new HashSet<int>()), 
-            alliance.MakeRef());
+            regime.MakeRef());
         key.Create(t);
         return t;
     }
     public static Theater Create(
-        Alliance alliance,
+        Regime regime,
         HashSet<CellRef> theaterCells,
         ICreateKey key)
     {
@@ -32,7 +32,7 @@ public class Theater : Entity
         var t = new Theater(data.IdDispenser.TakeId(),
             theaterCells.ToHashSet(), 
             ERefSet<Frontline>.Construct(new HashSet<int>()), 
-            alliance.MakeRef());
+            regime.MakeRef());
         key.Create(t);
         return t;
     }
@@ -40,10 +40,10 @@ public class Theater : Entity
     [SerializationConstructor] private 
         Theater(int id,
             HashSet<CellRef> cells, ERefSet<Frontline> frontlines,
-            ERef<Alliance> alliance)
+            ERef<Regime> regime)
         : base(id)
     {
-        Alliance = alliance;
+        Regime = regime;
         Id = id;
         Cells = cells;
         Frontlines = frontlines;

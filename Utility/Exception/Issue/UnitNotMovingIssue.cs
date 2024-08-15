@@ -6,15 +6,15 @@ public class UnitNotMovingIssue : Issue
 {
     public Vector2 Dest { get; private set; }
     public MoveType MoveType { get; private set; }
-    public Alliance Alliance { get; private set; }
+    public Regime Regime { get; private set; }
     public bool GoThruHostile { get; private set; }
     public UnitNotMovingIssue(Vector2 dest,
         Vector2 unitPos, string message, MoveType moveType,
-        Alliance alliance, bool goThruHostile, int tick) : base(unitPos, 
+        Regime regime, bool goThruHostile, int tick) : base(unitPos, 
         message, tick)
     {
         MoveType = moveType;
-        Alliance = alliance;
+        Regime = regime;
         Dest = dest;
         GoThruHostile = goThruHostile;
     }

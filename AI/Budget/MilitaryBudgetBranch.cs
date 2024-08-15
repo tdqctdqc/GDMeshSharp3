@@ -42,12 +42,11 @@ public class MilitaryBudgetBranch
 
     protected override float GetWeight(Regime r, BudgetRoot root, Data d)
     {
-        var alliance = r.GetAlliance(d);
-        var allianceStr = alliance.GetPowerScore(d);
-        var rivalStr = alliance.GetRivals(d)
+        var allianceStr = r.GetPowerScore(d);
+        var rivalStr = r.GetRivals(d)
             .Sum(rival =>
             {
-                var mult = rival.IsAtWar(alliance, d)
+                var mult = rival.IsAtWar(r, d)
                     ? 2f
                     : 1f;
                 return rival.GetPowerScore(d) * mult;

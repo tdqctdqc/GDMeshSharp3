@@ -26,8 +26,8 @@ public class DrawArmyLineMouseAction : CellHashMouseAction
     {
         if (v.prospect is LandCell == false) return false;
         var localPlayer = client.Data.BaseDomain.PlayerAux.LocalPlayer;
-        var localAlliance = localPlayer.Regime.Get(client.Data).GetAlliance(client.Data);
-        return localAlliance.Members.Contains(v.prospect.Controller);
+        var localRegime = localPlayer.Regime.Get(client.Data);
+        return localRegime.Id == v.prospect.Controller.RefId;
     }
     private void DrawNewLine(HashSet<Cell> l, Client client)
     {

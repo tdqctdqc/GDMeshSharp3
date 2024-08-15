@@ -23,16 +23,16 @@ public class MapPos
         LogicKey key)
     {
         var cell = PlanetDomainExt.GetPolyCell(polyCell, key.Data);
-        if (moveDat.MoveType.PassableFriendly(cell, moveDat.Alliance, key.Data) == false)
+        if (moveDat.MoveType.PassableFriendly(cell, moveDat.Regime, key.Data) == false)
         {
-            var moverAllianceLeader = moveDat.Alliance.Leader.Get(key.Data);
-            var cellAllianceLeader = cell.Controller.Get(key.Data).GetAlliance(key.Data).Leader.Get(key.Data);
+            var moverRegime = moveDat.Regime;
+            var cellRegime = cell.Controller.Get(key.Data);
             throw new Exception($"cell type {cell.GetType().Name}" +
                                 $"\nmove type {moveDat.MoveType.Name}" +
                                 $"\nlandform {cell.Landform.Get(key.Data).Name}" +
                                 $"\nvegetation {cell.Vegetation.Get(key.Data).Name}" +
-                                $"\nmover alliance {moverAllianceLeader.Name} {moverAllianceLeader.Id}" +
-                                $"\ncell alliance {cellAllianceLeader.Name} {cellAllianceLeader.Id}");
+                                $"\nmover alliance {moverRegime.Name} {moverRegime.Id}" +
+                                $"\ncell alliance {cellRegime.Name} {cellRegime.Id}");
         }
         PolyCell = polyCell;
         Destination = destCell;
