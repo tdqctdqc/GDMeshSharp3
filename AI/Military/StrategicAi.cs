@@ -9,8 +9,7 @@ public class StrategicAi
 {
     public StrategicContext PrevContext { get; private set; }
 
-    public Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>
-        FrontlineMerges { get; private set; }
+    
 
     public Dictionary<ERef<Frontline>, List<FrontFace>>
         FrontlineCache { get; private set; }
@@ -114,6 +113,7 @@ public class StrategicAi
                 v => new List<Theater>());
         foreach (var theater in theaters)
         {
+            context.TheaterMerges.Add(theater.MakeRef(), new HashSet<ERef<Theater>>());
             var theaterCell = theater.Cells
                 .Select(r => r.Get(d))
                 .FirstOrDefault(context.AlliedCells.Contains);
@@ -148,14 +148,14 @@ public class StrategicAi
             }
             else
             {
-                foreach (var theater in theatersToMerge)
-                {
-                    key.Remove(theater);
-                }
-
                 var newTheater = Theater.Create(alliance,
                     union.ToHashSet(),
                     key);
+                foreach (var theater in theatersToMerge)
+                {
+                    context.TheaterMerges[theater.MakeRef()].Add(newTheater.MakeRef());
+                    key.Remove(theater);
+                }
             }
         }
     }
@@ -408,7 +408,6 @@ public class StrategicAi
         var edgeHashes 
             = Context.Graph.Edges.SelectMany(v => v)
             .ToDictionary(l => l.ToHashSet(), l => l);
-        FrontlineMerges = new Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>();
         foreach (var (oldFrontline, oldFaces) 
                  in FrontlineCache)
         {
@@ -441,7 +440,7 @@ public class StrategicAi
                 
                 mergeInto.UnionWith(validFrontlines);
             }
-            FrontlineMerges.Add(oldFrontline, mergeInto);
+            Context.FrontlineMerges.Add(oldFrontline, mergeInto);
         }
     }
 }

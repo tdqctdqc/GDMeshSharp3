@@ -6,13 +6,16 @@ using Godot;
 
 public class ReserveAssignment : ArmyAssignment
 {
+    public ERef<Theater> Theater { get; private set; }
     public CellRef Cell { get; private set; }
     
-    public ReserveAssignment(int id, DeploymentBranch parent, 
+    public ReserveAssignment(DeploymentBranch parent, 
         ERef<Alliance> alliance, HashSet<ERef<Army>> armies, 
-        CellRef cell) : base(id, parent, alliance, armies)
+        CellRef cell, ERef<Theater> theater, int id) 
+            : base(parent, alliance, armies, id)
     {
         Cell = cell;
+        Theater = theater;
     }
 
     protected override void RemoveArmyFromData(Army g)
@@ -23,6 +26,36 @@ public class ReserveAssignment : ArmyAssignment
     public override void Draw(MeshBuilder mb, Vector2 relTo, Data d)
     {
         
+    }
+
+    public override void MergeToNew(DeploymentRoot newRoot, StrategicContext context, LogicKey key)
+    {
+        var aRef = Armies.Single();
+        if (key.Data.HasEntity(aRef.RefId) == false) return;
+        var army = aRef.Get(key.Data);
+        var home = army.GetHomeCell(key.Data);
+        
+        var merges = context.TheaterMerges[Theater];
+        var newTheaters = newRoot
+            .GetDescendentNodesOfType<TheaterBranch>()
+            .ToDictionary(v => v.Theater.Get(key.Data),
+                v => v);
+        
+        var mergeTheater = newTheaters.Keys
+            .First(t => t.Cells.Contains(home.MakeRef()));
+        
+        var mergeReserve = newTheaters[mergeTheater]
+            .GetDescendentAssignmentsOfType<ReserveAssignment>()
+            .Single();
+        if (mergeReserve.Armies.Any())
+        {
+            var mergeArmy = mergeReserve.Armies.Single().Get(key.Data);
+            
+        }
+        else
+        {
+            mergeReserve.PushArmy(army, key);
+        }
     }
 
     protected override void AddGroupToData(Army g, Data d)

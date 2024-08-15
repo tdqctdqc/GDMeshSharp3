@@ -32,6 +32,7 @@ public class DeploymentAi
     }
     public void Calculate(Alliance alliance, LogicKey key)
     {
+        var stratAi = alliance.GetAi(key.Data).Military.Strategic;
         var oldFrontlineGroupAssignments = 
             Root
             ?.GetDescendentAssignmentsOfType<FrontlineAssignment>()
@@ -49,62 +50,13 @@ public class DeploymentAi
             new HashSet<ArmyAssignment>());
         
         Root.MakeTheaters(milAi, key);
-        if (oldTheaterAssignments is not null)
-        {
-            TheatersShiftReserves(oldTheaterAssignments, key);
-        }
-        if (oldFrontlineGroupAssignments is not null)
-        {
-            ShiftArmiesFromOldFrontlines(key, oldFrontlineGroupAssignments, milAi);
-        }
+        Root.MergeToNew(Root, stratAi.Context, key);
         PatchFrontlines(key);
         Root.SetWeights(key);
         Root.ShiftUnits(key);
         Root.GiveOrders(key);
     }
     
-    private void ShiftArmiesFromOldFrontlines(LogicKey key, 
-        Dictionary<ERef<Frontline>, HashSet<ERef<Army>>> oldFrontlineGroupAssignments,
-        AllianceMilitaryAi milAi)
-    {
-        var context = milAi.Strategic.Context;
-        var newFrontlineAssignments = Root.GetDescendentAssignmentsOfType<FrontlineAssignment>()
-            .ToDictionary(v => v.Frontline, v => v);
-        
-        foreach (var (oldFrontline, armies) 
-                 in oldFrontlineGroupAssignments)
-        {
-            if (milAi.Strategic
-                    .FrontlineMerges.ContainsKey(oldFrontline) == false)
-                continue;
-            var mergeFrontlines = milAi.Strategic
-                .FrontlineMerges[oldFrontline]
-                .Select(fl => fl.Get(key.Data))
-                .ToArray();
-            if (mergeFrontlines.Length == 0)
-            {
-                continue;
-            }
-            foreach (var armyRef in armies)
-            {
-                if (key.Data.HasEntity(armyRef.RefId) == false) continue;
-                var army = armyRef.Get(key.Data);
-                var merge = mergeFrontlines
-                    .FirstOrDefault(m => 
-                        m.Faces.Any(f => army.LineMission.LineCells.Contains(f.Native)));
-                
-
-                if (merge is null 
-                    || newFrontlineAssignments.ContainsKey(merge.MakeRef()) == false)
-                {
-                    GD.Print("couldnt find assignment for frontline");
-                    continue;
-                }
-                var mergeAssignment = newFrontlineAssignments[merge.MakeRef()];
-                mergeAssignment.PushArmy(army, key);
-            }
-        }
-    }
 
     private void PatchFrontlines(LogicKey key)
     {
@@ -148,7 +100,6 @@ public class DeploymentAi
                     }
                     else
                     {
-                        GD.Print("pushing free army");
                         frontlineAssgn.PushArmy(army, key);
                         frontlineAssgn.ArmyFaceAssignments[faces] = army;
                     }
@@ -173,10 +124,10 @@ public class DeploymentAi
         }
     }
 
-    private void TheatersShiftReserves(TheaterBranch[] oldTheaters,
-        LogicKey key)
+    private void TheatersPullUnits(LogicKey key)
     {
-        
+        // var theaters = Root.GetDescendentNodesOfType<TheaterBranch>();
+        // var freeUnits = Alliance.Get(key.Data).
     }
 
     public DeploymentRoot GetRoot()

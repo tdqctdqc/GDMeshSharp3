@@ -24,6 +24,13 @@ public class DeploymentRoot : DeploymentBranch
                 new HashSet<DeploymentBranch>(),
                 new HashSet<ArmyAssignment>(),
                 theater.MakeRef());
+            var theaterCells = theater.Cells.Select(c => c.Get(key.Data));
+            var avgPos = key.Data.Planet.GetAveragePosition(theaterCells.Select(c => c.GetCenter()));
+            var centerCell = theaterCells.MinBy(c => c.GetCenter().Offset(avgPos, key.Data));
+            var theaterReserve = new ReserveAssignment(theaterBranch,
+                Alliance, new HashSet<ERef<Army>>(), centerCell.MakeRef(),
+                theaterBranch.Theater, key.Data.IdDispenser.TakeId());
+            theaterBranch.Assignments.Add(theaterReserve);
             SubBranches.Add(theaterBranch);
             theaterBranch.MakeFrontAssignments(ai, key);
         }

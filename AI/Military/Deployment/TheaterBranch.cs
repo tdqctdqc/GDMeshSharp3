@@ -9,7 +9,10 @@ public class TheaterBranch : DeploymentBranch
 {
     public ERef<Theater> Theater { get; private set; }
 
-    public TheaterBranch(ERef<Alliance> alliance, int id, HashSet<DeploymentBranch> subBranches, HashSet<ArmyAssignment> assignments, ERef<Theater> theater) : base(alliance, id, subBranches, assignments)
+    public TheaterBranch(ERef<Alliance> alliance, int id, 
+        HashSet<DeploymentBranch> subBranches, 
+        HashSet<ArmyAssignment> assignments, 
+        ERef<Theater> theater) : base(alliance, id, subBranches, assignments)
     {
         Theater = theater;
     }

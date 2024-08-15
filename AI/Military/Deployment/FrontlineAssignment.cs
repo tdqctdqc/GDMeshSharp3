@@ -41,7 +41,8 @@ public class FrontlineAssignment : ArmyAssignment
         float attackWeight, float defendWeight, 
         Dictionary<FrontFace, float> faceAttackWeights, 
         Dictionary<FrontFace, float> faceDefendWeights,
-        Dictionary<List<FrontFace>, Army> armyFaceAssignments) : base(id, parent, alliance, armies)
+        Dictionary<List<FrontFace>, Army> armyFaceAssignments) 
+        : base(parent, alliance, armies, id)
     {
         Frontline = frontline;
         Color = color;
@@ -60,6 +61,42 @@ public class FrontlineAssignment : ArmyAssignment
     public override void Draw(MeshBuilder mb, Vector2 relTo, Data d)
     {
         Frontline.Get(d).Draw(mb, relTo, d);
+    }
+
+    public override void MergeToNew(DeploymentRoot newRoot, StrategicContext context, LogicKey key)
+    {
+        if (context
+                .FrontlineMerges.ContainsKey(Frontline) == false)
+            return;
+        var mergeFrontlines = context
+            .FrontlineMerges[Frontline]
+            .Select(fl => fl.Get(key.Data))
+            .ToArray();
+        var newFrontlineAssgns = newRoot.GetDescendentAssignmentsOfType<FrontlineAssignment>()
+            .ToDictionary(fl => fl.Frontline, fl => fl);
+        
+        if (mergeFrontlines.Length == 0)
+        {
+            return;
+        }
+        foreach (var armyRef in Armies)
+        {
+            if (key.Data.HasEntity(armyRef.RefId) == false) continue;
+            var army = armyRef.Get(key.Data);
+            var merge = mergeFrontlines
+                .FirstOrDefault(m => 
+                    m.Faces.Any(f => army.LineMission.LineCells.Contains(f.Native)));
+
+            if (merge is null 
+                || newFrontlineAssgns
+                    .ContainsKey(merge.MakeRef()) == false)
+            {
+                GD.Print("couldnt find assignment for frontline");
+                continue;
+            }
+            var mergeAssignment = newFrontlineAssgns[merge.MakeRef()];
+            mergeAssignment.PushArmy(army, key);
+        }
     }
 
     protected override void AddGroupToData(

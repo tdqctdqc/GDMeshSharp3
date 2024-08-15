@@ -17,6 +17,8 @@ public interface IDeploymentNode
     void PushUnit(Unit u, LogicKey key);
     void PushArmy(Army a, LogicKey key);
     void Draw(MeshBuilder mb, Vector2 relTo, Data d);
+    void MergeToNew(DeploymentRoot newRoot, StrategicContext context,
+        LogicKey key);
 }
 
 public static class IDeploymentNodeExt

@@ -5,8 +5,7 @@ using System.Linq;
 using Godot;
 
 [MessagePack.Union(0, typeof(FrontlineAssignment))]
-public abstract class ArmyAssignment : IDeploymentNode, 
-    IIdentifiable
+public abstract class ArmyAssignment : IDeploymentNode, IIdentifiable
 {
     public int Id { get; private set; }
     public DeploymentBranch Parent { get; }
@@ -14,7 +13,8 @@ public abstract class ArmyAssignment : IDeploymentNode,
     public HashSet<ERef<Army>> Armies { get; }
     
 
-    protected ArmyAssignment(int id, DeploymentBranch parent, ERef<Alliance> alliance, HashSet<ERef<Army>> armies)
+    protected ArmyAssignment(DeploymentBranch parent, 
+        ERef<Alliance> alliance, HashSet<ERef<Army>> armies, int id)
     {
         Id = id;
         Parent = parent;
@@ -46,6 +46,9 @@ public abstract class ArmyAssignment : IDeploymentNode,
     }
 
     public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
+    public abstract void MergeToNew(DeploymentRoot newRoot, StrategicContext context, LogicKey key);
+    
+    
 
     protected abstract void AddGroupToData(Army g, Data d);
     public abstract float GetPowerPointNeed(Data d);

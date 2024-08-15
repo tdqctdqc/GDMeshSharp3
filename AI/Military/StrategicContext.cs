@@ -16,9 +16,11 @@ public class StrategicContext
     public List<HashSet<Cell>> LostUnions { get; private set; }
     public HashSet<Cell> Stable { get; private set; }
     public List<HashSet<Cell>> StableUnions { get; private set; }
-
     public Dictionary<List<FrontFace>, HashSet<List<FrontFace>>> EdgeMergeMap { get; private set; }
     public Dictionary<List<FrontFace>, ERef<Frontline>> ValidEdgesFrontlines { get; private set; }
+    public Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>> FrontlineMerges { get; private set; }
+    public Dictionary<ERef<Theater>, HashSet<ERef<Theater>>> TheaterMerges { get; private set; }
+    
     public StrategicContext(Alliance alliance, 
         HashSet<Cell> prev,
         Data d)
@@ -65,6 +67,7 @@ public class StrategicContext
 
         EdgeMergeMap = new Dictionary<List<FrontFace>, HashSet<List<FrontFace>>>();
         ValidEdgesFrontlines = new Dictionary<List<FrontFace>, ERef<Frontline>>();
+        FrontlineMerges = new Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>();
     }
     public CellChangeStatus GetCellChangeStatus(Cell c)
     {

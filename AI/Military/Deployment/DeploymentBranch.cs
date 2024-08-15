@@ -93,6 +93,13 @@ public abstract class DeploymentBranch
     }
 
     public abstract void Draw(MeshBuilder mb, Vector2 relTo, Data d);
+    public void MergeToNew(DeploymentRoot newRoot, StrategicContext context, LogicKey key)
+    {
+        foreach (var armyAssignment in Assignments)
+        {
+            armyAssignment.MergeToNew(newRoot, context, key);
+        }
+    }
 
     public void GiveOrders(LogicKey key)
     {
