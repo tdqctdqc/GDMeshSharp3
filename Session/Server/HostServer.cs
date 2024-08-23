@@ -80,4 +80,9 @@ public partial class HostServer : Node, IServer
     {
         _logic.CommandQueue.Enqueue(c);
     }
+
+    public bool HasRemotes()
+    {
+        return _peers.Count > 0;
+    }
 }

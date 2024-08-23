@@ -44,6 +44,6 @@ public class LogicKey : Key, ICreateKey
 
     public override bool HasRemotes()
     {
-        throw new NotImplementedException();
+        return _server.HasRemotes();
     }
 }
