@@ -23,4 +23,6 @@ public abstract class UiMode
         _client.GetComponent<TooltipManager>()
             .Clear();
     }
+
+    public abstract Control GetControl(Client client);
 }

@@ -31,8 +31,12 @@ public class StrategicAi
         PrevContext = prevContext;
     }
 
-    public void Calculate(Regime regime, LogicKey key)
+    public void Calculate(Regime regime, 
+        TimerTreeNode parentTimer, 
+        LogicKey key)
     {
+        var timer = parentTimer.AddChildAndStart("Stategic");
+        
         var d = key.Data;
         HashSet<Cell> prev;
         if (PrevContext is not null)
@@ -54,36 +58,34 @@ public class StrategicAi
             .Where(t => t.Regime.RefId == regime.Id)
             .ToArray();
         var regimeAi = regime.GetAi(key.Data);
-        regimeAi.Status.Add("Doing strategic ai");
         if (theaters.Count() == 0)
         {
-            regimeAi.Status.Add("Making theaters from scratch");
-
-            MakeTheatersFromScratch(theaters, regime, Context, key);
+            MakeTheatersFromScratch(theaters, regime, Context,
+                timer, key);
         }
         else
         {
-            regimeAi.Status.Add("validating theaters");
-            ValidateTheaters(theaters, regime, Context, key);
+            ValidateTheaters(theaters, regime, Context, timer, key);
         }
 
-        regimeAi.Status.Add("validating frontlines");
-        ValidateFrontlines(regime, key);
-        regimeAi.Status.Add("finished strategic ai");
+        ValidateFrontlines(regime, timer, key);
 
         if (Context.Gained.Count > 0 || Context.Lost.Count > 0)
         {
             d.ClientPlayerData.Issues.Add(new StrategicContextIssue(regimeAi.Regime.Get(d),
                 Context, d));
         }
+        timer.Stop();
     }
 
     private void MakeTheatersFromScratch(
         Theater[] theaters,
         Regime regime,
         StrategicContext context,
+        TimerTreeNode parentTimer,
         LogicKey key)
     {
+        var timer = parentTimer.AddChildAndStart("Making theaters from scratch");
         var d = key.Data;
 
         foreach (var frontline in theaters.SelectMany(t => t.Frontlines.Entities(d)))
@@ -101,11 +103,15 @@ public class StrategicAi
             var theater = Theater.Create(regime,
                 union, key);
         }
+        timer.Stop();
     }
 
     private void ValidateTheaters(Theater[] theaters,
-        Regime regime, StrategicContext context, LogicKey key)
+        Regime regime, StrategicContext context, 
+        TimerTreeNode parentTimer,
+        LogicKey key)
     {
+        var timer = parentTimer.AddChildAndStart("Validating theaters");
         var d = key.Data;
 
         var merge =
@@ -113,20 +119,22 @@ public class StrategicAi
                 v => new List<Theater>());
         foreach (var theater in theaters)
         {
-            context.TheaterMerges.Add(theater.MakeRef(), new HashSet<ERef<Theater>>());
-            var theaterCell = theater.Cells
+            context.TheaterMerges.Add(theater.MakeRef(), 
+                new HashSet<ERef<Theater>>());
+            var theaterCells = theater.Cells
                 .Select(r => r.Get(d))
-                .FirstOrDefault(context.AlliedCells.Contains);
-            if (theaterCell is null)
+                .Where(context.AlliedCells.Contains).ToHashSet();
+            if (theaterCells.Any() == false)
             {
                 //clean up
                 key.Remove(theater);
                 continue;
             }
 
+            
             var mergeIntos = merge
                 .Keys
-                .Where(k => k.Contains(theaterCell));
+                .Where(k => k.Intersect(theaterCells).Any());
             if (mergeIntos.Any() == false)
             {
                 throw new Exception();
@@ -154,15 +162,24 @@ public class StrategicAi
                 foreach (var theater in theatersToMerge)
                 {
                     context.TheaterMerges[theater.MakeRef()].Add(newTheater.MakeRef());
-                    key.Remove(theater);
+                    
                 }
             }
         }
+        foreach (var theater in merge.Values
+                     .SelectMany(v => v).Distinct())
+        {
+            key.Remove(theater);
+        }
+        timer.Stop();
     }
 
-    private void ValidateFrontlines(Regime regime, LogicKey key)
+    private void ValidateFrontlines(Regime regime, 
+        TimerTreeNode parentTimer,
+        LogicKey key)
     {
-        var depRoot = regime.GetAi(key.Data).Military.Deployment.GetRoot();
+        var timer = parentTimer.AddChildAndStart("Validating frontlines");
+        var depRoot = regime.GetAi(key.Data).Military.Deployment.Root;
 
         FrontlineAssignment[] oldFrontlines;
         if (depRoot is not null)
@@ -200,6 +217,7 @@ public class StrategicAi
                 newFrontline.MakeRef());
             key.SendMessage(proc);
         }
+        timer.Stop();
     }
 
 
@@ -260,6 +278,9 @@ public class StrategicAi
     
     private void ConstructNewFrontlinesWithGraph(Regime regime, LogicKey key)
     {
+        var theaters = key.Data.GetAll<Theater>()
+            .Where(t => t.Regime.RefId == regime.Id).ToArray();
+
         var validEdges = Context.Graph.Edges
             .SelectMany(fs => fs)
             .Where(f => ValidEdge(f, regime, key.Data)).ToHashSet();
@@ -309,6 +330,13 @@ public class StrategicAi
 
             var frontline = Frontline.Create(newFrontFaces, new HashSet<CellRef>(),
                 regime, key);
+            var theater = theaters.First(t => t.Cells.Contains(
+                newFrontFaces.First().GetNative(key.Data).MakeRef()));
+
+            var proc = new AddTheaterFrontlineProcedure(
+                theater.MakeRef(), frontline.MakeRef());
+            key.SendMessage(proc);
+            
             foreach (var f in newFronts)
             {
                 Context.ValidEdgesFrontlines[f] = frontline.MakeRef();

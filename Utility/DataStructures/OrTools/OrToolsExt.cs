@@ -11,38 +11,28 @@ public static class OrToolsExt
         GetAssignment<TWorker, TTask>(
             IReadOnlyList<TWorker> workers,
             IReadOnlyList<TTask> tasks,
-            Func<TWorker, TTask, int> getCost,
-            out HashSet<TWorker> leftoverWorkers,
-            out HashSet<TTask> leftoverTasks,
-            out Dictionary<(TWorker, TTask), float> costs)
+            Func<TWorker, TTask, int> getCost)
     {
         var assignment = new Dictionary<TWorker, TTask>();
         if (tasks.Count >= workers.Count)
         {
-            assignment = GetLinearSumAssignment(workers, tasks, getCost, out var c);
-            costs = c;
+            assignment = GetLinearSumAssignment(workers, tasks, getCost);
         }
         else
         {
             assignment = GetLinearSumAssignment(tasks, workers, 
-                    (t, w) => getCost(w, t), out var c)
+                    (t, w) => getCost(w, t))
                 .ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
-            costs = c.ToDictionary(kvp => (kvp.Key.Item2, kvp.Key.Item1), kvp => kvp.Value);
         }
-        
-        leftoverWorkers = workers.Except(assignment.Keys).ToHashSet();
-        leftoverTasks = tasks.Except(assignment.Values).ToHashSet();
         return assignment;
     }
     public static Dictionary<TWorker, TTask> 
         GetLinearSumAssignment<TWorker, TTask>(
             IReadOnlyList<TWorker> workers,
             IReadOnlyList<TTask> tasks,
-            Func<TWorker, TTask, int> getCost,
-            out Dictionary<(TWorker, TTask), float> costs)
+            Func<TWorker, TTask, int> getCost)
     {
         var assignment = new LinearSumAssignment();
-        costs = new Dictionary<(TWorker, TTask), float>();
         for (var i = 0; i < workers.Count; i++)
         {
             var worker = workers[i];
@@ -50,7 +40,11 @@ public static class OrToolsExt
             {
                 var task = tasks[j];
                 var cost = getCost(worker, task);
-                costs.Add((worker, task), cost);
+                if (cost <= 0) cost = 1;
+                if (float.IsFinite(cost) == false || float.IsNaN(cost))
+                {
+                    throw new Exception("bad cost " + cost);
+                }
                 assignment.AddArcWithCost(i, j, cost);
             }
         }
@@ -68,7 +62,11 @@ public static class OrToolsExt
         }
         else
         {
-            throw new Exception();
+            GD.Print($"solution status {solution.ToString()}" + $" tasks {tasks.Count} workers {workers.Count}");
+            // foreach (var ((worker, item2), value) in costs)
+            // {
+            //     GD.Print("cost " + value);
+            // }
         }
 
         return res;

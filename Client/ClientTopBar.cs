@@ -22,20 +22,20 @@ public partial class ClientTopBar : HBoxContainer, IClientComponent
         {
             var poly = client.Data.Get<MapPolygon>(i);
             if (poly == null) return;
-            client.Cam().JumpTo(poly.Center);
+            client.Cam().SetPos(poly.Center);
         });
         this.AddIntButton("Jump to Cell", i =>
         {
             var wp = PlanetDomainExt.GetPolyCell(i, client.Data);
             if (wp == null) return;
-            client.Cam().JumpTo(wp.GetCenter());
+            client.Cam().SetPos(wp.GetCenter());
         });
         this.AddIntButton("Jump to Group", i =>
         {
             if (client.Data.EntitiesById.TryGetValue(i, out var e)
                 && e is Army a)
             {
-                client.Cam().JumpTo(a.GetHomeCell(client.Data).GetCenter());
+                client.Cam().SetPos(a.GetHomeCell(client.Data).GetCenter());
             }
         });
         

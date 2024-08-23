@@ -33,17 +33,27 @@ public class RegimeMilitaryAi
             DeploymentAi.Construct(regime, d), 
             StrategicAi.Construct(regime, d));
     }
-    public void CalculateMajor(LogicKey key, MajorTurnOrders orders)
+    public void CalculateMajor(LogicKey key, 
+        TimerTreeNode parentTimer,
+        MajorTurnOrders orders)
     {
-        
-        ForceComposition.Calculate(_regime.Get(key.Data), key);
-        Templates.Calculate(key);
+        var timer = parentTimer.AddChildAndStart("Military Major");
+        timer.Start();
+        ForceComposition.Calculate(_regime.Get(key.Data),
+            timer, key);
+        Templates.Calculate(timer, key);
+        timer.Stop();
     }
 
-    public void CalculateMinor(LogicKey key, MinorTurnOrders orders)
+    public void CalculateMinor(LogicKey key, 
+        TimerTreeNode parentTimer,
+        MinorTurnOrders orders)
     {
-        Strategic.Calculate(_regime.Get(key.Data), key);
-        Deployment.Calculate(_regime.Get(key.Data), key);
+        var timer = parentTimer.AddChildAndStart("Military Minor");
+        timer.Start();
+        Strategic.Calculate(_regime.Get(key.Data), timer, key);
+        Deployment.Calculate(_regime.Get(key.Data),timer,  key);
+        timer.Stop();
     }
     
     

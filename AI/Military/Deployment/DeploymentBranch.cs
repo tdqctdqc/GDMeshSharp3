@@ -99,6 +99,11 @@ public abstract class DeploymentBranch
         {
             armyAssignment.MergeToNew(newRoot, context, key);
         }
+
+        foreach (var deploymentBranch in SubBranches)
+        {
+            deploymentBranch.MergeToNew(newRoot, context, key);
+        }
     }
 
     public void GiveOrders(LogicKey key)

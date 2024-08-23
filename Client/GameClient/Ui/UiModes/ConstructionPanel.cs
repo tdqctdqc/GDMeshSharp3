@@ -44,6 +44,7 @@ public partial class ConstructionPanel : PanelContainer
         _info.ClearChildren();
         _interact.ClearChildren();
         var regime = cell.Controller.Get(c.Data);
+        if (regime is null) return;
         var localPlayer = c.Data.BaseDomain.PlayerAux.LocalPlayer;
         if (localPlayer.Regime.RefId != regime.Id) return;
         

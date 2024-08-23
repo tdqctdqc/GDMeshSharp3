@@ -157,47 +157,40 @@ public partial class Client : Node, IClient
     {
         var mapGraphics = new MapGraphics(this);
         AddComponent(mapGraphics);
-
+        
         var uiFrame = GetComponent<UiFrame>();
+        
+        UiController.ModeOption.SettingChanged.SubscribeForNode(v =>
+        {
+            var newMode = v.newVal;
+            if (newMode is not null)
+            {
+                uiFrame.LeftBar.ShowPanel(newMode.GetControl(this));
+            }
+            else
+            {
+                uiFrame.LeftBar.HidePanel();
+            }
+        }, uiFrame.LeftBar);
+        
         uiFrame.LeftBar.Add(() => new MapGraphicsOptionsPanel(this),
             "Map Graphics Options");
         
-        uiFrame.LeftBar.Add(() =>
-            {
-                UiController.ModeOption.Choose<ConstructionMode>();
-                return new ConstructionPanel(this);
-            },
+        uiFrame.LeftBar.Add(() => UiController.ModeOption.Choose<ConstructionMode>(),
             "Construct");
         
-        uiFrame.LeftBar.Add(() =>
-            {
-                UiController.ModeOption.Choose<ArmyMode>();
-                return new ArmyPanel(this);
-            },
+        uiFrame.LeftBar.Add(() => UiController.ModeOption.Choose<ArmyMode>(),
             "Armies");
         
-        uiFrame.LeftBar.Add(() =>
-            {
-                UiController.ModeOption.Choose<PolyMode>();
-                return new PolyPanel(this);
-            },
+        uiFrame.LeftBar.Add(() => UiController.ModeOption.Choose<PolyMode>(),
             "Poly");
         
-        
-        uiFrame.LeftBar.Add(() =>
-            {
-                UiController.ModeOption.Choose<PathFindMode>();
-                return new PanelContainer();
-            },
+        uiFrame.LeftBar.Add(() => UiController.ModeOption.Choose<PathFindMode>(),
             "Pathfind");
         
-        uiFrame.LeftBar.Add(() =>
-            {
-                UiController.ModeOption.Choose<MilPlanningMode>();
-                return new MilPlanningPanel(this);
-            },
+        uiFrame.LeftBar.Add(() => UiController.ModeOption.Choose<MilPlanningMode>(),
             "Military Planning");
-        UiController.ModeOption.Choose<PolyMode>();
+        // UiController.ModeOption.Choose<BlankMode>();
     }
 }
 

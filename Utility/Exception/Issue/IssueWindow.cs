@@ -92,7 +92,7 @@ public partial class IssueWindow : Window
                         // _client.UiController.ModeOption.Choose<BlankMode>();
                         issue.Draw(_client);
                         DrawInfo(control);
-                        _client.Cam().JumpTo(issue.Pos);
+                        _client.Cam().SetPos(issue.Pos);
                     });
                 }
             }

@@ -15,7 +15,9 @@ public class ForceCompositionAi
     }
 
 
-    public void Calculate(Regime regime, LogicKey key)
+    public void Calculate(Regime regime, 
+        TimerTreeNode timer,
+        LogicKey key)
     {
         CalcDesired(regime, key);
         ReinforceUnits(regime, key);

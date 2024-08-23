@@ -149,6 +149,12 @@ public class PolyMode : UiMode
         }
     }
 
+    public override Control GetControl(Client client)
+    {
+        var p = new PolyPanel(client);
+        return p;
+    }
+
     public override void Clear()
     {
         var tooltip = _client.GetComponent<TooltipManager>();

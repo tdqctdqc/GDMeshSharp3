@@ -44,7 +44,7 @@ public partial class WorldCameraController : Camera2D, ICameraController
         // }
     }
     
-    public void JumpTo(Vector2 worldPos)
+    public void SetPos(Vector2 worldPos)
     {
         var y = worldPos.Y;
         var xRatio = 

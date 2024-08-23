@@ -87,4 +87,9 @@ public class MilPlanningMode : UiMode
         mg.RemoveOverlay(_plansOverlay);
         mg.RemoveOverlay(_cellOverlay);
     }
+
+    public override Control GetControl(Client client)
+    {
+        return new MilPlanningPanel(client);
+    }
 }

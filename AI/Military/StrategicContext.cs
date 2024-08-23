@@ -68,6 +68,7 @@ public class StrategicContext
         EdgeMergeMap = new Dictionary<List<FrontFace>, HashSet<List<FrontFace>>>();
         ValidEdgesFrontlines = new Dictionary<List<FrontFace>, ERef<Frontline>>();
         FrontlineMerges = new Dictionary<ERef<Frontline>, HashSet<ERef<Frontline>>>();
+        TheaterMerges = new Dictionary<ERef<Theater>, HashSet<ERef<Theater>>>();
     }
     public CellChangeStatus GetCellChangeStatus(Cell c)
     {

@@ -23,7 +23,7 @@ public partial class PolyPanel : PanelContainer
             this);
     }
 
-    private void Set(Client c, PolyMode mode, Data d)
+    public void Set(Client c, PolyMode mode, Data d)
     {
         _inner.ClearChildren();
         var poly = mode.Poly.Value;

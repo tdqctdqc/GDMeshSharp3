@@ -20,10 +20,11 @@ public class ListSettingsOption<T> : SettingsOption<T>
         }
     }
 
-    public void Choose<TOption>() where TOption : T
+    public TOption Choose<TOption>() where TOption : T
     {
-        var first = Options.First(t => t is TOption);
+        var first = Options.OfType<TOption>().First();
         Set(first);
+        return first;
     }
 
     public void Choose(T t)

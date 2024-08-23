@@ -17,6 +17,7 @@ public class DeploymentRoot : DeploymentBranch
         var theaters = key.Data.GetAll<Theater>()
             .Where(t => t.Regime.Equals(Regime))
             .ToArray();
+        var regime = Regime.Get(key.Data);
         foreach (var theater in theaters)
         {
             var theaterBranch = new TheaterBranch(Regime, 
@@ -26,10 +27,14 @@ public class DeploymentRoot : DeploymentBranch
                 theater.MakeRef());
             var theaterCells = theater.Cells.Select(c => c.Get(key.Data));
             var avgPos = key.Data.Planet.GetAveragePosition(theaterCells.Select(c => c.GetCenter()));
-            var centerCell = theaterCells.MinBy(c => c.GetCenter().Offset(avgPos, key.Data));
+            var centerCell = theaterCells
+                .MinBy(c => c.GetCenter().Offset(avgPos, key.Data).LengthSquared());
             var theaterReserve = new ReserveAssignment(theaterBranch,
                 Regime, new HashSet<ERef<Army>>(), centerCell.MakeRef(),
                 theaterBranch.Theater, key.Data.IdDispenser.TakeId());
+            var reserveArmy = Army.Create(regime, new Cell[] { centerCell },
+                new int[] { }, key);
+            theaterReserve.PushArmy(reserveArmy, key);
             theaterBranch.Assignments.Add(theaterReserve);
             SubBranches.Add(theaterBranch);
             theaterBranch.MakeFrontAssignments(ai, key);

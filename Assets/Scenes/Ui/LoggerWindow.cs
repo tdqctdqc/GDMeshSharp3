@@ -65,16 +65,19 @@ public partial class LoggerWindow : Window
         var vbox = new VBoxContainer();
         var inner = new VBoxContainer();
         inner.Visible = false;
-        var button = vbox.AddButton("Show tick " + entry.Tick,
+        var button = vbox.AddButton("Tick " + entry.Tick,
             () =>
             {
                 inner.Visible = inner.Visible == false;
-                inner.ClearChildren();
+                foreach (var child in inner.GetChildren())
+                {
+                    inner.RemoveChild(child);
+                }
                 if (inner.Visible)
                 {
                     for (var i = 0; i < entry.Logs.Count; i++)
                     {
-                        inner.CreateLabelAsChild("\t" + entry.Logs[i]);
+                        inner.AddChild(entry.Logs[i]);
                     }
                 }
             }

@@ -40,7 +40,7 @@ public abstract class ArmyAssignment : IDeploymentNode, IIdentifiable
 
     public void PushArmy(Army a, LogicKey key)
     {
-        AddGroupToData(a, key.Data);
+        AddArmyToData(a, key.Data);
         if (Armies.Contains(a.MakeRef())) throw new Exception();
         Armies.Add(a.MakeRef());
     }
@@ -50,7 +50,7 @@ public abstract class ArmyAssignment : IDeploymentNode, IIdentifiable
     
     
 
-    protected abstract void AddGroupToData(Army g, Data d);
+    protected abstract void AddArmyToData(Army g, Data d);
     public abstract float GetPowerPointNeed(Data d);
 
     public float GetPowerPointsAssigned(Data data)

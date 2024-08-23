@@ -14,7 +14,15 @@ public class PathCache : ThreadSafeCache<(MoveType moveType, Regime a, Cell from
     public List<Cell> FindPath(MoveType m, Regime a,
         Cell from, Cell to)
     {
-        return GetOrAdd((m, a, from, to));
+        var path = GetOrAdd((m, a, from, to));
+        if (path is null)
+        {
+            var issue = new CantFindPathIssue(a,
+                "Can't find path", from,
+                new List<Cell> { to }, m, Game.I.Client.Data.GetTick());
+            Game.I.Client.Data.ClientPlayerData.Issues.Add(issue);
+        }
+        return path;
     }
     protected override List<Cell> Make((MoveType moveType, Regime a, 
         Cell from, Cell to) key)

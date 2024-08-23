@@ -22,6 +22,11 @@ public class BlankMode : UiMode
         
     }
 
+    public override Control GetControl(Client client)
+    {
+        return new Control();
+    }
+
     public BlankMode(Client client) 
         : base(client, "Blank")
     {

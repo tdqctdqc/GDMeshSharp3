@@ -97,4 +97,9 @@ public class PathFindMode : UiMode
         mg.RemoveOverlay(_pathOverlay);
         mg.RemoveOverlay(_cellOverlay);
     }
+
+    public override Control GetControl(Client client)
+    {
+        return new Control();
+    }
 }

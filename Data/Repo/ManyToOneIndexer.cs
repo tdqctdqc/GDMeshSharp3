@@ -49,8 +49,10 @@ public class ManyToOneIndexer<TSingle, TKey>
     {
         _get = get;
         _dic = new Dictionary<TKey, TSingle>();
-        
     }
+
+    public IEnumerable<TKey> Keys() => _dic.Keys;
+    public IEnumerable<TSingle> Values() => _dic.Values.Distinct();
 
     public void HandleAdded(TSingle added)
     {

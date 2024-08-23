@@ -36,35 +36,9 @@ public partial class RegimeAiOverviewWindow : Window
         {
             var regime = kvp.Key;
             var ai = kvp.Value;
-            var control = GetRegimeAiOverview(regime, ai, _data);
-            control.Name = regime.Name;
+            var control = ai.Timer.GetNode();
+            control.Modulate = ai.Calculating ? Colors.Red : Colors.Green;
             _container.AddChild(control);
         }
-    }
-
-    private Control GetRegimeAiOverview(Regime r, RegimeAi ai, Data data)
-    {
-        var vbox = new VBoxContainer();
-        vbox.AnchorsPreset = (int)Control.LayoutPreset.FullRect;
-        vbox.CreateLabelAsChild(r.Name);
-        for (var i = 0; i < ai.Status.Count; i++)
-        {
-            var label = new Label();
-            label.Text += "....";
-
-            label.Text += ai.Status[i];
-            vbox.AddChild(label);
-        }
-
-        if (ai.Status.Count > 0 && ai.Status.Last() == "Finished")
-        {
-            vbox.Modulate = Colors.Green;
-        }
-        else
-        {
-            vbox.Modulate = Colors.Red;
-        }
-        
-        return vbox;
     }
 }

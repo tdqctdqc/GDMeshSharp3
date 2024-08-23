@@ -11,6 +11,6 @@ public interface ICameraController : IClientComponent
     float ScaledZoomOut { get; }
     float MaxZoomOut { get; }
     float ZoomOut { get; }
-    void JumpTo(Vector2 worldPos);
+    void SetPos(Vector2 worldPos);
     bool InViewport(Vector2 mapPos);
 }

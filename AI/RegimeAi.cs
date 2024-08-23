@@ -9,7 +9,8 @@ public class RegimeAi
     public RegimeMilitaryAi Military { get; private set; }
     public RegimeTechnologyAi Technology { get; private set; }
     public DiplomacyAi Diplomacy { get; private set; }
-    public List<string> Status { get; private set; }
+    public TimerTreeNode Timer { get; private set; }
+    public bool Calculating { get; private set; }
 
     public static RegimeAi Construct(Regime r, Data d)
     {
@@ -19,50 +20,60 @@ public class RegimeAi
             RegimeMilitaryAi.Construct(r, d),
             new RegimeTechnologyAi(r, d),
             new DiplomacyAi(),
-            new List<string>()
+            new TimerTreeNode($"{r.Name} Ai"),
+            false
         );
     }
     public RegimeAi(ERef<Regime> regime, BudgetAi budget, 
         RegimeMilitaryAi military, RegimeTechnologyAi technology, 
         DiplomacyAi diplomacy,
-        List<string> status)
+        TimerTreeNode timer,
+         bool calculating)
     {
+        Calculating = calculating;
         Regime = regime;
         Budget = budget;
         Military = military;
         Technology = technology;
-        Status = status;
+        Timer = timer;
         Diplomacy = diplomacy;
     }
 
     public RegimeTurnOrders CalculateAndSendOrders(LogicKey key)
     {
-        Status.Clear();
+        Calculating = true;
         var major = key.Data.BaseDomain.GameClock.MajorTurn(key.Data);
         RegimeTurnOrders orders = major ? GetMajorTurnOrders(key) : GetMinorTurnOrders(key);
-        Status.Add("Finished");
+        Calculating = false;
         return orders;
     }
     private MajorTurnOrders GetMajorTurnOrders(LogicKey key)
     {
-        Status.Add("Doing major");
+        Timer = new TimerTreeNode($"{Regime.Get(key.Data).Name} Ai Major");
+        Timer.Start();
         var regime = Regime.Get(key.Data);
         var orders = MajorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, regime);
         Diplomacy.Calculate(regime, orders, key);
-        Military.CalculateMajor(key, orders);
+        Military.CalculateMajor(key, Timer, orders);
         Technology.Calculate(key);
         Budget.Calculate(key, orders);
         // Status.RemoveAt(Status.Count - 1);
-
+        Timer.Stop();
+        Game.I.Client.QueuedUpdates.Enqueue(
+            () => Game.I.Client.Data.Logger.Log(Timer.GetNode(), LogType.Ai));
         return orders; 
     }
     private MinorTurnOrders GetMinorTurnOrders(LogicKey key)
     {
+        Timer = new TimerTreeNode($"{Regime.Get(key.Data).Name} Ai Minor");
+        Timer.Start();
         var regime = Regime.Get(key.Data);
         var orders = MinorTurnOrders.Construct(key.Data.BaseDomain.GameClock.Tick, regime);
         
-        Military.CalculateMinor(key, orders);
-        
+        Military.CalculateMinor(key, Timer, orders);
+        Game.I.Client.QueuedUpdates.Enqueue(
+            () => Game.I.Client.Data.Logger.Log(Timer.GetNode(), LogType.Ai));
+
         return orders; 
     }
 }

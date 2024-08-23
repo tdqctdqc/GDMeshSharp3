@@ -39,7 +39,7 @@ public class UnitTemplatesAi
         MetaTemplates = metaTemplates;
     }
 
-    public void Calculate(LogicKey key)
+    public void Calculate(TimerTreeNode timer, LogicKey key)
     {
         HandleUnassociatedTemplates(key);
         CheckTemplates(key);

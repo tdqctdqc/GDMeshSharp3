@@ -74,6 +74,10 @@ public static class RegimeExt
     {
         return d.Military.UnitAux.UnitByRegime[r] ?? ImmutableArray<Unit>.Empty;
     }
+    public static IEnumerable<Army> GetArmies(this Regime r, Data d)
+    {
+        return d.GetAll<Army>().Where(a => a.Regime.RefId == r.Id).ToImmutableArray();
+    }
     public static IEnumerable<UnitTemplate> GetUnitTemplates(this Regime r, Data d)
     {
         return d.Military.UnitAux.UnitTemplates[r];

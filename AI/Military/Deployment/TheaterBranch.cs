@@ -17,17 +17,30 @@ public class TheaterBranch : DeploymentBranch
         Theater = theater;
     }
 
-    public void MakeFrontAssignments(RegimeMilitaryAi ai, LogicKey key)
+    public void MakeFrontAssignments(RegimeMilitaryAi ai, 
+        LogicKey key)
     {
-        foreach (var frontline in Theater.Get(key.Data).Frontlines.Entities(key.Data))
+        foreach (var frontline in Theater.Get(key.Data)
+                     .Frontlines.Entities(key.Data))
         {
             var holdLine = FrontlineAssignment.Construct(Regime.Get(key.Data), ai.Deployment,
                 this, frontline, key);
             Assignments.Add(holdLine);
         }
     }
-    
 
+    public Army GetReserveArmy(Data d)
+    {
+        return Assignments.OfType<ReserveAssignment>().Single()
+            .Armies.Single().Get(d);
+    }
+
+    public void AddUnitToReserve(Unit u, LogicKey key)
+    {
+        var reserve = GetReserveArmy(key.Data);
+        var proc = new SetUnitArmyProcedure(u.MakeRef(), reserve.MakeRef());
+        key.SendMessage(proc);
+    }
 
     public override Cell GetCharacteristicCell(Data d)
     {

@@ -34,6 +34,7 @@ public partial class ArmyPanel : PanelContainer
             _inner.CreateLabelAsChild(army.Regime.Get(c.Data).Name);
             _inner.CreateLabelAsChild(army.Id.ToString());
             _inner.CreateLabelAsChild(army.LineMission.GetDescription(c.Data));
+            _inner.CreateLabelAsChild($"Units: {army.Units.Count()}");
             foreach (var order in army.OtherOrders)
             {
                 _inner.CreateLabelAsChild(order.GetDescription(c.Data));
@@ -49,6 +50,29 @@ public partial class ArmyPanel : PanelContainer
                     var a = m.OpenTab<ArmiesTab>();
                     a.SelectArmy(army);
                 });
+
+
+            var regime = army.Regime.Get(c.Data);
+            if (regime.IsPlayerRegime(c.Data) == false)
+            {
+                var root = regime.GetAi(c.Data).Military
+                    .Deployment.Root;
+                if (root is not null)
+                {
+                    var assgn = root
+                        .GetDescendentAssignments()
+                        .FirstOrDefault(a => a.Armies.Contains(army.MakeRef()));
+                    if (assgn is not null)
+                    {
+                        _inner.AddButton($"{assgn.ToString()}", () =>
+                        {
+                            var milPlanMode = c.UiController.ModeOption.Choose<MilPlanningMode>();
+                            milPlanMode.DeploymentNode.Set(assgn);
+                        });
+                    }
+                }
+            }
+            
             var tree = army.GetTree(0, c);
             tree.ExpandFill();
             _inner.AddChild(tree);

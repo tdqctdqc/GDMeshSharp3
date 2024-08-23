@@ -63,4 +63,9 @@ public class ConstructionMode : UiMode
         mg.RemoveOverlay(_mouseOverlay);
         mg.RemoveOverlay(_selectedOverlay);
     }
+
+    public override Control GetControl(Client client)
+    {
+        return new ConstructionPanel(client);
+    }
 }

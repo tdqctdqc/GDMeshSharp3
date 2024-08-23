@@ -72,6 +72,11 @@ public class ArmyMode : UiMode
         mg.RemoveOverlay(_cellOverlay);
     }
 
+    public override Control GetControl(Client client)
+    {
+        return new ArmyPanel(client);
+    }
+
     private void Draw()
     {
         _cellOverlay.Clear();

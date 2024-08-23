@@ -47,20 +47,13 @@ public class ReserveAssignment : ArmyAssignment
         var mergeReserve = newTheaters[mergeTheater]
             .GetDescendentAssignmentsOfType<ReserveAssignment>()
             .Single();
-        if (mergeReserve.Armies.Any())
-        {
-            var mergeArmy = mergeReserve.Armies.Single().Get(key.Data);
-            
-        }
-        else
-        {
-            mergeReserve.PushArmy(army, key);
-        }
+        var mergeArmy = mergeReserve.Armies.Single().Get(key.Data);
+        army.DissolveInto(mergeArmy, key);
     }
 
-    protected override void AddGroupToData(Army g, Data d)
+    protected override void AddArmyToData(Army g, Data d)
     {
-        
+        if (Armies.Count > 1) throw new Exception();
     }
     public override float GetPowerPointNeed(Data d)
     {

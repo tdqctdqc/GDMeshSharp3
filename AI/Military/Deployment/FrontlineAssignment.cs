@@ -69,11 +69,13 @@ public class FrontlineAssignment : ArmyAssignment
         if (context
                 .FrontlineMerges.ContainsKey(Frontline) == false)
             return;
+
         var mergeFrontlines = context
             .FrontlineMerges[Frontline]
             .Select(fl => fl.Get(key.Data))
             .ToArray();
-        var newFrontlineAssgns = newRoot.GetDescendentAssignmentsOfType<FrontlineAssignment>()
+        var newFrontlineAssgns = 
+            newRoot.GetDescendentAssignmentsOfType<FrontlineAssignment>()
             .ToDictionary(fl => fl.Frontline, fl => fl);
         
         if (mergeFrontlines.Length == 0)
@@ -100,7 +102,7 @@ public class FrontlineAssignment : ArmyAssignment
         }
     }
 
-    protected override void AddGroupToData(
+    protected override void AddArmyToData(
         Army g, Data d)
     {
     }
@@ -120,6 +122,23 @@ public class FrontlineAssignment : ArmyAssignment
             ArmyFaceAssignments.Add(seg, null);
         }
     }
+
+    public static float GetArmyAssignmentCost(Army army, List<FrontFace> faces, Data d)
+    {
+        var mid = faces.GetMiddleElement();
+        return (int)army.GetMoveCost(mid.GetNative(d), d);
+    }
+
+    public static Dictionary<Army, List<FrontFace>>
+        MakeArmyAssignments(IReadOnlyList<Army> armies, IReadOnlyList<List<FrontFace>> segs,
+            Data d)
+    {
+        return OrToolsExt
+            .GetAssignment(armies,
+                segs,
+                (army, list) => (int)GetArmyAssignmentCost(army, list, d)
+            );
+    }
     public HashSet<Army> AssignArmiesToSegs(LogicKey key)
     {
         var frontline = Frontline.Get(key.Data);
@@ -128,20 +147,16 @@ public class FrontlineAssignment : ArmyAssignment
         if (Armies.Count > 0)
         {
             var segs = ArmyFaceAssignments.Keys.ToList();
-            var armyAssignment = OrToolsExt
-                .GetAssignment(Armies.Select(a => a.Get(key.Data)).ToList(),
-                    segs,
-                    (army, list) =>
-                    {
-                        var mid = list.GetMiddleElement();
-                        return (int)army.GetMoveCost(mid.GetNative(key.Data), key.Data);
-                    },
-                    out var leftoverArmies,
-                    out var leftoverSegs, out var costs
-                );
+
+            var armyAssignment =
+                MakeArmyAssignments(Armies.Select(a => a.Get(key.Data)).ToList(),
+                    segs, key.Data);
+            
+            var leftoverArmies = Armies.Select(a => a.Get(key.Data)).Except(armyAssignment.Keys)
+                .ToHashSet();
             foreach (var (army, value) in armyAssignment)
             {
-                var cost = costs[(army, value)];
+                var cost = FrontlineAssignment.GetArmyAssignmentCost(army, value, key.Data);
                 if (cost > army.MoveType(key.Data).BaseSpeed * 2f)
                 {
                     leftoverArmies.Add(army);
@@ -155,7 +170,6 @@ public class FrontlineAssignment : ArmyAssignment
             {
                 RemoveArmy(army);
             }
-
             return leftoverArmies;
         }
         else

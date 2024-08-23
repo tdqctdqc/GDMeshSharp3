@@ -38,15 +38,6 @@ public class DiplomacyGraph : Entity
         return Graph.GetNeighborsWith(a, e => e == edge)
             .Select(n => d.Get<Regime>(n));
     }
-
-    public void MergeRelations(Regime dissolve, Regime into, IWriteKey key)
-    {
-        Graph.DoForEdges(dissolve, (n, r) =>
-        {
-            var other = key.GetData().Get<Regime>(n);
-            Graph.AddToEdge(into, other, r);
-        });
-    }
     public void RemoveRegime(Regime a, IWriteKey key)
     {
         Graph.Remove(a);

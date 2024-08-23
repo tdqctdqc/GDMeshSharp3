@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Godot;
 
 public class Logger
 {
     private Data _data;
     public Dictionary<LogType, Dictionary<int, LogEntry>> Entries { get; private set; }
-    private ConcurrentQueue<(LogType, string)> _queue;
+    private ConcurrentQueue<(LogType, Node)> _queue;
     public Logger(Data data)
     {
         _data = data;
         Entries = new Dictionary<LogType, Dictionary<int, LogEntry>>();
-        _queue = new ConcurrentQueue<(LogType, string)>();
+        _queue = new ConcurrentQueue<(LogType, Node)>();
         RunLoop();
     }
 
@@ -38,7 +39,11 @@ public class Logger
     }
     public void Log(string msg, LogType logType)
     {
-        _queue.Enqueue((logType, msg));
+        _queue.Enqueue((logType, NodeExt.CreateLabel(msg)));
+    }
+    public void Log(Node node, LogType logType)
+    {
+        _queue.Enqueue((logType, node));
     }
 
     public void RunAndLogTime(string name, LogType type, Action a)

@@ -6,5 +6,6 @@ public enum LogType
     Graphics,
     Diplomacy,
     Temp,
-    Ui
+    Ui,
+    Ai
 }
