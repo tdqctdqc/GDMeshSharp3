@@ -5,6 +5,7 @@ using Godot;
 
 public interface ILogic
 {
+    object Lock { get; }
     bool Calculating { get; }
     void Process(float delta);
     void SubmitPlayerOrders(Player player, RegimeTurnOrders orders);

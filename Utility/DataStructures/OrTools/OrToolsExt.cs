@@ -13,17 +13,9 @@ public static class OrToolsExt
             IReadOnlyList<TTask> tasks,
             Func<TWorker, TTask, int> getCost)
     {
-        var assignment = new Dictionary<TWorker, TTask>();
-        if (tasks.Count >= workers.Count)
-        {
-            assignment = GetLinearSumAssignment(workers, tasks, getCost);
-        }
-        else
-        {
-            assignment = GetLinearSumAssignment(tasks, workers, 
-                    (t, w) => getCost(w, t))
-                .ToDictionary(kvp => kvp.Value, kvp => kvp.Key);
-        }
+        var assignment = MinCostFlowAssignment(
+            workers, tasks, getCost);
+        
         return assignment;
     }
     public static Dictionary<TWorker, TTask> 
@@ -173,6 +165,13 @@ public static class OrToolsExt
         solver.SetNodeSupply(sink, -flow);
     
         var solution = solver.Solve();
+
+        if (solution != MinCostFlowBase.Status.OPTIMAL
+            && solution != MinCostFlowBase.Status.FEASIBLE)
+        {
+            GD.Print("Bad solution for min cost flow " + solution.ToString());
+        }
+        
         var res = new Dictionary<TWorker, TTask>();
         for (var i = 0; i < solver.NumArcs(); i++)
         {

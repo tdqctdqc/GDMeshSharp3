@@ -21,7 +21,8 @@ public class HostLogic : ILogic
     public ProcedureKey PKey { get; private set; }
     private LogicKey _logicKey;
     private Data _data => _session.Data;
-    private readonly object _lock = new object();
+    public object Lock { get; } = new object();
+
     public HostLogic(ISession session)
     {
         _session = session;
@@ -93,7 +94,7 @@ public class HostLogic : ILogic
 
     public void HandleMessage(Message m)
     {
-        lock (_lock)
+        lock (Lock)
         {
             if (m is Update u)
             {
@@ -142,7 +143,7 @@ public class HostLogic : ILogic
     }
     private void DoCommands()
     {
-        lock (_lock)
+        lock (Lock)
         {
             while (CommandQueue.TryDequeue(out var command))
             {

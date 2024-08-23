@@ -39,10 +39,6 @@ public class Data
     public Data()
     {
         Serializer = new Serializer();
-        
-        
-        var cellRef = new CellRef();
-        
         _entityTypeTree = new EntityTypeTree(this);
         Init();
     }
@@ -118,20 +114,6 @@ public class Data
             _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
         }
     }
-    private void SetupEntity(Entity e, ICreateKey key)
-    {
-        var t = e.GetType();
-        if (_entityTypeTree.Nodes.ContainsKey(t) == false)
-        {
-            AddEntityType(t);
-        }
-        if (EntitiesById.ContainsKey(e.Id))
-        {
-            throw new EntityTypeException($"trying to overwrite {EntitiesById[e.Id].GetType().ToString()} " +
-                                          $"with {e.GetType().ToString()}");
-        }
-        EntitiesById.Add(e.Id, e);
-    }
     public void RemoveEntities(int[] entityIds, ProcedureKey key)
     {
         foreach (var entityId in entityIds)
@@ -146,7 +128,6 @@ public class Data
         _entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
         EntitiesById.Remove(eId);
     }
-    
 
     public void SubscribeForCreation<TEntity>
         (Action<EntityCreatedNotice> callback) 

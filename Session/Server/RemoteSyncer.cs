@@ -8,19 +8,7 @@ public class RemoteSyncer : Syncer
     private Data _data;
     public RemoteSyncer(PacketPeerStream packetStream, 
         RemoteLogic logic) 
-        : base(packetStream,
-            m =>
-            {
-                if (m is Procedure p)
-                {
-                    p.Enact(logic.PKey);
-                }
-                else if (m is Update u)
-                {
-                    u.Enact(logic.PKey);
-                }
-                else throw new Exception();
-            },
+        : base(packetStream, logic.HandleMessage,
             logic.PKey.Data)
     {
         _data = logic.PKey.Data;

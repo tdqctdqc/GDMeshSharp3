@@ -9,7 +9,6 @@ public partial class RemoteServer : Node, IServer
     public int NetworkId { get; private set; }
     public Action ReceivedStateTransfer { get; set; }
 
-    private ServerKey _key;
     
     private ENetMultiplayerPeer _network;
     private StreamPeerTcp _streamPeer;
@@ -20,7 +19,6 @@ public partial class RemoteServer : Node, IServer
 
     public void Setup(GameSession session, RemoteLogic logic, Data data)
     {
-        _key = new ServerKey(session);
         _streamPeer = new StreamPeerTcp();
         if (
             // _streamPeer.IsConnectedToHost() == false

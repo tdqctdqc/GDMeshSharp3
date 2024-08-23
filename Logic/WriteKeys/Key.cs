@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public class Key
+public class Key : IWriteKey
 {
     public Data Data => Session.Data;
     public Data GetData() => Data;

@@ -15,8 +15,6 @@ public interface IEntityTypeTreeNode
     void BubbleDown(IEntityTypeTreeNotice notice);
     void PushDown(IEntityTypeTreeNotice n);
     void SetParent(IEntityTypeTreeNode parent);
-    
-    IReadOnlyCollection<Entity> GetEntities();
     RefAction<EntityCreatedNotice> Created { get; }    
     RefAction<EntityDestroyedNotice> Destroyed { get; }
     public static IEntityTypeTreeNode ConstructFromType(Type type)

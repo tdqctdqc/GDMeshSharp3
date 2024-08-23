@@ -8,6 +8,7 @@ public class WorldGenLogic : ILogic
     public bool Calculating { get; private set; }
     private bool _justGenned = false;
     private int _tries = 0;
+    public object Lock { get; } = new object();
     private GameSession _session;
     public GenData Data => (GenData) _session.Data;
     public Action FinishedGenSuccessfully { get; set; }
@@ -35,28 +36,32 @@ public class WorldGenLogic : ILogic
 
     public void TryGenerate()
     {
-        _tries = 0;
-        Succeeded = false;
-        Calculating = true;
-        var genData = (GenData)_session.Data;
-        var w = new WorldGenerator(genData, _session,
-            () => _justGenned = true);
-        genData.GenMultiSettings.Save(Data);
-        w.Generate();
-
-        try
-        {       
-        }
-        catch
+        lock (Lock)
         {
-            if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
-            {
-                RetryGen();
+            _tries = 0;
+            Succeeded = false;
+            Calculating = true;
+            var genData = (GenData)_session.Data;
+            var w = new WorldGenerator(genData, _session,
+                () => _justGenned = true);
+            genData.GenMultiSettings.Save(Data);
+            w.Generate();
+
+            try
+            {       
             }
-            else throw;
+            catch
+            {
+                if (Data.GenMultiSettings.PlanetSettings.RetryGen.Value)
+                {
+                    RetryGen();
+                }
+                else throw;
+            }
+        
+            Calculating = false;
         }
         
-        Calculating = false;
     }
 
     private void RetryGen()

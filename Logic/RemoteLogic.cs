@@ -8,6 +8,8 @@ public class RemoteLogic : ILogic
 {
     public bool Calculating => false;
     public ProcedureKey PKey { get; private set; }
+    public object Lock { get; } = new object();
+
     public RemoteLogic(Data data, GameSession session)
     {
         PKey = new ProcedureKey(session);
@@ -23,5 +25,21 @@ public class RemoteLogic : ILogic
     {
         var com = SubmitTurnCommand.Construct(orders, player.PlayerGuid);
         PKey.Session.Server.QueueCommandLocal(com);
+    }
+
+    public void HandleMessage(Message m)
+    {
+        lock (Lock)
+        {
+            if (m is Procedure p)
+            {
+                p.Enact(PKey);
+            }
+            else if (m is Update u)
+            {
+                u.Enact(PKey);
+            }
+            else throw new Exception();
+        }
     }
 }

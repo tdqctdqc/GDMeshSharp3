@@ -14,7 +14,6 @@ public class EntityTypeTreeNode<T> : IEntityTypeTreeNode where T : Entity
     public RefAction<EntityCreatedNotice> Created { get; private set; }    
     public RefAction<EntityDestroyedNotice> Destroyed { get; private set; }
     public HashSet<T> Entities { get; private set; }
-    public IReadOnlyCollection<Entity> GetEntities() => Entities;
 
     public static EntityTypeTreeNode<T> Construct()
     {

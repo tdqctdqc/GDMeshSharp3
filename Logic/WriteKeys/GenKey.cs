@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class GenKey : Key,
-    ICreateKey, IWriteKey
+public class GenKey : Key, ICreateKey
 {
     public GenData GenData => (GenData) Data;
     public GenKey(GenData data, ISession session) : base(session)

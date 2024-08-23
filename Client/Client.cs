@@ -10,7 +10,6 @@ public partial class Client : Node, IClient
     public Data Data => Session.Data;
     public ClientCallbacks Callbacks { get; private set; }
     public ClientNotices Notices { get; private set; }
-    public ClientKey Key { get; private set; }
     public ClientSettings Settings { get; private set; }
     public UiController UiController { get; private set; }
     public ConcurrentQueue<Action> QueuedUpdates { get; }
@@ -29,7 +28,6 @@ public partial class Client : Node, IClient
     {
         Notices = new ClientNotices();
         Session = session;
-        Key = new ClientKey(Session);
         QueuedUpdates = new ConcurrentQueue<Action>();
         UiTick = new RefAction();
         _uiTickTimer = new TimerAction(.1f, 0f, UiTick.Invoke);
@@ -66,14 +64,19 @@ public partial class Client : Node, IClient
     {
         _uiTickTimer.Process(delta);
         var values = Components.Values.ToList();
-        foreach (var component in values)
+
+        lock (Session.Logic.Lock)
         {
-            component.Process((float)delta);
+            foreach (var component in values)
+            {
+                component.Process((float)delta);
+            }
+            while (QueuedUpdates.TryDequeue(out var u))
+            {
+                u.Invoke();
+            }
         }
-        while (QueuedUpdates.TryDequeue(out var u))
-        {
-            u.Invoke();
-        }
+        
     }
     public override void _UnhandledInput(InputEvent e)
     {
@@ -173,7 +176,7 @@ public partial class Client : Node, IClient
             }
         }, uiFrame.LeftBar);
         
-        uiFrame.LeftBar.Add(() => new MapGraphicsOptionsPanel(this),
+        uiFrame.LeftBar.Add(() => uiFrame.LeftBar.ShowPanel(new MapGraphicsOptionsPanel(this)),
             "Map Graphics Options");
         
         uiFrame.LeftBar.Add(() => UiController.ModeOption.Choose<ConstructionMode>(),
