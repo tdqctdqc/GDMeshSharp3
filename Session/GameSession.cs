@@ -75,7 +75,7 @@ public partial class GameSession : Node, ISession
         var hServer = new HostServer();
         var logic = new HostLogic(this);
         Logic = logic;
-        hServer.Setup(logic, Data, this);
+        hServer.Setup(logic, Data);
         logic.SetDependencies(hServer);
         StartServer(hServer);
         StartClient();
@@ -89,7 +89,7 @@ public partial class GameSession : Node, ISession
 
         var logic = new HostLogic(this);
         Logic = logic;
-        hServer.Setup(logic, Data, this);
+        hServer.Setup(logic, Data);
         logic.SetDependencies(hServer);
         StartServer(hServer);
 

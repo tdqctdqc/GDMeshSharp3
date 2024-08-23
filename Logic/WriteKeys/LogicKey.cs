@@ -41,4 +41,9 @@ public class LogicKey : Key, ICreateKey
             _server.SendMessageToClient(p, client);
         }
     }
+
+    public override bool HasRemotes()
+    {
+        throw new NotImplementedException();
+    }
 }

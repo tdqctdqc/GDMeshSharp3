@@ -102,7 +102,7 @@ public class Army : Entity, ICombatGraphNode, ICelled
         return Units.Entities(data)
             .Sum(u => u.GetPowerPointsWeightedMorale(data));
     }
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         if (Units.Count() > 0) throw new Exception();
     }

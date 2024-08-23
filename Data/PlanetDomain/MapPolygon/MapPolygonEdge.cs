@@ -71,7 +71,7 @@ public class MapPolygonEdge : Entity
         return HiNexus.RefId == nexus.Id ? LoNexus.Get(data) : HiNexus.Get(data);
     }
 
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

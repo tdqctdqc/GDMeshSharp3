@@ -22,28 +22,24 @@ public class HostSyncer : Syncer
         _peerQueue = new Queue<byte[]>();
     }
 
-    public void Sync(Guid newPlayerGuid, HostKey key)
+    public void Sync(Player newPlayer, Data data)
     {
-        GD.Print("Syncing");
-        Player.Create(newPlayerGuid, "doot", key);
-
-        var data = key.Data;
         foreach (var e in data.EntitiesById.Values)
         {
-            var u = EntityCreationUpdate.Create(e, key);
-            QueuePacket(u.Serialize(key.Data));
+            var u = EntityCreationUpdate.Create(e, data);
+            QueuePacket(u.Serialize(data));
         }
         
-        var done = FinishedStateSyncUpdate.Create(newPlayerGuid, key);
-        var bytes = done.Serialize(key.Data);
+        var done = new FinishedStateSyncUpdate(newPlayer.PlayerGuid);
+        var bytes = done.Serialize(data);
         QueuePacket(bytes);
-        PushPackets(key);
+        PushPackets();
     }
     public void QueuePacket(byte[] packet)
     {
         _peerQueue.Enqueue(packet);
     }
-    public void PushPackets(HostKey key)
+    public void PushPackets()
     {
         bool push = true;
         var count = _peerQueue.Count;

@@ -93,7 +93,7 @@ public class CellHolder : Entity
 
         return (lefts, rights);
     }
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

@@ -58,7 +58,7 @@ public class Theater : Entity
                 Colors.Blue.Tint(.5f), relTo, d);
         }
     }
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

@@ -48,7 +48,7 @@ public class Settlement : Location, INamed
         key.Data.Notices.Infrastructure.ChangedTier.Invoke(this, tier, old);
     }
 
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

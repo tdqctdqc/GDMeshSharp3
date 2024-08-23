@@ -7,10 +7,6 @@ public class EntitiesDeletionUpdate : Update
 {
     public int[] EntityIds { get; private set; }
     
-    public static EntitiesDeletionUpdate Create(IEnumerable<int> entityIds, HostKey key)
-    {
-        return new EntitiesDeletionUpdate(entityIds.ToArray());
-    }
     [SerializationConstructor] public EntitiesDeletionUpdate(int[] entityIds) 
     {
         EntityIds = entityIds;

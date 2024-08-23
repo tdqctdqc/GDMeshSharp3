@@ -35,7 +35,7 @@ public class ResourceDeposit : Entity
     {
         Extraction = extraction;
     }
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

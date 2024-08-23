@@ -12,9 +12,9 @@ public sealed partial class EntityCreationUpdate : Update
     public byte[] EntityBytes { get; private set; }
     
     public static EntityCreationUpdate Create(Entity entity,
-        Key key)
+        Data d)
     {
-        var entityBytes = key.Data.Serializer.MP.Serialize(entity, entity.GetType());
+        var entityBytes = d.Serializer.MP.Serialize(entity, entity.GetType());
         return new EntityCreationUpdate(entity.GetType(), entityBytes);
     }
     [SerializationConstructor] private EntityCreationUpdate(Type entityType, byte[] entityBytes) 

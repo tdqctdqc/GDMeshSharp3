@@ -75,7 +75,7 @@ public class Regime : Entity, INamed
         IsMajor = isMajor;
     }
 
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
     }
 

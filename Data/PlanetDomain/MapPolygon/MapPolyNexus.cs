@@ -89,7 +89,7 @@ public class MapPolyNexus : Entity
         Point = point;
     }
 
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

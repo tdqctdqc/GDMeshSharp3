@@ -114,14 +114,14 @@ public class Data
             _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
         }
     }
-    public void RemoveEntities(int[] entityIds, ProcedureKey key)
+    public void RemoveEntities(int[] entityIds, IWriteKey key)
     {
         foreach (var entityId in entityIds)
         {
             RemoveEntity(entityId, key);
         }
     }
-    public void RemoveEntity(int eId, ProcedureKey key)
+    public void RemoveEntity(int eId, IWriteKey key)
     {
         var e = EntitiesById[eId];
         e.CleanUp(key);

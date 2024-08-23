@@ -6,10 +6,6 @@ using Godot;
 public class FinishedStateSyncUpdate : Update
 {
     public Guid PlayerGuid { get; private set; }
-    public static FinishedStateSyncUpdate Create(Guid playerGuid, HostKey key)
-    {
-        return new FinishedStateSyncUpdate(playerGuid);
-    }
     public FinishedStateSyncUpdate(Guid playerGuid) : base()
     {
         PlayerGuid = playerGuid;

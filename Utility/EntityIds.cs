@@ -25,7 +25,7 @@ public class EntityIds : Entity
         return Dispenser.TakeId();
     }
 
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

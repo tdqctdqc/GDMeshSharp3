@@ -91,7 +91,7 @@ public class Frontline : Entity
                 c => Colors.White, 5f, relTo, d);
         }
     }
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

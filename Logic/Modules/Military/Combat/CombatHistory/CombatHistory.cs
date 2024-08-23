@@ -18,7 +18,7 @@ public class CombatHistory : Entity
         Graphs = graphs;
     }
 
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         
     }

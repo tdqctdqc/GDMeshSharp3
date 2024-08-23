@@ -5,7 +5,7 @@ using System.Linq;
 
 public partial class HostServer : Node, IServer
 {
-    private HostKey _key;
+    private Data _data;
     private HostLogic _logic;
     private List<HostSyncer> _peers;
     private Dictionary<Guid, HostSyncer> _peersByGuid;
@@ -18,10 +18,10 @@ public partial class HostServer : Node, IServer
         _tcp = new TcpServer();
         _tcp.Listen((ushort)_port);
     }
-    public void Setup(HostLogic logic, Data data, GameSession session)
+    public void Setup(HostLogic logic, Data data)
     {
         _logic = logic;
-        _key = new HostKey(logic, session);
+        _data = data;
     }
     public override void _Process(double delta)
     {
@@ -29,11 +29,13 @@ public partial class HostServer : Node, IServer
         {
             GD.Print("connection available");
             var peer = _tcp.TakeConnection();
-            HandleNewPeer(peer);
+            var newPlayer = _logic.MakeNewPlayer();
+            HandleNewPeer(newPlayer, peer);
         }
     }
 
-    private void HandleNewPeer(StreamPeerTcp peer)
+    private void HandleNewPeer(Player newPlayer,
+        StreamPeerTcp peer)
     {
         var packet = new PacketPeerStream();
         packet.StreamPeer = peer;
@@ -41,7 +43,7 @@ public partial class HostServer : Node, IServer
         var syncer = new HostSyncer(packet, _logic, 
             newPlayerGuid);
         GD.Print("started syncing");
-        syncer.Sync(newPlayerGuid, _key);
+        syncer.Sync(newPlayer, _data);
         GD.Print("Done syncing");
         _peers.Add(syncer);
         _peersByGuid.Add(newPlayerGuid, syncer);
@@ -50,7 +52,7 @@ public partial class HostServer : Node, IServer
 
     public void QueueMessage(Message m)
     {
-        var bytes = m.Serialize(_key.Data);
+        var bytes = m.Serialize(_data);
         for (var i = 0; i < _peers.Count; i++)
         {
             _peers[i].QueuePacket(bytes);
@@ -59,20 +61,20 @@ public partial class HostServer : Node, IServer
 
     public void SendMessageToClient(Procedure p, Guid clientGuid)
     {
-        var bytes = p.Serialize(_key.Data);
+        var bytes = p.Serialize(_data);
         _peersByGuid[clientGuid].QueuePacket(bytes);
     }
-    public void ReceiveMessage(Message m, HostKey k)
+    public void ReceiveMessage(Message m)
     {
-        var bytes = m.Serialize(_key.Data);
+        var bytes = m.Serialize(_data);
         for (var j = 0; j < _peers.Count; j++)
         {
             _peers[j].QueuePacket(bytes);
         }
     }
-    public void PushPackets(HostKey key)
+    public void PushPackets()
     {
-        _peers.ForEach(p => p.PushPackets(key));
+        _peers.ForEach(p => p.PushPackets());
     }
     public void QueueCommandLocal(Command c)
     {

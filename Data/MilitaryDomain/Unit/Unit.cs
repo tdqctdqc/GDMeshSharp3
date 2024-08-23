@@ -35,7 +35,7 @@ public class Unit : Entity
         Morale = morale;
     }
 
-    public override void CleanUp(ProcedureKey key)
+    public override void CleanUp(IWriteKey key)
     {
         var g = this.GetArmy(key.GetData());
         if (g != null)

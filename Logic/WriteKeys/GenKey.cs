@@ -33,4 +33,8 @@ public class GenKey : Key, ICreateKey
         }
     }
 
+    public override bool HasRemotes()
+    {
+        return false;
+    }
 }

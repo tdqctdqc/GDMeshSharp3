@@ -17,7 +17,6 @@ public class HostLogic : ILogic
     public bool Calculating => _turnStateMachine.Current != _middle;
     public OrderHolder OrderHolder { get; private set; }
     private HostServer _server; 
-    private HostKey _hKey;
     public ProcedureKey PKey { get; private set; }
     private LogicKey _logicKey;
     private Data _data => _session.Data;
@@ -30,7 +29,6 @@ public class HostLogic : ILogic
         _logicKey = new LogicKey(this,
             _server,
             session);
-        _hKey = new HostKey(this, session);
         PKey = new ProcedureKey(_session);
         OrderHolder = new OrderHolder(_logicKey);
         
@@ -99,7 +97,7 @@ public class HostLogic : ILogic
             if (m is Update u)
             {
                 u.Enact(PKey);
-                _server.ReceiveMessage(m, _hKey);
+                _server.ReceiveMessage(m);
                 return;
             }
 
@@ -108,7 +106,7 @@ public class HostLogic : ILogic
                 if (p.Valid(_data, out string error))
                 {
                     p.Enact(PKey);
-                    _server.ReceiveMessage(m, _hKey);
+                    _server.ReceiveMessage(m);
                 }
                 else
                 {
@@ -153,8 +151,12 @@ public class HostLogic : ILogic
                 }
             }
         }
-        _server.PushPackets(_hKey);
+        _server.PushPackets();
     }
 
-    
+    public Player MakeNewPlayer()
+    {
+        return Player.Create(Guid.NewGuid(),
+            "doot", _logicKey);
+    }
 }
