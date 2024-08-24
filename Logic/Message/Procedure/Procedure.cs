@@ -10,9 +10,9 @@ using System;
 [MessagePack.Union(5, typeof(FinishedTurnEndCalcProc))]
 [MessagePack.Union(6, typeof(FinishedTurnStartCalcProc))]
 [MessagePack.Union(7, typeof(MigrationProcedure))]
-[MessagePack.Union(8, typeof(FormUnitProcedure))]
+[MessagePack.Union(8, typeof(SetFrontlineAdvanceIntoProcedure))]
 [MessagePack.Union(9 , typeof(HandleUnitMissionsProcedure))]
-[MessagePack.Union(10, typeof(SetTheaterCellsProcedure))]
+[MessagePack.Union(10, typeof(UpgradeTroopProcedure))]
 [MessagePack.Union(11, typeof(SetPlayerRegimeProcedure))]
 [MessagePack.Union(12, typeof(ProdResultProcedure))]
 [MessagePack.Union(13, typeof(RegimeUseItemsProcedure))]
@@ -25,7 +25,7 @@ using System;
 [MessagePack.Union(20, typeof(SetStockProcedure))]
 [MessagePack.Union(21, typeof(TroopLossesProcedure))]
 [MessagePack.Union(22, typeof(CleanUpArmyMissionsProcedure))]
-[MessagePack.Union(23, typeof(SetArmyOccupationProcedure))]
+[MessagePack.Union(23, typeof(AddExtractionProcedure))]
 [MessagePack.Union(24, typeof(DestroyArmyProcedure))]
 [MessagePack.Union(25, typeof(AddSettlementBuildingProcedure))]
 [MessagePack.Union(26, typeof(CancelMakeProjectProcedure))]
@@ -39,11 +39,6 @@ using System;
 [MessagePack.Union(34, typeof(ReplaceMakeProjectProc))]
 [MessagePack.Union(35, typeof(DoResearchProcedure))]
 [MessagePack.Union(36, typeof(SetResearchProcedure))]
-[MessagePack.Union(37, typeof(AddExtractionProcedure))]
-[MessagePack.Union(38, typeof(UpgradeTroopProcedure))]
-[MessagePack.Union(39, typeof(UnitChangeTroopAmountProcedure))]
-[MessagePack.Union(40, typeof(ChangeStockProcedure))]
-[MessagePack.Union(41, typeof(SetFrontlineAdvanceIntoProcedure))]
 
 public abstract class Procedure : Message, IPolymorph
 {

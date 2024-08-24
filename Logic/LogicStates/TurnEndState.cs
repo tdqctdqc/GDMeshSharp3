@@ -12,7 +12,9 @@ public class TurnEndState : TurnState
             new AllianceOrdersModule(),
             new DefaultLogicModule(() => new DoResearchProcedure()),
             new DefaultLogicModule(() => new TickProcedure()),
-            new ClearOrdersModule(orders)
+            new ClearOrdersModule(orders),
+            new DefaultLogicModule(() => new FinishedTurnEndCalcProc())
+
         };
         _minorModules = new LogicModule[]
         {
@@ -21,7 +23,8 @@ public class TurnEndState : TurnState
             new CombatModule(),
             new DefaultLogicModule(() => new CleanUpArmyMissionsProcedure()),
             new DefaultLogicModule(() => new TickProcedure()),
-            new ClearOrdersModule(orders)
+            new ClearOrdersModule(orders),
+            new DefaultLogicModule(() => new FinishedTurnEndCalcProc())
         };
     }
 

@@ -15,10 +15,14 @@ public class ReinforceProcedure : Procedure
         ReinforceCounts = reinforceCounts;
     }
 
-    public static void Enact(Regime regime,
-        List<ReinforceEntry> reinforceEntries,
-        IWriteKey key)
+    public override void Enact(ProcedureKey key)
     {
+        var reinforceEntries = ReinforceCounts.Select(
+            v => new ReinforceEntry(key.Data.Get<Unit>(v.unitId),
+                key.Data.Models.GetModel<Troop>(v.troopId),
+                v.count
+            )).ToList();
+        var regime = Regime.Get(key.Data);
         var reserve = regime.Stock;
         var data = key.GetData();
         foreach (var entry in reinforceEntries)
@@ -34,26 +38,6 @@ public class ReinforceProcedure : Procedure
                 unit.Troops.Add(troop, transfer);
             }
         }
-
-        if (key is LogicKey l && l.HasRemotes())
-        {
-            var proc = new ReinforceProcedure(
-                regime.MakeRef(),
-                reinforceEntries.Select(
-                    v => (v.Unit.Id, v.Troop.Id, v.Amount)).ToList()
-            );
-            l.SendMessage(proc);
-        }
-    }
-
-    public override void Enact(ProcedureKey key)
-    {
-        var entries = ReinforceCounts.Select(
-            v => new ReinforceEntry(key.Data.Get<Unit>(v.unitId),
-                key.Data.Models.GetModel<Troop>(v.troopId),
-                v.count
-            )).ToList();
-        Enact(Regime.Get(key.Data), entries, key);
     }
 
     public override bool Valid(Data data, out string error)

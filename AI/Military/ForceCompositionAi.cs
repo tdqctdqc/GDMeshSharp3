@@ -160,7 +160,7 @@ public class ForceCompositionAi
             });
         }
 
-        var reinforceEntries = new List<ReinforceEntry>();
+        var reinforceEntries = new List<(int unitId, int troopId, float amount)>();
         foreach (var unit in regime.GetUnits(key.Data))
         {
             var template = unit.Template.Get(key.Data);
@@ -180,11 +180,13 @@ public class ForceCompositionAi
                         if (reservesRemaining[troop] == 0f) continue;
                         var take = Mathf.Min(need, reservesRemaining[troop]);
                         reservesRemaining[troop] -= take;
-                        reinforceEntries.Add(new ReinforceEntry(unit, troop, take));
+                        reinforceEntries.Add((unit.Id, troop.Id, take));
                     }
                 }
             }
         }
-        ReinforceProcedure.Enact(regime, reinforceEntries, key);
+        var proc = new ReinforceProcedure(regime.MakeRef(),
+            reinforceEntries);
+        key.SendMessage(proc);
     }
 }
