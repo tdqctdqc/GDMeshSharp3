@@ -23,6 +23,48 @@ public static class DelaunayExt
     {
         return Mathf.FloorToInt(e / 3);
     }
+    
+    
+    
+    
+    public static Graph<T, TEdge>
+        GetVoronoiGraph<T, TEdge>(
+            List<T> ts, 
+            Func<T, Vector2> getPos,
+            Func<T, T, TEdge> getEdge,
+            Vector2I dim, GenKey key)
+    {
+        var dic = ts
+            .ToDictionary(t => getPos(t).GetIPoint(), t => t);
+        var ps = dic.Keys.ToArray();
+        var delaunay = new Delaunator(ps);
+
+        var graph = new Graph<T, TEdge>();
+        foreach (var t in ts)
+        {
+            graph.AddNode(t);
+        }
+        foreach (var edge in delaunay.GetEdges())
+        {
+            var e1 = edge.Index;
+            var p1 = delaunay.Points[delaunay.Triangles[e1]];
+            var e2 = delaunay.Halfedges[e1];
+            if (e2 == -1)
+            {
+                continue;
+            }
+            var p2 = delaunay.Points[delaunay.Triangles[e2]];
+            var t1 = dic[p1];
+            var t2 = dic[p2];
+            graph.AddEdge(t1, t2, getEdge(t1, t2));
+        }
+        
+        return graph;
+    }
+    
+    
+    
+    
     public static (Vector2I p1, Vector2I p2,
         (Vector2I, Vector2I))[] 
         GetPreCellVoronoiGraphNew(this Delaunator delaunay, 

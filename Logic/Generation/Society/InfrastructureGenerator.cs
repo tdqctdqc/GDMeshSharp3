@@ -14,7 +14,7 @@ public class InfrastructureGenerator : Generator
     private float _portInfraNodeSize = 0f;
     private float _minSettlementSizeForInfraNode = 0f;
     private float _sizeBuildRoadRangeMult = 2.5f;
-    private float _maxBuildRoadRange = 2000f;
+    private float _maxBuildRoadRange = 1000f;
     private MultiTimer _multiTimer;
     public override GenReport Generate(GenKey key)
     {
@@ -57,6 +57,8 @@ public class InfrastructureGenerator : Generator
     }
     private Dictionary<Vector2I, RoadModel> BuildLmRoadNetwork(Landmass lm)
     {
+        
+        
         var polyLvlGraph =
             _multiTimer.RunAndTime(
                 () => GetPolyLevelGraph(lm.Polys), 
@@ -293,10 +295,12 @@ public class InfrastructureGenerator : Generator
         }
         RoadModel getRoadFromTraffic(float traffic)
         {
-            if (traffic > 200_000f) return paved;
-            else if (traffic > 100_000f) return stone;
-            else if (traffic > 1_000f) return dirt;
-            return null;
+            return dirt;
+
+            // if (traffic > 200_000f) return paved;
+            // else if (traffic > 100_000f) return stone;
+            // else if (traffic > 1_000f) return dirt;
+            // return null;
         }
 
         float getEdgeCost(Cell w, Cell v)

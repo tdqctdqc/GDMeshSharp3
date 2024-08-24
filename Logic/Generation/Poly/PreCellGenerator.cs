@@ -21,64 +21,25 @@ public static class PreCellGenerator
             new Vector2(dim.X, dim.Y),
             Vector2.Down * dim.Y
         };
-        var total = new Stopwatch();
-        total.Start();
-        var sw = new Stopwatch();
         
-        sw.Start();
         var (points, dummyPoints) 
             = MakeCellPoints(30, dim);
-        sw.Stop();
-        // GD.Print($"make points {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
-        
-        sw.Start();
         var iPoints = points
             .Select(p => p.GetIPoint()).ToArray();
         var delaunator = new Delaunator(iPoints);
-        sw.Stop();
-        GD.Print($"delaunator {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
-
-        sw.Start();
         var graph = delaunator.GetPreCellVoronoiGraphNew(result, dim, key);
-        sw.Stop();
-        // GD.Print($"make graph {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
         
-        sw.Start();
         var cells = MakeCells(dim, points, graph, bounds, 
             dummyPoints, key);
-        sw.Stop();
-        // GD.Print($"make cells {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
         
-        
-        
-        sw.Start();
         MergeLeftRight(cells, dim);
-        sw.Stop();
-        // GD.Print($"merge left right {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
         
-        sw.Start();
         Parallel.ForEach(cells, c => c.MakePointsRel(dim));
-        sw.Stop();
-        // GD.Print($"making cell abs points {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
         
-        sw.Start();
         var polys = MakePolys(cells, dim, key);
-        sw.Stop();
-        // GD.Print($"make polys {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
         
-        sw.Start();
         CheckPolysContiguous(polys, dim, key);
-        sw.Stop();
-        // GD.Print($"check polys contiguous {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
-
+        
         foreach (var poly in polys)
         {
             foreach (var cell in poly.Cells)
@@ -87,33 +48,18 @@ public static class PreCellGenerator
             }
         }
         
-        
-        sw.Start();
         MakePolyNeighbors(polys);
-        sw.Stop();
-        // GD.Print($"make poly neighbors {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
         
-        sw.Start();
         var edges = MakeEdges(polys, key);
-        sw.Stop();
-        // GD.Print($"make edges {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
         
-        sw.Start();
         var nexi = MakeNexi(polys, cells, 
             edges, dim, result, key);
-        sw.Stop();
-        // GD.Print($"make nexi {sw.Elapsed.TotalMilliseconds}");
-        sw.Reset();
-
+        
         result.Nexi = nexi;
         result.Cells = cells;
         result.Polys = polys;
         result.Edges = edges;
         
-        total.Stop();
-        // GD.Print("total " + total.Elapsed.TotalMilliseconds);
         return result;
     }
 

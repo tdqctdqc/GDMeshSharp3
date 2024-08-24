@@ -4,28 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityNotice.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Graphics/EntityGraphicCache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/EntityGraphicCache.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityCreatedNotice.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityDestroyedNotice.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTree.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTreeNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNotice.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/Cache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/Cache.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/ManyToManyIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/ManyToManyIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/ManyToOneIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/ManyToOneIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/OneToManyIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/OneToManyIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/Repo/OneToOneIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/OneToOneIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicKey.cs" afterDir="false" />
-    </list>
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -65,20 +44,18 @@
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9fd3b083f28f40c0827cc635e2e56ca7459200/ab/fbc87aee/CanvasItem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/da93d77c56294abbb64e45d77ba161c8b4a0/27/03d38b2d/List`1.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/ArmyAssignment.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/AddTheaterFrontlineProcedure.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/EntityTypeTree/EntityNotice.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/Army.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/Server/HostServer.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Logic/Modules/Military/Combat/CellDefenseNode.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -739,6 +716,7 @@
       <workItem from="1724253161824" duration="5594000" />
       <workItem from="1724367024568" duration="5522000" />
       <workItem from="1724431083842" duration="9428000" />
+      <workItem from="1724509928510" duration="5761000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -950,22 +928,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00289" summary="bug fixes for unit make priority, research overflow">
-      <option name="closed" value="true" />
-      <created>1722698288972</created>
-      <option name="number" value="00289" />
-      <option name="presentableId" value="LOCAL-00289" />
-      <option name="project" value="LOCAL" />
-      <updated>1722698288972</updated>
-    </task>
-    <task id="LOCAL-00290" summary="ditto">
-      <option name="closed" value="true" />
-      <created>1722699532285</created>
-      <option name="number" value="00290" />
-      <option name="presentableId" value="LOCAL-00290" />
-      <option name="project" value="LOCAL" />
-      <updated>1722699532286</updated>
-    </task>
     <task id="LOCAL-00291" summary="changed moisture gen again, scaled 'diffusion' with planet dim">
       <option name="closed" value="true" />
       <created>1722706410408</created>
@@ -1102,7 +1064,23 @@
       <option name="project" value="LOCAL" />
       <updated>1724463191558</updated>
     </task>
-    <option name="localTasksCounter" value="308" />
+    <task id="LOCAL-00308" summary="cleaning up entity type tree">
+      <option name="closed" value="true" />
+      <created>1724511932112</created>
+      <option name="number" value="00308" />
+      <option name="presentableId" value="LOCAL-00308" />
+      <option name="project" value="LOCAL" />
+      <updated>1724511932112</updated>
+    </task>
+    <task id="LOCAL-00309" summary="rollback">
+      <option name="closed" value="true" />
+      <created>1724514880251</created>
+      <option name="number" value="00309" />
+      <option name="presentableId" value="LOCAL-00309" />
+      <option name="project" value="LOCAL" />
+      <updated>1724514880251</updated>
+    </task>
+    <option name="localTasksCounter" value="310" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1124,8 +1102,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="doot" />
-    <MESSAGE value="fixed it...." />
     <MESSAGE value="fixed?? problem is technologies are returning as 'equal' in ai loop even when not, used stupid workaround" />
     <MESSAGE value="it's problem in upgrade priority" />
     <MESSAGE value="made new upgrade troops priority" />
@@ -1149,6 +1125,8 @@
     <MESSAGE value="got rid of unnecessary keys" />
     <MESSAGE value="before changing procs" />
     <MESSAGE value="before simplifying entity type tree notices" />
-    <option name="LAST_COMMIT_MESSAGE" value="before simplifying entity type tree notices" />
+    <MESSAGE value="cleaning up entity type tree" />
+    <MESSAGE value="rollback" />
+    <option name="LAST_COMMIT_MESSAGE" value="rollback" />
   </component>
 </project>

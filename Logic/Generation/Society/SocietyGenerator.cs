@@ -149,24 +149,23 @@ public class SocietyGenerator : Generator
             .Where(p => p.GetCells(_data).First() is LandCell landCell
                         && landCell.Controller.RefId == r.Id)
             .OrderByDescending(PolyHabitability).ToArray();
+        var exclude = new HashSet<MapPolygon>();
         
-        var baseNum = Mathf.CeilToInt(
-            Mathf.Min(2f * popSurplus / (minSize), 
-                rPolysByHabitability.Length)
-            );
         var decayMult = .5f;
         var weights = new Dictionary<MapPolygon, int>();
-
-        var num = baseNum;
-        while (num > 0)
+        var excludeChance = .75f;
+        for (var i = 0; i < rPolysByHabitability.Length; i++)
         {
-            for (var i = 0; i < num; i++)
+            var poly = rPolysByHabitability[i];
+            if (exclude.Contains(poly)) continue;
+            weights.Add(poly, (int)PolyHabitability(poly));
+            foreach (var n in poly.Neighbors.Entities(_key.Data))
             {
-                var poly = rPolysByHabitability[i];
-                weights.AddOrSum(poly, 1);
+                if (Game.I.Random.Randf() < excludeChance)
+                {
+                    exclude.Add(n);
+                }
             }
-
-            num = Mathf.FloorToInt(num * decayMult);
         }
 
         var totalWeight = weights.Values.Sum();
