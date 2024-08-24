@@ -8,15 +8,12 @@ public interface IEntityTypeTreeNode
     Type EntityType { get; }
     IEntityTypeTreeNode Parent { get; }
     List<IEntityTypeTreeNode> Children { get; }
-    void RemoveEntity(Entity e);
-    void AddEntity(Entity e);
-    void Propagate(IEntityTypeTreeNotice n);
-    void BubbleUp(IEntityTypeTreeNotice notice);
-    void BubbleDown(IEntityTypeTreeNotice notice);
-    void PushDown(IEntityTypeTreeNotice n);
+    HashSet<Type> ChildTypes { get; }
+    void CollectChildTypes();
+    void Propagate(Entity e, EntityNotice noticeType);
+    void BubbleUp(Entity e, Type entityType, EntityNotice noticeType);
+    void BubbleDown(Entity e, Type entityType, EntityNotice noticeType);
     void SetParent(IEntityTypeTreeNode parent);
-    RefAction<EntityCreatedNotice> Created { get; }    
-    RefAction<EntityDestroyedNotice> Destroyed { get; }
     public static IEntityTypeTreeNode ConstructFromType(Type type)
     {
         return (IEntityTypeTreeNode)typeof(EntityTypeTreeNode<>)

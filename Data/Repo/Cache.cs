@@ -10,8 +10,8 @@ public static class Cache
             where TEntity : Entity
     {
         var c = new Cache<TEntity, TValue>(get, () => d.GetAll<TEntity>());
-        d.SubscribeForCreation<TEntity>(n => c.HandleAdded((TEntity)n.Entity));
-        d.SubscribeForDestruction<TEntity>(n => c.HandleRemoved((TEntity)n.Entity));
+        d.SubscribeForCreation<TEntity>(c.HandleAdded);
+        d.SubscribeForDestruction<TEntity>(c.HandleRemoved);
         return c;
     }
 }

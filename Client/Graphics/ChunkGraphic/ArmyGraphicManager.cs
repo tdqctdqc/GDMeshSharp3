@@ -103,10 +103,7 @@ public class ArmyGraphicManager : ISettinged
             }
         });
         
-        c.Data.SubscribeForDestruction<Army>(n =>
-        {
-            ArmyGraphicOrder.Remove((Army)n.Entity);
-        });
+        c.Data.SubscribeForDestruction<Army>(n => ArmyGraphicOrder.Remove(n));
     }
 
     private void DrawAll(Client c)

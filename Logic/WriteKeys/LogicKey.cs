@@ -4,13 +4,11 @@ using System;
 public class LogicKey : Key, ICreateKey
 {
     private HostLogic _logic;
-    private HostServer _server;
     public LogicKey(HostLogic logic, 
         HostServer server,
         ISession session) : base(session)
     {
         _logic = logic;
-        _server = server;
     }
 
     public void Remove(Entity e)
@@ -38,12 +36,12 @@ public class LogicKey : Key, ICreateKey
         }
         else
         {
-            _server.SendMessageToClient(p, client);
+            _logic.Server.SendMessageToClient(p, client);
         }
     }
 
     public override bool HasRemotes()
     {
-        return _server.HasRemotes();
+        return _logic.Server.HasRemotes();
     }
 }

@@ -14,8 +14,8 @@ public static class OneToOneIndexer
         var indexer = new OneToOneIndexer<TIndex, T>(
             () => d.GetAll<T>(),
             getKey);
-        d.SubscribeForCreation<T>(n => indexer.HandleAdded((T)n.Entity));
-        d.SubscribeForDestruction<T>(n => indexer.HandleRemoved((T)n.Entity));
+        d.SubscribeForCreation<T>(indexer.HandleAdded);
+        d.SubscribeForDestruction<T>(indexer.HandleRemoved);
         return indexer;
     }
 }

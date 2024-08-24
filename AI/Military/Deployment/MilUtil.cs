@@ -347,10 +347,11 @@ public static class MilUtil
 
 
 
-    public static ReinforceProcedure GetReinforceProc(Regime regime,
+    public static List<ReinforceEntry> GetReinforceCounts(Regime regime,
         IEnumerable<Unit> units, Data d)
     {
         var needCounts = new Dictionary<TroopType, float>();
+        var res = new List<ReinforceEntry>();
         foreach (var unit in units)
         {
             var template = unit.Template.Get(d);
@@ -365,7 +366,6 @@ public static class MilUtil
             }
         }
 
-        var proc = new ReinforceProcedure(regime.MakeRef(), new List<(int unitId, int troopId, float count)>());
         var reserve = regime.Stock;
 
         var reservesByType = new Dictionary<TroopType, List<Troop>>();
@@ -408,12 +408,12 @@ public static class MilUtil
                         if (reservesRemaining[troop] == 0f) continue;
                         var take = Mathf.Min(need, reservesRemaining[troop]);
                         reservesRemaining[troop] -= take;
-                        proc.ReinforceCounts.Add((unit.Id, troop.Id, take));
+                        res.Add(new ReinforceEntry(unit, troop, take));
                     }
                 }
             }
         }
 
-        return proc;
+        return res;
     }
 }

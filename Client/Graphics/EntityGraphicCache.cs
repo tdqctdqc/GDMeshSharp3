@@ -19,15 +19,13 @@ public class EntityGraphicCache<TEntity, TGraphic>
         }
         d.SubscribeForCreation<TEntity>(n =>
         {
-            var entity = (TEntity)n.Entity;
-            var graphic = makeGraphic(entity);
-            Graphics.Add(entity, graphic);
+            var graphic = makeGraphic(n);
+            Graphics.Add(n, graphic);
         });
         d.SubscribeForDestruction<TEntity>(n =>
         {
-            var entity = (TEntity)n.Entity;
-            var graphic = Graphics[entity];
-            Graphics.Remove(entity);
+            var graphic = Graphics[n];
+            Graphics.Remove(n);
             graphic.QueueFree();
         });
     }

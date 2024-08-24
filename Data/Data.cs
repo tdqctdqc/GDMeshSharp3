@@ -85,7 +85,7 @@ public class Data
                      $"with {e.GetType().ToString()}");
         }
         EntitiesById.Add(e.Id, e);
-        _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
+        _entityTypeTree.Get(e.GetType()).Propagate(e, EntityNotice.Creation);
     }
     public void LoadEntities(IReadOnlyList<Entity> es, ICreateKey key) 
     {
@@ -111,7 +111,7 @@ public class Data
         }
         foreach (var e in es)
         {
-            _entityTypeTree.Get(e.GetType()).Propagate(EntityCreatedNotice.Get(e));
+            _entityTypeTree.Get(e.GetType()).Propagate(e, EntityNotice.Creation);
         }
     }
     public void RemoveEntities(int[] entityIds, IWriteKey key)
@@ -125,23 +125,19 @@ public class Data
     {
         var e = EntitiesById[eId];
         e.CleanUp(key);
-        _entityTypeTree.Get(e.GetType()).Propagate(EntityDestroyedNotice.Get(e));
+        _entityTypeTree.Get(e.GetType()).Propagate(e, EntityNotice.Destruction);
         EntitiesById.Remove(eId);
     }
 
     public void SubscribeForCreation<TEntity>
-        (Action<EntityCreatedNotice> callback) 
+        (Action<TEntity> callback) 
             where TEntity : Entity
     {
-        _entityTypeTree.Get(typeof(TEntity)).Created.Subscribe(callback);
+        _entityTypeTree.Get<TEntity>().SubscribeForCreation(callback);
     }
-    public void SubscribeForCreation<TEntity>(RefAction<EntityCreatedNotice> callback) where TEntity : Entity
+    public void SubscribeForDestruction<TEntity>(Action<TEntity> callback) where TEntity : Entity
     {
-        _entityTypeTree.Get(typeof(TEntity)).Created.Subscribe(callback);
-    }
-    public void SubscribeForDestruction<TEntity>(Action<EntityDestroyedNotice> callback) where TEntity : Entity
-    {
-        _entityTypeTree.Get(typeof(TEntity)).Destroyed.Subscribe(callback);
+        _entityTypeTree.Get<TEntity>().SubscribeForDestruction(callback);
     }
 
     public T Get<T>(int id) where T : Entity

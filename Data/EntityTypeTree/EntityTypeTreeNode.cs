@@ -11,9 +11,10 @@ public class EntityTypeTreeNode<T> : IEntityTypeTreeNode where T : Entity
     public Type EntityType { get; private set; }
     public IEntityTypeTreeNode Parent { get; private set; }
     public List<IEntityTypeTreeNode> Children { get; private set; }
-    public RefAction<EntityCreatedNotice> Created { get; private set; }    
-    public RefAction<EntityDestroyedNotice> Destroyed { get; private set; }
+    private Action<T> _created;    
+    private Action<T> _destroyed;
     public HashSet<T> Entities { get; private set; }
+    public HashSet<Type> ChildTypes { get; private set; }
 
     public static EntityTypeTreeNode<T> Construct()
     {
@@ -23,44 +24,74 @@ public class EntityTypeTreeNode<T> : IEntityTypeTreeNode where T : Entity
     {
         EntityType = typeof(T);
         Children = new List<IEntityTypeTreeNode>();
-        Created = new RefAction<EntityCreatedNotice>();
-        Destroyed = new RefAction<EntityDestroyedNotice>();
         Entities = new HashSet<T>();
     }
-    public void Propagate(IEntityTypeTreeNotice n)
+
+    public void SubscribeForCreation(Action<T> action)
     {
-        n.HandleForTreeNode(this);
-        Parent?.BubbleUp(n);
-        PushDown(n);
+        _created += action;
     }
-    public void BubbleUp(IEntityTypeTreeNotice notice)
+    public void SubscribeForDestruction(Action<T> action)
     {
-        notice.HandleForTreeNode(this);
-        Parent?.BubbleUp(notice);
+        _destroyed += action;
     }
-    public void BubbleDown(IEntityTypeTreeNotice notice)
+
+    public void CollectChildTypes()
     {
-        notice.HandleForTreeNode(this);
-        PushDown(notice);
-    }
-    public void PushDown(IEntityTypeTreeNotice notice)
-    {
-        for (var i = 0; i < Children.Count; i++)
+        ChildTypes = new HashSet<Type>();
+        collect(this);
+        void collect(IEntityTypeTreeNode child)
         {
-            if (notice.EntityType.IsAssignableFrom(Children[i].EntityType))
+            ChildTypes.Add(child.EntityType);
+            foreach (var childChild in child.Children)
             {
-                Children[i].BubbleDown(notice);
-                break;
+                collect(childChild);
             }
         }
     }
-    public void AddEntity(Entity e)
+
+    public void Propagate(Entity e, EntityNotice noticeType)
     {
-        Entities.Add((T) e);
+        var entityType = e.GetType();
+        Handle(e, noticeType);
+        Parent?.BubbleUp(e, entityType, noticeType);
+        PushDown(e, entityType, noticeType);
     }
-    public void RemoveEntity(Entity e)
+
+    private void Handle(Entity e, EntityNotice entityNotice)
     {
-        Entities.Remove((T) e);
+        if (entityNotice == EntityNotice.Creation)
+        {
+            Entities.Add((T) e);
+            _created?.Invoke((T)e);
+        }
+        else if (entityNotice == EntityNotice.Destruction)
+        {
+            Entities.Remove((T) e);
+            _destroyed?.Invoke((T)e);
+        }
+        else throw new Exception();
+    }
+    public void BubbleUp(Entity e, Type entityType, EntityNotice noticeType)
+    {
+        Handle(e, noticeType);
+        Parent?.BubbleUp(e, entityType, noticeType);
+    }
+    public void BubbleDown(Entity e, Type entityType, EntityNotice noticeType)
+    {
+        Handle(e, noticeType);
+        PushDown(e, entityType, noticeType);
+    }
+    public void PushDown(Entity e, Type entityType, EntityNotice noticeType)
+    {
+        for (var i = 0; i < Children.Count; i++)
+        {
+            if (Children[i].ChildTypes.Contains(entityType))
+            {
+                Children[i].BubbleDown(e, entityType, noticeType);
+                break;
+            }
+        }
     }
     public void SetParent(IEntityTypeTreeNode parent)
     {

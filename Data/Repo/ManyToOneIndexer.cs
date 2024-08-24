@@ -17,9 +17,9 @@ public class ManyToOneIndexer
             s => get(s).Get<TKey, ERef<TKey>>(data));
         
         data.SubscribeForCreation<TSingle>
-            (n => indexer.HandleAdded((TSingle)n.Entity));
+            (indexer.HandleAdded);
         data.SubscribeForDestruction<TSingle>
-            (n => indexer.HandleRemoved((TSingle)n.Entity));
+            (indexer.HandleRemoved);
         return indexer;
     }
     
@@ -33,9 +33,9 @@ public class ManyToOneIndexer
             get);
         
         data.SubscribeForCreation<TSingle>
-            (n => indexer.HandleAdded((TSingle)n.Entity));
+            (indexer.HandleAdded);
         data.SubscribeForDestruction<TSingle>
-            (n => indexer.HandleRemoved((TSingle)n.Entity));
+            (indexer.HandleRemoved);
         return indexer;
     }
 }

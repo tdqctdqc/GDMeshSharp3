@@ -176,7 +176,10 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         var reinforceUnit = ButtonExt.GetButton(() =>
         {
             var selected = _armyTree.GetSelectedEntities<Unit>(c.Data);
-            var proc = MilUtil.GetReinforceProc(_getRegime(), selected, c.Data);
+            var entries = MilUtil
+                .GetReinforceCounts(_getRegime(), selected, c.Data)
+                .Select(v => (v.Unit.Id, v.Troop.Id, v.Amount)).ToList();
+            var proc = new ReinforceProcedure(_getRegime().MakeRef(), entries);
             var com = new SendMessageCommand(proc, 
                 c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(
@@ -194,8 +197,10 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         
         var reinforceArmy = ButtonExt.GetButton(() =>
         {
-            var proc = MilUtil.GetReinforceProc(_getRegime(),
+            var entries = MilUtil.GetReinforceCounts(_getRegime(),
                 a.Units.Entities(c.Data), c.Data);
+            var proc = new ReinforceProcedure(_getRegime().MakeRef(),
+                entries.Select(v => (v.Unit.Id, v.Troop.Id, v.Amount)).ToList());
             var com = new SendMessageCommand(proc, c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(
                 com, () =>
@@ -215,8 +220,10 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
             var v = _armyTree.GetSelectedTroopAndUnit(c.Data);
             if (v.HasValue == false) return;
             var (u, t) = v.Value;
-            var proc = MilUtil.GetReinforceProc(_getRegime(),
+            var entries = MilUtil.GetReinforceCounts(_getRegime(),
                 u.Yield(), c.Data);
+            var proc = new ReinforceProcedure(_getRegime().MakeRef(),
+                entries.Select(v => (v.Unit.Id, v.Troop.Id, v.Amount)).ToList());
             var com = new SendMessageCommand(proc,
                 c.Data.BaseDomain.PlayerAux.LocalPlayer.PlayerGuid);
             var outer = CallbackCommand.Construct(

@@ -12,8 +12,8 @@ public class ManyToManyIndexer
     {
         var res = new ManyToManyIndexer<T, TIndex>(getIndices,
             () => d.GetAll<T>());
-        d.SubscribeForCreation<T>(n => res.HandleAdded((T)n.Entity));
-        d.SubscribeForDestruction<T>(n => res.HandleRemoved((T)n.Entity));
+        d.SubscribeForCreation<T>(res.HandleAdded);
+        d.SubscribeForDestruction<T>(res.HandleRemoved);
         return res;
     }
 }

@@ -10,6 +10,16 @@ public class EntityTypeTree
     public EntityTypeTree(Data data)
     {
         Nodes = new Dictionary<Type, IEntityTypeTreeNode>();
+        var entityTypes = typeof(Entity).Assembly
+            .GetTypesOfType<Entity>();
+        foreach (var entityType in entityTypes)
+        {
+            Add(entityType);
+        }
+        foreach (var n in Nodes.Values)
+        {
+            n.CollectChildTypes();
+        }
     }
     public EntityTypeTreeNode<T> Get<T>() where T : Entity
     {
@@ -17,7 +27,7 @@ public class EntityTypeTree
     }
     public IEntityTypeTreeNode Get(Type type) 
     {
-        if(Nodes.ContainsKey(type) == false) Add(type);
+        // if(Nodes.ContainsKey(type) == false) Add(type);
         return Nodes[type];
     }
     private void Add(Type type)
@@ -28,7 +38,8 @@ public class EntityTypeTree
             var node = IEntityTypeTreeNode.ConstructFromType(type);
             Nodes.Add(type, node);
             var parentType = type.BaseType;
-            if (Nodes.ContainsKey(parentType) == false && typeof(Entity).IsAssignableFrom(parentType))
+            if (Nodes.ContainsKey(parentType) == false 
+                && typeof(Entity).IsAssignableFrom(parentType))
             {
                 Add(parentType);
             }

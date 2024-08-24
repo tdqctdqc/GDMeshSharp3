@@ -24,10 +24,7 @@ public class Context
             FriendlyPathCache.Clear();
             RivalPathCache.Clear();
         });
-        data.SubscribeForCreation<Army>(a =>
-        {
-            SetArmyHomeCell((Army)a.Entity, data);
-        });
+        data.SubscribeForCreation<Army>(a => SetArmyHomeCell(a, data));
     }
 
     public void Calculate(Data data)

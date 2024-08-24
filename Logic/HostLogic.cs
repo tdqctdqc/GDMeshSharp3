@@ -16,7 +16,7 @@ public class HostLogic : ILogic
     private TurnState _start, _middle, _end;
     public bool Calculating => _turnStateMachine.Current != _middle;
     public OrderHolder OrderHolder { get; private set; }
-    private HostServer _server; 
+    public HostServer Server { get; private set; } 
     public ProcedureKey PKey { get; private set; }
     private LogicKey _logicKey;
     private Data _data => _session.Data;
@@ -27,7 +27,7 @@ public class HostLogic : ILogic
         _session = session;
         CommandQueue = new ConcurrentQueue<Command>();
         _logicKey = new LogicKey(this,
-            _server,
+            Server,
             session);
         PKey = new ProcedureKey(_session);
         OrderHolder = new OrderHolder(_logicKey);
@@ -41,7 +41,7 @@ public class HostLogic : ILogic
     }
     public void SetDependencies(HostServer server)
     {
-        _server = server;
+        Server = server;
     }
     public void Process(float delta)
     {
@@ -97,7 +97,7 @@ public class HostLogic : ILogic
             if (m is Update u)
             {
                 u.Enact(PKey);
-                _server.ReceiveMessage(m);
+                Server.ReceiveMessage(m);
                 return;
             }
 
@@ -106,7 +106,7 @@ public class HostLogic : ILogic
                 if (p.Valid(_data, out string error))
                 {
                     p.Enact(PKey);
-                    _server.ReceiveMessage(m);
+                    Server.ReceiveMessage(m);
                 }
                 else
                 {
@@ -151,7 +151,7 @@ public class HostLogic : ILogic
                 }
             }
         }
-        _server.PushPackets();
+        Server.PushPackets();
     }
 
     public Player MakeNewPlayer()

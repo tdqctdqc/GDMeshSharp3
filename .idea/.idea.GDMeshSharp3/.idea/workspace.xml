@@ -5,42 +5,26 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Utility/DataStructures/Tree/TimerTreeNode.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/ArmyAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/ArmyAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentBranch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/FrontlineAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/ReserveAssignment.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/ReserveAssignment.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/TheaterBranch.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/TheaterBranch.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/ForceCompositionAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/ForceCompositionAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/RegimeMilitaryAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/StrategicContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/StrategicContext.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/Military/UnitTemplatesAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/UnitTemplatesAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/AI/RegimeAi.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/RegimeAi.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/LoggerWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/LoggerWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Ui/RegimeAiOverviewWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Client.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Client.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/ClientTopBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ClientTopBar.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/ArmyMode/ArmyPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningPanel.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/UiModes/MilPlanningPanel.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/ICameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/ICameraController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/ListSettingsOption.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/ListSettingsOption.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/WorldCameraController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/WorldCameraController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/MilitaryDomain/Army/ArmyExt.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityNotice.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/AI/Military/Deployment/MilUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ArmyGraphicManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/EntityGraphicCache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/EntityGraphicCache.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Data.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Data.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityCreatedNotice.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityDestroyedNotice.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTree.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTree.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/EntityTypeTreeNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNode.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNode.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/EntityTypeTree/IEntityTypeTreeNotice.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Repo/Cache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/Cache.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Repo/ManyToManyIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/ManyToManyIndexer.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Data/Repo/ManyToOneIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/ManyToOneIndexer.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/DiplomacyGraph.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Alliance/DiplomacyGraph/DiplomacyGraph.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/SocietyDomain/Regime/RegimeExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Context/PathCache.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/PathCache.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/TurnOrders/OrderHolder.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/OrTools/OrToolsExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/OrTools/OrToolsExt.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Exception/Issue/IssueWindow.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Exception/Issue/IssueWindow.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Logger/LogEntry.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Logger/LogEntry.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Logger/LogType.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Logger/LogType.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Logger/Logger.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Logger/Logger.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/StopwatchMeta.cs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Repo/OneToManyIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/OneToManyIndexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/Repo/OneToOneIndexer.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/Repo/OneToOneIndexer.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Context/Context.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Context/Context.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/HostLogic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/HostLogic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/WriteKeys/LogicKey.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/WriteKeys/LogicKey.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -79,17 +63,22 @@
     </option>
   </component>
   <component name="HighlightingSettingsPerFile">
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/9fd3b083f28f40c0827cc635e2e56ca7459200/ab/fbc87aee/CanvasItem.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/DecompilerCache/decompiler/da93d77c56294abbb64e45d77ba161c8b4a0/27/03d38b2d/List`1.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/AI/Military/Deployment/ArmyAssignment.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentAi.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/AI/Military/Deployment/DeploymentRoot.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/Client.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/MouseOverHandler.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/GameClient/Ui/MapGraphicsOptions/MapGraphicsOptionsPanel.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Client/GameClient/Ui/RegimeOverview/Military/ArmiesTab.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Client/WindowHolder.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Data/EntityTypeTree/EntityNotice.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/MilitaryDomain/Army/Army.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/SocietyDomain/Alliance/Alliance.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Session/Server/HostServer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
@@ -749,6 +738,7 @@
       <workItem from="1723733094205" duration="9215000" />
       <workItem from="1724253161824" duration="5594000" />
       <workItem from="1724367024568" duration="5522000" />
+      <workItem from="1724431083842" duration="9428000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -960,46 +950,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00284" summary="fixed?? problem is technologies are returning as 'equal' in ai loop even when not, used stupid workaround">
-      <option name="closed" value="true" />
-      <created>1722436357137</created>
-      <option name="number" value="00284" />
-      <option name="presentableId" value="LOCAL-00284" />
-      <option name="project" value="LOCAL" />
-      <updated>1722436357137</updated>
-    </task>
-    <task id="LOCAL-00285" summary="it's problem in upgrade priority">
-      <option name="closed" value="true" />
-      <created>1722444441535</created>
-      <option name="number" value="00285" />
-      <option name="presentableId" value="LOCAL-00285" />
-      <option name="project" value="LOCAL" />
-      <updated>1722444441535</updated>
-    </task>
-    <task id="LOCAL-00286" summary="made new upgrade troops priority">
-      <option name="closed" value="true" />
-      <created>1722521181316</created>
-      <option name="number" value="00286" />
-      <option name="presentableId" value="LOCAL-00286" />
-      <option name="project" value="LOCAL" />
-      <updated>1722521181317</updated>
-    </task>
-    <task id="LOCAL-00287" summary="curved research by population">
-      <option name="closed" value="true" />
-      <created>1722522856635</created>
-      <option name="number" value="00287" />
-      <option name="presentableId" value="LOCAL-00287" />
-      <option name="project" value="LOCAL" />
-      <updated>1722522856635</updated>
-    </task>
-    <task id="LOCAL-00288" summary="making ai serializable">
-      <option name="closed" value="true" />
-      <created>1722531100102</created>
-      <option name="number" value="00288" />
-      <option name="presentableId" value="LOCAL-00288" />
-      <option name="project" value="LOCAL" />
-      <updated>1722531100102</updated>
-    </task>
     <task id="LOCAL-00289" summary="bug fixes for unit make priority, research overflow">
       <option name="closed" value="true" />
       <created>1722698288972</created>
@@ -1112,7 +1062,47 @@
       <option name="project" value="LOCAL" />
       <updated>1723684837376</updated>
     </task>
-    <option name="localTasksCounter" value="303" />
+    <task id="LOCAL-00303" summary="timer tree, logger, more army ai stuff, reformed multiBar">
+      <option name="closed" value="true" />
+      <created>1724432413475</created>
+      <option name="number" value="00303" />
+      <option name="presentableId" value="LOCAL-00303" />
+      <option name="project" value="LOCAL" />
+      <updated>1724432413476</updated>
+    </task>
+    <task id="LOCAL-00304" summary="before reforming proc?">
+      <option name="closed" value="true" />
+      <created>1724434163850</created>
+      <option name="number" value="00304" />
+      <option name="presentableId" value="LOCAL-00304" />
+      <option name="project" value="LOCAL" />
+      <updated>1724434163850</updated>
+    </task>
+    <task id="LOCAL-00305" summary="got rid of unnecessary keys">
+      <option name="closed" value="true" />
+      <created>1724435089299</created>
+      <option name="number" value="00305" />
+      <option name="presentableId" value="LOCAL-00305" />
+      <option name="project" value="LOCAL" />
+      <updated>1724435089299</updated>
+    </task>
+    <task id="LOCAL-00306" summary="before changing procs">
+      <option name="closed" value="true" />
+      <created>1724435563854</created>
+      <option name="number" value="00306" />
+      <option name="presentableId" value="LOCAL-00306" />
+      <option name="project" value="LOCAL" />
+      <updated>1724435563854</updated>
+    </task>
+    <task id="LOCAL-00307" summary="before simplifying entity type tree notices">
+      <option name="closed" value="true" />
+      <created>1724463191558</created>
+      <option name="number" value="00307" />
+      <option name="presentableId" value="LOCAL-00307" />
+      <option name="project" value="LOCAL" />
+      <updated>1724463191558</updated>
+    </task>
+    <option name="localTasksCounter" value="308" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1134,11 +1124,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="template window" />
-    <MESSAGE value="added unit morale" />
-    <MESSAGE value="added morale to combat tree distribution calcs" />
-    <MESSAGE value="adding troop upgrades" />
-    <MESSAGE value="fixed it? hashset&lt;modelref&gt; doesnt work but refset&lt;modelref&gt; does?" />
     <MESSAGE value="doot" />
     <MESSAGE value="fixed it...." />
     <MESSAGE value="fixed?? problem is technologies are returning as 'equal' in ai loop even when not, used stupid workaround" />
@@ -1159,6 +1144,11 @@
     <MESSAGE value="ditto" />
     <MESSAGE value="before removing alliances" />
     <MESSAGE value="removed alliance" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed alliance" />
+    <MESSAGE value="timer tree, logger, more army ai stuff, reformed multiBar" />
+    <MESSAGE value="before reforming proc?" />
+    <MESSAGE value="got rid of unnecessary keys" />
+    <MESSAGE value="before changing procs" />
+    <MESSAGE value="before simplifying entity type tree notices" />
+    <option name="LAST_COMMIT_MESSAGE" value="before simplifying entity type tree notices" />
   </component>
 </project>
