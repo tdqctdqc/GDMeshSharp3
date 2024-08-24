@@ -177,9 +177,8 @@ public class CellDefenseNode : ICombatGraphNode, IUnitNode
             var victoriousRegime = victoriousRegimeUnits.Key;
             var victoriousArmies = victoriousRegimeUnits.Value.Select(u => u.GetArmy(key.Data))
                 .Distinct();
-            var changeController = ConquerCellProcedure
-                .Construct(Cell.Get(key.Data), victoriousRegime, victoriousArmies);
-            key.SendMessage(changeController);
+            ConquerCellProcedure.Enact(Cell.Get(key.Data), victoriousRegime, 
+                    victoriousArmies, key);
         }
     }
 

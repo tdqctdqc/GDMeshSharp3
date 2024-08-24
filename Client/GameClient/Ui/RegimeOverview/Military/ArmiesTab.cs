@@ -210,8 +210,6 @@ public partial class ArmiesTab : HBoxContainer, IUiDrawable
         });
         reinforceArmy.Text = "Reinforce Army";
 
-
-
         var reinforceTroop = ButtonExt.GetButton(() =>
         {
             var v = _armyTree.GetSelectedTroopAndUnit(c.Data);

@@ -154,16 +154,6 @@ public class Data
         return _entityTypeTree.Get<T>().Entities.ToHashSet();
     }
 
-
-    public EntityTypeTreeNode<T> GetEntityTypeNode<T>() where T : Entity
-    {
-        return _entityTypeTree.Get<T>();
-    }
-    public IEnumerable<IEntityTypeTreeNode> GetAllEntityTypeNodes()
-    {
-        return _entityTypeTree.Nodes.Values;
-    }
-
     public bool HasEntity(int id)
     {
         return EntitiesById.ContainsKey(id);

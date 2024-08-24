@@ -364,8 +364,8 @@ public static class MilUtil
                 }
             }
         }
-        
-        var proc = ReinforceProcedure.Construct(regime);
+
+        var proc = new ReinforceProcedure(regime.MakeRef(), new List<(int unitId, int troopId, float count)>());
         var reserve = regime.Stock;
 
         var reservesByType = new Dictionary<TroopType, List<Troop>>();
