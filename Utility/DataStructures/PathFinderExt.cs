@@ -63,11 +63,11 @@ public static partial class PathFinder
         if (p1 is LandCell l1 == false) return Mathf.Inf;
         if (p2 is LandCell l2 == false) return Mathf.Inf;
         
-        var cost = p1.GetCenter().Offset(p2.GetCenter(), data).Length();
+        var cost = 1f;
         cost *= 1f + l1.GetLandform(data).MinRoughness;
         cost *= 1f + l2.GetLandform(data).MinRoughness;
         
-        return cost * 3f;
+        return cost;
     }
     public static float EdgeRoughnessCost(Cell p1, Cell p2, Data data)
     {

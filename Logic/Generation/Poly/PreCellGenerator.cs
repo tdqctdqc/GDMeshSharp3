@@ -23,7 +23,7 @@ public static class PreCellGenerator
         };
         
         var (points, dummyPoints) 
-            = MakeCellPoints(30, dim);
+            = MakeCellPoints(Cell.AvgCellDist, dim);
         var iPoints = points
             .Select(p => p.GetIPoint()).ToArray();
         var delaunator = new Delaunator(iPoints);

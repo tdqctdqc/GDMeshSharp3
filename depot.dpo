@@ -3108,7 +3108,7 @@
                             "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
-                    "MinMoisture": 0.075,
+                    "MinMoisture": 0.05,
                     "FertilityMod": 0.3,
                     "MovementCostMult": 1,
                     "FrontLengthMult": 1,
@@ -3192,7 +3192,7 @@
                             "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
-                    "MinMoisture": 0.4,
+                    "MinMoisture": 0.25,
                     "FertilityMod": 0.5,
                     "MovementCostMult": 1.5,
                     "FrontLengthMult": 0.8,
@@ -3215,7 +3215,7 @@
                             "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
-                    "MinMoisture": 0.15,
+                    "MinMoisture": 0.125,
                     "FertilityMod": 1,
                     "MovementCostMult": 1,
                     "FrontLengthMult": 1,
@@ -3238,7 +3238,7 @@
                             "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
-                    "MinMoisture": 0.5,
+                    "MinMoisture": 0.25,
                     "FertilityMod": 0.4,
                     "MovementCostMult": 3,
                     "FrontLengthMult": 0.6,
@@ -3261,7 +3261,7 @@
                             "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
-                    "MinMoisture": 0.125,
+                    "MinMoisture": 0.75,
                     "FertilityMod": 0.6,
                     "MovementCostMult": 1,
                     "FrontLengthMult": 1,
@@ -3279,7 +3279,7 @@
                             "Value": "981f60bb-0022-4ea1-a77b-a7b388b088d0"
                         }
                     ],
-                    "MinMoisture": 0.7,
+                    "MinMoisture": 0.4,
                     "FertilityMod": 0.25,
                     "MovementCostMult": 1.75,
                     "FrontLengthMult": 0.6,

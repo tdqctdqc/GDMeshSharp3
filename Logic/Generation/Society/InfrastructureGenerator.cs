@@ -14,7 +14,6 @@ public class InfrastructureGenerator : Generator
     private float _portInfraNodeSize = 0f;
     private float _minSettlementSizeForInfraNode = 0f;
     private float _sizeBuildRoadRangeMult = 2.5f;
-    private float _maxBuildRoadRange = 1000f;
     private MultiTimer _multiTimer;
     public override GenReport Generate(GenKey key)
     {
@@ -39,18 +38,17 @@ public class InfrastructureGenerator : Generator
             var segs = BuildLmRoadNetwork(lm);
             if(segs != null) allSegs.Add(segs);
         });
+
         foreach (var segs in allSegs)
         {
             foreach (var kvp in segs)
             {
                 var edge = kvp.Key;
                 var road = kvp.Value;
-                var wp1 = PlanetDomainExt.GetPolyCell(edge.X, _data);
-                var wp2 = PlanetDomainExt.GetPolyCell(edge.Y, _data);
-                var success = roads.Roads.TryAdd(wp1, wp2, road.MakeRef());
-                if (success == false) throw new Exception();
+                roads.Roads.Dic.Add(edge, road.MakeRef());
             }
         }
+        
         genReport.StopSection(nameof(BuildLmRoadNetwork));
         _multiTimer.Print();
         return genReport;
@@ -75,47 +73,34 @@ public class InfrastructureGenerator : Generator
             () => DoPolyLevelTraffic(polyLvlGraph, hiLvlTrafficGraph),
             "poly level traffic");
         
-        return _multiTimer.RunAndTime(() => GetRoadSegs(polyLvlGraph), "road segs");
+        return _multiTimer.RunAndTime(
+            () => GetRoadSegs(polyLvlGraph), "road segs");
     }
     
-    private Graph<InfrastructureNode, InfraNodeEdge> GetPolyLevelGraph(HashSet<MapPolygon> polys)
+    private Graph<InfrastructureNode, InfraNodeEdge> GetPolyLevelGraph(
+        HashSet<MapPolygon> polys)
     {
         var urban = _data.Models.Landforms.Urban;
         var town = _data.Models.Settlements.Town;
         var city = _data.Models.Settlements.City;
         var graph = new Graph<InfrastructureNode, InfraNodeEdge>();
-        
         var polyNodes = polys.ToDictionary(
             p => p,
             p =>
             {
-                if (p.IsLand == false) throw new Exception(p.GetType().Name);
-                var landCells = p
-                    .GetCells(_data).OfType<LandCell>();
-                if (p.GetCells(_data).Any(c => c.HasSettlement(_data))
-                    && p.GetCells(_data).Where(c => c.HasPeep(_data))
-                        .Sum(c => c.GetPeep(_data).Size)
-                        >= _minSettlementSizeForInfraNode
-                    )
+                var cells = p.GetCells(_data);
+                var urbanCells = cells
+                    .Where(c => c.Landform.RefId == urban.Id);
+                if (urbanCells.Any())
                 {
-                    var urbanCell = landCells
-                        .FirstOrDefault(t => t.GetLandform(_data) == urban);
-                    if (urbanCell == null) urbanCell = landCells.First();
-                    
-                    var total = p.GetCells(_data)
-                        .Where(c => c.HasPeep(_data))
-                        .Sum(c => c.GetPeep(_data).Size);
+                    var urbanCell = urbanCells.First();
+                    var total = urbanCells.Sum(c => c.GetPeep(_data).Size);
                     var iNode = new InfrastructureNode(urbanCell, total);
                     return iNode;
                 }
                 else
                 {
-                    var centerCell = landCells.FirstOrDefault(
-                        t => t.GetLandform(_data) == urban);
-                    if (centerCell == null)
-                    {
-                        centerCell = landCells.MinBy(l => p.Center.Offset(l.GetCenter(), _data).Length());
-                    }
+                    var centerCell = cells.MinBy(l => p.Center.Offset(l.GetCenter(), _data).LengthSquared());
                     var iNode = new InfrastructureNode(centerCell, 0f);
                     return iNode;
                 }
@@ -167,7 +152,7 @@ public class InfrastructureGenerator : Generator
         foreach (var (n1, n2) in vGraph.Edges)
         {
             if (hiLvlTrafficGraph.HasEdge(n1, n2)) continue;
-            if (n1.Cell.GetCenter().Offset(n2.Cell.GetCenter(), _key.Data).Length() > 3000f) continue;
+            if (n1.Cell.GetCenter().Offset(n2.Cell.GetCenter(), _key.Data).LengthSquared() > 400f * 400f) continue;
             var traffic = n1.Size + n2.Size;
             var edge = new InfraNodeEdge(0f, traffic);
             hiLvlTrafficGraph.AddEdge(n1, n2, edge);
@@ -213,18 +198,16 @@ public class InfrastructureGenerator : Generator
             return path;
         }
     }
-
+    
     private Dictionary<Vector2I, RoadModel> GetRoadSegs(
         Graph<InfrastructureNode, InfraNodeEdge> polyLevelGraph
         )
     {
-        var edgeTraffic = new Dictionary<Vector2I, float>();
-        var roadPolySegs = new Dictionary<Vector2I, RoadModel>();
-        var roadWpSegs = new Dictionary<Vector2I, RoadModel>();
+        var roadSegs = new Dictionary<Vector2I, RoadModel>();
         var dirt = _data.Models.RoadList.DirtRoad;
         var stone = _data.Models.RoadList.StoneRoad;
         var paved = _data.Models.RoadList.PavedRoad;
-        var wpPaths = new Dictionary<Vector2I, List<Cell>>();
+        var cellPaths = new Dictionary<Vector2I, List<Cell>>();
         polyLevelGraph.RemoveEdgesWhere(e => getRoadFromTraffic(e.Traffic) == null);
         
         var dic = polyLevelGraph.Elements
@@ -234,56 +217,57 @@ public class InfrastructureGenerator : Generator
         {
             if (v.Cell.Id > w.Cell.Id) return;
             var road = getRoadFromTraffic(e.Traffic);
-            var path = getWpPath(w.Cell, v.Cell);
+            var path = getCellPath(w.Cell, v.Cell);
             if (path == null) return;
             for (var i = 0; i < path.Count - 1; i++)
             {
                 var from = path[i];
                 var to = path[i + 1];
                 var key = from.GetIdEdgeKey(to);
-                if (roadWpSegs.ContainsKey(key))
+                if (roadSegs.ContainsKey(key))
                 {
-                    var old = roadWpSegs[key];
+                    var old = roadSegs[key];
                     if (road.CostOverride <= old.CostOverride)
                     {
-                        roadWpSegs[key] = road;
+                        roadSegs[key] = road;
                     }
                 }
                 else
                 {
-                    roadWpSegs.Add(key, road);
+                    roadSegs.Add(key, road);
                 }
             }
         });
         
 
-        return roadWpSegs;
-        List<Cell> getWpPath(Cell i1, Cell i2)
+        return roadSegs;
+        List<Cell> getCellPath(Cell i1, Cell i2)
         {
             var key = i1.GetIdEdgeKey(i2);
-            if (wpPaths.ContainsKey(key) == false)
+            if (cellPaths.ContainsKey(key) == false)
             {
                 addPaths(i1);
             }
-            return wpPaths[key];
+            return cellPaths[key];
         }
 
         void addPaths(Cell w)
         {
             var node = dic[w];
             var ns = polyLevelGraph.GetNeighbors(node)
-                .Where(n => wpPaths.ContainsKey(w.GetIdEdgeKey(n.Cell)) == false)
+                .Where(n => cellPaths.ContainsKey(w.GetIdEdgeKey(n.Cell)) == false)
                 .Select(n => n.Cell)
                 .ToHashSet();
-
+            
             var paths = 
                 PathFinder<Cell>.FindMultiplePaths(
                 w, ns, wp => wp.GetNeighbors(_data).Where(x => x is LandCell),
-                getEdgeCost, (w, v) => w.GetCenter().Offset(v.GetCenter(), _data).Length());
+                (c1, c2) => PathFinder.RoadBuildEdgeCost(c1, c2, _data),
+                (w, v) => w.GetCenter().Offset(v.GetCenter(), _data).LengthSquared() / (Cell.AvgCellDist * Cell.AvgCellDist));
             foreach (var kvp in paths)
             {
                 var key = kvp.Key.GetIdEdgeKey(w);
-                wpPaths.Add(key, kvp.Value);
+                cellPaths.Add(key, kvp.Value);
             }
         }
         RoadModel getRoadFromTraffic(float traffic)
@@ -292,21 +276,6 @@ public class InfrastructureGenerator : Generator
             else if (traffic > 100_000f) return stone;
             else if (traffic > 1_000f) return dirt;
             return null;
-        }
-
-        float getEdgeCost(Cell w, Cell v)
-        {
-            var key = w.GetIdEdgeKey(v);
-            if (edgeTraffic.TryGetValue(key, out var traffic))
-            {
-                var road = getRoadFromTraffic(traffic);
-                if (road != null)
-                {
-                    var length = w.GetCenter().Offset(v.GetCenter(), _data).Length();
-                    return length / road.CostOverride;
-                }
-            }
-            return PathFinder.RoadBuildEdgeCost(w, v, _data);
         }
     }
 }

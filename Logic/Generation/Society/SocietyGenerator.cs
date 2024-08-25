@@ -152,13 +152,14 @@ public class SocietyGenerator : Generator
         var exclude = new HashSet<MapPolygon>();
         
         var decayMult = .5f;
-        var weights = new Dictionary<MapPolygon, int>();
+        var weights = new Dictionary<MapPolygon, float>();
         var excludeChance = .75f;
         for (var i = 0; i < rPolysByHabitability.Length; i++)
         {
             var poly = rPolysByHabitability[i];
             if (exclude.Contains(poly)) continue;
-            weights.Add(poly, (int)PolyHabitability(poly));
+            var hab = PolyHabitability(poly);
+            weights.Add(poly, hab * hab);
             foreach (var n in poly.Neighbors.Entities(_key.Data))
             {
                 if (Game.I.Random.Randf() < excludeChance)

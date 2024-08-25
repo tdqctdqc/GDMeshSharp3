@@ -5,9 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGeneratorNew.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/Geometry/Triangulation/DelaunayExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,9 +59,10 @@
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/Geometry/Triangulation/DelaunayExt.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../VoronoiSandbox/DelaunayExt.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/../VoronoiSandbox/Util.cs" root0="SKIP_HIGHLIGHTING" />
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -721,6 +724,7 @@
       <workItem from="1724431083842" duration="9428000" />
       <workItem from="1724509928510" duration="5761000" />
       <workItem from="1724519805911" duration="3014000" />
+      <workItem from="1724545649782" duration="10175000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -932,22 +936,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00292" summary="serializing alliance ai">
-      <option name="closed" value="true" />
-      <created>1722711678323</created>
-      <option name="number" value="00292" />
-      <option name="presentableId" value="LOCAL-00292" />
-      <option name="project" value="LOCAL" />
-      <updated>1722711678323</updated>
-    </task>
-    <task id="LOCAL-00293" summary="serializing alliance military ai">
-      <option name="closed" value="true" />
-      <created>1722729278938</created>
-      <option name="number" value="00293" />
-      <option name="presentableId" value="LOCAL-00293" />
-      <option name="project" value="LOCAL" />
-      <updated>1722729278938</updated>
-    </task>
     <task id="LOCAL-00294" summary="made unionFind generic wrt collection type">
       <option name="closed" value="true" />
       <created>1722730423198</created>
@@ -1084,7 +1072,23 @@
       <option name="project" value="LOCAL" />
       <updated>1724521774737</updated>
     </task>
-    <option name="localTasksCounter" value="311" />
+    <task id="LOCAL-00311" summary="silly stuff">
+      <option name="closed" value="true" />
+      <created>1724549630144</created>
+      <option name="number" value="00311" />
+      <option name="presentableId" value="LOCAL-00311" />
+      <option name="project" value="LOCAL" />
+      <updated>1724549630144</updated>
+    </task>
+    <task id="LOCAL-00312" summary="reforming infra gen">
+      <option name="closed" value="true" />
+      <created>1724551724002</created>
+      <option name="number" value="00312" />
+      <option name="presentableId" value="LOCAL-00312" />
+      <option name="project" value="LOCAL" />
+      <updated>1724551724002</updated>
+    </task>
+    <option name="localTasksCounter" value="313" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1106,8 +1110,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="it's problem in upgrade priority" />
-    <MESSAGE value="made new upgrade troops priority" />
     <MESSAGE value="curved research by population" />
     <MESSAGE value="making ai serializable" />
     <MESSAGE value="bug fixes for unit make priority, research overflow" />
@@ -1131,6 +1133,8 @@
     <MESSAGE value="cleaning up entity type tree" />
     <MESSAGE value="rollback" />
     <MESSAGE value="added back voronoi graph generator" />
-    <option name="LAST_COMMIT_MESSAGE" value="added back voronoi graph generator" />
+    <MESSAGE value="silly stuff" />
+    <MESSAGE value="reforming infra gen" />
+    <option name="LAST_COMMIT_MESSAGE" value="reforming infra gen" />
   </component>
 </project>

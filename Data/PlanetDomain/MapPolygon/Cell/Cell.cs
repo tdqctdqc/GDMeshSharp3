@@ -11,6 +11,7 @@ using MessagePack;
 public abstract class Cell : IPolymorph,
     IIdentifiable, ICelled
 {
+    public static readonly int AvgCellDist = 30;
     public int Id { get; private set; }
     public ERef<Regime> Controller { get; private set; }
     
