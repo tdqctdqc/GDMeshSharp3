@@ -1,24 +1,24 @@
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Godot;
 
-public class AdjacencyCountPickerAgent<T> : IPickerAgent<T>
+public class RandomPickerAgent<T> : IPickerAgent<T>
 {
     public HashSet<T> Seeds { get; private set; }
     public HashSet<T> Picked { get; private set; }
-    public Dictionary<T, int> Adjacents { get; private set; }
+    public HashSet<T> Adjacents { get; private set; }
     private Func<T, bool> _valid;
     public int NumToPick { get; private set; }
 
-    public AdjacencyCountPickerAgent(T seed, Picker<T> host, int numToPick, 
+    public RandomPickerAgent(T seed, Picker<T> host, int numToPick, 
         Func<T, bool> valid)
     {
         Seeds = new HashSet<T> { seed };
         _valid = valid;
         NumToPick = numToPick;
         Picked = new HashSet<T>();
-        Adjacents = new Dictionary<T, int>();
+        Adjacents = new HashSet<T>();
         host.AddAgent(this);
         Add(seed, host);
     }
@@ -28,7 +28,7 @@ public class AdjacencyCountPickerAgent<T> : IPickerAgent<T>
         while (true)
         {
             if (Adjacents.Count == 0) return false;
-            var max = Adjacents.MaxBy(kvp => kvp.Value).Key;
+            var max = Adjacents.GetRandomElement();
             if (host.NotTaken.Contains(max) && _valid(max))
             {
                 Add(max, host);
@@ -41,8 +41,6 @@ public class AdjacencyCountPickerAgent<T> : IPickerAgent<T>
         }
     }
 
-    
-
     protected void Add(T t, Picker<T> host)
     {
         Picked.Add(t);
@@ -53,7 +51,7 @@ public class AdjacencyCountPickerAgent<T> : IPickerAgent<T>
         {
             if (_valid(n) && host.NotTaken.Contains(n))
             {
-                Adjacents.AddOrSum(n, 1);
+                Adjacents.Add(n);
             }
         }
     }

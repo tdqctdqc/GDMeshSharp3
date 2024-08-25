@@ -12,7 +12,8 @@ public class PickerUtil
         var result = new List<TSeed>[seedNums.Length];
         for (var i = 0; i < seedNums.Length; i++)
         {
-            var seeds = available.Except(taken).GetDistinctRandomElements(seedNums[i]);
+            var seeds = available.Except(taken)
+                .GetDistinctRandomElements(seedNums[i]);
             seeds.ForEach(s => taken.Add(s));
             result[i] = seeds;
         }
@@ -69,6 +70,7 @@ public class PickerUtil
         IEnumerable<TPicker> openPickersSource,
         Func<TPicker, HashSet<TPicked>> getAdjacent, Action<TPicker, TPicked> take,
         Func<TPicked, TPicker, float> heuristic,
+        Func<TPicked, bool> valid,
         int numPickedToLeave) where TPicked : class
     {
         Func<TPicker, HashSet<TPicked>, TPicked> choose = (picker, avail) =>

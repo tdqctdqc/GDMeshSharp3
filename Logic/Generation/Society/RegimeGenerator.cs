@@ -134,13 +134,14 @@ public class RegimeGenerator : Generator
         var agents = new Dictionary<IPickerAgent<MapPolygon>, Regime>();
         foreach (var (p, r) in polyRegimes)
         {
-            var w = new AdjacencyCountPickerAgent<MapPolygon>(p, picker, iter, x => x.IsLand, _key.Data);
+            var w = new AdjacencyCountPickerAgent<MapPolygon>(p, picker, iter, 
+                x => x.IsLand);
             iter %= 12;
             iter += 4;
             picker.AddAgent(w);
             agents.Add(w, r);
         }
-        picker.RandomAgentPick(_data);
+        picker.RandomAgentPick();
         
         foreach (var w in picker.Agents)
         {

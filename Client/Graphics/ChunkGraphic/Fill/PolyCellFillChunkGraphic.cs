@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public abstract partial class PolyCellFillChunkGraphic : TriColorMesh<Cell>
+public abstract partial class PolyCellFillChunkGraphic 
+    : TriColorMesh<Cell>
 {
     public MapChunk Chunk { get; private set; }
     public PolyCellFillChunkGraphic(string name, 

@@ -4,12 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PreCellGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/InfrastructureGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/SocietyGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/PathFinderExt.cs" afterDir="false" />
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="tweaked veg moisture levels">
+      <change afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PaintPolyCellChunkGraphic.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/RandomPickerAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyCellFillChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PolyCellFillChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/GenAuxiliaryData.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/GenAuxiliaryData.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GenContinent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GenContinent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Society/RegimeGenerator.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/ColorsExt.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/ColorsExt.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Picker/PickerUtil.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/PickerUtil.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/IPickerAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/IPickerAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/Picker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/Picker.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/UI/Tooltip/PolyTooltipTemplate.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -58,8 +69,8 @@
     <setting file="file://$PROJECT_DIR$/Data/EntityTypeTree/EntityNotice.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../VoronoiSandbox/DelaunayExt.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../VoronoiSandbox/Util.cs" root0="SKIP_HIGHLIGHTING" />
@@ -725,6 +736,7 @@
       <workItem from="1724509928510" duration="5761000" />
       <workItem from="1724519805911" duration="3014000" />
       <workItem from="1724545649782" duration="10175000" />
+      <workItem from="1724602036348" duration="7437000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -936,14 +948,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00294" summary="made unionFind generic wrt collection type">
-      <option name="closed" value="true" />
-      <created>1722730423198</created>
-      <option name="number" value="00294" />
-      <option name="presentableId" value="LOCAL-00294" />
-      <option name="project" value="LOCAL" />
-      <updated>1722730423198</updated>
-    </task>
     <task id="LOCAL-00295" summary="made so shift phase in deployment node goes longer to fix problem, added more to milplanningmode ui">
       <option name="closed" value="true" />
       <created>1722806425374</created>
@@ -1088,7 +1092,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724551724002</updated>
     </task>
-    <option name="localTasksCounter" value="313" />
+    <task id="LOCAL-00313" summary="tweaked veg moisture levels">
+      <option name="closed" value="true" />
+      <created>1724602952128</created>
+      <option name="number" value="00313" />
+      <option name="presentableId" value="LOCAL-00313" />
+      <option name="project" value="LOCAL" />
+      <updated>1724602952129</updated>
+    </task>
+    <option name="localTasksCounter" value="314" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1110,7 +1122,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="curved research by population" />
     <MESSAGE value="making ai serializable" />
     <MESSAGE value="bug fixes for unit make priority, research overflow" />
     <MESSAGE value="changed moisture gen again, scaled 'diffusion' with planet dim" />
@@ -1135,6 +1146,7 @@
     <MESSAGE value="added back voronoi graph generator" />
     <MESSAGE value="silly stuff" />
     <MESSAGE value="reforming infra gen" />
-    <option name="LAST_COMMIT_MESSAGE" value="reforming infra gen" />
+    <MESSAGE value="tweaked veg moisture levels" />
+    <option name="LAST_COMMIT_MESSAGE" value="tweaked veg moisture levels" />
   </component>
 </project>

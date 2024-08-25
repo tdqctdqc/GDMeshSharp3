@@ -24,12 +24,13 @@ public class Picker<T>
         Agents.Add(w);
     }
 
-    public void RandomAgentPick(Data data)
+    
+    public void RandomAgentPick(int toLeave = 0)
     {
-        while (OpenPickers.Count > 0 && NotTaken.Count > 0)
+        while (OpenPickers.Count > 0 && NotTaken.Count > toLeave)
         {
             var wanderer = OpenPickers.GetRandomElement();
-            var open = wanderer.Pick(this, data);
+            var open = wanderer.Pick(this);
             if (open == false) OpenPickers.Remove(wanderer);
         }
     }

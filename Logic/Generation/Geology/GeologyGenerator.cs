@@ -11,6 +11,11 @@ public class GeologyGenerator : Generator
 {
     public GenData Data { get; private set; }
     private GenKey _key;
+    private static float _landMinAlt;
+    private static float _landMaxAlt;
+    private static float _seaMinAlt;
+    private static float _seaMaxAlt;
+
     public GeologyGenerator()
     {
         
@@ -38,8 +43,13 @@ public class GeologyGenerator : Generator
         report.StopSection("BuildContinents");
         
         report.StartSection(); 
-        DoContinentFriction();
+        DoPlateFriction();
         report.StopSection("DoContinentFriction");
+        
+        
+        report.StartSection();
+        SeparateContinents();
+        report.StopSection("Separating continents");
         
         report.StartSection(); 
         HandleIsthmusAndInlandSeas();
@@ -140,67 +150,113 @@ public class GeologyGenerator : Generator
 
         var numMasses = Data.GenAuxData.Masses.Count;
         var numLandConts = (int) Data.GenMultiSettings.GeologySettings.NumContinents.Value;
-        var numSeas = (int) Data.GenMultiSettings.GeologySettings.NumSeas.Value;
-        if (numLandConts + numSeas > Data.GenAuxData.Masses.Count) throw new Exception();
 
-        var landMinAlt = .5f;
-        var landMaxAlt = .9f;
-        var seaMinAlt = .1f;
-        var seaMaxAlt = .45f;
-        
+        _landMinAlt = .5f;
+        _landMaxAlt = .9f;
+        _seaMinAlt = .1f;
+        _seaMaxAlt = .45f;
         
         var landRatio = Data.GenMultiSettings.GeologySettings.LandRatio.Value;
         var numSeaMasses = Mathf.FloorToInt(numMasses * (1f - landRatio));
 
-        var seeds = PickerUtil.PickSeeds(Data.GenAuxData.Masses, new int[] {numLandConts, numSeas});
-        var landSeeds = seeds[0].ToHashSet();
-        var waterSeeds = seeds[1].ToHashSet();
-        var allSeeds = landSeeds.Union(waterSeeds);
-        var landConts = landSeeds
-            .Select(s => new GenContinent(s, 
-                id.TakeId(), 
-            Game.I.Random.RandfRange(landMinAlt, landMaxAlt), true))
-            .ToList();
-        //todo make delaunay graph for landConts and put a sea on each edge
-        var seaConts = waterSeeds
-            .Select(s => new GenContinent(s, id.TakeId(), 
-                Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt), false))
-            .ToList();
-        var width = Data.GenMultiSettings.Dimensions.X;
-        var landRemainder = PickerUtil.PickInTurnToLimitHeuristic(
-            Data.GenAuxData.Masses.Except(allSeeds), 
-            landConts,
-            cont => cont.NeighboringMasses,
-            (cont, mass) => cont.AddMass(mass),
-            (m, c) => width
-                      + m.Center.DistanceTo(c.Center) / 20f
-                      + Game.I.Random.RandfRange(0f, width / 5f), //todo use cylinder pos
-            numSeaMasses);
-        
-        var seaRemainder = PickerUtil.PickInTurn(landRemainder, seaConts,
-            cont => cont.NeighboringMasses,
-            (cont, mass) => cont.AddMass(mass));
+        var landSeeds = Data.GenAuxData.Masses.GetDistinctRandomElements(numLandConts);
 
-        if (seaRemainder.Count > 0)
+        var continentGraph = VoronoiSandbox.DelaunayExt
+            .GetVoronoiGraph(landSeeds.ToList(),
+                t => t.Center, 
+                (m, n) => (m, n));
+        var availSeaSeeds = Data.GenAuxData.Masses.Except(landSeeds).ToHashSet();
+        var waterSeeds = new HashSet<GenMass>();
+
+        continentGraph.ForEachEdge((m, n, e) =>
         {
-            var unions = UnionFind.Find<GenMass, List<GenMass>>(seaRemainder, (g, h) => true, m => m.Neighbors);
+            if (availSeaSeeds.Count == 0) return;
+            var mid = (m.Center + n.Center) / 2f;
+            var close = availSeaSeeds.MinBy(s => s.Center.DistanceTo(mid));
+            availSeaSeeds.Remove(close);
+            waterSeeds.Add(close);
+        });
+        
+        var landContPicker = new Picker<GenMass>(
+            Data.GenAuxData.Masses.Except(landSeeds.Union(waterSeeds)),
+            m => m.Neighbors);
+        foreach (var landSeed in landSeeds)
+        {
+            var agent = new AdjacencyCountPickerAgent<GenMass>(
+                landSeed, landContPicker, 1,
+                m => true);
+            landContPicker.AddAgent(agent);
+        }
+        
+        landContPicker.RandomAgentPick(numSeaMasses);
+        var leftover = Data.GenAuxData.Masses
+            .ToHashSet();
+        foreach (var agent in landContPicker.Agents)
+        {
+            var seed = agent.Seeds.First();
+            var cont = new GenContinent(seed,
+                id.TakeId(),
+                Game.I.Random.RandfRange(_landMinAlt, _landMaxAlt), 
+                true);
+            Data.GenAuxData.Continents.Add(cont);
+            foreach (var genMass in agent.Picked)
+            {
+                cont.AddMass(genMass);
+                leftover.Remove(genMass);
+            }
+        }
+        
+        var waterContPicker = new Picker<GenMass>(
+            leftover.ToHashSet(),
+            m => m.Neighbors);
+        
+        foreach (var waterSeed in waterSeeds)
+        {
+            waterContPicker.AddAgent(new RandomPickerAgent<GenMass>(
+                waterSeed, waterContPicker, 
+                1, m => true));
+        }
+        
+        waterContPicker.RandomAgentPick();
+        
+        foreach (var agent in waterContPicker.Agents)
+        {
+            var cont = new GenContinent(agent.Seeds.First(), 
+                id.TakeId(), 
+                Game.I.Random.RandfRange(_seaMinAlt, _seaMaxAlt),
+                false);
+            Data.GenAuxData.Continents.Add(cont);
+            foreach (var genMass in agent.Picked)
+            {
+                leftover.Remove(genMass);
+                cont.AddMass(genMass);
+            }
+        }
+        
+        if (leftover.Count > 0)
+        {
+            var unions = UnionFind
+                .Find<GenMass, List<GenMass>>(leftover,
+                    (g, h) => true, m => m.Neighbors);
             foreach (var u in unions)
             {
                 var cont = new GenContinent(u.First(), 
                     id.TakeId(), 
-                    Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt),
+                    Game.I.Random.RandfRange(_seaMinAlt, _seaMaxAlt),
                     false);
                 for (var i = 1; i < u.Count; i++)
                 {
                     cont.AddMass(u[i]);
                 }
-                seaConts.Add(cont);
+                Data.GenAuxData.Continents.Add(cont);
             }
         }
-        Data.GenAuxData.Continents.AddRange(landConts);
-        Data.GenAuxData.Continents.AddRange(seaConts);
-        Data.GenAuxData.Continents.ForEach(c => c.SetNeighbors());
-        Data.GenAuxData.Continents.ForEach(cont =>
+        foreach (var c in Data.GenAuxData.Continents)
+        {
+            c.SetNeighbors();
+        }
+
+        foreach (var cont in Data.GenAuxData.Continents)
         {
             var isLand = landSeeds.Contains(cont.Seed);
             var polys = cont.Masses
@@ -213,10 +269,10 @@ public class GeologyGenerator : Generator
                 var altValue = cont.Altitude + .2f * altNoise;
                 poly.SetAltitude(altValue, _key);
             }
-        });
+        }
     }
 
-    private void DoContinentFriction()
+    private void DoPlateFriction()
     {
         var gSettings = Data.GenMultiSettings.GeologySettings;
         var roughnessScale = gSettings.RoughnessScale.Value;
@@ -227,9 +283,7 @@ public class GeologyGenerator : Generator
         var roughnessErosionMult = gSettings.RoughnessErosionMult.Value * roughnessScale;
         var seaLevel = gSettings.SeaLevel.Value;
         var frictionRoughnessEffectSetting = gSettings.FrictionRoughnessEffect.Value * roughnessScale;
-        ConcurrentBag<FaultLine> faults = new ConcurrentBag<FaultLine>();
-        MakeFaults(faults);
-
+        var faults = MakeFaults();
         var mtnPassNoise = new FastNoiseLite();
         mtnPassNoise.NoiseType = FastNoiseLite.NoiseTypeEnum.Simplex;
         mtnPassNoise.Frequency = 1 / 100f;
@@ -305,8 +359,9 @@ public class GeologyGenerator : Generator
         return polys;
     }
 
-    private void MakeFaults(ConcurrentBag<FaultLine> faults)
+    private ConcurrentBag<FaultLine> MakeFaults()
     {
+        var faults = new ConcurrentBag<FaultLine>();
         Parallel.ForEach(Data.GenAuxData.Plates, setFriction);
         foreach (var f in faults)
         {
@@ -352,6 +407,41 @@ public class GeologyGenerator : Generator
                     faults.Add(fault);
                 }
             }
+        }
+
+        return faults;
+    }
+
+    private void SeparateContinents()
+    {
+        var polyConts = Data.GetAll<MapPolygon>()
+            .ToDictionary(p => p, p => getCont(p));
+        var toWater = polyConts
+            .AsParallel()
+            .Where(kvp => turnToWater(kvp.Key, kvp.Value))
+            .ToArray();
+        foreach (var kvp in toWater)
+        {
+            var poly = kvp.Key;
+            poly.SetIsLand(false, _key);
+        }
+
+        GenContinent getCont(MapPolygon p)
+        {
+            return Data.GenAuxData.PolyGenCells[p].Plate.Mass.GenContinent;
+        }
+        bool turnToWater(MapPolygon p, GenContinent cont)
+        {
+            if (p.IsWater()) return false;
+            return p.Neighbors.Entities(Data)
+                .Any(n =>
+                {
+                    var nCont = polyConts[n];
+                    var v = n.IsLand
+                            && nCont.Id != cont.Id
+                            && nCont.IsLand;
+                    return v;
+                });
         }
     }
 }

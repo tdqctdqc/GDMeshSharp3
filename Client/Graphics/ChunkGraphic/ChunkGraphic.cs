@@ -12,6 +12,7 @@ public partial class ChunkGraphic : Node2D
     public IconsChunkModule Icons {get; private set; }
     public ResourceIcons ResourceIcons {get; private set; }
     public ChunkLabelGraphics Labels { get; private set; }
+    public PaintPolyCellChunkGraphic Continents { get; private set; }
     
     public ChunkGraphic(MapChunk chunk, 
         GraphicLayerHolder holder,
@@ -65,6 +66,19 @@ public partial class ChunkGraphic : Node2D
         ResourceIcons = new ResourceIcons(Chunk, ChunkGraphic.IconZoomVisRange, d);
         
         Labels = new ChunkLabelGraphics(Chunk, IconZoomVisRange, d);
+        Continents = new PaintPolyCellChunkGraphic(
+            "Continents", c =>
+            {
+                if(d is GenData g == false) return Colors.Transparent;
+                if(c is IPolyCell pc == false) return Colors.Transparent;
+                ;
+                var continent = g.GenAuxData.PolyGenCells[pc.Polygon.Get(d)]
+                    .Plate.Mass.GenContinent;
+                return continent.Color;
+            },
+            Chunk, LayerOrder.PolyFill,
+            new Vector2(0f, 1f),
+            d);
     }
     public IEnumerable<IChunkGraphicModule> GetModules()
     {
@@ -74,5 +88,6 @@ public partial class ChunkGraphic : Node2D
         yield return Icons;
         yield return ResourceIcons;
         yield return Labels;
+        yield return Continents;
     }
 }

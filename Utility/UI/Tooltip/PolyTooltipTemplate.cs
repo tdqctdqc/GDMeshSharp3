@@ -13,6 +13,7 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
         _fastGetters { get; }
         = new List<Func<(MapPolygon poly, Cell cell), Data, Control>>
         {
+            GetContinent,
             GetPolyId,
             GetCellId,
             GetRegime,
@@ -33,7 +34,14 @@ public class PolyTooltipTemplate : TooltipTemplate<(MapPolygon poly, Cell cell)>
             // GetAltitude,
             // GetSlots
         };
+    private static Control GetContinent((MapPolygon poly, Cell cell) t, Data d)
+    {
+        if (d is GenData g == false) return new Control();
 
+        var continent = g.GenAuxData.PolyGenCells[t.poly].Plate.Mass.GenContinent;
+
+        return NodeExt.CreateLabel($"Continent {continent.Id} land {continent.IsLand}");
+    }
     private static Control GetPop((MapPolygon poly, Cell cell) t, Data d)
     {
         var s = "";

@@ -35,7 +35,10 @@ public static class ColorsExt
             rand,rand,rand
         );
     }
-
+    public static Color Shade(this Color c, float s)
+    {
+        return new Color(c.R * s, c.G * s, c.B * s);
+    }
     public static Color Tint(this Color c, float a)
     {
         return new Color(c, a);

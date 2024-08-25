@@ -7,10 +7,10 @@ using VoronoiSandbox;
 public class GenAuxiliaryData 
 {
     public Dictionary<MapPolygon, GenCell> PolyGenCells { get; private set; }
-    public List<GenCell> Cells { get; private set; }
-    public List<GenMass> Masses { get; private set; }
-    public List<GenPlate> Plates { get; private set; }
-    public List<GenContinent> Continents { get; private set; }
+    public HashSet<GenCell> Cells { get; private set; }
+    public HashSet<GenMass> Masses { get; private set; }
+    public HashSet<GenPlate> Plates { get; private set; }
+    public HashSet<GenContinent> Continents { get; private set; }
     public Dictionary<MapPolygon, List<PreCell>> PreCellPolys { get; private set; }
     public Dictionary<MapPolygon, Vector2[]> PolyRelBoundaries { get; private set; }
     public FaultLineManager FaultLines { get; private set; }
@@ -23,11 +23,11 @@ public class GenAuxiliaryData
         _altNoise.FractalOctaves = 3;
         _altNoise.FractalLacunarity = 2;
         _altNoise.FractalGain = .5f;
-        Cells = new List<GenCell>();
+        Cells = new HashSet<GenCell>();
         PolyGenCells = new Dictionary<MapPolygon, GenCell>();
-        Masses = new List<GenMass>();
-        Plates = new List<GenPlate>();
-        Continents = new List<GenContinent>();
+        Masses = new HashSet<GenMass>();
+        Plates = new HashSet<GenPlate>();
+        Continents = new HashSet<GenContinent>();
         FaultLines = new FaultLineManager();
         PreCellPolys = new Dictionary<MapPolygon, List<PreCell>>();
         PolyRelBoundaries = new Dictionary<MapPolygon, Vector2[]>();

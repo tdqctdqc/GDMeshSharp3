@@ -5,6 +5,7 @@ using System.Linq;
 
 public class GenContinent
 {
+    public Color Color { get; private set; }
     public int Id { get; private set; }
     public GenMass Seed { get; private set; }
     public HashSet<GenMass> Masses { get; private set; }
@@ -28,6 +29,14 @@ public class GenContinent
         Drift = Vector2.Left.Rotated(Game.I.Random.RandfRange(0f, 2f * Mathf.Pi));
         AddMass(seed);
         IsLand = isLand;
+        if (isLand)
+        {
+            Color = Colors.Green.Shade(Game.I.Random.RandfRange(.25f, .75f));
+        }
+        else
+        {
+            Color = Colors.Blue.Shade(Game.I.Random.RandfRange(.25f, .75f));
+        }
     }
     public MapPolygon GetSeedPoly() => Seed.GetSeedPoly();
 
