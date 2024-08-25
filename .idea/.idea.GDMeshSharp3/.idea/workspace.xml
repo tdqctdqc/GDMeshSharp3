@@ -4,13 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="">
+    <list default="true" id="9fd2f97b-d7fd-496e-a0ac-249f20acc1ed" name="Changes" comment="fixed that overpicking bug">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.GDMeshSharp3/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Settings/Generation/GeologySettings.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Geology/GeologyGenerator.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/Picker.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/Picker.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/RandomPickerAgent.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Utility/DataStructures/Picker/WandererPicker/RandomPickerAgent.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/GameClient/Ui/MultiBar.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/GameClient/Ui/MultiBar.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/ChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PaintPolyCellChunkGraphic.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Client/Graphics/ChunkGraphic/Fill/PaintPolyCellChunkGraphic.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Logic/Generation/Poly/PolyCellGenerator.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,8 +58,8 @@
     <setting file="file://$PROJECT_DIR$/Data/EntityTypeTree/EntityNotice.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/MilitaryDomain/Army/Army.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Model/Flow/Flow.cs" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Data/PlanetDomain/MapPolygon/Cell/Cell.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Data/Ref/RefSetCallback.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="mock://C:/Users/Me/Desktop/games/GDMeshSharp3/Utility/DataStructures/Picker/WandererPicker/AdjacencyCountPickerAgent.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../HexWargame/Map/MapGraphics/MapBaseLayer.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/../VoronoiSandbox/DelaunayExt.cs" root0="SKIP_HIGHLIGHTING" />
@@ -728,7 +727,7 @@
       <workItem from="1724519805911" duration="3014000" />
       <workItem from="1724545649782" duration="10175000" />
       <workItem from="1724602036348" duration="7962000" />
-      <workItem from="1724614986606" duration="1538000" />
+      <workItem from="1724614986606" duration="2537000" />
     </task>
     <task id="LOCAL-00001" summary="first">
       <created>1688150529236</created>
@@ -940,14 +939,6 @@
       <option name="project" value="LOCAL" />
       <updated>1690986058902</updated>
     </task>
-    <task id="LOCAL-00296" summary="making theaters, frontlines semi persistent">
-      <option name="closed" value="true" />
-      <created>1722883663260</created>
-      <option name="number" value="00296" />
-      <option name="presentableId" value="LOCAL-00296" />
-      <option name="project" value="LOCAL" />
-      <updated>1722883663261</updated>
-    </task>
     <task id="LOCAL-00297" summary="made left-right for cells cached in cellHolder">
       <option name="closed" value="true" />
       <created>1723043921656</created>
@@ -1092,7 +1083,15 @@
       <option name="project" value="LOCAL" />
       <updated>1724609799494</updated>
     </task>
-    <option name="localTasksCounter" value="315" />
+    <task id="LOCAL-00315" summary="fixed that overpicking bug">
+      <option name="closed" value="true" />
+      <created>1724616753116</created>
+      <option name="number" value="00315" />
+      <option name="presentableId" value="LOCAL-00315" />
+      <option name="project" value="LOCAL" />
+      <updated>1724616753117</updated>
+    </task>
+    <option name="localTasksCounter" value="316" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -1114,7 +1113,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
-    <MESSAGE value="bug fixes for unit make priority, research overflow" />
     <MESSAGE value="changed moisture gen again, scaled 'diffusion' with planet dim" />
     <MESSAGE value="serializing alliance ai" />
     <MESSAGE value="serializing alliance military ai" />
@@ -1139,6 +1137,7 @@
     <MESSAGE value="reforming infra gen" />
     <MESSAGE value="tweaked veg moisture levels" />
     <MESSAGE value="made continent separation, still have to find overcounting masses/etc bug" />
-    <option name="LAST_COMMIT_MESSAGE" value="made continent separation, still have to find overcounting masses/etc bug" />
+    <MESSAGE value="fixed that overpicking bug" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed that overpicking bug" />
   </component>
 </project>

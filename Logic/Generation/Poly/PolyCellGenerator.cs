@@ -192,16 +192,22 @@ public class PolyCellGenerator : Generator
         {
             if (cell is LandCell l is false) return;
             var veg = cell.GetVegetation(key.Data);
-            var grass = 
+            var isGrass = 
                 veg == key.Data.Models.Vegetations.Grassland;
-            var forest = 
+            var isForest = 
                 veg == key.Data.Models.Vegetations.Forest;
-            var jungle = 
+            var isJungle = 
                 veg == key.Data.Models.Vegetations.Jungle;
-            if ((grass || forest || jungle) == false)
+            if ((isGrass || isForest || isJungle) == false)
             {
                 return;
             }
+
+            var reforest = key.Data.Models.Vegetations.Jungle
+                .Allowed(l.Polygon.Get(key.Data), 1f,
+                    cell.GetLandform(key.Data), _data)
+                ? key.Data.Models.Vegetations.Jungle
+                : key.Data.Models.Vegetations.Forest;
 
             var poly = l.Polygon.Get(_data);
             var plate = key.GenData.GenAuxData.PolyGenCells[poly].Plate;
@@ -210,15 +216,15 @@ public class PolyCellGenerator : Generator
             var cellSample = reforestNoise.GetNoise2D(cell.RelTo.X, cell.RelTo.Y);
             if (cellSample < .25f) return;
 
-            if (grass)
+            if (isGrass)
             {
-                cell.SetVegetation(key.Data.Models.Vegetations.Forest, key);
+                cell.SetVegetation(reforest, key);
             }
-            else if (forest)
+            else if (isForest)
             {
                 cell.SetVegetation(key.Data.Models.Vegetations.Grassland, key);
             }
-            else if (jungle)
+            else if (isJungle)
             {
                 cell.SetVegetation(key.Data.Models.Vegetations.Grassland, key);
             }

@@ -26,7 +26,7 @@ public partial class PaintPolyCellChunkGraphic : PolyCellFillChunkGraphic
     {
         var s = new Settings("doot");
         s.SettingsOptions.Add(
-            this.MakeVisibilitySetting(true));
+            this.MakeVisibilitySetting(false));
         return s;
     }
 }

@@ -40,7 +40,7 @@ public partial class MultiBar : Control
             },
             () =>
             {
-                Hide();
+                HidePanel();
             });
         button.Text = name;
         button.ButtonGroup = _group;

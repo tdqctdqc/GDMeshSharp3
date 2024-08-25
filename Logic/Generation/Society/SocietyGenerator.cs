@@ -193,9 +193,9 @@ public class SocietyGenerator : Generator
                 urban.SetVegetation(_data.Models.Vegetations.Barren, _key);
                 urban.GetPeep(_data).GrowSize(forThis, _key);
                 res.Add((urban, forThis));
-                pop = forNext;
+                pop = Mathf.Max(0, forNext);
             }
-
+            
             var last = queue.Dequeue();
             last.SetLandform(_data.Models.Landforms.Urban, _key);
             last.SetVegetation(_data.Models.Vegetations.Barren, _key);
