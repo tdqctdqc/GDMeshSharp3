@@ -57,8 +57,6 @@ public class InfrastructureGenerator : Generator
     }
     private Dictionary<Vector2I, RoadModel> BuildLmRoadNetwork(Landmass lm)
     {
-        
-        
         var polyLvlGraph =
             _multiTimer.RunAndTime(
                 () => GetPolyLevelGraph(lm.Polys), 
@@ -231,7 +229,6 @@ public class InfrastructureGenerator : Generator
         var stone = _data.Models.RoadList.StoneRoad;
         var paved = _data.Models.RoadList.PavedRoad;
         var wpPaths = new Dictionary<Vector2I, List<Cell>>();
-        var walk = _data.Models.MoveTypes.InfantryMove;
         polyLevelGraph.RemoveEdgesWhere(e => getRoadFromTraffic(e.Traffic) == null);
         
         var dic = polyLevelGraph.Elements
@@ -295,12 +292,10 @@ public class InfrastructureGenerator : Generator
         }
         RoadModel getRoadFromTraffic(float traffic)
         {
-            return dirt;
-
-            // if (traffic > 200_000f) return paved;
-            // else if (traffic > 100_000f) return stone;
-            // else if (traffic > 1_000f) return dirt;
-            // return null;
+            if (traffic > 200_000f) return paved;
+            else if (traffic > 100_000f) return stone;
+            else if (traffic > 1_000f) return dirt;
+            return null;
         }
 
         float getEdgeCost(Cell w, Cell v)

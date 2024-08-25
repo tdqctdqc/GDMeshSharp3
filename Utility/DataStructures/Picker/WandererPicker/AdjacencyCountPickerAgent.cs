@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class RegimeWanderer : Wanderer
+public class AdjacencyCountPickerAgent<TItem> 
+    : PickerAgent<TItem>
 {
-    public Regime Regime { get; private set; }
-    public RegimeWanderer(Regime regime, MapPolygon seed, WandererPicker host, int numToPick, Data data) 
-        : base(seed, host, numToPick, data)
+    public AdjacencyCountPickerAgent(TItem seed, 
+        Picker<TItem> host, int numToPick, Func<TItem, bool> valid,
+        Data data) 
+        : base(seed, host, numToPick, valid, data)
     {
-        Regime = regime;
     }
     
-    public override bool MoveAndPick(WandererPicker host, Data data)
+    public override bool Pick(Picker<TItem> host, Data data)
     {
         if (ValidAdjacent.Any(host.NotTaken.Contains) == false) return false;
 
@@ -28,14 +29,20 @@ public class RegimeWanderer : Wanderer
         }
 
         var aCount = 0;
-        MapPolygon pick = null;
+        TItem pick = default;
         var found = false;
         
-        foreach (var a in ValidAdjacent)
+        foreach (var a in ValidAdjacent.ToArray())
         {
-            if (host.NotTaken.Contains(a) == false) continue;
-            if (a.Neighbors.Entities(data).Where(n => Picked.Contains(n)).Count() <= 1) continue;
-            var count = a.Neighbors.Entities(data).Where(n => Picked.Contains(n)).Count();
+            if (host.NotTaken.Contains(a) == false)
+            {
+                ValidAdjacent.Remove(a);
+                continue;
+            }
+            var count = host.GetNeighbors(a)
+                .Count(n => Picked.Contains(n));
+            if (count <= 1) continue;
+
             if (count > aCount)
             {
                 pick = a;
@@ -50,11 +57,5 @@ public class RegimeWanderer : Wanderer
         }
 
         return false;
-    }
-
-
-    protected override bool Valid(MapPolygon poly)
-    {
-        return poly.IsLand;
     }
 }

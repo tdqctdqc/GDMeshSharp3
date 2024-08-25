@@ -10,7 +10,7 @@ public class RegimeGenerator : Generator
 {
     private GenData _data;
     private GenKey _key;
-    private int _polysForRegimeAvg = 20;
+    private GenReport _report;
     private int _numPolysToBeMajor = 20;
     public RegimeGenerator()
     {
@@ -21,35 +21,38 @@ public class RegimeGenerator : Generator
     {
         _key = key;
         _data = key.GenData;
-        var report = new GenReport(GetType().Name);
-        report.StartSection();
+        _report = new GenReport(GetType().Name);
+        _report.StartSection();
         var polyRegimes = GenerateRegimes();
-        foreach (var (p, regime) in polyRegimes)
-        {
-            var size = regime.GetCells(_key.Data).Count();
-            regime.Stock.Stock.Add(key.Data.Models.Troops.Rifle1, size * 2f);
-            regime.Stock.Stock.Add(key.Data.Models.Troops.Artillery1, size);
-        }
+
+        GenerateRegimeTroops(key, polyRegimes);
 
         _data.Notices.Gen.GeneratedRegimes.Invoke();
+        _report.StopSection("all");
 
-        report.StopSection("all");
 
-        return report;
+        return _report;
     }
+
+    
 
 
     private Dictionary<MapPolygon, Regime> GenerateRegimes()
     {
-        var polysPerRegime = 30;
+        var numLandPolys = _key.Data.GetAll<MapPolygon>()
+            .Count(p => p.IsLand);
+        
+        var polysPerRegime = Mathf.Max(30, numLandPolys / 20);
         var polyRegimes = 
             new Dictionary<MapPolygon, Regime>();
         var templates = _data.Models.GetModels<RegimeTemplate>().ToHashSet();
+
         
         _data.Planet.MapAux.LandSea.Landmasses.ForEach(
             lm =>
             {
-                var lmRegimes = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);
+                var lmRegimes 
+                    = GenerateLandmassRegimes(lm.Polys, polysPerRegime, templates);
                 polyRegimes.AddRange(lmRegimes);
             });
         
@@ -57,7 +60,7 @@ public class RegimeGenerator : Generator
         {
             ExpandRegimes(polyRegimes);
         }
-
+        
         var remainders = _data.GetAll<MapPolygon>()
             .Where(p => p.IsLand 
                         && (polyRegimes.ContainsKey(p) == false))
@@ -72,7 +75,6 @@ public class RegimeGenerator : Generator
                 c.SetController(regime, _key);
             }
         }
-        
         
         var bySize = polyRegimes
             .SortBy(
@@ -99,11 +101,12 @@ public class RegimeGenerator : Generator
     }
 
     
-    private Dictionary<MapPolygon, Regime> GenerateLandmassRegimes(HashSet<MapPolygon> lm, int polysPerRegime,
+    private Dictionary<MapPolygon, Regime> GenerateLandmassRegimes(
+        HashSet<MapPolygon> lm, int polysPerRegime,
         HashSet<RegimeTemplate> templates)
     {
         var res = new Dictionary<MapPolygon, Regime>();
-        int numRegimes = lm.Count / _polysForRegimeAvg;
+        int numRegimes = lm.Count / polysPerRegime;
         numRegimes = Mathf.Max(1, numRegimes);
         var seeds = lm.GetDistinctRandomElements(numRegimes);
         
@@ -126,23 +129,24 @@ public class RegimeGenerator : Generator
             .Where(p => p.IsLand)
             .Except(polyRegimes.Keys).ToHashSet();
         
-        var picker = new WandererPicker(free);
+        var picker = new Picker<MapPolygon>(free, p => p.Neighbors.Entities(_key.Data));
         int iter = 1;
+        var agents = new Dictionary<PickerAgent<MapPolygon>, Regime>();
         foreach (var (p, r) in polyRegimes)
         {
-            var w = new RegimeWanderer(r, p, picker, iter, _key.Data);
-            iter += 2;
-            iter %= 6;
-            if (iter == 0) iter++;
-            picker.AddWanderer(w);
+            var w = new AdjacencyCountPickerAgent<MapPolygon>(p, picker, iter, x => x.IsLand, _key.Data);
+            iter %= 12;
+            iter += 4;
+            picker.AddAgent(w);
+            agents.Add(w, r);
         }
         picker.Pick(_data);
         
-        foreach (var w in picker.Wanderers)
+        foreach (var w in picker.Agents)
         {
             if (w.Picked.Count == 0) throw new Exception();
 
-            var r = ((RegimeWanderer) w).Regime;
+            var r = agents[w];
             foreach (var p in w.Picked)
             {
                 if (polyRegimes.ContainsKey(p) == false)
@@ -175,14 +179,23 @@ public class RegimeGenerator : Generator
             var sec = prim.Inverted();
             var template = templates.GetRandomElement();
             // templates.Remove(template);
-            var isMajor = union.Count >= _polysForRegimeAvg * .75;
-            var regime = Regime.Create(union[0], template, isMajor, _key);
+            var regime = Regime.Create(union[0], template, false, _key);
             for (var i = 0; i < union.Count; i++)
             {
                 var p = union[i];
                 if (polyRegimes.ContainsKey(p)) continue;
                 polyRegimes.Add(p, regime);
             }
+        }
+    }
+    
+    private void GenerateRegimeTroops(GenKey key, Dictionary<MapPolygon, Regime> polyRegimes)
+    {
+        foreach (var regime in key.Data.GetAll<Regime>())
+        {
+            var size = regime.GetCells(_key.Data).Count();
+            regime.Stock.Stock.Add(key.Data.Models.Troops.Rifle1, size * 2f);
+            regime.Stock.Stock.Add(key.Data.Models.Troops.Artillery1, size);
         }
     }
 }

@@ -31,8 +31,7 @@ public static class DelaunayExt
         GetVoronoiGraph<T, TEdge>(
             List<T> ts, 
             Func<T, Vector2> getPos,
-            Func<T, T, TEdge> getEdge,
-            Vector2I dim, GenKey key)
+            Func<T, T, TEdge> getEdge)
     {
         var dic = ts
             .ToDictionary(t => getPos(t).GetIPoint(), t => t);

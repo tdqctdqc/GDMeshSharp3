@@ -63,14 +63,14 @@ public class GeologyGenerator : Generator
         var polys = Data.GetAll<MapPolygon>();
         var numCells = polys.Count / polysPerCell;
         var polyCellDic = Data.GenAuxData.PolyGenCells;
-        var cellSeeds = Picker.PickSeeds(polys, new int[] {numCells})[0];
+        var cellSeeds = PickerUtil.PickSeeds(polys, new int[] {numCells})[0];
 
         var cells = cellSeeds.Select(p => new GenCell(p, _key, polyCellDic, Data)).ToList();
         Data.GenAuxData.Cells.AddRange(cells);
         var polysNotTaken =
             polys.Except(cellSeeds);
 
-        var remainder = Picker.PickInTurn(polysNotTaken, 
+        var remainder = PickerUtil.PickInTurn(polysNotTaken, 
             cells, 
             cell => cell.NeighboringPolyGeos, 
             (cell, poly) => cell.AddPolygon(poly, _key)
@@ -89,13 +89,13 @@ public class GeologyGenerator : Generator
         var numPlates 
             = Data.GenAuxData.Cells.Count / cellsPerPlate;
         var plateSeeds 
-            = Picker.PickSeeds(Data.GenAuxData.Cells, 
+            = PickerUtil.PickSeeds(Data.GenAuxData.Cells, 
                 new[] {numPlates})[0];
         var plates = plateSeeds.Select(s => new GenPlate(s, id.TakeId(), _key)).ToList();
         
         Data.GenAuxData.Plates.AddRange(plates);
         var cellsNotTaken = Data.GenAuxData.Cells.Except(plateSeeds);
-        var remainder = Picker.PickInTurnHeuristic(cellsNotTaken, plates, 
+        var remainder = PickerUtil.PickInTurnHeuristic(cellsNotTaken, plates, 
             plate => plate.NeighboringCells,
             (plate, cell) => plate.AddCell(cell, _key),
             (cell, plate) => 
@@ -121,11 +121,11 @@ public class GeologyGenerator : Generator
 
         var platesPerMass = 3;
         var numMasses = Data.GenAuxData.Plates.Count / 3;
-        var massSeeds = Picker.PickSeeds(Data.GenAuxData.Plates, new int[] {numMasses})[0];
+        var massSeeds = PickerUtil.PickSeeds(Data.GenAuxData.Plates, new int[] {numMasses})[0];
         var masses = massSeeds.Select(s => new GenMass(s, id.TakeId())).ToList();
 
         var platesNotTaken = Data.GenAuxData.Plates.Except(massSeeds);
-        var remainder = Picker.PickInTurnHeuristic(platesNotTaken, masses,
+        var remainder = PickerUtil.PickInTurnHeuristic(platesNotTaken, masses,
             mass => mass.NeighboringPlates,
             (mass, plate) => mass.AddPlate(plate),
             (plate, mass) => mass.NeighboringPlatesAdjCount[plate]);
@@ -153,7 +153,7 @@ public class GeologyGenerator : Generator
         var landRatio = Data.GenMultiSettings.GeologySettings.LandRatio.Value;
         var numSeaMasses = Mathf.FloorToInt(numMasses * (1f - landRatio));
 
-        var seeds = Picker.PickSeeds(Data.GenAuxData.Masses, new int[] {numLandConts, numSeas});
+        var seeds = PickerUtil.PickSeeds(Data.GenAuxData.Masses, new int[] {numLandConts, numSeas});
         var landSeeds = seeds[0].ToHashSet();
         var waterSeeds = seeds[1].ToHashSet();
         var allSeeds = landSeeds.Union(waterSeeds);
@@ -168,7 +168,7 @@ public class GeologyGenerator : Generator
                 Game.I.Random.RandfRange(seaMinAlt, seaMaxAlt), false))
             .ToList();
         var width = Data.GenMultiSettings.Dimensions.X;
-        var landRemainder = Picker.PickInTurnToLimitHeuristic(
+        var landRemainder = PickerUtil.PickInTurnToLimitHeuristic(
             Data.GenAuxData.Masses.Except(allSeeds), 
             landConts,
             cont => cont.NeighboringMasses,
@@ -178,7 +178,7 @@ public class GeologyGenerator : Generator
                       + Game.I.Random.RandfRange(0f, width / 5f), //todo use cylinder pos
             numSeaMasses);
         
-        var seaRemainder = Picker.PickInTurn(landRemainder, seaConts,
+        var seaRemainder = PickerUtil.PickInTurn(landRemainder, seaConts,
             cont => cont.NeighboringMasses,
             (cont, mass) => cont.AddMass(mass));
 

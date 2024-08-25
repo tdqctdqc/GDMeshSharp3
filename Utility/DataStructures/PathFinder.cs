@@ -269,43 +269,7 @@ public static class PathFinder<T>
         return default;
     }
     
-    public static Graph<T, List<T>> TransformGraph<TOldEdge>(
-            Graph<T, TOldEdge> oldGraph,
-            Func<T, IEnumerable<T>> getNeighbors,
-            Func<T,T,float> getEdgeCost,
-            Func<T, T, float> heuristicCost)
-    {
-        var newGraph = new Graph<T, List<T>>();
-        var els = oldGraph.Elements;
-        for (var i = 0; i < els.Count; i++)
-        {
-            var element = els[i];
-            newGraph.AddNode(element);
-        }
-        for (var i = 0; i < els.Count; i++)
-        {
-            var element = els[i];
-            var ns = oldGraph.GetNeighbors(element)
-                .Where(n => newGraph.HasEdge(element, n) == false)
-                .ToHashSet();
-
-            var dic = 
-                FindMultiplePaths(
-                    element, ns,
-                    getNeighbors,
-                    getEdgeCost,
-                    heuristicCost
-                );
-            foreach (var kvp in dic)
-            {
-                var n = kvp.Key;
-                var path = kvp.Value;
-                newGraph.AddEdge(element, n, path);
-            }
-        }
-
-        return newGraph;
-    }
+    
     
     public static Dictionary<T, List<T>> FindMultiplePaths(T end, 
         HashSet<T> starts, 
