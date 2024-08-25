@@ -70,10 +70,11 @@ public class GeologyGenerator : Generator
         var polysNotTaken =
             polys.Except(cellSeeds);
 
-        var remainder = PickerUtil.PickInTurn(polysNotTaken, 
-            cells, 
-            cell => cell.NeighboringPolyGeos, 
-            (cell, poly) => cell.AddPolygon(poly, _key)
+        var remainder = PickerUtil
+            .PickInTurn(polysNotTaken, 
+                cells, 
+                cell => cell.NeighboringPolyGeos, 
+                (cell, poly) => cell.AddPolygon(poly, _key)
         );
         if (remainder.Count > 0)
         {
@@ -100,8 +101,6 @@ public class GeologyGenerator : Generator
             (plate, cell) => plate.AddCell(cell, _key),
             (cell, plate) => 
                 plate.Center.Offset(cell.Center, Data).Length()
-                // plate.NeighboringCellsAdjCount[cell]
-            
             );
         if (remainder.Count > 0) throw new Exception();
         plates.ForEach(p =>

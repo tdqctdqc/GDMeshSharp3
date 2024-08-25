@@ -34,7 +34,8 @@ public class PickerUtil
             }
             return default;
         };
-        return Pick(notTakenSource, openPickersSource, getAdjacent, choose, take);
+        return Pick(notTakenSource, openPickersSource, 
+            getAdjacent, choose, take);
     }
     public static HashSet<TPicked> PickInTurnHeuristic<TPicker, TPicked>(IEnumerable<TPicked> notTakenSource, 
         IEnumerable<TPicker> openPickersSource,

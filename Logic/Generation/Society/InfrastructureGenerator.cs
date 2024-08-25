@@ -133,7 +133,7 @@ public class InfrastructureGenerator : Generator
             {
                 if (nPoly.Id > poly.Id) continue;
                 if (polyNodes.ContainsKey(nPoly) == false) continue;
-                var polyCost = 1f;//PathFinder.RoadBuildPolyEdgeCost(poly, nPoly, _data);
+                var polyCost = 1f;
                 var cost = new InfraNodeEdge(polyCost, 0f);
                 graph.AddEdge(polyNode, polyNodes[nPoly], cost);
             }
@@ -143,39 +143,35 @@ public class InfrastructureGenerator : Generator
     }
 
     private Graph<InfrastructureNode, InfraNodeEdge> GetHighLevelTrafficGraph(
-        Graph<InfrastructureNode, InfraNodeEdge> polyPortGraph)
+        Graph<InfrastructureNode, InfraNodeEdge> polyLevelGraph)
     {
+
         var activeNodes = 
-            polyPortGraph.Elements
+            polyLevelGraph.Elements
                 .Where(e => e.Size > 0f)
                 .ToList();
         if (activeNodes.Count < 3) return null;
-        var activeNodeGrid = new CylinderGrid<InfrastructureNode>(
-            _data.Planet.Dim, 500f, i => i.Cell.GetCenter());
+
+        var relTo = activeNodes.First().Cell.GetCenter();
+        var vGraph = VoronoiSandbox.DelaunayExt
+            .GetVoronoiGraph(activeNodes,
+                n => relTo.Offset(n.Cell.GetCenter(), _key.Data),
+                (p, q) => (p, q));
+        
         var hiLvlTrafficGraph = new Graph<InfrastructureNode, InfraNodeEdge>();
 
         foreach (var aNode in activeNodes)
         {
-            activeNodeGrid.Add(aNode);
             hiLvlTrafficGraph.AddNode(aNode);
         }
-        foreach (var aNode in activeNodes)
+        foreach (var (n1, n2) in vGraph.Edges)
         {
-            var radius = Mathf.Sqrt(aNode.Size) * _sizeBuildRoadRangeMult;
-            radius = Mathf.Min(_maxBuildRoadRange, radius);
-            var near = activeNodeGrid
-                .GetWithin(aNode.Cell.GetCenter(),
-                    radius, v => true);
-            foreach (var nearNode in near)
-            {
-                if (nearNode == aNode) continue;
-                if (hiLvlTrafficGraph.HasEdge(aNode, nearNode)) continue;
-                var traffic = aNode.Size + nearNode.Size;
-                var edge = new InfraNodeEdge(0f, traffic);
-                hiLvlTrafficGraph.AddEdge(aNode, nearNode, edge);
-            }
+            if (hiLvlTrafficGraph.HasEdge(n1, n2)) continue;
+            if (n1.Cell.GetCenter().Offset(n2.Cell.GetCenter(), _key.Data).Length() > 3000f) continue;
+            var traffic = n1.Size + n2.Size;
+            var edge = new InfraNodeEdge(0f, traffic);
+            hiLvlTrafficGraph.AddEdge(n1, n2, edge);
         }
-        
         
         return hiLvlTrafficGraph;
     }

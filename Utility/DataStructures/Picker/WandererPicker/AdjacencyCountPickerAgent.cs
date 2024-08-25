@@ -3,59 +3,56 @@ using System.Collections.Generic;
 using System.Linq;
 using Godot;
 
-public class AdjacencyCountPickerAgent<TItem> 
-    : PickerAgent<TItem>
+public class AdjacencyCountPickerAgent<T> : IPickerAgent<T>
 {
-    public AdjacencyCountPickerAgent(TItem seed, 
-        Picker<TItem> host, int numToPick, Func<TItem, bool> valid,
-        Data data) 
-        : base(seed, host, numToPick, valid, data)
-    {
-    }
-    
-    public override bool Pick(Picker<TItem> host, Data data)
-    {
-        if (ValidAdjacent.Any(host.NotTaken.Contains) == false) return false;
+    public HashSet<T> Picked { get; private set; }
+    public Dictionary<T, int> Adjacents { get; private set; }
+    private Func<T, bool> _valid;
+    public int NumToPick { get; private set; }
 
-        if (Picked.Count < 4)
+    public AdjacencyCountPickerAgent(T seed, Picker<T> host, int numToPick, 
+        Func<T, bool> valid,
+        Data data)
+    {
+        _valid = valid;
+        NumToPick = numToPick;
+        Picked = new HashSet<T>();
+        Adjacents = new Dictionary<T, int>();
+        host.AddAgent(this);
+        Add(seed, host, data);
+    }
+
+    public bool Pick(Picker<T> host, Data data)
+    {
+        while (true)
         {
-            foreach (var a in ValidAdjacent)
+            if (Adjacents.Count == 0) return false;
+            var max = Adjacents.MaxBy(kvp => kvp.Value).Key;
+            if (host.NotTaken.Contains(max))
             {
-                if (host.NotTaken.Contains(a) == false) continue;
-                Add(a, host, data);
+                Add(max, host, data);
                 return true;
             }
-            return false;
-        }
-
-        var aCount = 0;
-        TItem pick = default;
-        var found = false;
-        
-        foreach (var a in ValidAdjacent.ToArray())
-        {
-            if (host.NotTaken.Contains(a) == false)
+            else
             {
-                ValidAdjacent.Remove(a);
-                continue;
-            }
-            var count = host.GetNeighbors(a)
-                .Count(n => Picked.Contains(n));
-            if (count <= 1) continue;
-
-            if (count > aCount)
-            {
-                pick = a;
-                aCount = count;
-                found = true;
+                Adjacents.Remove(max);
             }
         }
-        if (found)
-        {
-            Add(pick, host, data);
-            return true;
-        }
-
-        return false;
     }
+
+    protected void Add(T t, Picker<T> host, Data data)
+    {
+        Picked.Add(t);
+        host.NotTaken.Remove(t);
+        Adjacents.Remove(t);
+        
+        foreach (var n in host.GetNeighbors(t))
+        {
+            if (_valid(n) && host.NotTaken.Contains(n))
+            {
+                Adjacents.AddOrSum(n, 1);
+            }
+        }
+    }
+
 }

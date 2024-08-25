@@ -35,7 +35,7 @@ public partial class LoggerWindow : Window
     private void Draw()
     {
         _timer = 0f;
-        _container.ClearChildren();
+        _container.UnparentChildren();
         _num.Clear();
         _innerContainers.Clear();
         foreach (var kvp in _data.Logger.Entries)

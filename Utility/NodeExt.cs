@@ -153,6 +153,15 @@ public static class NodeExt
             c.QueueFree();
         }
     }
+    public static void UnparentChildren(this Node n)
+    {
+        if (n == null) throw new Exception();
+        while (n.GetChildCount() > 0)
+        {
+            var c = n.GetChild(0);
+            n.RemoveChild(c);
+        }
+    }
     public static void AddChildWithVSeparator(this Node parent, Node n)
     {
         parent.AddChild(n);

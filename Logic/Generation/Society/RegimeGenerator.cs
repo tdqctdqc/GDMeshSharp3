@@ -131,7 +131,7 @@ public class RegimeGenerator : Generator
         
         var picker = new Picker<MapPolygon>(free, p => p.Neighbors.Entities(_key.Data));
         int iter = 1;
-        var agents = new Dictionary<PickerAgent<MapPolygon>, Regime>();
+        var agents = new Dictionary<IPickerAgent<MapPolygon>, Regime>();
         foreach (var (p, r) in polyRegimes)
         {
             var w = new AdjacencyCountPickerAgent<MapPolygon>(p, picker, iter, x => x.IsLand, _key.Data);
@@ -140,7 +140,7 @@ public class RegimeGenerator : Generator
             picker.AddAgent(w);
             agents.Add(w, r);
         }
-        picker.Pick(_data);
+        picker.RandomAgentPick(_data);
         
         foreach (var w in picker.Agents)
         {
