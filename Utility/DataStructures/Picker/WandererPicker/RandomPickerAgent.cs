@@ -27,9 +27,12 @@ public class RandomPickerAgent<T> : IPickerAgent<T>
     {
         while (true)
         {
-            if (Adjacents.Count == 0) return false;
-            var max = Adjacents.GetRandomElement();
-            if (host.NotTaken.Contains(max) && _valid(max))
+            var avail = Adjacents
+                .Intersect(host.NotTaken);
+            if (avail.Any() == false) return false;
+
+            var max = avail.GetRandomElement();
+            if (_valid(max))
             {
                 Add(max, host);
                 return true;

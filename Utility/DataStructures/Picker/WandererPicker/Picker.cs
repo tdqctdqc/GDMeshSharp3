@@ -20,6 +20,7 @@ public class Picker<T>
 
     public void AddAgent(IPickerAgent<T> w)
     {
+        NotTaken.RemoveWhere(w.Picked.Contains);
         OpenPickers.Add(w);
         Agents.Add(w);
     }

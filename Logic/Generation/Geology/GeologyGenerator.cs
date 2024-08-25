@@ -22,6 +22,8 @@ public class GeologyGenerator : Generator
     }
     public override GenReport Generate(GenKey key)
     {
+        
+        //actual count of masses
         var report = new GenReport(GetType().Name);
         _key = key;
         Data = key.GenData;
@@ -58,6 +60,28 @@ public class GeologyGenerator : Generator
         report.StartSection(); 
         Data.Notices.Gen.SetLandAndSea.Invoke();
         report.StopSection("SetLandmasses");
+
+
+        var massCount1 = Data.GenAuxData.Continents
+            .Sum(c => c.Masses.Count);
+        var massCount2 = Data.GenAuxData.Masses.Count;
+        GD.Print($"masses {massCount1} {massCount2}");
+        
+        var plateCount1 = Data.GenAuxData.Masses
+            .Sum(c => c.Plates.Count);
+        var plateCount2 = Data.GenAuxData.Plates.Count;
+        GD.Print($"plates {plateCount1} {plateCount2}");
+        
+        
+        var cellCount1 = Data.GenAuxData.Plates
+            .Sum(c => c.Cells.Count);
+        var cellCount2 = Data.GenAuxData.Cells.Count;
+        GD.Print($"cells {cellCount1} {cellCount2}");
+        
+        var polyCount1 = Data.GenAuxData.Cells
+            .Sum(c => c.Polys.Count);
+        var polyCount2 = Data.GetAll<MapPolygon>().Count;
+        GD.Print($"polys {polyCount1} {polyCount2}");
         
         return report;
     }
@@ -159,13 +183,15 @@ public class GeologyGenerator : Generator
         var landRatio = Data.GenMultiSettings.GeologySettings.LandRatio.Value;
         var numSeaMasses = Mathf.FloorToInt(numMasses * (1f - landRatio));
 
-        var landSeeds = Data.GenAuxData.Masses.GetDistinctRandomElements(numLandConts);
+        var landSeeds = Data.GenAuxData.Masses
+            .GetDistinctRandomElements(numLandConts);
 
         var continentGraph = VoronoiSandbox.DelaunayExt
             .GetVoronoiGraph(landSeeds.ToList(),
                 t => t.Center, 
                 (m, n) => (m, n));
-        var availSeaSeeds = Data.GenAuxData.Masses.Except(landSeeds).ToHashSet();
+        var availSeaSeeds = Data.GenAuxData
+            .Masses.Except(landSeeds).ToHashSet();
         var waterSeeds = new HashSet<GenMass>();
 
         continentGraph.ForEachEdge((m, n, e) =>
@@ -178,19 +204,18 @@ public class GeologyGenerator : Generator
         });
         
         var landContPicker = new Picker<GenMass>(
-            Data.GenAuxData.Masses.Except(landSeeds.Union(waterSeeds)),
+            Data.GenAuxData.Masses.Except(landSeeds
+                ).Except(waterSeeds),
             m => m.Neighbors);
         foreach (var landSeed in landSeeds)
         {
             var agent = new AdjacencyCountPickerAgent<GenMass>(
                 landSeed, landContPicker, 1,
                 m => true);
-            landContPicker.AddAgent(agent);
         }
         
         landContPicker.RandomAgentPick(numSeaMasses);
-        var leftover = Data.GenAuxData.Masses
-            .ToHashSet();
+        
         foreach (var agent in landContPicker.Agents)
         {
             var seed = agent.Seeds.First();
@@ -202,19 +227,20 @@ public class GeologyGenerator : Generator
             foreach (var genMass in agent.Picked)
             {
                 cont.AddMass(genMass);
-                leftover.Remove(genMass);
             }
         }
         
         var waterContPicker = new Picker<GenMass>(
-            leftover.ToHashSet(),
+            Data.GenAuxData.Masses
+                .Except(Data.GenAuxData.Continents
+                    .SelectMany(c => c.Masses)).ToArray(),
             m => m.Neighbors);
         
         foreach (var waterSeed in waterSeeds)
         {
-            waterContPicker.AddAgent(new RandomPickerAgent<GenMass>(
-                waterSeed, waterContPicker, 
-                1, m => true));
+            new RandomPickerAgent<GenMass>(
+                waterSeed, waterContPicker,
+                1, m => true);
         }
         
         waterContPicker.RandomAgentPick();
@@ -228,12 +254,27 @@ public class GeologyGenerator : Generator
             Data.GenAuxData.Continents.Add(cont);
             foreach (var genMass in agent.Picked)
             {
-                leftover.Remove(genMass);
                 cont.AddMass(genMass);
             }
         }
+
+        var landmasses1 = landContPicker
+            .Agents.SelectMany(a => a.Picked).ToArray();
+        var landmasses2 = landmasses1.ToHashSet();
+        GD.Print($"land {landmasses1.Count()} {landmasses2.Count()}");
+
+        var watermasses1 = waterContPicker
+            .Agents.SelectMany(a => a.Picked).ToArray();
+        var watermasses2 = watermasses1.ToHashSet();
+        GD.Print($"water {watermasses1.Count()} {watermasses2.Count()}");
+
         
-        if (leftover.Count > 0)
+        
+        var leftover = Data.GenAuxData.Masses
+            .Except(Data.GenAuxData.Continents
+                .SelectMany(c => c.Masses)).ToArray();
+        
+        if (leftover.Length > 0)
         {
             var unions = UnionFind
                 .Find<GenMass, List<GenMass>>(leftover,

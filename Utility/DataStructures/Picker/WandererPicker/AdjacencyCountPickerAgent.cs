@@ -27,9 +27,10 @@ public class AdjacencyCountPickerAgent<T> : IPickerAgent<T>
     {
         while (true)
         {
-            if (Adjacents.Count == 0) return false;
-            var max = Adjacents.MaxBy(kvp => kvp.Value).Key;
-            if (host.NotTaken.Contains(max) && _valid(max))
+            var avail = Adjacents.Keys.Intersect(host.NotTaken);
+            if (avail.Any() == false) return false;
+            var max = avail.MaxBy(a => Adjacents[a]);
+            if (_valid(max))
             {
                 Add(max, host);
                 return true;
